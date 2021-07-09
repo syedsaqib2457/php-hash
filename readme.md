@@ -1,7 +1,5 @@
 ## Installation
 
-Control panel functionality is currently tested on the latest version of Chrome Browser.
-
 Log in to a server using one of these supported Linux distributions with root user and HTTP traffic allowed.
 
 + Debian 9 Stretch

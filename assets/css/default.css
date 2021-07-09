@@ -137,6 +137,7 @@ select {
 	cursor: pointer;
 	display: block;
 	font-size: 13px;
+	height: 40px;
 	line-height: 38px;
 	margin: 0;
 	outline: none;
@@ -197,7 +198,9 @@ strong {
 	}
 	.checkbox[checked="1"] {
 		border-color: #000 !important;
-		box-shadow: 0 0 0 3px inset #000 !important;
+		border-width: 4px !important;
+		height: 8px !important;
+		width: 8px !important;
 	}
 .checkbox-container {
 	float: left;
@@ -305,24 +308,6 @@ strong {
 		.field-group .table span {
 			line-height: 20px !important;
 		}
-	.field-group label[type="radio"] {
-		border: 1px solid #ddd;
-		cursor: pointer;
-		height: 38px;
-		line-height: 38px;
-		margin-bottom: 10px;
-		padding: 0;
-		width: 100%;
-	}
-		.field-group label[type="radio"] input {
-			cursor: pointer;
-			height: auto;
-			margin: 11px 10px 0 13px !important;
-			width: auto;
-		}
-		.field-group label[type="radio"]:hover {
-			border-color: #000;
-		}
 	.field-group select {
 		margin-bottom: 10px;
 	}
@@ -429,9 +414,6 @@ strong {
 .icon[process="download"] {
 	background: url('../png/icon-download.png') center no-repeat;
 }
-.icon[process="group"] {
-	background: url('../png/icon-group.png') center no-repeat;
-}
 .icon[process="search"] {
 	background: url('../png/icon-search.png') center no-repeat;
 }
@@ -445,14 +427,7 @@ strong {
 .icon.next,
 .icon.previous,
 .icon.remove,
-.icon[process="activate"],
-.icon[process="authenticate"],
-.icon[process="deactivate"],
-.icon[process="download"],
-.icon[process="group"],
-.icon[process="search"],
-.icon[process="server_nameserver_processes"],
-.icon[process="server_proxy_processes"] {
+.icon[process] {
 	background-size: auto 16px !important;
 }
 .item-configuration-container .checked-container {
@@ -586,6 +561,7 @@ strong {
 			border-color: #000;
 		}
 		.item-container input {
+			height: 40px;
 			line-height: 38px;
 			padding: 0 12px;
 		}
