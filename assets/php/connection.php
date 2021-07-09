@@ -487,7 +487,9 @@
 				'allow * * * * HTTP',
 				'nolog',
 				'allow * * * * HTTPS',
-				'nolog'
+				'nolog',
+				'#log /var/log/proxy',
+				'#logformat "L%t.%. %U %C %R %O+%I %n"'
 			);
 
 			if (empty($this->decodedServerData['proxies'])) {
@@ -884,18 +886,13 @@
 		}
 
 		protected function _sendUrlRequestLogData() {
-			$urlRequestLogDirectory = '/var/log/3proxy/';
-			$urlRequestLogFile = $urlRequestLogDirectory . 'access.log';
-
-			if (!is_dir($urlRequestLogDirectory)) {
-				shell_exec('sudo mkdir -m 755 -p ' . $urlRequestLogDirectory);
-			}
+			$urlRequestLogFile = '/var/log/proxy';
 
 			if (!file_exists($urlRequestLogFile)) {
 				return;
 			}
 
-			$encodedUrlRequestLogs = '[' . rtrim(file_get_contents($urlRequestLogFile), ',') . ']';
+			/*$encodedUrlRequestLogs = '[' . rtrim(file_get_contents($urlRequestLogFile), ',') . ']';
 			$urlRequestLogs = json_decode($encodedUrlRequestLogs, true);
 
 			if (empty($urlRequestLogs)) {
@@ -929,14 +926,14 @@
 			$updatedUrlRequestLogs = file_get_contents($urlRequestLogFile);
 			$mostRecentUrlRequestLog = end($urlRequestLogs) . ',';
 			$updatedUrlRequestLogs = substr($updatedUrlRequestLogs, strpos($updatedUrlRequestLogs, $mostRecentUrlRequestLog) + strlen($mostRecentUrlRequestLog));
-			file_put_contents($urlRequestLogFile, $updatedUrlRequestLogs);
+			file_put_contents($urlRequestLogFile, $updatedUrlRequestLogs);*/
 			return;
 		}
 
 		protected function _verifyNameserverProcesses() {
 			$serverData = file_exists($this->rootPath . 'cache/data') ? file_get_contents($this->rootPath . 'cache/data') : '';
 			$decodedServerData = json_decode($serverData, true);
-			
+
 			if (empty($this->nameserverServiceName)) {
 				$this->nameserverServiceName = is_dir('/etc/default/bind9') ? 'bind9' : 'named';
 			}
