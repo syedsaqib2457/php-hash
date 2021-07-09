@@ -53,54 +53,6 @@
 				'type' => 'INT(3)'
 			)
 		),
-		'databases' => array(
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
-				'type' => 'DATETIME'
-			),
-			'gigabytes_total' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'FLOAT(9,2)'
-			),
-			'gigabytes_used' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'FLOAT(9,2)'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'null' => false,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'ip' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(30)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
-				'type' => 'DATETIME'
-			),
-			'removed' => array(
-				'default' => 0,
-				'null' => false,
-				'type' => 'TINYINT(1)'
-			),
-			'status_activated' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'status_deployed' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			)
-		),
 		'proxies' => array(
 			'block_all_urls' => array(
 				'default' => 0,
@@ -180,7 +132,44 @@
 				'type' => 'TEXT'
 			)
 		),
-		'proxy_logs' => array(),
+		'proxy_authentications' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'null' => false,
+				'type' => 'DATETIME'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'null' => false,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'null' => false,
+				'type' => 'DATETIME'
+			),
+			'proxy_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'server_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'username' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(40)'
+			),
+			'whitelisted_ips' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'TEXT'
+			)
+		),
 		'proxy_urls' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -206,7 +195,7 @@
 			'url' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'VARCHAR(10000)'
+				'type' => 'VARCHAR(1000)'
 			)
 		),
 		'proxy_url_request_limitation_proxies' => array(
@@ -310,12 +299,32 @@
 				'null' => false,
 				'type' => 'FLOAT(9,2)'
 			),
+			'client_ip' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(30)'
+			),
+			'code' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'SMALLINT(3)'
+			),
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'null' => false,
+				'type' => 'DATETIME'
+			),
 			'id' => array(
 				'auto_increment' => true,
 				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
+			'proxy_authentication_id' => array(
+                                'default' => null,
+                                'null' => true,
+                                'type' => 'BIGINT(11)'
+                        ),
 			'proxy_id' => array(
 				'default' => null,
 				'null' => true,
@@ -326,19 +335,20 @@
 				'null' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'requests' => array(
-				'null' => false,
-				'type' => 'BIGINT(11)'
-			),
 			'server_id' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'timestamp' => array(
-				'index' => true,
-				'null' => false,
-				'type' => 'VARCHAR(10)'
+			'target_ip' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(30)'
+			),
+			'target_url' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(1000)'
 			)
 		),
 		'servers' => array(
