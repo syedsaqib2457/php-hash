@@ -200,7 +200,7 @@ var processDownload = function() {
 	elementContent += '<div class="hidden item-controls">';
 	elementContent += '<label>Proxies</label>';
 	elementContent += '<div class="download-textarea-container">';
-	elementContent += '<textarea class="download" id="download" name="download"></textarea>';
+	elementContent += '<textarea class="download" name="download"></textarea>';
 	elementContent += '</div>';
 	elementContent += '</div>';
 	elementContent += '<div class="clear"></div>';
@@ -570,7 +570,6 @@ var processProxyItems = function(response, itemListParameters) {
 			elements.addClass(itemListParameters.selector + ' .edit.icon', 'hidden');
 			elements.html(selectedElementSelector + ' .table-text', '<label class="label">Loading</label>');
 			api.sendRequest(function(response) {
-
 				if (
 					response.message.status &&
 					response.message.status !== 'success'
@@ -584,21 +583,21 @@ var processProxyItems = function(response, itemListParameters) {
 					elementContent += '<p>' + response.data.externalIp + ' <span disabled>[' + (response.data.internalIp || response.data.externalIp) + ']</span></p>';
 					elementContent += '<div class="field-group no-margin">';
 					elementContent += '<div class="align-left checkbox-container no-margin-top">';
-					elementContent += '<span checked="0" class="checkbox proxy-status-active-field no-margin-left" id="proxy-status-active" name="proxy_status_active"></span>';
-					elementContent += '<label class="custom-checkbox-label" for="proxy-status-active" name="proxy_status_active">Active</label>';
+					elementContent += '<span checked="0" class="checkbox proxy-status-active-field no-margin-left" name="proxy_status_active"></span>';
+					elementContent += '<label class="custom-checkbox-label" name="proxy_status_active">Active</label>';
 					elementContent += '</div>';
 					elementContent += '<div class="clear"></div>';
-					elementContent += '<label for="proxy-username">Username</label>';
+					elementContent += '<label>Username</label>';
 					elementContent += '<div class="field-group no-margin-top">';
-					elementContent += '<input class="no-margin proxy-username-field" id="proxy-username" name="proxy_username" placeholder="Between 4 and 15 characters">';
+					elementContent += '<input class="no-margin proxy-username-field" name="proxy_username" placeholder="Between 4 and 15 characters">';
 					elementContent += '</div>';
-					elementContent += '<label for="proxy-password">Password</label>';
+					elementContent += '<label>Password</label>';
 					elementContent += '<div class="field-group no-margin-top">';
-					elementContent += '<input class="no-margin proxy-password-field" id="proxy-password" name="proxy_password" placeholder="Between 4 and 15 characters">';
+					elementContent += '<input class="no-margin proxy-password-field" name="proxy_password" placeholder="Between 4 and 15 characters">';
 					elementContent += '</div>';
-					elementContent += '<label for="proxy-whitelisted-ips">Whitelisted IPs and Subnets</label>';
+					elementContent += '<label>Whitelisted IPs and Subnets</label>';
 					elementContent += '<div class="field-group no-margin-top">';
-					elementContent += '<textarea class="no-margin proxy-whitelisted-ips-field" id="proxy-whitelisted-ips" name="proxy_whitelisted_ips" placeholder="127.0.0.1\n127.0.0.2\n127.0.0.0/8\netc..."></textarea>';
+					elementContent += '<textarea class="no-margin proxy-whitelisted-ips-field" name="proxy_whitelisted_ips" placeholder="127.0.0.1\n127.0.0.2\n127.0.0.0/8\netc..."></textarea>';
 					elementContent += '</div>';
 					elementContent += '<div class="clear"></div>';
 					elementContent += '<button class="alternate-button button no-margin-bottom proxy-cancel-edit-button margin-right">Cancel</button>';
@@ -716,11 +715,10 @@ var processProxyUrlItems = function(response, itemListParameters) {
 		var elementContent = '<div class="additional-item-controls">';
 		elementContent += '<a class="align-right button main-button" href="javascript:void(0);" show="create-proxy-url">Create Proxy URL</a>';
 		elementContent += '<div class="create-proxy-url form hidden">';
-		elementContent += '<label for="proxy_url">URL</label>';
+		elementContent += '<label>URL</label>';
 		elementContent += '<div class="field-group no-margin-top">';
 		elementContent += '<input class="no-margin proxy-url-field" name="proxy_url" placeholder="Enter domain or subdomain URL (e.g. https://example.com)">';
 		elementContent += '</div>';
-		elementContent += '<div class="clear"></div>';
 		elementContent += '<div class="clear"></div>';
 		elementContent += '<a class="alternate-button button margin-right" hide="create-proxy-url" href="javascript:void(0)">Cancel</a>';
 		elementContent += '<a class="add-proxy-url-button button main-button" href="javascript:void(0)">Add Proxy URL</a>';

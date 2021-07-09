@@ -311,19 +311,19 @@ var processServerNameserverProcessItems = function(response, itemListParameters)
 		elementContent += '<a class="align-right button create-server-nameserver-process-button main-button no-margin-bottom" href="javascript:void(0);" show="create-server-nameserver-process">Create Server Nameserver Process</a>';
 		elementContent += '<div class="create-server-nameserver-process form hidden">';
 		elementContent += '<div class="checkbox-container">';
-		elementContent += '<span checked="0" class="checkbox server-nameserver-process-create-internal-process" id="server-nameserver-process-create-internal-process" name="create_internal_process"></span>';
-		elementContent += '<label class="custom-checkbox-label server-nameserver-process-create-internal-process-field" for="server-nameserver-process-create-internal-process" name="create_internal_process">Create Internal Process</label>';
+		elementContent += '<span checked="0" class="checkbox server-nameserver-process-create-internal-process" name="create_internal_process"></span>';
+		elementContent += '<label class="custom-checkbox-label server-nameserver-process-create-internal-process-field" name="create_internal_process">Create Internal Process</label>';
 		elementContent += '</div>';
 		elementContent += '<div class="clear"></div>';
-		elementContent += '<label for="server-nameserver-process-listening-ip">Listening IP</label>';
+		elementContent += '<label>Listening IP</label>';
 		elementContent += '<div class="field-group no-margin">';
-		elementContent += '<input class="server-nameserver-process-listening-ip-field" id="server-nameserver-process-listening-ip" name="listening_ip" placeholder="Enter listening IP (e.g. 127.0.0.1, etc)" value="127.0.0.1" type="text">';
+		elementContent += '<input class="server-nameserver-process-listening-ip-field" name="listening_ip" placeholder="Enter listening IP (e.g. 127.0.0.1, etc)" value="127.0.0.1" type="text">';
 		elementContent += '</div>';
 		elementContent += '<div class="clear"></div>';
 		elementContent += '<div class="checkbox-option-container clear hidden no-padding" field="create_internal_process">';
-		elementContent += '<label for="server-nameserver-process-external-source-ip">External Source IP</label>';
+		elementContent += '<label>External Source IP</label>';
 		elementContent += '<div class="field-group no-margin">';
-		elementContent += '<input class="server-nameserver-process-external-source-ip-field" id="server-nameserver-process-external-source-ip" placeholder="Enter external source IP from list of server node IPs" type="text">';
+		elementContent += '<input class="server-nameserver-process-external-source-ip-field" placeholder="Enter external source IP from list of server node IPs" type="text">';
 		elementContent += '</div>';
 		elementContent += '</div>';
 		elementContent += '<div class="clear"></div>';
@@ -387,12 +387,12 @@ var processServerNodeItems = function(response, itemListParameters) {
 	if (typeof itemListParameters !== 'object') {
 		processItemList('listServerNodeItems');
 	} else {
-		var serverNodeElementContent = '<label for="server_node_external_ip">External IP</label>';
+		var serverNodeElementContent = '<label>External IP</label>';
 		serverNodeElementContent += '<div class="field-group no-margin-top">';
 		serverNodeElementContent += '<input class="no-margin server-node-external-ip-field" name="server_external_node_external_ip" placeholder="Enter external IP address" type="text">';
 		serverNodeElementContent += '</div>';
 		serverNodeElementContent += '<div class="clear"></div>';
-		serverNodeElementContent += '<label for="server_node_internal_ip">Internal IP</label>';
+		serverNodeElementContent += '<label>Internal IP</label>';
 		serverNodeElementContent += '<div class="field-group no-margin-top">';
 		serverNodeElementContent += '<input class="no-margin server-node-internal-ip-field" name="server_node_internal_ip" placeholder="Enter optional internal IP address if already routed by the host" type="text">';
 		serverNodeElementContent += '</div>';
@@ -685,9 +685,9 @@ var processServerProxyProcessItems = function(response, itemListParameters) {
 	if (typeof itemListParameters !== 'object') {
 		processItemList('listServerProxyProcessItems');
 	} else {
-		let proxyProcessElementContent = '<label for="server-proxy-process-port">Port</label>';
+		let proxyProcessElementContent = '<label>Port</label>';
 		proxyProcessElementContent += '<div class="field-group no-margin-top">';
-		proxyProcessElementContent += '<input class="no-margin server-proxy-process-port-field" id="server-proxy-process-port" name="server_proxy_process_port" placeholder="Enter port number (e.g. 80, 8888, etc)" type="text">';
+		proxyProcessElementContent += '<input class="no-margin server-proxy-process-port-field" name="server_proxy_process_port" placeholder="Enter port number (e.g. 80, 8888, etc)" type="text">';
 		proxyProcessElementContent += '</div>';
 		proxyProcessElementContent += '<div class="clear"></div>';
 		const processServerProxyProcessAdd = function() {
@@ -1028,9 +1028,9 @@ const processServerItems = function(response, itemListParameters) {
 		var elementContent = '<div class="additional-item-controls">';
 		elementContent += '<a class="align-right button create-server-button main-button no-margin-bottom" href="javascript:void(0);" show="create-server">Create Server</a>';
 		elementContent += '<div class="create-server form hidden">';
-		elementContent += '<label for="ip-field">Main Server IP</label>';
+		elementContent += '<label>Main Server IP</label>';
 		elementContent += '<div class="field-group no-margin">';
-		elementContent += '<input class="ip-field" id="ip-field" name="ip" placeholder="Enter the server\'s main IP" type="text">';
+		elementContent += '<input class="ip-field" name="ip" placeholder="Enter the server\'s main IP" type="text">';
 		elementContent += '</div>';
 		elementContent += '<div class="clear"></div>';
 		elementContent += '<a class="alternate-button button margin-right" hide="create-server" href="javascript:void(0)">Cancel</a>';

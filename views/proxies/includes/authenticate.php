@@ -5,20 +5,20 @@
 				<div class="authenticate-configuration">
 					<div class="item-body">
 						<div class="authenticate message-container"></div>
-						<label for="username">Username</label>
-						<input class="username" id="username" name="username" placeholder="Between 4 and 15 characters" type="text">
-						<label for="password">Password</label>
-						<input class="password" id="password" name="password" placeholder="Between 4 and 15 characters" type="text">
+						<label>Username</label>
+						<input class="username" name="username" placeholder="Between 4 and 15 characters" type="text">
+						<label>Password</label>
+						<input class="password" name="password" placeholder="Between 4 and 15 characters" type="text">
 						<div class="checkbox-container">
-							<span checked="0" class="checkbox generate-unique" id="generate-unique" name="generate_unique"></span>
-							<label class="custom-checkbox-label" for="generate-unique" name="generate_unique">Generate Random Unique Usernames and Passwords</label>
+							<span checked="0" class="checkbox generate-unique" name="generate_unique"></span>
+							<label class="custom-checkbox-label" name="generate_unique">Generate Random Unique Usernames and Passwords</label>
 						</div>
 						<div class="clear"></div>
-						<label for="whitelisted_ips">Whitelisted IPs and Subnets</label>
-						<textarea class="whitelisted-ips" id="whitelisted-ips" name="whitelisted_ips" placeholder="<?php echo "127.0.0.1\n127.0.0.2\n127.0.0.0/8\netc..." ?>" type="text"></textarea>
+						<label>Whitelisted IPs and Subnets</label>
+						<textarea class="whitelisted-ips" name="whitelisted_ips" placeholder="<?php echo "127.0.0.1\n127.0.0.2\n127.0.0.0/8\netc..." ?>" type="text"></textarea>
 						<div class="checkbox-container">
-							<span checked="0" class="checkbox" id="ignore-empty" name="ignore_empty"></span>
-							<label class="custom-checkbox-label" for="ignore-empty" name="ignore_empty">Ignore Empty Authentication Values</label>
+							<span checked="0" class="checkbox" name="ignore_empty"></span>
+							<label class="custom-checkbox-label" name="ignore_empty">Ignore Empty Authentication Values</label>
 						</div>
 						<div class="clear"></div>
 					</div>

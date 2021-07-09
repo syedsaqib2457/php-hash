@@ -4,8 +4,8 @@
 			<div class="item">
 				<div class="item-body">
 					<div class="login message-container"></div>
-					<label for="login-password">Password</label>
-					<input class="password" id="login-password" name="password" placeholder="Enter password" type="password">
+					<label>Password</label>
+					<input class="password" name="password" placeholder="Enter password" type="password">
 					<div class="clear"></div>
 				</div>
 				<div class="item-footer">

@@ -13,12 +13,12 @@
 							<p class="message">Loading</p>
 						</div>
 						<div class="checkbox-container no-margin-top">
-							<span checked="0" class="checkbox" id="only-allow-urls" name="only_allow_urls"></span>
-							<label class="custom-checkbox-label" for="only-allow-urls" name="only_allow_urls">Only Allow Requests to the Selected URLs</label>
+							<span checked="0" class="checkbox" name="only_allow_urls"></span>
+							<label class="custom-checkbox-label" name="only_allow_urls">Only Allow Requests to the Selected URLs</label>
 						</div>
 						<div class="checkbox-container no-margin-top">
-							<span checked="0" class="checkbox" id="block-all-urls" name="block_all_urls"></span>
-							<label class="custom-checkbox-label" for="block-all-urls" name="block_all_urls">Block All Requests to the Selected URLs</label>
+							<span checked="0" class="checkbox" name="block_all_urls"></span>
+							<label class="custom-checkbox-label" name="block_all_urls">Block All Requests to the Selected URLs</label>
 						</div>
 						<div class="clear"></div>
 					</div>
