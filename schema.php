@@ -295,9 +295,13 @@
 			)
 		),
 		'proxy_url_request_logs' => array(
-			'bytes' => array(
+			'bytes_received' => array(
 				'null' => false,
-				'type' => 'FLOAT(9,2)'
+				'type' => 'BIGINT(11)'
+			),
+			'bytes_sent' => array(
+				'null' => false,
+				'type' => 'BIGINT(11)'
 			),
 			'client_ip' => array(
 				'default' => null,
@@ -319,6 +323,11 @@
 				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'null' => false,
+				'type' => 'DATETIME'
 			),
 			'proxy_authentication_id' => array(
                                 'default' => null,

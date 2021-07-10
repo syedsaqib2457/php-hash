@@ -23,7 +23,7 @@
 
 			$this->_createInterfaces();
 			$this->_createProxyConfiguration();
-			$this->_sendUrlRequestLogData();
+			$this->_sendProxyUrlRequestLogData();
 			$this->_verifyNameserverProcesses();
 			$firewallRulePorts = $serverData = array();
 			$firewallRulePortsFile = $this->rootPath . 'cache/ports';
@@ -485,11 +485,7 @@
 				'stacksize 0',
 				'flush',
 				'allow * * * * HTTP',
-				'nolog',
-				'allow * * * * HTTPS',
-				'nolog',
-				'#log /var/log/proxy',
-				'#logformat "L%t.%. %U %C %R %O+%I %n"'
+				'allow * * * * HTTPS'
 			);
 
 			if (empty($this->decodedServerData['proxies'])) {
@@ -526,6 +522,9 @@
 					}
 				}
 
+				// ..
+				$proxyConnect[] = 'log /var/log/proxy';
+				$proxyConnect[] = 'logformat " {""_"":""%."",""bytes_received"":""%O"",""bytes_sent"":""%I"",""client_ip"":""%C"",""code"":""%E"",""created"":""%Y-%m-%d %H-%M-%S"",""proxy_id"":""' . $proxy['id'] . '"",""server_id"":""' . $this->parameters['id'] . '"",""target_ip"":""%R"",""username"":""%U"",""target_url"":""%n""},"';
 				$proxyConnect[$proxyIps[$proxy['id']]] = false;
 				$proxyConnect[] = 'deny *';
 				$proxyConnect[] = 'flush';
@@ -885,48 +884,30 @@
 			return;
 		}
 
-		protected function _sendUrlRequestLogData() {
-			$urlRequestLogFile = '/var/log/proxy';
+		protected function _sendProxyUrlRequestLogData() {
+			$proxyUrlRequestLogFile = '/var/log/proxy';
 
-			if (!file_exists($urlRequestLogFile)) {
+			if (!file_exists($proxyUrlRequestLogFile)) {
 				return;
 			}
 
-			/*$encodedUrlRequestLogs = '[' . rtrim(file_get_contents($urlRequestLogFile), ',') . ']';
-			$urlRequestLogs = json_decode($encodedUrlRequestLogs, true);
+			$encodedProxyUrlRequestLogs = '[' . rtrim(trim(file_get_contents($proxyUrlRequestLogFile)), ',') . ']';
+			$proxyUrlRequestLogs = json_decode($encodedProxyUrlRequestLogs, true);
 
-			if (empty($urlRequestLogs)) {
+			if (empty($proxyUrlRequestLogs)) {
 				return;
 			}
 
-			$formattedUrlRequestLogs = array();
+			$proxyUrlRequestLogParts = array_chunk($proxyUrlRequestLogs, 20000);
 
-			foreach ($urlRequestLogs as $urlRequestLog) {
-				$urlRequestLogKey = '[client_identifier]';
-
-				if (empty($formattedUrlRequestLogs[$urlRequestLogKey])) {
-					$formattedUrlRequestLogs[$urlRequestLogKey] = array(
-						'bytes' => 0,
-						'requests' => 0
-					);
-				}
-
-				$formattedUrlRequestLogs[$urlRequestLogKey] = array(
-					'bytes' => ($formattedUrlRequestLogs[$urlRequestLogKey]['bytes'] + (integer) $urlRequestLog['10']),
-					'requests' => ($formattedUrlRequestLogs[$urlRequestLogKey]['requests'] + 1)
-				);
+			foreach ($proxyUrlRequestLogParts as $proxyUrlRequestLogPart) {
+				shell_exec('sudo wget -O /tmp/proxyUrlRequestLogResponse.json --no-dns-cache --post-data "json={\"action\":\"archive\",\"data\":{\"proxyUrlRequestLogs\":' . json_encode($proxyUrlRequestLogPart) . '},\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/proxy-url-request-logs');
 			}
 
-			shell_exec('sudo wget -O /tmp/proxyUrlRequestLogResponse.json --no-dns-cache --post-data "json={\"action\":\"archive\",\"data\":{\"proxyUrlRequestLogs\":' . json_encode($formattedUrlRequestLogs) . '},\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/proxy-url-request-logs');
-
-			if ($response['message']['status'] === 'error') {
-				return;
-			}
-
-			$updatedUrlRequestLogs = file_get_contents($urlRequestLogFile);
-			$mostRecentUrlRequestLog = end($urlRequestLogs) . ',';
-			$updatedUrlRequestLogs = substr($updatedUrlRequestLogs, strpos($updatedUrlRequestLogs, $mostRecentUrlRequestLog) + strlen($mostRecentUrlRequestLog));
-			file_put_contents($urlRequestLogFile, $updatedUrlRequestLogs);*/
+			$mostRecentProxyUrlRequestLog = json_encode(end($proxyUrlRequestLogs)) . ',';
+			$updatedProxyUrlRequestLogs = file_get_contents($proxyUrlRequestLogFile);
+			$updatedProxyUrlRequestLogs = substr($updatedProxyUrlRequestLogs, strpos($updatedProxyUrlRequestLogs, $mostRecentProxyUrlRequestLog) + strlen($mostRecentProxyUrlRequestLog));
+			file_put_contents($proxyUrlRequestLogFile, trim($updatedProxyUrlRequestLogs));
 			return;
 		}
 
