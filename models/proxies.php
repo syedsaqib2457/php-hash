@@ -95,7 +95,7 @@
 										'password' => $parameters['data']['password'],
 										'server_id' => ($serverId = $proxy['data'][0]['server_id']),
 										'username' => $parameters['data']['username'],
-										'whitelisted_ips' => implode("\n", array_diff($whitelistedIps, $proxyIp['data'][0]))
+										'whitelisted_ips' => implode("\n", array_diff($whitelistedIps, $proxy['data'][0]))
 									);
 
 									if (!empty($parameters['data']['generate_unique'])) {
