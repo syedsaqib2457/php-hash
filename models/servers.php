@@ -612,6 +612,7 @@
 			) {
 				$serverRelationalTableToRemoveDataFrom = array(
 					'proxies',
+					'proxy_authentications',
 					'server_nameserver_listening_ips',
 					'server_nameserver_processes',
 					'server_nodes',

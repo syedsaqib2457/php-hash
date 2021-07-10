@@ -69,7 +69,7 @@
 
 						if (!empty($parameters['items']['list_proxy_items']['count'])) {
 							$validatedWhitelistedIps = (!empty($parameters['data']['whitelisted_ips']) ? $this->_validateIps($parameters['data']['whitelisted_ips'], true) : array());
-							$proxyData = $whitelistedIps = array();
+							$proxyData = $proxyAuthenticationData = $whitelistedIps = array();
 
 							if (!empty($validatedWhitelistedIps)) {
 								foreach ($validatedWhitelistedIps as $validatedWhitelistedIpVersionIps) {
@@ -78,41 +78,79 @@
 							}
 
 							foreach ($parameters['items']['list_proxy_items']['data'] as $proxyId) {
-								$proxyIp = $this->fetch(array(
+								$proxy = $this->fetch(array(
 									'fields' => array(
-										'external_ip'
+										'external_ip',
+										'server_id'
 									),
 									'from' => 'proxies',
 									'where' => array(
 										'id' => $proxyId
 									)
 								));
-								$proxy = array(
-									'id' => $proxyId,
-									'password' => $parameters['data']['password'],
-									'username' => $parameters['data']['username'],
-									'whitelisted_ips' => implode("\n", array_diff($whitelistedIps, $proxyIp['data']))
-								);
 
-								if (!empty($parameters['data']['generate_unique'])) {
-									$proxyAuthentication = array_intersect_key($proxy, array(
-										'password' => true,
-										'username' => true
+								if (!empty($proxy['count'])) {
+									$proxy = array(
+										'id' => $proxyId,
+										'password' => $parameters['data']['password'],
+										'server_id' => ($serverId = $proxy['data'][0]['server_id']),
+										'username' => $parameters['data']['username'],
+										'whitelisted_ips' => implode("\n", array_diff($whitelistedIps, $proxyIp['data'][0]))
+									);
+
+									if (!empty($parameters['data']['generate_unique'])) {
+										$proxyAuthentication = array_intersect_key($proxy, array(
+											'password' => true,
+											'username' => true
+										));
+										$proxy = array_merge($proxy, $this->_generateRandomAuthentication($proxyAuthentication));
+									}
+
+									if (!empty($parameters['data']['ignore_empty'])) {
+										$proxy = array_filter($proxy);
+									}
+
+									$mostRecentProxyAuthenticationId = $this->fetch(array(
+										'fields' => array(
+											'id'
+										),
+										'from' => 'proxy_authentications',
+										'limit' => 1,
+										'sort' => array(
+											'field' => 'created',
+											'order' => 'DESC'
+										),
+										'where' => array(
+											'proxy_id' => $proxyId
+										)
 									));
-									$proxy = array_merge($proxy, $this->_generateRandomAuthentication($proxyAuthentication));
-								}
 
-								if (!empty($parameters['data']['ignore_empty'])) {
-									$proxy = array_filter($proxy);
-								}
+									if (!empty($mostRecentProxyAuthenticationId['count'])) {
+										$proxyAuthenticationData[] = array(
+											'id' => $mostRecentProxyAuthenticationId['data'][0]
+										);
+									}
 
-								$proxyData[] = $proxy;
+									$proxyAuthentication = array_diff_key($proxy, array(
+										'id' => true,
+										'password' => true
+									));
+									$proxyAuthentication['proxy_id'] = $proxy['id'];
+									$proxyAuthenticationData[] = $proxyAuthentication;
+									$proxyData[] = $proxy;
+								}
 							}
 
-							if ($this->save(array(
-								'data' => $proxyData,
-								'to' => 'proxies'
-							))) {
+							if (
+								$this->save(array(
+									'data' => $proxyData,
+									'to' => 'proxies'
+								)) &&
+								$this->save(array(
+									'data' => $proxyAuthenticationData,
+									'to' => 'proxy_authentications'
+								))
+							) {
 								$response['message'] = array(
 									'status' => 'success',
 									'text' => 'Proxies authenticated successfully.'
