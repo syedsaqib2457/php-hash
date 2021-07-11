@@ -29,6 +29,17 @@
 			return $response;
 		}
 
+		public function shellProcessProxyUrlRequestLogs($parameters) {
+			$response = array(
+				'message' => array(
+					'status' => 'error',
+					'text' => 'There aren\'t any new proxy URL request logs to process, please try again later.'
+				)
+			);
+			// Download proxy request logs from each proxy server instead of sending with wget --post-data
+			return $response;
+		}
+
 	}
 
 	if (!empty($configuration->parameters)) {
