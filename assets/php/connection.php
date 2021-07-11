@@ -891,25 +891,19 @@
 				return;
 			}
 
-			$encodedProxyUrlRequestLogs = '[' . rtrim(trim(file_get_contents($proxyUrlRequestLogFile)), ',') . ']';
-			$proxyUrlRequestLogs = json_decode($encodedProxyUrlRequestLogs, true);
+			exec('sudo curl -s --form "data=@' . $proxyUrlRequestLogFile . '" --form-string "json={\"action\":\"archive\"}" ' . $this->parameters['url'] . '/endpoint/proxy-url-request-logs 2>&1', $response);
+			$response = json_decode($response[0], true);
 
-			if (empty($proxyUrlRequestLogs)) {
-				return;
+			if (!empty($response['data']['most_recent_proxy_url_request_log'])) {
+				$mostRecentProxyUrlRequestLog = $response['data']['most_recent_proxy_url_request_log'];
+				$proxyUrlRequestLogFileContents = file_get_contents($proxyUrlRequestLogFile);
+				$updatedProxyUrlRequestLogs = substr($proxyUrlRequestLogFileContents, strpos($proxyUrlRequestLogFileContents, $mostRecentProxyUrlRequestLog) + strlen($mostRecentProxyUrlRequestLog));
+				file_put_contents($proxyUrlRequestLogFile, trim($updatedProxyUrlRequestLogs));
 			}
 
-			$proxyUrlRequestLogParts = array_chunk($proxyUrlRequestLogs, 20000);
-			// test with maximum number of logs per part
-
-			foreach ($proxyUrlRequestLogParts as $proxyUrlRequestLogPart) {
-				$proxyUrlRequestLogPart = str_replace('"', '\"', json_encode($proxyUrlRequestLogPart));
-				shell_exec('sudo wget -qO- --no-dns-cache --post-data "json={\"action\":\"archive\",\"data\":' . $proxyUrlRequestLogPart . '}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/proxy-url-request-logs');
-			}
-
-			$mostRecentProxyUrlRequestLog = json_encode(end($proxyUrlRequestLogs)) . ',';
-			$updatedProxyUrlRequestLogs = file_get_contents($proxyUrlRequestLogFile);
-			$updatedProxyUrlRequestLogs = substr($updatedProxyUrlRequestLogs, strpos($updatedProxyUrlRequestLogs, $mostRecentProxyUrlRequestLog) + strlen($mostRecentProxyUrlRequestLog));
-			file_put_contents($proxyUrlRequestLogFile, trim($updatedProxyUrlRequestLogs));
+			// todo: dynamically increase PHP ini limits for apache in control panel and cli in proxy servers
+			// todo: call _sendProxyUrlRequestLogData() frequently through connection/firewall process
+			// todo: test with 100k+ records per minute per server, add background processing with additional servers if necessary
 			return;
 		}
 
