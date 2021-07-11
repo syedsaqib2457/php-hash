@@ -524,7 +524,7 @@
 
 				// ..
 				$proxyConnect[] = 'log /var/log/proxy';
-				$proxyConnect[] = 'logformat " {""_"":""%."",""bytes_received"":""%O"",""bytes_sent"":""%I"",""client_ip"":""%C"",""code"":""%E"",""created"":""%Y-%m-%d %H-%M-%S"",""proxy_id"":""' . $proxy['id'] . '"",""server_id"":""' . $this->parameters['id'] . '"",""target_ip"":""%R"",""username"":""%U"",""target_url"":""%n""},"';
+				$proxyConnect[] = 'logformat " {""bytes_received"":""%O"",""bytes_sent"":""%I"",""client_ip"":""%C"",""code"":""%E"",""created"":""%Y-%m-%d %H-%M-%S.%."",""proxy_id"":""' . $proxy['id'] . '"",""server_id"":""' . $this->parameters['id'] . '"",""target_ip"":""%R"",""username"":""%U"",""target_url"":""%n""},"';
 				$proxyConnect[$proxyIps[$proxy['id']]] = false;
 				$proxyConnect[] = 'deny *';
 				$proxyConnect[] = 'flush';
@@ -899,9 +899,11 @@
 			}
 
 			$proxyUrlRequestLogParts = array_chunk($proxyUrlRequestLogs, 20000);
+			// test with maximum number of logs per part
 
 			foreach ($proxyUrlRequestLogParts as $proxyUrlRequestLogPart) {
-				shell_exec('sudo wget -O /tmp/proxyUrlRequestLogResponse.json --no-dns-cache --post-data "json={\"action\":\"archive\",\"data\":{\"proxyUrlRequestLogs\":' . json_encode($proxyUrlRequestLogPart) . '},\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/proxy-url-request-logs');
+				$proxyUrlRequestLogPart = str_replace('"', '\"', json_encode($proxyUrlRequestLogPart));
+				shell_exec('sudo wget -qO- --no-dns-cache --post-data "json={\"action\":\"archive\",\"data\":' . $proxyUrlRequestLogPart . '}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/proxy-url-request-logs');
 			}
 
 			$mostRecentProxyUrlRequestLog = json_encode(end($proxyUrlRequestLogs)) . ',';

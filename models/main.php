@@ -1093,7 +1093,11 @@
 			) {
 				$response['message']['text'] = 'No results found, please try again.';
 				$parameters = $this->_parseParameters(json_decode($_POST['json'], true), 'snake');
-				$parameters['from'] = !empty($parameters['from']) ? $parameters['from'] : (!empty($parameters['url']) ? str_replace('-', '_', basename($parameters['url'])) : basename($_SERVER['REQUEST_URI']));
+
+				if (empty($parameters['from'])) {
+					$from = !empty($parameters['url']) ? basename($parameters['url']) : basename($_SERVER['REQUEST_URI']);
+					$parameters['from'] = str_replace('-', '_', $from);
+				}
 
 				if (
 					(

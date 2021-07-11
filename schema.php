@@ -8,7 +8,6 @@
 			),
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'encoded_items_processed' => array(
@@ -28,13 +27,11 @@
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'processed' => array(
@@ -49,19 +46,16 @@
 			),
 			'progress' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'INT(3)'
 			)
 		),
 		'proxies' => array(
 			'block_all_urls' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'external_ip' => array(
@@ -76,7 +70,6 @@
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
@@ -93,12 +86,10 @@
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'index' => true,
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'only_allow_urls' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'password' => array(
@@ -135,18 +126,15 @@
 		'proxy_authentications' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'proxy_id' => array(
@@ -173,23 +161,19 @@
 		'proxy_urls' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'removed' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'url' => array(
@@ -201,18 +185,15 @@
 		'proxy_url_request_limitation_proxies' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'proxy_id' => array(
@@ -239,18 +220,15 @@
 		'proxy_url_request_limitations' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'previous_limitation_date' => array(
@@ -260,32 +238,26 @@
 			),
 			'proxy_url_block_interval_type' => array(
 				'default' => "'minute'",
-				'null' => false,
 				'type' => 'VARCHAR(255)'
 			),
 			'proxy_url_block_interval_value' => array(
 				'default' => 1,
-				'null' => false,
 				'type' => 'SMALLINT(3)'
 			),
 			'proxy_url_request_interval_type' => array(
 				'default' => "'minute'",
-				'null' => false,
 				'type' => 'VARCHAR(255)'
 			),
 			'proxy_url_request_interval_value' => array(
 				'default' => 1,
-				'null' => false,
 				'type' => 'SMALLINT(3)'
 			),
 			'proxy_url_request_number' => array(
 				'default' => 1,
-				'null' => false,
 				'type' => 'BIGINT(11)'
 			),
 			'removed' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'status_limited' => array(
@@ -296,11 +268,9 @@
 		),
 		'proxy_url_request_logs' => array(
 			'bytes_received' => array(
-				'null' => false,
 				'type' => 'BIGINT(11)'
 			),
 			'bytes_sent' => array(
-				'null' => false,
 				'type' => 'BIGINT(11)'
 			),
 			'client_ip' => array(
@@ -315,18 +285,15 @@
 			),
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'proxy_authentication_id' => array(
@@ -349,6 +316,10 @@
 				'null' => true,
 				'type' => 'BIGINT(11)'
 			),
+			'username' => array(
+				'default' => "'-'",
+				'type' => 'VARCHAR(15)'
+			),
 			'target_ip' => array(
 				'default' => null,
 				'null' => true,
@@ -363,12 +334,10 @@
 		'servers' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
@@ -384,12 +353,10 @@
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'removed' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'status_activated' => array(
@@ -406,12 +373,10 @@
 		'server_nameserver_listening_ips' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
@@ -422,12 +387,10 @@
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'removed' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'server_id' => array(
@@ -442,14 +405,12 @@
 			),
 			'source_ip_count' => array(
 				'default' => 1,
-				'null' => false,
 				'type' => 'BIGINT(11)'
 			)
 		),
 		'server_nameserver_processes' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'external_source_ip' => array(
@@ -459,13 +420,11 @@
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'local' => array(
 				'default' => 1,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'internal_source_ip' => array(
@@ -480,12 +439,10 @@
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'removed' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'server_id' => array(
@@ -497,7 +454,6 @@
 		'server_nodes' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'external_ip' => array(
@@ -512,7 +468,6 @@
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
@@ -528,17 +483,14 @@
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'processing' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'removed' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'server_id' => array(
@@ -555,18 +507,15 @@
 		'server_proxy_processes' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'port' => array(
@@ -576,7 +525,6 @@
 			),
 			'removed' => array(
 				'default' => 0,
-				'null' => false,
 				'type' => 'TINYINT(1)'
 			),
 			'server_id' => array(
@@ -588,28 +536,23 @@
 		'settings' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'VARCHAR(255)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'value' => array(
-				'null' => false,
 				'type' => 'VARCHAR(255)'
 			)
 		),
 		'tokens' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'encoded_parameters' => array(
@@ -634,13 +577,11 @@
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'string' => array(
@@ -652,18 +593,15 @@
 		'users' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'id' => array(
 				'auto_increment' => true,
-				'null' => false,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
-				'null' => false,
 				'type' => 'DATETIME'
 			),
 			'password' => array(

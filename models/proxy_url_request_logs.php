@@ -13,10 +13,17 @@
 			);
 
 			if (
+				!empty($parameters['data']) &&
 				!empty($parameters['user']['endpoint']) &&
-				!empty($parameters['where']['id'])
+				$this->save(array(
+                                        'data' => $parameters['data'],
+                                        'to' => 'proxy_url_request_logs'
+                                ))
 			) {
-				// ..
+				$response['message'] = array(
+					'status' => 'success',
+					'text' => 'Proxy url request logs archived successfully.'
+				);
 			}
 
 			return $response;
