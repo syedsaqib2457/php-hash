@@ -522,9 +522,9 @@
 					}
 				}
 
-				// ..
+				// todo: disable logging by default
 				$proxyConnect[] = 'log /var/log/proxy';
-				$proxyConnect[] = 'logformat " {""bytes_received"":""%O"",""bytes_sent"":""%I"",""client_ip"":""%C"",""code"":""%E"",""created"":""%Y-%m-%d %H-%M-%S.%."",""proxy_id"":""' . $proxy['id'] . '"",""server_id"":""' . $this->parameters['id'] . '"",""target_ip"":""%R"",""username"":""%U"",""target_url"":""%n""},"';
+				$proxyConnect[] = 'logformat " %O _ %I _ %C _ %E _ %Y-%m-%d %H-%M-%S.%. _ ' . $proxy['id'] . ' _ ' . $this->parameters['id'] . ' _ %R _ %U _ %n"';
 				$proxyConnect[$proxyIps[$proxy['id']]] = false;
 				$proxyConnect[] = 'deny *';
 				$proxyConnect[] = 'flush';
