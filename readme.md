@@ -1,3 +1,7 @@
+Note: Overlord is currently at version 18 with no official release tag.
+
+The first official release will be at version 19 when process auto-scaling, proxy request logging and system monitoring features are completed.
+
 ## Installation
 
 Log in to a server using one of these supported Linux distributions with root user and HTTP traffic allowed.
