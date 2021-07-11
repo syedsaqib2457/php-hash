@@ -123,41 +123,6 @@
 				'type' => 'TEXT'
 			)
 		),
-		'proxy_authentications' => array(
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'proxy_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'server_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'username' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(40)'
-			),
-			'whitelisted_ips' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'TEXT'
-			)
-		),
 		'proxy_urls' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -296,11 +261,6 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'proxy_authentication_id' => array(
-                                'default' => null,
-                                'null' => true,
-                                'type' => 'BIGINT(11)'
-                        ),
 			'proxy_id' => array(
 				'default' => null,
 				'null' => true,

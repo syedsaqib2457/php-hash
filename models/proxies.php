@@ -69,7 +69,7 @@
 
 						if (!empty($parameters['items']['list_proxy_items']['count'])) {
 							$validatedWhitelistedIps = (!empty($parameters['data']['whitelisted_ips']) ? $this->_validateIps($parameters['data']['whitelisted_ips'], true) : array());
-							$proxyData = $proxyAuthenticationData = $whitelistedIps = array();
+							$proxyData = $whitelistedIps = array();
 
 							if (!empty($validatedWhitelistedIps)) {
 								foreach ($validatedWhitelistedIps as $validatedWhitelistedIpVersionIps) {
@@ -110,47 +110,14 @@
 										$proxy = array_filter($proxy);
 									}
 
-									$mostRecentProxyAuthenticationId = $this->fetch(array(
-										'fields' => array(
-											'id'
-										),
-										'from' => 'proxy_authentications',
-										'limit' => 1,
-										'sort' => array(
-											'field' => 'created',
-											'order' => 'DESC'
-										),
-										'where' => array(
-											'proxy_id' => $proxyId
-										)
-									));
-
-									if (!empty($mostRecentProxyAuthenticationId['count'])) {
-										$proxyAuthenticationData[] = array(
-											'id' => $mostRecentProxyAuthenticationId['data'][0]
-										);
-									}
-
-									$proxyAuthentication = array_diff_key($proxy, array(
-										'id' => true,
-										'password' => true
-									));
-									$proxyAuthentication['proxy_id'] = $proxy['id'];
-									$proxyAuthenticationData[] = $proxyAuthentication;
 									$proxyData[] = $proxy;
 								}
 							}
 
-							if (
-								$this->save(array(
-									'data' => $proxyData,
-									'to' => 'proxies'
-								)) &&
-								$this->save(array(
-									'data' => $proxyAuthenticationData,
-									'to' => 'proxy_authentications'
-								))
-							) {
+							if ($this->save(array(
+								'data' => $proxyData,
+								'to' => 'proxies'
+							))) {
 								$response['message'] = array(
 									'status' => 'success',
 									'text' => 'Proxies authenticated successfully.'
