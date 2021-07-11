@@ -52,7 +52,7 @@
 						'server_proxy_processes' => 'server_id'
 					),
 					'hostname' => 'localhost',
-					'name' => 'williamstaffordparsons',
+					'name' => 'overlord',
 					'password' => 'password',
 					'schema' => $schema,
 					'username' => 'root'
