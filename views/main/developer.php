@@ -160,6 +160,7 @@
 		text: <span class="value">"Server deactivated successfully."</span>
 	}
 }</pre>
+<!-- todo: Add API method to Edit Proxy -->
 				<h2>Edit Server Node</h2>
 				<pre>
 <span class="request-heading">POST <?php echo $configuration->settings['base_domain']; ?>/endpoint/server-nodes</span>{
