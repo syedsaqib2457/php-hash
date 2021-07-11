@@ -626,6 +626,12 @@
 					'name' => 'systemctl',
 					'output' => 'invalid option',
 					'package' => 'systemd'
+				),
+				array(
+					'command' => $uniqueId,
+					'name' => 'telinit',
+					'output' => 'single',
+					'package' => 'systemd'
 				)
 			);
 			$this->binaryFiles = array();
