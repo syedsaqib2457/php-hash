@@ -74,6 +74,7 @@
 
 					$proxies = $this->fetch(array(
 						'fields' => array(
+							'enable_url_request_logs',
 							'external_ip',
 							'id',
 							'internal_ip',

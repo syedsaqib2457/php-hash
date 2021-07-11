@@ -58,6 +58,11 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
+			'enable_url_request_logs' => array(
+				'default' => 0,
+				'null' => true,
+				'type' => 'TINYINT(1)'
+			),
 			'external_ip' => array(
 				'default' => null,
 				'null' => true,

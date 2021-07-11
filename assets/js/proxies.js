@@ -525,6 +525,7 @@ var processProxyItems = function(response, itemListParameters) {
 				api.setRequestParameters({
 					action: 'edit',
 					data: {
+						enableUrlRequestLogs: elements.getAttribute(selectedElementSelector + ' .proxy-enable-url-request-logs-field', 'checked'),
 						password: elements.get(selectedElementSelector + ' .proxy-password-field').value,
 						status: elements.getAttribute(selectedElementSelector + ' .proxy-status-active-field', 'checked'),
 						username: elements.get(selectedElementSelector + ' .proxy-username-field').value,
@@ -587,6 +588,12 @@ var processProxyItems = function(response, itemListParameters) {
 					elementContent += '<label class="custom-checkbox-label" name="proxy_status_active">Active</label>';
 					elementContent += '</div>';
 					elementContent += '<div class="clear"></div>';
+					elementContent += '<div class="field-group no-margin">';
+					elementContent += '<div class="align-left checkbox-container no-margin-top">';
+					elementContent += '<span checked="0" class="checkbox proxy-enable-url-request-logs-field no-margin-left" name="proxy_enable_url_request_logs"></span>';
+					elementContent += '<label class="custom-checkbox-label" name="proxy_enable_url_request_logs">Enable URL Request Logs</label>';
+					elementContent += '</div>';
+					elementContent += '<div class="clear"></div>';
 					elementContent += '<label>Username</label>';
 					elementContent += '<div class="field-group no-margin-top">';
 					elementContent += '<input class="no-margin proxy-username-field" name="proxy_username" placeholder="Between 4 and 15 characters">';
@@ -607,6 +614,7 @@ var processProxyItems = function(response, itemListParameters) {
 					elements.html(selectedElementSelector + ' .table-text', elementContent);
 					render(function() {
 						elements.get(selectedElementSelector + ' .table-text .proxy-whitelisted-ips-field').value = response.data.whitelistedIps;
+						elements.setAttribute(selectedElementSelector + ' .table-text .proxy-enable-url-request-logs-field', 'checked', response.data.enableUrlRequestLogs);
 						elements.setAttribute(selectedElementSelector + ' .table-text .proxy-password-field', 'value', response.data.password || '');
 						elements.setAttribute(selectedElementSelector + ' .table-text .proxy-status-active-field', 'checked', +(response.data.status === 'active'));
 						elements.setAttribute(selectedElementSelector + ' .table-text .proxy-username-field', 'value', response.data.username || '');

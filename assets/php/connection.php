@@ -522,9 +522,13 @@
 					}
 				}
 
-				// todo: disable logging by default
-				$proxyConnect[] = 'log /var/log/proxy';
-				$proxyConnect[] = 'logformat " %O _ %I _ %C _ %E _ %Y-%m-%d %H-%M-%S.%. _ ' . $proxy['id'] . ' _ ' . $this->parameters['id'] . ' _ %R _ %U _ %n"';
+				if ($proxy['enable_url_request_logs']) {
+					$proxyConnect[] = 'log /var/log/proxy';
+					$proxyConnect[] = 'logformat " %O _ %I _ %C _ %E _ %Y-%m-%d %H-%M-%S.%. _ ' . $proxy['id'] . ' _ ' . $this->parameters['id'] . ' _ %R _ %U _ %n"';
+				} else {
+					$proxyConnect[] = 'nolog';
+				}
+
 				$proxyConnect[$proxyIps[$proxy['id']]] = false;
 				$proxyConnect[] = 'deny *';
 				$proxyConnect[] = 'flush';

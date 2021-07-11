@@ -269,6 +269,8 @@
 			);
 
 			if (
+				isset($parameters['data']['enable_url_request_logs']) &&
+				is_numeric($parameters['data']['enable_url_request_logs']) &&
 				isset($parameters['data']['password']) &&
 				is_string($parameters['data']['password']) &&
 				isset($parameters['data']['username']) &&
@@ -305,7 +307,8 @@
 					} else {
 						$proxyData = array(
 							array_merge($proxy['data'][0], array(
-								'status' => $parameters['data']['status'] > 0 ? 'active' : 'inactive'
+								'enable_url_request_logs' => (boolean) $parameters['data']['enable_url_request_logs'],
+								'status' => $parameters['data']['status'] ? 'active' : 'inactive'
 							))
 						);
 
@@ -526,6 +529,7 @@
 			) {
 				$proxy = $this->fetch(array(
 					'fields' => array(
+						'enable_url_request_logs',
 						'external_ip',
 						'id',
 						'internal_ip',
