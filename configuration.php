@@ -40,6 +40,7 @@
 			$this->settings = array(
 				'base_domain' => basename(__DIR__),
 				'base_path' => __DIR__,
+				'client_ip' => !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false,
 				'database' => array(
 					'foreign_keys' => array(
 						'proxies' => false,

@@ -1,6 +1,4 @@
 <?php
-	// todo: undefined from table index errors when main model is used in shell.php
-
 	class MainModel extends Configuration {
 
 		protected function _authenticate($parameters) {
@@ -67,7 +65,7 @@
 			if (!empty($user['count'])) {
 				$response['message'] = array(
 					'status' => 'error',
-					'text' => 'IP ' . ($clientIp = $_SERVER['REMOTE_ADDR']) . ' must be whitelisted in your account, please try again.'
+					'text' => 'IP ' . ($clientIp = $this->settings['client_ip']) . ' must be whitelisted in your account, please try again.'
 				);
 				$whitelistedIps = explode("\n", $user['data'][0]['whitelisted_ips']);
 
@@ -90,18 +88,18 @@
 						$response['message']['status'] = 'success';
 					}
 				}
-			}
 
-			if ($response['message']['status'] === 'success') {
-				$response = array(
-					'data' => array_merge($user['data'][0], array(
-						'endpoint' => true
-					)),
-					'message' => array(
-						'status' => 'success',
-						'text' => 'Endpoint authenticated successfully.'
-					)
-				);
+				if ($response['message']['status'] === 'success') {
+					$response = array(
+						'data' => array_merge($user['data'][0], array(
+							'endpoint' => true
+						)),
+						'message' => array(
+							'status' => 'success',
+							'text' => 'Endpoint authenticated successfully.'
+						)
+					);
+				}
 			}
 
 			return $response;
@@ -1088,6 +1086,8 @@
 					'text' => 'Request parameters are required, please try again.'
 				)
 			);
+			$clientIp = $this->settings['client_ip'];
+			$validRequest = false;
 
 			if (
 				!empty($_POST['json']) &&
@@ -1152,10 +1152,11 @@
 					));
 
 					if (
-						in_array($parameters['action'], $this->publicPermissions[$parameters['from']]) ||
+						($publicRequest = in_array($parameters['action'], $this->publicPermissions[$parameters['from']])) ||
 						!empty($parameters['user']['id'])
 					) {
 						$queryResponse = $this->_processAction($parameters);
+						$validRequest = $publicRequest && $queryResponse['message']['status'] === 'error' ? false : true;
 
 						if (!empty($queryResponse)) {
 							$response = array_merge($queryResponse, array(
@@ -1168,6 +1169,45 @@
 
 			if (!empty($parameters['camel_case_response_keys'])) {
 				$response = $this->_parseParameters($response, 'camel');
+			}
+
+			if ($validRequest === true) {
+				$this->delete(array(
+					'from' => 'public_request_limitations',
+					'where' => array(
+						'client_ip' => $clientIp
+					)
+				));
+			} else {
+				$publicRequestLimitationData = array();
+				$publicRequestLimitations = $this->fetch(array(
+					'fields' => array(
+						'id',
+						'request_attempts'
+					),
+					'from' => 'public_request_limitations',
+					'limit' => 1,
+					'where' => array(
+						'client_ip' => $clientIp
+					)
+				));
+
+				if (!empty($publicRequestLimitations['count'])) {
+					$publicRequestLimitationData = $publicRequestLimitations['data'];
+				} else {
+					$publicRequestLimitationData = array(
+						array(
+							'client_ip' => $clientIp,
+							'request_attempts' => 0
+						)
+					);
+				}
+
+				$publicRequestLimitationData[0]['request_attempts']++;
+				$this->save(array(
+					'data' => $publicRequestLimitationData,
+					'to' => 'public_request_limitations'
+				));
 			}
 
 			return $response;
@@ -1491,66 +1531,24 @@
 					'text' => 'Error logging in to account, please make sure cookies are enabled and try again.'
 				)
 			);
-			$publicRequestLimitationData = array();
-			$publicRequestLimitations = $this->fetch(array(
+			$user = $this->fetch(array(
 				'fields' => array(
-					'id',
-					'request_attempts'
+					'id'
 				),
-				'from' => 'public_request_limitations',
-				'limit' => 1,
+				'from' => 'users',
 				'where' => array(
-					'client_ip' => ($clientIp = $_SERVER['REMOTE_ADDR'])
+					'password' => $parameters['data']['password']
 				)
 			));
 
-			if (!empty($publicRequestLimitations['count'])) {
-				$publicRequestLimitationData = $publicRequestLimitations['data'];
-			}
-
 			if (
-				!empty($publicRequestLimitations['data'][0]['request_attempts'] &&
-				$publicRequestLimitations['data'][0]['request_attempts'] >= 10
-			)) {
-				$response['message']['text'] = ($limitedMessage = 'Too many consecutive login attempts, please try again later.');
-			} else {
-				$user = $this->fetch(array(
-					'fields' => array(
-						'id'
-					),
-					'from' => 'users',
-					'where' => array(
-						'password' => $parameters['data']['password']
-					)
-				));
-
-				if (
-					!empty($user['count']) &&
-					$this->_getToken(array(
-						'session_id' => $parameters['settings']['session_id']
-					))
-				) {
-					$response['message']['status'] = 'success';
-					$response['redirect'] = '/servers';
-				} else {
-					if (empty($publicRequestLimitationData)) {
-						$publicRequestLimitationData = array(
-							array(
-								'client_ip' => $clientIp,
-								'request_attempts' => 0
-							)
-						);
-					}
-
-					if ($publicRequestLimitationData[0]['request_attempts'] >= 10) {
-						$response['message']['text'] = $limitedMessage;
-					}
-
-					$this->save(array(
-						'data' => $publicRequestLimitationData,
-						'to' => 'public_request_limitations'
-					));
-				}
+				!empty($user['count']) &&
+				$this->_getToken(array(
+					'session_id' => $parameters['settings']['session_id']
+				))
+			) {
+				$response['message']['status'] = 'success';
+				$response['redirect'] = '/servers';
 			}
 
 			return $response;
@@ -1697,30 +1695,53 @@
 		}
 
 		public function shellProcessPublicRequestLimitations() {
+			// todo: limit prefixes instead of addresses for ipv6
 			$response = array(
 				'message' => array(
 					'status' => 'error',
 					'text' => 'There aren\'t any new public request limitations to process, please try again later.'
 				)
 			);
-			$publicRequestLimitsToProcess = $this->fetch(array(
+			$publicRequestLimitationsToProcess = $this->fetch(array(
 				'fields' => array(
 					'id',
 					'client_ip'
 				),
+				'from' => 'public_request_limitations',
 				'where' => array(
 					'request_attempts >=' => 10
 				)
 			));
 
-			if (!empty($publicRequestLimitsToProcess['count'])) {
-				foreach ($publicRequestLimitsToProcess['data'] as $publicRequestLimitToProcess) {
-					$publicRequestLimitFile = '/tmp/' . $publicRequestLimitsToProcess['client_ip'];
+			if (!empty($publicRequestLimitationsToProcess['count'])) {
+				$publicRequestLimitationsPath = $this->settings['base_path'] . '/public_request_limitations/';
 
-					if (!file_exists($publicRequestLimitFile)) {
-						touch($publicRequestLimitFile);
-					} elseif (filemtime($publicRequestLimitFile) < strtotime('-1 hour')) {
-						unlink($publicRequestLimitFile);
+				if (!is_dir($publicRequestLimitationsPath)) {
+					mkdir($publicRequestLimitationsPath, 0755);
+				}
+
+				foreach ($publicRequestLimitationsToProcess['data'] as $publicRequestLimitationToProcess) {
+					$clientIp = $publicRequestLimitationToProcess['client_ip'];
+					$publicRequestLimitationToProcessPath = explode('.', $clientIp);
+					$publicRequestLimitationToProcessFile = array_pop($publicRequestLimitationToProcessPath);
+					$publicRequestLimitationToProcessPath = $publicRequestLimitationsPath . implode('/', $publicRequestLimitationToProcessPath) . '/';
+
+					if (!is_dir($publicRequestLimitationToProcessPath)) {
+						mkdir($publicRequestLimitationToProcessPath, 0755, true);
+					}
+
+					$publicRequestLimitationToProcessFile = $publicRequestLimitationToProcessPath . $publicRequestLimitationToProcessFile;
+
+					if (!file_exists($publicRequestLimitationToProcessFile)) {
+						touch($publicRequestLimitationToProcessFile);
+					} elseif (filemtime($publicRequestLimitationToProcessFile) < strtotime('-1 second')) {
+						unlink($publicRequestLimitationToProcessFile);
+						$this->delete(array(
+							'from' => 'public_request_limitations',
+							'where' => array(
+								'client_ip' => $clientIp
+							)
+						));
 					}
 				}
 
