@@ -1,4 +1,4 @@
-Note: Overlord is currently at version 18 with no official release tag.
+Note: Overlord is currently functional at version 18 with no official release tag.
 
 The first official release will be at version 19 when process auto-scaling, proxy request logging, reverse proxies and system monitoring features are completed.
 
