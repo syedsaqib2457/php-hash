@@ -1,4 +1,5 @@
 <?php
+	// todo: consistently add status_ prefix to all boolean columns that represent status (processing, limiting, etc)
 	$schema = array(
 		'actions' => array(
 			'chunks' => array(

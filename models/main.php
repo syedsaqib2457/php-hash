@@ -1,4 +1,6 @@
 <?php
+	// todo: undefined from table index errors when main model is used in shell.php
+
 	class MainModel extends Configuration {
 
 		protected function _authenticate($parameters) {

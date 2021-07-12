@@ -1,4 +1,5 @@
 const processProcess = function(processElement, processSubmit) {
+	// todo: button processing is stuck after pressing button too fast
 	let processName = elements.getAttribute(processElement, 'process');
 
 	if (
