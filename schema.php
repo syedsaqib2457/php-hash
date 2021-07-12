@@ -296,6 +296,28 @@
 				'type' => 'VARCHAR(1000)'
 			)
 		),
+		'public_request_limitations' => array(
+			'client_ip' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(30)'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'request_attempts' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'TINYINT(1)'
+			),
+			'status_limited' => array(
+				'default' => 0,
+				'null' => true,
+				'type' => 'TINYINT(1)'
+			)
+		),
 		'servers' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
