@@ -1,5 +1,6 @@
 <?php
 	// todo: consistently add status_ prefix to all boolean columns that represent status (processing, limiting, etc)
+	// todo: hardcode created/modified fields into /assets/php/database.php
 	$schema = array(
 		'actions' => array(
 			'chunks' => array(
@@ -303,10 +304,18 @@
 				'null' => true,
 				'type' => 'VARCHAR(30)'
 			),
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
 			),
 			'request_attempts' => array(
 				'default' => null,
