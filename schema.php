@@ -198,6 +198,11 @@
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
+			'limited' => array(
+				'default' => 0,
+				'null' => true,
+				'type' => 'TINYINT(1)'
+                        ),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
@@ -229,11 +234,6 @@
 			),
 			'removed' => array(
 				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'status_limited' => array(
-				'default' => 0,
-				'null' => true,
 				'type' => 'TINYINT(1)'
 			)
 		),
@@ -310,11 +310,6 @@
 			),
 			'request_attempts' => array(
 				'default' => null,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'status_limited' => array(
-				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
 			)

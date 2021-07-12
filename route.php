@@ -1,4 +1,11 @@
 <?php
+	if (
+		!empty($_SERVER['REMOTE_ADDR']) &&
+		file_exists('/tmp/' . $_SERVER['REMOTE_ADDR'])
+	) {
+		exit;
+	}
+
 	require_once(__DIR__ . '/configuration.php');
 
 	if (

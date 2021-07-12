@@ -1488,12 +1488,32 @@
 			$response = array(
 				'message' => array(
 					'status' => 'error',
-					'text' => ($defaultMessage = 'Error logging in to account, please make sure cookies are enabled and try again.')
+					'text' => 'Error logging in to account, please make sure cookies are enabled and try again.'
 				)
 			);
+			$publicRequestLimitationData = array();
+			$publicRequestLimitations = $this->fetch(array(
+				'fields' => array(
+					'id',
+					'request_attempts'
+				),
+				'from' => 'public_request_limitations',
+				'limit' => 1,
+				'where' => array(
+					'client_ip' => ($clientIp = $_SERVER['REMOTE_ADDR'])
+				)
+			));
 
-			if (!empty($parameters['data']['password'])) {
-				$response['message']['text'] = $defaultMessage;
+			if (!empty($publicRequestLimitations['count'])) {
+				$publicRequestLimitationData = $publicRequestLimitations['data'];
+			}
+
+			if (
+				!empty($publicRequestLimitations['data'][0]['request_attempts'] &&
+				$publicRequestLimitations['data'][0]['request_attempts'] >= 10
+			)) {
+				$response['message']['text'] = ($limitedMessage = 'Too many consecutive login attempts, please try again later.');
+			} else {
 				$user = $this->fetch(array(
 					'fields' => array(
 						'id'
@@ -1512,6 +1532,24 @@
 				) {
 					$response['message']['status'] = 'success';
 					$response['redirect'] = '/servers';
+				} else {
+					if (empty($publicRequestLimitationData)) {
+						$publicRequestLimitationData = array(
+							array(
+								'client_ip' => $clientIp,
+								'request_attempts' => 0
+							)
+						);
+					}
+
+					if ($publicRequestLimitationData[0]['request_attempts'] >= 10) {
+						$response['message']['text'] = $limitedMessage;
+					}
+
+					$this->save(array(
+						'data' => $publicRequestLimitationData,
+						'to' => 'public_request_limitations'
+					));
 				}
 			}
 
@@ -1653,6 +1691,45 @@
 						$response = false;
 					}
 				}
+			}
+
+			return $response;
+		}
+
+		public function shellProcessPublicRequestLimitations() {
+			$response = array(
+				'message' => array(
+					'status' => 'error',
+					'text' => 'There aren\'t any new public request limitations to process, please try again later.'
+				)
+			);
+			$publicRequestLimitsToProcess = $this->fetch(array(
+				'fields' => array(
+					'id',
+					'client_ip'
+				),
+				'where' => array(
+					'request_attempts >=' => 10
+				)
+			));
+
+			if (!empty($publicRequestLimitsToProcess['count'])) {
+				foreach ($publicRequestLimitsToProcess['data'] as $publicRequestLimitToProcess) {
+					$publicRequestLimitFile = '/tmp/' . $publicRequestLimitsToProcess['client_ip'];
+
+					if (!file_exists($publicRequestLimitFile)) {
+						touch($publicRequestLimitFile);
+					} elseif (filemtime($publicRequestLimitFile) < strtotime('-1 hour')) {
+						unlink($publicRequestLimitFile);
+					}
+				}
+
+				$response = array(
+					'message' => array(
+						'status' => 'success',
+						'text' => 'Public request limitations processed successfully.'
+					)
+				);
 			}
 
 			return $response;

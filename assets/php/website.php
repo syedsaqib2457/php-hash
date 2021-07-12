@@ -487,6 +487,7 @@
 	$crontabCommands = array(
 		'# [Start]',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $websitePath . '/shell.php actions processActions',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $websitePath . '/shell.php main processPublicRequestLimitations',
 		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
 		'# [Stop]'
 	);
