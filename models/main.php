@@ -1734,7 +1734,7 @@
 
 					if (!file_exists($publicRequestLimitationToProcessFile)) {
 						touch($publicRequestLimitationToProcessFile);
-					} elseif (filemtime($publicRequestLimitationToProcessFile) < strtotime('-1 second')) {
+					} elseif (filemtime($publicRequestLimitationToProcessFile) < strtotime('-1 hour')) {
 						unlink($publicRequestLimitationToProcessFile);
 						$this->delete(array(
 							'from' => 'public_request_limitations',
