@@ -25,7 +25,7 @@
 		$navigationItems = array(
 			array(
 				'href' => '/servers?#password',
-				'text' => 'Account'
+				'text' => 'Account' // todo: rename to System and list storage capacity, memory, cpu process usage, etc
 			),
 			array(
 				'href' => '/developer',
@@ -33,7 +33,7 @@
 			),
 			array(
 				'href' => '/proxies',
-				'text' => 'Proxies'
+				'text' => 'Proxies' // todo: rename to Nodes and allow changing node type between DNS and proxy (proxies will still have custom DNS config)
 			),
 			array(
 				'href' => '/servers',
@@ -41,7 +41,7 @@
 			),
 			array(
 				'href' => '/servers?#login',
-				'text' => 'Sign Out'
+				'text' => 'Sign Out' // todo: align right
 			)
 		);
 	}
