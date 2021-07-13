@@ -1097,8 +1097,7 @@
 				$parameters = $this->_parseParameters(json_decode($_POST['json'], true), 'snake');
 
 				if (empty($parameters['from'])) {
-					$from = !empty($parameters['url']) ? basename($parameters['url']) : basename($_SERVER['REQUEST_URI']);
-					$parameters['from'] = str_replace('-', '_', $from);
+					$parameters['from'] = str_replace('-', '_', !empty($parameters['url']) ? basename($parameters['url']) : basename($_SERVER['REQUEST_URI']));
 				}
 
 				if (

@@ -125,15 +125,18 @@ var processServer = function() {
 							attributes: [
 								{
 									name: 'class',
-									value: 'button icon process-button tooltip tooltip-bottom'
+									value: 'button hidden icon process-button tooltip tooltip-bottom'
+								},
+								{
+									name: 'item_function'
 								},
 								{
 									name: 'item_title',
-									value: 'Manage server proxy processes'
+									value: 'Download request logs for selected server nodes'
 								},
 								{
 									name: 'process',
-									value: 'server_proxy_processes'
+									value: 'download'
 								}
 							],
 							tag: 'span'
@@ -151,6 +154,23 @@ var processServer = function() {
 								{
 									name: 'process',
 									value: 'server_nameserver_processes'
+								}
+							],
+							tag: 'span'
+						},
+						{
+							attributes: [
+								{
+									name: 'class',
+									value: 'button icon process-button tooltip tooltip-bottom'
+								},
+								{
+									name: 'item_title',
+									value: 'Manage server proxy processes'
+								},
+								{
+									name: 'process',
+									value: 'server_proxy_processes'
 								}
 							],
 							tag: 'span'

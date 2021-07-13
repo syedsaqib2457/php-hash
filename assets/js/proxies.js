@@ -425,7 +425,7 @@ var processProxies = function() {
 					],
 					tag: 'span'
 				},
-				/*{
+				{
 					attributes: [
 						{
 							name: 'class',
@@ -453,27 +453,7 @@ var processProxies = function() {
 						},
 						{
 							name: 'item_title',
-							value: 'Download proxy request logs'
-						},
-						{
-							name: 'process',
-							value: 'log'
-						}
-					],
-					tag: 'span'
-				},*/
-				{
-					attributes: [
-						{
-							name: 'class',
-							value: 'button hidden icon process-button tooltip tooltip-bottom'
-						},
-						{
-							name: 'item_function'
-						},
-						{
-							name: 'item_title',
-							value: 'Configure proxy authentication settings'
+							value: 'Manage authentication of selected proxies'
 						},
 						{
 							name: 'process',
@@ -580,6 +560,7 @@ var processProxyItems = function(response, itemListParameters) {
 				}
 
 				if (response.data) {
+					// todo: restructure section to allow changing server node IP between proxy, VPN and DNS mode
 					var elementContent = '<label>Proxy</label>';
 					elementContent += '<p>' + response.data.externalIp + ' <span disabled>[' + (response.data.internalIp || response.data.externalIp) + ']</span></p>';
 					elementContent += '<div class="field-group no-margin">';
