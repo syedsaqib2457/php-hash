@@ -1124,7 +1124,11 @@
 					(
 						(
 							!empty($parameters['sort']['field']) &&
-							empty($this->settings['database']['schema'][$parameters['from']][$parameters['sort']['field']])
+							empty($this->settings['database']['schema'][$parameters['from']][$parameters['sort']['field']]) &&
+							!in_array($parameters['sort']['field'], array(
+								'created',
+								'modified'
+							))
 						) ||
 						(
 							!empty($parameters['sort']['order']) &&
@@ -1494,7 +1498,13 @@
 				is_array($parameters['fields'])
 			) {
 				foreach ($parameters['fields'] as $fieldKey => $fieldName) {
-					if (empty($this->settings['database']['schema'][$parameters['from']][$fieldName])) {
+					if (
+						empty($this->settings['database']['schema'][$parameters['from']][$fieldName]) &&
+						!in_array($fieldName, array(
+							'created',
+							'modified'
+						))
+					) {
 						unset($parameters['fields'][$fieldKey]);
 					}
 				}
