@@ -475,6 +475,7 @@
 		}
 
 		protected function _createProxyConfiguration() {
+			// todo: add HTTP processes again
 			$proxyAuthentication = $proxyConnectAuthentication = $proxyConnect = $proxyIps = array();
 			$proxyConfiguration = array(
 				'maxconn 20000',
