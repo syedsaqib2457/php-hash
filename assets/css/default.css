@@ -414,6 +414,9 @@ strong {
 .icon[process="download"] {
 	background: url('../png/icon-download.png') center no-repeat;
 }
+.icon[process="limit"] {
+	background: url('../png/icon-limit.png') center no-repeat; /* todo: design icons for proxy + dns request limits */
+}
 .icon[process="search"] {
 	background: url('../png/icon-search.png') center no-repeat;
 }
@@ -423,6 +426,7 @@ strong {
 .icon[process="server_proxy_processes"] {
 	background: url('../png/icon-server-proxy-processes.png') center no-repeat;
 }
+/* todo: design info tooltip icon */
 .icon.edit,
 .icon.next,
 .icon.previous,

@@ -4,21 +4,21 @@
 			<div class="item">
 				<div class="limit-configuration">
 					<div class="item-body">
+						<!- todo: improve layout design for this section -->
 						<div class="limit message-container"></div>
-						<p class="error message">New per-proxy and per-URL request limitation and blacklist/whitelist features are currently in development.</p>
 						<div class="item-list" from="proxy_urls">
 							<p class="message">Loading</p>
 						</div>
 						<div class="item-list" from="proxy_url_request_limitations">
 							<p class="message">Loading</p>
 						</div>
-						<div class="checkbox-container no-margin-top">
+						<div class="checkbox-container margin-top">
 							<span checked="0" class="checkbox" name="only_allow_urls"></span>
-							<label class="custom-checkbox-label" name="only_allow_urls">Only Allow Requests to the Selected URLs</label>
+							<label class="custom-checkbox-label" name="only_allow_urls">Only Allow Requests to Selected URLs</label>
 						</div>
 						<div class="checkbox-container no-margin-top">
 							<span checked="0" class="checkbox" name="block_all_urls"></span>
-							<label class="custom-checkbox-label" name="block_all_urls">Block All Requests to the Selected URLs</label>
+							<label class="custom-checkbox-label" name="block_all_urls">Block All Requests to Selected URLs</label>
 						</div>
 						<div class="clear"></div>
 					</div>
