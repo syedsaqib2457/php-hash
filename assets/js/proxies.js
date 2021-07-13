@@ -225,6 +225,8 @@ var processDownload = function() {
 	});
 };
 var processLimit = function() {
+	delete apiRequestParameters.encodeItemList;
+
 	if (!apiRequestParameters.processing) {
 		if (
 			typeof apiRequestParameters.listProxyUrlItems === 'undefined' ||
