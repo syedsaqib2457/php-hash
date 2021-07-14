@@ -387,25 +387,6 @@
 			return $response;
 		}
 
-		protected function _fetchIpDetails($ip) {
-			$response = array(
-				'type' => 'public',
-				'version' => 4
-			);
-			$ipInteger = ip2long($ip);
-
-			foreach ($this->privateIpRangeIntegers as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
-				if (
-					$ipInteger >= $privateIpRangeIntegerStart &&
-					$ipInteger <= $privateIpRangeIntegerEnd
-				) {
-					$response['type'] = 'private';
-				}
-			}
-
-			return $response;
-		}
-
 		protected function _generateRandomAuthentication($authentication = array()) {
 			$response = array();
 			$letters = 'abcdefghijklmnopqrstuvwxyz';
@@ -1039,11 +1020,10 @@
 			}
 
 			$findDataRowPartSize = 100000;
-			$hasResults = (!empty($parameters['count']) && !empty($parameters['limit']));
 			$queryParts = array_fill(0, max(1, ($hasResults ? ceil($parameters['limit'] / $findDataRowPartSize) : 1)), true);
 
 			foreach ($queryParts as $queryPartKey => $queryPartValue) {
-				if ($hasResults) {
+				if (empty($parameters['limit']) === false) {
 					end($parameterized['parameterizedValues']);
 					$offset = $parameterized['parameterizedValues'][key($parameterized['parameterizedValues'])] = $parameters['offset'] + ($queryPartKey * $findDataRowPartSize);
 					$limit = prev($parameterized['parameterizedValues']);
@@ -1071,10 +1051,18 @@
 				}
 
 				$execute = $connection->execute($parameterized['parameterizedValues']);
-				$data[] = $connection->fetchAll(!empty($parameters['field_count']) && $parameters['field_count'] === 1 ? PDO::FETCH_COLUMN : PDO::FETCH_ASSOC);
+				$data[] = $connection->fetchAll(PDO::FETCH_ASSOC);
 			}
 
-			$response = !empty($data[0]) ? call_user_func_array('array_merge', $data) : $execute;
+			$response = empty($data[0]) === false ? call_user_func_array('array_merge', $data) : $execute;
+
+			if (
+				is_array($response) === true &
+				empty($response[1]) === true
+			) {
+				$response = current($response);
+			}
+
 			$connection->closeCursor();
 			return $response;
 		}
@@ -1246,6 +1234,23 @@
 			}
 
 			$response = $validatedIps;
+			return $response;
+		}
+
+		protected function _validateIpType($ip, $ipVersion) {
+			// todo: validate ipv6 private ip ranges
+			$response = 'public';
+			$ipInteger = ip2long($ip);
+
+			foreach ($this->privateIpRangeIntegers as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
+				if (
+					$ipInteger >= $privateIpRangeIntegerStart &&
+					$ipInteger <= $privateIpRangeIntegerEnd
+				) {
+					$response = 'private';
+				}
+			}
+
 			return $response;
 		}
 
@@ -1423,6 +1428,28 @@
 			return $response;
 		}
 
+		public function count($parameters) {
+			$query = ' FROM ' . $parameters['in'];
+
+			if (
+				empty($parameters['where']) === false &&
+				is_array($parameters['where']) === true
+			) {
+				if (
+					strpos(json_encode($parameters['where']), '"removed":') === false &&
+					empty($this->settings['database']['schema'][$parameters['from']]['removed']) === false
+				) {
+					$parameters['where']['removed'] = false;
+				}
+
+				$query .= ' WHERE ' . implode(' AND ', $this->_formatQuery($parameters['from'], $parameters['where']));
+			}
+
+			$count = $this->_query('SELECT COUNT(id)' . $query);
+			$response = isset($count[0]['COUNT(id)']) === true ? $count[0]['COUNT(id)'] : false;
+			return $response;
+		}
+
 		public function delete($parameters) {
 			$query = 'DELETE FROM ' . $parameters['from'];
 
@@ -1469,8 +1496,6 @@
 				$query .= ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['from'], $parameters['where']));
 			}
 
-			$count = $this->_query('SELECT COUNT(id)' . $query);
-
 			if (!empty($parameters['sort'])) {
 				$query .= ' ORDER BY ';
 
@@ -1496,23 +1521,21 @@
 			}
 
 			$parameters = array_merge($parameters, array(
-				'count' => $count = $parameters['count'] = !empty($count[0]['COUNT(id)']) ? $count[0]['COUNT(id)'] : 0,
-				'field_count' => !empty($parameters['fields']) && is_array($parameters['fields']) ? count($parameters['fields']) : 0,
-				'limit' => !empty($parameters['limit']) && $parameters['limit'] < $count ? $parameters['limit'] : min(10000, $count),
-				'offset' => !empty($parameters['offset']) ? $parameters['offset'] : 0
+				'limit' => empty($parameters['limit']) === false ? $parameters['limit'] : 10000,
+				'offset' => empty($parameters['offset']) === false ? $parameters['offset'] : 0
 			));
 			$query = 'SELECT ' . (!empty($parameters['fields']) && is_array($parameters['fields']) ? implode(',', $parameters['fields']) : '*') . $query;
 			$query .= ' LIMIT ' . $this->_parseQueryValue($parameters['limit']) . ' OFFSET ' . $this->_parseQueryValue($parameters['offset']);
 			$data = $this->_query($query, $parameters);
-			$response = array(
-				'count' => $count,
-				'data' => is_array($data) ? $data : array()
-			);
+			$response = $data;
 
-			if (empty($count)) {
+			if (
+				$data !== false &&
+				empty($data) === true
+			) {
 				$response['message'] = array(
 					'status' => 'error',
-					'text' => 'No ' . str_replace('_', ' ', $parameters['from']) . ' found, please try again.'
+					'text' => 'No ' . str_replace('_', ' ', $parameters['from']) . ' found.'
 				);
 			}
 

@@ -185,8 +185,7 @@
 				)
 			);
 
-			if (!empty($parameters['where']['id'])) {
-				$response['message']['text'] = 'Invalid server ID, please try again.';
+			if (empty($parameters['where']['id']) === false) {
 				$server = $this->fetch(array(
 					'fields' => array(
 						'id',
@@ -200,53 +199,57 @@
 					)
 				));
 
-				if (!empty($server['count'])) {
-					$response = array(
-						'data' => array(
-							'deployment_command' => 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . ($url = $_SERVER['REQUEST_SCHEME'] . '://' . $this->settings['base_domain']) . '/assets/php/proxy.php?' . time() . '" && sudo php proxy.php ' . $serverId . ' ' . $url,
-							'server' => $server['data'][0]
-						),
-						'message' => array(
-							'status' => 'success',
-							'text' => 'Server is ready for activation.'
-						)
-					);
+				if ($server !== false) {
+					$response['message']['text'] = 'Invalid server ID, please try again.';
 
-					if (!empty($response['data']['server']['status_active'])) {
-						$response['message']['text'] = 'Server is already activated.';
-					} elseif (!empty($parameters['user']['endpoint'])) {
-						$response['message'] = array(
-							'status' => 'error',
-							'text' => $defaultMessage
-						);
-						$serverNodesUpdated = $this->update(array(
+					if (empty($server) === false) {
+						$response = array(
 							'data' => array(
-								'status_active' => true
+								'deployment_command' => 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . ($url = $_SERVER['REQUEST_SCHEME'] . '://' . $this->settings['base_domain']) . '/assets/php/proxy.php?' . time() . '" && sudo php proxy.php ' . $serverId . ' ' . $url,
+								'server' => $server
 							),
-							'in' => 'server_nodes',
-							'where' => array(
-								'server_id' => $serverId
-							)
-						));
-						$serversUpdated = $this->update(array(
-							'data' => array(
-								'status_active' => true
-							),
-							'in' => 'servers',
-							'where' => array(
-								'server_id' => $serverId
-							)
-						));
-
-						if (
-							$serverNodesUpdated &&
-							$serversUpdated
-						) {
-							$response['data']['server']['status_active'] = true;
-							$response['message'] = array(
+							'message' => array(
 								'status' => 'success',
-								'text' => 'Server activated successfully.'
+								'text' => 'Server is ready for activation.'
+							)
+						);
+
+						if ($response['data']['server']['status_active'] === true) {
+							$response['message']['text'] = 'Server is already activated.';
+						} elseif (empty($parameters['user']['endpoint']) === false) {
+							$response['message'] = array(
+								'status' => 'error',
+								'text' => $defaultMessage
 							);
+							$serverNodeDataUpdated = $this->update(array(
+								'data' => array(
+									'status_active' => true
+								),
+								'in' => 'server_nodes',
+								'where' => array(
+									'server_id' => $serverId
+								)
+							));
+							$serverDataUpdated = $this->update(array(
+								'data' => array(
+									'status_active' => true
+								),
+								'in' => 'servers',
+								'where' => array(
+									'id' => $serverId
+								)
+							));
+
+							if (
+								$serverNodeDataUpdated === true &&
+								$serverDataUpdated === true
+							) {
+								$response['data']['server']['status_active'] = true;
+								$response['message'] = array(
+									'status' => 'success',
+									'text' => 'Server activated successfully.'
+								);
+							}
 						}
 					}
 				}
@@ -263,114 +266,113 @@
 				)
 			);
 
-			if (!empty($parameters['data']['ip'])) {
+			if (empty($parameters['data']['ip']) === false) {
 				$response['message']['text'] = 'Invalid IP, please try again.';
-				$serverIp = $parameters['data']['ip'];
+				$formattedServerIp = $this->_validateIps($parameters['data']['ip']);
 
-				if ($serverIp = current(current($this->_validateIps($serverIp)))) {
+				if (empty($formattedServerIp) === false) {
+					$serverIp = current(current($formattedServerIp));
 					$response['message']['text'] = $defaultMessage;
-					$existingServerNodeIpParameters = $existingServerIpParameters = array(
-						'fields' => array(
-							'ip'
-						),
+					$existingServerNodeCount = $this->count(array(
+						'in' => 'server_nodes',
+						'where' => array(
+							'OR' => array(
+								'external_ip' => $serverIp,
+								'internal_ip' => $serverIp
+							)
+						)
+					));
+					$existingServerCount = $this->count(array(
+						'in' => 'servers',
 						'where' => array(
 							'ip' => $serverIp
 						)
-					);
-					$existingServerIpParameters['from'] = 'servers';
-					$existingServerNodeIpParameters['from'] = 'server_nodes';
-					$existingServerNodeIpParameters['where'] = array(
-						'OR' => array(
-							'external_ip' => $serverIp,
-							'internal_ip' => $serverIp
-						)
-					);
-					$existingServerIps = $this->fetch($existingServerIpParameters);
-					$existingServerNodeIps = $this->fetch($existingServerNodeIpParameters);
-					$serverData = array(
-						array(
-							'ip' => $serverIp,
-							'server_node_count' => 1
-						)
-					);
+					));
 
 					if (
-						!empty($existingServerNodeIps['count']) ||
-						!empty($existingServerIps['count'])
+						intval($existingServerNodeCount) === true &&
+						intval($existingServerCount) === true
 					) {
 						$response['message']['text'] = 'IPs already in use, please try again.';
-					} else {
-						$serverParameters = array(
-							'fields' => array(
-								'id'
-							),
-							'from' => 'servers',
-							'where' => $serverData[0]
-						);
 
-						if ($this->save(array(
-							'data' => $serverData,
-							'to' => 'servers'
-						))) {
-							$server = $this->fetch($serverParameters);
+						if (
+							$existingServerNodeCount === 0 ||
+							$existingServerCount === 0
+						) {
+							$serverDataSaved = $this->save(array(
+								'data' => array(
+									array(
+										'ip' => $serverIp,
+										 'server_node_count' => 1
+									)
+								),
+								'to' => 'servers'
+							));
 
-							if (!empty($server['count'])) {
-								$response['message']['text'] = $defaultMessage;
-								$serverNodeData = array(
-									'server_id' => ($serverId = $server['data'][0]),
-									'status_active' => false
-								);
-								$serverIpDetails = $this->_fetchIpDetails($serverIp);
-								$serverNodeData = array(
-									array_merge($serverNodeData, array(
-										'external_ip' => $serverIp
-									))
-								);
-								$serverNodesSaved = $this->save(array(
-                                                                        'data' => $serverNodeData,
-                                                                        'to' => 'server_nodes'
-                                                                ));
+							if ($serverDataSaved === true) {
+								$server = $this->fetch(array(
+									'fields' => array(
+										'id'
+									),
+									'from' => 'servers',
+									'where' => array(
+										'ip' => $serverIp
+									)
+								));
 
-								if ($serverNodesSaved) {
+								if (empty($server) === false) {
 									$response['message']['text'] = $defaultMessage;
-									$serverNameserverProcessData = $serverProxyProcessData = array();
-
-									foreach (range(1, 8) as $serverNameserverListeningIpSegment) {
-										$serverNameserverProcessData[] = array(
-											'external_source_ip' => $serverIpDetails['type'] === 'public' ? $serverIp : '127.0.0.1',
-											'listening_ip' => '127.0.0.' . $serverNameserverListeningIpSegment,
-											'server_id' => $serverId,
-											'status_local' => true
-										);
-									}
-
-									$serverProxyProcessPort = 1080;
-
-									foreach (range(1, 10) as $serverProxyProcess) {
-										$serverProxyProcessData[] = array(
-											'port' => $serverProxyProcessPort,
-											'server_id' => $serverId
-										);
-										$serverProxyProcessPort++;
-									}
-
-									$serverNameserverProcessesSaved = $this->save(array(
-										'data' => $serverNameserverProcessData,
-										'to' => 'server_nameserver_processes'
-									));
-									$serverProxyProcessesSaved = $this->save(array(
-										'data' => $serverProxyProcessData,
-										'to' => 'server_proxy_processes'
+									$serverNodeDataSaved = $this->save(array(
+										'data' => array(
+											'external_ip' => $serverIp,
+											'server_id' => ($serverId = $server['id']),
+											'server_ip_version' => ($ipVersion = key($formattedServerIp)),
+											'status_active' => false
+										),
+										'to' => 'server_nodes'
 									));
 
-									if (
-										$serverNameserverProcessesSaved &&
-										$serverProxyProcessesSaved
-									) {
-										$response['message'] = array(
-											'status' => 'success',
-											'text' => ($defaultMessage = 'Server added successfully.')
-										);
+									if ($serverNodeDataSaved === true) {
+										$response['message']['text'] = $defaultMessage;
+										$serverNameserverProcessData = $serverProxyProcessData = array();
+
+										foreach (range(1, 8) as $serverNameserverListeningIpSegment) {
+											$serverNameserverProcessData[] = array(
+												'external_source_ip' => $this->_validateIpType($serverIp, $ipVersion) === true ? $serverIp : ($ipPrefix = $ipVersion === 4 ? '127.0.0.' : '::') . '1',
+												'listening_ip' => $ipPrefix . $serverNameserverListeningIpSegment,
+												'server_id' => $serverId,
+												'status_local' => true
+											);
+										}
+
+										$serverProxyProcessPort = 1080;
+
+										foreach (range(1, 10) as $serverProxyProcess) {
+											$serverProxyProcessData[] = array(
+												'port' => $serverProxyProcessPort,
+												'server_id' => $serverId
+											);
+											$serverProxyProcessPort++;
+										}
+
+										$serverNameserverProcessDataSaved = $this->save(array(
+											'data' => $serverNameserverProcessData,
+											'to' => 'server_nameserver_processes'
+										));
+										$serverProxyProcessDataSaved = $this->save(array(
+											'data' => $serverProxyProcessData,
+											'to' => 'server_proxy_processes'
+										));
+
+										if (
+											$serverNameserverProcessDataSaved === true &&
+											$serverProxyProcessDataSaved === true
+										) {
+											$response['message'] = array(
+												'status' => 'success',
+												'text' => ($defaultMessage = 'Server added successfully.')
+											);
+										}
 									}
 								}
 							}
@@ -391,6 +393,7 @@
 			);
 
 			if (!empty($parameters['where']['id'])) {
+				// ..
 				$response['message']['text'] = 'Invalid server ID, please try again.';
 				$server = $this->fetch(array(
 					'fields' => array(
@@ -416,14 +419,14 @@
 						)
 					);
 
-					if (empty($response['data']['server']['status_active'])) {
+					if ($response['data']['server']['status_active'] === false) {
 						$response['message']['text'] = 'Server is already deactivated.';
 					} elseif (!empty($parameters['data']['confirm_deactivation'])) {
 						$response['message'] = array(
 							'status' => 'error',
 							'text' => $defaultMessage
 						);
-						$serverNodesUpdated = $this->update(array(
+						$serverNodeDataUpdated = $this->update(array(
 							'data' => array(
 								'status_active' => false,
 								'status_processing' => false
@@ -433,7 +436,7 @@
 								'server_id' => $serverId
 							)
 						));
-						$serversUpdated = $this->update(array(
+						$serverDataUpdated = $this->update(array(
 							'data' => array(
 								'status_active' => false
 							),
@@ -444,8 +447,8 @@
 						));
 
 						if (
-							$serversUpdated &&
-							$serverNodesUpdated
+							$serverDataUpdated &&
+							$serverNodeDataUpdated
 						) {
 							$response['data']['server']['status_active'] = false;
 							$response['message'] = array(
@@ -468,8 +471,6 @@
 				)
 			);
 
-			// ..
-
 			if (!empty($parameters['where']['id'])) {
 				$response['message']['text'] = 'Invalid server ID, please try again.';
 				$server = $this->fetch(array(
@@ -480,26 +481,26 @@
 						'status_deployed'
 					),
 					'from' => 'servers',
-					'where' => array_intersect_key($parameters['where'], array(
-						'id' => true
-					))
+					'where' => array(
+						'id' => ($serverId = $parameters['where']['id'])
+					)
 				));
-				$serverId = $parameters['where']['id'];
 
 				if (!empty($server['count'])) {
 					$response['message']['text'] = 'Server activation required before deployment, please activate the server and try again.';
-					$response['data']['server'] = $serverData = $server['data'][0];
 
-					if (!empty($serverData['status_activated'])) {
+					if ($server['data'][0]['status_activated']) {
 						$response = array(
-							'data' => $response['data'],
+							'data' => array(
+								'server' => $server['data'][0]
+							),
 							'message' => array(
 								'status' => 'success',
 								'text' => 'Server is ready for deployment.'
 							)
 						);
 
-						if (!empty($serverData['status_deployed'])) {
+						if ($response['data']['status_deployed']) {
 							$response['message']['text'] = 'Server is already deployed.';
 						}
 
@@ -508,56 +509,35 @@
 								'status' => 'error',
 								'text' => $defaultMessage
 							);
-							$proxyParameters = $serverNodeParameters = array(
-								'fields' => array(
-									'external_ip',
-									'id',
-									'internal_ip'
+							$serverNodeDataUpdated = $this->update(array(
+								'data' => array(
+									'status_active' => true,
+									'status_processing' => false
 								),
+								'in' => 'server_nodes',
 								'where' => array(
 									'server_id' => $serverId
 								)
-							);
-							$proxyParameters['from'] = 'proxies';
-							$serverNodeParameters['from'] = 'server_nodes';
-							$proxies = $this->fetch($proxyParameters);
-							$serverNodes = $this->fetch($serverNodeParameters);
+							));
+							$serverDataUpdated = $this->update(array(
+								'data' => array(
+									'status_deployed' => true
+								),
+								'in' => 'servers',
+								'where' => array(
+									'id' => $serverId
+								)
+							));
 
-							if (!empty($serverNodes['count'])) {
-								$proxyData = array();
-
-								if (!empty($proxies['count'])) {
-									foreach ($proxies['data'] as $proxy) {
-										$proxies[$proxy['external_ip']] = $proxy['id'];
-									}
-								}
-
-								foreach ($serverNodes['data'] as $serverNode) {
-									$proxyData[$serverNode['id']] = array_merge($serverNode, array(
-										'server_id' => $serverId,
-										'server_node_id' => $serverNode['id'],
-										'status' => 'active'
-									));
-
-									if (!empty($proxies[$serverNode['external_ip']])) {
-										$proxyData[$serverNode['id']]['id'] = $proxies[$serverNode['external_ip']];
-									}
-								}
-
-								if (
-									$this->_query("UPDATE `servers` SET `status_deployed` = 1 WHERE `id` = $serverId;") &&
-									$this->_query("UPDATE `server_nodes` SET `status` = 'active', `processing` = false WHERE `server_id` = $serverId;") &&
-									$this->save(array(
-										'data' => $proxyData,
-										'to' => 'proxies'
-									))
-								) {
-									$response['data']['server']['status_deployed'] = true;
-									$response['message'] = array(
-										'status' => 'success',
-										'text' => 'Server deployed successfully.'
-									);
-								}
+							if (
+								$serverNodeDataUpdated &&
+								$serverDataUpdated
+							) {
+								$response['data']['server']['status_deployed'] = true;
+								$response['message'] = array(
+									'status' => 'success',
+									'text' => 'Server deployed successfully.'
+								);
 							}
 						}
 					}

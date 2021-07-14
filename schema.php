@@ -1,4 +1,5 @@
 <?php
+	// todo: refactor all php functions to avoid ! shortcode, instead use === boolean
 	// todo: deploy custom nameservers (non-caching) in website.php instead of relying on each cloud hosts default nameservers
 	// todo: make sure tinyint boolean default values are saved as boolean type in database.php
 	// todo: add search function to /servers/id page
