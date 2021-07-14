@@ -191,74 +191,62 @@
 					'fields' => array(
 						'id',
 						'ip',
-						'ip_count',
-						'status_activated'
+						'server_node_count',
+						'status_active'
 					),
 					'from' => 'servers',
-					'where' => array_intersect_key($parameters['where'], array(
-						'id' => true
-					))
+					'where' => array(
+						'id' => ($serverId = $parameters['where']['id'])
+					)
 				));
-				$serverId = $parameters['where']['id'];
 
 				if (!empty($server['count'])) {
-					$response['message']['text'] = 'Proxy and nameserver processes are required before activation, please review them and try again.';
-					$response['data']['server'] = $serverData = $server['data'][0];
-					$serverProxyProcessPorts = $this->_call(array(
-						'method_from' => 'server_proxy_processes',
-						'method_name' => 'fetchServerProxyProcessPorts',
-						'method_parameters' => array(
-							$serverId
+					$response = array(
+						'data' => array(
+							'deployment_command' => 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . ($url = $_SERVER['REQUEST_SCHEME'] . '://' . $this->settings['base_domain']) . '/assets/php/proxy.php?' . time() . '" && sudo php proxy.php ' . $serverId . ' ' . $url,
+							'server' => $server['data'][0]
+						),
+						'message' => array(
+							'status' => 'success',
+							'text' => 'Server is ready for activation.'
 						)
-					));
+					);
 
-					if (!empty($serverProxyProcessPorts)) {
-						$validServerProxyProcessCount = true;
+					if (!empty($response['data']['server']['status_active'])) {
+						$response['message']['text'] = 'Server is already activated.';
+					} elseif (!empty($parameters['user']['endpoint'])) {
+						$response['message'] = array(
+							'status' => 'error',
+							'text' => $defaultMessage
+						);
+						$serverNodesUpdated = $this->update(array(
+							'data' => array(
+								'status_active' => true
+							),
+							'in' => 'server_nodes',
+							'where' => array(
+								'server_id' => $serverId
+							)
+						));
+						$serversUpdated = $this->update(array(
+							'data' => array(
+								'status_active' => true
+							),
+							'in' => 'servers',
+							'where' => array(
+								'server_id' => $serverId
+							)
+						));
 
-						if (count($serverProxyProcessPorts) < 10) {
-							$response['message']['text'] = 'At least 10 proxy processes are required, please add more and try again.';
-							$validServerProxyProcessCount = false;
-						}
-
-						if ($validServerProxyProcessCount === true) {
-							$response = array(
-								'data' => array_merge($response['data'], array(
-									'deployment_command' => 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . ($url = $_SERVER['REQUEST_SCHEME'] . '://' . $this->settings['base_domain']) . '/assets/php/proxy.php?' . time() . '" && sudo php proxy.php ' . $serverId . ' ' . $url
-								)),
-								'message' => array(
-									'status' => 'success',
-									'text' => 'Server is ready for activation.'
-								)
+						if (
+							$serverNodesUpdated &&
+							$serversUpdated
+						) {
+							$response['data']['server']['status_active'] = true;
+							$response['message'] = array(
+								'status' => 'success',
+								'text' => 'Server activated successfully.'
 							);
-
-							if (!empty($response['data']['server']['status_activated'])) {
-								$response['message']['text'] = 'Server is already activated.';
-							} elseif (!empty($parameters['user']['endpoint'])) {
-								$response['message'] = array(
-									'status' => 'error',
-									'text' => $defaultMessage
-								);
-
-								if (
-									$this->_query("UPDATE `proxies` SET `status` = 'active' WHERE `server_id` = $serverId;") &&
-									$this->_query("UPDATE `server_nodes` SET `status` = 'active' WHERE `server_id` = $serverId;") &&
-									$this->save(array(
-										'data' => array(
-											array(
-												'id' => $serverId,
-												'status_activated' => true
-											)
-										),
-										'to' => 'servers'
-									))
-								) {
-									$response['data']['server']['status_activated'] = true;
-									$response['message'] = array(
-										'status' => 'success',
-										'text' => 'Server activated successfully.'
-									);
-								}
-							}
 						}
 					}
 				}
@@ -302,7 +290,7 @@
 					$serverData = array(
 						array(
 							'ip' => $serverIp,
-							'ip_count' => 1
+							'server_node_count' => 1
 						)
 					);
 
@@ -330,7 +318,7 @@
 								$response['message']['text'] = $defaultMessage;
 								$serverNodeData = array(
 									'server_id' => ($serverId = $server['data'][0]),
-									'status' => 'inactive'
+									'status_active' => false
 								);
 								$serverIpDetails = $this->_fetchIpDetails($serverIp);
 								$serverNodeData = array(
@@ -338,25 +326,21 @@
 										'external_ip' => $serverIp
 									))
 								);
+								$serverNodesSaved = $this->save(array(
+                                                                        'data' => $serverNodeData,
+                                                                        'to' => 'server_nodes'
+                                                                ));
 
-								if ($this->save(array(
-									'data' => $serverNodeData,
-									'to' => 'server_nodes'
-								))) {
+								if ($serverNodesSaved) {
 									$response['message']['text'] = $defaultMessage;
-									$serverNameserverListeningIpData = $serverNameserverProcessData = $serverProxyProcessData = array();
+									$serverNameserverProcessData = $serverProxyProcessData = array();
 
 									foreach (range(1, 8) as $serverNameserverListeningIpSegment) {
-										$serverNameserverListeningIpData[] = array(
-												'listening_ip' => '127.0.0.' . $serverNameserverListeningIpSegment,
-												'server_id' => $serverId,
-												'source_ip_count' => 1
-										);
 										$serverNameserverProcessData[] = array(
 											'external_source_ip' => $serverIpDetails['type'] === 'public' ? $serverIp : '127.0.0.1',
 											'listening_ip' => '127.0.0.' . $serverNameserverListeningIpSegment,
-											'local' => 1,
-											'server_id' => $serverId
+											'server_id' => $serverId,
+											'status_local' => true
 										);
 									}
 
@@ -370,19 +354,18 @@
 										$serverProxyProcessPort++;
 									}
 
+									$serverNameserverProcessesSaved = $this->save(array(
+										'data' => $serverNameserverProcessData,
+										'to' => 'server_nameserver_processes'
+									));
+									$serverProxyProcessesSaved = $this->save(array(
+										'data' => $serverProxyProcessData,
+										'to' => 'server_proxy_processes'
+									));
+
 									if (
-										$this->save(array(
-											'data' => $serverNameserverListeningIpData,
-											'to' => 'server_nameserver_listening_ips'
-										)) &&
-										$this->save(array(
-											'data' => $serverNameserverProcessData,
-											'to' => 'server_nameserver_processes'
-										)) &&
-										$this->save(array(
-											'data' => $serverProxyProcessData,
-											'to' => 'server_proxy_processes'
-										))
+										$serverNameserverProcessesSaved &&
+										$serverProxyProcessesSaved
 									) {
 										$response['message'] = array(
 											'status' => 'success',
@@ -411,23 +394,21 @@
 				$response['message']['text'] = 'Invalid server ID, please try again.';
 				$server = $this->fetch(array(
 					'fields' => array(
-						'currency',
 						'id',
 						'ip',
-						'ip_count',
-						'status_activated'
+						'server_node_count',
+						'status_active'
 					),
 					'from' => 'servers',
-					'where' => array_intersect_key($parameters['where'], array(
-						'id' => true
-					))
+					'where' => array(
+						'id' => ($serverId = $parameters['where']['id'])
+					)
 				));
-				$serverId = $parameters['where']['id'];
 
 				if (!empty($server['count'])) {
 					$response = array(
 						'data' => array(
-							'server' => ($serverData = $server['data'][0])
+							'server' => $server['data'][0]
 						),
 						'message' => array(
 							'status' => 'success',
@@ -435,52 +416,41 @@
 						)
 					);
 
-					if (empty($serverData['status_activated'])) {
+					if (empty($response['data']['server']['status_active'])) {
 						$response['message']['text'] = 'Server is already deactivated.';
 					} elseif (!empty($parameters['data']['confirm_deactivation'])) {
 						$response['message'] = array(
 							'status' => 'error',
 							'text' => $defaultMessage
 						);
-						$serverNodes = $this->fetch(array(
-							'fields' => array(
-								'external_ip',
-								'id',
-								'processing'
+						$serverNodesUpdated = $this->update(array(
+							'data' => array(
+								'status_active' => false,
+								'status_processing' => false
 							),
-							'from' => 'server_nodes',
-							'sort' => array(
-								'field' => 'created',
-								'order' => 'DESC'
-							),
+							'in' => 'server_nodes',
 							'where' => array(
-								'server_id' => $serverId,
-								'status' => 'active'
+								'server_id' => $serverId
+							)
+						));
+						$serversUpdated = $this->update(array(
+							'data' => array(
+								'status_active' => false
+							),
+							'in' => 'servers',
+							'where' => array(
+								'id' => $serverId
 							)
 						));
 
-						foreach ($serverNodes['data'] as $serverNodeKey => $serverNode) {
-							$serverNodeId = $serverNode['id'];
-							$this->_query("UPDATE `proxies` SET `status` = 'inactive' WHERE `server_node_id` = $serverNodeId;");
-							$this->_query("UPDATE `server_nodes` SET `status` = 'inactive', `processing` = false WHERE `id` = $serverNodeId;");
-						}
-
-						if ($this->save(array(
-							'data' => ($serverData = array(
-								array_merge($serverData, array(
-									'status_activated' => false
-								))
-							)),
-							'to' => 'servers'
-						))) {
-							$response = array(
-								'data' => array(
-									'server' => $serverData[0]
-								),
-								'message' => array(
-									'status' => 'success',
-									'text' => 'Server deactivated successfully.'
-								)
+						if (
+							$serversUpdated &&
+							$serverNodesUpdated
+						) {
+							$response['data']['server']['status_active'] = false;
+							$response['message'] = array(
+								'status' => 'success',
+								'text' => 'Server deactivated successfully.'
 							);
 						}
 					}
@@ -497,6 +467,8 @@
 					'text' => ($defaultMessage = 'Error deploying server, please try again.')
 				)
 			);
+
+			// ..
 
 			if (!empty($parameters['where']['id'])) {
 				$response['message']['text'] = 'Invalid server ID, please try again.';

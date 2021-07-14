@@ -126,7 +126,7 @@
 			return $response;
 		}
 
-		public function fetchServerProxyProcessPorts($serverId) {
+		public function fetchServerProxyProcessPorts($serverId) { // todo: add ports to server_nodes for both DNS and proxies
 			$response = array();
 			$serverProxyProcessPorts = $this->fetch(array(
 				'fields' => array(

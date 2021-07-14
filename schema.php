@@ -1,7 +1,10 @@
 <?php
+	// todo: deploy custom nameservers (non-caching) in website.php instead of relying on each cloud hosts default nameservers
+	// todo: make sure tinyint boolean default values are saved as boolean type in database.php
 	// todo: add search function to /servers/id page
 	// todo: forward internal server node ips to external ip if the internal ip is private and isn't on the primary interface
-	// todo: consistently add status_ prefix to all boolean columns that represent status (processing, limiting, etc)
+	// todo: consistently add status_ prefix to all boolean columns that represent status (processing, limiting, removed, etc)
+	// todo: revert created/modified field requirements to prevent performance decrease
 	// todo: change all url_request_log names to request_log since URLs will be an optional field when DNS + reverse proxies are included
 	$schema = array(
 		'actions' => array(
@@ -45,7 +48,7 @@
 				'type' => 'INT(3)'
 			)
 		),
-		'proxies' => array(
+		/*'proxies' => array(
 			'block_all_urls' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
@@ -114,7 +117,7 @@
 				'null' => true,
 				'type' => 'TEXT'
 			)
-		),
+		),*/
 		'proxy_urls' => array(
 			'id' => array(
 				'auto_increment' => true,
@@ -251,23 +254,6 @@
 				'type' => 'VARCHAR(1000)'
 			)
 		),
-		'public_request_limitations' => array(
-			'client_ip' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(30)'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'request_attempts' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			)
-		),
 		'servers' => array(
 			'id' => array(
 				'auto_increment' => true,
@@ -279,16 +265,16 @@
 				'null' => true,
 				'type' => 'VARCHAR(30)'
 			),
-			'ip_count' => array(
-				'default' => 1,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
 			'removed' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
 			),
-			'status_activated' => array(
+			'server_node_count' => array(
+				'default' => 1,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'status_active' => array(
 				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
@@ -297,36 +283,6 @@
 				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
-			)
-		),
-		'server_nameserver_listening_ips' => array(
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'listening_ip' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(100)'
-			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'server_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'server_nameserver_process_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'source_ip_count' => array(
-				'default' => 1,
-				'type' => 'BIGINT(11)'
 			)
 		),
 		'server_nameserver_processes' => array(
@@ -339,10 +295,6 @@
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
-			),
-			'local' => array(
-				'default' => 1,
-				'type' => 'TINYINT(1)'
 			),
 			'internal_source_ip' => array(
 				'default' => null,
@@ -362,6 +314,10 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'status_local' => array(
+				'default' => 1,
+				'type' => 'TINYINT(1)'
 			)
 		),
 		'server_nodes' => array(
@@ -390,10 +346,6 @@
 				'null' => true,
 				'type' => 'TINYINT(1)'
 			),
-			'processing' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
 			'removed' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
@@ -403,10 +355,42 @@
 				'null' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'status' => array(
+			'status_active' => array(
+				'default' => 0,
+				'null' => true,
+				'type' => 'TINYINT(1)'
+			),
+			'status_processing' => array(
+				'default' => 0,
+				'null' => true,
+				'type' => 'TINYINT(1)'
+			),
+			'type' => array(
+				'default' => "'proxy'",
+				'null' => true,
+				'type' => 'CHAR(10)'
+			)
+		),
+		'server_node_users' => array(
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'server_id' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'VARCHAR(10)'
+				'type' => 'BIGINT(11)'
+			),
+			'server_node_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'user_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
 			)
 		),
 		'server_proxy_processes' => array(
@@ -471,21 +455,55 @@
 				'type' => 'VARCHAR(255)'
 			)
 		),
-		'users' => array(
+		'unauthorized_request_logs' => array( // todo: add unauthorized request logging / limiting to server_node_users to prevent proxy username:password brute forcing
+			'client_ip' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(30)'
+			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'password' => array(
+			'unauthorized_request_count' => array(
+				'default' => 0,
+				'type' => 'TINYINT(1)'
+			)
+		),
+		'users' => array(
+			'authentication_password' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(255)'
 			),
-			'whitelisted_ips' => array(
+			'authentication_username' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(255)'
+			),
+			'authentication_whitelist' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'TEXT'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'status_allowing_requests' => array( // todo: use in combination with rate limiting specific URLs / IPs to only allow or block access to specific URLs / IPs
+				'default' => 0,
+				'type' => 'TINYINT(1)'
+			),
+			'status_blocking_requests' => array(
+				'default' => 0,
+				'type' => 'TINYINT(1)'
+			),
+			'status_logging_requests' => array(
+				'default' => 0,
+				'null' => true,
+				'type' => 'TINYINT(1)'
 			)
 		)
 	);

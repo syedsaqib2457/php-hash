@@ -1,3 +1,5 @@
+This branch is for development only.
+
 Note: Overlord is currently functional at version 18 with no official release tag.
 
 The first official release will be at version 19 when process auto-scaling, IPv6, proxy request logging, public-facing DNS, reverse proxies and system monitoring features are completed.
