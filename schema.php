@@ -1,54 +1,19 @@
 <?php
+	// refactoring is always worth it
+	// todo: allow nameserver process editing (source ip, port, listening ip, etc)
+	// todo: make sure externally-hosted public dns (with only a listening IP) still works
+	// todo: delete background action processing code and limit selected items to 10000
+		// retain item indexes for front-end selection speed
+		// users who want to update more than 10000 items at once can use the API (a company using 10000 ips would probably already have a developer implement the API)
+	// todo: add deploy_ prefix to all deployment files in /assets/php/
 	// todo: refactor all php functions to avoid ! shortcode, instead use === boolean
 	// todo: deploy custom nameservers (non-caching) in website.php instead of relying on each cloud hosts default nameservers
 	// todo: make sure tinyint boolean default values are saved as boolean type in database.php
 	// todo: add search function to /servers/id page
 	// todo: forward internal server node ips to external ip if the internal ip is private and isn't on the primary interface
 	// todo: consistently add status_ prefix to all boolean columns that represent status (processing, limiting, removed, etc)
-	// todo: revert created/modified field requirements to prevent performance decrease
 	// todo: change all url_request_log names to request_log since URLs will be an optional field when DNS + reverse proxies are included
 	$schema = array(
-		'actions' => array(
-			'chunks' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'INT(5)'
-			),
-			'encoded_items_processed' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'TEXT'
-			),
-			'encoded_items_to_process' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'TEXT'
-			),
-			'encoded_parameters' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'TEXT'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'processed' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'processing' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'progress' => array(
-				'default' => 0,
-				'type' => 'INT(3)'
-			)
-		),
 		/*'proxies' => array(
 			'block_all_urls' => array(
 				'default' => 0,
@@ -256,6 +221,10 @@
 			)
 		),
 		'servers' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
@@ -265,6 +234,10 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(30)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
 			),
 			'removed' => array(
 				'default' => 0,
@@ -287,6 +260,10 @@
 			)
 		),
 		'server_nameserver_processes' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'external_source_ip' => array(
 				'default' => null,
 				'null' => true,
@@ -307,6 +284,15 @@
 				'null' => true,
 				'type' => 'VARCHAR(100)'
 			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'port' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'INT(5)'
+			),
 			'removed' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
@@ -315,13 +301,13 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
-			),
-			'status_local' => array(
-				'default' => 1,
-				'type' => 'TINYINT(1)'
 			)
 		),
 		'server_nodes' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'external_ip' => array(
 				'default' => null,
 				'null' => true,
@@ -346,6 +332,10 @@
 				'default' => 4,
 				'null' => true,
 				'type' => 'TINYINT(1)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
 			),
 			'removed' => array(
 				'default' => 0,
@@ -373,10 +363,18 @@
 			)
 		),
 		'server_node_users' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
 			),
 			'server_id' => array(
 				'default' => null,
@@ -395,10 +393,18 @@
 			)
 		),
 		'server_proxy_processes' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
 			),
 			'port' => array(
 				'default' => null,
@@ -416,15 +422,27 @@
 			)
 		),
 		'settings' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'id' => array(
 				'primary_key' => true,
 				'type' => 'VARCHAR(255)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
 			),
 			'value' => array(
 				'type' => 'VARCHAR(255)'
 			)
 		),
 		'tokens' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'encoded_parameters' => array(
 				'default' => null,
 				'null' => true,
@@ -450,6 +468,10 @@
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'string' => array(
 				'default' => null,
 				'null' => true,
@@ -462,10 +484,18 @@
 				'null' => true,
 				'type' => 'VARCHAR(30)'
 			),
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
 			),
 			'unauthorized_request_count' => array(
 				'default' => 0,
@@ -488,10 +518,18 @@
 				'null' => true,
 				'type' => 'TEXT'
 			),
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
 			),
 			'status_allowing_requests' => array( // todo: use in combination with rate limiting specific URLs / IPs to only allow or block access to specific URLs / IPs
 				'default' => 0,

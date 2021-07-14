@@ -232,6 +232,7 @@
 						$loadBalancer = $destinationIpKey > 0 ? '-m statistic --mode nth --every ' . ($destinationIpKey + 1) . ' --packet 0 ' : '';
 
 						foreach ($nameserverProcessLoadBalanceSourceIps as $nameserverProcessLoadBalanceSourceIp) {
+							// todo: change dport to dports to allow custom DNS ports
 							$firewallRules[] = '-A OUTPUT -d ' . $nameserverProcessLoadBalanceSourceIp . ' -p udp --dport 53 ' . $loadBalancer . '-j DNAT --to-destination ' . $destinationIp;
 						}
 					}

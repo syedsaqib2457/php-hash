@@ -13,12 +13,13 @@
 			);
 
 			if (
-				!empty($parameters['data']['port']) &&
-				!empty($parameters['data']['server_id'])
+				empty($parameters['data']['port']) === false &&
+				empty($parameters['data']['server_id']) === false
 			) {
 				$response['message']['text'] = 'Invalid port, please try again.';
+				$validServerProxyProcessPort = $this->_validatePort($parameters['data']['port']);
 
-				if ($validServerProxyProcessPort = $this->_validatePort($parameters['data']['port'])) {
+				if (is_int($validServerProxyProcessPort) === true) {
 					$response['message']['text'] = $defaultMessage;
 					$server = $this->fetch(array(
 						'fields' => array(
@@ -30,28 +31,41 @@
 						)
 					));
 
-					if (!empty($server['count'])) {
-						$response['message']['text'] = 'Port already in use on this server, please try again.';
-						$serverProxyProcessPorts = $this->fetchServerProxyProcessPorts($serverId);
+					if ($server !== false) {
+						$response['message']['text'] = 'Invalid server ID, please try again.';
 
-						if (!in_array($validServerProxyProcessPort, $serverProxyProcessPorts)) {
+						if (empty($server) === false) {
 							$response['message']['text'] = $defaultMessage;
+							$serverProcessPorts = $this->_call(array(
+								'method_from' => 'servers',
+								'method_name' => 'fetchServerProcessPorts',
+								'method_parameters' => array(
+									$serverId
+								)
+							));
 
-							if (
-								$this->save(array(
-									'data' => array(
-										array(
-											'port' => $parameters['data']['port'],
-											'server_id' => $serverId
-										)
-									),
-									'to' => 'server_proxy_processes'
-								))
-							) {
-								$response['message'] = array(
-									'status' => 'success',
-									'text' => 'Server proxy process added successfully.'
-								);
+							if ($serverProcessPorts !== false) {
+								$response['message']['text'] = 'Port already in use on this server, please try again.';
+
+								if (in_array($validServerProxyProcessPort, $serverProcessPorts) === false) {
+									$response['message']['text'] = $defaultMessage;
+									$serverProxyProcessDataSaved = $this->save(array(
+										'data' => array(
+											array(
+												'port' => $validServerProxyProcessPort,
+												'server_id' => $serverId
+											)
+										),
+										'to' => 'server_proxy_processes'
+									));
+
+									if ($serverProxyProcessDataSaved === true) {
+										$response['message'] = array(
+											'status' => 'success',
+											'text' => 'Server proxy process added successfully.'
+										);
+									}
+								}
 							}
 						}
 					}
@@ -70,13 +84,13 @@
 			);
 
 			if (
-				is_string($parameters['data']['port']) &&
-				!empty($parameters['where']['id']) &&
-				is_string($parameters['where']['id'])
+				empty($parameters['data']['port']) === false &&
+				empty($parameters['where']['id']) === false
 			) {
 				$response['message']['text'] = 'Invalid port, please try again.';
+				$validServerProxyProcessPort = $this->_validatePort($parameters['data']['port']);
 
-				if ($validServerProxyProcessPort = $this->_validatePort($parameters['data']['port'])) {
+                                if (is_int($validServerProxyProcessPort) === true) {
 					$response['message']['text'] = $defaultMessage;
 					$serverProxyProcess = $this->fetch(array(
 						'fields' => array(
@@ -84,10 +98,12 @@
 							'server_id'
 						),
 						'from' => 'server_proxy_processes',
-						'where' => array_intersect_key($parameters['where'], array(
-							'id' => true
-						))
+						'where' => array(
+							'id' => $parameters['where']['id']
+						)
 					));
+
+					// ..
 
 					if (!empty($serverProxyProcess['count'])) {
 						$response['message']['text'] = 'Port already in use on this server, please try again.';
@@ -126,21 +142,41 @@
 			return $response;
 		}
 
-		public function fetchServerProxyProcessPorts($serverId) { // todo: add ports to server_nodes for both DNS and proxies
+		public function fetchServerProcessPorts($serverId, $serverProcessType = false) { // todo: add ports to server_nodes for both DNS and proxies, move to servers.php, pass second optional parameter for serverProcessPortType
 			$response = array();
-			$serverProxyProcessPorts = $this->fetch(array(
+			$serverProcessPortParameters = array(
 				'fields' => array(
 					'port'
 				),
-				'from' => 'server_proxy_processes',
 				'where' => array(
 					'server_id' => $serverId
 				)
-			));
+			);
+			$serverProcessTypes = array(
+				'nameserver',
+				'proxy'
+			);
 
-			if (!empty($serverProxyProcessPorts['count'])) {
-				foreach ($serverProxyProcessPorts['data'] as $serverProxyProcessPort) {
-					$response[$serverProxyProcessPort] = $serverProxyProcessPort;
+			if (is_string($serverProcessType) === true) {
+				$serverProcessTypes = array_intersect($serverProcessTypes, array(
+					$serverProcessType
+				));
+			}
+
+			if (empty($serverProcessTypes) === false) {
+				foreach ($serverProcessPortTypes as $serverProcessPortType) {
+					$serverProcessPortParameters['from'] = 'server_' . $serverProcessPortType . '_processes';
+					$serverProcessPorts = $this->fetch($serverProcessPortParameters);
+
+					if ($serverProcessPorts === false) {
+						return false;
+					}
+
+					if (empty($serverProcessPorts) === false) {
+						foreach ($serverProcessPorts as $serverProcessPort) {
+							$response[$serverProcessPort] = $serverProcessPort;
+						}
+					}
 				}
 			}
 
