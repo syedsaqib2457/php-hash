@@ -1,6 +1,6 @@
 Note: Overlord is currently functional at version 18 with no official release tag.
 
-The first official release will be at version 19 when process auto-scaling, IPv6, proxy request logging, public-facing DNS, reverse proxies and system monitoring features are completed.
+The first official release will be at version 19 when process auto-scaling, IPv6, proxy request logging, public-facing DNS, reverse proxies and system monitoring features are completed. It will likely require new installations and server deployments if upgrading from version 18 to version 19.
 
 ## Installation
 
@@ -26,11 +26,3 @@ After the control panel is installed, log in as instructed and start deploying c
 + [Oracle Cloud](https://gist.github.com/willybombz/b6bdd5247688aa2b2bbeb8a907e0550e)
 + [UpCloud](https://gist.github.com/willybombz/e6fbbf9a68ec8c94d29f7ab763af230e)
 + [Vultr](https://gist.github.com/willybombz/e73d940a4a7a142925e5bea5c8164faf)
-
-## Sponsors
-
-Overlord is free and unencumbered software released into the [public domain](https://github.com/willybombz/overlord/blob/master/license.txt).
-
-Support the project by following my coding streams on [Twitch](https://www.twitch.tv/willybombz) or contacting me on [Twitter](https://twitter.com/willybombz) to send a donation.
-
-+ [CrepProxy](https://twitter.com/crepproxy) donated 250 USD
