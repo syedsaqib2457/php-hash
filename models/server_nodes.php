@@ -166,14 +166,13 @@
 			);
 
 			if (
-				is_string($parameters['data']['external_ip']) &&
-				is_string($parameters['data']['internal_ip']) &&
-				!empty($parameters['where']['id']) &&
-				is_string($parameters['where']['id'])
+				empty($parameters['data']['external_ip']) === false &&
+				empty($parameters['where']['id']) === false
 			) {
 				$response['message']['text'] = 'Invalid external IP address, please try again.';
-				$proxyData = $serverData = $serverNodeData = $serverNodeIps = array();
+				$serverData = $serverNodeData = $serverNodeIps = array();
 				$validServerNodeIps = true;
+				// ..
 
 				if ($validServerNodeExternalIp = current(current($this->_validateIps($parameters['data']['external_ip'])))) {
 					$response['message']['text'] = $defaultMessage;
