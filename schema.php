@@ -357,6 +357,11 @@
 				'null' => true,
 				'type' => 'TINYINT(1)'
 			),
+			'target' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(1000)'
+			),
 			'type' => array(
 				'default' => "'proxy'",
 				'null' => true,
