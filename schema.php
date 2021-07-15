@@ -1,5 +1,6 @@
 <?php
 	// refactoring is always worth it
+	// todo: auto-detect if server is ipv4 or ipv6 only for deployment command URLs + add main_ipv4 and main_ipv6 instead of base_domain in configuration.php settings
 	// todo: delete ip_version fields, create ipv4 and ipv6 versions of both internal_ip and external_ip fields
 	// todo: add primary ipv4 and ipv6 fields to servers instead of ip field
 	// todo: show live ipv4_count and ipv6 count instead of using a static ip_count field for servers
