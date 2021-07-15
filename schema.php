@@ -1,5 +1,6 @@
 <?php
 	// refactoring is always worth it
+	// todo: delete ip_version fields, create ipv4 and ipv6 versions of both internal_ip and external_ip fields
 	// todo: add primary ipv4 and ipv6 fields to servers instead of ip field
 	// todo: show live ipv4_count and ipv6 count instead of using a static ip_count field for servers
 	// todo: parse - from empty usernames in logs
@@ -86,7 +87,7 @@
 				'null' => true,
 				'type' => 'TEXT'
 			)
-		),*/
+		),
 		'proxy_urls' => array(
 			'id' => array(
 				'auto_increment' => true,
@@ -222,7 +223,7 @@
 				'default' => "'-'",
 				'type' => 'VARCHAR(15)'
 			)
-		),
+		),*/
 		'servers' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -233,10 +234,15 @@
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'ip' => array(
+			'main_ipv4' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'VARCHAR(30)'
+				'type' => 'VARCHAR(15)'
+			),
+			'main_ipv6' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(39)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -262,25 +268,40 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'external_source_ip' => array(
+			'external_source_ipv4' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'VARCHAR(100)'
+				'type' => 'VARCHAR(15)'
+			),
+			'external_source_ipv6' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(39)'
 			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'internal_source_ip' => array(
+			'internal_source_ipv4' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'VARCHAR(100)'
+				'type' => 'VARCHAR(15)'
 			),
-			'listening_ip' => array(
+			'internal_source_ipv6' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'VARCHAR(100)'
+				'type' => 'VARCHAR(39)'
+			),
+			'listening_ipv4' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(15)'
+			),
+			'listening_ipv6' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(39)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -306,30 +327,30 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'external_ip' => array(
+			'external_ipv4' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'VARCHAR(30)'
+				'type' => 'VARCHAR(15)'
 			),
-			'external_ip_version' => array(
-				'default' => 4,
+			'external_ipv6' => array(
+				'default' => null,
 				'null' => true,
-				'type' => 'TINYINT(1)'
+				'type' => 'VARCHAR(39)'
 			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'internal_ip' => array(
+			'internal_ipv4' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'VARCHAR(30)'
+				'type' => 'VARCHAR(15)'
 			),
-			'internal_ip_version' => array(
-				'default' => 4,
+			'internal_ipv6' => array(
+				'default' => null,
 				'null' => true,
-				'type' => 'TINYINT(1)'
+				'type' => 'VARCHAR(39)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
