@@ -142,32 +142,6 @@
 								));
 
 								if ($serverNodeDataSaved === true) {
-									$serverNodes = $this->fetch(array(
-										'fields' => array(
-											'id'
-										),
-										'from' => 'server_nodes',
-										'limit' => 1,
-										'where' => array(
-											'server_id' => $serverId
-										)
-									));
-
-									if (
-										isset($serverNodes['count']) &&
-										is_numeric($serverNodes['count'])
-									) {
-										$this->save(array(
-											'data' => array(
-												array(
-													'id' => $serverId,
-													'ip_count' => $serverNodes['count']
-												)
-											),
-											'to' => 'servers'
-										));
-									}
-
 									$response['message'] = array(
 										'status' => 'success',
 										'text' => 'Server node added successfully.'
