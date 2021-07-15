@@ -13,18 +13,19 @@
 			);
 
 			if (
-				!empty($parameters['data']['external_ip']) &&
-				!empty($parameters['data']['server_id'])
+				empty($parameters['data']['external_ip']) === false &&
+				empty($parameters['data']['server_id']) === false
 			) {
 				$response['message']['text'] = 'Invalid external IP address, please try again.';
-				$serverNodeIps = array();
-				$validServerNodeIps = true;
+				$formattedServerNodeExternalIp = $this->_validateIps($parameters['data']['external_ip'];
 
-				if ($validServerNodeExternalIp = current(current($this->_validateIps($parameters['data']['external_ip'])))) {
+				if ($validServerNodeIps = (empty($formattedServerNodeExternalIp) !== false)) {
 					$response['message']['text'] = $defaultMessage;
+					$serverNodeExternalIp = current(current($formattedServerNodeExternalIp));
+					$serverNodeIps = array();
 					$server = $this->fetch(array(
 						'fields' => array(
-							'status_activated',
+							'status_active',
 							'status_deployed'
 						),
 						'from' => 'servers',
@@ -35,25 +36,29 @@
 
 					if (!empty($server['count'])) {
 						$serverNodeData = array(
-							array(
-								'external_ip' => ($serverNodeIps[$validServerNodeExternalIp] = $validServerNodeExternalIp),
-								'processing' => true,
-								'server_id' => $serverId,
-								'status' => 'inactive'
-							)
+							'external_ip' => ($serverNodeIps[$validServerNodeExternalIp] = $validServerNodeExternalIp),
+							'external_ip_version' => key($formattedServerNodeExternalIp),
+							'server_id' => $serverId,
+							'status_active' => false,
+							'status_processing' => true
 						);
 
 						if (!empty($parameters['data']['internal_ip'])) {
 							$response['message']['text'] = 'Invalid internal IP address, please try again.';
-							$validServerNodeIps = false;
+							$formattedServerNodeInternalIp = $this->_validateIps($parameters['data']['internal_ip'];
 
-							if ($validServerNodeInternalIp = current(current($this->_validateIps($parameters['data']['internal_ip'])))) {
-								$serverNodeIps[$validServerNodeInternalIp] = $serverNodeData[0]['internal_ip'] = $validServerNodeInternalIp;
-								$validServerNodeIps = true;
+							if ($validServerNodeIps = (empty($formattedServerNodeInternalIp) !== false)) {
+								$serverNodeInternalIp = current(current($formattedServerNodeInternalIp));
+								$serverNodeData = array_merge($serverNodeData, array(
+									'internal_ip' => ($serverNodeIps[$validServerNodeInternalIp] = $serverNodeInternalIp),
+									'internal_ip_version' => key($formattedServerNodeInternalIp)
+								));
 							}
 						}
 
 						if ($validServerNodeIps === true) {
+							// ..
+
 							$existingIpParameters = array(
 								'fields' => array(
 									'external_ip',
