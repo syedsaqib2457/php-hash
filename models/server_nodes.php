@@ -19,7 +19,7 @@
 				$response['message']['text'] = 'Invalid external IP address, please try again.';
 				$formattedServerNodeExternalIp = $this->_validateIps($parameters['data']['external_ip'];
 
-				if ($validServerNodeIps = (empty($formattedServerNodeExternalIp) !== false)) {
+				if ($validServerNodeIps = (empty($formattedServerNodeExternalIp) === false)) {
 					$response['message']['text'] = $defaultMessage;
 					$serverNodeExternalIp = current(current($formattedServerNodeExternalIp));
 					$serverNodeIps = array();
@@ -50,7 +50,7 @@
 								$response['message']['text'] = 'Invalid internal IP address, please try again.';
 								$formattedServerNodeInternalIp = $this->_validateIps($parameters['data']['internal_ip'];
 
-								if ($validServerNodeIps = (empty($formattedServerNodeInternalIp) !== false)) {
+								if ($validServerNodeIps = (empty($formattedServerNodeInternalIp) === false)) {
 									$serverNodeInternalIp = current(current($serverNodeInternalIp));
 									$serverNodeData = array_merge($serverNodeData, array(
 										'internal_ip' => ($serverNodeIps[$serverNodeInternalIp] = $serverNodeInternalIp),

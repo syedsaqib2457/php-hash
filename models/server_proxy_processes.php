@@ -17,9 +17,9 @@
 				empty($parameters['data']['server_id']) === false
 			) {
 				$response['message']['text'] = 'Invalid port, please try again.';
-				$validServerProxyProcessPort = $this->_validatePort($parameters['data']['port']);
+				$serverProxyProcessPort = $this->_validatePort($parameters['data']['port']);
 
-				if (is_int($validServerProxyProcessPort) === true) {
+				if (is_int($serverProxyProcessPort) === true) {
 					$response['message']['text'] = $defaultMessage;
 					$server = $this->fetch(array(
 						'fields' => array(
@@ -47,12 +47,12 @@
 							if ($serverProcessPorts !== false) {
 								$response['message']['text'] = 'Port already in use on this server, please try again.';
 
-								if (in_array($validServerProxyProcessPort, $serverProcessPorts) === false) {
+								if (in_array($serverProxyProcessPort, $serverProcessPorts) === false) {
 									$response['message']['text'] = $defaultMessage;
 									$serverProxyProcessDataSaved = $this->save(array(
 										'data' => array(
 											array(
-												'port' => $validServerProxyProcessPort,
+												'port' => $serverProxyProcessPort,
 												'server_id' => $serverId
 											)
 										),
@@ -88,9 +88,9 @@
 				empty($parameters['where']['id']) === false
 			) {
 				$response['message']['text'] = 'Invalid port, please try again.';
-				$validServerProxyProcessPort = $this->_validatePort($parameters['data']['port']);
+				$serverProxyProcessPort = $this->_validatePort($parameters['data']['port']);
 
-                                if (is_int($validServerProxyProcessPort) === true) {
+                                if (is_int($serverProxyProcessPort) === true) {
 					$response['message']['text'] = $defaultMessage;
 					$serverProxyProcess = $this->fetch(array(
 						'fields' => array(
@@ -117,12 +117,12 @@
 								)
 							));
 
-							if (in_array($validServerProxyProcessPort, $serverProcessPorts) === false) {
+							if (in_array($serverProxyProcessPort, $serverProcessPorts) === false) {
 								$response['message']['text'] = $defaultMessage;
 								$serverProxyProcessData = array(
 									array(
 										'id' => $parameters['where']['id'],
-										'port' => $validServerProxyProcessPort,
+										'port' => $serverProxyProcessPort,
 										'server_id' => $serverId
 									)
 								);
