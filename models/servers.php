@@ -191,7 +191,6 @@
 					'fields' => array(
 						'id',
 						'ip',
-						'server_node_count',
 						'status_active'
 					),
 					'from' => 'servers',
@@ -303,8 +302,7 @@
 							$serverDataSaved = $this->save(array(
 								'data' => array(
 									array(
-										'ip' => $serverIp,
-										 'server_node_count' => 1
+										'ip' => $serverIp
 									)
 								),
 								'to' => 'servers'
@@ -399,7 +397,6 @@
 					'fields' => array(
 						'id',
 						'ip',
-						'server_node_count',
 						'status_active'
 					),
 					'from' => 'servers',

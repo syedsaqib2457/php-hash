@@ -1,5 +1,7 @@
 <?php
 	// refactoring is always worth it
+	// todo: add primary ipv4 and ipv6 fields to servers instead of ip field
+	// todo: show live ipv4_count and ipv6 count instead of using a static ip_count field for servers
 	// todo: parse - from empty usernames in logs
 	// todo: allow nameserver process editing (source ip, port, listening ip, etc)
 	// todo: make sure externally-hosted public dns (with only a listening IP) still works
@@ -243,11 +245,6 @@
 			'removed' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
-			),
-			'server_node_count' => array(
-				'default' => 1,
-				'null' => true,
-				'type' => 'BIGINT(11)'
 			),
 			'status_active' => array(
 				'default' => 0,
