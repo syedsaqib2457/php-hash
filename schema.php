@@ -1,5 +1,6 @@
 <?php
 	// refactoring is always worth it
+	// todo: parse - from empty usernames in logs
 	// todo: allow nameserver process editing (source ip, port, listening ip, etc)
 	// todo: make sure externally-hosted public dns (with only a listening IP) still works
 	// todo: delete background action processing code and limit selected items to 10000
@@ -205,10 +206,6 @@
 				'null' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'username' => array(
-				'default' => "'-'",
-				'type' => 'VARCHAR(15)'
-			),
 			'target_ip' => array(
 				'default' => null,
 				'null' => true,
@@ -218,6 +215,10 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(1000)'
+			),
+			'username' => array(
+				'default' => "'-'",
+				'type' => 'VARCHAR(15)'
 			)
 		),
 		'servers' => array(
