@@ -284,70 +284,72 @@
 			}
 
 			if ($validServerMainIps === true) {
-				$response['message']['text'] = 'Invalid IPs, please try again.';
-				$validServerNodeIps = (
+				$validServerMainIps = (
 					$formattedServerMainIps === $this->_validateIps($serverMainIps) &&
 					count(current($formattedServerMainIps)) === 1
 				);
 
-				if ($validServerNodeIps === true) {
-					foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
-						$formattedServerMainIps[$serverMainIpVersion] = $serverMainIp = current($serverMainIp);
-						$validServerNodeIps = $this->_validateIpType(current($serverMainIp), $serverMainIpVersion) === 'public';
+				if ($validServerMainIps === false) {
+					$response['message']['text'] = 'Invalid IPs, please try again.';
+				}
+			}
 
-						if ($validServerNodeIps === false) {
-							$response['message']['text'] = 'Both main server IPs must be public, please try again.';
-							break;
-						}
-					}
+			if ($validServerMainIps === true) {
+				foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
+					$formattedServerMainIps[$serverMainIpVersion] = $serverMainIp = current($serverMainIp);
+					$validServerMainIps = $this->_validateIpType(current($serverMainIp), $serverMainIpVersion) === 'public';
 
-					if ($validServerNodeIps === true) {
-						foreach ($formattedServerMainIps as $serverMainIp) {
-							$existingServerNodeCount = $this->count(array(
-								'in' => 'server_nodes',
-								'where' => array(
-									'OR' => array(
-										'external_ip_version_4' => $serverMainIp,
-										'external_ip_version_6' => $serverMainIp,
-										'internal_ip_version_4' => $serverMainIp,
-										'internal_ip_version_6' => $serverMainIp
-									)
-								)
-							));
-							$existingServerCount = $this->count(array(
-								'in' => 'servers',
-								'where' => array(
-									'OR' => array(
-										'main_ip_version_4' => $serverMainIp,
-										'main_ip_version_6' => $serverMainIp
-									)
-								)
-							));
-							$validServerNodeIps = (
-								intval($existingServerNodeCount) === true &&
-								intval($existingServerCount) === true
-							);
-
-							if ($validServerNodeIps === false) {
-								break;
-							}
-
-							$validServerNodeIps = (
-								$existingServerNodeCount === 0 &&
-								$existingServerCount === 0
-							);
-
-							if ($validServerNodeIps === false) {
-								$response['message']['text'] = 'IPs already in use, please try again.';
-								break;
-							}
-						)
+					if ($validServerMainIps === false) {
+						$response['message']['text'] = 'Server main IPs must be public, please try again.';
+						break;
 					}
 				}
 			}
 
 			if ($validServerMainIps === true) {
-				$response['message']['text'] = $defaultMessage;
+				foreach ($formattedServerMainIps as $serverMainIp) {
+					$existingServerNodeCount = $this->count(array(
+						'in' => 'server_nodes',
+						'where' => array(
+							'OR' => array(
+								'external_ip_version_4' => $serverMainIp,
+								'external_ip_version_6' => $serverMainIp,
+								'internal_ip_version_4' => $serverMainIp,
+								'internal_ip_version_6' => $serverMainIp
+							)
+						)
+					));
+					$existingServerCount = $this->count(array(
+						'in' => 'servers',
+						'where' => array(
+							'OR' => array(
+								'main_ip_version_4' => $serverMainIp,
+								'main_ip_version_6' => $serverMainIp
+							)
+						)
+					));
+					$validServerMainIps = (
+						intval($existingServerNodeCount) === true &&
+						intval($existingServerCount) === true
+					);
+
+					if ($validServerMainIps === false) {
+						break;
+					}
+
+					$validServerMainIps = (
+						$existingServerNodeCount === 0 &&
+						$existingServerCount === 0
+					);
+
+					if ($validServerMainIps === false) {
+						$response['message']['text'] = 'IPs already in use, please try again.';
+						break;
+					}
+				)
+			}
+
+			if ($validServerMainIps === true) {
 				$serverData = array();
 
 				foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
