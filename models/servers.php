@@ -278,7 +278,7 @@
 				$serverMainIpKey = 'main_ip_version_' . $serverMainIpVersion;
 
 				if (empty($parameters['data'][$serverMainIpKey]) === false) {
-					$formattedServerMainIps[$serverMainIpVersion][] = $serverMainIps = $parameters['data']['main_ip_version_' . $serverMainIpVersion];
+					$formattedServerMainIps[$serverMainIpVersion][] = $serverMainIps = $parameters['data'][$serverMainIpKey];
 					$validServerMainIps = true;
 				}
 			}
