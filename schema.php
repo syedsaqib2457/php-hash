@@ -225,84 +225,75 @@
 				'type' => 'VARCHAR(15)'
 			)
 		),*/
-		'servers' => array(
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'main_ipv4' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(15)'
-			),
-			'main_ipv6' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(39)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'status_active' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'status_deployed' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			)
-		),
 		'server_nameserver_processes' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'external_source_ipv4' => array(
+			'external_source_ip_version_4' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'external_source_ipv6' => array(
+			'external_source_ip_version_4_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
+			),
+			'external_source_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
+			),
+			'external_source_ip_version_6_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
 			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'internal_source_ipv4' => array(
+			'internal_source_ip_version_4' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'internal_source_ipv6' => array(
+			'internal_source_ip_version_4_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
+			),
+			'internal_source_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
 			),
-			'listening_ipv4' => array(
+			'internal_source_ip_version_6_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
+			),
+			'listening_ip_version_4' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'listening_ipv6' => array(
+			'listening_ip_version_4_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
+			),
+			'listening_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
+			),
+			'listening_ip_version_6_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -328,30 +319,50 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'external_ipv4' => array(
+			'external_ip_version_4' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'external_ipv6' => array(
+			'external_ip_version_4_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
+			),
+			'external_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
+			),
+			'external_ip_version_6_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
 			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'internal_ipv4' => array(
+			'internal_ip_version_4' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'internal_ipv6' => array(
+			'internal_ip_version_4_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
+			),
+			'internal_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
+			),
+			'internal_ip_version_6_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -444,6 +455,55 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
+			)
+		),
+		'servers' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'main_ip_version_4' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(15)'
+			),
+			'main_ip_version_4_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
+			),
+			'main_ip_version_6' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(39)'
+			),
+			'main_ip_version_6_type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(7)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'removed' => array(
+				'default' => 0,
+				'type' => 'TINYINT(1)'
+			),
+			'status_active' => array(
+				'default' => 0,
+				'null' => true,
+				'type' => 'TINYINT(1)'
+			),
+			'status_deployed' => array(
+				'default' => 0,
+				'null' => true,
+				'type' => 'TINYINT(1)'
 			)
 		),
 		'settings' => array(
