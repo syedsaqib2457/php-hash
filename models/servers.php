@@ -278,7 +278,7 @@
 				$serverMainIpKey = 'main_ip_version_' . $serverMainIpVersion;
 
 				if (empty($parameters['data'][$serverMainIpKey]) === false) {
-					$formattedServerMainIps[$serverMainIpVersion][] = $serverMainIps = $parameters['data'][$serverMainIpKey];
+					$formattedServerMainIps[$serverMainIpVersion][] = $serverMainIps[] = $parameters['data'][$serverMainIpKey];
 					$validServerMainIps = true;
 				}
 			}
@@ -296,8 +296,8 @@
 
 			if ($validServerMainIps === true) {
 				foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
-					$formattedServerMainIps[$serverMainIpVersion] = $serverMainIp = current($serverMainIp);
-					$validServerMainIps = $this->_validateIpType(current($serverMainIp), $serverMainIpVersion) === 'public';
+					$formattedServerMainIps[$serverMainIpVersion] = current($serverMainIp);
+					$validServerMainIps = $this->_validateIpType($formattedServerMainIps[$serverMainIpVersion], $serverMainIpVersion) === 'public';
 
 					if ($validServerMainIps === false) {
 						$response['message']['text'] = 'Server main IPs must be public, please try again.';
