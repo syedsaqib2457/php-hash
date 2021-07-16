@@ -267,55 +267,55 @@
 					'text' => ($defaultMessage = 'Error adding server, please try again.')
 				)
 			);
-			$formattedServerMainIps = $serverMainIps = array();
-			$serverMainIpVersions = array(
+			$formattedServerIps = $serverIps = array();
+			$serverIpVersions = array(
 				'4',
 				'6'
 			);
-			$validServerMainIps = false;
+			$validServerIps = false;
 
-			foreach ($serverMainIpVersions as $serverMainIpVersion) {
-				$serverMainIpKey = 'main_ip_version_' . $serverMainIpVersion;
+			foreach ($serverIpVersions as $serverIpVersion) {
+				$serverMainIpKey = 'main_ip_version_' . $serverIpVersion;
 
 				if (empty($parameters['data'][$serverMainIpKey]) === false) {
-					$formattedServerMainIps[$serverMainIpVersion][] = $serverMainIps[] = $parameters['data'][$serverMainIpKey];
-					$validServerMainIps = true;
+					$formattedServerIps[$serverIpVersion][] = $serverIps[] = $parameters['data'][$serverMainIpKey];
+					$validServerIps = true;
 				}
 			}
 
-			if ($validServerMainIps === true) {
-				$validServerMainIps = (
-					$formattedServerMainIps === $this->_validateIps($serverMainIps) &&
-					count(current($formattedServerMainIps)) === 1
+			if ($validServerIps === true) {
+				$validServerIps = (
+					$formattedServerIps === $this->_validateIps($serverIps) &&
+					count(current($formattedServerIps)) === 1
 				);
 
-				if ($validServerMainIps === false) {
+				if ($validServerIps === false) {
 					$response['message']['text'] = 'Invalid IPs, please try again.';
 				}
 			}
 
-			if ($validServerMainIps === true) {
-				foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
-					$formattedServerMainIps[$serverMainIpVersion] = current($serverMainIp);
-					$validServerMainIps = $this->_validateIpType($formattedServerMainIps[$serverMainIpVersion], $serverMainIpVersion) === 'public';
+			if ($validServerIps === true) {
+				foreach ($formattedServerIps as $serverIpVersion => $serverIpVersionIps) {
+					$formattedServerIps[$serverIpVersion] = current($serverIpVersionIps);
+					$validServerIps = $this->_validateIpType($formattedServerIps[$serverIpVersion], $serverIpVersion) === 'public';
 
-					if ($validServerMainIps === false) {
+					if ($validServerIps === false) {
 						$response['message']['text'] = 'Server main IPs must be public, please try again.';
 						break;
 					}
 				}
 			}
 
-			if ($validServerMainIps === true) {
-				foreach ($formattedServerMainIps as $serverMainIp) {
+			if ($validServerIps === true) {
+				foreach ($formattedServerIps as $serverIp) {
 					$existingServerNodeCount = $this->count(array(
 						'in' => 'server_nodes',
 						'where' => array(
 							'OR' => array(
-								'external_ip_version_4' => $serverMainIp,
-								'external_ip_version_6' => $serverMainIp,
-								'internal_ip_version_4' => $serverMainIp,
-								'internal_ip_version_6' => $serverMainIp
+								'external_ip_version_4' => $serverIp,
+								'external_ip_version_6' => $serverIp,
+								'internal_ip_version_4' => $serverIp,
+								'internal_ip_version_6' => $serverIp
 							)
 						)
 					));
@@ -323,37 +323,37 @@
 						'in' => 'servers',
 						'where' => array(
 							'OR' => array(
-								'main_ip_version_4' => $serverMainIp,
-								'main_ip_version_6' => $serverMainIp
+								'main_ip_version_4' => $serverIp,
+								'main_ip_version_6' => $serverIp
 							)
 						)
 					));
-					$validServerMainIps = (
+					$validServerIps = (
 						intval($existingServerNodeCount) === true &&
 						intval($existingServerCount) === true
 					);
 
-					if ($validServerMainIps === false) {
+					if ($validServerIps === false) {
 						break;
 					}
 
-					$validServerMainIps = (
+					$validServerIps = (
 						$existingServerNodeCount === 0 &&
 						$existingServerCount === 0
 					);
 
-					if ($validServerMainIps === false) {
+					if ($validServerIps === false) {
 						$response['message']['text'] = 'IPs already in use, please try again.';
 						break;
 					}
 				)
 			}
 
-			if ($validServerMainIps === true) {
+			if ($validServerIps === true) {
 				$serverData = array();
 
-				foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
-					$serverData['main_ip_version_' . $serverMainIpVersion] = $serverMainIp;
+				foreach ($formattedServerIps as $serverIpVersion => $serverIp) {
+					$serverData['main_ip_version_' . $serverIpVersion] = $serverIp;
 				}
 
 				$serverData = array(
@@ -382,19 +382,19 @@
 							'type' => 'proxy'
 						);
 
-						foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
+						foreach ($formattedServerIps as $serverIpVersion => $serverIp) {
 							foreach (range(1, 8) as $serverNameserverListeningIpSegment) {
 								$serverNameserverProcessData[] = array(
-									'external_source_ip_version_' . $serverMainIpVersion => $serverMainIp,
-									'listening_ip_version_' . $serverMainIpVersion => ($serverMainIpVersion === 4 ? '127.0.0.' : '::') . $serverNameserverListeningIpSegment,
+									'external_source_ip_version_' . $serverIpVersion => $serverIp,
+									'listening_ip_version_' . $serverIpVersion => ($serverIpVersion === 4 ? '127.0.0.' : '::') . $serverNameserverListeningIpSegment,
 									'port' => 53,
 									'server_id' => $serverId
 								);
 							}
 
 							$serverNodeData = array_merge($serverNodeData, array(
-								'external_ip_version_' . $serverMainIpVersion => $serverMainIp,
-								'external_ip_version_' . $serverMainIpVersion . '_type' => 'public'
+								'external_ip_version_' . $serverIpVersion => $serverIp,
+								'external_ip_version_' . $serverIpVersion . '_type' => 'public'
 							));
 							$serverProxyProcessPort = 1080;
 
