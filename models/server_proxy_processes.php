@@ -16,7 +16,7 @@
 				empty($parameters['data']['port']) === false &&
 				empty($parameters['data']['server_id']) === false
 			) {
-				$response['message']['text'] = 'Invalid port, please try again.';
+				$response['message']['text'] = 'Invalid server proxy process port, please try again.';
 				$serverProxyProcessPort = $this->_validatePort($parameters['data']['port']);
 
 				if (is_int($serverProxyProcessPort) === true) {
@@ -45,7 +45,7 @@
 							));
 
 							if ($serverProcessPorts !== false) {
-								$response['message']['text'] = 'Port already in use on this server, please try again.';
+								$response['message']['text'] = 'Server proxy process port already in use on this server, please try again.';
 
 								if (in_array($serverProxyProcessPort, $serverProcessPorts) === false) {
 									$response['message']['text'] = $defaultMessage;
@@ -87,7 +87,7 @@
 				empty($parameters['data']['port']) === false &&
 				empty($parameters['where']['id']) === false
 			) {
-				$response['message']['text'] = 'Invalid port, please try again.';
+				$response['message']['text'] = 'Invalid server proxy process port, please try again.';
 				$serverProxyProcessPort = $this->_validatePort($parameters['data']['port']);
 
                                 if (is_int($serverProxyProcessPort) === true) {
@@ -107,7 +107,7 @@
 						$response['message']['text'] = 'Invalid server proxy process ID, please try again.';
 
 						if (empty($serverProxyProcess) === false) {
-							$response['message']['text'] = 'Port already in use on this server, please try again.';
+							$response['message']['text'] = 'Server proxy process port already in use on this server, please try again.';
 							$serverId = $serverProxyProcess['server_id'];
 							$serverProcessPorts = $this->_call(array(
 								'method_from' => 'servers',

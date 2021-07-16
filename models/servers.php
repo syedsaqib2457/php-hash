@@ -267,6 +267,7 @@
 					'text' => ($defaultMessage = 'Error adding server, please try again.')
 				)
 			);
+			// todo: rename main ip array back to $serverMainIps (to allow for easy adding for other server IPs (broadcast, anycast, etc))
 			$formattedServerIps = $serverIps = array();
 			$serverIpVersions = array(
 				'4',
@@ -290,7 +291,7 @@
 				);
 
 				if ($validServerIps === false) {
-					$response['message']['text'] = 'Invalid IPs, please try again.';
+					$response['message']['text'] = 'Invalid server main IPs, please try again.';
 				}
 			}
 
@@ -343,7 +344,7 @@
 					);
 
 					if ($validServerIps === false) {
-						$response['message']['text'] = 'IPs already in use, please try again.';
+						$response['message']['text'] = 'Server main IPs already in use, please try again.';
 						break;
 					}
 				)
