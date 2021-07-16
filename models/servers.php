@@ -293,7 +293,7 @@
 				if ($validServerNodeIps === true) {
 					foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
 						$formattedServerMainIps[$serverMainIpVersion] = $serverMainIp = current($serverMainIp);
-						$validServerNodeIps = $this->_validateIpType(current($serverMainIp), $serverMainIpVersion) === 'private';
+						$validServerNodeIps = $this->_validateIpType(current($serverMainIp), $serverMainIpVersion) === 'public';
 
 						if ($validServerNodeIps === false) {
 							$response['message']['text'] = 'Both main server IPs must be public, please try again.';
