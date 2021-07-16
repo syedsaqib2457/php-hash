@@ -1,5 +1,7 @@
 <?php
 	// refactoring is always worth it
+	// todo: rename $defaultMessage to $defaultResponseMessageText
+	// todo: set a combined maximum of 55000 proxy + nameserver processes
 	// todo: add automated server deployment for each cloud service that allows it with an api key
 	// todo: create optional automatic update scripts as gists for version 18 to 19, 19 to 20, etc so complete reinstall isn't required
 	// todo: add each of these as GitHub issues
