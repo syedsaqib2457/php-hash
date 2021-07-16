@@ -1220,11 +1220,11 @@
 						strpos($ip, ':') !== false &&
 						strpos($ip, ':::') === false &&
 						($ipVersion = 6) &&
-						($validatedIp = $this->_validateIpv6($ip, $allowSubnets, $allowSubnetParts)) === false
+						($validatedIp = $this->_validateIpVersion6($ip, $allowSubnets, $allowSubnetParts)) === false
 					) ||
 					(
 						empty($validatedIp) &&
-						($validatedIp = $this->_validateIpv4($ip, $allowSubnets, $allowSubnetParts)) === false
+						($validatedIp = $this->_validateIpVersion4($ip, $allowSubnets, $allowSubnetParts)) === false
 					)
 				) {
 					continue;
@@ -1254,7 +1254,7 @@
 			return $response;
 		}
 
-		protected function _validateIpv4($ip, $allowSubnets = false, $allowSubnetParts = false) {
+		protected function _validateIpVersion4($ip, $allowSubnets = false, $allowSubnetParts = false) {
 			$response = false;
 			$ipSubnetParts = explode('.', $ip);
 
@@ -1301,7 +1301,7 @@
 			return $response;
 		}
 
-		protected function _validateIpv6($ip) {
+		protected function _validateIpVersion6($ip) {
 			$response = false;
 
 			if (strpos($ip, '::') !== false) {
