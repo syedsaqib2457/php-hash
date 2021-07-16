@@ -190,8 +190,10 @@
 				$server = $this->fetch(array(
 					'fields' => array(
 						'id',
-						'ip',
-						'status_active'
+						'main_ip_version_4',
+						'main_ip_version_6',
+						'status_active',
+						'status_deployed'
 					),
 					'from' => 'servers',
 					'where' => array(
@@ -265,27 +267,88 @@
 					'text' => ($defaultMessage = 'Error adding server, please try again.')
 				)
 			);
+			$formattedServerMainIps = $serverMainIps = array();
+			$serverMainIpVersions = array(
+				'4',
+				'6'
+			);
+			$validServerMainIps = false;
 
-			if (empty($parameters['data']['ip']) === false) {
-				$response['message']['text'] = 'Invalid IP, please try again.';
-				$formattedServerIp = $this->_validateIps($parameters['data']['ip']);
+			foreach ($serverMainIpVersions as $serverMainIpVersion) {
+				$serverMainIpKey = 'main_ip_version_' . $serverMainIpVersion;
 
-				if (empty($formattedServerIp) === false) {
-					$serverIp = current(current($formattedServerIp));
+				if (empty($parameters['data'][$serverMainIpKey]) === false) {
+					$formattedServerMainIps[$serverMainIpVersion][] = $serverMainIps = $parameters['data']['main_ip_version_' . $serverMainIpVersion];
+					$validServerMainIps = true;
+				}
+			}
+
+			if ($validServerMainIps === true) {
+				$response['message']['text'] = 'Invalid IPs, please try again.';
+				$validServerNodeIps = (
+					$formattedServerMainIps === $this->_validateIps($serverMainIps) &&
+					count(current($formattedServerMainIps)) === 1
+				);
+
+				if ($validServerNodeIps === true) {
+					foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
+						$formattedServerMainIps[$serverMainIpVersion] = $serverMainIp = current($serverMainIp);
+						$validServerNodeIps = $this->_validateIpType(current($serverMainIp), $serverMainIpVersion) === 'private';
+
+						if ($validServerNodeIps === false) {
+							$response['message']['text'] = 'Both main server IPs must be public, please try again.';
+							break;
+						}
+					}
+
+					if ($validServerNodeIps === true) {
+						foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
+							$existingServerNodeCount = $this->count(array(
+								'in' => 'server_nodes',
+								'where' => array(
+									'OR' => array(
+										'external_ipv4' => $serverMainIp,
+										'external_ipv6' => $serverMainIp,
+										'internal_ipv4' => $serverMainIp,
+										'internal_ipv6' => $serverMainIp
+									)
+								)
+							));
+
+							// ..
+						)
+					}
+				}
+			}
+
+			if ($validServerMainIps === true) {
+				// ..
+			}
+
+				/*$response['message']['text'] = 'Invalid IPv4 address, please try again.';
+				$serverMainIPv4 = $this->_validateIPv4($parameters['data']['main_ipv4']);
+
+				if (empty($serverMainIPv4) === false) {
 					$response['message']['text'] = $defaultMessage;
+					$serverMainIPv4Type = $this->_validateIPType($serverMainIPv4, 4);
 					$existingServerNodeCount = $this->count(array(
 						'in' => 'server_nodes',
 						'where' => array(
 							'OR' => array(
-								'external_ip' => $serverIp,
-								'internal_ip' => $serverIp
+								'external_ipv4' => $serverMainIPv4,
+								'external_ipv6' => $serverMainIPv6,
+								'internal_ipv4' => $serverMainIPv4,
+								'internal_ipv6' => $serverMainIPv6
 							)
 						)
 					));
 					$existingServerCount = $this->count(array(
 						'in' => 'servers',
 						'where' => array(
-							'ip' => $serverIp
+							'OR' => array(
+								'main_ipv4' => $serverMainIPv4,
+								'main_ipv6' => $serverMainIPv4
+							)
 						)
 					));
 
@@ -378,7 +441,7 @@
 						}
 					}
 				}
-			}
+			}*/
 
 			return $response;
 		}

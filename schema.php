@@ -1,5 +1,9 @@
 <?php
 	// refactoring is always worth it
+	// todo: allow node_external_ip to be private ip for proxy processes on a public server (automatically deletes internal_ip value if set to different public/private ip)
+	// todo: only allow nameserver processes with public external_source_ip and listening ip (nameserver processes with the same public listening ip but different external source ips will still load balance with different source ips)
+	// todo: avoid variable assignments in conditional unless that variable is used in the same conditional
+	// todo: add "Enable IPv6" checkbox option in Account section, disable for control panel by default
 	// todo: auto-detect if server is ipv4 or ipv6 only for deployment command URLs + add main_ipv4 and main_ipv6 instead of base_domain in configuration.php settings
 	// todo: delete ip_version fields, create ipv4 and ipv6 versions of both internal_ip and external_ip fields
 	// todo: add primary ipv4 and ipv6 fields to servers instead of ip field
@@ -472,20 +476,10 @@
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'main_ip_version_4_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
-			),
 			'main_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
-			),
-			'main_ip_version_6_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
