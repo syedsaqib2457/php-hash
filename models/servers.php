@@ -426,7 +426,7 @@
 						) {
 							$response['message'] = array(
 								'status' => 'success',
-								'text' => ($defaultMessage = 'Server added successfully.')
+								'text' => 'Server added successfully.'
 							);
 						}
 					}
@@ -529,7 +529,8 @@
 				$server = $this->fetch(array(
 					'fields' => array(
 						'id',
-						'ip',
+						'main_ip_version_4',
+						'main_ip_version_6',
 						'status_active',
 						'status_deployed'
 					),
@@ -646,6 +647,7 @@
 		}
 
 		public function list() {
+			// todo: use list method for /servers page to include server_node ipv4 and ipv6 counts instead of using fetch method
 			return array();
 		}
 
