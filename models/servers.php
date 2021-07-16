@@ -302,146 +302,136 @@
 					}
 
 					if ($validServerNodeIps === true) {
-						foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
+						foreach ($formattedServerMainIps as $serverMainIp) {
 							$existingServerNodeCount = $this->count(array(
 								'in' => 'server_nodes',
 								'where' => array(
 									'OR' => array(
-										'external_ipv4' => $serverMainIp,
-										'external_ipv6' => $serverMainIp,
-										'internal_ipv4' => $serverMainIp,
-										'internal_ipv6' => $serverMainIp
+										'external_ip_version_4' => $serverMainIp,
+										'external_ip_version_6' => $serverMainIp,
+										'internal_ip_version_4' => $serverMainIp,
+										'internal_ip_version_6' => $serverMainIp
 									)
 								)
 							));
+							$existingServerCount = $this->count(array(
+								'in' => 'servers',
+								'where' => array(
+									'OR' => array(
+										'main_ip_version_4' => $serverMainIp,
+										'main_ip_version_6' => $serverMainIp
+									)
+								)
+							));
+							$validServerNodeIps = (
+								intval($existingServerNodeCount) === true &&
+								intval($existingServerCount) === true
+							);
 
-							// ..
+							if ($validServerNodeIps === false) {
+								break;
+							}
+
+							$validServerNodeIps = (
+								$existingServerNodeCount === 0 &&
+								$existingServerCount === 0
+							);
+
+							if ($validServerNodeIps === false) {
+								$response['message']['text'] = 'IPs already in use, please try again.';
+								break;
+							}
 						)
 					}
 				}
 			}
 
 			if ($validServerMainIps === true) {
-				// ..
-			}
+				$serverData = array();
 
-				/*$response['message']['text'] = 'Invalid IPv4 address, please try again.';
-				$serverMainIPv4 = $this->_validateIPv4($parameters['data']['main_ipv4']);
+				foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
+					$serverData['main_ip_version_' . $serverMainIpVersion] = $serverMainIp;
+				}
 
-				if (empty($serverMainIPv4) === false) {
-					$response['message']['text'] = $defaultMessage;
-					$serverMainIPv4Type = $this->_validateIPType($serverMainIPv4, 4);
-					$existingServerNodeCount = $this->count(array(
-						'in' => 'server_nodes',
-						'where' => array(
-							'OR' => array(
-								'external_ipv4' => $serverMainIPv4,
-								'external_ipv6' => $serverMainIPv6,
-								'internal_ipv4' => $serverMainIPv4,
-								'internal_ipv6' => $serverMainIPv6
-							)
-						)
-					));
-					$existingServerCount = $this->count(array(
-						'in' => 'servers',
-						'where' => array(
-							'OR' => array(
-								'main_ipv4' => $serverMainIPv4,
-								'main_ipv6' => $serverMainIPv4
-							)
-						)
+				$serverData = array(
+					$serverData
+				);
+				$serverDataSaved = $this->save(array(
+					'data' => $serverData,
+					'to' => 'servers'
+				));
+
+				if ($serverDataSaved === true) {
+					$server = $this->fetch(array(
+						'fields' => array(
+							'id'
+						),
+						'from' => 'servers',
+						'where' => current($serverData)
 					));
 
 					if (
-						intval($existingServerNodeCount) === true &&
-						intval($existingServerCount) === true
+						$server !== false) &&
+						empty($server) === false
 					) {
-						$response['message']['text'] = 'IPs already in use, please try again.';
+						$serverNodeData = array(
+							'server_id' => $server['id'],
+							'type' => 'proxy'
+						);
+
+						foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
+							foreach (range(1, 8) as $serverNameserverListeningIpSegment) {
+								$serverNameserverProcessData[] = array(
+									'external_source_ip_version_' . $serverMainIpVersion => $serverMainIp,
+									'listening_ip_version_' . $serverMainIpVersion => ($serverMainIpVersion === 4 ? '127.0.0.' : '::') . $serverNameserverListeningIpSegment,
+									'port' => 53,
+									'server_id' => $serverId
+								);
+							}
+
+							$serverNodeData = array_merge($serverNodeData, array(
+								'external_ip_version_' . $serverMainIpVersion => $serverMainIp,
+								'external_ip_version_' . $serverMainIpVersion . '_type' => 'public'
+							));
+							$serverProxyProcessPort = 1080;
+
+							foreach (range(1, 10) as $serverProxyProcess) {
+								$serverProxyProcessData[] = array(
+									'port' => $serverProxyProcessPort++,
+									'server_id' => $serverId
+								);
+							}
+						}
+
+						$serverNodeData = array(
+							$serverNodeData
+						);
+						$serverNameserverProcessDataSaved = $this->save(array(
+							'data' => $serverNameserverProcessData,
+							'to' => 'server_nameserver_processes'
+						));
+						$serverNodeDataSaved = $this->save(array(
+							'data' => $serverNodeData,
+							'to' => 'server_nodes'
+						));
+						$serverProxyProcessDataSaved = $this->save(array(
+							'data' => $serverProxyProcessData,
+							'to' => 'server_proxy_processes'
+						));
 
 						if (
-							$existingServerNodeCount === 0 ||
-							$existingServerCount === 0
+							$serverNameserverProcessDataSaved === true &&
+							$serverNodeDataSaved === true &&
+							$serverProxyProcessDataSaved === true
 						) {
-							$serverDataSaved = $this->save(array(
-								'data' => array(
-									array(
-										'ip' => $serverIp
-									)
-								),
-								'to' => 'servers'
-							));
-
-							if ($serverDataSaved === true) {
-								$server = $this->fetch(array(
-									'fields' => array(
-										'id'
-									),
-									'from' => 'servers',
-									'where' => array(
-										'ip' => $serverIp
-									)
-								));
-
-								if (empty($server) === false) {
-									$response['message']['text'] = $defaultMessage;
-									$serverNodeDataSaved = $this->save(array(
-										'data' => array(
-											'external_ip' => $serverIp,
-											'server_id' => ($serverId = $server['id']),
-											'server_ip_version' => ($ipVersion = key($formattedServerIp)),
-											'status_active' => false
-										),
-										'to' => 'server_nodes'
-									));
-
-									if ($serverNodeDataSaved === true) {
-										$response['message']['text'] = $defaultMessage;
-										$serverNameserverProcessData = $serverProxyProcessData = array();
-
-										foreach (range(1, 8) as $serverNameserverListeningIpSegment) {
-											$serverNameserverProcessData[] = array(
-												'external_source_ip' => $this->_validateIpType($serverIp, $ipVersion) === true ? $serverIp : ($ipPrefix = $ipVersion === 4 ? '127.0.0.' : '::') . '1',
-												'listening_ip' => $ipPrefix . $serverNameserverListeningIpSegment,
-												'port' => 53,
-												'server_id' => $serverId
-											);
-										}
-
-										$serverProxyProcessPort = 1080;
-
-										foreach (range(1, 10) as $serverProxyProcess) {
-											$serverProxyProcessData[] = array(
-												'port' => $serverProxyProcessPort,
-												'server_id' => $serverId
-											);
-											$serverProxyProcessPort++;
-										}
-
-										$serverNameserverProcessDataSaved = $this->save(array(
-											'data' => $serverNameserverProcessData,
-											'to' => 'server_nameserver_processes'
-										));
-										$serverProxyProcessDataSaved = $this->save(array(
-											'data' => $serverProxyProcessData,
-											'to' => 'server_proxy_processes'
-										));
-
-										if (
-											$serverNameserverProcessDataSaved === true &&
-											$serverProxyProcessDataSaved === true
-										) {
-											$response['message'] = array(
-												'status' => 'success',
-												'text' => ($defaultMessage = 'Server added successfully.')
-											);
-										}
-									}
-								}
-							}
+							$response['message'] = array(
+								'status' => 'success',
+								'text' => ($defaultMessage = 'Server added successfully.')
+							);
 						}
 					}
 				}
-			}*/
+			}
 
 			return $response;
 		}

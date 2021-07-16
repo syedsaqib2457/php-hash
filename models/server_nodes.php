@@ -41,9 +41,7 @@
 							$serverNodeData = array(
 								'external_ip' => ($serverNodeIps[$serverNodeExternalIp] = $serverNodeExternalIp),
 								'external_ip_version' => ($serverNodeExternalIpVersion = key($formattedServerNodeExternalIp)),
-								'server_id' => $serverId,
-								'status_active' => false,
-								'status_processing' => true
+								'server_id' => $serverId
 							);
 
 							if (!empty($parameters['data']['internal_ip'])) {
@@ -125,16 +123,8 @@
 							}
 
 							if ($validServerNodeIps === true) {
-								if (empty($server['status_active']) === false) {
-									$serverNodeData['status_active'] = true;
-								}
-
-								if (empty($server['status_deployed']) === false) {
-									$serverNodeData['status_processing'] = false;
-								}
-
 								$serverNodeData = array(
-									$serverNodeData
+									array_merge($serverNodeData, $server)
 								);
 								$serverNodeDataSaved = $this->save(array(
 									'data' => $serverNodeData,

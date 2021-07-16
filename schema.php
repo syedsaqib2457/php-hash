@@ -1,7 +1,13 @@
 <?php
 	// refactoring is always worth it
+	// todo: add automated server deployment for each cloud service that allows it with an api key
+	// todo: create optional automatic update scripts as gists for version 18 to 19, 19 to 20, etc so complete reinstall isn't required
+	// todo: add each of these as GitHub issues
+	// todo: test the maximum amount of iptables statistic nth mode before performance degradation
+	// todo: test iptables statistic with --random flag when proxy process count is above X count for automatic process scaling
+	// todo: test iptables with ipset instead of repeating rules with chunks of dports
 	// todo: allow node_external_ip to be private ip for proxy processes on a public server (automatically deletes internal_ip value if set to different public/private ip)
-	// todo: only allow nameserver processes with public external_source_ip and listening ip (nameserver processes with the same public listening ip but different external source ips will still load balance with different source ips)
+	// todo: only allow local nameserver processes with public external_source_ip and allow public listening ips with whitelist (nameserver processes with the same public listening ip but different external source ips will still load balance with different source ips)
 	// todo: avoid variable assignments in conditional unless that variable is used in the same conditional
 	// todo: add "Enable IPv6" checkbox option in Account section, disable for control panel by default
 	// todo: auto-detect if server is ipv4 or ipv6 only for deployment command URLs + add main_ipv4 and main_ipv6 instead of base_domain in configuration.php settings
@@ -239,20 +245,10 @@
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'external_source_ip_version_4_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
-			),
 			'external_source_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
-			),
-			'external_source_ip_version_6_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
 			),
 			'id' => array(
 				'auto_increment' => true,
@@ -264,20 +260,10 @@
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'internal_source_ip_version_4_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
-			),
 			'internal_source_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
-			),
-			'internal_source_ip_version_6_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
 			),
 			'listening_ip_version_4' => array(
 				'default' => null,
@@ -386,7 +372,7 @@
 				'null' => true,
 				'type' => 'TINYINT(1)'
 			),
-			'status_processing' => array(
+			'status_deployed' => array(
 				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
@@ -397,7 +383,7 @@
 				'type' => 'VARCHAR(1000)'
 			),
 			'type' => array(
-				'default' => "'proxy'",
+				'default' => null,
 				'null' => true,
 				'type' => 'CHAR(10)'
 			)
