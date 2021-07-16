@@ -347,6 +347,7 @@
 			}
 
 			if ($validServerMainIps === true) {
+				$response['message']['text'] = $defaultMessage;
 				$serverData = array();
 
 				foreach ($formattedServerMainIps as $serverMainIpVersion => $serverMainIp) {
