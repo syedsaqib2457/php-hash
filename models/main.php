@@ -1776,14 +1776,18 @@
 
 		public function update($parameters) {
 			$response = true;
-			$query = 'UPDATE ' . $parameters['in'] . ' SET ';
 
-			foreach ($parameters['data'] as $updateValueKey => $updateValue) {
-				$query .= $this->keys['start'] . $updateValueKey . $this->keys['stop'] .  ' = ' . $this->keys['start'] . $updateValue . $this->keys['stop'] . ','
+			if (!empty($parameters['data'])) {
+				$query = 'UPDATE ' . $parameters['in'] . ' SET ';
+
+				foreach ($parameters['data'] as $updateValueKey => $updateValue) {
+					$query .= $this->keys['start'] . $updateValueKey . $this->keys['stop'] .  ' = ' . $this->keys['start'] . $updateValue . $this->keys['stop'] . ','
+				}
+
+				$query = rtrim($query, ',') . ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['in'], $parameters['where']));
+				$response = $this->_query($query);
 			}
 
-			$query = rtrim($query, ',') . ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['in'], $parameters['where']));
-			$response = $this->_query($query);
 			return $response;
 		}
 
