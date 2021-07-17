@@ -309,7 +309,7 @@
 
 			if ($validServerIps === true) {
 				foreach ($formattedServerIps as $serverIp) {
-					$existingServerNodeCount = $this->count(array(
+					$conflictingServerNodeCount = $this->count(array(
 						'in' => 'server_nodes',
 						'where' => array(
 							'OR' => array(
@@ -320,7 +320,7 @@
 							)
 						)
 					));
-					$existingServerCount = $this->count(array(
+					$conflictingServerCount = $this->count(array(
 						'in' => 'servers',
 						'where' => array(
 							'OR' => array(
@@ -330,8 +330,8 @@
 						)
 					));
 					$validServerIps = (
-						intval($existingServerNodeCount) === true &&
-						intval($existingServerCount) === true
+						intval($conflictingServerNodeCount) === true &&
+						intval($conflictingServerCount) === true
 					);
 
 					if ($validServerIps === false) {
@@ -339,8 +339,8 @@
 					}
 
 					$validServerIps = (
-						$existingServerNodeCount === 0 &&
-						$existingServerCount === 0
+						$conflictingServerNodeCount === 0 &&
+						$conflictingServerCount === 0
 					);
 
 					if ($validServerIps === false) {

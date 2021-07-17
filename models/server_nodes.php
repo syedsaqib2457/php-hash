@@ -12,8 +12,6 @@
 				)
 			);
 
-			// adding server_node.php ipv4 + ipv6 support (referencing servers.php add)
-
 			if (empty($parameters['data']['server_id']) === false) {
 				$server = $this->fetch(array(
 					'fields' => array(
@@ -32,9 +30,9 @@
 					if (empty($server) === false) {
 						$response['message']['text'] = $defaultMessage;
 						$formattedServerNodeExternalIps = $serverNodeExternalIps = array();
-						$serverNodeData = array(
+						$serverNodeData = array_merge($server, array(
 							'server_id' => $serverId
-						);
+						));
 						$serverNodeIpVersions = array(
 							'4',
 							'6'
@@ -45,7 +43,7 @@
 							$serverNodeExternalIpKey = 'external_ip_version_' . $serverNodeIpVersion;
 
 							if (empty($parameters['data'][$serverNodeExternalIpKey]) === false) {
-								$formattedServerNodeExternalIps[$serverNodeExternalIpKey][] = $serverNodeData[$serverNodeExternalIpKey] = $serverNodeExternalIps[] = $parameters['data'][$serverNodeExternalIpKey];
+								$formattedServerNodeExternalIps[$serverNodeIpVersion][] = $serverNodeData[$serverNodeExternalIpKey] = $serverNodeExternalIps[$serverNodeExternalIpKey] = $parameters['data'][$serverNodeExternalIpKey];
 								$validServerNodeIps = true;
 							}
 						}
@@ -89,13 +87,13 @@
 								$serverNodeInternalIpKey = 'internal_ip_version_' . $serverNodeIpVersion;
 
 								if (empty($parameters['data'][$serverNodeInternalIpKey]) === false) {
-									$formattedServerNodeInternalIps[$serverNodeExternalIpKey][] = $serverNodeData[$serverNodeInternalIpKey] = $serverNodeInternalIps[] = $parameters['data'][$serverNodeInternalIpKey];
+									$formattedServerNodeInternalIps[$serverNodeIpVersion][] = $serverNodeData[$serverNodeInternalIpKey] = $serverNodeInternalIps[$serverNodeInternalIpKey] = $parameters['data'][$serverNodeInternalIpKey];
 								}
 							}
 
 							$validServerNodeIps = (
 								$formattedServerNodeInternalIps === $this->_validateIps($serverNodeInternalIps) &&
-								count(current($formattedServerNodeExternalIps)) === 1
+								count(current($formattedServerNodeInternalIps)) === 1
 							);
 
 							if ($validServerNodeIps === false) {
@@ -104,12 +102,50 @@
 						}
 
 						if ($validServerNodeIps === true) {
-							// todo: validate existing server nodes for valid external / internal ips
+							$conflictingServerNodeCount = $this->count(array(
+								'in' => 'server_nodes',
+								'where' => array(
+									'OR' => array(
+										array(
+											'server_id' => $serverId,
+											'OR' => ($serverNodeExternalIps + $serverNodeInternalIps)
+										),
+										array(
+											'server_id !=' => $serverId,
+											'OR' => $serverNodeExternalIps
+										)
+									)
+								)
+							));
+							$conflictingServerCount = $this->count(array(
+								'in' => 'servers',
+								'where' => array(
+									'OR' => array_combine(array(
+										'main_ip_version_4',
+										'main_ip_version_6'
+									), $serverNodeExternalIps)
+								)
+							));
+							$validServerNodeIps = (
+								intval($conflictingServerNodeCount) === true &&
+								intval($conflictingServerCount) === true
+							);
+
+							if ($validServerNodeIps === true) {
+								$validServerNodeIps = (
+									$conflictingServerNodeCount === 0 &&
+									$conflictingServerCount === 0
+								);
+
+								if ($validServerNodeIps === false) {
+									$response['message']['text'] = 'Server node IPs already in use, please try again.';
+								}
+							}
 						}
 
 						if ($validServerNodeIps === true) {
 							$serverNodeData = array(
-								array_merge($serverNodeData, $server)
+								$serverNodeData
 							);
 							$serverNodeDataSaved = $this->save(array(
 								'data' => $serverNodeData,
