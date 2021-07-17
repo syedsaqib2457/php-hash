@@ -1,7 +1,14 @@
 <?php
 	// refactoring is always worth it
+	// todo: delete search function
+		// the API can be used for searching/grouping
+		// users who are only deploying a few servers with the GUI won't need it
+		// it will allow the removal of slow/complex wildcard queries and messy code
+	// todo: remove blackhat DNS source IP rotation on every request feature, only allow load balancing on local ips with one source IP
+		// use a combination of random ports + range of listening ips [start-end] to allow a matrix of processes greater than 60000
+		// handle local source ip conflicts automatically with connection.php process
 	// todo: rename $defaultMessage to $defaultResponseMessageText
-	// todo: set a combined maximum of 55000 proxy + nameserver processes
+	// todo: set a combined maximum of 55000 proxy + nameserver processes (allow binding proxy ips to local ips instead of using ports for load balancing to exceed 55000 processes, try grouping with ipset and dnat random)
 	// todo: add automated server deployment for each cloud service that allows it with an api key
 	// todo: create optional automatic update scripts as gists for version 18 to 19, 19 to 20, etc so complete reinstall isn't required
 	// todo: add each of these as GitHub issues
@@ -242,12 +249,12 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'external_source_ip_version_4' => array(
+			'external_ip_version_4' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'external_source_ip_version_6' => array(
+			'external_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
@@ -257,35 +264,15 @@
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'internal_source_ip_version_4' => array(
+			'internal_ip_version_4' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'internal_source_ip_version_6' => array(
+			'internal_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
-			),
-			'listening_ip_version_4' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(15)'
-			),
-			'listening_ip_version_4_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
-			),
-			'listening_ip_version_6' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(39)'
-			),
-			'listening_ip_version_6_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -304,6 +291,11 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'server_node_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
 			)
 		),
 		'server_nodes' => array(
@@ -316,45 +308,15 @@
 				'null' => true,
 				'type' => 'VARCHAR(15)'
 			),
-			'external_ip_version_4_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
-			),
 			'external_ip_version_6' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(39)'
 			),
-			'external_ip_version_6_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
-			),
 			'id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
-			),
-			'internal_ip_version_4' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(15)'
-			),
-			'internal_ip_version_4_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
-			),
-			'internal_ip_version_6' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(39)'
-			),
-			'internal_ip_version_6_type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(7)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',

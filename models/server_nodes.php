@@ -343,18 +343,6 @@
 						}
 
 						if ($validServerNodeIps === true) {
-							$conflictingServerNameserverProcesses = $this->fetch(array(
-								'fields' => array(
-									// ..
-								),
-								'from' => 'server_nameserver_processes',
-								'where' => array(
-									// ..
-								)
-							));
-							$serverNameserverProcessData = array();
-							// ..
-
 							$serverData = array(
 								$serverData
 							);

@@ -384,18 +384,15 @@
 						);
 
 						foreach ($formattedServerIps as $serverIpVersion => $serverIp) {
-							foreach (range(1, 8) as $serverNameserverListeningIpSegment) {
+							foreach (range(53, 60) as $serverNameserverListeningPort) {
 								$serverNameserverProcessData[] = array(
-									'external_source_ip_version_' . $serverIpVersion => $serverIp,
-									'listening_ip_version_' . $serverIpVersion => ($serverIpVersion === 4 ? '127.0.0.' : '::') . $serverNameserverListeningIpSegment,
-									'port' => 53,
+									'port' => $serverNameserverListeningPort,
 									'server_id' => $serverId
 								);
 							}
 
 							$serverNodeData = array_merge($serverNodeData, array(
 								'external_ip_version_' . $serverIpVersion => $serverIp,
-								'external_ip_version_' . $serverIpVersion . '_type' => 'public'
 							));
 							$serverProxyProcessPort = 1080;
 
