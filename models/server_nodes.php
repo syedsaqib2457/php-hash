@@ -127,8 +127,8 @@
 								)
 							));
 							$validServerNodeIps = (
-								intval($conflictingServerNodeCount) === true &&
-								intval($conflictingServerCount) === true
+								is_int($conflictingServerNodeCount) === true &&
+								is_int($conflictingServerCount) === true
 							);
 
 							if ($validServerNodeIps === true) {
