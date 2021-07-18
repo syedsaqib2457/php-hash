@@ -1,3 +1,4 @@
+// todo: use response.data.length instead of response.count after refactor (count value not included in fetch)
 const api = {
 	setRequestParameters: function(requestParameters, mergeRequestParameters) {
 		if (

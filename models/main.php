@@ -387,67 +387,6 @@
 			return $response;
 		}
 
-		protected function _fetchIpDetails($ip) {
-			$response = array(
-				'type' => 'public',
-				'version' => 4
-			);
-			$ipInteger = ip2long($ip);
-
-			foreach ($this->privateIpRangeIntegers as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
-				if (
-					$ipInteger >= $privateIpRangeIntegerStart &&
-					$ipInteger <= $privateIpRangeIntegerEnd
-				) {
-					$response['type'] = 'private';
-				}
-			}
-
-			return $response;
-		}
-
-		protected function _formatQuery($from, $where = array(), $conjunction = 'OR') {
-			$operators = array('>', '>=', '<', '<=', '=', '!=', 'LIKE');
-
-			foreach ($where as $key => $value) {
-				$conjunction = !empty($key) && in_array($key, array('AND', 'OR')) ? $key : $conjunction;
-				$validQuery = true;
-
-				if (
-					is_array($value) &&
-					count($value) != count($value, COUNT_RECURSIVE)
-				) {
-					$where[$key] = '(' . implode(') ' . $conjunction . ' (', $this->_formatQuery($from, $value, $conjunction)) . ')';
-				} else {
-					if (is_array($value)) {
-						array_walk($value, function(&$fieldValue, $fieldKey) use ($key, $operators) {
-							$key = (strlen($fieldKey) > 1 && is_string($fieldKey) ? $fieldKey : $key);
-							$fieldValue = (is_null($fieldValue) ? $key . ' IS NULL' : trim(in_array(trim(substr($key, strpos($key, ' '))), $operators) ? $key : $key . ' =') . ' ' . $this->_prepareValue($fieldValue));
-						});
-					} else {
-						$value = array((is_null($value) ? $key . ' IS NULL' : trim(in_array(trim(substr($key, strpos($key, ' '))), $operators) ? $key : $key . ' =') . ' ' . $this->_prepareValue($value)));
-					}
-
-					$keyParts = explode(' ', $key);
-
-					if (
-						!in_array($key, array('AND', 'OR')) &&
-						empty($this->settings['database']['schema'][$from][$keyParts[0]])
-					) {
-						unset($where[$key]);
-						$validQuery = false;
-					}
-
-					if ($validQuery === true) {
-						$where[$key] = implode(' ' . (strpos($key, '!=') !== false ? 'AND' : $conjunction) . ' ', $value);
-					}
-				}
-			}
-
-			$response = $where;
-			return $response;
-		}
-
 		protected function _generateRandomAuthentication($authentication = array()) {
 			$response = array();
 			$letters = 'abcdefghijklmnopqrstuvwxyz';
@@ -537,27 +476,6 @@
 			return !empty($response['data'][0]) ? $response['data'][0] : array();
 		}
 
-		protected function _parameterizeSQL($query) {
-			$queryParts = explode($this->keys['start'], $query);
-			$parameterValues = array();
-
-			foreach ($queryParts as $queryPartKey => $queryPart) {
-				if (
-					($position = strpos($queryPart, $this->keys['stop'])) !== false &&
-					$queryPart = str_replace($this->keys['stop'], '?', $queryPart)
-				) {
-					$queryParts[$queryPartKey] = str_replace(($between = substr($queryPart, 0, $position)), '', $queryPart);
-					$parameterValues[] = $between;
-				}
-			}
-
-			$response = array(
-				'parameterizedQuery' => implode('', $queryParts),
-				'parameterizedValues' => $parameterValues
-			);
-			return $response;
-		}
-
 		protected function _parseFormDataItem($formDataItemKey, $formDataItemValue) {
 			$parsedFormDataItem = array(
 				$formDataItemKey => $formDataItemValue
@@ -602,6 +520,26 @@
 				'foreign_key' => $itemListTokenParameters['foreign_key'],
 				'foreign_value' => $itemListTokenParameters['foreign_value'],
 				'parameters_to_encode' => $itemListTokenParameters['parameters']
+			);
+			return $response;
+		}
+
+		protected function _parseParameterizedQuery($query) {
+			$queryParts = explode($this->keys['start'], $query);
+			$parameterValues = array();
+
+			foreach ($queryParts as $queryPartKey => $queryPart) {
+				if (($position = strpos($queryPart, $this->keys['stop'])) !== false) {
+					$queryPart = str_replace($this->keys['stop'], '?', $queryPart);
+					$queryPartValue = substr($queryPart, 0, $position);
+					$queryParts[$queryPartKey] = str_replace($queryPartValue, '', $queryPart);
+					$parameterValues[] = $queryPartValue;
+				}
+			}
+
+			$response = array(
+				'parameterizedQuery' => implode('', $queryParts),
+				'parameterizedValues' => $parameterValues
 			);
 			return $response;
 		}
@@ -720,7 +658,50 @@
 			return $response;
 		}
 
-		protected function _prepareValue($value) {
+		protected function _parseQueryConditions($from, $where = array(), $conjunction = 'OR') {
+			$operators = array('>', '>=', '<', '<=', '=', '!=', 'LIKE');
+
+			foreach ($where as $key => $value) {
+				$conjunction = !empty($key) && in_array($key, array('AND', 'OR')) ? $key : $conjunction;
+				$validQuery = true;
+
+				if (
+					is_array($value) &&
+					count($value) != count($value, COUNT_RECURSIVE)
+				) {
+					$where[$key] = '(' . implode(') ' . $conjunction . ' (', $this->_parseQueryConditions($from, $value, $conjunction)) . ')';
+				} else {
+					if (!is_array($value)) {
+						$value = array(
+							$value
+						);
+					}
+
+					array_walk($value, function(&$fieldValue, $fieldKey) use ($key, $operators) {
+						$key = (strlen($fieldKey) > 1 && is_string($fieldKey) ? $fieldKey : $key);
+						$fieldValue = (is_null($fieldValue) ? $key . ' IS NULL' : trim(in_array(trim(substr($key, strpos($key, ' '))), $operators) ? $key : $key . ' =') . ' ' . $this->_parseQueryValue($fieldValue));
+					});
+					$keyParts = explode(' ', $key);
+
+					if (
+						!in_array($key, array('AND', 'OR')) &&
+						empty($this->settings['database']['schema'][$from][$keyParts[0]])
+					) {
+						unset($where[$key]);
+						$validQuery = false;
+					}
+
+					if ($validQuery === true) {
+						$where[$key] = implode(' ' . (strpos($key, '!=') !== false ? 'AND' : $conjunction) . ' ', $value);
+					}
+				}
+			}
+
+			$response = $where;
+			return $response;
+		}
+
+		protected function _parseQueryValue($value) {
 			$response = $this->keys['start'] . (is_bool($value) ? (integer) $value : $value) . $this->keys['stop'];
 			return $response;
 		}
@@ -1022,7 +1003,7 @@
 			$database = new PDO('mysql:host=' . $this->settings['database']['hostname'] . '; dbname=' . $this->settings['database']['name'] . ';', $this->settings['database']['username'], $this->settings['database']['password']);
 			$database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 			$database->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-			$parameterized = $this->_parameterizeSQL($query);
+			$parameterized = $this->_parseParameterizedQuery($query);
 
 			if (empty($parameterized['parameterizedQuery'])) {
 				return false;
@@ -1039,11 +1020,10 @@
 			}
 
 			$findDataRowPartSize = 100000;
-			$hasResults = (!empty($parameters['count']) && !empty($parameters['limit']));
 			$queryParts = array_fill(0, max(1, ($hasResults ? ceil($parameters['limit'] / $findDataRowPartSize) : 1)), true);
 
 			foreach ($queryParts as $queryPartKey => $queryPartValue) {
-				if ($hasResults) {
+				if (empty($parameters['limit']) === false) {
 					end($parameterized['parameterizedValues']);
 					$offset = $parameterized['parameterizedValues'][key($parameterized['parameterizedValues'])] = $parameters['offset'] + ($queryPartKey * $findDataRowPartSize);
 					$limit = prev($parameterized['parameterizedValues']);
@@ -1071,10 +1051,18 @@
 				}
 
 				$execute = $connection->execute($parameterized['parameterizedValues']);
-				$data[] = $connection->fetchAll(!empty($parameters['field_count']) && $parameters['field_count'] === 1 ? PDO::FETCH_COLUMN : PDO::FETCH_ASSOC);
+				$data[] = $connection->fetchAll(PDO::FETCH_ASSOC);
 			}
 
-			$response = !empty($data[0]) ? call_user_func_array('array_merge', $data) : $execute;
+			$response = empty($data[0]) === false ? call_user_func_array('array_merge', $data) : $execute;
+
+			if (
+				is_array($response) === true &
+				empty($response[1]) === true
+			) {
+				$response = current($response);
+			}
+
 			$connection->closeCursor();
 			return $response;
 		}
@@ -1097,8 +1085,7 @@
 				$parameters = $this->_parseParameters(json_decode($_POST['json'], true), 'snake');
 
 				if (empty($parameters['from'])) {
-					$from = !empty($parameters['url']) ? basename($parameters['url']) : basename($_SERVER['REQUEST_URI']);
-					$parameters['from'] = str_replace('-', '_', $from);
+					$parameters['from'] = str_replace('-', '_', !empty($parameters['url']) ? basename($parameters['url']) : basename($_SERVER['REQUEST_URI']));
 				}
 
 				if (
@@ -1233,11 +1220,11 @@
 						strpos($ip, ':') !== false &&
 						strpos($ip, ':::') === false &&
 						($ipVersion = 6) &&
-						($validatedIp = $this->_validateIpv6($ip, $allowSubnets, $allowSubnetParts)) === false
+						($validatedIp = $this->_validateIpVersion6($ip, $allowSubnets, $allowSubnetParts)) === false
 					) ||
 					(
 						empty($validatedIp) &&
-						($validatedIp = $this->_validateIpv4($ip, $allowSubnets, $allowSubnetParts)) === false
+						($validatedIp = $this->_validateIpVersion4($ip, $allowSubnets, $allowSubnetParts)) === false
 					)
 				) {
 					continue;
@@ -1250,7 +1237,24 @@
 			return $response;
 		}
 
-		protected function _validateIpv4($ip, $allowSubnets = false, $allowSubnetParts = false) {
+		protected function _validateIpType($ip, $ipVersion) {
+			// todo: validate ipv6 private ip ranges
+			$response = 'public';
+			$ipInteger = ip2long($ip);
+
+			foreach ($this->privateIpRangeIntegers as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
+				if (
+					$ipInteger >= $privateIpRangeIntegerStart &&
+					$ipInteger <= $privateIpRangeIntegerEnd
+				) {
+					$response = 'private';
+				}
+			}
+
+			return $response;
+		}
+
+		protected function _validateIpVersion4($ip, $allowSubnets = false, $allowSubnetParts = false) {
 			$response = false;
 			$ipSubnetParts = explode('.', $ip);
 
@@ -1297,7 +1301,7 @@
 			return $response;
 		}
 
-		protected function _validateIpv6($ip) {
+		protected function _validateIpVersion6($ip) {
 			$response = false;
 
 			if (strpos($ip, '::') !== false) {
@@ -1424,6 +1428,28 @@
 			return $response;
 		}
 
+		public function count($parameters) {
+			$query = ' FROM ' . $parameters['in'];
+
+			if (
+				empty($parameters['where']) === false &&
+				is_array($parameters['where']) === true
+			) {
+				if (
+					strpos(json_encode($parameters['where']), '"removed":') === false &&
+					empty($this->settings['database']['schema'][$parameters['from']]['removed']) === false
+				) {
+					$parameters['where']['removed'] = false;
+				}
+
+				$query .= ' WHERE ' . implode(' AND ', $this->_formatQuery($parameters['from'], $parameters['where']));
+			}
+
+			$count = $this->_query('SELECT COUNT(id)' . $query);
+			$response = isset($count[0]['COUNT(id)']) === true ? $count[0]['COUNT(id)'] : false;
+			return $response;
+		}
+
 		public function delete($parameters) {
 			$query = 'DELETE FROM ' . $parameters['from'];
 
@@ -1431,11 +1457,7 @@
 				!empty($parameters['where']) &&
 				is_array($parameters['where'])
 			) {
-				$query .= ' WHERE ' . ($queryData = implode(' AND ', array_filter($this->_formatQuery($parameters['from'], $parameters['where']))));
-
-				if (empty($queryData)) {
-					return true;
-				}
+				$query .= ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['from'], $parameters['where']));
 			}
 
 			$response = $this->_query($query);
@@ -1471,10 +1493,8 @@
 					$parameters['where']['removed'] = false;
 				}
 
-				$query .= ' WHERE ' . implode(' AND ', $this->_formatQuery($parameters['from'], $parameters['where']));
+				$query .= ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['from'], $parameters['where']));
 			}
-
-			$count = $this->_query('SELECT COUNT(id)' . $query);
 
 			if (!empty($parameters['sort'])) {
 				$query .= ' ORDER BY ';
@@ -1501,23 +1521,21 @@
 			}
 
 			$parameters = array_merge($parameters, array(
-				'count' => $count = $parameters['count'] = !empty($count[0]['COUNT(id)']) ? $count[0]['COUNT(id)'] : 0,
-				'field_count' => !empty($parameters['fields']) && is_array($parameters['fields']) ? count($parameters['fields']) : 0,
-				'limit' => !empty($parameters['limit']) && $parameters['limit'] < $count ? $parameters['limit'] : min(10000, $count),
-				'offset' => !empty($parameters['offset']) ? $parameters['offset'] : 0
+				'limit' => empty($parameters['limit']) === false ? $parameters['limit'] : 10000,
+				'offset' => empty($parameters['offset']) === false ? $parameters['offset'] : 0
 			));
 			$query = 'SELECT ' . (!empty($parameters['fields']) && is_array($parameters['fields']) ? implode(',', $parameters['fields']) : '*') . $query;
-			$query .= ' LIMIT ' . $this->_prepareValue($parameters['limit']) . ' OFFSET ' . $this->_prepareValue($parameters['offset']);
+			$query .= ' LIMIT ' . $this->_parseQueryValue($parameters['limit']) . ' OFFSET ' . $this->_parseQueryValue($parameters['offset']);
 			$data = $this->_query($query, $parameters);
-			$response = array(
-				'count' => $count,
-				'data' => is_array($data) ? $data : array()
-			);
+			$response = $data;
 
-			if (empty($count)) {
+			if (
+				$data !== false &&
+				empty($data) === true
+			) {
 				$response['message'] = array(
 					'status' => 'error',
-					'text' => 'No ' . str_replace('_', ' ', $parameters['from']) . ' found, please try again.'
+					'text' => 'No ' . str_replace('_', ' ', $parameters['from']) . ' found.'
 				);
 			}
 
@@ -1630,7 +1648,7 @@
 		}
 
 		public function save($parameters) {
-			$ids = $queries = array();
+			$queries = array();
 			$response = true;
 
 			if (!empty($parameters['data'])) {
@@ -1751,6 +1769,23 @@
 						'text' => 'Public request limitations processed successfully.'
 					)
 				);
+			}
+
+			return $response;
+		}
+
+		public function update($parameters) {
+			$response = true;
+
+			if (!empty($parameters['data'])) {
+				$query = 'UPDATE ' . $parameters['in'] . ' SET ';
+
+				foreach ($parameters['data'] as $updateValueKey => $updateValue) {
+					$query .= $this->keys['start'] . $updateValueKey . $this->keys['stop'] .  ' = ' . $this->keys['start'] . $updateValue . $this->keys['stop'] . ','
+				}
+
+				$query = rtrim($query, ',') . ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['in'], $parameters['where']));
+				$response = $this->_query($query);
 			}
 
 			return $response;

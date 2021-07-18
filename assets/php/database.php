@@ -26,6 +26,16 @@
 
 	foreach ($configuration->settings['database']['schema'] as $table => $columns) {
 		$columnKey = key($columns);
+		$columns = array_merge($columns, array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			)
+		));
 
 		if (!empty($columnKey)) {
 			$queries[] = 'CREATE TABLE IF NOT EXISTS `' . $table . '` (`' . $columnKey . '` ' . $columns[$columnKey]['type'] . ' ' . (empty($columns[$columnKey]['null']) ? 'NOT ' : '') . 'NULL' . (isset($columns[$columnKey]['default']) ? ' DEFAULT ' . $columns[$columnKey]['default'] : '') . ');';
