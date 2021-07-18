@@ -454,7 +454,7 @@
 		'sudo apt-get update',
 		'sleep 1',
 		'sudo rm -rf ' . $websitePath . '/*',
-		'cd ' . $websitePath . ' && sudo wget -O overlord.tar.gz ' . $wgetParameters . ' https://github.com/willybombz/overlord/archive/refs/heads/master.tar.gz'
+		'cd ' . $websitePath . ' && sudo wget -O overlord.tar.gz ' . $wgetParameters . ' https://github.com/williamstaffordparsons/overlord/archive/refs/heads/master.tar.gz'
 	);
 	applyCommands($commands);
 
