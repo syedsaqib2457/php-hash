@@ -1,5 +1,7 @@
 <?php
 	// refactoring is always worth it
+	// todo: increase tcp-clients and allow public-facing dns over both tcp and udp (previously was private with udp only and tcp for health checks)
+	// todo: combine server_proxy_processes and server_nameserver_processes into node_processes
 	// todo: delete servers table, use status_main_ip for nodes table, additional node ips should have node_id with the main node, relational tables for server statistics should be node_usage, node_etc etc
 	// todo: remove blackhat DNS source IP rotation on every request feature, only allow load balancing on local ips with one source IP
 		// use a combination of random ports + range of listening ips [start-end] to allow a matrix of processes greater than 60000
@@ -241,7 +243,7 @@
 				'type' => 'VARCHAR(15)'
 			)
 		),*/
-		'nameserver_processes' => array(
+		'node_processes' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
@@ -285,9 +287,39 @@
 				'null' => true,
 				'type' => 'INT(5)'
 			),
+			'protocol' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'SMALLINT(3)'
+			),
 			'removed' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
+			)
+		),
+		'node_users' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'node_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'user_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
 			)
 		),
 		'nodes' => array(
@@ -309,6 +341,16 @@
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'internal_ip_version_4' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(15)'
+			),
+			'internal_ip_version_6' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(39)'
 			),
 			'modified' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -342,60 +384,6 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'CHAR(10)'
-			)
-		),
-		'node_users' => array(
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'node_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'user_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			)
-		),
-		'proxy_processes' => array(
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'port' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'INT(5)'
-			),
-			'node_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
 			)
 		),
 		'settings' => array(
