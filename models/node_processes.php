@@ -2,54 +2,55 @@
 	$extend = true;
 	require_once($configuration->settings['base_path'] . '/models/main.php');
 
-	class ServerProxyProcessesModel extends MainModel {
+	class NodeProcessesModel extends MainModel {
 
 		public function add($parameters) {
 			$response = array(
 				'message' => array(
 					'status' => 'error',
-					'text' => ($defaultMessage = 'Error adding server proxy process, please try again.')
+					'text' => ($defaultMessage = 'Error adding node proxy process, please try again.')
 				)
 			);
 
 			if (
-				empty($parameters['data']['port']) === false &&
-				empty($parameters['data']['server_id']) === false
+				empty($parameters['data']['node_id']) === false &&
+				empty($parameters['data']['port']) === false
 			) {
-				$response['message']['text'] = 'Invalid server proxy process port, please try again.';
-				$serverProxyProcessPort = $this->_validatePort($parameters['data']['port']);
+				$response['message']['text'] = 'Invalid node process port, please try again.';
+				$nodeProcessPort = $this->_validatePort($parameters['data']['port']);
 
-				if (is_int($serverProxyProcessPort) === true) {
+				if (is_int($nodeProcessPort) === true) {
 					$response['message']['text'] = $defaultMessage;
-					$server = $this->fetch(array(
+					$node = $this->fetch(array(
 						'fields' => array(
 							'id'
 						),
-						'from' => 'servers',
+						'from' => 'nodes',
 						'where' => array(
-							'id' => ($serverId = $parameters['data']['server_id'])
+							'id' => ($nodeId = $parameters['data']['node_id']),
+							'node_id' => null
 						)
 					));
 
-					if ($server !== false) {
-						$response['message']['text'] = 'Invalid server ID, please try again.';
+					if ($node !== false) {
+						$response['message']['text'] = 'Invalid node ID, please try again.';
 
-						if (empty($server) === false) {
+						if (empty($node) === false) {
 							$response['message']['text'] = $defaultMessage;
-							$serverProcessPorts = $this->_call(array(
-								'method_from' => 'servers',
-								'method_name' => 'fetchServerProcessPorts',
-								'method_parameters' => array(
-									$serverId
+							$nodeProcessPortCount = $this->count(array(
+								'in' => 'node_processes',
+								'where' => array(
+									'node_id' => $nodeId,
+									'port' => $nodeProcessPort
 								)
 							));
 
-							if ($serverProcessPorts !== false) {
-								$response['message']['text'] = 'Server proxy process port already in use on this server, please try again.';
+							if ($nodeProcessPortCount !== false) {
+								$response['message']['text'] = 'Node is already using this proxy process port, please try again.';
 
-								if (in_array($serverProxyProcessPort, $serverProcessPorts) === false) {
+								if ($nodeProcessPortCount === 0) {
 									$response['message']['text'] = $defaultMessage;
-									$serverProxyProcessDataSaved = $this->save(array(
+									$nodeProcessDataSaved = $this->save(array(
 										'data' => array(
 											array(
 												'port' => $serverProxyProcessPort,

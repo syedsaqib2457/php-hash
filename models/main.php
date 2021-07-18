@@ -1200,7 +1200,7 @@
 			return $response;
 		}
 
-		protected function _validateIps($ips = array(), $allowSubnets = false, $allowSubnetParts = false) {
+		protected function _sanitizeIps($ips = array(), $allowSubnets = false, $allowSubnetParts = false) {
 			$validatedIps = array();
 
 			if (!is_array($ips)) {
@@ -1220,11 +1220,11 @@
 						strpos($ip, ':') !== false &&
 						strpos($ip, ':::') === false &&
 						($ipVersion = 6) &&
-						($validatedIp = $this->_validateIpVersion6($ip, $allowSubnets, $allowSubnetParts)) === false
+						($validatedIp = $this->_validateIp($ip, $ipVersion, $allowSubnets, $allowSubnetParts)) === false
 					) ||
 					(
 						empty($validatedIp) &&
-						($validatedIp = $this->_validateIpVersion4($ip, $allowSubnets, $allowSubnetParts)) === false
+						($validatedIp = $this->_validateIp($ip, $ipVersion, $allowSubnets, $allowSubnetParts)) === false
 					)
 				) {
 					continue;
@@ -1237,7 +1237,7 @@
 			return $response;
 		}
 
-		protected function _validateIpType($ip, $ipVersion) {
+		protected function _fetchIpType($ip, $ipVersion) {
 			// todo: validate ipv6 private ip ranges
 			$response = 'public';
 			$ipInteger = ip2long($ip);
@@ -1254,83 +1254,85 @@
 			return $response;
 		}
 
-		protected function _validateIpVersion4($ip, $allowSubnets = false, $allowSubnetParts = false) {
+		protected function _validateIp($ip, $ipVersion, $allowSubnets = false, $allowSubnetParts = false) {
 			$response = false;
-			$ipSubnetParts = explode('.', $ip);
 
-			if (
-				count($ipSubnetParts) === 4 ||
-				$allowSubnetParts === true
-			) {
-				foreach ($ipSubnetParts as $ipSubnetPartKey => $ipSubnetPart) {
+			switch ($ipVersion) {
+				case 4:
+					$ipSubnetParts = explode('.', $ip);
+
 					if (
-						!is_numeric($ipSubnetPart) ||
-						strlen(intval($ipSubnetPart)) >= 4 ||
-						$ipSubnetPart > 255 ||
-						$ipSubnetPart < 0
+						count($ipSubnetParts) === 4 ||
+						$allowSubnetParts === true
 					) {
-						if (
-							$allowSubnets === true &&
-							$ipSubnetPart === end($ipSubnetParts) &&
-							substr_count($ipSubnetPart, '/') === 1 &&
-							($ipSubnetMaskParts = explode('/', $ipSubnetPart)) &&
-							is_numeric($ipSubnetMaskParts[0]) &&
-							($ipSubnetPart = (integer) $ipSubnetMaskParts[0]) !== false &&
-							strlen($ipSubnetPart) >= 1 &&
-							strlen($ipSubnetPart) <= 3 &&
-							$ipSubnetPart <= 255 &&
-							$ipSubnetPart >= 0 &&
-							is_numeric($ipSubnetMaskParts[1]) &&
-							$ipSubnetMaskParts[1] <= 30 &&
-							$ipSubnetMaskParts[1] >= 8
-						) {
-							$ipSubnetPart .= '/' . $ipSubnetMaskParts[1];
-						} else {
-							return false;
+						foreach ($ipSubnetParts as $ipSubnetPartKey => $ipSubnetPart) {
+							if (
+								!is_numeric($ipSubnetPart) ||
+								strlen(intval($ipSubnetPart)) >= 4 ||
+								$ipSubnetPart > 255 ||
+								$ipSubnetPart < 0
+							) {
+								if (
+									$allowSubnets === true &&
+									$ipSubnetPart === end($ipSubnetParts) &&
+									substr_count($ipSubnetPart, '/') === 1 &&
+									($ipSubnetMaskParts = explode('/', $ipSubnetPart)) &&
+									is_numeric($ipSubnetMaskParts[0]) &&
+									($ipSubnetPart = (integer) $ipSubnetMaskParts[0]) !== false &&
+									strlen($ipSubnetPart) >= 1 &&
+									strlen($ipSubnetPart) <= 3 &&
+									$ipSubnetPart <= 255 &&
+									$ipSubnetPart >= 0 &&
+									is_numeric($ipSubnetMaskParts[1]) &&
+									$ipSubnetMaskParts[1] <= 30 &&
+									$ipSubnetMaskParts[1] >= 8
+								) {
+									$ipSubnetPart .= '/' . $ipSubnetMaskParts[1];
+								} else {
+									return false;
+								}
+							} else {
+								$ipSubnetPart = (integer) $ipSubnetPart;
+							}
+
+							$ipSubnetParts[$ipSubnetPartKey] = $ipSubnetPart;
 						}
-					} else {
-						$ipSubnetPart = (integer) $ipSubnetPart;
+
+						$response = implode('.', $ipSubnetParts);
 					}
 
-					$ipSubnetParts[$ipSubnetPartKey] = $ipSubnetPart;
-				}
+					break;
+				case 6:
+					if (strpos($ip, '::') !== false) {
+						$ip = str_replace('::', str_repeat(':0', 7 - (substr_count($ip, ':') - 1)) . ':', $ip);
 
-				$response = implode('.', $ipSubnetParts);
-			}
-
-			return $response;
-		}
-
-		protected function _validateIpVersion6($ip) {
-			$response = false;
-
-			if (strpos($ip, '::') !== false) {
-				$ip = str_replace('::', str_repeat(':0', 7 - (substr_count($ip, ':') - 1)) . ':', $ip);
-
-				if ($ip[0] === ':') {
-					$ip = '0' . $ip;
-				}
-			}
-
-			$ipSubnetParts = explode(':', $ip);
-			$validCharacters = '0123456789ABCDEF';
-
-			if (count($ipSubnetParts) === 8) {
-				foreach ($ipSubnetParts as $ipSubnetPart) {
-					if (strlen($ipSubnetPart) > 4) {
-						return false;
+						if ($ip[0] === ':') {
+							$ip = '0' . $ip;
+						}
 					}
 
-					if (!is_numeric($ipSubnetPart)) {
-						foreach (range(0, strlen($ipSubnetPart) - 1) as $ipSubnetPartIndex) {
-							if (strpos($validCharacters, $ipSubnetPart[$ipSubnetPartIndex]) === false) {
+					$ipSubnetParts = explode(':', $ip);
+					$validCharacters = '0123456789ABCDEF';
+
+					if (count($ipSubnetParts) === 8) {
+						foreach ($ipSubnetParts as $ipSubnetPart) {
+							if (strlen($ipSubnetPart) > 4) {
 								return false;
 							}
-						}
-					}
-				}
 
-				$response = $ip;
+							if (!is_numeric($ipSubnetPart)) {
+								foreach (range(0, strlen($ipSubnetPart) - 1) as $ipSubnetPartIndex) {
+									if (strpos($validCharacters, $ipSubnetPart[$ipSubnetPartIndex]) === false) {
+										return false;
+									}
+								}
+							}
+						}
+
+						$response = $ip;
+					}
+
+					break;
 			}
 
 			return $response;
