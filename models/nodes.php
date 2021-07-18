@@ -6,7 +6,7 @@
 
 		public function add($parameters) {
 			$response = array(
-				'message' => ($defaultMessage = 'Error adding node, please try again.'),
+				'message' => 'Error adding node, please try again.',
 				'status_valid' => false
 			);
 
@@ -183,7 +183,7 @@
 
 		public function edit($parameters) {
 			$response = array(
-				'message' => ($defaultMessage = 'Error editing node, please try again.'),
+				'message' => 'Error editing node, please try again.',
 				'status_valid' => false
 			);
 
