@@ -1,9 +1,6 @@
 <?php
 	// refactoring is always worth it
-	// todo: delete search function
-		// the API can be used for searching/grouping
-		// users who are only deploying a few servers with the GUI won't need it
-		// it will allow the removal of slow/complex wildcard queries and messy code
+	// todo: delete servers table, use status_main_ip for nodes table, additional node ips should have node_id with the main node, relational tables for server statistics should be node_usage, node_etc etc
 	// todo: remove blackhat DNS source IP rotation on every request feature, only allow load balancing on local ips with one source IP
 		// use a combination of random ports + range of listening ips [start-end] to allow a matrix of processes greater than 60000
 		// handle local source ip conflicts automatically with connection.php process
@@ -244,7 +241,7 @@
 				'type' => 'VARCHAR(15)'
 			)
 		),*/
-		'server_nameserver_processes' => array(
+		'nameserver_processes' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
@@ -278,6 +275,11 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
+			'node_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
 			'port' => array(
 				'default' => null,
 				'null' => true,
@@ -286,19 +288,9 @@
 			'removed' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
-			),
-			'server_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'server_node_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
 			)
 		),
-		'server_nodes' => array(
+		'nodes' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
@@ -322,14 +314,14 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'server_id' => array(
+			'node_id' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'removed' => array(
+				'default' => 0,
+				'type' => 'TINYINT(1)'
 			),
 			'status_active' => array(
 				'default' => 0,
@@ -352,7 +344,7 @@
 				'type' => 'CHAR(10)'
 			)
 		),
-		'server_node_users' => array(
+		'node_users' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
@@ -366,12 +358,7 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'server_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'server_node_id' => array(
+			'node_id' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
@@ -382,7 +369,7 @@
 				'type' => 'BIGINT(11)'
 			)
 		),
-		'server_proxy_processes' => array(
+		'proxy_processes' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
@@ -401,52 +388,13 @@
 				'null' => true,
 				'type' => 'INT(5)'
 			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'server_id' => array(
+			'node_id' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
-			)
-		),
-		'servers' => array(
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'main_ip_version_4' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(15)'
-			),
-			'main_ip_version_6' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(39)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
 			),
 			'removed' => array(
 				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'status_active' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'status_deployed' => array(
-				'default' => 0,
-				'null' => true,
 				'type' => 'TINYINT(1)'
 			)
 		),
