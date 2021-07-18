@@ -387,6 +387,23 @@
 			return $response;
 		}
 
+		protected function _fetchIpType($ip, $ipVersion) {
+			// todo: validate ipv6 private ip ranges
+			$response = 'public';
+			$ipInteger = ip2long($ip);
+
+			foreach ($this->privateIpRangeIntegers as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
+				if (
+					$ipInteger >= $privateIpRangeIntegerStart &&
+					$ipInteger <= $privateIpRangeIntegerEnd
+				) {
+					$response = 'private';
+				}
+			}
+
+			return $response;
+		}
+
 		protected function _generateRandomAuthentication($authentication = array()) {
 			$response = array();
 			$letters = 'abcdefghijklmnopqrstuvwxyz';
@@ -1234,23 +1251,6 @@
 			}
 
 			$response = $validatedIps;
-			return $response;
-		}
-
-		protected function _fetchIpType($ip, $ipVersion) {
-			// todo: validate ipv6 private ip ranges
-			$response = 'public';
-			$ipInteger = ip2long($ip);
-
-			foreach ($this->privateIpRangeIntegers as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
-				if (
-					$ipInteger >= $privateIpRangeIntegerStart &&
-					$ipInteger <= $privateIpRangeIntegerEnd
-				) {
-					$response = 'private';
-				}
-			}
-
 			return $response;
 		}
 
