@@ -244,6 +244,11 @@
 			)
 		),*/
 		'node_processes' => array(
+			'application_protocol' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(4)'
+			),
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
@@ -287,14 +292,14 @@
 				'null' => true,
 				'type' => 'INT(5)'
 			),
-			'protocol' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'SMALLINT(3)'
-			),
 			'removed' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
+			),
+			'transport_protocol' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(3)'
 			)
 		),
 		'node_users' => array(
@@ -326,6 +331,11 @@
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
+			),
+			'destination' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(255)'
 			),
 			'external_ip_version_4' => array(
 				'default' => null,
@@ -374,11 +384,6 @@
 				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
-			),
-			'target' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(1000)'
 			),
 			'type' => array(
 				'default' => null,
