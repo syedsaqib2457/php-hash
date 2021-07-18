@@ -11,12 +11,12 @@
 			);
 
 			if (empty($parameters['data']['type']) === false) {
-				$statusValid = in_array($parameters['data']['type'], array(
+				$response['status_valid'] = in_array($parameters['data']['type'], array(
 					'nameserver',
 					'proxy'
 				));
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeData = array();
 
 					if (empty($parameters['data']['node_id']) === false) {
@@ -32,48 +32,48 @@
 								'id' => ($nodeData['node_id'] = $nodeId = $parameters['data']['node_id'])
 							)
 						));
-						$statusValid = ($node !== false);
+						$response['status_valid'] = ($node !== false);
 
-						if ($statusValid === true) {
-							$statusValid = (empty($node) === false);
+						if ($response['status_valid'] === true) {
+							$response['status_valid'] = (empty($node) === false);
 
-							if ($statusValid === false) {
+							if ($response['status_valid'] === false) {
 								$response['message'] = 'Invalid node ID, please try again.';
 							}
 						}
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeExternalIpVersions = $nodeExternalIps = array();
 					$nodeIpVersions = array(
 						'4',
 						'6'
 					);
-					$statusValid = false;
+					$response['status_valid'] = false;
 
 					foreach ($nodeIpVersions as $nodeIpVersion) {
 						$nodeExternalIpKey = 'external_ip_version_' . $nodeIpVersion;
 
 						if (empty($parameters['data'][$nodeExternalIpKey]) === false) {
 							$nodeData[$nodeExternalIpKey] = $nodeExternalIps[$nodeExternalIpKey] = $nodeExternalIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeExternalIpKey];
-							$statusValid = true;
+							$response['status_valid'] = true;
 						}
 					}
 				}
 
-				if ($statusValid === true) {
-					$statusValid = (
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = (
 						$nodeExternalIpVersions === $this->_sanitizeIps($nodeExternalIps) &&
 						count(current($nodeExternalIpVersions)) === 1
 					);
 
-					if ($statusValid === false) {
+					if ($response['status_valid'] === false) {
 						$response['message'] = 'Invalid node external IPs, please try again.';
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeExternalIpTypes = array();
 
 					foreach ($nodeExternalIpVersions as $nodeExternalIpVersion => $nodeExternalIpVersionIps) {
@@ -85,12 +85,14 @@
 					}
 
 					if (count($nodeExternalIpTypes) !== 1) {
-						$response['message'] = 'Node external IPs must be either private or public, please try again.';
-						$statusValid = false;
+						$response = array(
+							'message' => 'Node external IPs must be either private or public, please try again.',
+							'status_valid' => false
+						);
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeInternalIpVersions = $nodeInternalIps = array();
 
 					if (empty($nodeInternalIpTypes['public']) === false) {
@@ -102,62 +104,63 @@
 							}
 						}
 
-						$statusValid = (
+						$response['status_valid'] = (
 							$nodeInternalIpVersions === $this->_sanitizeIps($nodeInternalIps) &&
 							count(current($nodeInternalIpVersions)) === 1
 						);
 
-						if ($statusValid === false) {
+						if ($response['status_valid'] === false) {
 							$response['message'] = 'Invalid node internal IPs, please try again.';
 						}
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeInternalIpTypes = array();
 
 					foreach ($nodeExternalIpVersions as $nodeExternalIpVersion => $nodeExternalIpVersionIps) {
 						if ($this->_fetchIpType(current($nodeExternalIpVersionIps), $nodeExternalIpVersion) !== 'private') {
-							$response['message'] = 'Node internal IPs must be private, please try again.';
-							$statusValid = false;
+							$response = array(
+								'message' => 'Node internal IPs must be private, please try again.',
+								'status_valid' => false
+							);
 							break;
 						}
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$conflictingNodeCountParameters = array(
 						'in' => 'nodes',
 						'where' => array(
-							'OR' => array(
-								array(
-									'node_id' => null,
-									'OR' => $nodeExternalIps
-								)
-							)
+							'OR' => $nodeExternalIps
 						)
 					));
 
 					if (empty($nodeId) !== false) {
-						$conflictingNodeCountParameters['where']['OR'][] = array(
-							'node_id' => $nodeId,
-							'OR' => ($nodeExternalIps + $nodeInternalIps)
+						$conflictingNodeCountParameters['where']['OR'] = array(
+							$conflictingNodeCountParameters['where'],
+							array(
+								'node_id' => $nodeId,
+								'OR' => ($nodeExternalIps + $nodeInternalIps)
+							)
 						);
 					}
 
 					$conflictingNodeCount = $this->count($conflictingNodeCountParameters);
-					$statusValid = (is_int($conflictingNodeCount) === true);
+					$response['status_valid'] = (is_int($conflictingNodeCount) === true);
 				}
 
-				if ($statusValid === true) {
-					$statusValid = ($conflictingNodeCount === 0);
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = ($conflictingNodeCount === 0);
 
-					if ($statusValid === false) {
+					if ($response['status_valid'] === false) {
 						$response['message'] = 'Node IPs already in use, please try again.';
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = false;
 					$nodeData = array(
 						$nodeData
 					);
@@ -198,48 +201,46 @@
 						'id' => ($nodeId = $parameters['data']['id'])
 					)
 				));
-				$statusValid = ($node !== false);
+				$response['status_valid'] = ($node !== false);
 
-				if ($statusValid === true) {
-					$statusValid = (empty($node) === false);
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = (empty($node) === false);
 
-					if ($statusValid === false) {
+					if ($response['status_valid'] === false) {
 						$response['message'] = 'Invalid node ID, please try again.';
 					}
 				}
 
-				// todo: create reusable function sanitizeNodeIps v
-
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = false;
 					$nodeExternalIpVersions = $nodeExternalIps = array();
 					$nodeIpVersions = array(
 						'4',
 						'6'
 					);
-					$statusValid = false;
 
 					foreach ($nodeIpVersions as $nodeIpVersion) {
 						$nodeExternalIpKey = 'external_ip_version_' . $nodeIpVersion;
 
 						if (empty($parameters['data'][$nodeExternalIpKey]) === false) {
 							$nodeData[$nodeExternalIpKey] = $nodeExternalIps[$nodeExternalIpKey] = $nodeExternalIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeExternalIpKey];
-							$statusValid = true;
+							$response['status_valid'] = true;
 						}
 					}
 				}
 
-				if ($statusValid === true) {
-					$statusValid = (
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = (
 						$nodeExternalIpVersions === $this->_sanitizeIps($nodeExternalIps) &&
 						count(current($nodeExternalIpVersions)) === 1
 					);
 
-					if ($statusValid === false) {
-						$response['message']['text'] = 'Invalid node external IPs, please try again.';
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid node external IPs, please try again.';
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeExternalIpTypes = array();
 
 					foreach ($nodeExternalIpVersions as $nodeExternalIpVersion => $nodeExternalIpVersionIps) {
@@ -251,12 +252,14 @@
 					}
 
 					if (count($nodeExternalIpTypes) !== 1) {
-						$response['message']['text'] = 'Node external IPs must be either private or public, please try again.';
-						$statusValid = false;
+						$response = array(
+							'message' => 'Node external IPs must be either private or public, please try again.',
+							'status_valid' => false
+						);
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeInternalIpVersions = $nodeInternalIps = array();
 
 					if (empty($nodeInternalIpTypes['public']) === false) {
@@ -268,44 +271,46 @@
 							}
 						}
 
-						$statusValid = (
+						$response['status_valid'] = (
 							$nodeInternalIpVersions === $this->_sanitizeIps($nodeInternalIps) &&
 							count(current($nodeInternalIpVersions)) === 1
 						);
 
-						if ($statusValid === false) {
-							$response['message']['text'] = 'Invalid node internal IPs, please try again.';
+						if ($response['status_valid'] === false) {
+							$response['message'] = 'Invalid node internal IPs, please try again.';
 						}
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeInternalIpTypes = array();
 
 					foreach ($nodeExternalIpVersions as $nodeExternalIpVersion => $nodeExternalIpVersionIps) {
 						if ($this->_fetchIpType(current($nodeExternalIpVersionIps), $nodeExternalIpVersion) !== 'private') {
-							$response['message']['text'] = 'Node internal IPs must be private, please try again.';
-							$statusValid = false;
+							$response = array(
+								'message' => 'Node internal IPs must be private, please try again.',
+								'status_valid' => false
+							);
 							break;
 						}
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$nodeInternalIpTypes = array();
 
 					foreach ($nodeExternalIpVersions as $nodeExternalIpVersion => $nodeExternalIpVersionIps) {
 						if ($this->_fetchIpType(current($nodeExternalIpVersionIps), $nodeExternalIpVersion) !== 'private') {
-							$response['message']['text'] = 'Node internal IPs must be private, please try again.';
-							$statusValid = false;
+							$response = array(
+								'message' => 'Node internal IPs must be private, please try again.',
+								'status_valid' => false
+							);
 							break;
 						}
 					}
 				}
 
-				// reusable function ^
-
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
 					$conflictingNodeCountParameters = array(
 						'in' => 'nodes',
 						'where' => array(
@@ -314,31 +319,36 @@
 								array(
 									'node_id' => null,
 									'OR' => $nodeExternalIps
+								),
+								array(
+									'node_id' => $nodeId,
+									'OR' => ($nodeIps = ($nodeExternalIps + $nodeInternalIps))
 								)
 							)
 						)
 					));
 
-					if (empty($nodeId) !== false) {
+					if (empty($node['node_id']) === false) {
 						$conflictingNodeCountParameters['where']['OR'][] = array(
-							'node_id' => $nodeId,
-							'OR' => ($nodeExternalIps + $nodeInternalIps)
+							'id' => $node['node_id'],
+							'OR' => $nodeIps
 						);
 					}
 
 					$conflictingNodeCount = $this->count($conflictingNodeCountParameters);
-					$statusValid = (is_int($conflictingNodeCount) === true);
+					$response['status_valid'] = (is_int($conflictingNodeCount) === true);
 				}
 
-				if ($statusValid === true) {
-					$statusValid = ($conflictingNodeCount === 0);
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = ($conflictingNodeCount === 0);
 
-					if ($statusValid === false) {
-						$response['message']['text'] = 'Node IPs already in use, please try again.';
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Node IPs already in use, please try again.';
 					}
 				}
 
-				if ($statusValid === true) {
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = false;
 					$nodeData = array(
 						$nodeData
 					);
@@ -350,7 +360,7 @@
 						)
 					));
 
-					if ($nodeDataUpdated === true) {
+					if ($response['status_valid'] === true) {
 						$response = array(
 							'message' => 'Node edited successfully.',
 							'status_valid' => true
