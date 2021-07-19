@@ -101,9 +101,17 @@
 					if (empty($parameters['data'][$nodeIpKey]) === false) {
 						$nodeIps[$nodeIpKey] = $nodeIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeIpKey];
 
-						if ($this->_fetchIpType($nodeIps[$nodeIpKey], $nodeIpVersion) !== $nodeIpType) {
+						if (empty($node['external_ip_version_' . $nodeIpVersion]) === true) {
 							$response = array(
-								'message' => 'Node ' . $nodeIpInterface . ' IPs must be ' . $nodeIpType . ', please try again.',
+								'message' => 'Node must have an external IP version ' . $nodeIpVersion . ' before adding a node process ' . $nodeIpInterface . ' IP version ' . $nodeIpVersion . ', please try again.',
+								'status_valid' => false
+							);
+							return $response;
+						}
+
+						if ($nodeIpType !== $this->_fetchIpType($nodeIps[$nodeIpKey], $nodeIpVersion)) {
+							$response = array(
+								'message' => 'Node process ' . $nodeIpInterface . ' IPs must be ' . $nodeIpType . ', please try again.',
 								'status_valid' => false
 							);
 							return $response;
