@@ -283,19 +283,6 @@
 			return $response;
 		}
 
-		protected function _deleteRemovedItems($parameters) {
-			$response = (
-				!empty($this->settings['database']['schema'][$parameters['from']]['removed']) &&
-				$this->delete(array(
-					'from' => $parameters['from'],
-					'where' => array_merge($parameters['where'], array(
-						'removed' => true
-					))
-				))
-			);
-			return $response;
-		}
-
 		protected function _encodeItems($parameters) {
 			$response = array();
 
@@ -984,16 +971,6 @@
 			}
 
 			if (
-				$processAction === true ||
-				!empty($parameters['user']['endpoint'])
-			) {
-				$this->_deleteRemovedItems(array(
-					'from' => $parameters['from'],
-					'where' => !empty($parameters['where']) ? $parameters['where'] : array()
-				));
-			}
-
-			if (
 				$decodeItemList &&
 				!empty($response['items'][$parameters['item_list_name']]['data'])
 			) {
@@ -1437,13 +1414,6 @@
 				empty($parameters['where']) === false &&
 				is_array($parameters['where']) === true
 			) {
-				if (
-					strpos(json_encode($parameters['where']), '"removed":') === false &&
-					empty($this->settings['database']['schema'][$parameters['from']]['removed']) === false
-				) {
-					$parameters['where']['removed'] = false;
-				}
-
 				$query .= ' WHERE ' . implode(' AND ', $this->_formatQuery($parameters['from'], $parameters['where']));
 			}
 
@@ -1488,13 +1458,6 @@
 				!empty($parameters['where']) &&
 				is_array($parameters['where'])
 			) {
-				if (
-					strpos(json_encode($parameters['where']), '"removed":') === false &&
-					!empty($this->settings['database']['schema'][$parameters['from']]['removed'])
-				) {
-					$parameters['where']['removed'] = false;
-				}
-
 				$query .= ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['from'], $parameters['where']));
 			}
 

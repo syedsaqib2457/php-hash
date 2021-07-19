@@ -383,17 +383,14 @@
 				return $response;
 			}
 
-			$nodeDataUpdated = $this->update(array(
-				'data' => array(
-					'removed' => true
-				),
-				'in' => 'nodes',
+			$nodeDataDeleted = $this->delete(array(
+				'from' => 'nodes',
 				'where' => array(
 					'id' => $selectedNodeIds
 				)
 			));
 
-			if ($nodeDataUpdated === false) {
+			if ($nodeDataDeleted === false) {
 				$response['status_valid'] = false;
 				return $response;
 			}

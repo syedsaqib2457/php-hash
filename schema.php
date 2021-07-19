@@ -1,5 +1,6 @@
 <?php
 	// refactoring is always worth it
+	// todo: create optional automatic update scripts for versions above 19
 	// todo: increase tcp-clients and allow public-facing dns over both tcp and udp (previously was private with udp only and tcp for health checks)
 	// todo: combine server_proxy_processes and server_nameserver_processes into node_processes
 	// todo: delete servers table, use status_main_ip for nodes table, additional node ips should have node_id with the main node, relational tables for server statistics should be node_usage, node_etc etc
@@ -9,7 +10,6 @@
 	// todo: rename $defaultMessage to $defaultResponseMessageText
 	// todo: set a combined maximum of 55000 proxy + nameserver processes (allow binding proxy ips to local ips instead of using ports for load balancing to exceed 55000 processes, try grouping with ipset and dnat random)
 	// todo: add automated server deployment for each cloud service that allows it with an api key
-	// todo: create optional automatic update scripts as gists for version 18 to 19, 19 to 20, etc so complete reinstall isn't required
 	// todo: add each of these as GitHub issues
 	// todo: test the maximum amount of iptables statistic nth mode before performance degradation
 	// todo: test iptables statistic with --random flag when proxy process count is above X count for automatic process scaling
@@ -34,7 +34,7 @@
 	// todo: make sure tinyint boolean default values are saved as boolean type in database.php
 	// todo: add search function to /servers/id page
 	// todo: forward internal server node ips to external ip if the internal ip is private and isn't on the primary interface
-	// todo: consistently add status_ prefix to all boolean columns that represent status (processing, limiting, removed, etc)
+	// todo: consistently add status_ prefix to all boolean columns that represent status (active, limited, etc)
 	// todo: change all url_request_log names to request_log since URLs will be an optional field when DNS + reverse proxies are included
 	$schema = array(
 		/*'proxies' => array(
@@ -292,10 +292,6 @@
 				'null' => true,
 				'type' => 'INT(5)'
 			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
 			'transport_protocol' => array(
 				'default' => null,
 				'null' => true,
@@ -370,10 +366,6 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
-			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
 			),
 			'status_active' => array(
 				'default' => 0,
