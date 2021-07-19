@@ -246,7 +246,7 @@
 				'to' => 'nodes'
 			));
 
-			if ($nodeDataSaved === false) {
+			if ($nodeProcessDataSaved === false) {
 				$response['status_valid'] = false;
 				return $response;
 			}
