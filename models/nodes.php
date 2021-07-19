@@ -26,7 +26,6 @@
 			if (empty($parameters['data']['node_id']) === false) {
 				$node = $nodeData = $this->fetch(array(
 					'fields' => array(
-						'id',
 						'status_active',
 						'status_deployed'
 					),
@@ -39,6 +38,7 @@
 
 				if ($response['status_valid'] === true) {
 					$response['status_valid'] = (empty($node) === false);
+					unset($nodeData['id']);
 
 					if ($response['status_valid'] === false) {
 						$response['message'] = 'Invalid node ID, please try again.';
