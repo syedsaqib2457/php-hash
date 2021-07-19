@@ -27,7 +27,6 @@
 				$node = $nodeData = $this->fetch(array(
 					'fields' => array(
 						'id',
-						'removed',
 						'status_active',
 						'status_deployed'
 					),
