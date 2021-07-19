@@ -24,7 +24,7 @@
 			}
 
 			if (empty($parameters['data']['node_id']) === false) {
-				$node = $nodeData = $this->fetch(array(
+				$node = $this->fetch(array(
 					'fields' => array(
 						'id',
 						'node_id',
@@ -32,7 +32,7 @@
 					),
 					'from' => 'nodes',
 					'where' => array(
-						'id' => ($nodeProcessNodeId = $parameters['data']['node_id'])
+						'id' => $parameters['data']['node_id']
 					)
 				));
 				$response['status_valid'] = ($node !== false);
@@ -100,13 +100,16 @@
 				return $response;
 			}
 
+			$nodeProcessData = array(
+				array_intersect_key($parameters['data'], array(
+					'application_protocol' => true,
+					'node_id' => true,
+					'port' => true,
+					'transport_protocol' => true
+				))
+			);
 			$nodeProcessDataSaved = $this->save(array(
-				'data' => array(
-					array(
-						'node_id' => $nodeProcessNodeId,
-						'port' => $nodeProcessPort
-					)
-				),
+				'data' => $nodeProcessData,
 				'to' => 'nodes'
 			));
 
