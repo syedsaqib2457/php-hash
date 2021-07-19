@@ -389,8 +389,17 @@
 					'id' => $selectedNodeIds
 				)
 			));
+			$nodeUserDataDeleted = $this->delete(array(
+				'from' => 'node_users',
+				'where' => array(
+					'node_id' => $selectedNodeIds
+				)
+			));
 
-			if ($nodeDataDeleted === false) {
+			if (
+				$nodeDataDeleted === false ||
+				$nodeUserDataDeleted === false
+			) {
 				$response['status_valid'] = false;
 				return $response;
 			}
