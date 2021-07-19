@@ -21,10 +21,8 @@
 				return $response;
 			}
 
-			$nodeData = array();
-
 			if (empty($parameters['data']['node_id']) === false) {
-				$node = $nodeData = $this->fetch(array(
+				$node = $this->fetch(array(
 					'fields' => array(
 						'status_active',
 						'status_deployed'
@@ -38,6 +36,7 @@
 
 				if ($response['status_valid'] === true) {
 					$response['status_valid'] = (empty($node) === false);
+					$parameters['data'] = array_merge($parameters['data'], $node);
 
 					if ($response['status_valid'] === false) {
 						$response['message'] = 'Invalid node ID, please try again.';
@@ -60,7 +59,7 @@
 				$nodeExternalIpKey = 'external_ip_version_' . $nodeIpVersion;
 
 				if (empty($parameters['data'][$nodeExternalIpKey]) === false) {
-					$nodeData[$nodeExternalIpKey] = $nodeExternalIps[$nodeExternalIpKey] = $nodeExternalIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeExternalIpKey];
+					$nodeExternalIps[$nodeExternalIpKey] = $nodeExternalIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeExternalIpKey];
 					$response['status_valid'] = true;
 				}
 			}
@@ -103,7 +102,7 @@
 				$nodeInternalIpKey = 'internal_ip_version_' . $nodeIpVersion;
 
 				if (empty($parameters['data'][$nodeInternalIpKey]) === false) {
-					$nodeData[$nodeInternalIpKey] = $nodeInternalIps[$nodeInternalIpKey] = $nodeInternalIpVersions[$nodeIpVersion][] = $parameters['data'][$serverNodeInternalIpKey];
+					$nodeInternalIps[$nodeInternalIpKey] = $nodeInternalIpVersions[$nodeIpVersion][] = $parameters['data'][$serverNodeInternalIpKey];
 				}
 			}
 
@@ -162,7 +161,16 @@
 			}
 
 			$nodeData = array(
-				$nodeData
+				array_key_intersect($parameters['data'], array(
+					'internal_ip_version_4' => true,
+					'internal_ip_version_6' => true,
+					'external_ip_version_4' => true,
+					'external_ip_version_6' => true,
+					'node_id' => true,
+					'status_active' => true,
+					'status_deployed' => true,
+					'type' => true
+				))
 			);
 			$nodeDataSaved = $this->save(array(
 				'data' => $nodeData,
