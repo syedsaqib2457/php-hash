@@ -10,22 +10,6 @@
 				'status_valid' => false
 			);
 
-			if (empty($parameters['data']['application_protocol']) === false) {
-				$response['status_valid'] = in_array($parameters['data']['application_protocol'], array(
-					'http',
-					'socks'
-				));
-
-				if ($parameters['data']['application_protocol'] === 'http') {
-					$parameters['data']['transport_protocol'] = 'tcp';
-				}
-			}
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid application protocol, please try again.';
-				return $response;
-			}
-
 			if (empty($parameters['data']['transport_protocol']) === false) {
 				$response['status_valid'] = (in_array($parameters['data']['transport_protocol'], array(
 						'tcp',
@@ -68,6 +52,22 @@
 
 			if ($node['type'] === 'nameserver') {
 				unset($parameters['data']['application_protocol']);
+			}
+
+			if (empty($parameters['data']['application_protocol']) === false) {
+				$response['status_valid'] = in_array($parameters['data']['application_protocol'], array(
+					'http',
+					'socks'
+				));
+
+				if ($parameters['data']['application_protocol'] === 'http') {
+					$parameters['data']['transport_protocol'] = 'tcp';
+				}
+			}
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid application protocol, please try again.';
+				return $response;
 			}
 
 			if (empty($parameters['data']['node_id']) === false) {
