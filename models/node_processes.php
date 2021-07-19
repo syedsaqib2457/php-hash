@@ -24,7 +24,7 @@
 			}
 
 			if (empty($parameters['data']['node_id']) === false) {
-				$node = $this->fetch(array(
+				$nodeParameters = array(
 					'fields' => array(
 						'external_ip_version_4',
 						'external_ip_version_6',
@@ -38,7 +38,8 @@
 					'where' => array(
 						'id' => $parameters['data']['node_id']
 					)
-				));
+				);
+				$node = $this->fetch($nodeParameters);
 				$response['status_valid'] = ($node !== false);
 
 				if ($response['status_valid'] === true) {
@@ -49,6 +50,26 @@
 					}
 				}
 			}
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			if (empty($node['node_id']) === false) {
+				$nodeParameters['where']['id'] = $node['node_id'];
+				$node = $this->fetch($nodeParameters);
+				$response['status_valid'] = ($node !== false);
+
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = (empty($node) === false);
+
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid node ID, please try again.';
+					}
+				}
+			}
+
+			$nodeProcessNodeId = $parameters['data']['node_id'] = $node['id'];
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -74,7 +95,7 @@
 				return $response;
 			}
 
-			if (empty($parameters['data']['node_id']) === false) {
+			if (empty($parameters['data']['port']) === false) {
 				$nodeProcessPort = $this->_validatePort($parameters['data']['port']);
 				$response['status_valid'] = (is_int($nodeProcessPort) === true);
 			}
@@ -84,7 +105,7 @@
 				return $response;
 			}
 
-			$nodeProcessIps = $nodeProcessIpVersions = array();
+			$nodeProcessExternalIps = $nodeProcessIps = $nodeProcessIpVersions = array();
 			$nodeProcessIpTypes = array(
 				'external' => 'public',
 				'internal' => 'private'
@@ -107,6 +128,10 @@
 								'status_valid' => false
 							);
 							return $response;
+						}
+
+						if ($nodeProcessIpInterface === 'external') {
+							$nodeProcessExternalIps[$nodeProcessIpKey] = $nodeProcessIp;
 						}
 
 						if ($nodeProcessIpType !== $this->_fetchIpType($nodeProcessIp, $nodeProcessIpVersion)) {
@@ -132,7 +157,54 @@
 				return $response;
 			}
 
-			// todo: check conflicting ips in both nodes and node processes
+			if (empty($nodeIps) === false) {
+				$conflictingNodeIpCountParameters = array(
+					'in' => 'nodes',
+					'where' => array(
+						'id' => $nodeProcessNodeId,
+						'OR' => $nodeProcessIps
+					)
+				));
+				$conflictingNodeProcessIpCountParameters = array(
+					'in' => 'node_processes',
+					'where' => array(
+						'node_id' => $nodeProcessNodeId,
+						'OR' => $nodeProcessIps
+					)
+				);
+
+				if (empty($nodeProcessExternalIps) === false) {
+					$conflictingNodeIpCountParameters['where']['OR'] = array(
+						$conflictingNodeIpCountParameters['where'],
+						$nodeProcessExternalIps
+					);
+					$conflictingNodeProcessIpCountParameters['where']['OR'] = array(
+						$conflictingNodeProcessIpCountParameters['where'],
+						$nodeProcessExternalIps
+					);
+				}
+
+				$conflictingNodeIpCount = $this->count($conflictingNodeIpCountParameters);
+				$conflictingNodeProcessIpCount = $this->count($conflictingNodeProcessIpCountParameters);
+				$response['status_valid'] = (
+					is_int($conflictingNodeIpCount) === true &&
+					is_int($conflictingNodeProcessIpCount) === true
+				);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				$response['status_valid'] = (
+					$conflictingNodeIpCount === 0 &&
+					$conflictingNodeProcessIpCount === 0
+				);
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Node process IP already in use, please try again.';
+					return $response;
+				}
+			}
 
 			$conflictingNodeProcessPortCount = $this->count(array(
 				'in' => 'node_processes',
@@ -157,6 +229,10 @@
 			$nodeProcessData = array(
 				array_intersect_key($parameters['data'], array(
 					'application_protocol' => true,
+					'external_ip_version_4' => true,
+					'external_ip_version_6' => true,
+					'internal_ip_version_4' => true,
+					'internal_ip_version_6' => true,
 					'node_id' => true,
 					'port' => true,
 					'transport_protocol' => true
