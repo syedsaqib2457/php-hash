@@ -26,7 +26,11 @@
 			if (empty($parameters['data']['node_id']) === false) {
 				$node = $this->fetch(array(
 					'fields' => array(
+						'external_ip_version_4',
+						'external_ip_version_6',
 						'id',
+						'internal_ip_version_4',
+						'internal_ip_version_6',
 						'node_id',
 						'type'
 					),
@@ -79,6 +83,40 @@
 				$response['message'] = 'Invalid node process port, please try again.';
 				return $response;
 			}
+
+			$nodeIps = $nodeIpVersions = array();
+			$nodeIpTypes = array(
+				'external' => 'public',
+				'internal' => 'private'
+			);
+			$nodeIpVersions = array(
+				'4',
+				'6'
+			);
+
+			foreach ($nodeIpTypes as $nodeIpInterface => $nodeIpType) {
+				foreach ($nodeIpVersions as $nodeIpVersion) {
+					$nodeIpKey = $nodeIpInterface . '_ip_version_' . $nodeIpVersion;
+
+					if (empty($parameters['data'][$nodeIpKey]) === false) {
+						$nodeIps[$nodeIpKey] = $nodeIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeIpKey];
+
+						if ($this->_fetchIpType($nodeIps[$nodeIpKey], $nodeIpVersion) !== $nodeIpType) {
+							$response = array(
+								'message' => 'Node ' . $nodeIpInterface . ' IPs must be ' . $nodeIpType . ', please try again.',
+								'status_valid' => false
+							);
+							return $response;
+						}
+					}
+				}
+			}
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			// ..
 
 			$conflictingNodeProcessPortCount = $this->count(array(
 				'in' => 'node_processes',
