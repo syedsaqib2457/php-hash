@@ -6,7 +6,7 @@
 
 		public function add($parameters) {
 			$response = array(
-				'message' => 'Error adding node proxy process, please try again.',
+				'message' => 'Error adding node process, please try again.',
 				'status_valid' => false
 			);
 
@@ -19,7 +19,7 @@
 			}
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid transport protocol, please try again.';
+				$response['message'] = 'Invalid node process transport protocol, please try again.';
 				return $response;
 			}
 
@@ -70,7 +70,7 @@
 			}
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid application protocol, please try again.';
+				$response['message'] = 'Invalid node process application protocol, please try again.';
 				return $response;
 			}
 
@@ -84,34 +84,42 @@
 				return $response;
 			}
 
-			$nodeIps = $nodeIpVersions = array();
-			$nodeIpTypes = array(
+			$nodeProcessIps = $nodeProcessIpVersions = array();
+			$nodeProcessIpTypes = array(
 				'external' => 'public',
 				'internal' => 'private'
 			);
-			$nodeIpVersions = array(
+			$nodeProcessIpVersions = array(
 				'4',
 				'6'
 			);
 
-			foreach ($nodeIpTypes as $nodeIpInterface => $nodeIpType) {
-				foreach ($nodeIpVersions as $nodeIpVersion) {
-					$nodeIpKey = $nodeIpInterface . '_ip_version_' . $nodeIpVersion;
+			foreach ($nodeProcessIpTypes as $nodeProcessIpInterface => $nodeProcessIpType) {
+				foreach ($nodeProcessIpVersions as $nodeProcessIpVersion) {
+					$nodeProcessIpKey = $nodeProcessIpInterface . '_ip_version_' . $nodeProcessIpVersion;
 
 					if (empty($parameters['data'][$nodeIpKey]) === false) {
-						$nodeIps[$nodeIpKey] = $nodeIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeIpKey];
+						$nodeProcessIp = $nodeProcessIps[$nodeProcessIpKey] = $nodeProcessIpVersions[$nodeProcessIpVersion][] = $parameters['data'][$nodeProcessIpKey];
 
-						if (empty($node['external_ip_version_' . $nodeIpVersion]) === true) {
+						if (empty($node['external_ip_version_' . $nodeProcessIpVersion]) === true) {
 							$response = array(
-								'message' => 'Node must have an external IP version ' . $nodeIpVersion . ' before adding a node process ' . $nodeIpInterface . ' IP version ' . $nodeIpVersion . ', please try again.',
+								'message' => 'Node must have an external IP version ' . $nodeProcessIpVersion . ' before adding a node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.',
 								'status_valid' => false
 							);
 							return $response;
 						}
 
-						if ($nodeIpType !== $this->_fetchIpType($nodeIps[$nodeIpKey], $nodeIpVersion)) {
+						if ($nodeProcessIpType !== $this->_fetchIpType($nodeProcessIp, $nodeProcessIpVersion)) {
 							$response = array(
-								'message' => 'Node process ' . $nodeIpInterface . ' IPs must be ' . $nodeIpType . ', please try again.',
+								'message' => 'Node process ' . $nodeProcessIpInterface . ' IPs must be ' . $nodeProcessIpType . ', please try again.',
+								'status_valid' => false
+							);
+							return $response;
+						}
+
+						if ($nodeProcessIpVersion !== key($this->_sanitizeIps(array($nodeProcessIp)))) {
+							$response = array(
+								'message' => 'Invalid node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.',
 								'status_valid' => false
 							);
 							return $response;
@@ -124,7 +132,7 @@
 				return $response;
 			}
 
-			// ..
+			// todo: check conflicting ips in both nodes and node processes
 
 			$conflictingNodeProcessPortCount = $this->count(array(
 				'in' => 'node_processes',
