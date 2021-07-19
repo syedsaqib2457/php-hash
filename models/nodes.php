@@ -335,9 +335,6 @@
 				return $response;
 			}
 
-			$nodeData = array(
-				$nodeData
-			);
 			$nodeDataUpdated = $this->update(array(
 				'data' => $nodeData,
 				'in' => 'nodes',
@@ -365,104 +362,46 @@
 			);
 
 			if (empty($parameters['items'][$parameters['item_list_name']]['data']) === false) {
-				$serverNodeIds = $parameters['items'][$parameters['item_list_name']]['data'])
-				//$serverIds = $serverNodeData = $serverNodeIps = array();
-				$serverNodes = $this->fetch(array(
-					'fields' => array(
-						'id'
-					),
-					'from' => 'server_nodes',
+				$selectedNodeIds = $parameters['items'][$parameters['item_list_name']]['data'])
+				$selectedNodeCount = $this->count(array(
+					'in' => 'nodes',
 					'where' => array(
-						'id' => $serverNodeIds
+						'id' => $selectedNodeIds
 					)
 				));
-
-				if ($serverNodes !== false) {
-					$response['message']['text'] = 'Invalid server node IDs, please try again.';
-
-					if (empty($serverNodes) === false) {
-						$response['message']['text'] = $defaultMessage;
-						$servers = $this->fetch(array(
-							'fields' => array(
-								'main_ip_version_4',
-								'main_ip_version_6'
-							),
-							'from' => 'servers',
-							'where' => array(
-								'id' => ($serverId = $parameters['where']['id'])
-							)
-						));
-
-						if (
-							$servers !== false &&
-							empty($servers) === false
-						) {
-							$validServerNodes = true;
-							$serverNameserverProcessCount = $this->count(array(
-								'in' => 'server_nameserver_processes',
-								'where' => array(
-									'server_node_id' => $serverNodeIds
-								)
-							));
-
-							if ($serverNameserverProcessCount !== false) {
-								$validServerNodes = ($serverNameserverProcessCount === 0);
-
-								if ($validServerNodes === false) {
-									$response['message']['text'] = 'The selected server nodes are connected to server nameserver processes, please try again.';
-								}
-							}
-
-							if ($validServerNodes === true) {
-								// delete server_node_users
-								// update data
-							}
-						}
-					}
-				}
-
-				if (!empty($serverNodes['count'])) {
-					foreach ($serverNodes['data'] as $serverNode) {
-						$serverIds[$serverNode['server_id']] = $serverNode['server_id'];
-						$serverNodeData[] = array(
-							'id' => $serverNode['id'],
-							'removed' => true
-						);
-						$serverNodeIps[$serverNode['external_ip']] = $serverNode['external_ip'];
-					}
-
-					if (!empty($serverIds)) {
-						$serverIps = $this->fetch(array(
-							'fields' => array(
-								'ip'
-							),
-							'from' => 'servers',
-							'where' => array(
-								'id' => array_values($serverIds)
-							)
-						));
-
-						if (!empty($serverIps['count'])) {
-							$serverIps = array_intersect(array_values($serverNodeIps), array_unique($serverIps['data']));
-
-							if (!empty($serverIps)) {
-								$response['message']['text'] = 'Unable to delete server main IP, please try again.';
-							} elseif (
-								$this->save(array(
-									'data' => $serverNodeData,
-									'to' => 'server_nodes'
-								))
-							) {
-								$response['message'] = array(
-									'status' => 'success',
-									'text' => 'Server nodes removed successfully.'
-								);
-							}
-						}
-					}
-				}
+				$response['status_valid'] = (is_int($selectedNodeCount) === true);
 			}
 
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = ($selectedNodeCount === count($selectedNodeIds));
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node IDs, please try again.';
+				return $response;
+			}
+
+			$nodeDataUpdated = $this->update(array(
+				'data' => array(
+					'removed' => true
+				),
+				'in' => 'nodes',
+				'where' => array(
+					'id' => $selectedNodeIds
+				)
+			));
+
+			if ($nodeDataUpdated === false) {
+				$response['status_valid'] = false;
+				return $response;
+			}
+
+			$response = array(
+				'message' => 'Nodes removed successfully.',
+				'status_valid' => true
+			);
 			return $response;
 		}
 
