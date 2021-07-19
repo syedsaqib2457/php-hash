@@ -29,7 +29,7 @@
 					),
 					'from' => 'nodes',
 					'where' => array(
-						'id' => ($nodeData['node_id'] = $nodeId = $parameters['data']['node_id'])
+						'id' => ($nodeId = $parameters['data']['node_id'])
 					)
 				));
 				$response['status_valid'] = ($node !== false);
@@ -48,7 +48,6 @@
 				return $response;
 			}
 
-			$response['status_valid'] = false;
 			$nodeExternalIps = $nodeExternalIpVersions = array();
 			$nodeIpVersions = array(
 				'4',
@@ -60,9 +59,10 @@
 
 				if (empty($parameters['data'][$nodeExternalIpKey]) === false) {
 					$nodeExternalIps[$nodeExternalIpKey] = $nodeExternalIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeExternalIpKey];
-					$response['status_valid'] = true;
 				}
 			}
+
+			$response['status_valid'] = (empty($nodeExternalIps) === false);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -129,6 +129,7 @@
 				}
 			}
 
+			// todo: count conflicting node process ips
 			$conflictingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
@@ -161,11 +162,11 @@
 			}
 
 			$nodeData = array(
-				array_key_intersect($parameters['data'], array(
-					'internal_ip_version_4' => true,
-					'internal_ip_version_6' => true,
+				array_intersect_key($parameters['data'], array(
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
+					'internal_ip_version_4' => true,
+					'internal_ip_version_6' => true,
 					'node_id' => true,
 					'status_active' => true,
 					'status_deployed' => true,
@@ -196,13 +197,10 @@
 			);
 
 			if (empty($parameters['data']['id']) === false) {
-				$node = $nodeData = $this->fetch(array(
+				$node = $this->fetch(array(
 					'fields' => array(
-						'external_ip_version_4',
-						'external_ip_version_6',
-						'internal_ip_version_4',
-						'internal_ip_version_6',
-						'node_id'
+						'node_id',
+						'status_deployed'
 					),
 					'from' => 'nodes',
 					'where' => array(
@@ -223,7 +221,14 @@
 				return $response;
 			}
 
-			$response['status_valid'] = false;
+			if (isset($parameters['data']['status_active']) === false) {
+				$parameters['data']['status_active'] = boolval($parameters['data']['status_active']);
+
+				if ($node['status_deployed'] === false) {
+					$parameters['data']['status_active'] = false;
+				}
+			}
+
 			$nodeExternalIps = $nodeExternalIpVersions = array();
 			$nodeIpVersions = array(
 				'4',
@@ -234,10 +239,11 @@
 				$nodeExternalIpKey = 'external_ip_version_' . $nodeIpVersion;
 
 				if (empty($parameters['data'][$nodeExternalIpKey]) === false) {
-					$nodeData[$nodeExternalIpKey] = $nodeExternalIps[$nodeExternalIpKey] = $nodeExternalIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeExternalIpKey];
-					$response['status_valid'] = true;
+					$nodeExternalIps[$nodeExternalIpKey] = $nodeExternalIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeExternalIpKey];
 				}
 			}
+
+			$response['status_valid'] = (empty($nodeExternalIps) === false);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -277,7 +283,7 @@
 				$nodeInternalIpKey = 'internal_ip_version_' . $nodeIpVersion;
 
 				if (empty($parameters['data'][$nodeInternalIpKey]) === false) {
-					$nodeData[$nodeInternalIpKey] = $nodeInternalIps[$nodeInternalIpKey] = $nodeInternalIpVersions[$nodeIpVersion][] = $parameters['data'][$serverNodeInternalIpKey];
+					$nodeInternalIps[$nodeInternalIpKey] = $nodeInternalIpVersions[$nodeIpVersion][] = $parameters['data'][$serverNodeInternalIpKey];
 				}
 			}
 
@@ -304,6 +310,7 @@
 				}
 			}
 
+			// todo: count conflicting node process ips
 			$conflictingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
@@ -341,6 +348,16 @@
 				return $response;
 			}
 
+			$nodeData = array_intersect_key($parameters['data'], array(
+				'external_ip_version_4' => true,
+				'external_ip_version_6' => true,
+				'id' => true,
+				'internal_ip_version_4' => true,
+				'internal_ip_version_6' => true,
+				'node_id' => true,
+				'status_active' => true,
+				'type' => true
+			));
 			$nodeDataUpdated = $this->update(array(
 				'data' => $nodeData,
 				'in' => 'nodes',
