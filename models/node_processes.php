@@ -12,10 +12,9 @@
 
 			if (empty($parameters['data']['transport_protocol']) === false) {
 				$response['status_valid'] = (in_array($parameters['data']['transport_protocol'], array(
-						'tcp',
-						'udp'
-					))
-				);
+					'tcp',
+					'udp'
+				));
 			}
 
 			if ($response['status_valid'] === false) {
@@ -26,13 +25,8 @@
 			if (empty($parameters['data']['node_id']) === false) {
 				$nodeParameters = array(
 					'fields' => array(
-						'external_ip_version_4',
-						'external_ip_version_6',
 						'id',
-						'internal_ip_version_4',
-						'internal_ip_version_6',
-						'node_id',
-						'type'
+						'node_id'
 					),
 					'from' => 'nodes',
 					'where' => array(
@@ -161,8 +155,16 @@
 				$conflictingNodeIpCountParameters = array(
 					'in' => 'nodes',
 					'where' => array(
-						'id' => $nodeProcessNodeId,
-						'OR' => $nodeProcessIps
+						'OR' => array(
+							array(
+								'id' => $nodeProcessNodeId,
+								'OR' => $nodeProcessIps
+							),
+							array(
+								'node_id' => $nodeProcessNodeId,
+								'OR' => $nodeProcessIps
+							)
+						)
 					)
 				));
 				$conflictingNodeProcessIpCountParameters = array(
@@ -174,13 +176,14 @@
 				);
 
 				if (empty($nodeProcessExternalIps) === false) {
-					$conflictingNodeIpCountParameters['where']['OR'] = array(
-						$conflictingNodeIpCountParameters['where'],
-						$nodeProcessExternalIps
+					$conflictingNodeIpCountParameters['where']['OR'][] = array(
+						'OR' => $nodeProcessExternalIps
 					);
 					$conflictingNodeProcessIpCountParameters['where']['OR'] = array(
 						$conflictingNodeProcessIpCountParameters['where'],
-						$nodeProcessExternalIps
+						array(
+							'OR' => $nodeProcessExternalIps
+						)
 					);
 				}
 
@@ -209,7 +212,7 @@
 			$conflictingNodeProcessPortCount = $this->count(array(
 				'in' => 'node_processes',
 				'where' => array(
-					'node_id' => array_filter($node)
+					'node_id' => $nodeProcessId,
 					'port' => $nodeProcessPort
 				)
 			));
