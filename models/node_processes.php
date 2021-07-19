@@ -6,73 +6,85 @@
 
 		public function add($parameters) {
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => ($defaultMessage = 'Error adding node proxy process, please try again.')
-				)
+				'message' => 'Error adding node proxy process, please try again.',
+				'status_valid' => false
 			);
 
-			if (
-				empty($parameters['data']['node_id']) === false &&
-				empty($parameters['data']['port']) === false
-			) {
-				$response['message']['text'] = 'Invalid node process port, please try again.';
-				$nodeProcessPort = $this->_validatePort($parameters['data']['port']);
+			if (empty($parameters['data']['node_id']) === false) {
+				$node = $nodeData = $this->fetch(array(
+					'fields' => array(
+						'id',
+						'node_id'
+					),
+					'from' => 'nodes',
+					'where' => array(
+						'id' => ($nodeProcessNodeId = $parameters['data']['node_id'])
+					)
+				));
+				$response['status_valid'] = ($node !== false);
 
-				if (is_int($nodeProcessPort) === true) {
-					$response['message']['text'] = $defaultMessage;
-					$node = $this->fetch(array(
-						'fields' => array(
-							'id'
-						),
-						'from' => 'nodes',
-						'where' => array(
-							'id' => ($nodeId = $parameters['data']['node_id']),
-							'node_id' => null
-						)
-					));
+				if ($response['status_valid'] === true) {
+					$response['status_valid'] = (empty($node) === false);
 
-					if ($node !== false) {
-						$response['message']['text'] = 'Invalid node ID, please try again.';
-
-						if (empty($node) === false) {
-							$response['message']['text'] = $defaultMessage;
-							$nodeProcessPortCount = $this->count(array(
-								'in' => 'node_processes',
-								'where' => array(
-									'node_id' => $nodeId,
-									'port' => $nodeProcessPort
-								)
-							));
-
-							if ($nodeProcessPortCount !== false) {
-								$response['message']['text'] = 'Node is already using this proxy process port, please try again.';
-
-								if ($nodeProcessPortCount === 0) {
-									$response['message']['text'] = $defaultMessage;
-									$nodeProcessDataSaved = $this->save(array(
-										'data' => array(
-											array(
-												'port' => $serverProxyProcessPort,
-												'server_id' => $serverId
-											)
-										),
-										'to' => 'server_proxy_processes'
-									));
-
-									if ($serverProxyProcessDataSaved === true) {
-										$response['message'] = array(
-											'status' => 'success',
-											'text' => 'Server proxy process added successfully.'
-										);
-									}
-								}
-							}
-						}
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid node ID, please try again.';
 					}
 				}
 			}
 
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			if (empty($parameters['data']['node_id']) === false) {
+				$nodeProcessPort = $this->_validatePort($parameters['data']['port']);
+				$response['status_valid'] = (is_int($nodeProcessPort) === true);
+			}
+
+			if ($response['status_valid'] === false) {
+				$response['message']['text'] = 'Invalid node process port, please try again.';
+				return $response;
+			}
+
+			$conflictingNodeProcessPortCount = $this->count(array(
+				'in' => 'node_processes',
+				'where' => array(
+					'node_id' => array_filter($node)
+					'port' => $nodeProcessPort
+				)
+			));
+			$response['status_valid'] = (is_int($conflictingNodeProcessPortCount) === true);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = ($conflictingNodeProcessPortCount === 0);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Node process port already in use, please try again.';
+				return $response;
+			}
+
+			$nodeProcessDataSaved = $this->save(array(
+				'data' => array(
+					array(
+						'node_id' => $nodeProcessNodeId,
+						'port' => $nodeProcessPort
+					)
+				),
+				'to' => 'nodes'
+			));
+
+			if ($nodeDataSaved === false) {
+				$response['status_valid'] = false;
+				return $response;
+			}
+
+			$response = array(
+				'message' => 'Node process added successfully.',
+				'status_valid' => true
+			);
 			return $response;
 		}
 
