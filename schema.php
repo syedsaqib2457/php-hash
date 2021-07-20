@@ -492,6 +492,31 @@
 				'type' => 'TINYINT(1)'
 			)
 		),
+		'user_request_limit_rules' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'user_request_limit_rule_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'user_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			)
+		),
 		'users' => array(
 			'authentication_password' => array(
 				'default' => null,
@@ -521,15 +546,11 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'status_allowing_destination_requests_only' => array( // todo: use in combination with rate limiting specific URLs / IPs to only allow or block access to specific URLs / IPs
+			'status_allowing_request_destinations_only' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
 			),
-			'status_blocking_destination_requests_only' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'status_logging_requests' => array( // add to user_rules to allow request logging for specific destinations only per user
+			'status_allowing_request_logs' => array(
 				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
