@@ -184,23 +184,6 @@
 			)
 		),
 		*/
-		'destinations' => array(
-			'destination' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(1000)'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'CHAR(6)'
-			)
-		),
 		'node_processes' => array(
 			'application_protocol' => array(
 				'default' => null,
@@ -339,6 +322,23 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'CHAR(10)'
+			)
+		),
+		'request_destinations' => array(
+			'destination' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(1000)'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'CHAR(6)'
 			)
 		),
 		'request_limit_rules' => array(
