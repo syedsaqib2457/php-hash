@@ -322,30 +322,6 @@
 				'type' => 'VARCHAR(255)'
 			)
 		),
-		'unauthorized_request_logs' => array( // todo: add unauthorized request logging / limiting to server_node_users to prevent proxy username:password brute forcing
-			'client_ip' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(30)'
-			),
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'unauthorized_request_count' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			)
-		),
 		'user_request_destinations' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
