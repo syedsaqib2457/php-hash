@@ -500,8 +500,34 @@
 				}
 			}
 
-			// ..
+			$nodeProcessData = array_intersect_key($parameters['data'], array(
+				'application_protocol' => true,
+				'external_ip_version_4' => true,
+				'external_ip_version_6' => true,
+				'internal_ip_version_4' => true,
+				'internal_ip_version_6' => true,
+				'ip' => true,
+				'node_id' => true,
+				'port' => true,
+				'transport_protocol' => true
+			));
+			$nodeProcessDataUpdated = $this->update(array(
+				'data' => $nodeProcessData,
+				'in' => 'node_processs',
+				'where' => array(
+					'id' => $nodeProcessId
+				)
+			));
 
+			if ($nodeProcessDataUpdated === false) {
+				$response['status_valid'] = false;
+				return $response;
+			}
+
+			$response = array(
+				'message' => 'Node process edited successfully.',
+				'status_valid' => true
+			);
 			return $response;
 		}
 
