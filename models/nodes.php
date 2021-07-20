@@ -190,9 +190,9 @@
 				'data' => $nodeData,
 				'to' => 'nodes'
 			));
+			$response['status_valid'] = ($nodeDataSaved === true);
 
-			if ($nodeDataSaved === false) {
-				$response['status_valid'] = false;
+			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
@@ -566,9 +566,9 @@
 					'id' => $nodeId
 				)
 			));
+			$response['status_valid'] = ($nodeDataUpdated === true);
 
-			if ($nodeDataUpdated === false) {
-				$response['status_valid'] = false;
+			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
@@ -619,12 +619,12 @@
 					'node_id' => $selectedNodeIds
 				)
 			));
+			$response['status_valid'] = (
+				$nodeDataDeleted === true &&
+				$nodeUserDataDeleted === true
+			);
 
-			if (
-				$nodeDataDeleted === false ||
-				$nodeUserDataDeleted === false
-			) {
-				$response['status_valid'] = false;
+			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
