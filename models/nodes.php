@@ -18,6 +18,7 @@
 			}
 
 			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node type, please try again.';
 				return $response;
 			}
 
@@ -195,6 +196,18 @@
 				'message' => 'Error editing node, please try again.',
 				'status_valid' => false
 			);
+
+			if (empty($parameters['data']['type']) === false) {
+				$response['status_valid'] = in_array($parameters['data']['type'], array(
+					'nameserver',
+					'proxy'
+				));
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Invalid node type, please try again.';
+					return $response;
+				}
+			}
 
 			if (empty($parameters['data']['id']) === false) {
 				$node = $this->fetch(array(
