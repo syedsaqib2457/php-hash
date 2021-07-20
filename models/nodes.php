@@ -203,6 +203,165 @@
 			return $response;
 		}
 
+		public function authenticate($parameters) {
+			$response = array(
+				'message' => 'Error authenticating nodes, please try again.',
+				'status_valid' => false
+			);
+
+			if (empty($parameters['ids']['nodes']) === true) {
+				$response['message'] = 'Invalid node IDs, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				(
+					empty($parameters['data']['authentication_password']) === false ||
+					empty($parameters['data']['authentication_username']) === false
+				) &&
+				(
+					empty($parameters['data']['authentication_password']) === true ||
+					empty($parameters['data']['authentication_username']) === true
+				)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Authentication username and password must be either set or empty, please try again.';
+				return $response;
+			}
+
+			if (empty($parameters['data']['authentication_password']) === true) {
+				$parameters['data']['authentication_password'] = $parameters['data']['authentication_username'] = null;
+			}
+
+			$response['status_valid'] = (
+				empty($parameters['data']['authentication_username']) === true ||
+				(
+					strlen($parameters['data']['authentication_username']) > 10 &&
+					strlen($parameters['data']['authentication_username']) < 20 &&
+					strlen($parameters['data']['authentication_password']) > 10 &&
+					strlen($parameters['data']['authentication_password']) < 20
+				)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Authentication username and password must be between 10 and 20 characters, please try again.';
+				return $response;
+			}
+
+			if (empty($parameters['data']['authentication_whitelist']) === false) {
+				$authenticationWhitelist = array();
+				$authenticationWhitelistSourceVersions = $this->_sanitizeIps($parameters['data']['authentication_whitelist'], true);
+
+				if (!empty($authenticationWhitelistSourceVersions)) {
+					foreach ($authenticationWhitelistSourceVersions as $authenticationWhitelistSources) {
+						$authenticationWhitelist += $authenticationWhitelistSources;
+					}
+				}
+
+				$parameters['data']['authentication_whitelist'] = implode("\n", $authenticationWhitelist);
+			}
+
+			$userParameters = array(
+				'fields' => array(
+					'id'
+				),
+				'from' => 'users',
+				'where' => array_intersect_key($parameters['data'], array(
+					'authentication_password',
+					'authentication_username',
+					'authentication_whitelist'
+				))
+			));
+			$user = $this->fetch($userParameters);
+			$response['status_valid'] = ($user !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			if (empty($userId) === false) {
+				$parameters['data']['id'] = $userId = $user['id'];
+			}
+
+			$userDataSaved = $this->save(array(
+				'data' => array(
+					array_intersect_key($parameters['data'], array(
+						'authentication_password',
+						'authentication_username',
+						'authentication_whitelist',
+						'id'
+					))
+				),
+				'to' => 'users'
+			));
+			$response['status_valid'] = ($userDataSaved === true);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			if (empty($userId) === true) {
+				$user = $this->fetch($userParameters);
+				$response['status_valid'] = ($user !== false);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				$userId = $user['id'];
+			}
+
+			$nodeUsers = $this->fetch(array(
+				'fields' => array(
+					'id',
+					'node_id',
+					'user_id'
+				),
+				'from' => 'node_users',
+				'where' => array(
+					'node_id' => ($nodeIds = $parameters['ids']['nodes']),
+					'user_id' => $userId
+				)
+			));
+			$response['status_valid'] = ($nodeUsers !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$nodeUserData = array();
+
+			foreach ($nodeUsers as $nodeUser) {
+				$nodeUserData[$nodeUser['node_id']] = $nodeUser;
+			}
+
+			$nodeIds = array_diff($nodeIds, array_keys($nodeUserData));
+
+			foreach ($nodeIds as $nodeId) {
+				$nodeUserData[] = array(
+					'node_id' => $nodeId,
+					'user_id' => $user['id']
+				);
+			}
+
+			$nodeUserDataSaved = $this->save(array(
+				'data' => $nodeUserData,
+				'to' => 'node_users'
+			));
+			$response['status_valid'] = ($nodeUserDataSaved === true);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response = array(
+				'message' => 'Nodes authenticated successfully.',
+				'status_valid' => true
+			);
+			return $response;
+		}
+
 		public function edit($parameters) {
 			$response = array(
 				'message' => 'Error editing node, please try again.',
