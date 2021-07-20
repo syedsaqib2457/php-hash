@@ -130,16 +130,21 @@
 				}
 			}
 
-			// todo: count conflicting node process ips
 			$conflictingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
 					'OR' => $nodeExternalIps
 				)
 			));
+			$conflictingNodeProcessCountParameters = array(
+				'in' => 'node_processes',
+				'where' => array(
+					'OR' => $nodeExternalIps
+				)
+			);
 
 			if (empty($nodeId) !== false) {
-				$conflictingNodeCountParameters['where']['OR'] = array(
+				$conflictingNodeCountParameters['where']['OR'] = $conflictingNodeProcessCountParameters['where']['OR'] = array(
 					$conflictingNodeCountParameters['where'],
 					array(
 						'node_id' => $nodeId,
@@ -149,13 +154,20 @@
 			}
 
 			$conflictingNodeCount = $this->count($conflictingNodeCountParameters);
-			$response['status_valid'] = (is_int($conflictingNodeCount) === true);
+			$conflictingNodeProcessCount = $this->count($conflictingNodeProcessCountParameters);
+			$response['status_valid'] = (
+				is_int($conflictingNodeCount) === true &&
+				is_int($conflictingNodeProcessCount) === true
+			);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = ($conflictingNodeCount === 0);
+			$response['status_valid'] = (
+				$conflictingNodeCount === 0 &&
+				$conflictingNodeProcessCount === 0
+			);
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Node IPs already in use, please try again.';
