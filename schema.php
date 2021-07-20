@@ -39,8 +39,6 @@
 
 
 	/*
-		destinations (url/ip/subnet)
-		request_logs
 		rules
 		user_rules (add statusblockonly and statusallowonly to this table)
 		user_destinations
@@ -117,22 +115,6 @@
 				'type' => 'TEXT'
 			)
 		),
-		'proxy_urls' => array(
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'url' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(1000)'
-			)
-		),
 		'proxy_url_request_limitation_proxies' => array(
 			'id' => array(
 				'auto_increment' => true,
@@ -202,6 +184,23 @@
 			)
 		),
 		*/
+		'destinations' => array(
+			'destination' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(1000)'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'CHAR(6)'
+			)
+		),
 		'node_processes' => array(
 			'application_protocol' => array(
 				'default' => null,
