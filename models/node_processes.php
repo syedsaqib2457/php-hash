@@ -533,73 +533,48 @@
 
 		public function remove($parameters) {
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => ($defaultMessage = 'Error removing server proxy processes, please try again.')
-				)
+				'message' => 'Error removing node processes, please try again.',
+				'status_valid' => false
 			);
 
 			if (empty($parameters['items'][$parameters['item_list_name']]['data']) === false) {
-				$selectedServerProxyProcessParameters = $serverProxyProcessParameters = array(
-					'fields' => array(
-						'id'
-					),
-					'in' => 'server_proxy_processes',
+				$selectedNodeProcessIds = $parameters['items'][$parameters['item_list_name']]['data'])
+				$selectedNodeProcessCount = $this->count(array(
+					'in' => 'nodes',
 					'where' => array(
-						'server_id' => ($serverId = $parameters['server_id'])
+						'id' => $selectedNodeProcessIds
 					)
-				);
-				$serverProxyProcessIds = $selectedServerProxyProcessParameters['where']['id'] = $parameters['items'][$parameters['item_list_name']]['data'];
-				$selectedServerProxyProcessCount = $this->count($selectedServerProxyProcessParameters);
-				$serverProxyProcessCount = $this->count($serverProxyProcessParameters);
-				$selectedServerProxyProcessParameters['from'] = $serverProxyProcessParameters['from'] = 'server_proxy_processes';
-				$selectedServerProxyProcesses = $this->fetch($selectedServerProxyProcessParameters);
-				$serverProxyProcesses = $this->fetch($serverProxyProcessParameters);
-
-				if (
-					$selectedServerProxyProcessCount !== false &&
-					$serverProxyProcessCount !== false &&
-					$selectedServerProxyProcesses !== false &&
-					$serverProxyProcesses !== false
-				) {
-					$response['message']['text'] = 'Invalid server proxy process IDs, please try again.';
-
-					if (
-						$selectedServerProxyProcessCount > 0 &&
-						$serverProxyProcessCount > 0
-						empty($serverProxyProcesses) === false &&
-						empty($selectedServerProxyProcesses) === false
-					) {
-						$response['message']['text'] = 'There is a minimum requirement of 10 server proxy processes, please try again.';
-						$remainingServerProxyProcessCount = ($serverProxyProcessCount - $selectedServerProxyProcessCount);
-
-						if ($remainingServerProxyProcessCount >= 10) {
-							$response['message']['text'] = $defaultMessage;
-							$serverProxyProcessData = array();
-
-							foreach ($serverProxyProcessIds as $serverProxyProcessId) {
-								$serverProxyProcessData[] = array(
-									'id' => $serverProxyProcessId,
-									'removed' => true
-								);
-							}
-
-							$serverProxyProcessDataSaved = $this->save(array(
-								'data' => $serverProxyProcessData,
-								'to' => 'server_proxy_processes'
-							));
-
-							if ($serverProxyProcessDataSaved === true) {
-								$response['message'] = array(
-									'status' => 'success',
-									'text' => 'Server proxy processes removed successfully.'
-								);
-							}
-						}
-					}
-				}
+				));
+				$response['status_valid'] = (is_int($selectedNodeProcessCount) === true);
 			}
 
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = ($selectedNodeProcessCount === count($selectedNodeProcessIds));
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node process IDs, please try again.';
+				return $response;
+			}
+
+			$nodeProcessDataDeleted = $this->delete(array(
+				'from' => 'node_processes',
+				'where' => array(
+					'id' => $selectedNodeProcessIds
+				)
+			));
+
+			if ($nodeProcessDataDeleted === false) {
+				$response['status_valid'] = false;
+				return $response;
+			}
+
+			$response = array(
+				'message' => 'Node processes removed successfully.',
+				'status_valid' => true
+			);
 			return $response;
 		}
 

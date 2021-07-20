@@ -393,7 +393,7 @@
 
 		public function remove($parameters) {
 			$response = array(
-				'message' => 'Error removing server nodes, please try again.',
+				'message' => 'Error removing nodes, please try again.',
 				'status_valid' => false
 			);
 
