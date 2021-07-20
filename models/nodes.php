@@ -450,7 +450,7 @@
 	}
 
 	if (!empty($configuration->parameters)) {
-		$serverNodesModel = new ServerNodesModel();
-		$data = $serverNodesModel->route($configuration->parameters);
+		$nodesModel = new NodesModel();
+		$data = $nodesModel->route($configuration->parameters);
 	}
 ?>

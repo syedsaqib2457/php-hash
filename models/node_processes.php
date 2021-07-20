@@ -645,7 +645,7 @@
 	}
 
 	if (!empty($configuration->parameters)) {
-		$serverProxyProcessesModel = new ServerProxyProcessesModel();
-		$data = $serverProxyProcessesModel->route($configuration->parameters);
+		$nodeProcessesModel = new NodeProcessesModel();
+		$data = $nodeProcessesModel->route($configuration->parameters);
 	}
 ?>
