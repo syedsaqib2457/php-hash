@@ -341,6 +341,29 @@
 				'type' => 'CHAR(10)'
 			)
 		),
+		'request_limit_rules' => array(
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'request_interval_type' => array(
+				'default' => "'minute'",
+				'type' => 'VARCHAR(255)'
+			),
+			'request_interval_value' => array(
+				'default' => 1,
+				'type' => 'SMALLINT(3)'
+			),
+			'request_limit_interval_type' => array(
+				'default' => "'minute'",
+				'type' => 'VARCHAR(255)'
+			),
+			'request_limit_interval_value' => array(
+				'default' => 1,
+				'type' => 'SMALLINT(3)'
+			)
+		),
 		'request_logs' => array(
 			'bytes_received' => array(
 				'type' => 'BIGINT(11)'
