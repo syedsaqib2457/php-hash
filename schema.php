@@ -373,7 +373,7 @@
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'node_id' => array(
+			'node_user_id' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
