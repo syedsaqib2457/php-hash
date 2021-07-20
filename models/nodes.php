@@ -203,6 +203,11 @@
 			return $response;
 		}
 
+		// todo: combine authenticate and request_limit functions into configure() function
+		// todo: add download function
+		// todo: add search function
+		// todo: delete proxies.php
+
 		public function authenticate($parameters) {
 			$response = array(
 				'message' => 'Error authenticating nodes, please try again.',
