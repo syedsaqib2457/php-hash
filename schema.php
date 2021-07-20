@@ -36,6 +36,16 @@
 	// todo: forward internal server node ips to external ip if the internal ip is private and isn't on the primary interface
 	// todo: consistently add status_ prefix to all boolean columns that represent status (active, limited, etc)
 	// todo: change all url_request_log names to request_log since URLs will be an optional field when DNS + reverse proxies are included
+
+
+	/*
+		destinations (url/ip/subnet)
+		request_logs
+		rules
+		user_rules (add statusblockonly and statusallowonly to this table)
+		user_destinations
+	/*
+
 	$schema = array(
 		/*'proxies' => array(
 			'block_all_urls' => array(
@@ -191,58 +201,7 @@
 				'type' => 'TINYINT(1)'
 			)
 		),
-		'proxy_url_request_logs' => array(
-			'bytes_received' => array(
-				'type' => 'BIGINT(11)'
-			),
-			'bytes_sent' => array(
-				'type' => 'BIGINT(11)'
-			),
-			'client_ip' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(30)'
-			),
-			'code' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'SMALLINT(3)'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'proxy_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'proxy_url_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'server_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'target_ip' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(30)'
-			),
-			'target_url' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(1000)'
-			),
-			'username' => array(
-				'default' => "'-'",
-				'type' => 'VARCHAR(15)'
-			)
-		),*/
+		*/
 		'node_processes' => array(
 			'application_protocol' => array(
 				'default' => null,
@@ -383,6 +342,53 @@
 				'type' => 'CHAR(10)'
 			)
 		),
+		'request_logs' => array(
+			'bytes_received' => array(
+				'type' => 'BIGINT(11)'
+			),
+			'bytes_sent' => array(
+				'type' => 'BIGINT(11)'
+			),
+			'code' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'SMALLINT(3)'
+			),
+			'destination_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'destination_ip' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(30)'
+			),
+			'destination_url' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(1000)'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'node_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'source_ip' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(30)'
+			),
+			'username' => array(
+				'default' => "'-'",
+				'type' => 'VARCHAR(15)'
+			)
+		),
 		'settings' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -493,15 +499,15 @@
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
 			),
-			'status_allowing_requests' => array( // todo: use in combination with rate limiting specific URLs / IPs to only allow or block access to specific URLs / IPs
+			'status_allowing_destination_requests_only' => array( // todo: use in combination with rate limiting specific URLs / IPs to only allow or block access to specific URLs / IPs
 				'default' => 0,
 				'type' => 'TINYINT(1)'
 			),
-			'status_blocking_requests' => array(
+			'status_blocking_destination_requests_only' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
 			),
-			'status_logging_requests' => array(
+			'status_logging_requests' => array( // add to user_rules to allow request logging for specific destinations only per user
 				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
