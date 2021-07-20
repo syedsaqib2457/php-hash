@@ -335,7 +335,6 @@
 				}
 			}
 
-			// todo: count conflicting node process ips
 			$conflictingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
@@ -351,10 +350,28 @@
 					)
 				)
 			));
+			$conflictingNodeProcessCountParameters = array(
+				'in' => 'node_processes',
+				'where' => array(
+					'OR' => array(
+						array(
+							'OR' => $nodeExternalIps
+						),
+						array(
+							'node_id' => $nodeId,
+							'OR' => $nodeIps
+						)
+					)
+				)
+			);
 
 			if (empty($node['node_id']) === false) {
 				$conflictingNodeCountParameters['where']['OR'][] = array(
 					'id' => $node['node_id'],
+					'OR' => $nodeIps
+				);
+				$conflictingNodeProcessCountParameters['where']['OR'][] = array(
+					'node_id' => $node['node_id'],
 					'OR' => $nodeIps
 				);
 			}
