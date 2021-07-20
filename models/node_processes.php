@@ -26,7 +26,8 @@
 				$nodeParameters = array(
 					'fields' => array(
 						'id',
-						'node_id'
+						'node_id',
+						'type'
 					),
 					'from' => 'nodes',
 					'where' => array(
