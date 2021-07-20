@@ -580,38 +580,12 @@
 
 		public function view($parameters = array()) {
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => 'Error viewing server proxy process, please try again.'
-				)
+				'message' => 'Error viewing node process, please try again.',
+				'status_valid' => false
 			);
 
 			if (empty($parameters['where']['id']) === false) {
-				$serverProxyProcess = $this->fetch(array(
-					'fields' => array(
-						'id',
-						'port',
-						'server_id'
-					),
-					'from' => 'server_proxy_processes',
-					'where' => array(
-						'id' => $parameters['where']['id']
-					)
-				));
-
-				if ($serverProxyProcess !== false) {
-					$response['message']['text'] = 'Invalid server proxy process ID, please try again';
-
-					if (empty($serverProxyProcess) === false) {
-						$response = array(
-							'data' => $serverProxyProcess,
-							'message' => array(
-								'status' => 'success',
-								'text' => 'Server proxy process viewed successfully.'
-							)
-						);
-					}
-				}
+				// ..
 			}
 
 			return $response;
