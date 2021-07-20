@@ -37,153 +37,7 @@
 	// todo: consistently add status_ prefix to all boolean columns that represent status (active, limited, etc)
 	// todo: change all url_request_log names to request_log since URLs will be an optional field when DNS + reverse proxies are included
 
-
-	/*
-		rules
-		user_rules (add statusblockonly and statusallowonly to this table)
-		user_destinations
-	/*
-
 	$schema = array(
-		/*'proxies' => array(
-			'block_all_urls' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'enable_url_request_logs' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'external_ip' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(30)'
-			),
-			'external_ip_version' => array(
-				'default' => 4,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'internal_ip' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(30)'
-			),
-			'internal_ip_version' => array(
-				'default' => 4,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-			),
-			'only_allow_urls' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			),
-			'password' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(40)'
-			),
-			'server_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'server_node_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'status' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(10)'
-			),
-			'username' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(40)'
-			),
-			'whitelisted_ips' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'TEXT'
-			)
-		),
-		'proxy_url_request_limitation_proxies' => array(
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'proxy_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'proxy_url_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'proxy_url_request_limitation_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'server_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			)
-		),
-		'proxy_url_request_limitations' => array(
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'limited' => array(
-				'default' => 0,
-				'null' => true,
-				'type' => 'TINYINT(1)'
-                        ),
-			'previous_limitation_date' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'DATETIME'
-			),
-			'proxy_url_block_interval_type' => array(
-				'default' => "'minute'",
-				'type' => 'VARCHAR(255)'
-			),
-			'proxy_url_block_interval_value' => array(
-				'default' => 1,
-				'type' => 'SMALLINT(3)'
-			),
-			'proxy_url_request_interval_type' => array(
-				'default' => "'minute'",
-				'type' => 'VARCHAR(255)'
-			),
-			'proxy_url_request_interval_value' => array(
-				'default' => 1,
-				'type' => 'SMALLINT(3)'
-			),
-			'proxy_url_request_number' => array(
-				'default' => 1,
-				'type' => 'BIGINT(11)'
-			),
-			'removed' => array(
-				'default' => 0,
-				'type' => 'TINYINT(1)'
-			)
-		),
-		*/
 		'node_processes' => array(
 			'application_protocol' => array(
 				'default' => null,
@@ -490,6 +344,31 @@
 			'unauthorized_request_count' => array(
 				'default' => 0,
 				'type' => 'TINYINT(1)'
+			)
+		),
+		'user_request_destinations' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'request_destination_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'user_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
 			)
 		),
 		'user_request_limit_rules' => array(
