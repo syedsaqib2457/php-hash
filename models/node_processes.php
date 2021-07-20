@@ -242,9 +242,9 @@
 				'data' => $nodeProcessData,
 				'to' => 'nodes'
 			));
+			$response['status_valid'] = ($nodeProcessDataSaved === true);
 
-			if ($nodeProcessDataSaved === false) {
-				$response['status_valid'] = false;
+			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
@@ -518,9 +518,9 @@
 					'id' => $nodeProcessId
 				)
 			));
+			$response['status_valid'] = ($nodeProcessDataUpdated === true);
 
-			if ($nodeProcessDataUpdated === false) {
-				$response['status_valid'] = false;
+			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
@@ -565,9 +565,9 @@
 					'id' => $selectedNodeProcessIds
 				)
 			));
+			$response['status_valid'] = ($nodeProcessDataDeleted === true);
 
-			if ($nodeProcessDataDeleted === false) {
-				$response['status_valid'] = false;
+			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
