@@ -220,15 +220,14 @@
 		),
 		'request_logs' => array(
 			'bytes_received' => array(
+				'default' => null,
+				'null' => true,
 				'type' => 'BIGINT(11)'
 			),
 			'bytes_sent' => array(
-				'type' => 'BIGINT(11)'
-			),
-			'code' => array(
 				'default' => null,
 				'null' => true,
-				'type' => 'SMALLINT(3)'
+				'type' => 'BIGINT(11)'
 			),
 			'destination_id' => array(
 				'default' => null,
@@ -254,6 +253,11 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'response_code' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'SMALLINT(3)'
 			),
 			'source_ip' => array(
 				'default' => null,
