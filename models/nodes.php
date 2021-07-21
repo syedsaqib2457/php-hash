@@ -273,8 +273,6 @@
 			return $response;
 		}
 
-		// todo: delete proxies.php
-
 		public function authenticate($parameters) {
 			$response = array(
 				'message' => 'Error authenticating nodes, please try again.',
