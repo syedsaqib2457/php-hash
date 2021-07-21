@@ -385,6 +385,15 @@
 			return $response;
 		}
 
+		public function download($parameters) {
+			$response = array(
+				'message' => 'Error downloading nodes, please try again.',
+				'status_valid' => false
+			);
+			// ..
+			return $response;
+		}
+
 		public function edit($parameters) {
 			$response = array(
 				'message' => 'Error editing node, please try again.',
