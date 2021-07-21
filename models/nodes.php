@@ -7,81 +7,70 @@
 		public function activate($parameters) {
 			$response = array(
 				'message' => 'Error activating node, please try again.',
-				'status_valid' => false
+				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
 
-			/*
-			if (empty($parameters['where']['id']) === false) {
-				$server = $this->fetch(array(
-					'fields' => array(
-						'id',
-						'main_ip_version_4',
-						'main_ip_version_6',
-						'status_active',
-						'status_deployed'
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$node = $this->fetch(array(
+				'fields' => array(
+					'node_id',
+					'status_active'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'id' => ($nodeId = $parameters['where']['id'])
+				)
+			));
+			$response['status_valid'] = ($node !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($node) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node ID, please try again.';
+				return $response;
+			}
+
+			if (empty($node['node_id']) !== false) {
+				$nodeId = $node['node_id'];
+			}
+
+			$response = array(
+				'data' => array(
+					'command' => 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . ($url = $_SERVER['REQUEST_SCHEME'] . '://' . $this->settings['base_domain']) . '/assets/php/proxy.php?' . time() . '" && sudo php proxy.php ' . $nodeId . ' ' . $url,
+				),
+				'message' => 'Node is ready for activation.',
+				'status_valid' => true
+			);
+
+			if ($node['status_active'] === true) {
+				$response['message'] = 'Node is already activated.';
+			} elseif ($parameters['user']['endpoint'] === false) {
+				$nodeDataUpdated = $this->update(array(
+					'data' => array(
+						'status_active' => true
 					),
-					'from' => 'servers',
 					'where' => array(
-						'id' => ($serverId = $parameters['where']['id'])
+						'OR' => array(
+							'id' => $nodeId,
+							'node_id' => $nodeId
+						)
 					)
 				));
+				$response['status_valid'] = ($nodeDataUpdated === true);
 
-				if ($server !== false) {
-					$response['message']['text'] = 'Invalid server ID, please try again.';
-
-					if (empty($server) === false) {
-						$response = array(
-							'data' => array(
-								'deployment_command' => 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . ($url = $_SERVER['REQUEST_SCHEME'] . '://' . $this->settings['base_domain']) . '/assets/php/proxy.php?' . time() . '" && sudo php proxy.php ' . $serverId . ' ' . $url,
-								'server' => $server
-							),
-							'message' => array(
-								'status' => 'success',
-								'text' => 'Server is ready for activation.'
-							)
-						);
-
-						if ($server'status_active'] === true) {
-							$response['message']['text'] = 'Server is already activated.';
-						} elseif (empty($parameters['user']['endpoint']) === false) {
-							$response['message'] = array(
-								'status' => 'error',
-								'text' => $defaultMessage
-							);
-							$serverNodeDataUpdated = $this->update(array(
-								'data' => array(
-									'status_active' => true
-								),
-								'in' => 'server_nodes',
-								'where' => array(
-									'server_id' => $serverId
-								)
-							));
-							$serverDataUpdated = $this->update(array(
-								'data' => array(
-									'status_active' => true
-								),
-								'in' => 'servers',
-								'where' => array(
-									'id' => $serverId
-								)
-							));
-
-							if (
-								$serverNodeDataUpdated === true &&
-								$serverDataUpdated === true
-							) {
-								$response['data']['server']['status_active'] = true;
-								$response['message'] = array(
-									'status' => 'success',
-									'text' => 'Server activated successfully.'
-								);
-							}
-						}
-					}
+				if ($response['status_valid'] === false) {
+					return $response;
 				}
+
+				$response['message'] = 'Node activated successfully.';
 			}
-			*/
 
 			return $response;
 		}
