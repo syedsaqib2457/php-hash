@@ -438,77 +438,64 @@
 				'status_valid' => false
 			);
 
-			/*
-			if (!empty($parameters['where']['id'])) {
-				$response['message']['text'] = 'Invalid server ID, please try again.';
-				$server = $this->fetch(array(
-					'fields' => array(
-						'id',
-						'ip',
-						'status_active'
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$node = $this->fetch(array(
+				'fields' => array(
+					'node_id',
+					'status_active'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'id' => ($nodeId = $parameters['where']['id'])
+				)
+			));
+			$response['status_valid'] = ($node !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($node) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node ID, please try again.';
+				return $response;
+			}
+
+			if (empty($node['node_id']) !== false) {
+				$nodeId = $node['node_id'];
+			}
+
+			$response = array(
+				'message' => 'Node is ready for deactivation.',
+				'status_valid' => true
+			);
+
+			if ($node['status_active'] === false) {
+				$response['message'] = 'Node is already deactivated.';
+			} elseif ($parameters['user']['endpoint'] === false) {
+				$nodeDataUpdated = $this->update(array(
+					'data' => array(
+						'status_active' => false
 					),
-					'from' => 'servers',
 					'where' => array(
-						'id' => ($serverId = $parameters['where']['id'])
+						'OR' => array(
+							'id' => $nodeId,
+							'node_id' => $nodeId
+						)
 					)
 				));
+				$response['status_valid'] = ($nodeDataUpdated === true);
 
-				if ($server !== false) {
-					$response['message']['text'] = 'Invalid server ID, please try again.';
-
-					if (empty($server) === false) {
-						$response = array(
-							'data' => array(
-								'server' => $server
-							),
-							'message' => array(
-								'status' => 'success',
-								'text' => 'Server is ready for deactivation.'
-							)
-						);
-
-						if ($server['status_active'] === false) {
-							$response['message']['text'] = 'Server is already deactivated.';
-						} elseif (empty($parameters['data']['confirm_deactivation']) === false) {
-							$response['message'] = array(
-								'status' => 'error',
-								'text' => $defaultMessage
-							);
-							$serverNodeDataUpdated = $this->update(array(
-								'data' => array(
-									'status_active' => false,
-									'status_processing' => false
-								),
-								'in' => 'server_nodes',
-								'where' => array(
-									'server_id' => $serverId
-								)
-							));
-							$serverDataUpdated = $this->update(array(
-								'data' => array(
-									'status_active' => false
-								),
-								'in' => 'servers',
-								'where' => array(
-									'id' => $serverId
-								)
-							));
-
-							if (
-								$serverDataUpdated === true &&
-								$serverNodeDataUpdated === true
-							) {
-								$response['data']['server']['status_active'] = false;
-								$response['message'] = array(
-									'status' => 'success',
-									'text' => 'Server deactivated successfully.'
-								);
-							}
-						}
-					}
+				if ($response['status_valid'] === false) {
+					return $response;
 				}
+
+				$response['message'] = 'Node deactivated successfully.';
 			}
-			*/
 
 			return $response;
 		}
