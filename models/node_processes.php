@@ -537,22 +537,22 @@
 				'status_valid' => false
 			);
 
-			if (empty($parameters['items'][$parameters['item_list_name']]['data']) === false) {
-				$selectedNodeProcessIds = $parameters['items'][$parameters['item_list_name']]['data'])
-				$selectedNodeProcessCount = $this->count(array(
+			if (empty($parameters['ids']['node_processes']) === false) {
+				$nodeProcessIds = $parameters['ids']['node_processes'];
+				$nodeProcessCount = $this->count(array(
 					'in' => 'nodes',
 					'where' => array(
-						'id' => $selectedNodeProcessIds
+						'id' => $nodeProcessIds
 					)
 				));
-				$response['status_valid'] = (is_int($selectedNodeProcessCount) === true);
+				$response['status_valid'] = (is_int($nodeProcessCount) === true);
 			}
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = ($selectedNodeProcessCount === count($selectedNodeProcessIds));
+			$response['status_valid'] = ($nodeProcessCount === count($nodeProcessIds));
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid node process IDs, please try again.';
@@ -562,7 +562,7 @@
 			$nodeProcessDataDeleted = $this->delete(array(
 				'from' => 'node_processes',
 				'where' => array(
-					'id' => $selectedNodeProcessIds
+					'id' => $nodeProcessIds
 				)
 			));
 			$response['status_valid'] = ($nodeProcessDataDeleted === true);
