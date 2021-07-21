@@ -490,96 +490,84 @@
 				}
 
 				$response['message'] = 'Node deactivated successfully.';
+				return $response;
 			}
 
+			$response['message'] = 'Node is ready for deactivation.';
 			return $response;
 		}
 
 		public function deploy($parameters) {
 			$response = array(
 				'message' => 'Error deploying node, please try again.',
-				'status_valid' => false
+				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
 
-			/*
-			if (!empty($parameters['where']['id'])) {
-				$server = $this->fetch(array(
-					'fields' => array(
-						'id',
-						'main_ip_version_4',
-						'main_ip_version_6',
-						'status_active',
-						'status_deployed'
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$node = $this->fetch(array(
+				'fields' => array(
+					'node_id',
+					'status_active',
+					'status_deployed'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'id' => ($nodeId = $parameters['where']['id'])
+				)
+			));
+			$response['status_valid'] = ($node !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($node) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node ID, please try again.';
+				return $response;
+			}
+
+			if (empty($node['node_id']) !== false) {
+				$nodeId = $node['node_id'];
+			}
+
+			$response['status_valid'] = (empty($node['status_active']) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Node activation required before deployment, please try again.';
+				return $response;
+			}
+
+			if ($node['status_deployed'] === true) {
+				$response['message'] = 'Node is already deployed.';
+				return $response;
+			} elseif (empty($parameters['user']['endpoint']) === false) {
+				$nodeDataUpdated = $this->update(array(
+					'data' => array(
+						'status_deployed' => true
 					),
-					'from' => 'servers',
 					'where' => array(
-						'id' => ($serverId = $parameters['where']['id'])
+						'OR' => array(
+							'id' => $nodeId,
+							'node_id' => $nodeId
+						)
 					)
 				));
+				$response['status_valid'] = ($nodeDataUpdated === true);
 
-				if ($server !== false) {
-					$response['message']['text'] = 'Invalid server ID, please try again.';
-
-					if (empty($server) === false) {
-						$response['message']['text'] = 'Server activation required before deployment, please try again.';
-
-						if ($server['status_active'] === true) {
-							$response = array(
-								'data' => array(
-									'server' => $server
-								),
-								'message' => array(
-									'status' => 'success',
-									'text' => 'Server is ready for deployment.'
-								)
-							);
-
-							if ($response['data']['status_deployed'] === true) {
-								$response['message']['text'] = 'Server is already deployed.';
-							}
-
-							if (empty($parameters['user']['endpoint']) === false) {
-								$response['message'] = array(
-									'status' => 'error',
-									'text' => $defaultMessage
-								);
-								$serverNodeDataUpdated = $this->update(array(
-									'data' => array(
-										'status_active' => true,
-										'status_processing' => false
-									),
-									'in' => 'server_nodes',
-									'where' => array(
-										'server_id' => $serverId
-									)
-								));
-								$serverDataUpdated = $this->update(array(
-									'data' => array(
-										'status_deployed' => true
-									),
-									'in' => 'servers',
-									'where' => array(
-										'id' => $serverId
-									)
-								));
-
-								if (
-									$serverNodeDataUpdated === true &&
-									$serverDataUpdated === true
-								) {
-									$response['data']['server']['status_deployed'] = true;
-									$response['message'] = array(
-										'status' => 'success',
-										'text' => 'Server deployed successfully.'
-									);
-								}
-							}
-						}
-					}
+				if ($response['status_valid'] === false) {
+					return $response;
 				}
-			}
-			*/
 
+				$response['message'] = 'Node deployed successfully.';
+				return $response;
+			}
+
+			$response['message'] = 'Node is ready for deployment.';
 			return $response;
 		}
 
