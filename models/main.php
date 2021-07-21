@@ -1677,61 +1677,56 @@
 			return $response;
 		}
 
-		public function shellProcessPublicRequestLimitations() {
+		public function shellProcessRequestLogs() {
 			// todo: limit prefixes instead of addresses for ipv6
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => 'There aren\'t any new public request limitations to process, please try again later.'
-				)
+				'message' => 'Error processing request logs, please try again.',
+				'status_valid' => false
 			);
-			$publicRequestLimitationsToProcess = $this->fetch(array(
+			$requestLogsToProcess = $this->fetch(array(
 				'fields' => array(
 					'id',
-					'client_ip'
+					'source_ip'
 				),
-				'from' => 'public_request_limitations',
+				'from' => 'request_logs',
 				'where' => array(
-					'request_attempts >=' => 10
+					'node_user_id' => null,
+					'response_code >=' => 10
 				)
 			));
 
-			if (!empty($publicRequestLimitationsToProcess['count'])) {
-				$publicRequestLimitationsPath = $this->settings['base_path'] . '/public_request_limitations/';
+			if (empty($requestLogsToProcess) === false) {
+				$requestLogsPath = $this->settings['base_path'] . '/request_logs/';
 
-				if (!is_dir($publicRequestLimitationsPath)) {
-					mkdir($publicRequestLimitationsPath, 0755);
+				if (is_dir($requestLogsPath) === false) {
+					mkdir($requestLogsPath, 0755);
 				}
 
-				foreach ($publicRequestLimitationsToProcess['data'] as $publicRequestLimitationToProcess) {
-					$clientIp = $publicRequestLimitationToProcess['client_ip'];
-					$publicRequestLimitationToProcessPath = explode('.', $clientIp);
-					$publicRequestLimitationToProcessFile = array_pop($publicRequestLimitationToProcessPath);
-					$publicRequestLimitationToProcessPath = $publicRequestLimitationsPath . implode('/', $publicRequestLimitationToProcessPath) . '/';
+				foreach ($requestLogsToProcess as $requestLogToProcess) {
+					$requestLogToProcessPath = $requestLogsPath . implode('/', explode('.', $requestLogToProcessPath['source_ip'])) . '/';
 
-					if (!is_dir($publicRequestLimitationToProcessPath)) {
-						mkdir($publicRequestLimitationToProcessPath, 0755, true);
+					if (is_dir($requestLogToProcessPath) === false) {
+						mkdir($requestLogToProcessPath, 0755, true);
 					}
 
-					$publicRequestLimitationToProcessFile = $publicRequestLimitationToProcessPath . $publicRequestLimitationToProcessFile;
+					$requestLogToProcessFile = $requestLogToProcessPath . '.';
 
-					if (!file_exists($publicRequestLimitationToProcessFile)) {
-						touch($publicRequestLimitationToProcessFile);
-					} elseif (filemtime($publicRequestLimitationToProcessFile) < strtotime('-1 hour')) {
-						unlink($publicRequestLimitationToProcessFile);
-						$this->delete(array(
-							'from' => 'public_request_limitations',
-							'where' => array(
-								'client_ip' => $clientIp
-							)
-						));
+					if (filemtime($requestLogToProcessFile) < strtotime('-1 hour')) {
+						rmdir($requestLogToProcessPath);
 					}
 				}
 
+				$this->delete(array(
+					'from' => 'request_logs',
+					'where' => array(
+						'modified <' => date('Y-m-d H:i:s', strtotime('-1 hour')),
+						'node_user_id' => null
+					)
+				));
 				$response = array(
 					'message' => array(
 						'status' => 'success',
-						'text' => 'Public request limitations processed successfully.'
+						'text' => 'Request logs processed successfully.'
 					)
 				);
 			}
