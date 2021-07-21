@@ -4,6 +4,15 @@
 
 	class NodesModel extends MainModel {
 
+		public function activate($parameters) {
+			$response = array(
+				'message' => 'Error activating node, please try again.',
+				'status_valid' => false
+			);
+			// ..
+			return $response;
+		}
+
 		public function add($parameters) {
 			$response = array(
 				'message' => 'Error adding node, please try again.',
