@@ -2,7 +2,7 @@
 	$extend = true;
 	require_once($configuration->settings['base_path'] . '/models/main.php');
 
-	class ProxyUrlRequestLimitationsModel extends MainModel {
+	class RequestLimitRulesModel extends MainModel {
 
 		public function add($parameters) {
 			$response = array(
@@ -154,7 +154,7 @@
 	}
 
 	if (!empty($configuration->parameters)) {
-		$proxyUrlRequestLimitationsModel = new ProxyUrlRequestLimitationsModel();
-		$data = $proxyUrlRequestLimitationsModel->route($configuration->parameters);
+		$requestLimitRulesModel = new RequestLimitRulesModel();
+		$data = $requestLimitRulesModel->route($configuration->parameters);
 	}
 ?>
