@@ -611,6 +611,11 @@
 			return $response;
 		}
 
+		public function list($parameters) {
+			// ..
+			return array();
+		}
+
 		public function remove($parameters) {
 			$response = array(
 				'message' => 'Error removing nodes, please try again.',
@@ -673,6 +678,22 @@
 				'status_valid' => false
 			);
 			// ..
+			return $response;
+		}
+
+		public function view($parameters = array()) {
+			$response = array(
+				'message' => 'Error viewing node, please try again.',
+				'status_valid' => false
+			);
+
+			if (
+				empty($parameters['where']['id']) !== false &&
+				is_string($parameters['where']['id']) === true
+			) {
+				// ..
+			}
+
 			return $response;
 		}
 
