@@ -373,6 +373,15 @@
 			return $response;
 		}
 
+		public function deactivate($parameters) {
+			$response = array(
+				'message' => 'Error deactivating node, please try again.',
+				'status_valid' => false
+			);
+			// ..
+			return $response;
+		}
+
 		public function deploy($parameters) {
 			$response = array(
 				'message' => 'Error deploying node, please try again.',
