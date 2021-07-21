@@ -51,7 +51,7 @@
 
 			if ($node['status_active'] === true) {
 				$response['message'] = 'Node is already activated.';
-			} elseif ($parameters['user']['endpoint'] === false) {
+			} elseif (empty($parameters['user']['endpoint']) === false) {
 				$nodeDataUpdated = $this->update(array(
 					'data' => array(
 						'status_active' => true
@@ -476,7 +476,7 @@
 
 			if ($node['status_active'] === false) {
 				$response['message'] = 'Node is already deactivated.';
-			} elseif ($parameters['user']['endpoint'] === false) {
+			} elseif (empty($parameters['user']['endpoint']) === false) {
 				$nodeDataUpdated = $this->update(array(
 					'data' => array(
 						'status_active' => false
