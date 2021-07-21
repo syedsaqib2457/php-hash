@@ -43,14 +43,11 @@
 				'client_ip' => !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false,
 				'database' => array(
 					'foreign_keys' => array(
-						'proxies' => false,
-						'proxy_urls' => false,
-						'proxy_url_request_limitations' => false,
-						'servers' => false,
-						'server_nameserver_listening_ips' => 'server_id',
-						'server_nameserver_processes' => 'server_id',
-						'server_nodes' => 'server_id',
-						'server_proxy_processes' => 'server_id'
+						'node_processes' => 'node_id',
+						'nodes' => false,
+						'request_destinations' => false,
+						'request_limit_rules' => false,
+						'users' => false
 					),
 					'hostname' => 'localhost',
 					'name' => 'overlord',
