@@ -469,13 +469,9 @@
 				$nodeId = $node['node_id'];
 			}
 
-			$response = array(
-				'message' => 'Node is ready for deactivation.',
-				'status_valid' => true
-			);
-
 			if ($node['status_active'] === false) {
 				$response['message'] = 'Node is already deactivated.';
+				return $response;
 			} elseif (empty($parameters['user']['endpoint']) === false) {
 				$nodeDataUpdated = $this->update(array(
 					'data' => array(
