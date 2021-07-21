@@ -574,128 +574,137 @@
 		public function download($parameters) {
 			$response = array(
 				'message' => 'Error downloading nodes, please try again.',
-				'status_valid' => false
+				'status_valid' => (empty($parameters['list']['nodes']['id']) === false)
 			);
 
-			/*
-			if (!empty($parameters['items']['list_proxy_items']['data'])) {
-				$formattedProxies = $proxyPorts = $serverProxyProcessPorts = array();
-				$parameters['items']['list_proxy_items']['data'] = array_intersect_key($parameters['items']['list_proxy_items']['data'], array(
-					$parameters['data']['results'] => true
-				));
-				$proxyItemParameters = array(
-					'items' => array_intersect_key($parameters['items'], array(
-						'list_proxy_items' => true
-					))
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$parameters['list'] = array(
+				$parameters['list']['nodes']
+			);
+			$parameters['list']['nodes']['id'] = array_intersect_key($parameters['list']['nodes']['id'], array(
+				$parameters['data']['results'] => true
+			));
+
+			$decodedList = $this->_decodeList($parameters, true); // todo: rename and refactor decodeItems function
+			$response['status_valid'] = ($decodedLists !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($decodedList['nodes']['id']) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node IDs, please try again.';
+				return $response;
+			}
+
+			$nodeIds = $decodedIds['nodes']['id'];
+
+			// ..
+
+			/*if (!empty($proxyItems['list_proxy_items']['data'])) {
+				$proxyParameters = array(
+					'fields' => array(
+						'external_ip',
+						'id',
+						'internal_ip',
+						'password',
+						'server_id',
+						'username'
+					),
+					'from' => 'proxies',
+					'where' => array(
+						'id' => $proxyItems['list_proxy_items']['data']
+					)
 				);
 
-				if (!empty($parameters['search']['list_proxy_items'])) {
-					$proxyItemParameters['search']['list_proxy_items'] = $parameters['search']['list_proxy_items'];
+				if (!empty($proxyItems['list_proxy_items']['token']['parameters']['sort'])) {
+					$proxyParameters['sort'] = $proxyItems['list_proxy_items']['token']['parameters']['sort'];
 				}
 
-				$proxyItems = $this->_decodeItems($proxyItemParameters, true);
+				$proxies = $this->fetch($proxyParameters);
+				$delimiters = array(
+					!empty($parameters['data']['ipv4_delimiter1']) ? $parameters['data']['ipv4_delimiter1'] : '',
+					!empty($parameters['data']['ipv4_delimiter2']) ? $parameters['data']['ipv4_delimiter2'] : '',
+					!empty($parameters['data']['ipv4_delimiter3']) ? $parameters['data']['ipv4_delimiter3'] : '',
+					''
+				);
+				$delimiterMask = implode('', array_unique($delimiters));
 
-				if (!empty($proxyItems['list_proxy_items']['data'])) {
-					$proxyParameters = array(
-						'fields' => array(
-							'external_ip',
-							'id',
-							'internal_ip',
-							'password',
-							'server_id',
-							'username'
-						),
-						'from' => 'proxies',
-						'where' => array(
-							'id' => $proxyItems['list_proxy_items']['data']
-						)
-					);
+				if (!empty($proxies['data'])) {
+					foreach ($proxies['data'] as $proxy) {
+						$serverId = $proxy['server_id'];
 
-					if (!empty($proxyItems['list_proxy_items']['token']['parameters']['sort'])) {
-						$proxyParameters['sort'] = $proxyItems['list_proxy_items']['token']['parameters']['sort'];
+						if (empty($serverProxyProcessPorts[$serverId])) {
+							$serverProxyProcessPorts[$serverId] = $this->_call(array(
+								'method_from' => 'server_proxy_processes',
+								'method_name' => 'fetchServerProxyProcessPorts',
+								'method_parameters' => array(
+									$serverId
+								)
+							));
+						}
+
+						if (!empty($serverProxyProcessPorts[$serverId])) {
+							foreach ($serverProxyProcessPorts[$serverId] as $serverProxyProcessPort) {
+								$proxyPorts[$serverProxyProcessPort] = $serverProxyProcessPort;
+							}
+						}
 					}
 
-					$proxies = $this->fetch($proxyParameters);
-					$delimiters = array(
-						!empty($parameters['data']['ipv4_delimiter1']) ? $parameters['data']['ipv4_delimiter1'] : '',
-						!empty($parameters['data']['ipv4_delimiter2']) ? $parameters['data']['ipv4_delimiter2'] : '',
-						!empty($parameters['data']['ipv4_delimiter3']) ? $parameters['data']['ipv4_delimiter3'] : '',
-						''
+					$response['data'] = array(
+						'proxy_port' => ($proxyPort = $parameters['data']['proxy_port']),
+						'proxy_ports' => $proxyPorts
 					);
-					$delimiterMask = implode('', array_unique($delimiters));
+					$separatorKey = $parameters['data']['separator'];
+					$separators = array(
+						'comma' => ',',
+						'hyphen' => '-',
+						'new_line' => "\n",
+						'plus' => '+',
+						'semicolon' => ';',
+						'space' => ' ',
+						'underscore' => '_'
+					);
 
-					if (!empty($proxies['data'])) {
-						foreach ($proxies['data'] as $proxy) {
-							$serverId = $proxy['server_id'];
+					if (
+						empty($separatorKey) ||
+						!array_key_exists($separatorKey, $separators)
+					) {
+						$separatorKey = 'new_line';
+					}
 
-							if (empty($serverProxyProcessPorts[$serverId])) {
-								$serverProxyProcessPorts[$serverId] = $this->_call(array(
-									'method_from' => 'server_proxy_processes',
-									'method_name' => 'fetchServerProxyProcessPorts',
-									'method_parameters' => array(
-										$serverId
-									)
-								));
-							}
+					$separator = $separators[$separatorKey];
 
-							if (!empty($serverProxyProcessPorts[$serverId])) {
-								foreach ($serverProxyProcessPorts[$serverId] as $serverProxyProcessPort) {
-									$proxyPorts[$serverProxyProcessPort] = $serverProxyProcessPort;
-								}
-							}
+					foreach ($proxies['data'] as $proxyKey => $proxy) {
+						$formattedProxy = '';
+						$proxy['port'] = current($serverProxyProcessPorts[$proxy['server_id']]);
+
+						if (in_array($proxyPort, $serverProxyProcessPorts[$proxy['server_id']])) {
+							$proxy['port'] = $proxyPort;
 						}
 
-						$response['data'] = array(
-							'proxy_port' => ($proxyPort = $parameters['data']['proxy_port']),
-							'proxy_ports' => $proxyPorts
+						for ($i = 1; $i < 5; $i++) {
+							$column = $parameters['data']['ipv4_column' . $i];
+							$formattedProxy .= ($proxy[$column] ? $proxy[$column] . $delimiters[($i - 1)] : '');
+						}
+
+						$formattedProxies[$proxyKey] = rtrim($formattedProxy, $delimiterMask);
+					}
+
+					if (!empty($formattedProxies)) {
+						$response['data']['formatted_proxies'] = implode($separator, $formattedProxies);
+						$response['message'] = array(
+							'status' => 'success',
+							'text' => 'Proxies downloaded successfully.'
 						);
-						$separatorKey = $parameters['data']['separator'];
-						$separators = array(
-							'comma' => ',',
-							'hyphen' => '-',
-							'new_line' => "\n",
-							'plus' => '+',
-							'semicolon' => ';',
-							'space' => ' ',
-							'underscore' => '_'
-						);
-
-						if (
-							empty($separatorKey) ||
-							!array_key_exists($separatorKey, $separators)
-						) {
-							$separatorKey = 'new_line';
-						}
-
-						$separator = $separators[$separatorKey];
-
-						foreach ($proxies['data'] as $proxyKey => $proxy) {
-							$formattedProxy = '';
-							$proxy['port'] = current($serverProxyProcessPorts[$proxy['server_id']]);
-
-							if (in_array($proxyPort, $serverProxyProcessPorts[$proxy['server_id']])) {
-								$proxy['port'] = $proxyPort;
-							}
-
-							for ($i = 1; $i < 5; $i++) {
-								$column = $parameters['data']['ipv4_column' . $i];
-								$formattedProxy .= ($proxy[$column] ? $proxy[$column] . $delimiters[($i - 1)] : '');
-							}
-
-							$formattedProxies[$proxyKey] = rtrim($formattedProxy, $delimiterMask);
-						}
-
-						if (!empty($formattedProxies)) {
-							$response['data']['formatted_proxies'] = implode($separator, $formattedProxies);
-							$response['message'] = array(
-								'status' => 'success',
-								'text' => 'Proxies downloaded successfully.'
-							);
-						}
 					}
 				}
-			}
-			*/
+			}*/
 
 			return $response;
 		}
@@ -1035,14 +1044,14 @@
 		public function remove($parameters) {
 			$response = array(
 				'message' => 'Error removing nodes, please try again.',
-				'status_valid' => (empty($parameters['ids']['nodes']) === false)
+				'status_valid' => (empty($parameters['list']['nodes']['id']) === false)
 			);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$nodeIds = $parameters['ids']['nodes'];
+			$nodeIds = $parameters['list']['nodes']['id'];
 			$nodeCount = $this->count(array(
 				'in' => 'nodes',
 				'where' => array(
