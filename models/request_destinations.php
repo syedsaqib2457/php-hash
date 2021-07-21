@@ -2,7 +2,7 @@
 	$extend = true;
 	require_once($configuration->settings['base_path'] . '/models/main.php');
 
-	class ProxyUrlsModel extends MainModel {
+	class RequestDestinationsModel extends MainModel {
 
 		public function add($parameters) {
 			$response = array(
@@ -111,7 +111,7 @@
 	}
 
 	if (!empty($configuration->parameters)) {
-		$proxyUrlsModel = new ProxyUrlsModel();
-		$data = $proxyUrlsModel->route($configuration->parameters);
+		$requestDestinationsModel = new RequestDestinationsModel();
+		$data = $requestDestinationsModel->route($configuration->parameters);
 	}
 ?>
