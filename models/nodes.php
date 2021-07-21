@@ -89,15 +89,14 @@
 		public function add($parameters) {
 			$response = array(
 				'message' => 'Error adding node, please try again.',
-				'status_valid' => false
+				'status_valid' => (
+					empty($parameters['data']['type']) === false &&
+					in_array($parameters['data']['type'], array(
+						'nameserver',
+						'proxy'
+					))
+				)
 			);
-
-			if (empty($parameters['data']['type']) === false) {
-				$response['status_valid'] = in_array($parameters['data']['type'], array(
-					'nameserver',
-					'proxy'
-				));
-			}
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid node type, please try again.';
