@@ -2,7 +2,7 @@
 	$extend = true;
 	require_once($configuration->settings['base_path'] . '/models/main.php');
 
-	class ProxyUrlRequestLogsModel extends MainModel {
+	class RequestLogsModel extends MainModel {
 
 		public function archive($parameters) {
 			$response = array(
@@ -75,7 +75,7 @@
 	}
 
 	if (!empty($configuration->parameters)) {
-		$proxyUrlRequestLogsModel = new ProxyUrlRequestLogsModel();
-		$data = $proxyUrlRequestLogsModel->route($configuration->parameters);
+		$requestLogsModel = new RequestLogsModel();
+		$data = $requestLogsModel->route($configuration->parameters);
 	}
 ?>
