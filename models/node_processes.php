@@ -7,15 +7,14 @@
 		public function add($parameters) {
 			$response = array(
 				'message' => 'Error adding node process, please try again.',
-				'status_valid' => false
+				'status_valid' => (
+					(empty($parameters['data']['transport_protocol']) === false) &&
+					in_array($parameters['data']['transport_protocol'], array(
+						'tcp',
+						'udp'
+					))
+				)
 			);
-
-			if (empty($parameters['data']['transport_protocol']) === false) {
-				$response['status_valid'] = (in_array($parameters['data']['transport_protocol'], array(
-					'tcp',
-					'udp'
-				));
-			}
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid node process transport protocol, please try again.';
@@ -258,19 +257,18 @@
 		public function edit($parameters) {
 			$response = array(
 				'message' => 'Error editing server proxy process, please try again.',
-				'status_valid' => false
+				'status_valid' => (
+					empty($parameters['data']['transport_protocol']) === true ||
+					in_array($parameters['data']['transport_protocol'], array(
+						'tcp',
+						'udp'
+					))
+				)
 			);
 
-			if (empty($parameters['data']['transport_protocol']) === false) {
-				$response['status_valid'] = (in_array($parameters['data']['transport_protocol'], array(
-					'tcp',
-					'udp'
-				));
-
-				if ($response['status_valid'] === false) {
-					$response['message'] = 'Invalid node process transport protocol, please try again.';
-					return $response;
-				}
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node process transport protocol, please try again.';
+				return $response;
 			}
 
 			if (empty($parameters['data']['id']) === false) {
@@ -534,19 +532,21 @@
 		public function remove($parameters) {
 			$response = array(
 				'message' => 'Error removing node processes, please try again.',
-				'status_valid' => false
+				'status_valid' => (empty($parameters['ids']['node_processes']) === false)
 			);
 
-			if (empty($parameters['ids']['node_processes']) === false) {
-				$nodeProcessIds = $parameters['ids']['node_processes'];
-				$nodeProcessCount = $this->count(array(
-					'in' => 'nodes',
-					'where' => array(
-						'id' => $nodeProcessIds
-					)
-				));
-				$response['status_valid'] = (is_int($nodeProcessCount) === true);
+			if ($response['status_valid'] === false) {
+				return $response;
 			}
+
+			$nodeProcessIds = $parameters['ids']['node_processes'];
+			$nodeProcessCount = $this->count(array(
+				'in' => 'nodes',
+				'where' => array(
+					'id' => $nodeProcessIds
+				)
+			));
+			$response['status_valid'] = (is_int($nodeProcessCount) === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;

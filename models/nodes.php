@@ -275,10 +275,10 @@
 		public function authenticate($parameters) {
 			$response = array(
 				'message' => 'Error authenticating nodes, please try again.',
-				'status_valid' => false
+				'status_valid' => (empty($parameters['ids']['nodes']) === false)
 			);
 
-			if (empty($parameters['ids']['nodes']) === true) {
+			if ($response['status_valid'] === false)
 				$response['message'] = 'Invalid node IDs, please try again.';
 				return $response;
 			}
@@ -434,7 +434,7 @@
 		public function deactivate($parameters) {
 			$response = array(
 				'message' => 'Error deactivating node, please try again.',
-				'status_valid' => false
+				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -703,21 +703,20 @@
 		public function edit($parameters) {
 			$response = array(
 				'message' => 'Error editing node, please try again.',
-				'status_valid' => false
+				'status_valid' => (
+					empty($parameters['data']['type']) === true ||
+					in_array($parameters['data']['type'], array(
+						'nameserver',
+						'proxy'
+					))
+				)
 			);
 
 			// todo: combine authenticate and request_limit functions into edit() function
 
-			if (empty($parameters['data']['type']) === false) {
-				$response['status_valid'] = in_array($parameters['data']['type'], array(
-					'nameserver',
-					'proxy'
-				));
-
-				if ($response['status_valid'] === false) {
-					$response['message'] = 'Invalid node type, please try again.';
-					return $response;
-				}
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node type, please try again.';
+				return $response;
 			}
 
 			if (empty($parameters['data']['id']) === false) {
@@ -1036,19 +1035,21 @@
 		public function remove($parameters) {
 			$response = array(
 				'message' => 'Error removing nodes, please try again.',
-				'status_valid' => false
+				'status_valid' => (empty($parameters['ids']['nodes']) === false)
 			);
 
-			if (empty($parameters['ids']['nodes']) === false) {
-				$nodeIds = $parameters['ids']['nodes'];
-				$nodeCount = $this->count(array(
-					'in' => 'nodes',
-					'where' => array(
-						'id' => $nodeIds
-					)
-				));
-				$response['status_valid'] = (is_int($nodeCount) === true);
+			if ($response['status_valid'] === false) {
+				return $response;
 			}
+
+			$nodeIds = $parameters['ids']['nodes'];
+			$nodeCount = $this->count(array(
+				'in' => 'nodes',
+				'where' => array(
+					'id' => $nodeIds
+				)
+			));
+			$response['status_valid'] = (is_int($nodeCount) === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
