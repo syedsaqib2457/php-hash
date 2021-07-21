@@ -667,6 +667,15 @@
 			return $response;
 		}
 
+		public function search($parameters) {
+			$response = array(
+				'message' => 'Error searching nodes, please try again.',
+				'status_valid' => false
+			);
+			// ..
+			return $response;
+		}
+
 	}
 
 	if (!empty($configuration->parameters)) {
