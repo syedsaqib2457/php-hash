@@ -212,9 +212,6 @@
 			return $response;
 		}
 
-		// todo: combine authenticate and request_limit functions into configure() function
-		// todo: add download function
-		// todo: add search function
 		// todo: delete proxies.php
 
 		public function authenticate($parameters) {
@@ -399,6 +396,8 @@
 				'message' => 'Error editing node, please try again.',
 				'status_valid' => false
 			);
+
+			// todo: combine authenticate and request_limit functions into edit() function
 
 			if (empty($parameters['data']['type']) === false) {
 				$response['status_valid'] = in_array($parameters['data']['type'], array(
