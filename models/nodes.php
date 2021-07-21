@@ -590,22 +590,22 @@
 				'status_valid' => false
 			);
 
-			if (empty($parameters['items'][$parameters['item_list_name']]['data']) === false) {
-				$selectedNodeIds = $parameters['items'][$parameters['item_list_name']]['data'])
-				$selectedNodeCount = $this->count(array(
+			if (empty($parameters['ids']['nodes']) === false) {
+				$nodeIds = $parameters['ids']['nodes'];
+				$nodeCount = $this->count(array(
 					'in' => 'nodes',
 					'where' => array(
-						'id' => $selectedNodeIds
+						'id' => $nodeIds
 					)
 				));
-				$response['status_valid'] = (is_int($selectedNodeCount) === true);
+				$response['status_valid'] = (is_int($nodeCount) === true);
 			}
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = ($selectedNodeCount === count($selectedNodeIds));
+			$response['status_valid'] = ($nodeCount === count($nodeIds));
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid node IDs, please try again.';
@@ -615,13 +615,13 @@
 			$nodeDataDeleted = $this->delete(array(
 				'from' => 'nodes',
 				'where' => array(
-					'id' => $selectedNodeIds
+					'id' => $nodeIds
 				)
 			));
 			$nodeUserDataDeleted = $this->delete(array(
 				'from' => 'node_users',
 				'where' => array(
-					'node_id' => $selectedNodeIds
+					'node_id' => $nodeIds
 				)
 			));
 			$response['status_valid'] = (
