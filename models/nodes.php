@@ -376,6 +376,15 @@
 			return $response;
 		}
 
+		public function deploy($parameters) {
+			$response = array(
+				'message' => 'Error deploying node, please try again.',
+				'status_valid' => false
+			);
+			// ..
+			return $response;
+		}
+
 		public function edit($parameters) {
 			$response = array(
 				'message' => 'Error editing node, please try again.',
