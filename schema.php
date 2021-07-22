@@ -91,6 +91,11 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(3)'
+			),
+			'type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'CHAR(10)'
 			)
 		),
 		'node_users' => array(
@@ -111,6 +116,11 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'BIGINT(11)'
+			),
+			'type' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'CHAR(10)'
 			),
 			'user_id' => array(
 				'default' => null,
@@ -171,11 +181,6 @@
 				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
-			),
-			'type' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'CHAR(10)'
 			)
 		),
 		'request_destinations' => array(
