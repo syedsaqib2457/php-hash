@@ -231,6 +231,10 @@
 				return $response;
 			}
 
+			if (empty($nodeId) === true) {
+				// todo: automatically create nameserver and proxy processes for primary nodes that haven't been deployed yet
+			}
+
 			$nodeData = array(
 				array_intersect_key($parameters['data'], array(
 					'external_ip_version_4' => true,
