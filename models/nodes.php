@@ -1045,11 +1045,10 @@
 				return $response;
 			}
 
-			$nodeIds = $parameters['list']['nodes']['id'];
 			$nodeCount = $this->count(array(
 				'in' => 'nodes',
 				'where' => array(
-					'id' => $nodeIds
+					'id' => ($nodeIds = $parameters['list']['nodes']['id'])
 				)
 			));
 			$response['status_valid'] = (is_int($nodeCount) === true);
