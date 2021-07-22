@@ -566,8 +566,21 @@
 		public function download($parameters) {
 			$response = array(
 				'message' => 'Error downloading nodes, please try again.',
-				'status_valid' => (empty($parameters['list']['nodes']['id']) === false)
+				'status_valid' => (
+					empty($parameters['data']['type']) === false &&
+					in_array($parameters['data']['type'], array(
+						'nameserver',
+						'proxy'
+					))
+				)
 			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node type, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($parameters['list']['nodes']['id']) === false);
 
 			if ($response['status_valid'] === false) {
 				return $response;
