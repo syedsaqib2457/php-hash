@@ -243,8 +243,7 @@
 					'internal_ip_version_6' => true,
 					'node_id' => true,
 					'status_active' => true,
-					'status_deployed' => true,
-					'type' => true
+					'status_deployed' => true
 				))
 			);
 			$nodeDataSaved = $this->save(array(
@@ -1009,8 +1008,7 @@
 				'internal_ip_version_4' => true,
 				'internal_ip_version_6' => true,
 				'node_id' => true,
-				'status_active' => true,
-				'type' => true
+				'status_active' => true
 			));
 			$nodeDataUpdated = $this->update(array(
 				'data' => $nodeData,
