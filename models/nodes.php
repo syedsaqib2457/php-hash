@@ -700,35 +700,26 @@
 		public function edit($parameters) {
 			$response = array(
 				'message' => 'Error editing node, please try again.',
-				'status_valid' => (
-					empty($parameters['data']['type']) === true ||
-					in_array($parameters['data']['type'], array(
-						'nameserver',
-						'proxy'
-					))
-				)
+				'status_valid' => (empty($parameters['data']['id']) === false)
 			);
 
 			// todo: combine authenticate and request_limit functions into edit() function
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid node type, please try again.';
 				return $response;
 			}
 
-			if (empty($parameters['data']['id']) === false) {
-				$node = $this->fetch(array(
-					'fields' => array(
-						'node_id',
-						'status_deployed'
-					),
-					'from' => 'nodes',
-					'where' => array(
-						'id' => ($nodeId = $parameters['data']['id'])
-					)
-				));
-				$response['status_valid'] = ($node !== false);
-			}
+			$node = $this->fetch(array(
+				'fields' => array(
+					'node_id',
+					'status_deployed'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'id' => ($nodeId = $parameters['data']['id'])
+				)
+			));
+			$response['status_valid'] = ($node !== false);
 
 			if ($response['status_valid'] === false) {
 				return $response;
