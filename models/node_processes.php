@@ -256,14 +256,27 @@
 
 		public function edit($parameters) {
 			$response = array(
-				'message' => 'Error editing server proxy process, please try again.',
+				'message' => 'Error editing node process, please try again.',
 				'status_valid' => (
-					empty($parameters['data']['transport_protocol']) === true ||
-					in_array($parameters['data']['transport_protocol'], array(
-						'tcp',
-						'udp'
+					empty($parameters['data']['type']) === true ||
+					in_array($parameters['data']['type'], array(
+						'nameserver',
+						'proxy'
 					))
 				)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node process type, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				empty($parameters['data']['transport_protocol']) === true ||
+				in_array($parameters['data']['transport_protocol'], array(
+					'tcp',
+					'udp'
+				))
 			);
 
 			if ($response['status_valid'] === false) {
