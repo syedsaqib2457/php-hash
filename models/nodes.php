@@ -77,19 +77,8 @@
 		public function add($parameters) {
 			$response = array(
 				'message' => 'Error adding node, please try again.',
-				'status_valid' => (
-					empty($parameters['data']['type']) === false &&
-					in_array($parameters['data']['type'], array(
-						'nameserver',
-						'proxy'
-					))
-				)
+				'status_valid' => false
 			);
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid node type, please try again.';
-				return $response;
-			}
 
 			if (empty($parameters['data']['node_id']) === false) {
 				$node = $this->fetch(array(
@@ -104,18 +93,17 @@
 				));
 				$response['status_valid'] = ($node !== false);
 
-				if ($response['status_valid'] === true) {
-					$response['status_valid'] = (empty($node) === false);
-					$parameters['data'] = array_merge($parameters['data'], $node);
-
-					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid node ID, please try again.';
-					}
+				if ($response['status_valid'] === false) {
+					return $response;
 				}
-			}
 
-			if ($response['status_valid'] === false) {
-				return $response;
+				$response['status_valid'] = (empty($node) === false);
+				$parameters['data'] = array_merge($parameters['data'], $node);
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Invalid node ID, please try again.';
+					return $response;
+				}
 			}
 
 			$nodeExternalIps = $nodeExternalIpVersions = array();
@@ -212,7 +200,7 @@
 				)
 			);
 
-			if (empty($nodeId) !== false) {
+			if (empty($nodeId) === false) {
 				$conflictingNodeCountParameters['where']['OR'] = $conflictingNodeProcessCountParameters['where']['OR'] = array(
 					$conflictingNodeCountParameters['where'],
 					array(
