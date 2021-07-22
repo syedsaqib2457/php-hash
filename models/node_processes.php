@@ -8,12 +8,25 @@
 			$response = array(
 				'message' => 'Error adding node process, please try again.',
 				'status_valid' => (
-					(empty($parameters['data']['transport_protocol']) === false) &&
-					in_array($parameters['data']['transport_protocol'], array(
-						'tcp',
-						'udp'
+					empty($parameters['data']['type']) === false &&
+					in_array($parameters['data']['type'], array(
+						'nameserver',
+						'proxy'
 					))
 				)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node process type, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				(empty($parameters['data']['transport_protocol']) === false) &&
+				in_array($parameters['data']['transport_protocol'], array(
+					'tcp',
+					'udp'
+				))
 			);
 
 			if ($response['status_valid'] === false) {
@@ -234,7 +247,8 @@
 					'internal_ip_version_6' => true,
 					'node_id' => true,
 					'port' => true,
-					'transport_protocol' => true
+					'transport_protocol' => true,
+					'type' => true
 				))
 			);
 			$nodeProcessDataSaved = $this->save(array(
@@ -520,7 +534,8 @@
 				'ip' => true,
 				'node_id' => true,
 				'port' => true,
-				'transport_protocol' => true
+				'transport_protocol' => true,
+				'type' => true
 			));
 			$nodeProcessDataUpdated = $this->update(array(
 				'data' => $nodeProcessData,
