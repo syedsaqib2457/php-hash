@@ -27,13 +27,6 @@
 			'url' => '/assets/css/[file]'
 		),
 		array(
-			'file' => $configuration->settings['base_path'] . '/assets/download/[file]',
-			'headers' => array(
-				'Content-type: text/plain'
-			),
-			'url' => '/assets/download/[file]'
-		),
-		array(
 			'file' => $configuration->settings['base_path'] . '/assets/font/[file]',
 			'headers' => array(
 				'Content-type: text/plain'
