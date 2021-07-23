@@ -69,14 +69,6 @@ const api = {
 				response.message.html = '<p class="message' + (response.message.status ? ' ' + response.message.status : '') + '">' + response.message.text + '</p>';
 			}
 
-			if (
-				typeof response.processing !== 'undefined' &&
-				typeof response.processing.processed !== 'undefined' &&
-				!response.processing.processed
-			) {
-				processAction(response);
-			}
-
 			callback(response);
 			processWindowEvents('resize');
 		};
@@ -335,79 +327,6 @@ const openProcess = function(processSelector) {
 	}
 
 	window.scroll(0, 0);
-};
-const processAction = function(response) {
-	var delayInterval = setTimeout(function() {}, 1);
-	var elementContent = '<p class="message">Your request to ' + response.processing.encodedParameters.action + ' ' + response.processing.encodedParameters.itemCount + ' ' + response.processing.encodedParameters.from + ' is in progress.</p>';
-	const processActionProgress = function(response) {
-		const actionProcessed = (response.processing ? response.processing.processed : false);
-		const actionProgress = (response.processing ? response.processing.progress : 0);
-		elements.html('.progress-text', actionProgress + '%');
-		elements.setAttribute('.progress', 'style', 'width: ' + actionProgress + '%');
-
-		if (
-			actionProgress < 100 &&
-			!actionProcessed
-		) {
-			while (delayInterval--) {
-				clearTimeout(delayInterval);
-			}
-
-			var delayInterval = setTimeout(function() {
-				api.setRequestParameters({
-					action: 'fetch',
-					offset: 0,
-					url: '/endpoint/actions',
-					where: {
-						id: response.processing.id
-					}
-				});
-				api.sendRequest(function(response) {
-					if (response.data.length) {
-						response.processing = response.data[0];
-					}
-
-					processActionProgress(response);
-				});
-			}, 10000);
-			processWindowEvents('resize');
-		} else {
-			window.location.reload();
-			return;
-		}
-	};
-	closeProcesses();
-	elements.addClass('.item-list-container', 'hidden');
-	elementContent += '<p class="progress-text"></p>';
-	elementContent += '<div class="progress-container">';
-	elementContent += '<div class="progress"></div>';
-	elementContent += '<div class="clear"></div>';
-	elementContent += '</div>';
-	elementContent += '<a class="align-left alternate-button button cancel-action margin-top" href="javascript:void(0);">Cancel</a>';
-
-	if (elements.get('.item-list-processing-container')) {
-		elements.html('.item-list-processing-container', elementContent);
-		elements.removeClass('.item-list-processing-container', 'hidden');
-		render(function() {
-			elements.addEventListener('.cancel-action', {
-				method: function() {
-					api.setRequestParameters({
-						action: 'cancel',
-						url: '/endpoint/actions',
-						where: {
-							id: response.processing.id
-						}
-					});
-					api.sendRequest(function(response) {
-						processActionProgress(response);
-					});
-				},
-				type: 'click'
-			});
-		});
-		delete apiRequestParameters.from;
-		processActionProgress(response);
-	}
 };
 const processItemList = function(itemListName, callback) {
 	let itemListParameters = apiRequestParameters[itemListName];
@@ -937,32 +856,14 @@ const processProcesses = function() {
 							elements.get('[process="' + processName + '"] .button.submit') &&
 							!elements.hasClass(selectedElement, 'no-process')
 						) {
-							var delayInterval = setTimeout(function() {}, 1);
-							let processing = true;
 							const submitButton = elements.get('[process="' + processName + '"] .button.submit[process="' + processName + '"]');
-							const processActionProgress = function() {
-								if (
-									processing === true ||
-									typeof apiRequestParameters.processing !== 'undefined'
-								) {
-									processing = false;
 
-									while (delayInterval--) {
-										clearTimeout(delayInterval);
-									}
+							if (processSubmitButtonText) {
+								elements.html(submitButton, processSubmitButtonText);
+							}
 
-									var delayInterval = setTimeout(function() {
-										processActionProgress();
-									}, 10);
-								} else {
-									if (processSubmitButtonText) {
-										elements.html(submitButton, processSubmitButtonText);
-									}
-
-									elements.removeAttribute(submitButton, 'disabled');
-									window.scroll(0, 0);
-								}
-							};
+							elements.removeAttribute(submitButton, 'disabled');
+							window.scroll(0, 0);
 							const processSubmitButtonText = elements.html(submitButton);
 							api.setRequestParameters({
 								processing: true
@@ -971,7 +872,6 @@ const processProcesses = function() {
 							elements.setAttribute(submitButton, 'disabled', 'disabled');
 							elements.html(submitButton, 'Processing');
 							processProcess(selectedElement, true);
-							processActionProgress();
 						}
 					},
 					type: 'keydown'
@@ -1041,32 +941,14 @@ const processProcesses = function() {
 		render(function() {
 			elements.addEventListener(selectedElement, {
 				method: function() {
-					var delayInterval = setTimeout(function() {}, 1);
-					let processing = false;
 					let processSubmit = elements.hasClass(selectedElement, 'submit');
-					const processActionProgress = function() {
-						if (
-							processing === true ||
-							typeof apiRequestParameters.processing !== 'undefined'
-						) {
-							processing = false;
 
-							while (delayInterval--) {
-								clearTimeout(delayInterval);
-							}
+					if (processSubmitButtonText) {
+						elements.html(selectedElement, processSubmitButtonText);
+					}
 
-							var delayInterval = setTimeout(function() {
-								processActionProgress();
-							}, 10);
-						} else {
-							if (processSubmitButtonText) {
-								elements.html(selectedElement, processSubmitButtonText);
-							}
-
-							elements.removeAttribute(selectedElement, 'disabled');
-							window.scroll(0, 0);
-						}
-					};
+					elements.removeAttribute(selectedElement, 'disabled');
+					window.scroll(0, 0);
 					const processSubmitButtonText = elements.html(selectedElement);
 
 					if (
@@ -1077,7 +959,6 @@ const processProcesses = function() {
 							processing: true
 						});
 						elements.setAttribute(selectedElement, 'disabled', 'disabled');
-						processing = true;
 
 						if (!elements.hasClass(selectedElement, 'icon')) {
 							elements.html(selectedElement, 'Processing');
@@ -1085,7 +966,6 @@ const processProcesses = function() {
 					}
 
 					processProcess(selectedElement, processSubmit);
-					processActionProgress();
 				},
 				type: 'click'
 			});
