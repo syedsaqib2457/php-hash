@@ -1,8 +1,8 @@
 <?php
 	if (
 		!empty($_SERVER['REMOTE_ADDR']) &&
-		($publicRequestLimitationPath = __DIR__ . '/public_request_limitations/' . str_replace('.', '/', $_SERVER['REMOTE_ADDR'])) &&
-		file_exists($publicRequestLimitationPath)
+		($requestLogsPath = __DIR__ . '/request_logs/' . str_replace('.', '/', $_SERVER['REMOTE_ADDR'])) &&
+		file_exists($requestLogsPath)
 	) {
 		echo 'Too many consecutive unauthorized access attempts, please try again later.';
 		exit;
