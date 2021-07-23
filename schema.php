@@ -117,11 +117,6 @@
 				'null' => true,
 				'type' => 'BIGINT(11)'
 			),
-			'tag_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
-			),
 			'type' => array(
 				'default' => null,
 				'null' => true,
@@ -296,26 +291,6 @@
 				'type' => 'VARCHAR(255)'
 			)
 		),
-		'tags' => array(
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'name' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(100)'
-			)
-		),
 		'tokens' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -450,10 +425,10 @@
 				'null' => true,
 				'type' => 'TINYINT(1)'
 			),
-			'tag_id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
+			'tag' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(100)'
 			)
 		)
 	);
