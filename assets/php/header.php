@@ -28,10 +28,6 @@
 				'text' => 'Account' // todo: rename to System and list storage capacity, memory, cpu process usage, etc
 			),
 			array(
-				'href' => '/developer',
-				'text' => 'Developer'
-			),
-			array(
 				'href' => '/proxies',
 				'text' => 'Proxies' // todo: rename to Nodes and allow changing node type between DNS and proxy (proxies will still have custom DNS config)
 			),

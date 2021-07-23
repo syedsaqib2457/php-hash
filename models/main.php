@@ -1228,10 +1228,6 @@
 			return $response;
 		}
 
-		public function developer($parameters) {
-			return array();
-		}
-
 		public function endpoint() {
 			return $this->_request($_POST);
 		}
