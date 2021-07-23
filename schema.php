@@ -336,7 +336,7 @@
 				'type' => 'VARCHAR(255)'
 			)
 		),
-		'user_groups' => array(
+		'user_groups' => array( // todo: change to "tags", use tag_id for both nodes and users
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
 				'type' => 'DATETIME'
