@@ -27,13 +27,6 @@
 			'url' => '/assets/css/[file]'
 		),
 		array(
-			'file' => $configuration->settings['base_path'] . '/assets/font/[file]',
-			'headers' => array(
-				'Content-type: text/plain'
-			),
-			'url' => '/assets/font/[file]'
-		),
-		array(
 			'file' => $configuration->settings['base_path'] . '/assets/php/[file]',
 			'headers' => array(
 				'Content-type: text/plain'
@@ -61,11 +54,6 @@
 				'Content-type: application/json'
 			),
 			'url' => '/endpoint/[from]'
-		),
-		array(
-			'file' => $configuration->settings['base_path'] . '/views/main/developer.php',
-			'title' => 'Developer',
-			'url' => '/developer'
 		),
 		array(
 			'file' => $configuration->settings['base_path'] . '/views/proxies/list.php',
