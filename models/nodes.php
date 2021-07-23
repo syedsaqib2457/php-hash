@@ -596,7 +596,7 @@
 			}
 
 			$response['status_valid'] = (
-				(empty($parameters['where']['ip_version']) === false) &&
+				(empty($parameters['where']['ip_version']) === true) ||
 				(in_array($parameters['where']['ip_version'], array(
 					4,
 					6
@@ -609,13 +609,34 @@
 			}
 
 			$response['status_valid'] = (
-				(empty($parameters['where']['port']) === false) &&
+				(empty($parameters['where']['port']) === true) ||
 				($this->_validatePort($parameters['where']['port']) !== false)
 			);
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid node process port, please try again.';
 				return $response;
+			}
+
+			if (empty($parameters['where']['user_group_id']) === false) {
+				$userGroupCount = $this->count(array(
+					'in' => 'user_groups',
+					'where' => array(
+						'id' => $parameters['where']['user_group_id']
+					)
+				));
+				$response['status_valid'] = ($userGroupCount !== false);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				$response['status_valid'] = ($userGroupCount === 1);
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Invalid user group ID, please try again';
+					return $response;
+				}
 			}
 
 			$response['status_valid'] = (empty($parameters['list']['nodes']['id']) === false);
@@ -646,7 +667,6 @@
 			}
 
 			$nodeIds = $decodedIds['nodes']['id'];
-			$nodeProcessData = array();
 			$nodeProcesses = $this->fetch(array(
 				'fields' => array(
 					($nodeExternalIpKey = 'external_ip_version_' . $parameters['where']['ip_version']),
@@ -661,6 +681,56 @@
 					'node_id' => $nodeIds
 				))
 			));
+
+			if ($parameters['where']['type'] === 'proxy') {
+				$nodeUsers = $this->fetch(array(
+					'fields' => array(
+						'node_id',
+						'user_group_id',
+						'user_id'
+					),
+					'from' => 'node_users',
+					'where' => array(
+						'node_id' => $nodeIds,
+						'type' => 'proxy'
+					)
+				));
+				$response['status_valid'] = ($nodeUsers !== false);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				// todo: add user_groups table to structure
+					// e.g. create 2 user groups, 1 for limited access to example.com, named "limit" and 1 that only allows access to example.com, named "block"
+					// each unique node_user can be added to the user_group
+					// select user_group on download form select field instead of displaying all username:passwords at once
+
+				if (empty($nodeUsers) === false) {
+					/*$nodeUserIds = array();
+
+					foreach ($nodeUsers as $nodeUser) {
+						// ..
+					}
+
+					$users = $this->fetch(array(
+						'fields' => array(
+							'authentication_password',
+							'authentication_username'
+						),
+						'from' => 'users',
+						'where' => array(
+							// ..
+						)
+					));
+					$nodeUserData == array();
+
+					foreach ($nodeUsers as $nodeUser) {
+						// ..
+					}*/
+				}
+			}
+
 			$nodes = $this->fetch(array(
 				'fields' => array(
 					$nodeExternalIpKey,
@@ -671,6 +741,7 @@
 					'id' => $nodeIds
 				)
 			));
+			$nodeProcessData = array();
 
 			foreach ($nodeProcesses as $nodeProcess) {
 				$nodeProcessData[$nodeProcess['node_id']] = array(

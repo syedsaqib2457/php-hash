@@ -122,6 +122,11 @@
 				'null' => true,
 				'type' => 'CHAR(10)'
 			),
+			'user_group_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
 			'user_id' => array(
 				'default' => null,
 				'null' => true,
@@ -349,11 +354,6 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(100)'
-			),
-			'user_id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
 			)
 		),
 		'user_request_destinations' => array(
@@ -449,6 +449,11 @@
 				'default' => 0,
 				'null' => true,
 				'type' => 'TINYINT(1)'
+			),
+			'user_group_id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
 			)
 		)
 	);
