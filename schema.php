@@ -331,6 +331,31 @@
 				'type' => 'VARCHAR(255)'
 			)
 		),
+		'user_groups' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'name' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(100)'
+			),
+			'user_id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			)
+		),
 		'user_request_destinations' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
