@@ -608,6 +608,16 @@
 				return $response;
 			}
 
+			$response['status_valid'] = (
+				(empty($parameters['where']['port']) === false) &&
+				($this->_validatePort($parameters['where']['port']) !== false)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node process port, please try again.';
+				return $response;
+			}
+
 			$response['status_valid'] = (empty($parameters['list']['nodes']['id']) === false);
 
 			if ($response['status_valid'] === false) {
