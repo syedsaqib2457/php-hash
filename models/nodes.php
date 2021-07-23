@@ -646,23 +646,24 @@
 			}
 
 			$nodeIds = $decodedIds['nodes']['id'];
+			$nodeProcessData = array();
 			$nodeProcesses = $this->fetch(array(
 				'fields' => array(
-					'external_ip_version_4',
-					'external_ip_version_6',
+					($nodeExternalIpKey = 'external_ip_version_' . $parameters['where']['ip_version']),
 					'node_id',
 					'port'
 				),
 				'from' => 'node_processes',
-				'where' => array_intersect_key($parameters['where'], array(
+				'where' => array_merge(array_intersect_key($parameters['where'], array(
 					'application_protocol' => true,
 					'type' => true
+				)), array(
+					'node_id' => $nodeIds
 				))
 			));
 			$nodes = $this->fetch(array(
 				'fields' => array(
-					'external_ip_version_4',
-					'external_ip_version_6',
+					$nodeExternalIpKey,
 					'id'
 				),
 				'from' => 'nodes',
@@ -670,6 +671,13 @@
 					'id' => $nodeIds
 				)
 			));
+
+			foreach ($nodeProcesses as $nodeProcess) {
+				$nodeProcessData[$nodeProcess['node_id']] = array(
+					'ip' => $nodeProcess[$nodeExternalIpKey],
+					'port' => $nodeProcess['port']
+				);
+			}
 
 			// ..
 
