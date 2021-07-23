@@ -887,7 +887,7 @@
 		public function remove($parameters) {
 			$response = array(
 				'message' => 'Error removing nodes, please try again.',
-				'status_valid' => (empty($parameters['list']['nodes']['id']) === false)
+				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -897,7 +897,7 @@
 			$nodeCount = $this->count(array(
 				'in' => 'nodes',
 				'where' => array(
-					'id' => ($nodeIds = $parameters['list']['nodes']['id'])
+					'id' => ($nodeIds = $parameters['where']['id'])
 				)
 			));
 			$response['status_valid'] = (is_int($nodeCount) === true);

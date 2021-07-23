@@ -554,7 +554,7 @@
 		public function remove($parameters) {
 			$response = array(
 				'message' => 'Error removing node processes, please try again.',
-				'status_valid' => (empty($parameters['list']['node_processes']['id']) === false)
+				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -564,7 +564,7 @@
 			$nodeProcessCount = $this->count(array(
 				'in' => 'nodes',
 				'where' => array(
-					'id' => ($nodeProcessIds = $parameters['list']['node_processes']['id'])
+					'id' => ($nodeProcessIds = $parameters['where']['id'])
 				)
 			));
 			$response['status_valid'] = (is_int($nodeProcessCount) === true);

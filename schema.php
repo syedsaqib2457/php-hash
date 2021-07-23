@@ -1,5 +1,6 @@
 <?php
 	// refactoring is always worth it
+	// todo: remove over-engineered item list index functionality that isn't required in version 19
 	// todo: create optional automatic update scripts for versions above 19
 	// todo: increase tcp-clients and allow public-facing dns over both tcp and udp (previously was private with udp only and tcp for health checks)
 	// todo: combine server_proxy_processes and server_nameserver_processes into node_processes
