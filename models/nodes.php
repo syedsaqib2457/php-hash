@@ -566,8 +566,8 @@
 			$response = array(
 				'message' => 'Error downloading nodes, please try again.',
 				'status_valid' => (
-					empty($parameters['data']['type']) === false &&
-					in_array($parameters['data']['type'], array(
+					empty($parameters['where']['type']) === false &&
+					in_array($parameters['where']['type'], array(
 						'nameserver',
 						'proxy'
 					))
@@ -576,6 +576,35 @@
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid node type, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				$parameters['where']['type'] === 'nameserver' ||
+				(
+					empty($parameters['where']['application_protocol']) === false &&
+					in_array($parameters['where']['application_protocol'], array(
+						'http',
+						'socks'
+					))
+				)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node process application protocol, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				empty($parameters['where']['ip_version']) === false &&
+				in_array($parameters['where']['ip_version'], array(
+					4,
+					6
+				)) === true
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node IP version, please try again.';
 				return $response;
 			}
 
@@ -607,6 +636,30 @@
 			}
 
 			$nodeIds = $decodedIds['nodes']['id'];
+			$nodeProcesses = $this->fetch(array(
+				'fields' => array(
+					'external_ip_version_4',
+					'external_ip_version_6',
+					'node_id',
+					'port'
+				),
+				'from' => 'node_processes',
+				'where' => array_intersect_key($parameters['where'], array(
+					'application_protocol' => true,
+					'type' => true
+				))
+			));
+			$nodes = $this->fetch(array(
+				'fields' => array(
+					'external_ip_version_4',
+					'external_ip_version_6',
+					'id'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'id' => $nodeIds
+				)
+			));
 
 			// ..
 
