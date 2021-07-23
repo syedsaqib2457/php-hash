@@ -117,15 +117,15 @@
 				'null' => true,
 				'type' => 'BIGINT(11)'
 			),
+			'tag_id' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'BIGINT(11)'
+			),
 			'type' => array(
 				'default' => null,
 				'null' => true,
 				'type' => 'CHAR(10)'
-			),
-			'user_group_id' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'BIGINT(11)'
 			),
 			'user_id' => array(
 				'default' => null,
@@ -296,6 +296,26 @@
 				'type' => 'VARCHAR(255)'
 			)
 		),
+		'tags' => array(
+			'created' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'id' => array(
+				'auto_increment' => true,
+				'primary_key' => true,
+				'type' => 'BIGINT(11)'
+			),
+			'modified' => array(
+				'default' => 'CURRENT_TIMESTAMP',
+				'type' => 'DATETIME'
+			),
+			'name' => array(
+				'default' => null,
+				'null' => true,
+				'type' => 'VARCHAR(100)'
+			)
+		),
 		'tokens' => array(
 			'created' => array(
 				'default' => 'CURRENT_TIMESTAMP',
@@ -334,26 +354,6 @@
 				'default' => null,
 				'null' => true,
 				'type' => 'VARCHAR(255)'
-			)
-		),
-		'user_groups' => array( // todo: change to "tags", use tag_id for both nodes and users
-			'created' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'id' => array(
-				'auto_increment' => true,
-				'primary_key' => true,
-				'type' => 'BIGINT(11)'
-			),
-			'modified' => array(
-				'default' => 'CURRENT_TIMESTAMP',
-				'type' => 'DATETIME'
-			),
-			'name' => array(
-				'default' => null,
-				'null' => true,
-				'type' => 'VARCHAR(100)'
 			)
 		),
 		'user_request_destinations' => array(
@@ -450,7 +450,7 @@
 				'null' => true,
 				'type' => 'TINYINT(1)'
 			),
-			'user_group_id' => array(
+			'tag_id' => array(
 				'auto_increment' => true,
 				'primary_key' => true,
 				'type' => 'BIGINT(11)'
