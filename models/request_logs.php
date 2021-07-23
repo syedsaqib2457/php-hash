@@ -1,8 +1,8 @@
 <?php
 	$extend = true;
-	require_once($configuration->settings['base_path'] . '/models/main.php');
+	require_once($configuration->settings['base_path'] . '/models/system.php');
 
-	class RequestLogsModel extends MainModel {
+	class RequestLogsModel extends SystemModel {
 
 		public function archive($parameters) {
 			$response = array(

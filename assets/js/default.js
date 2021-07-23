@@ -1005,24 +1005,6 @@ var processRemove = function(processElement) {
 		delete apiRequestParameters.processing;
 	}
 };
-var processPassword = function(processElement, processSubmit) {
-	api.setRequestParameters({
-		action: 'password',
-		url: '/endpoint/main'
-	});
-	api.sendRequest(function(response) {
-		delete apiRequestParameters.processing;
-		elements.get('.account-password').value = response.user.password;
-		elements.get('.account-whitelisted-ips').value = response.user.whitelistedIps;
-
-		if (processSubmit) {
-			elements.get('.account-password').value = apiRequestParameters.data.accountPassword || response.user.password;
-			elements.get('.account-whitelisted-ips').value = response.data.whitelistedIps;
-			elements.html('.password.message-container', response.message.html);
-			elements.setAttribute('.account-password', 'value', response.user.password);
-		}
-	});
-};
 var processSearch = function() {
 	let itemListName = camelCaseString(elements.getAttribute('.process-container[process="search"]', 'search'));
 	let itemListParameters = apiRequestParameters[itemListName];
@@ -1057,6 +1039,24 @@ var processSearch = function() {
 			}
 		});
 	}
+};
+var processSettings = function(processElement, processSubmit) {
+	api.setRequestParameters({
+		action: 'settings',
+		url: '/endpoint/main'
+	});
+	api.sendRequest(function(response) {
+		delete apiRequestParameters.processing;
+		elements.get('.account-password').value = response.user.password;
+		elements.get('.account-whitelisted-ips').value = response.user.whitelistedIps;
+
+		if (processSubmit) {
+			elements.get('.account-password').value = apiRequestParameters.data.accountPassword || response.user.password;
+			elements.get('.account-whitelisted-ips').value = response.data.whitelistedIps;
+			elements.html('.password.message-container', response.message.html);
+			elements.setAttribute('.account-password', 'value', response.user.password);
+		}
+	});
 };
 const processWindowEvents = function(event) {
 	if (typeof event === 'undefined') {

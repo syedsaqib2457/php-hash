@@ -1,5 +1,5 @@
 <?php
-	class MainModel extends Configuration {
+	class SystemModel extends Configuration {
 
 		protected function _authenticate($parameters) {
 			$response = false;
@@ -517,48 +517,6 @@
 				))
 			);
 			$validTokens = true;
-
-			if (isset($this->settings['database']['foreign_keys'][$parameters['from']])) {
-				$itemListForeignKey = $this->settings['database']['foreign_keys'][$parameters['from']];
-
-				if (!empty($itemListForeignKey)) {
-					$tokenParameters['foreign_key'] = $itemListForeignKey;
-				}
-
-				if (!empty($parameters['where'])) {
-					if (!empty($parameters['where'][$tokenParameters['foreign_key']])) {
-						$tokenParameters['foreign_value'] = $parameters['where'][$tokenParameters['foreign_key']];
-					}
-
-					$tokenParameters['parameters_to_encode']['where'] = $parameters['where'];
-				}
-
-				$itemListToken = $this->_getToken($tokenParameters);
-
-				if ($itemListToken === false) {
-					return false;
-				} else {
-					if (empty($parameters['items'][$itemListName]['token'])) {
-						$parameters['items'][$itemListName]['token'] = $itemListToken;
-					}
-				}
-
-				if (!empty($parameters['items'])) {
-					foreach ($parameters['items'] as $itemList) {
-						if (!empty($itemList['token'])) {
-							$itemListToken = $this->_getToken($this->_parseItemListTokenParameters($itemList['token']));
-
-							if (
-								$itemListToken === false ||
-								$itemListToken['string'] != $itemList['token']['string']
-							) {
-								$validTokens = false;
-							}
-						}
-					}
-				}
-			}
-
 			$clearItems = !empty($parameters['item_list_name']) ? array(
 				$parameters['item_list_name'] => array(
 					'count' => 0,
@@ -1199,6 +1157,57 @@
 			return $response;
 		}
 
+		public function configure($parameters = array()) {
+			$response = array(
+				'message' => array(
+					'status' => 'error',
+					'text' => ($defaultMessage = 'Error configuring system, please try again.')
+				)
+			);
+
+			if (
+				isset($parameters['data']['account_password']) &&
+				isset($parameters['data']['account_whitelisted_ips'])
+			) {
+				$whitelistedIps = array();
+
+				if (!empty($parameters['data']['account_whitelisted_ips'])) {
+					foreach ($this->_validateIps($parameters['data']['account_whitelisted_ips']) as $validatedWhitelistedIpVersionIps) {
+						$whitelistedIps += $validatedWhitelistedIpVersionIps;
+					}
+				}
+
+				$parameters['data'] = array(
+					'id' => 1,
+					'password' => $parameters['data']['account_password'],
+					'whitelisted_ips' => ($whitelistedIps = implode("\n", $whitelistedIps))
+				);
+
+				if (empty($parameters['data']['password'])) {
+					unset($parameters['data']['password']);
+				}
+
+				if ($this->save(array(
+					'data' => array(
+						$parameters['data']
+					),
+					'to' => 'users'
+				))) {
+					$response = array(
+						'data' => array(
+							'whitelisted_ips' => $whitelistedIps
+						),
+						'message' => array(
+							'status' => 'success',
+							'text' => 'System configured successfully.'
+						)
+					);
+				}
+			}
+
+			return $response;
+		}
+
 		public function count($parameters) {
 			$query = ' FROM ' . $parameters['in'];
 
@@ -1325,57 +1334,6 @@
 			return $response;
 		}
 
-		public function password($parameters = array()) {
-			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => ($defaultMessage = 'Error saving password, please make sure cookies are enabled and try again.')
-				)
-			);
-
-			if (
-				isset($parameters['data']['account_password']) &&
-				isset($parameters['data']['account_whitelisted_ips'])
-			) {
-				$whitelistedIps = array();
-
-				if (!empty($parameters['data']['account_whitelisted_ips'])) {
-					foreach ($this->_validateIps($parameters['data']['account_whitelisted_ips']) as $validatedWhitelistedIpVersionIps) {
-						$whitelistedIps += $validatedWhitelistedIpVersionIps;
-					}
-				}
-
-				$parameters['data'] = array(
-					'id' => 1,
-					'password' => $parameters['data']['account_password'],
-					'whitelisted_ips' => ($whitelistedIps = implode("\n", $whitelistedIps))
-				);
-
-				if (empty($parameters['data']['password'])) {
-					unset($parameters['data']['password']);
-				}
-
-				if ($this->save(array(
-					'data' => array(
-						$parameters['data']
-					),
-					'to' => 'users'
-				))) {
-					$response = array(
-						'data' => array(
-							'whitelisted_ips' => $whitelistedIps
-						),
-						'message' => array(
-							'status' => 'success',
-							'text' => 'Password saved successfully.'
-						)
-					);
-				}
-			}
-
-			return $response;
-		}
-
 		public function route($parameters) {
 			$response = false;
 
@@ -1465,6 +1423,57 @@
 			return $response;
 		}
 
+		public function settings($parameters = array()) {
+			$response = array(
+				'message' => array(
+					'status' => 'error',
+					'text' => ($defaultMessage = 'Error saving settings, please try again.')
+				)
+			);
+
+			if (
+				isset($parameters['data']['account_password']) &&
+				isset($parameters['data']['account_whitelisted_ips'])
+			) {
+				$whitelistedIps = array();
+
+				if (!empty($parameters['data']['account_whitelisted_ips'])) {
+					foreach ($this->_validateIps($parameters['data']['account_whitelisted_ips']) as $validatedWhitelistedIpVersionIps) {
+						$whitelistedIps += $validatedWhitelistedIpVersionIps;
+					}
+				}
+
+				$parameters['data'] = array(
+					'id' => 1,
+					'password' => $parameters['data']['account_password'],
+					'whitelisted_ips' => ($whitelistedIps = implode("\n", $whitelistedIps))
+				);
+
+				if (empty($parameters['data']['password'])) {
+					unset($parameters['data']['password']);
+				}
+
+				if ($this->save(array(
+					'data' => array(
+						$parameters['data']
+					),
+					'to' => 'users'
+				))) {
+					$response = array(
+						'data' => array(
+							'whitelisted_ips' => $whitelistedIps
+						),
+						'message' => array(
+							'status' => 'success',
+							'text' => 'Settings saved successfully.'
+						)
+					);
+				}
+			}
+
+			return $response;
+		}
+
 		public function shellProcessRequestLogs() {
 			// todo: limit prefixes instead of addresses for ipv6
 			$response = array(
@@ -1545,7 +1554,7 @@
 		!empty($configuration->parameters) &&
 		empty($extend)
 	) {
-		$mainModel = new MainModel();
-		$data = $mainModel->route($configuration->parameters);
+		$systemModel = new SystemModel();
+		$data = $systemModel->route($configuration->parameters);
 	}
 ?>

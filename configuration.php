@@ -13,7 +13,7 @@
 			);
 
 			$this->publicPermissions = array(
-				'main' => array(
+				'system' => array(
 					'login'
 				)
 			);
@@ -42,13 +42,6 @@
 				'base_path' => __DIR__,
 				'client_ip' => !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false,
 				'database' => array(
-					'foreign_keys' => array(
-						'node_processes' => 'node_id',
-						'nodes' => false,
-						'request_destinations' => false,
-						'request_limit_rules' => false,
-						'users' => false
-					),
 					'hostname' => 'localhost',
 					'name' => 'overlord',
 					'password' => 'password',

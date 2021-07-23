@@ -1,8 +1,8 @@
 <?php
 	$extend = true;
-	require_once($configuration->settings['base_path'] . '/models/main.php');
+	require_once($configuration->settings['base_path'] . '/models/system.php');
 
-	class NodeProcessesModel extends MainModel {
+	class NodeProcessesModel extends SystemModel {
 
 		public function add($parameters) {
 			$response = array(
