@@ -8,11 +8,11 @@
 			$response = array(
 				'message' => 'Error adding node process, please try again.',
 				'status_valid' => (
-					empty($parameters['data']['type']) === false &&
-					in_array($parameters['data']['type'], array(
+					(empty($parameters['data']['type']) === false) &&
+					(in_array($parameters['data']['type'], array(
 						'nameserver',
 						'proxy'
-					))
+					)) === true)
 				)
 			);
 
@@ -23,10 +23,10 @@
 
 			$response['status_valid'] = (
 				(empty($parameters['data']['transport_protocol']) === false) &&
-				in_array($parameters['data']['transport_protocol'], array(
+				(in_array($parameters['data']['transport_protocol'], array(
 					'tcp',
 					'udp'
-				))
+				)) === true)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -87,10 +87,10 @@
 			}
 
 			if (empty($parameters['data']['application_protocol']) === false) {
-				$response['status_valid'] = in_array($parameters['data']['application_protocol'], array(
+				$response['status_valid'] = (in_array($parameters['data']['application_protocol'], array(
 					'http',
 					'socks'
-				));
+				)) === true);
 
 				if ($parameters['data']['application_protocol'] === 'http') {
 					$parameters['data']['transport_protocol'] = 'tcp';
@@ -127,33 +127,30 @@
 					$nodeProcessIpKey = $nodeProcessIpInterface . '_ip_version_' . $nodeProcessIpVersion;
 
 					if (empty($parameters['data'][$nodeIpKey]) === false) {
-						$nodeProcessIp = $nodeProcessIps[$nodeProcessIpKey] = $nodeProcessIpVersions[$nodeProcessIpVersion][] = $parameters['data'][$nodeProcessIpKey];
+						$response['status_valid'] = (empty($node['external_ip_version_' . $nodeProcessIpVersion]) === false);
 
-						if (empty($node['external_ip_version_' . $nodeProcessIpVersion]) === true) {
-							$response = array(
-								'message' => 'Node must have an external IP version ' . $nodeProcessIpVersion . ' before adding a node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.',
-								'status_valid' => false
-							);
+						if ($response['status_valid'] === false) {
+							$response['message'] = 'Node must have an external IP version ' . $nodeProcessIpVersion . ' before adding a node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.';
 							return $response;
 						}
+
+						$nodeProcessIp = $nodeProcessIps[$nodeProcessIpKey] = $nodeProcessIpVersions[$nodeProcessIpVersion][] = $parameters['data'][$nodeProcessIpKey];
 
 						if ($nodeProcessIpInterface === 'external') {
 							$nodeProcessExternalIps[$nodeProcessIpKey] = $nodeProcessIp;
 						}
 
-						if ($nodeProcessIpType !== $this->_fetchIpType($nodeProcessIp, $nodeProcessIpVersion)) {
-							$response = array(
-								'message' => 'Node process ' . $nodeProcessIpInterface . ' IPs must be ' . $nodeProcessIpType . ', please try again.',
-								'status_valid' => false
-							);
+						$response['status_valid'] = ($nodeProcessIpType === $this->_fetchIpType($nodeProcessIp, $nodeProcessIpVersion));
+
+						if ($response['status_valid'] === false) {
+							$response['message'] = 'Node process ' . $nodeProcessIpInterface . ' IPs must be ' . $nodeProcessIpType . ', please try again.';
 							return $response;
 						}
 
-						if ($nodeProcessIpVersion !== key($this->_sanitizeIps(array($nodeProcessIp)))) {
-							$response = array(
-								'message' => 'Invalid node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.',
-								'status_valid' => false
-							);
+						$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($nodeProcessIp))));
+
+						if ($response['status_valid'] === false) {
+							$response['message'] = 'Invalid node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.';
 							return $response;
 						}
 					}
@@ -199,8 +196,8 @@
 				$conflictingNodeIpCount = $this->count($conflictingNodeIpCountParameters);
 				$conflictingNodeProcessIpCount = $this->count($conflictingNodeProcessIpCountParameters);
 				$response['status_valid'] = (
-					is_int($conflictingNodeIpCount) === true &&
-					is_int($conflictingNodeProcessIpCount) === true
+					(is_int($conflictingNodeIpCount) === true) &&
+					(is_int($conflictingNodeProcessIpCount) === true)
 				);
 
 				if ($response['status_valid'] === false) {
@@ -208,8 +205,8 @@
 				}
 
 				$response['status_valid'] = (
-					$conflictingNodeIpCount === 0 &&
-					$conflictingNodeProcessIpCount === 0
+					($conflictingNodeIpCount === 0) &&
+					($conflictingNodeProcessIpCount === 0)
 				);
 
 				if ($response['status_valid'] === false) {
@@ -272,11 +269,11 @@
 			$response = array(
 				'message' => 'Error editing node process, please try again.',
 				'status_valid' => (
-					empty($parameters['data']['type']) === true ||
-					in_array($parameters['data']['type'], array(
+					(empty($parameters['data']['type']) === true) ||
+					(in_array($parameters['data']['type'], array(
 						'nameserver',
 						'proxy'
-					))
+					)) === true)
 				)
 			);
 
@@ -286,11 +283,11 @@
 			}
 
 			$response['status_valid'] = (
-				empty($parameters['data']['transport_protocol']) === true ||
-				in_array($parameters['data']['transport_protocol'], array(
+				(empty($parameters['data']['transport_protocol']) === true) ||
+				(in_array($parameters['data']['transport_protocol'], array(
 					'tcp',
 					'udp'
-				))
+				)) === true)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -373,10 +370,10 @@
 			}
 
 			if (empty($parameters['data']['application_protocol']) === false) {
-				$response['status_valid'] = in_array($parameters['data']['application_protocol'], array(
+				$response['status_valid'] = (in_array($parameters['data']['application_protocol'], array(
 					'http',
 					'socks'
-				));
+				)) === true);
 
 				if ($parameters['data']['application_protocol'] === 'http') {
 					$parameters['data']['transport_protocol'] = 'tcp';
@@ -413,33 +410,30 @@
 					$nodeProcessIpKey = $nodeProcessIpInterface . '_ip_version_' . $nodeProcessIpVersion;
 
 					if (empty($parameters['data'][$nodeIpKey]) === false) {
-						$nodeProcessIp = $nodeProcessIps[$nodeProcessIpKey] = $nodeProcessIpVersions[$nodeProcessIpVersion][] = $parameters['data'][$nodeProcessIpKey];
+						$response['status_valid'] = empty($node['external_ip_version_' . $nodeProcessIpVersion]) === false);
 
-						if (empty($node['external_ip_version_' . $nodeProcessIpVersion]) === true) {
-							$response = array(
-								'message' => 'Node must have an external IP version ' . $nodeProcessIpVersion . ' before adding a node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.',
-								'status_valid' => false
-							);
+						if ($response['status_valid'] === false) {
+							$response['message'] = 'Node must have an external IP version ' . $nodeProcessIpVersion . ' before adding a node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.';
 							return $response;
 						}
+
+						$nodeProcessIp = $nodeProcessIps[$nodeProcessIpKey] = $nodeProcessIpVersions[$nodeProcessIpVersion][] = $parameters['data'][$nodeProcessIpKey];
 
 						if ($nodeProcessIpInterface === 'external') {
 							$nodeProcessExternalIps[$nodeProcessIpKey] = $nodeProcessIp;
 						}
 
-						if ($nodeProcessIpType !== $this->_fetchIpType($nodeProcessIp, $nodeProcessIpVersion)) {
-							$response = array(
-								'message' => 'Node process ' . $nodeProcessIpInterface . ' IPs must be ' . $nodeProcessIpType . ', please try again.',
-								'status_valid' => false
-							);
+						$response['status_valid'] = ($nodeProcessIpType === $this->_fetchIpType($nodeProcessIp, $nodeProcessIpVersion));
+
+						if ($response['status_valid'] === false) {
+							$response['message'] = 'Node process ' . $nodeProcessIpInterface . ' IPs must be ' . $nodeProcessIpType . ', please try again.';
 							return $response;
 						}
 
-						if ($nodeProcessIpVersion !== key($this->_sanitizeIps(array($nodeProcessIp)))) {
-							$response = array(
-								'message' => 'Invalid node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.',
-								'status_valid' => false
-							);
+						$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($nodeProcessIp))));
+
+						if ($response['status_valid'] === false) {
+							$response['message'] = 'Invalid node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.';
 							return $response;
 						}
 					}
@@ -484,8 +478,8 @@
 				$conflictingNodeIpCount = $this->count($conflictingNodeIpCountParameters);
 				$conflictingNodeProcessIpCount = $this->count($conflictingNodeProcessIpCountParameters);
 				$response['status_valid'] = (
-					is_int($conflictingNodeIpCount) === true &&
-					is_int($conflictingNodeProcessIpCount) === true
+					(is_int($conflictingNodeIpCount) === true) &&
+					(is_int($conflictingNodeProcessIpCount) === true)
 				);
 
 				if ($response['status_valid'] === false) {
@@ -493,8 +487,8 @@
 				}
 
 				$response['status_valid'] = (
-					$conflictingNodeIpCount === 0 &&
-					$conflictingNodeProcessIpCount === 0
+					($conflictingNodeIpCount === 0) &&
+					($conflictingNodeProcessIpCount === 0)
 				);
 
 				if ($response['status_valid'] === false) {

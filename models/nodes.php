@@ -128,7 +128,7 @@
 
 			$response['status_valid'] = (
 				$nodeExternalIpVersions === $this->_sanitizeIps($nodeExternalIps) &&
-				count(current($nodeExternalIpVersions)) === 1
+				(count(current($nodeExternalIpVersions)) === 1)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -165,10 +165,10 @@
 			}
 
 			$response['status_valid'] = (
-				empty($nodeInternalIps) === true ||
+				(empty($nodeInternalIps) === true) ||
 				(
-					$nodeInternalIpVersions === $this->_sanitizeIps($nodeInternalIps) &&
-					count(current($nodeInternalIpVersions)) === 1
+					($nodeInternalIpVersions === $this->_sanitizeIps($nodeInternalIps)) &&
+					(count(current($nodeInternalIpVersions)) === 1)
 				)
 			);
 
@@ -213,8 +213,8 @@
 			$conflictingNodeCount = $this->count($conflictingNodeCountParameters);
 			$conflictingNodeProcessCount = $this->count($conflictingNodeProcessCountParameters);
 			$response['status_valid'] = (
-				is_int($conflictingNodeCount) === true &&
-				is_int($conflictingNodeProcessCount) === true
+				(is_int($conflictingNodeCount) === true) &&
+				(is_int($conflictingNodeProcessCount) === true)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -222,8 +222,8 @@
 			}
 
 			$response['status_valid'] = (
-				$conflictingNodeCount === 0 &&
-				$conflictingNodeProcessCount === 0
+				($conflictingNodeCount === 0) &&
+				($conflictingNodeProcessCount === 0)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -276,12 +276,12 @@
 
 			$response['status_valid'] = (
 				(
-					empty($parameters['data']['authentication_password']) === false ||
-					empty($parameters['data']['authentication_username']) === false
+					(empty($parameters['data']['authentication_password']) === false) ||
+					(empty($parameters['data']['authentication_username']) === false)
 				) &&
 				(
-					empty($parameters['data']['authentication_password']) === true ||
-					empty($parameters['data']['authentication_username']) === true
+					(empty($parameters['data']['authentication_password']) === true) ||
+					(empty($parameters['data']['authentication_username']) === true)
 				)
 			);
 
@@ -295,12 +295,12 @@
 			}
 
 			$response['status_valid'] = (
-				empty($parameters['data']['authentication_username']) === true ||
+				(empty($parameters['data']['authentication_username']) === true) ||
 				(
-					strlen($parameters['data']['authentication_username']) > 10 &&
-					strlen($parameters['data']['authentication_username']) < 20 &&
-					strlen($parameters['data']['authentication_password']) > 10 &&
-					strlen($parameters['data']['authentication_password']) < 20
+					(strlen($parameters['data']['authentication_username']) > 10) &&
+					(strlen($parameters['data']['authentication_username']) < 20) &&
+					(strlen($parameters['data']['authentication_password']) > 10) &&
+					(strlen($parameters['data']['authentication_password']) < 20)
 				)
 			);
 
@@ -566,11 +566,11 @@
 			$response = array(
 				'message' => 'Error downloading nodes, please try again.',
 				'status_valid' => (
-					empty($parameters['where']['type']) === false &&
-					in_array($parameters['where']['type'], array(
+					(empty($parameters['where']['type']) === false) &&
+					(in_array($parameters['where']['type'], array(
 						'nameserver',
 						'proxy'
-					))
+					)) === true)
 				)
 			);
 
@@ -580,13 +580,13 @@
 			}
 
 			$response['status_valid'] = (
-				$parameters['where']['type'] === 'nameserver' ||
+				($parameters['where']['type'] === 'nameserver') ||
 				(
-					empty($parameters['where']['application_protocol']) === false &&
-					in_array($parameters['where']['application_protocol'], array(
+					(empty($parameters['where']['application_protocol']) === false &&
+					(in_array($parameters['where']['application_protocol'], array(
 						'http',
 						'socks'
-					))
+					)) === true)
 				)
 			);
 
@@ -596,11 +596,11 @@
 			}
 
 			$response['status_valid'] = (
-				empty($parameters['where']['ip_version']) === false &&
-				in_array($parameters['where']['ip_version'], array(
+				(empty($parameters['where']['ip_version']) === false) &&
+				(in_array($parameters['where']['ip_version'], array(
 					4,
 					6
-				)) === true
+				)) === true)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -830,8 +830,8 @@
 			}
 
 			$response['status_valid'] = (
-				$nodeExternalIpVersions === $this->_sanitizeIps($nodeExternalIps) &&
-				count(current($nodeExternalIpVersions)) === 1
+				($nodeExternalIpVersions === $this->_sanitizeIps($nodeExternalIps)) &&
+				(count(current($nodeExternalIpVersions)) === 1)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -868,10 +868,10 @@
 			}
 
 			$response['status_valid'] = (
-				empty($nodeInternalIps) === true ||
+				(empty($nodeInternalIps) === true) ||
 				(
-					$nodeInternalIpVersions === $this->_sanitizeIps($nodeInternalIps) &&
-					count(current($nodeInternalIpVersions)) === 1
+					($nodeInternalIpVersions === $this->_sanitizeIps($nodeInternalIps)) &&
+					(count(current($nodeInternalIpVersions)) === 1)
 				)
 			);
 
@@ -1130,8 +1130,8 @@
 				)
 			));
 			$response['status_valid'] = (
-				$nodeDataDeleted === true &&
-				$nodeUserDataDeleted === true
+				($nodeDataDeleted === true) &&
+				($nodeUserDataDeleted === true)
 			);
 
 			if ($response['status_valid'] === false) {
