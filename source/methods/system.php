@@ -40,11 +40,19 @@
 
 			if ($response === true) {
 				$user = $this->fetch(array(
-					'from' => 'users'
+					'fields' => array(
+						'authentication_password',
+						'authentication_whitelist'
+					),
+					'from' => 'users',
+					'where' => array(
+						'id' => 1
+					)
 				));
 
+
 				if (!empty($user['count'])) {
-					$response = $user['data'][0];
+					$response = $user;
 				}
 			}
 
@@ -279,6 +287,41 @@
 			}
 
 			return !empty($response['data'][0]) ? $response['data'][0] : array();
+		}
+
+		protected function _logInvalidRequest() {
+			$requestLogs = $this->fetch(array(
+				'fields' => array(
+					'id',
+					'request_attempts'
+				),
+				'from' => 'request_logs',
+				'where' => array(
+					'node_user_id' => null,
+					'source_ip' => $_SERVER['REQUEST_URI']
+				)
+			));
+			$requestLogData = array(
+				'source_ip' => $_SERVER['REQUEST_URI'],
+				'request_attempts' => 1
+			);
+
+			if (
+				($requestLogs !== false) &&
+				(empty($requestLogs) === false)
+			) {
+				$requestLogs['request_attempts']++;
+				$requestLogData = $requestLogs;
+			}
+
+			$requestLogData = array(
+				$requestLogData
+			);
+			$this->save(array(
+				'data' => $requestLogData,
+				'to' => 'request_logs'
+			));
+			return;
 		}
 
 		protected function _parseFormDataItem($formDataItemKey, $formDataItemValue) {
@@ -813,132 +856,108 @@
 
 		protected function _request($parameters) {
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => 'Request parameters are required, please try again.'
+				'message' => 'Invalid request parameters, please try again.',
+				'status_valid' => (
+					(empty($_POST['json']) === false) &&
+					(is_string($_POST['json']) === true)
 				)
 			);
-			$validRequest = false;
+
+			if ($parameters['status_valid'] === false) {
+				$this->_logInvalidRequest();
+				return $response;
+			}
+
+			$parameters = $this->_parseParameters(json_decode($_POST['json'], true), 'snake');
+
+			if (empty($parameters['from']) === true) {
+				$parameters['from'] = $_SERVER['REQUEST_URI'];
+
+				if (empty($parameters['url']) === false) {
+					$parameters['from'] = $parameters['url'];
+				}
+
+				$parameters['from'] = str_replace('-', '_', basename($parameters['from']));
+			}
+
+			$response['status_valid'] = (
+				(
+					(empty($parameters['from']) === false) &&
+					(
+						($parameters['from'] === 'system') ||
+						(empty($this->settings['database']['structure'][$parameters['from']]) === false)
+					)
+				) &&
+				(
+					(isset($parameters['limit']) === false) ||
+					(is_int($parameters['limit']) === true)
+				) &&
+				(
+					(empty($parameters['method']) === false) &&
+					(method_exists($this, $parameters['method']) === true)
+				) &&
+				(
+					(isset($parameters['offset']) === false) ||
+					(is_int($parameters['offset']) === true)
+				) &&
+				(
+					(isset($parameters['sort']) === false) ||
+					(
+						(empty($parameters['sort']['field']) === false) &&
+						(empty($this->settings['database']['structure'][$parameters['from']][$parameters['sort']['field']]) === false) &&
+						(empty($parameters['sort']['order']) === false) &&
+						(in_array(strtoupper($parameters['sort']['order']), array('ASC', 'DESC')) === true)
+					)
+				) &&
+				(
+					(isset($parameters['where']) === false) ||
+					(
+						(empty($parameters['where']) === false) &&
+						(is_array($parameters['where']) === true)
+					)
+				)
+			);
+
+			if ($parameters['status_valid'] === false) {
+				$this->_logInvalidRequest();
+				return $response;
+			}
+
+			$authenticateResponse = $this->_authenticate($parameters);
 
 			if (
-				!empty($_POST['json']) &&
-				is_string($_POST['json'])
+				empty($authenticateResponse['user']) === true &&
+				$parameters['method'] !== 'login'
 			) {
-				$response['message']['text'] = 'No results found, please try again.';
-				$parameters = $this->_parseParameters(json_decode($_POST['json'], true), 'snake');
-
-				if (empty($parameters['from'])) {
-					$parameters['from'] = str_replace('-', '_', !empty($parameters['url']) ? basename($parameters['url']) : basename($_SERVER['REQUEST_URI']));
-				}
-
-				if (
-					(
-						empty($parameters['from']) ||
-						(
-							$parameters['from'] !== 'main' &&
-							empty($this->settings['database']['schema'][$parameters['from']])
-						)
-					) ||
-					(
-						($parameters['method'] = !empty($parameters['method']) ? $parameters['method'] : 'fetch') &&
-						!method_exists($this, $parameters['method'])
-					) ||
-					(
-						isset($parameters['limit']) &&
-						!is_int($parameters['limit'])
-					) ||
-					(
-						isset($parameters['offset']) &&
-						!is_int($parameters['offset'])
-					) ||
-					(
-						(
-							!empty($parameters['sort']['field']) &&
-							empty($this->settings['database']['schema'][$parameters['from']][$parameters['sort']['field']])
-						) ||
-						(
-							!empty($parameters['sort']['order']) &&
-							!in_array(strtoupper($parameters['sort']['order']), array('ASC', 'DESC'))
-						)
-					) ||
-					(
-						!empty($parameters['where']) &&
-						!is_array($parameters['where'])
-					)
-				) {
-					$response['message']['text'] = 'Invalid request parameters, please try again.';
-				} else {
-					$response = array(
-						'message' => array(
-							'status' => 'error',
-							'text' => 'Authentication required, please try again.'
-						),
-						'redirect' => '/',
-						'user' => false
-					);
-					$parameters = array_merge($parameters, array(
-						'redirect' => '',
-						'user' => $this->_authenticate($parameters)
-					));
-
-					if (empty($parameters['user']['id']) === false) {
-						$methodResponse = $this->_processMethod($parameters);
-						$validRequest = ($methodResponse['status_valid'] === false);
-
-						if (!empty($methodResponse)) {
-							$response = array_merge($methodResponse, array(
-								'user' => $parameters['user']
-							));
-						}
-					}
-				}
+				$this->_logInvalidRequest();
+				return $authenticateResponse;
 			}
+
+			$methodResponse = $this->_processMethod(array_merge($parameters, $authenticateResponse));
+
+			if (
+				$methodResponse['status_valid'] === false &&
+				$parameters['method'] === 'login'
+			) {
+				$this->_logInvalidRequest();
+				return $methodResponse;
+			}
+
+			$response = array_merge($methodResponse, array(
+				'user' => $authenticateResponse['user']
+			));
 
 			if (!empty($parameters['camel_case_response_keys'])) {
 				$response = $this->_parseParameters($response, 'camel');
 			}
 
-			if ($validRequest === true) {
-				$this->delete(array(
-					'from' => 'request_logs',
-					'where' => array(
-						'node_user_id' => null,
-						'source_ip' => $_SERVER['REQUEST_URI']
-					)
-				));
-			} else {
-				// ..
-				$publicRequestLimitationData = array();
-				$publicRequestLimitations = $this->fetch(array(
-					'fields' => array(
-						'id',
-						'request_attempts'
-					),
-					'from' => 'public_request_limitations',
-					'limit' => 1,
-					'where' => array(
-						'client_ip' => $_SERVER['REQUEST_URI']
-					)
-				));
-
-				if (!empty($publicRequestLimitations['count'])) {
-					$publicRequestLimitationData = $publicRequestLimitations['data'];
-				} else {
-					$publicRequestLimitationData = array(
-						array(
-							'client_ip' => $clientIp,
-							'request_attempts' => 0
-						)
-					);
-				}
-
-				$publicRequestLimitationData[0]['request_attempts']++;
-				$this->save(array(
-					'data' => $publicRequestLimitationData,
-					'to' => 'public_request_limitations'
-				));
-			}
-
+			$this->delete(array(
+				'from' => 'request_logs',
+				'where' => array(
+					'node_user_id' => null,
+					'source_ip' => $_SERVER['REQUEST_URI']
+				)
+			));
 			return $response;
 		}
 
