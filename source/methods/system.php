@@ -426,7 +426,7 @@
 					is_array($parameterized['parameterizedValues'])
 				) {
 					foreach ($parameterized['parameterizedValues'] as $parameterizedValueKey => $parameterizedValue) {
-						if ($parameterizedValue === $this->keys['salt'] . 'is_null' . $this->keys['salt']) {
+						if ($parameterizedValue === '_is_null_') {
 							$parameterized['parameterizedValues'][$parameterizedValueKey] = null;
 						}
 					}
@@ -963,19 +963,19 @@
 			$queries = array();
 			$response = true;
 
-			if (!empty($parameters['data'])) {
+			if (empty($parameters['data']) === false) {
 				foreach (array_chunk($parameters['data'], 1000) as $rows) {
 					$groupValues = array();
 
 					foreach ($rows as $row) {
 						$fields = array_keys($row);
 						$values = array_map(function($value) {
-							if (is_bool($value)) {
+							if (is_bool($value) === true) {
 								$value = (integer) $value;
 							}
 
-							if (is_null($value)) {
-								$value = $this->keys['salt'] . 'is_null' . $this->keys['salt'];
+							if (is_null($value) === true) {
+								$value = '_is_null_';
 							}
 
 							return $value;
