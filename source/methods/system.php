@@ -2,58 +2,42 @@
 	class SystemMethods extends System {
 
 		protected function _authenticate($parameters) {
-			$response = false;
+			$response = array(
+				'message' => 'Error authenticating request, please try again.',
+				'status_valid' => (
+					(empty($parameters['settings']['session_id']) === false) &&
+					($this->_verifyKeys() === true)
+				)
+			);
 
-			if (
-				!empty($parameters['settings']['session_id']) &&
-				$this->_verifyKeys()
-			) {
-				$token = $this->fetch(array(
-					'fields' => array(
-						'foreign_key',
-						'foreign_value',
-						'id',
-						'string'
-					),
-					'from' => 'tokens',
-					'sort' => array(
-						'field' => 'created',
-						'order' => 'DESC'
-					),
+			if ($response['status_valid'] === true) {
+				$tokenCount = $this->count(array(
+					'in' => 'tokens',
 					'where' => array(
 						'string' => $this->_createTokenString(array(
 							'session_id' => $parameters['settings']['session_id']
 						))
 					)
 				));
-
-				if (!empty($token['count'])) {
-					$response = true;
-				}
-			} else {
-				$authenticateEndpoint = $this->_authenticateEndpoint($parameters);
-
-				if ($authenticateEndpoint['message']['status'] === 'success') {
-					$response = $authenticateEndpoint['data'];
-				}
+				$response['status_valid'] = (
+					(is_int($tokenCount) === true) &&
+					($tokenCount > 0)
+				);
 			}
 
-			if ($response === true) {
-				$user = $this->fetch(array(
-					'fields' => array(
-						'authentication_password',
-						'authentication_whitelist'
-					),
-					'from' => 'users',
-					'where' => array(
-						'id' => 1
-					)
-				));
+			$response['user'] = $this->fetch(array(
+				'fields' => array(
+					'authentication_password',
+					'authentication_whitelist'
+				),
+				'from' => 'users',
+				'where' => array(
+					'id' => 1
+				)
+			));
 
-
-				if (!empty($user['count'])) {
-					$response = $user;
-				}
+			if ($response['status_valid'] === false) {
+				$response = $this->_authenticateEndpoint($response);
 			}
 
 			return $response;
@@ -61,53 +45,37 @@
 
 		protected function _authenticateEndpoint($parameters) {
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => ($defaultMessage = 'Error authenticating your endpoint request, please try again.')
+				'message' => 'Error authenticating endpoint request, please try again.',
+				'status_valid' => (
+					($parameters['user'] !== false) &&
+					(empty($parameters['user']) === false)
 				)
 			);
-			$user = $this->fetch(array(
-				'from' => 'users'
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$nodeCount = $this->count(array(
+				'in' => 'nodes',
+				'where' => array(
+					'node_id' => null,
+					'OR' => array(
+						'external_ip_version_4' => $_SERVER['REMOTE_ADDR'],
+						'external_ip_version_6' => $_SERVER['REMOTE_ADDR']
+					)
+				)
 			));
+			$response['status_valid'] = (
+				(
+					(is_int($nodeCount) === true) &&
+					($nodeCount === 1)
+				) ||
+				(in_array($_SERVER['REMOTE_ADDR'], explode("\n", $parameters['user']['authentication_whitelist'])) === true)
+			);
 
-			if (!empty($user['count'])) {
-				$response['message'] = array(
-					'status' => 'error',
-					'text' => 'IP ' . ($clientIp = $this->settings['client_ip']) . ' must be whitelisted in your account, please try again.'
-				);
-				$whitelistedIps = explode("\n", $user['data'][0]['whitelisted_ips']);
-
-				if (in_array($clientIp, $whitelistedIps)) {
-					$response['message']['status'] = 'success';
-				}
-
-				if ($response['message']['status'] === 'error') {
-					$serverIp = $this->fetch(array(
-						'from' => 'servers',
-						'fields' => array(
-							'ip'
-						),
-						'where' => array(
-							'ip' => $clientIp
-						)
-					));
-
-					if (!empty($serverIp['count'])) {
-						$response['message']['status'] = 'success';
-					}
-				}
-
-				if ($response['message']['status'] === 'success') {
-					$response = array(
-						'data' => array_merge($user['data'][0], array(
-							'endpoint' => true
-						)),
-						'message' => array(
-							'status' => 'success',
-							'text' => 'Endpoint authenticated successfully.'
-						)
-					);
-				}
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid source IP, please try again.';
 			}
 
 			return $response;
@@ -920,44 +888,44 @@
 
 			if ($parameters['status_valid'] === false) {
 				$this->_logInvalidRequest();
-				return $response;
+			} else {
+				$response = $this->_authenticate($parameters);
+				$parameters['user'] = $response['user'];
+
+				if (
+					(empty($parameters['user']) === true) &&
+					($parameters['method'] !== 'login')
+				) {
+					if ($response['status_valid'] === false) {
+						$this->_logInvalidRequest();
+					}
+				} else {
+					$response = $this->_processMethod($parameters);
+
+					if (
+						($response['status_valid'] === false) &&
+						($parameters['method'] === 'login')
+					) {
+						$this->_logInvalidRequest();
+					} else {
+						$response = array_merge($response, array(
+							'user' => $parameters['user']
+						));
+						$this->delete(array(
+							'from' => 'request_logs',
+							'where' => array(
+								'node_user_id' => null,
+								'source_ip' => $_SERVER['REQUEST_URI']
+							)
+						));
+					}
+				}
 			}
 
-			$authenticateResponse = $this->_authenticate($parameters);
-
-			if (
-				empty($authenticateResponse['user']) === true &&
-				$parameters['method'] !== 'login'
-			) {
-				$this->_logInvalidRequest();
-				return $authenticateResponse;
-			}
-
-			$methodResponse = $this->_processMethod(array_merge($parameters, $authenticateResponse));
-
-			if (
-				$methodResponse['status_valid'] === false &&
-				$parameters['method'] === 'login'
-			) {
-				$this->_logInvalidRequest();
-				return $methodResponse;
-			}
-
-			$response = array_merge($methodResponse, array(
-				'user' => $authenticateResponse['user']
-			));
-
-			if (!empty($parameters['camel_case_response_keys'])) {
+			if (empty($parameters['camel_case_response_keys']) === false) {
 				$response = $this->_parseParameters($response, 'camel');
 			}
 
-			$this->delete(array(
-				'from' => 'request_logs',
-				'where' => array(
-					'node_user_id' => null,
-					'source_ip' => $_SERVER['REQUEST_URI']
-				)
-			));
 			return $response;
 		}
 
