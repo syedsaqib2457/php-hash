@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="initial-scale=1, width=device-width" name="viewport">
+<title>Overlord</title>
+<link href="/assets/png/icon-favicon.png" rel="icon" type="image/png">
+<style type="text/css">
 .align-left { float: left !important; }
 .align-right { float: right !important; }
 .clear { clear: both !important; float: none !important; }
@@ -942,3 +950,6 @@ strong {
 		margin-left: -10px;
 		margin-top: 22px;
 	}
+</style>
+</head>
+<body>

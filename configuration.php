@@ -3,11 +3,10 @@
 
 		public function __construct() {
 
+			require(__DIR__ . '/database.php');
 			require(__DIR__ . '/keys.php');
-			require(__DIR__ . '/schema.php');
 
 			$this->keys = array(
-				'salt' => $keys['salt'],
 				'start' => $keys['salt'] . $keys['start'] . $keys['salt'],
 				'stop' => $keys['salt'] . $keys['stop'] . $keys['salt']
 			);
@@ -40,16 +39,13 @@
 			$this->settings = array(
 				'base_domain' => basename(__DIR__),
 				'base_path' => __DIR__,
-				'client_ip' => !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false,
-				'database' => array(
-					'hostname' => 'localhost',
-					'name' => 'overlord',
-					'password' => 'password',
-					'schema' => $schema,
-					'username' => 'root'
-				),
+				'database' => $database,
 				'version' => (integer) file_get_contents(__DIR__ . '/version.txt')
 			);
+
+			if (empty($_SERVER['REMOTE_ADDR']) === false) {
+				$this->settings['client_ip'] = $_SERVER['REMOTE_ADDR'];
+			}
 
 		}
 
