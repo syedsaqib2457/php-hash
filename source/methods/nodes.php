@@ -1,8 +1,8 @@
 <?php
 	$extend = true;
-	require_once($configuration->settings['base_path'] . '/models/system.php');
+	require_once($system->settings['base_path'] . '/methods/system.php');
 
-	class NodesModel extends SystemModel {
+	class NodeMethods extends SystemMethods {
 
 		public function activate($parameters) {
 			$response = array(
@@ -1199,8 +1199,8 @@
 
 	}
 
-	if (!empty($configuration->parameters)) {
-		$nodesModel = new NodesModel();
-		$data = $nodesModel->route($configuration->parameters);
+	if (empty($system->parameters) === false) {
+		$nodeMethods = new NodeMethods();
+		$data = $nodeMethods->route($system->parameters);
 	}
 ?>

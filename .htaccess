@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
 RewriteEngine on
 RewriteBase /
-RewriteCond %{REQUEST_URI} !system/configurations/routing.php
-RewriteRule (.*) /system/configurations/routing.php?/$1 [L]
+RewriteCond %{REQUEST_URI} !source/routing.php
+RewriteRule (.*) /source/routing.php?/$1 [L]
 </IfModule>

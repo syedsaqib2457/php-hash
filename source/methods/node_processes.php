@@ -1,8 +1,8 @@
 <?php
 	$extend = true;
-	require_once($configuration->settings['base_path'] . '/models/system.php');
+	require_once($system->settings['base_path'] . '/methods/system.php');
 
-	class NodeProcessesModel extends SystemModel {
+	class NodeProcessMethods extends SystemMethods {
 
 		public function add($parameters) {
 			$response = array(
@@ -614,8 +614,8 @@
 
 	}
 
-	if (!empty($configuration->parameters)) {
-		$nodeProcessesModel = new NodeProcessesModel();
-		$data = $nodeProcessesModel->route($configuration->parameters);
+	if (empty($system->parameters) === false) {
+		$nodeProcessMethods = new NodeProcessMethods();
+		$data = $nodeProcessMethods->route($system->parameters);
 	}
 ?>

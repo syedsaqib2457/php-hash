@@ -1,8 +1,8 @@
 <?php
 	$extend = true;
-	require_once($configuration->settings['base_path'] . '/models/system.php');
+	require_once($system->settings['base_path'] . '/methods/system.php');
 
-	class RequestDestinationsModel extends SystemModel {
+	class RequestDestinationMethods extends SystemMethods {
 
 		public function add($parameters) {
 			$response = array(
@@ -110,8 +110,8 @@
 
 	}
 
-	if (!empty($configuration->parameters)) {
-		$requestDestinationsModel = new RequestDestinationsModel();
-		$data = $requestDestinationsModel->route($configuration->parameters);
+	if (empty($system->parameters) === false) {
+		$requestDestinationMethods = new RequestDestinationMethods();
+		$data = $requestDestinationMethods->route($system->parameters);
 	}
 ?>

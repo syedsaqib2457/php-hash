@@ -1,8 +1,8 @@
 <?php
 	$extend = true;
-	require_once($configuration->settings['base_path'] . '/models/system.php');
+	require_once($system->settings['base_path'] . '/methods/system.php');
 
-	class RequestLimitRulesModel extends SystemModel {
+	class RequestLimitRuleMethods extends SystemMethods {
 
 		public function add($parameters) {
 			$response = array(
@@ -153,8 +153,8 @@
 
 	}
 
-	if (!empty($configuration->parameters)) {
-		$requestLimitRulesModel = new RequestLimitRulesModel();
-		$data = $requestLimitRulesModel->route($configuration->parameters);
+	if (empty($system->parameters) === false) {
+		$requestLimitRuleMethods = new RequestLimitRuleMethods();
+		$data = $requestLimitRuleMethods->route($system->parameters);
 	}
 ?>

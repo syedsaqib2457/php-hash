@@ -8,33 +8,31 @@
 		exit;
 	}
 
-	require_once(__DIR__ . '/configurations/settings.php');
+	require_once(__DIR__ . '/source/system.php');
 
 	if (
 		($_SERVER['REDIRECT_URL'] !== '/') &&
 		(substr($_SERVER['REDIRECT_URL'], -1) === '/')
 	) {
-		$configuration->redirect(substr($_SERVER['REDIRECT_URL'], 0, -1));
+		header('Location: ' . substr($_SERVER['REDIRECT_URL'], 0, -1), true, 301);
+		exit;
 	}
 
 	$pathParts = array_filter(explode('/', $_SERVER['REDIRECT_URL']));
 	$routes = array(
 		array(
-			'file' => $configuration->settings['base_path'] . '/scripts/[file]',
-			'headers' => array(
-				'Content-type: text/plain'
-			),
-			'url' => '/scripts/[file]'
-		),
-		array(
-			'file' => $configuration->settings['base_path'] . '/interfaces/browser/images/[file]',
+			'file' => $system->settings['base_path'] . '/interfaces/browser/images/[file]',
 			'headers' => array(
 				'Content-type: image/png'
 			),
-			'url' => '/interfaces/browser/images/[file]'
+			'url' => '/images/[file]'
 		),
 		array(
-			'file' => $configuration->settings['base_path'] . '/interfaces/developer/interface.php',
+			'file' => $system->settings['base_path'] . '/interfaces/browser/interface.php',
+			'url' => '/'
+		),
+		array(
+			'file' => $system->settings['base_path'] . '/interfaces/developer/interface.php',
 			'headers' => array(
 				'Access-Control-Allow-Origin: *',
 				'Content-type: application/json'
@@ -42,8 +40,11 @@
 			'url' => '/endpoint/[from]'
 		),
 		array(
-			'file' => $configuration->settings['base_path'] . '/interfaces/browser/interface.php',
-			'url' => '/'
+			'file' => $system->settings['base_path'] . '/scripts/[file]',
+			'headers' => array(
+				'Content-type: text/plain'
+			),
+			'url' => '/scripts/[file]'
 		)
 	);
 

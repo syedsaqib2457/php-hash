@@ -1,5 +1,5 @@
 <?php
-	class SystemModel extends Configuration {
+	class SystemMethods extends System {
 
 		protected function _authenticate($parameters) {
 			$response = false;
@@ -502,7 +502,7 @@
 			return $response;
 		}
 
-		protected function _processAction($parameters) {
+		protected function _processMethod($parameters) {
 			$actionsProcessing = $response = array();
 			$decodeItemList = (
 				$parameters['action'] !== 'fetch' &&
@@ -818,7 +818,6 @@
 					'text' => 'Request parameters are required, please try again.'
 				)
 			);
-			$clientIp = $this->settings['client_ip'];
 			$validRequest = false;
 
 			if (
@@ -841,8 +840,8 @@
 						)
 					) ||
 					(
-						($parameters['action'] = !empty($parameters['action']) ? $parameters['action'] : 'fetch') &&
-						!method_exists($this, $parameters['action'])
+						($parameters['method'] = !empty($parameters['method']) ? $parameters['method'] : 'fetch') &&
+						!method_exists($this, $parameters['method'])
 					) ||
 					(
 						isset($parameters['limit']) &&
@@ -874,7 +873,7 @@
 							'status' => 'error',
 							'text' => 'Authentication required, please try again.'
 						),
-						'redirect' => '/servers?#login',
+						'redirect' => '/',
 						'user' => false
 					);
 					$parameters = array_merge($parameters, array(
@@ -882,15 +881,12 @@
 						'user' => $this->_authenticate($parameters)
 					));
 
-					if (
-						($publicRequest = in_array($parameters['action'], $this->publicPermissions[$parameters['from']])) ||
-						!empty($parameters['user']['id'])
-					) {
-						$queryResponse = $this->_processAction($parameters);
-						$validRequest = $publicRequest && $queryResponse['message']['status'] === 'error' ? false : true;
+					if (empty($parameters['user']['id']) === false) {
+						$methodResponse = $this->_processMethod($parameters);
+						$validRequest = ($methodResponse['status_valid'] === false);
 
-						if (!empty($queryResponse)) {
-							$response = array_merge($queryResponse, array(
+						if (!empty($methodResponse)) {
+							$response = array_merge($methodResponse, array(
 								'user' => $parameters['user']
 							));
 						}
@@ -904,12 +900,14 @@
 
 			if ($validRequest === true) {
 				$this->delete(array(
-					'from' => 'public_request_limitations',
+					'from' => 'request_logs',
 					'where' => array(
-						'client_ip' => $clientIp
+						'node_user_id' => null,
+						'source_ip' => $_SERVER['REQUEST_URI']
 					)
 				));
 			} else {
+				// ..
 				$publicRequestLimitationData = array();
 				$publicRequestLimitations = $this->fetch(array(
 					'fields' => array(
@@ -919,7 +917,7 @@
 					'from' => 'public_request_limitations',
 					'limit' => 1,
 					'where' => array(
-						'client_ip' => $clientIp
+						'client_ip' => $_SERVER['REQUEST_URI']
 					)
 				));
 
@@ -1474,63 +1472,6 @@
 			return $response;
 		}
 
-		public function shellProcessRequestLogs() {
-			// todo: limit prefixes instead of addresses for ipv6
-			$response = array(
-				'message' => 'Error processing request logs, please try again.',
-				'status_valid' => false
-			);
-			$requestLogsToProcess = $this->fetch(array(
-				'fields' => array(
-					'id',
-					'source_ip'
-				),
-				'from' => 'request_logs',
-				'where' => array(
-					'node_user_id' => null,
-					'response_code >=' => 10
-				)
-			));
-
-			if (empty($requestLogsToProcess) === false) {
-				$requestLogsPath = $this->settings['base_path'] . '/request_logs/';
-
-				if (is_dir($requestLogsPath) === false) {
-					mkdir($requestLogsPath, 0755);
-				}
-
-				foreach ($requestLogsToProcess as $requestLogToProcess) {
-					$requestLogToProcessPath = $requestLogsPath . implode('/', explode('.', $requestLogToProcessPath['source_ip'])) . '/';
-
-					if (is_dir($requestLogToProcessPath) === false) {
-						mkdir($requestLogToProcessPath, 0755, true);
-					}
-
-					$requestLogToProcessFile = $requestLogToProcessPath . '.';
-
-					if (filemtime($requestLogToProcessFile) < strtotime('-1 hour')) {
-						rmdir($requestLogToProcessPath);
-					}
-				}
-
-				$this->delete(array(
-					'from' => 'request_logs',
-					'where' => array(
-						'modified <' => date('Y-m-d H:i:s', strtotime('-1 hour')),
-						'node_user_id' => null
-					)
-				));
-				$response = array(
-					'message' => array(
-						'status' => 'success',
-						'text' => 'Request logs processed successfully.'
-					)
-				);
-			}
-
-			return $response;
-		}
-
 		public function update($parameters) {
 			$response = true;
 
@@ -1551,10 +1492,10 @@
 	}
 
 	if (
-		!empty($configuration->parameters) &&
-		empty($extend)
+		(empty($system->parameters) === false) &&
+		(empty($extend) === true)
 	) {
-		$systemModel = new SystemModel();
-		$data = $systemModel->route($configuration->parameters);
+		$systemMethods = new SystemMethods();
+		$data = $systemMethods->route($system->parameters);
 	}
 ?>
