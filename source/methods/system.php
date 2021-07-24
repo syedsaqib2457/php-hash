@@ -695,76 +695,58 @@
 		}
 
 		protected function _verifyKeys() {
-			$response = false;
+			$response = (
+				(empty($this->settings['keys']['start']) === false) &&
+				(empty($this->settings['keys']['stop']) === false)
+			);
 
-			if (
-				!empty($this->keys['salt']) &&
-				!empty($this->keys['start']) &&
-				!empty($this->keys['stop'])
-			) {
-				$string = sha1($this->keys['salt'] . $this->keys['start'] . $this->keys['stop']);
-				$keys = $this->fetch(array(
-					'fields' => array(
-						'id',
-						'value'
+			if ($response === false) {
+				return $response;
+			}
+
+			$setting = $this->fetch(array(
+				'fields' => array(
+					'id',
+					'value'
+				),
+				'from' => 'settings',
+				'sort' => array(
+					'field' => 'modified',
+					'order' => 'DESC'
+				),
+				'where' => array(
+					'id' => 'keys',
+					'value' => ($keys = sha1($this->settings['keys']['start'] . $this->settings['keys']['stop']))
+				)
+			));
+			$response = ($setting !== false);
+
+			if ($response === false) {
+				return $response;
+			}
+
+			$response = ($keys === $setting['value']);
+
+			if ($response === false) {
+				$this->update(array(
+					'data' => array(
+						'value' => $keys
 					),
-					'from' => 'settings',
-					'sort' => array(
-						'field' => 'modified',
-						'order' => 'DESC'
-					),
+					'in' => 'settings',
 					'where' => array(
 						'id' => 'keys'
 					)
 				));
-
-				if (!empty($keys['count'])) {
-					$response = true;
-				}
-
-				if (
-					empty($keys['count']) ||
-					(
-						!empty($keys['count']) &&
-						$keys['data'][0]['value'] !== $string
+				$this->update(array(
+					'data' => array(
+						'authentication_expires' => null,
+						'authentication_username' => ''
+					),
+					'in' => 'users',
+					'where' => array(
+						'id' => 1
 					)
-				) {
-					$response = false;
-					$user = $this->fetch(array(
-						'fields' => array(
-							'id',
-							'password',
-						),
-						'from' => 'users'
-					));
-
-					if (!empty($user['count'])) {
-						$userData = array(
-							array(
-								'id' => $user['data'][0]['id'],
-								'password' => ''
-							)
-						);
-						$this->save(array(
-							'data' => $userData,
-							'to' => 'users'
-						));
-					}
-
-					$this->delete(array(
-						'from' => 'tokens'
-					));
-					$settingData = array(
-						array(
-							'id' => 'keys',
-							'value' => $string
-						)
-					);
-					$this->save(array(
-						'data' => $settingData,
-						'to' => 'settings'
-					));
-				}
+				));
 			}
 
 			return $response;
