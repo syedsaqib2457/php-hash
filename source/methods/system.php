@@ -1031,57 +1031,6 @@
 			return $response;
 		}
 
-		public function settings($parameters = array()) {
-			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => ($defaultMessage = 'Error saving settings, please try again.')
-				)
-			);
-
-			if (
-				isset($parameters['data']['account_password']) &&
-				isset($parameters['data']['account_whitelisted_ips'])
-			) {
-				$whitelistedIps = array();
-
-				if (!empty($parameters['data']['account_whitelisted_ips'])) {
-					foreach ($this->_validateIps($parameters['data']['account_whitelisted_ips']) as $validatedWhitelistedIpVersionIps) {
-						$whitelistedIps += $validatedWhitelistedIpVersionIps;
-					}
-				}
-
-				$parameters['data'] = array(
-					'id' => 1,
-					'password' => $parameters['data']['account_password'],
-					'whitelisted_ips' => ($whitelistedIps = implode("\n", $whitelistedIps))
-				);
-
-				if (empty($parameters['data']['password'])) {
-					unset($parameters['data']['password']);
-				}
-
-				if ($this->save(array(
-					'data' => array(
-						$parameters['data']
-					),
-					'to' => 'users'
-				))) {
-					$response = array(
-						'data' => array(
-							'whitelisted_ips' => $whitelistedIps
-						),
-						'message' => array(
-							'status' => 'success',
-							'text' => 'Settings saved successfully.'
-						)
-					);
-				}
-			}
-
-			return $response;
-		}
-
 		public function update($parameters) {
 			$response = true;
 
