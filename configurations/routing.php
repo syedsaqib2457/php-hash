@@ -8,7 +8,7 @@
 		exit;
 	}
 
-	require_once(__DIR__ . '/configuration.php');
+	require_once(__DIR__ . '/configurations/settings.php');
 
 	if (
 		($_SERVER['REDIRECT_URL'] !== '/') &&
@@ -20,35 +20,21 @@
 	$pathParts = array_filter(explode('/', $_SERVER['REDIRECT_URL']));
 	$routes = array(
 		array(
-			'file' => $configuration->settings['base_path'] . '/assets/css/[file]',
-			'headers' => array(
-				'Content-type: text/css'
-			),
-			'url' => '/assets/css/[file]'
-		),
-		array(
-			'file' => $configuration->settings['base_path'] . '/assets/js/[file]',
-			'headers' => array(
-				'Content-type: text/javascript'
-			),
-			'url' => '/assets/js/[file]'
-		),
-		array(
-			'file' => $configuration->settings['base_path'] . '/assets/php/[file]',
+			'file' => $configuration->settings['base_path'] . '/scripts/[file]',
 			'headers' => array(
 				'Content-type: text/plain'
 			),
-			'url' => '/assets/php/[file]'
+			'url' => '/scripts/[file]'
 		),
 		array(
-			'file' => $configuration->settings['base_path'] . '/assets/png/[file]',
+			'file' => $configuration->settings['base_path'] . '/interfaces/browser/images/[file]',
 			'headers' => array(
 				'Content-type: image/png'
 			),
-			'url' => '/assets/png/[file]'
+			'url' => '/interfaces/browser/images/[file]'
 		),
 		array(
-			'file' => $configuration->settings['base_path'] . '/views/endpoint.php',
+			'file' => $configuration->settings['base_path'] . '/interfaces/developer/interface.php',
 			'headers' => array(
 				'Access-Control-Allow-Origin: *',
 				'Content-type: application/json'
@@ -56,7 +42,7 @@
 			'url' => '/endpoint/[from]'
 		),
 		array(
-			'file' => $configuration->settings['base_path'] . '/views/system/main.php',
+			'file' => $configuration->settings['base_path'] . '/interfaces/browser/interface.php',
 			'url' => '/'
 		)
 	);

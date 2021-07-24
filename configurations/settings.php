@@ -44,7 +44,7 @@
 			);
 
 			if (empty($_SERVER['REMOTE_ADDR']) === false) {
-				$this->settings['client_ip'] = $_SERVER['REMOTE_ADDR'];
+				$this->settings['source_ip'] = $_SERVER['REMOTE_ADDR'];
 			}
 
 		}

@@ -1,6 +1,7 @@
 <?php
 	// refactoring is always worth it
-	// todo: refactor layout for security
+	// todo: refactor clean file/folder structure for organization and security
+	// todo: minimize css styling and js complexity by avoiding tables, inline editing (use process windows), etc
 	// todo: remove over-engineered item list index functionality that isn't required in version 19
 	// todo: create optional automatic update scripts for versions above 19
 	// todo: increase tcp-clients and allow public-facing dns over both tcp and udp (previously was private with udp only and tcp for health checks)
