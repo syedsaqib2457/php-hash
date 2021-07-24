@@ -788,10 +788,11 @@
 			));
 			$response['status_valid'] = ($userDataUpdated === true);
 
-			if ($response['status_valid'] === true) {
-				$response['message'] = 'System configured successfully.';
+			if ($response['status_valid'] === false) {
+				return $response;
 			}
 
+			$response['message'] = 'System configured successfully.';
 			return $response;
 		}
 
