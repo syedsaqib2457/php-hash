@@ -754,50 +754,42 @@
 
 		public function configure($parameters = array()) {
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => ($defaultMessage = 'Error configuring system, please try again.')
+				'message' => 'Error configuring system, please try again.',
+				'status_valid' => (
+					(isset($parameters['data']['authentication_password']) === true) &&
+					(isset($parameters['data']['authentication_whitelist']) === true)
 				)
 			);
 
-			if (
-				isset($parameters['data']['account_password']) &&
-				isset($parameters['data']['account_whitelisted_ips'])
-			) {
-				$whitelistedIps = array();
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
 
-				if (!empty($parameters['data']['account_whitelisted_ips'])) {
-					foreach ($this->_validateIps($parameters['data']['account_whitelisted_ips']) as $validatedWhitelistedIpVersionIps) {
-						$whitelistedIps += $validatedWhitelistedIpVersionIps;
-					}
-				}
+			$parameters['data']['authentication_whitelist'] = $this->_sanitizeIps($parameters['data']['authentication_whitelist']);
 
-				$parameters['data'] = array(
-					'id' => 1,
-					'password' => $parameters['data']['account_password'],
-					'whitelisted_ips' => ($whitelistedIps = implode("\n", $whitelistedIps))
-				);
+			foreach ($parameters['data']['authentication_whitelist'] as $authenticationWhitelistIpVersion => $authenticationWhitelistIpVersionIps) {
+				unset($parameters['data']['authentication_whitelist'][$authenticationWhitelistIpVersion]);
+				$parameters['data']['authentication_whitelist'] = array_merge($parameters['data']['authentication_whitelist'], $authenticationWhitelistIpVersionIps);
+			}
 
-				if (empty($parameters['data']['password'])) {
-					unset($parameters['data']['password']);
-				}
+			if (empty($parameters['data']['password']) === true) {
+				unset($parameters['data']['password']);
+			}
 
-				if ($this->save(array(
-					'data' => array(
-						$parameters['data']
-					),
-					'to' => 'users'
-				))) {
-					$response = array(
-						'data' => array(
-							'whitelisted_ips' => $whitelistedIps
-						),
-						'message' => array(
-							'status' => 'success',
-							'text' => 'System configured successfully.'
-						)
-					);
-				}
+			$userDataUpdated = $this->update(array(
+				'data' => array_intersect_key($parameters['data'], array(
+					'authentication_password' => true,
+					'authentication_whitelist' => true
+				),
+				'in' => 'users',
+				'where' => array(
+					'id' => 1
+				)
+			));
+			$response['status_valid'] = ($userDataUpdated === true);
+
+			if ($response['status_valid'] === true) {
+				$response['message'] = 'System configured successfully.';
 			}
 
 			return $response;
