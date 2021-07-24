@@ -84,30 +84,24 @@
 		protected function _call($parameters = array()) {
 			$response = false;
 			$methodFromParts = explode('_', $parameters['method_from']);
-			$modelName = implode('', array_map(function($methodFrom) {
+			$methodObjectName = implode('', array_map(function($methodFrom) {
 				return ucwords($methodFrom);
-			}, $methodFromParts)) . 'Model';
-			$modelPath = $this->settings['base_path'] . '/models/' . $parameters['method_from'] . '.php';
+			}, $methodFromParts)) . 'Methods';
 
-			if (
-				!class_exists($modelName) &&
-				file_exists($modelPath)
-			) {
-				$configuration = new Configuration();
-				require_once($modelPath);
+			if (class_exists($methodObjectName) === false) {
+				$system = new System();
+				require_once($this->settings['base_path'] . '/methods/' . $parameters['method_from'] . '.php');
 			}
 
-			if (empty($this->$modelName)) {
-				$this->$modelName = new $modelName();
+			if (empty($this->$methodObjectName) === true) {
+				$this->$methodObjectName = new $methodObjectName();
 			}
 
 			if (
-				!empty($parameters['method_name']) &&
-				method_exists($this->$modelName, $parameters['method_name'])
+				(empty($parameters['method_name']) === false) &&
+				(method_exists($this->$methodObjectName, $parameters['method_name']) === true)
 			) {
-				$methodName = $parameters['method_name'];
-				$methodParameters = !empty($parameters['method_parameters']) ? $parameters['method_parameters'] : array();
-				$response = call_user_func_array(array($this->$modelName, $methodName), $methodParameters);
+				$response = call_user_func_array(array($this->$methodObjectName, $parameters['method_name']), $parameters['method_parameters']);
 			}
 
 			return $response;
