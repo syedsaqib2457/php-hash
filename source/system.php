@@ -266,46 +266,6 @@
 								'type' => 'VARCHAR(255)'
 							)
 						),
-						'tokens' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'encoded_parameters' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(10000)'
-							),
-							'expiration' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'DATETIME'
-							),
-							'foreign_key' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(255)'
-							),
-							'foreign_value' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(255)'
-							),
-							'id' => array(
-								'auto_increment' => true,
-								'primary_key' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'string' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(255)'
-							)
-						),
 						'user_request_destinations' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
@@ -366,6 +326,11 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(255)'
+							),
+							'authentication_expires' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'DATETIME'
 							),
 							'authentication_username' => array(
 								'default' => null,

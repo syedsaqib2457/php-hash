@@ -11,17 +11,17 @@
 			);
 
 			if ($response['status_valid'] === true) {
-				$tokenCount = $this->count(array(
-					'in' => 'tokens',
+				$userCount = $this->count(array(
+					'in' => 'users',
 					'where' => array(
-						'string' => $this->_createTokenString(array(
-							'session_id' => $parameters['settings']['session_id']
-						))
+						'authentication_expires >' => date('Y-m-d H:i:s', time()),
+						'authentication_username' => sha1($this->settings['keys']['start'] . '_' . $parameters['settings']['session_id'])
+						'id' => 1
 					)
 				));
 				$response['status_valid'] = (
-					(is_int($tokenCount) === true) &&
-					($tokenCount > 0)
+					(is_int($userCount) === true) &&
+					($userCount > 0)
 				);
 			}
 
@@ -38,6 +38,7 @@
 
 			if ($response['status_valid'] === false) {
 				$response = $this->_authenticateEndpoint($response);
+				$response['user']['endpoint'] = $response['status_valid'];
 			}
 
 			return $response;
@@ -107,44 +108,6 @@
 			return $response;
 		}
 
-		protected function _createTokenString($parameters) {
-			$response = array(
-				$this->keys['start']
-			);
-			$tokenStringParameters = array(
-				'fields' => array(
-					'id'
-				),
-				'from' => $parameters['parameters_to_encode']['from'],
-				'limit' => 1,
-				'sort' => array(
-					'field' => 'modified',
-					'order' => 'DESC'
-				)
-			);
-
-			if (!empty($parameters['parameters_to_encode']['sort'])) {
-				$tokenStringParameters['sort'] = $parameters['parameters_to_encode']['sort'];
-			}
-
-			if (!empty($parameters['parameters_to_encode']['where'])) {
-				$tokenStringParameters['where'] = $parameters['parameters_to_encode']['where'];
-				$data = $this->fetch($tokenStringParameters);
-				$response[] = $data['count'] . $data['data'][0];
-			}
-
-			if (!empty($parameters['session_id'])) {
-				$response[] = $parameters['session_id'];
-			}
-
-			if (!empty($parameters['salt'])) {
-				$response[] = $parameters['salt'];
-			}
-
-			$response = sha1(json_encode(implode('_', $response)));
-			return $response;
-		}
-
 		protected function _fetchIpType($ip, $ipVersion) {
 			// todo: validate ipv6 private ip ranges
 			$response = 'public';
@@ -160,95 +123,6 @@
 			}
 
 			return $response;
-		}
-
-		protected function _generateRandomAuthentication($authentication = array()) {
-			$response = array();
-			$letters = 'abcdefghijklmnopqrstuvwxyz';
-			$numbers = '0123456789012345678901234567890123456789';
-			$characters = str_shuffle(str_repeat($letters . $numbers, count($authentication)));
-			$authenticationIndex = 0;
-
-			foreach ($authentication as $authenticationKey => $authenticationValue) {
-				$response[$authenticationKey] = (empty($authenticationValue) ? $letters[rand(0, 25)] : '') . substr((!empty($authenticationValue) ? $authenticationValue : '') . substr($characters, 14 * $authenticationIndex, 14), 0, 14);
-				$authenticationIndex++;
-			}
-
-			return $response;
-		}
-
-		protected function _getToken($parameters) {
-			$tokenParameters = array(
-				'fields' => array(
-					'encoded_parameters',
-					'id'
-				),
-				'from' => 'tokens',
-				'limit' => 1,
-				'where' => array(
-					'string' => $this->_createTokenString($parameters)
-				)
-			);
-
-			if (
-				!empty($parameters['foreign_key']) &&
-				!empty($parameters['foreign_value'])
-			) {
-				$tokenParameters['where'] += array(
-					'foreign_key' => $parameters['foreign_key'],
-					'foreign_value' => $parameters['foreign_value']
-				);
-			}
-
-			$token = $this->fetch($tokenParameters);
-
-			if (!empty($token['count'])) {
-				$tokenParameters['where']['id'] = $token['data'][0]['id'];
-			}
-
-			if (
-				!empty($parameters['expiration_minutes']) &&
-				is_numeric($parameters['expiration_minutes'])
-			) {
-				$tokenParameters['where']['expiration'] = date('Y-m-d H:i:s', strtotime('+' . $parameters['expiration_minutes'] . ' minutes'));
-			}
-
-			$encodedParameters = json_encode($parameters['parameters_to_encode']);
-			$tokenData = array(
-				$tokenParameters['where']
-			);
-
-			if (
-				empty($token['data'][0]['encoded_parameters']) ||
-				(
-					!empty($encodedParameters) &&
-					$encodedParameters !== $token['data'][0]['encoded_parameters']
-				)
-			) {
-				$tokenData[0]['encoded_parameters'] = $encodedParameters;
-			}
-
-			$this->save(array(
-				'data' => $tokenData,
-				'to' => 'tokens'
-			));
-			$tokenParameters['fields'] = array(
-				'created',
-				'encoded_parameters',
-				'expiration',
-				'foreign_key',
-				'foreign_value',
-				'id',
-				'string'
-			);
-			$response = $this->fetch($tokenParameters);
-
-			if (!empty($response['data'][0]['encoded_parameters'])) {
-				$response['data'][0]['parameters'] = json_decode($response['data'][0]['encoded_parameters'], true);
-				unset($response['data'][0]['encoded_parameters']);
-			}
-
-			return !empty($response['data'][0]) ? $response['data'][0] : array();
 		}
 
 		protected function _logInvalidRequest() {
@@ -507,247 +381,6 @@
 			return $response;
 		}
 
-		protected function _processMethod($parameters) {
-			$actionsProcessing = $response = array();
-			$decodeItemList = (
-				$parameters['action'] !== 'fetch' &&
-				empty($parameters['encode_item_list'])
-			);
-			$itemListName = $parameters['item_list_name'] = !empty($parameters['item_list_name']) ? $parameters['item_list_name'] : $parameters['from'];
-			$processAction = false;
-			$tokenParameters = array(
-				'parameters_to_encode' => array_intersect_key($parameters, array(
-					'from' => true,
-					'sort' => true
-				))
-			);
-			$validTokens = true;
-			$clearItems = !empty($parameters['item_list_name']) ? array(
-				$parameters['item_list_name'] => array(
-					'count' => 0,
-					'data' => array(),
-					'from' => $parameters['from'],
-					'name' => $parameters['item_list_name']
-				)
-			) : array();
-			$response['items'] = $parameters['items'] = isset($parameters['items']) ? $parameters['items'] : $clearItems;
-
-			if (
-				!empty($parameters['data']) &&
-				is_array($parameters['data'])
-			) {
-				$parameters['data'] = $this->_parseFormDataItems($parameters['data']);
-			}
-
-			if ($validTokens === false) {
-				$parameters['action'] = 'fetch';
-				$response['items'] = $clearItems;
-
-				if (!empty($parameters['items'][$itemListName]['data'])) {
-					$response['message'] = array(
-						'status' => 'error',
-						'text' => 'Your selected items were modified by another process, please try again.'
-					);
-				}
-			} else {
-				$actionsProcessing = $this->fetch(array(
-					'fields' => array(
-						'encoded_parameters',
-						'id',
-						'progress'
-					),
-					'from' => 'actions',
-					'where' => array(
-						'processed' => false
-					)
-				));
-
-				if (
-					$decodeItemList &&
-					empty($actionsProcessing['count']) &&
-					!empty($parameters['items'][$itemListName]['data'])
-				) {
-					foreach ($parameters['items'] as $itemListKey => $itemList) {
-						if (
-							!empty($itemList['data'][1]) &&
-							empty($parameters[$itemListKey]['enable_background_action_processing'])
-						) {
-							$decodeItemList = false;
-							$parameters['items'][$itemListKey]['count'] = 10001;
-						}
-					}
-
-					if ($decodeItemList) {
-						$items = $this->_decodeItems($parameters);
-						$itemKeyLineCount = count($parameters['items'][$itemListName]['data']);
-						$parametersToEncode = array_intersect_key($parameters, array(
-							'action' => true,
-							'data' => true,
-							'from' => true,
-							'item_list_name' => true,
-							'limit' => true,
-							'offset' => true,
-							'search' => true,
-							'sort' => true,
-							'where' => true
-						));
-						$parametersToEncode['item_count'] = $items[$itemListName]['count'];
-						$actionData = array(
-							array(
-								'chunks' => $itemKeyLineCount,
-								'encoded_items_to_process' => json_encode($items[$itemListName]['data']),
-								'encoded_parameters' => json_encode($parametersToEncode),
-								'processed' => false,
-								'progress' => 0
-							)
-						);
-
-						if (
-							$decodeItemList &&
-							$itemKeyLineCount === 1
-						) {
-							$processAction = true;
-
-							if (is_string($parameters['items'][$itemListName]['data'][0])) {
-								$parameters['items'] = $this->_decodeItems($parameters, true);
-							}
-
-							$actionData[0] = array_merge($actionData[0], array(
-								'processed' => true,
-								'progress' => 100
-							));
-						}
-					}
-
-					if ($this->save(array(
-						'data' => $actionData,
-						'to' => 'actions'
-					))) {
-						$response['processing'] = $actionData[0];
-
-						if ($itemKeyLineCount > 1) {
-							$parameters['action'] = 'fetch';
-							$response['message'] = array(
-								'status' => 'success',
-								'text' => 'Action processing successfully.'
-							);
-						}
-					} else {
-						$response['message'] = array(
-							'status' => 'error',
-							'text' => 'Error processing action, please try again.'
-						);
-					}
-				}
-
-				if (!isset($response['processing'])) {
-					$actionData = $this->fetch(array(
-						'fields' => array(
-							'chunks',
-							'encoded_items_processed',
-							'encoded_items_to_process',
-							'encoded_parameters',
-							'id',
-							'processed',
-							'progress'
-						),
-						'from' => 'actions',
-						'limit' => 1,
-						'where' => array(
-							'processed' => false
-						)
-					));
-					$response['processing'] = !empty($actionData['data'][0]) ? $actionData['data'][0] : false;
-				}
-			}
-
-			if (!empty($parameters['redirect'])) {
-				$response['redirect'] = $parameters['redirect'];
-			}
-
-			if (!empty($parameters['user']['endpoint'])) {
-				if ($parameters['action'] === 'fetch') {
-					$parameters['limit'] = 10000;
-					$parameters['offset'] = 0;
-
-					if (
-						!empty($parameters['results_page']) &&
-						is_numeric($parameters['results_page'])
-					) {
-						$parameters['offset'] = max(0, $parameters['results_page'] - 1);
-					}
-
-					if (
-						!empty($parameters['results_per_page']) &&
-						is_numeric($parameters['results_per_page'])
-					) {
-						$parameters['limit'] = min(10000, max(1, $parameters['results_per_page']));
-					}
-				} elseif (!empty($parameters['where'])) {
-					$endpointItemIds = $this->fetch(array(
-						'fields' => array(
-							'id'
-						),
-						'from' => $parameters['from'],
-						'limit' => 10000,
-						'where' => $parameters['where']
-					));
-
-					if (!empty($endpointItemIds['count'])) {
-						$parameters = array_merge($parameters, array(
-							'items' => array(
-								'list_endpoint_items' => array_intersect_key($endpointItemIds, array(
-									'count' => true,
-									'data' => true
-								))
-							),
-							'item_list_name' => 'list_endpoint_items'
-						));
-					}
-				}
-
-				if (!empty($actionsProcessing['count'])) {
-					$actionsProcessingParameters = json_decode($actionsProcessing['data'][0]['encoded_parameters'], true);
-					return array(
-						'message' => array(
-							'status' => 'error',
-							'text' => 'Action to ' . $actionsProcessingParameters['action'] . ' ' . $actionsProcessingParameters['item_count'] . ' selected ' . $actionsProcessingParameters['from'] . ' is currently processing at ' . $actionsProcessing['data'][0]['progress'] . '%, please wait and try again.'
-						)
-					);
-				}
-			}
-
-			$action = $parameters['action'];
-			$responseMessage = $response['message'];
-			$response = array_merge($response, $this->$action($parameters, true));
-
-			if (!empty($responseMessage)) {
-				$response['message'] = $responseMessage;
-			}
-
-			if (
-				$decodeItemList &&
-				!empty($response['items'][$parameters['item_list_name']]['data'])
-			) {
-				$parameters['processing'] = $response['processing'];
-				$response = array_merge($response, $this->_encodeItems($parameters));
-			}
-
-			if (!empty($parameters['items'])) {
-				foreach ($parameters['items'] as $itemListName => $itemList) {
-					if (!empty($itemList['token'])) {
-						$response['items'][$itemListName]['token'] = $this->_getToken($this->_parseItemListTokenParameters($itemList['token']));
-					}
-				}
-			}
-
-			if (!empty($response['selected_items'])) {
-				$response['items'] = array_merge($response['items'], $response['selected_items']);
-			}
-
-			return $response;
-		}
-
 		protected function _query($query, $parameters = array()) {
 			$database = new PDO('mysql:host=' . $this->settings['database']['hostname'] . '; dbname=' . $this->settings['database']['name'] . ';', $this->settings['database']['username'], $this->settings['database']['password']);
 			$database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
@@ -894,7 +527,8 @@
 						$this->_logInvalidRequest();
 					}
 				} else {
-					$response = $this->_processMethod($parameters);
+					$methodName = $parameters['method'];
+					$response = $this->$methodName($parameters);
 
 					if (
 						($response['status_valid'] === false) &&
@@ -1285,31 +919,44 @@
 
 		public function login($parameters) {
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => 'Error logging in to account, please make sure cookies are enabled and try again.'
-				)
+				'message' => 'Error logging in to account, please try again.',
+				'status_valid' => (empty($parameters['data']['password']) === false)
 			);
-			$user = $this->fetch(array(
-				'fields' => array(
-					'id'
-				),
-				'from' => 'users',
-				'where' => array(
-					'password' => $parameters['data']['password']
-				)
-			));
 
-			if (
-				!empty($user['count']) &&
-				$this->_getToken(array(
-					'session_id' => $parameters['settings']['session_id']
-				))
-			) {
-				$response['message']['status'] = 'success';
-				$response['redirect'] = '/servers';
+			if ($response['status_valid'] === false) {
+				return $response;
 			}
 
+			$userCount = $this->count(array(
+				'in' => 'users',
+				'where' => array(
+					'authentication_password' => $parameters['data']['password'],
+					'id' => 1
+				)
+			));
+			$response['status_valid'] = (
+				(is_int($userCount) === true) &&
+				($userCount === 1)
+			);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$userDataUpdated = $this->update(array(
+				'data' => array(
+					'authentication_expires' => date('Y-m-d H:i:s', strtotime('+1 month')),
+					'authentication_username' => sha1($this->settings['keys']['start'] . '_' . $parameters['settings']['session_id'])
+				),
+				'in' => 'users',
+				'where' => array(
+					'id' => 1
+				)
+			));
+			$response['status_valid'] = (
+				($userDataUpdated !== false) &&
+				(empty($userDataUpdated) === false)
+			);
 			return $response;
 		}
 
@@ -1456,7 +1103,7 @@
 		public function update($parameters) {
 			$response = true;
 
-			if (!empty($parameters['data'])) {
+			if (empty($parameters['data']) === false) {
 				$query = 'UPDATE ' . $parameters['in'] . ' SET ';
 
 				foreach ($parameters['data'] as $updateValueKey => $updateValue) {
