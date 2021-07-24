@@ -519,20 +519,19 @@
 				}
 			}
 
-			$nodeProcessData = array_intersect_key($parameters['data'], array(
-				'application_protocol' => true,
-				'external_ip_version_4' => true,
-				'external_ip_version_6' => true,
-				'internal_ip_version_4' => true,
-				'internal_ip_version_6' => true,
-				'ip' => true,
-				'node_id' => true,
-				'port' => true,
-				'transport_protocol' => true,
-				'type' => true
-			));
 			$nodeProcessDataUpdated = $this->update(array(
-				'data' => $nodeProcessData,
+				'data' => array_intersect_key($parameters['data'], array(
+					'application_protocol' => true,
+					'external_ip_version_4' => true,
+					'external_ip_version_6' => true,
+					'internal_ip_version_4' => true,
+					'internal_ip_version_6' => true,
+					'ip' => true,
+					'node_id' => true,
+					'port' => true,
+					'transport_protocol' => true,
+					'type' => true
+				)),
 				'in' => 'node_processs',
 				'where' => array(
 					'id' => $nodeProcessId

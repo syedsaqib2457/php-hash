@@ -850,17 +850,16 @@
 			}
 			*/
 
-			$nodeData = array_intersect_key($parameters['data'], array(
-				'external_ip_version_4' => true,
-				'external_ip_version_6' => true,
-				'id' => true,
-				'internal_ip_version_4' => true,
-				'internal_ip_version_6' => true,
-				'node_id' => true,
-				'status_active' => true
-			));
 			$nodeDataUpdated = $this->update(array(
-				'data' => $nodeData,
+				'data' => array_intersect_key($parameters['data'], array(
+					'external_ip_version_4' => true,
+					'external_ip_version_6' => true,
+					'id' => true,
+					'internal_ip_version_4' => true,
+					'internal_ip_version_6' => true,
+					'node_id' => true,
+					'status_active' => true
+				)),
 				'in' => 'nodes',
 				'where' => array(
 					'id' => $nodeId
