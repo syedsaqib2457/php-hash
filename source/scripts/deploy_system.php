@@ -170,6 +170,11 @@
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg'
 	);
 	applyCommands($commands);
+
+	if (function_exists('mysqli_query') === false) {
+		exit;
+	}
+
 	$uniqueId = '_' . uniqid() . time();
 	$binaries = array(
 		array(
