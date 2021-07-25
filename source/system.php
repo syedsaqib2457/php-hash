@@ -374,10 +374,7 @@
 					),
 					'username' => 'root'
 				),
-				'keys' => array(
-					'start' => $keys['salt'] . $keys['start'] . $keys['salt'],
-					'stop' => $keys['salt'] . $keys['stop'] . $keys['salt']
-				),
+				'keys' => $keys,
 				'private_ip_ranges' => array(
 					0 => 16777215,
 					167772160 => 184549375,
