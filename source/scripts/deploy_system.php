@@ -664,8 +664,8 @@
 	mysqli_query($database, 'INSERT IGNORE INTO `users` (`' . implode('`, `', $userDataFields) . '`) VALUES (' . implode(', ', $userDataValues) . ')');
 
 	if (
-		(empty(mysqli_query($database, 'SELECT `id` FROM `settings`')->num_rows === true) ||
-		(empty(mysqli_query($database, 'SELECT `id` FROM `users`')->num_rows === true)
+		(empty(mysqli_query($database, 'SELECT `id` FROM `settings`')->num_rows) === true) ||
+		(empty(mysqli_query($database, 'SELECT `id` FROM `users`')->num_rows) === true)
 	) {
 		echo 'Error creating system user, please try again.' . "\n";
 		exit;
