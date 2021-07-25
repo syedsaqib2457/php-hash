@@ -1490,7 +1490,7 @@
 	var processLogin = function(processElement, processSubmit) {
 		if (processSubmit) {
 			api.setRequestParameters({
-				action: 'login',
+				method: 'login',
 				url: '/endpoint/main'
 			});
 			api.sendRequest(function(response) {
@@ -1638,32 +1638,27 @@
 		});
 	};
 	var processRemove = function(processElement) {
-		let itemListName = camelCaseString(elements.getAttribute(processElement, 'item_list_name'));
-		let itemListParameters = apiRequestParameters[itemListName];
+		let listName = camelCaseString(elements.getAttribute(processElement, 'list_name'));
+		let listParameters = apiRequestParameters[listName];
 
-		if (confirm('Are you sure you want to delete the selected ' + snakeCaseString(camelCaseString(itemListParameters.from), ' ') + '?')) {
+		if (confirm('Are you sure you want to remove this ' + snakeCaseString(camelCaseString(listParameters.from), ' ') + '?')) {
 			api.setRequestParameters({
-				action: 'remove',
-				from: itemListParameters.from,
-				itemListName: snakeCaseString(itemListName, '_'),
-				url: itemListParameters.url
+				from: listParameters.from,
+				listName: snakeCaseString(listName, '_'),
+				method: 'remove',
+				url: listParameters.url,
+				where: {
+					id: elements.getAttribute(processElement, snakeCaseString(listName, '_') + '_id')
+				}
 			});
 			api.sendRequest(function(response) {
-				let itemListItems = {};
-				var mergeRequestParameters = {
-					items: {}
-				};
-				mergeRequestParameters[itemListName] = itemListParameters;
-				mergeRequestParameters[itemListName].page = 1;
-				mergeRequestParameters.items[itemListName] = {
-					action: 'fetch',
-					data: [],
-					from: itemListParameters.from
-				};
+				let listItems = {};
+				mergeRequestParameters[listName] = listParameters;
+				mergeRequestParameters[listName].page = 1;
 				api.setRequestParameters(mergeRequestParameters, true);
-				processItemList(itemListName, function() {
+				processList(listName, function() {
 					delete apiRequestParameters.processing;
-					elements.html(itemListParameters.selector + ' .message-container.' + snakeCaseString(itemListName, '-'), response.message.html);
+					elements.html(listParameters.selector + ' .message-container.' + snakeCaseString(listName, '-'), response.message);
 				});
 			});
 		} else {
