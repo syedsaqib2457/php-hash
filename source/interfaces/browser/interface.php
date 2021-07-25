@@ -1018,34 +1018,13 @@
 					return false;
 				}
 
-				if (typeof response.items !== 'undefined') {
-					api.setRequestParameters({
-						items: response.items
-					});
-				}
-
-				if (typeof response.message === 'undefined') {
-					response.message = {
-						html: '',
-						text: ''
-					};
-				}
-
-				if (
-					typeof response.message.status !== 'undefined' &&
-					response.message.text
-				) {
-					response.message.html = '<p class="message' + (response.message.status ? ' ' + response.message.status : '') + '">' + response.message.text + '</p>';
-				}
-
 				callback(response);
 				processWindowEvents('resize');
 			};
 		}
 	};
 	var apiRequestParameters = {
-		data: {},
-		items: {}
+		data: {}
 	};
 	const camelCaseString = function(string) {
 		let stringParts = string.split('_');
@@ -1074,7 +1053,7 @@
 		delete apiRequestParameters.processing;
 		elements.addClass('.process-container', 'hidden');
 		elements.html('.process .message-container', '');
-		elements.removeClass('footer, header, main', 'hidden');
+		elements.removeClass('main', 'hidden');
 		processWindowEvents('resize');
 		window.scroll(0, 0);
 	};
@@ -1297,11 +1276,10 @@
 
 		window.scroll(0, 0);
 	};
-	const processItemList = function(itemListName, callback) {
-		let itemListParameters = apiRequestParameters[itemListName];
+	const processList = function(listName, callback) {
+		let listParameters = apiRequestParameters[listName];
 
-		if (apiRequestParameters[itemListName].initial === true) {
-			elements.addClass('.item-footer', 'hidden');
+		if (apiRequestParameters[listName].initial === true) {
 			var elementContent = '<div class="item-container item-configuration-container">';
 			elementContent += '<div class="item">';
 			elementContent += '<div class="item-configuration">';
@@ -1320,7 +1298,7 @@
 			elementContent += '</div>';
 
 			if (
-				typeof itemListParameters.options === 'object' &&
+				(typeof itemListParameters.options === 'object') &&
 				itemListParameters.options
 			) {
 				elementContent += '<div class="align-left hidden item-control-button-container item-controls selectable-item-controls">';
@@ -1369,7 +1347,7 @@
 			elementContent += '<div class="items" previous_checked="0"></div>';
 			elementContent += '</div>';
 			elements.html(itemListParameters.selector, elementContent);
-			Object.defineProperty(itemListParameters, 'itemListName', {
+			Object.defineProperty(itemListParameters, 'listName', {
 				configurable: true,
 				enumerable: true,
 				value: itemListName,
@@ -1390,328 +1368,66 @@
 			elements.html(itemListParameters.listControlContainerSelector + ' > .item-header > p .total-checked', +(apiRequestParameters[itemListName].selectedItemCount || 0));
 		}
 
-		let itemListMatrix = (
-			typeof apiRequestParameters.items[itemListName] !== 'undefined' &&
-			typeof apiRequestParameters.items[itemListName].data === 'object'
-		) ? apiRequestParameters.items[itemListName].data : [];
-		let itemListMatrixCount = itemListMatrix.length;
-		const itemListControlButtonContainerSelector = itemListParameters.listControlContainerSelector + ' > .item-header > .item-control-button-container';
-		const itemListPaginationSelector = itemListParameters.listControlContainerSelector + ' > .item-header > .pagination-container .pagination';
-		const itemListControlSelector = itemListParameters.listControlContainerSelector + ' > .item-header > .item-controls, ' + itemListPaginationSelector + ' .item-controls, ' + itemListParameters.listContentSelector + ' .items';
-		const itemListSelectedDetailsSelector = itemListParameters.listControlContainerSelector + ' > .item-header > p';
-		const statusMessageSelector = itemListParameters.listControlContainerSelector + ' > .item-header > .message-container.status';
+		const listControlButtonContainerSelector = listParameters.listControlContainerSelector + ' > .item-header > .item-control-button-container';
+		const listPaginationSelector = listParameters.listControlContainerSelector + ' > .item-header > .pagination-container .pagination';
+		const listControlSelector = listParameters.listControlContainerSelector + ' > .item-header > .item-controls, ' + listPaginationSelector + ' .item-controls, ' + listParameters.listContentSelector + ' .items';
+		const listSelectedDetailsSelector = listParameters.listControlContainerSelector + ' > .item-header > p';
+		const statusMessageSelector = listParameters.listControlContainerSelector + ' > .item-header > .message-container.status';
 		elements.html(statusMessageSelector, '<p class="message">Loading</p>');
-		const itemToggle = function(itemListItem) {
-			let previousChecked = elements.getAttribute(itemListParameters.listContentSelector + ' .items', 'previous_checked');
-			elements.setAttribute(itemListParameters.listContentSelector + ' .items', 'current_checked', elements.getAttribute(itemListItem, 'index'));
-			processItemListMatrix(window.event.shiftKey ? range(previousChecked, itemListItem.getAttribute('index')) : [itemListItem.getAttribute('index')], window.event.shiftKey ? +elements.getAttribute(itemListParameters.listContentSelector + ' .checkbox[index="' + previousChecked + '"]', 'checked') !== 0 : +elements.getAttribute(itemListItem, 'checked') === 0);
-			elements.setAttribute(itemListParameters.listContentSelector + ' .items', 'previous_checked', elements.getAttribute(itemListItem, 'index'));
-			itemToggleEvent();
-		};
-		const itemAll = elements.get(itemListSelectedDetailsSelector + ' .item-action[index="all"]');
-		const itemAllVisible = elements.get(itemListControlButtonContainerSelector + ' .checkbox[index="all-visible"]');
-		const itemToggleAllVisible = function(item) {
-			elements.setAttribute(itemListParameters.listContentSelector + ' .items', 'current_checked', 0);
-			elements.setAttribute(itemListParameters.listContentSelector + ' .items', 'previous_checked', 0);
-			processItemListMatrix(range(0, selectAllElements(itemListParameters.listContentSelector + ' .items .checkbox').length - 1), +item.getAttribute('checked') === 0);
-			itemToggleEvent();
-		};
-		const itemToggleEvent = function() {
-			if (
-				itemListSelectedCount === 1 &&
-				elements.hasAttribute(itemListParameters.listContentSelector + ' .items .checkbox[checked="1"]', 'item_id')
-			) {
-				var mergeRequestParameters = {};
-				mergeRequestParameters[itemListName] = {
-					itemId: elements.getAttribute(itemListParameters.listContentSelector + ' .items .checkbox[checked="1"]', 'item_id')
-				};
-				api.setRequestParameters(mergeRequestParameters, true);
-			}
-
-			if (
-				typeof itemListParameters.callbacks !== 'undefined' &&
-				typeof itemListParameters.callbacks.onItemListItemToggle === 'function'
-			) {
-				itemListParameters.callbacks.onItemListItemToggle();
-			}
-		};
-		const processItemListMatrix = function(itemListItemIndexes, itemState) {
-			if (elements.get(itemListParameters.selector + ' .editing')) {
-				elements.html(itemListParameters.selector + ' .editing .table-text', apiRequestParameters.editing.content);
-				elements.removeClass(itemListParameters.selector + ' .edit.icon', 'hidden');
-				elements.removeClass(itemListParameters.selector + ' .editing', 'editing');
-				delete apiRequestParameters.editing;
-			}
-
-			let itemListItemCount = itemListSelectedCount = 0;
-			const itemListMatrixLineSizeMaximum = +('1' + repeat(Math.min(elements.html(itemListSelectedDetailsSelector + ' .results-total').length, 4), '0'));
-			const itemListPageResultCount = (+elements.html(itemListPaginationSelector + ' .result-last') - +elements.html(itemListPaginationSelector + ' .result-first') + 1);
-			const itemListResultsTotal = +elements.html(itemListSelectedDetailsSelector + ' .results-total');
-			const itemListMatrixLineSize = function(key) {
-				return Math.min(itemListMatrixLineSizeMaximum, itemListResultsTotal - (key * itemListMatrixLineSizeMaximum)).toString();
-			};
-			const processItemListMatrixSelection = function(item) {
-				let keyIndexes = range(0, Math.floor(itemListResultsTotal / itemListMatrixLineSizeMaximum));
-				elements.html(itemListSelectedDetailsSelector + ' .total-checked', (selectionStatus = +item.getAttribute('status')) ? itemListResultsTotal : 0);
-
-				for (let keyIndexKey in keyIndexes) {
-					itemListMatrix[keyIndexes[keyIndexKey]] = selectionStatus + itemListMatrixLineSize(keyIndexes[keyIndexKey]);
-				}
-
-				itemListMatrix = (selectionStatus ? itemListMatrix : []);
-				processItemListMatrix(range(0, selectAllElements(itemListParameters.listContentSelector + ' .items .checkbox').length - 1));
-			};
-
-			if (
-				(
-					typeof itemListItemIndexes[1] === 'number' &&
-					itemListItemIndexes[1] < 0
-				) ||
-				(
-					!itemAll &&
-					!itemAllVisible
-				)
-			) {
-				return;
-			}
-
-			if (!itemListMatrix.length) {
-				elements.html(itemListSelectedDetailsSelector + ' .total-checked', itemListSelectedCount);
-			}
-
-			for (let itemListItemIndexKey in itemListItemIndexes) {
-				let itemListItemIndex = itemListItemIndexes[itemListItemIndexKey];
-				let encodeCount = 1;
-				let encodedListMatrixLineItems = [];
-				let index = ((itemListParameters.page * itemListParameters.resultsPerPage) - itemListParameters.resultsPerPage) + +itemListItemIndex;
-				let item = elements.get(itemListParameters.listContentSelector + ' .items .checkbox[index="' + itemListItemIndex + '"]');
-				let key = Math.floor(index / itemListMatrixLineSizeMaximum);
-
-				if (!itemListMatrix[key]) {
-					itemListMatrix[key] = repeat(itemListMatrixLineSize(key), '0');
-				} else {
-					itemListMatrix[key] = itemListMatrix[key].split('_');
-
-					for (var itemListMatrixKeyKey in itemListMatrix[key]) {
-						itemListMatrix[key][itemListMatrixKeyKey] = repeat(itemListMatrix[key][itemListMatrixKeyKey].substr(1), itemListMatrix[key][itemListMatrixKeyKey].substr(0, 1));
-					}
-
-					itemListMatrix[key] = itemListMatrix[key].join("");
-				}
-
-				const itemListMatrixLineIndex = index - (key * itemListMatrixLineSizeMaximum);
-
-				if (typeof itemState === 'boolean') {
-					itemListMatrix[key] = itemListMatrix[key].substr(0, itemListMatrixLineIndex) + +itemState + itemListMatrix[key].substr(itemListMatrixLineIndex + Math.max(1, ('' + +itemState).length))
-				}
-
-				itemListMatrix[key] = itemListMatrix[key].split("");
-				itemListMatrix[key].map(function(itemStatus, itemStatusIndex) {
-					if (itemStatus != itemListMatrix[key][itemStatusIndex + 1]) {
-						encodedListMatrixLineItems.push(itemStatus + encodeCount);
-						encodeCount = 0;
-					}
-
-					encodeCount++;
-				});
-				elements.setAttribute(item, 'checked', +itemListMatrix[key][itemListMatrixLineIndex]);
-				itemListMatrix[key] = encodedListMatrixLineItems.join('_');
-			}
-
-			let itemListItemCountIndexes = range(0, itemListPageResultCount - 1);
-
-			for (let itemListItemCountIndexKey in itemListItemCountIndexes) {
-				if (+(elements.getAttribute(itemListParameters.listContentSelector + ' .items .checkbox[index="' + itemListItemCountIndexes[itemListItemCountIndexKey] + '"]', 'checked'))) {
-					itemListItemCount++;
-				}
-			}
-
-			const allVisibleChecked = (itemListItemCount === itemListPageResultCount);
-			let itemCheckedCount = +elements.html(itemListSelectedDetailsSelector + ' .total-checked');
-
-			if (
-				apiRequestParameters[itemListName].initial === true &&
-				typeof apiRequestParameters[itemListName].selectedItemCount !== 'undefined'
-			) {
-				itemCheckedCount = apiRequestParameters[itemListName].selectedItemCount;
-			} else if (typeof itemState === 'boolean') {
-				itemCheckedCount += (itemListItemCount - itemListMatrixCount);
-			}
-
-			elements.html(itemListSelectedDetailsSelector + ' .total-checked', itemCheckedCount);
-			elements.addClass(itemAll, 'hidden');
-			render(function() {
-				elements.addEventListener(itemAll, {
-					method: function() {
-						processItemListMatrixSelection(itemAll);
-					},
-					name: itemListParameters.selector,
-					type: 'click'
-				});
-			});
-			render(function() {
-				elements.addEventListener(itemAllVisible, {
-					method: function() {
-						itemToggleAllVisible(itemAllVisible);
-					},
-					name: itemListParameters.selector,
-					type: 'click'
-				});
-			});
-			elements.setAttribute(itemAllVisible, 'checked', +(allVisibleChecked));
-			itemListSelectedCount = +elements.html(itemListSelectedDetailsSelector + ' .total-checked');
-
-			if (
-				itemListPageResultCount != itemListResultsTotal &&
-				(
-					(
-						allVisibleChecked &&
-						itemListSelectedCount < itemListResultsTotal
-					) ||
-					itemListSelectedCount === itemListResultsTotal
-				)
-			) {
-				let selectionStatus = +(itemListSelectedCount === itemListResultsTotal);
-				elements.html(itemListSelectedDetailsSelector + ' .action', (selectionStatus ? 'Unselect' : 'Select'));
-				elements.removeClass(itemAll, 'hidden');
-				elements.setAttribute(itemAll, 'status', +(selectionStatus === 0));
-			}
-
-			elements.removeClass(itemListControlButtonContainerSelector + ' .icon[item_function]', 'hidden');
-			itemListMatrixCount = itemListItemCount;
-			processWindowEvents('resize');
-			var mergeRequestParameters = {
-				items: {}
-			};
-			mergeRequestParameters.items[itemListName] = {
-				data: itemListMatrix,
-				from: itemListParameters.from,
-				token: []
-			};
-
-			if (
-				typeof apiRequestParameters.items[itemListName] !== 'undefined' &&
-				typeof apiRequestParameters.items[itemListName].token === 'object'
-			) {
-				mergeRequestParameters.items[itemListName].token = apiRequestParameters.items[itemListName].token;
-			}
-
-			mergeRequestParameters[itemListName] = {
-				selectedItemCount: itemListSelectedCount
-			};
-			api.setRequestParameters(mergeRequestParameters, true);
-			selectAllElements(itemListControlButtonContainerSelector + ' .icon[item_function]', function(selectedElementKey, selectedElement) {
-				const booleanAttributeStringValues = ['false', 'true'];
-				let itemFunction = elements.getAttribute(selectedElement, 'item_function');
-
-				if (
-					booleanAttributeStringValues.indexOf(itemFunction) === 0 ||
-					(
-						!itemFunction &&
-						!itemListSelectedCount
-					) ||
-					(
-						booleanAttributeStringValues.indexOf(itemFunction) > 0 &&
-						(
-							itemListResultsTotal === itemListSelectedCount ||
-							itemListSelectedCount === 0
-						)
-					) ||
-					(
-						!isNaN(parseInt(itemFunction)) &&
-						(
-							itemFunction > 0 &&
-							(
-								itemListSelectedCount > itemFunction ||
-								itemListSelectedCount === 0
-							)
-						)
-					)
-				) {
-					elements.addClass(selectedElement, 'hidden');
-				}
-			});
-		};
-		elements.addClass(itemListControlSelector, 'hidden');
-		elements.setAttribute(itemListPaginationSelector + ' .next', 'page', 0);
-		elements.setAttribute(itemListPaginationSelector + ' .previous', 'page', 0);
-		let itemListRequestParameters = {
-			action: itemListParameters.action,
-			from: itemListParameters.from,
-			itemListName: snakeCaseString(itemListName, '_'),
-			limit: itemListParameters.resultsPerPage,
-			offset: ((itemListParameters.page * itemListParameters.resultsPerPage) - itemListParameters.resultsPerPage),
-			url: itemListParameters.url
+		elements.addClass(listControlSelector, 'hidden');
+		elements.setAttribute(listPaginationSelector + ' .next', 'page', 0);
+		elements.setAttribute(listPaginationSelector + ' .previous', 'page', 0);
+		let listRequestParameters = {
+			from: listParameters.from,
+			limit: listParameters.resultsPerPage,
+			listName: snakeCaseString(listName, '_'),
+			method: 'list',
+			offset: ((listParameters.page * listParameters.resultsPerPage) - listParameters.resultsPerPage),
+			url: listParameters.url
 		};
 
-		if (typeof itemListParameters.sort !== 'undefined') {
-			itemListRequestParameters.sort = itemListParameters.sort;
+		if (typeof listParameters.sort !== 'undefined') {
+			listRequestParameters.sort = listParameters.sort;
 		}
 
-		if (typeof itemListParameters.where !== 'undefined') {
-			itemListRequestParameters.where = itemListParameters.where;
+		if (typeof listParameters.where !== 'undefined') {
+			listRequestParameters.where = listParameters.where;
 		}
 
-		api.setRequestParameters(itemListRequestParameters);
-		var mergeRequestParameters = {
-			items: {}
-		};
-		mergeRequestParameters.items[itemListName] = {
-			data: itemListMatrix,
-			from: itemListParameters.from,
-			token: []
-		};
-
-		if (
-			typeof apiRequestParameters.items[itemListName] !== 'undefined' &&
-			typeof apiRequestParameters.items[itemListName].token === 'object'
-		) {
-			mergeRequestParameters.items[itemListName].token = apiRequestParameters.items[itemListName].token;
-		}
-
-		api.setRequestParameters(mergeRequestParameters, true);
+		api.setRequestParameters(listRequestParameters);
 		api.sendRequest(function(response) {
-			itemListMatrix = typeof response.items[itemListName].data !== 'undefined' ? response.items[itemListName].data : [];
-			itemListMatrixCount = itemListMatrix.length;
-
 			if (
-				typeof itemListParameters.callbacks !== 'undefined' &&
-				typeof itemListParameters.callbacks.onItemListReady === 'function'
+				typeof listParameters.callbacks !== 'undefined' &&
+				typeof listParameters.callbacks.onReady === 'function'
 			) {
-				itemListParameters.callbacks.onItemListReady(response, itemListParameters);
+				listParameters.callbacks.onReady(response, listParameters);
 			}
 
-			let data = response.data;
+			let listCount = response.data.length;
+			// add listCount and listTotalCount to each list() method
+			let listData = response.data;
+			let lastResult = listParameters.page * listParameters.resultsPerPage;
+			elements.html(listPaginationSelector + ' .result-first', listParameters.page === 1 ? listParameters.page : ((listParameters.page * listParameters.resultsPerPage) - listParameters.resultsPerPage) + 1);
+			elements.html(listPaginationSelector + ' .result-last', lastResult >= listTotalCount ? listTotalCount : lastResult);
+			elements.html(listSelectedDetailsSelector + ' .results-total, ' + listPaginationSelector + ' .results-total', listTotalCount);
+			elements.setAttribute(listPaginationSelector, 'page_current', listParameters.page);
+			elements.setAttribute(listPaginationSelector + ' .next', 'page', +elements.html(listPaginationSelector + ' .result-last') < listTotalCount ? listParameters.page + 1 : 0);
+			elements.setAttribute(listPaginationSelector + ' .previous', 'page', itemListParameters.page <= 0 ? 0 : itemListParameters.page - 1);
 
-			if (
-				typeof itemListParameters.data !== 'undefined' &&
-				response.data[itemListParameters.data]
-			) {
-				data = response.data[itemListParameters.data];
-			}
-
-			let lastResult = itemListParameters.page * itemListParameters.resultsPerPage;
-			elements.html(itemListPaginationSelector + ' .result-first', itemListParameters.page === 1 ? itemListParameters.page : ((itemListParameters.page * itemListParameters.resultsPerPage) - itemListParameters.resultsPerPage) + 1);
-			elements.html(itemListPaginationSelector + ' .result-last', lastResult >= response.count ? response.count : lastResult);
-			elements.html(itemListSelectedDetailsSelector + ' .results-total, ' + itemListPaginationSelector + ' .results-total', response.count);
-			elements.setAttribute(itemListPaginationSelector, 'page_current', itemListParameters.page);
-			elements.setAttribute(itemListPaginationSelector + ' .next', 'page', +elements.html(itemListPaginationSelector + ' .result-last') < response.count ? itemListParameters.page + 1 : 0);
-			elements.setAttribute(itemListPaginationSelector + ' .previous', 'page', itemListParameters.page <= 0 ? 0 : itemListParameters.page - 1);
-
-			if (apiRequestParameters[itemListName].initial === true) {
-				selectAllElements(itemListPaginationSelector + ' .button', function(selectedElementKey, selectedElement) {
+			if (apiRequestParameters[listName].initial === true) {
+				selectAllElements(listPaginationSelector + ' .button', function(selectedElementKey, selectedElement) {
 					render(function() {
 						elements.addEventListener(selectedElement, {
 							method: function() {
 								if ((page = +elements.getAttribute(selectedElement, 'page')) > 0) {
 									var mergeRequestParameters = {};
-									mergeRequestParameters[itemListName] = {};
-									mergeRequestParameters[itemListName].page = page;
+									mergeRequestParameters[listName] = {};
+									mergeRequestParameters[listName].page = page;
 									api.setRequestParameters(mergeRequestParameters, true);
-									processItemList(itemListName);
+									processList(listName);
 								}
 							},
-							name: itemListParameters.selector,
+							name: listParameters.selector,
 							type: 'click'
 						});
 					});
@@ -1721,49 +1437,31 @@
 			processProcesses();
 
 			if (
-				typeof data.length !== 'undefined' &&
+				(typeof data.length !== 'undefined') &&
 				data.length
 			) {
-				elements.removeClass(itemListControlSelector, 'hidden');
+				elements.removeClass(listControlSelector, 'hidden');
 			} else {
-				elements.addClass(itemListControlSelector, 'hidden');
-			}
-
-			if (elements.get(itemListParameters.listContentSelector + ' .items .checkbox[index]')) {
-				processItemListMatrix(range(0, data.length - 1));
-			} else {
-				elements.addClass(itemListParameters.listControlContainerSelector + ' > .item-header > .selectable-item-controls', 'hidden');
+				elements.addClass(listControlSelector, 'hidden');
 			}
 
 			if (typeof callback === 'function') {
-				callback(response, itemListParameters);
+				callback(response, listParameters);
 				processWindowEvents('resize');
 			}
 
-			selectAllElements(itemListParameters.listContentSelector + ' .items .checkbox', function(selectedElementKey, selectedElement) {
-				render(function() {
-					elements.addEventListener(selectedElement, {
-						method: function() {
-							itemToggle(selectedElement);
-						},
-						name: itemListParameters.selector,
-						type: 'click'
-					});
-				});
-			});
-
-			if (apiRequestParameters[itemListName].initial === true) {
+			if (apiRequestParameters[listName].initial === true) {
 				var mergeRequestParameters = {};
-				mergeRequestParameters[itemListName] = {
+				mergeRequestParameters[listName] = {
 					initial: false
 				};
 				api.setRequestParameters(mergeRequestParameters, true);
-				elements.addScrollable(itemListParameters.listControlContainerSelector + '.scrollable', function(element) {
+				elements.addScrollable(listParameters.listControlContainerSelector + '.scrollable', function(element) {
 					if (element.details.width) {
-						const selectorContainerDetails = elements.get(itemListParameters.selector).parentNode.getBoundingClientRect();
-						elements.get(itemListParameters.listContentSelector).setAttribute('style', 'padding-top: ' + (elements.get(itemListParameters.listControlContainerSelector + ' > .item-header').clientHeight + 1) + 'px');
+						const selectorContainerDetails = elements.get(listParameters.selector).parentNode.getBoundingClientRect();
+						elements.get(listParameters.listContentSelector).setAttribute('style', 'padding-top: ' + (elements.get(listParameters.listControlContainerSelector + ' > .item-header').clientHeight + 1) + 'px');
 						elements.setAttribute(element, 'style', 'width: ' + element.details.width + 'px; right: ' + (element.details.width - selectorContainerDetails.width) + 'px');
-						elements.setAttribute(element, 'scrolled_to_the_bottom', +(window.pageYOffset > Math.max(0, (element.details.bottom + window.pageYOffset - +(elements.get(itemListParameters.listControlContainerSelector + ' > .item-header').clientHeight)))));
+						elements.setAttribute(element, 'scrolled_to_the_bottom', +(window.pageYOffset > Math.max(0, (element.details.bottom + window.pageYOffset - +(elements.get(listParameters.listControlContainerSelector + ' > .item-header').clientHeight)))));
 					}
 				});
 			}
@@ -1772,22 +1470,20 @@
 
 			if (
 				typeof apiRequestParameters.search !== 'undefined' &&
-				typeof apiRequestParameters.search[itemListName] !== 'undefined'
+				typeof apiRequestParameters.search[listName] !== 'undefined'
 			) {
 				elements.html(statusMessageSelector, '<a class="clear-search" href="javascript:void(0);"">Clear search</a>');
 				render(function() {
 					elements.addEventListener('.clear-search', {
 						method: function() {
-							delete apiRequestParameters.items[itemListName].data;
-							delete apiRequestParameters.search[itemListName];
-							processItemList(itemListName);
+							delete apiRequestParameters.search[listName];
+							processList(listName);
 						},
 						type: 'click'
 					});
 				});
 			}
 
-			elements.removeClass('.item-footer', 'hidden');
 			processWindowEvents('resize');
 		});
 	};
