@@ -877,6 +877,10 @@
 		}
 
 		public function list($parameters) {
+			$response = array(
+				'message' => 'Error listing nodes, please try again.',
+				'status_valid' => false
+			);
 			// ..
 			return array();
 		}
