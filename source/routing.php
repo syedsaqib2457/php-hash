@@ -8,7 +8,7 @@
 		exit;
 	}
 
-	require_once(__DIR__ . '/source/system.php');
+	require_once(__DIR__ . '/system.php');
 
 	if (
 		($_SERVER['REDIRECT_URL'] !== '/') &&

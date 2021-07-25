@@ -6,7 +6,7 @@
 			require(__DIR__ . '/keys.php');
 
 			$this->settings = array(
-				'base_domain' => basename(__DIR__),
+				'base_domain' => basename(dirname(__DIR__)),
 				'base_path' => __DIR__,
 				'database' => array(
 					'hostname' => 'localhost',
