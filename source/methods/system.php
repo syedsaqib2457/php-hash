@@ -108,6 +108,7 @@
 			return $response;
 		}
 
+		// ..
 		protected function _fetchIpType($ip, $ipVersion) {
 			// todo: validate ipv6 private ip ranges
 			$response = 'public';
@@ -150,16 +151,16 @@
 				$requestLogData = $requestLogs;
 			}
 
-			$requestLogData = array(
-				$requestLogData
-			);
 			$this->save(array(
-				'data' => $requestLogData,
+				'data' => array(
+					$requestLogData
+				),
 				'to' => 'request_logs'
 			));
 			return;
 		}
 
+		// ..
 		protected function _parseFormDataItem($formDataItemKey, $formDataItemValue) {
 			$parsedFormDataItem = array(
 				$formDataItemKey => $formDataItemValue
@@ -199,6 +200,7 @@
 			return $response;
 		}
 
+		// ..
 		protected function _parseParameterizedQuery($query) {
 			$queryParts = explode($this->keys['start'], $query);
 			$parameterValues = array();
@@ -219,6 +221,7 @@
 			return $response;
 		}
 
+		// ..
 		protected function _parseParametersToCamelCase($parameters) {
 			$response = array();
 
@@ -264,6 +267,7 @@
 			return $response;
 		}
 
+		// ..
 		protected function _parseParametersToSnakeCase($parameters) {
 			$response = array();
 			$exceptionKeyValues = array(
@@ -314,6 +318,7 @@
 			return $response;
 		}
 
+		// ..
 		protected function _parseParameters($parameters, $caseType) {
 			$response = array();
 			$parseMethod = '_parseParametersTo' . ucwords($caseType) . 'Case';
@@ -333,6 +338,7 @@
 			return $response;
 		}
 
+		// ..
 		protected function _parseQueryConditions($from, $where = array(), $conjunction = 'OR') {
 			$operators = array('>', '>=', '<', '<=', '=', '!=', 'LIKE');
 
@@ -376,11 +382,13 @@
 			return $response;
 		}
 
+		// ..
 		protected function _parseQueryValue($value) {
 			$response = $this->keys['start'] . (is_bool($value) ? (integer) $value : $value) . $this->keys['stop'];
 			return $response;
 		}
 
+		// ..
 		protected function _query($query, $parameters = array()) {
 			$database = new PDO('mysql:host=' . $this->settings['database']['hostname'] . '; dbname=' . $this->settings['database']['name'] . ';', $this->settings['database']['username'], $this->settings['database']['password']);
 			$database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
@@ -557,6 +565,7 @@
 			return $response;
 		}
 
+		// ..
 		protected function _sanitizeIps($ips = array(), $allowSubnets = false, $allowSubnetParts = false) {
 			$validatedIps = array();
 
@@ -594,6 +603,7 @@
 			return $response;
 		}
 
+		// ..
 		protected function _validateIp($ip, $ipVersion, $allowSubnets = false, $allowSubnetParts = false) {
 			$response = false;
 
@@ -682,13 +692,13 @@
 			$response = false;
 
 			if (
-				is_numeric($port) &&
+				(is_numeric($port) === true) &&
 				(
-					$port >= 1 &&
-					$port <= 65535
+					($port >= 1) &&
+					($port <= 65535)
 				)
 			) {
-				$response = (integer) trim($port);
+				$response = intval(trim($port));
 			}
 
 			return $response;
@@ -800,17 +810,23 @@
 			$query = ' FROM ' . $parameters['in'];
 
 			if (
-				empty($parameters['where']) === false &&
-				is_array($parameters['where']) === true
+				(empty($parameters['where']) === false) &&
+				(is_array($parameters['where']) === true)
 			) {
 				$query .= ' WHERE ' . implode(' AND ', $this->_formatQuery($parameters['from'], $parameters['where']));
 			}
 
 			$count = $this->_query('SELECT COUNT(id)' . $query);
-			$response = isset($count[0]['COUNT(id)']) === true ? $count[0]['COUNT(id)'] : false;
+			$response = false;
+
+			if (isset($count['COUNT(id)'])) {
+				$response = $count['COUNT(id)'];
+			}
+
 			return $response;
 		}
 
+		// ..
 		public function delete($parameters) {
 			$query = 'DELETE FROM ' . $parameters['from'];
 
@@ -826,9 +842,11 @@
 		}
 
 		public function endpoint() {
-			return $this->_request($_POST);
+			$response = $this->_request($_POST);
+			return $response;
 		}
 
+		// ..
 		public function fetch($parameters) {
 			$query = ' FROM ' . $parameters['from'];
 
@@ -935,6 +953,7 @@
 			return $response;
 		}
 
+		// ..
 		public function route($parameters) {
 			$response = false;
 
@@ -964,6 +983,12 @@
 			$response = true;
 
 			if (empty($parameters['data']) === false) {
+				if (is_numeric(key($parameters['data'])) === false) {
+					$parameters['data'] = array(
+						$parameters['data']
+					);
+				}
+
 				foreach (array_chunk($parameters['data'], 1000) as $rows) {
 					$groupValues = array();
 
@@ -982,25 +1007,25 @@
 						}, array_values($row));
 
 						if (
-							!in_array('created', $fields) &&
-							!in_array('id', $fields)
+							(in_array('created', $fields) === false) &&
+							(in_array('id', $fields) === false)
 						) {
 							$fields[] = 'created';
 							$values[] = date('Y-m-d H:i:s', time());
 						}
 
 						if (
-							!in_array('modified', $fields) &&
+							(in_array('modified', $fields) === false) &&
 							(
-								!isset($parameters['update_modified']) ||
-								$parameters['update_modified'] !== false
+								(isset($parameters['update_modified']) === false) ||
+								($parameters['update_modified'] !== false)
 							)
 						) {
 							$fields[] = 'modified';
 							$values[] = date('Y-m-d H:i:s', time());
 						}
 
-						$groupValues[implode(',', $fields)][] = $this->keys['start'] . implode($this->keys['stop'] . ',' . $this->keys['start'], $values) . $this->keys['stop'];
+						$groupValues[implode(',', $fields)][] = $this->settings['keys']['start'] . implode($this->settings['keys']['stop'] . ',' . $this->settings['keys']['start'], $values) . $this->settings['keys']['stop'];
 					}
 
 					foreach ($groupValues as $fields => $values) {
@@ -1015,8 +1040,9 @@
 				foreach ($queries as $query) {
 					$connection = $this->_query($query);
 
-					if (empty($connection)) {
+					if (empty($connection) === true) {
 						$response = false;
+						break;
 					}
 				}
 			}
@@ -1031,7 +1057,7 @@
 				$query = 'UPDATE ' . $parameters['in'] . ' SET ';
 
 				foreach ($parameters['data'] as $updateValueKey => $updateValue) {
-					$query .= $this->keys['start'] . $updateValueKey . $this->keys['stop'] .  ' = ' . $this->keys['start'] . $updateValue . $this->keys['stop'] . ','
+					$query .= $this->settings['keys']['start'] . $updateValueKey . $this->settings['keys']['stop'] .  ' = ' . $this->settings['keys']['start'] . $updateValue . $this->settings['keys']['stop'] . ','
 				}
 
 				$query = rtrim($query, ',') . ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['in'], $parameters['where']));

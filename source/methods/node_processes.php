@@ -235,8 +235,8 @@
 				return $response;
 			}
 
-			$nodeProcessData = array(
-				array_intersect_key($parameters['data'], array(
+			$nodeProcessDataSaved = $this->save(array(
+				'data' => array_intersect_key($parameters['data'], array(
 					'application_protocol' => true,
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
@@ -246,10 +246,7 @@
 					'port' => true,
 					'transport_protocol' => true,
 					'type' => true
-				))
-			);
-			$nodeProcessDataSaved = $this->save(array(
-				'data' => $nodeProcessData,
+				)),
 				'to' => 'nodes'
 			));
 			$response['status_valid'] = ($nodeProcessDataSaved === true);

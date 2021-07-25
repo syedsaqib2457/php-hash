@@ -235,8 +235,8 @@
 				// todo: automatically create nameserver and proxy processes for primary nodes that haven't been deployed yet
 			}
 
-			$nodeData = array(
-				array_intersect_key($parameters['data'], array(
+			$nodeDataSaved = $this->save(array(
+				'data' => array_intersect_key($parameters['data'], array(
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
 					'internal_ip_version_4' => true,
@@ -244,9 +244,7 @@
 					'node_id' => true,
 					'status_active' => true,
 					'status_deployed' => true
-				))
-			);
-			$nodeDataSaved = $this->save(array(
+				)),
 				'data' => $nodeData,
 				'to' => 'nodes'
 			));
