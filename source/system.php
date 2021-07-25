@@ -23,6 +23,26 @@
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
 							),
+							'destination_address_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(1000)'
+							),
+							'destination_address_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(1000)'
+							),
+							'destination_port_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'destination_port_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
 							'external_ip_version_4' => array(
 								'default' => null,
 								'null' => true,
@@ -107,11 +127,6 @@
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
-							),
-							'destination' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(255)'
 							),
 							'external_ip_version_4' => array(
 								'default' => null,
