@@ -426,12 +426,12 @@
 				return false;
 			}
 
-			$connection = $database->prepare($parameterized['parameterizedQuery']);
+			$database = $database->prepare($parameterized['parameterizedQuery']);
 			$data = array();
 
 			if (
-				(empty($connection) === true) ||
-				(is_object($connection) === false)
+				(empty($database) === true) ||
+				(is_object($database) === false)
 			) {
 				return false;
 			}
@@ -447,8 +447,8 @@
 				}
 			}
 
-			$response = $connection->execute($parameterized['parameterizedValues']);
-			$data = $connection->fetchAll(PDO::FETCH_ASSOC);
+			$response = $database->execute($parameterized['parameterizedValues']);
+			$data = $database->fetchAll(PDO::FETCH_ASSOC);
 
 			if (empty($data) === false) {
 				if (empty($data[1]) === true) {
@@ -458,7 +458,6 @@
 				$response = $data;
 			}
 
-			$connection->closeCursor();
 			return $response;
 		}
 

@@ -1,1 +1,3 @@
 This branch is for development only.
+
+url=STATIC_IP_ADDRESS && cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O deploy_system.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "https://raw.githubusercontent.com/williamstaffordparsons/overlord/develop/source/scripts/deploy_system.php" && sudo php deploy_system.php $url

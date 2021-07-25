@@ -1,17 +1,17 @@
 <?php
 	if (
-		empty($_SERVER['argv'][1]) ||
-		$_SERVER['argv'][1] === 'STATIC_IP_ADDRESS'
+		(empty($_SERVER['argv'][1]) === true) ||
+		($_SERVER['argv'][1] === 'STATIC_IP_ADDRESS')
 	) {
-		echo 'Error: STATIC_IP_ADDRESS should be the static public IPv4 address of the server.' . "\n";
+		echo 'Error deploying system with STATIC_IP_ADDRESS, please try again.' . "\n";
 		exit;
 	}
 
 	function applyCommands($commands) {
 		foreach ($commands as $command) {
 			if (
-				!empty($command) &&
-				is_string($command)
+				(empty($command) === false) &&
+				(is_string($command) === true)
 			) {
 				echo shell_exec($command);
 			}
@@ -27,7 +27,7 @@
 		);
 		$commandsFile = '/tmp/commands.sh';
 
-		if (file_exists($commandsFile)) {
+		if (file_exists($commandsFile) === true) {
 			unlink($commandsFile);
 		}
 
@@ -37,8 +37,8 @@
 		$binaryFile = current($binaryFile);
 		unlink($commandsFile);
 
-		if (empty($binaryFile)) {
-			echo 'Error: Binary file for ' . $binary['name'] . ' not found, please run the install script again.' . "\n";
+		if (empty($binaryFile) === true) {
+			echo 'Error fetching required binary file, please try again.' . "\n";
 			shell_exec('sudo apt-get update');
 			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
 			exit;
@@ -50,13 +50,13 @@
 	function fetchSshPorts() {
 		$sshPorts = array();
 
-		if (file_exists('/etc/ssh/sshd_config')) {
+		if (file_exists('/etc/ssh/sshd_config') === true) {
 			exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPorts);
 
 			foreach ($sshPorts as $sshPortKey => $sshPort) {
 				if (
-					strlen($sshPort) > 5 ||
-					!is_numeric($sshPort)
+					(strlen($sshPort) > 5) ||
+					(is_numeric($sshPort) === false)
 				) {
 					unset($sshPorts[$sshPortKey]);
 				}
@@ -141,36 +141,33 @@
 	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
 		$operatingSystemDetail = explode('=', $operatingSystemDetail);
 
-		if (!empty($operatingSystemDetail[1])) {
+		if (empty($operatingSystemDetail[1]) === false) {
 			$operatingSystemDetails[strtolower($operatingSystemDetail[0])] = trim($operatingSystemDetail[1], '"');
 		}
 
 		unset($operatingSystemDetails[$operatingSystemDetailKey]);
 	}
 
-	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']])) {
-		echo 'Error: Unsupported operating system ' . $operatingSystemDetails['pretty_name'] . "\n";
+	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
+		echo 'Error detecting a supported operating system, please try again.' . "\n";
 		exit;
 	}
 
 	$operatingSystemConfiguration = $supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']];
 
 	if (
-		!file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) ||
-		!file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents']))
+		(file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) === false) ||
+		(file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents'])) === false)
 	) {
-		echo 'Error: Unable to update package sources at ' . $operatingSystemConfiguration['sources']['aptitude']['path'] . '.' . "\n";
+		echo 'Error updating package sources, please try again.' . "\n";
 		exit;
 	}
 
 	$commands = array(
 		'sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)',
 		'sudo apt-get update',
-		'sleep 1',
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils cron curl iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux',
-		'sleep 1',
-		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg',
-		'sleep 1'
+		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg'
 	);
 	applyCommands($commands);
 	$uniqueId = '_' . uniqid() . time();
@@ -307,17 +304,6 @@
 		'net.ipv4.tcp_window_scaling = 1',
 		'net.ipv4.udp_rmem_min = 1',
 		'net.ipv4.udp_wmem_min = 1',
-		'net.netfilter.nf_conntrack_max = 1000000000',
-		'net.netfilter.nf_conntrack_tcp_loose = 0',
-		'net.netfilter.nf_conntrack_tcp_timeout_close = 10',
-		'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 10',
-		'net.netfilter.nf_conntrack_tcp_timeout_established = 10',
-		'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 10',
-		'net.netfilter.nf_conntrack_tcp_timeout_last_ack = 10',
-		'net.netfilter.nf_conntrack_tcp_timeout_syn_recv = 10',
-		'net.netfilter.nf_conntrack_tcp_timeout_syn_sent = 10',
-		'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 10',
-		'net.nf_conntrack_max = 1000000000',
 		'net.ipv6.conf.all.accept_redirects = 0',
 		'net.ipv6.conf.all.accept_source_route = 0',
 		'net.ipv6.conf.all.disable_ipv6 = 0',
@@ -368,8 +354,8 @@
 	}
 
 	$commands = array(
-		'sudo rm -rf ' . ($websitePath = '/var/www/' . ($url = $_SERVER['argv'][1])),
-		'sudo mkdir -p ' . $websitePath,
+		'sudo rm -rf ' . ($systemPath = '/var/www/' . ($url = $_SERVER['argv'][1])),
+		'sudo mkdir -p ' . $systemPath,
 		'sudo ' . $binaryFiles['systemctl'] . ' start apache2'
 	);
 	applyCommands($commands);
@@ -377,8 +363,8 @@
 		'<VirtualHost *:80>',
 		'ServerAlias ' . $url,
 		'ServerName ' . $url,
-		'DocumentRoot ' . $websitePath,
-		'<Directory ' . $websitePath . '>',
+		'DocumentRoot ' . $systemPath . '/source',
+		'<Directory ' . $systemPath . '/source' . '>',
 		'Allow from all',
 		'Options FollowSymLinks',
 		'AllowOverride All',
@@ -387,48 +373,35 @@
 	);
 	file_put_contents('/etc/apache2/sites-available/' . $url . '.conf', implode("\n", $virtualHostContents));
 	$commands = array(
-		'sleep 1',
 		'cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $url,
-		'sleep 1',
 		'cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load',
-		'sleep 1',
 		'sudo ' . $binaryFiles['apachectl'] . ' graceful',
-		'sleep 1',
 		'sudo apt-get update',
-		'sleep 1',
 		'sudo ' . $binaryFiles['systemctl'] . ' stop mysql',
-		'sleep 1',
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*',
-		'sleep 1',
 		'sudo rm -rf /etc/mysql /var/lib/mysql /var/log/mysql',
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove',
-		'sleep 1',
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean',
-		'sleep 1',
 		'cd /tmp && sudo wget -O mysql_apt_config.deb ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb',
 	);
 	applyCommands($commands);
 
-	if (!file_exists('/tmp/mysql_apt_config.deb')) {
-		echo 'Error: Unable to download MySQL source file.' . "\n";
+	if (file_exists('/tmp/mysql_apt_config.deb') === false) {
+		echo 'Error downloading MySQL source file, please try again.' . "\n";
 		exit;
 	}
 
 	$commands = array(
 		'cd /tmp && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql_apt_config.deb',
-		'sleep 1',
 		'sudo add-apt-repository -y universe',
-		'sleep 1',
 		'sudo apt-get update',
-		'sleep 1',
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libmecab2',
-		'sleep 1',
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-common mysql-client mysql-community-server-core mysql-community-client mysql-community-client-core mysql-community-server mysql-community-client-plugins mysql-server'
 	);
 	applyCommands($commands);
 
-	if (!file_exists('/etc/mysql/mysql.conf.d/mysqld.cnf')) {
-		echo 'Error: Unable to install MySQL, please try again.' . "\n";
+	if (file_exists('/etc/mysql/mysql.conf.d/mysqld.cnf') === false) {
+		echo 'Error installing MySQL, please try again.' . "\n";
 		exit;
 	}
 
@@ -444,62 +417,65 @@
 	file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', implode("\n", $mysqlConfigurationContents));
 	$commands = array(
 		'sudo ' . $binaryFiles['service'] . ' mysql restart',
-		'sleep 1',
 		'sudo mysql -u root -p"password" -e "DELETE FROM mysql.user WHERE User=\'\'; DELETE FROM mysql.user WHERE User=\'root\' AND Host NOT IN (\'localhost\', \'127.0.0.1\', \'::1\');"',
-		'sleep 1',
 		'sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"',
-		'sleep 1',
 		'sudo ' . $binaryFiles['service'] . ' mysql restart',
-		'sleep 1',
 		'sudo apt-get update',
-		'sleep 1',
-		'sudo rm -rf ' . $websitePath . '/*',
-		'cd ' . $websitePath . ' && sudo wget -O overlord.tar.gz ' . $wgetParameters . ' https://github.com/williamstaffordparsons/overlord/archive/refs/heads/master.tar.gz'
+		'sudo rm -rf ' . $systemPath . '/*',
+		'cd ' . $systemPath . ' && sudo wget -O overlord.tar.gz ' . $wgetParameters . ' https://github.com/williamstaffordparsons/overlord/archive/refs/heads/develop.tar.gz'
 	);
 	applyCommands($commands);
 
-	if (!file_exists($websitePath . '/overlord.tar.gz')) {
-		echo 'Error: Unable to download website files.' . "\n";
+	if (file_exists($systemPath . '/overlord.tar.gz') === false) {
+		echo 'Error downloading system files, please try again.' . "\n";
 		exit;
 	}
 
 	$commands = array(
-		'cd ' . $websitePath . ' && sudo tar -xvzf overlord.tar.gz && cd overlord-master && mv .* * ../',
-		'cd ' . $websitePath . ' && sudo rm -rf overlord.tar.gz overlord-master'
+		'cd ' . $systemPath . ' && sudo tar -xvzf overlord.tar.gz && cd overlord-develop && mv .* * ../',
+		'cd ' . $systemPath . ' && sudo rm -rf overlord.tar.gz overlord-develop'
 	);
 	applyCommands($commands);
 
-	if (!file_exists($websitePath . '/version.txt')) {
-		echo 'Error: Unable to extract website files.' . "\n";
+	if (file_exists($systemPath . '/license.txt') === false) {
+		echo 'Error extracting system files, please try again.' . "\n";
 		exit;
 	}
 
 	$keyCharacters = str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 4));
 	$keyStart = 'x' . substr($keyCharacters, 0, rand(17, 34));
 	$keyStop = 'x' . substr($keyCharacters, 34, rand(17, 34));
-	file_put_contents($websitePath . '/keys.php', "<?php \$keys = array('start' => '" . $keyStart . "', 'stop' => '" . $keyStop . "'); ?>");
+	file_put_contents($systemPath . '/source/keys.php', "<?php \$keys = array('start' => '" . $keyStart . "', 'stop' => '" . $keyStop . "'); ?>");
 	$crontabFile = '/etc/crontab';
+
+	if (file_exists($crontabFile) === true) {
+		$crontabFileContents = file_get_contents($crontabFile);
+	}
+
 	$crontabCommands = array(
 		'# [Start]',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $websitePath . '/shell.php main processRequestLogs',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/source/interfaces/command/interface.php system processRequestLogs',
 		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
 		'# [Stop]'
 	);
 
 	if (
-		!file_exists($crontabFile) ||
-		($crontabFileContents = file_get_contents($crontabFile)) === false
+		(file_exists($crontabFile) === false) ||
+		(boolval($crontabFileContents) === false)
 	) {
-		echo 'Error: Unable to retrieve crontab contents at ' . $crontabFile . '.' . "\n";
+		echo 'Error fetching crontab contents, please try again.' . "\n";
 		exit;
 	}
 
 	$crontabFileContents = explode("\n", $crontabFileContents);
 
-	while (($startCrontabFileContents = array_search('# [Start]', $crontabFileContents)) !== false) {
+	while (array_search('# [Start]', $crontabFileContents) !== false) {
+		$startCrontabFileContents = array_search('# [Start]', $crontabFileContents);
+		$stopCrontabFileContents = array_search('# [Stop]', $crontabFileContents);
+
 		if (
-			($stopCrontabFileContents = array_search('# [Stop]', $crontabFileContents)) !== false &&
-			$stopCrontabFileContents > $startCrontabFileContents
+			($stopCrontabFileContents !== false) &&
+			($stopCrontabFileContents > $startCrontabFileContents)
 		) {
 			foreach (range($startCrontabFileContents, $stopCrontabFileContents) as $crontabContentLineIndex) {
 				unset($crontabFileContents[$crontabContentLineIndex]);
@@ -522,8 +498,8 @@
 	);
 
 	if (
-		!empty($sshPorts) &&
-		is_array($sshPorts)
+		(empty($sshPorts) === false) &&
+		(is_array($sshPorts) === true)
 	) {
 		foreach ($sshPorts as $sshPort) {
 			$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask 32 -j DROP';
@@ -548,24 +524,24 @@
 	shell_exec('sudo ' . $binaryFiles['iptables-restore'] . ' < ' . $firewallRulesFile);
 	sleep(1 * count($firewallRuleParts));
 	shell_exec('sudo rm /tmp/firewall');
-	require_once('/var/www/' . $url . '/configuration.php');
-	$connection = mysqli_connect($configuration->settings['database']['hostname'], $configuration->settings['database']['username'], $configuration->settings['database']['password']);
+	require_once('/var/www/' . $url . '/source/system.php');
+	$database = mysqli_connect($system->settings['database']['hostname'], $system->settings['database']['username'], $system->settings['database']['password']);
 	$queries = array();
 
-	if (!$connection) {
+	if ($database === false) {
 		echo 'Error: ' . mysqli_connect_error() . '.';
 		exit;
 	}
 
-	mysqli_query($connection, 'CREATE DATABASE IF NOT EXISTS `' . $configuration->settings['database']['name'] . '` CHARSET utf8');
-	$database = mysqli_connect($configuration->settings['database']['hostname'], $configuration->settings['database']['username'], $configuration->settings['database']['password'], $configuration->settings['database']['name']);
+	mysqli_query($database, 'CREATE DATABASE IF NOT EXISTS `' . $system->settings['database']['name'] . '` CHARSET utf8');
+	$database = mysqli_connect($system->settings['database']['hostname'], $system->settings['database']['username'], $system->settings['database']['password'], $system->settings['database']['name']);
 
-	if (!$database) {
+	if ($database === false) {
 		echo 'Error: ' . mysqli_connect_error() . '.';
 		exit;
 	}
 
-	foreach ($configuration->settings['database']['structure'] as $table => $columns) {
+	foreach ($system->settings['database']['structure'] as $tableName => $columns) {
 		$columnKey = key($columns);
 		$columns = array_merge($columns, array(
 			'created' => array(
@@ -578,25 +554,47 @@
 			)
 		));
 
-		if (!empty($columnKey)) {
-			$queries[] = 'CREATE TABLE IF NOT EXISTS `' . $table . '` (`' . $columnKey . '` ' . $columns[$columnKey]['type'] . ' ' . (empty($columns[$columnKey]['null']) ? 'NOT ' : '') . 'NULL' . (isset($columns[$columnKey]['default']) ? ' DEFAULT ' . $columns[$columnKey]['default'] : '') . ');';
+		if (empty($columnKey) === false) {
+			$columnDefault = '';
+			$columnNull = 'NULL';
+
+			if (isset($columns[$columnKey]['default']) === true) {
+				$columnDefault = ' DEFAULT ' . $columns[$columnKey]['default'];
+			}
+
+			if (empty($columns[$columnKey]['null']) === true) {
+				$columnNull = 'NOT NULL';
+			}
+
+			$queries[] = 'CREATE TABLE IF NOT EXISTS `' . $tableName . '` (`' . $columnKey . '` ' . $columns[$columnKey]['type'] . ' ' . $columnNull . $columnDefault . ');';
 
 			foreach ($columns as $columnName => $columnStructure) {
+				$columnDefault = '';
+				$columnNull = 'NULL';
+
+				if (isset($columnStructure['default']) === true) {
+					$columnDefault = ' DEFAULT ' . $columnStructure['default'];
+				}
+
+				if (empty($columnStructure['null']) === true) {
+					$columnNull = 'NOT NULL';
+				}
+
 				$queryActions = array(
 					'add' => 'ADD `' . $columnName . '`',
 					'change' => 'CHANGE `' . $columnName . '` `' . $columnName . '`'
 				);
-				$query = 'ALTER TABLE `' . $table . '` ' . $queryActions['change'] . ' ' . $columnStructure['type'] . ' ' . (empty($columnStructure['null']) ? 'NOT ' : '') . 'NULL' . (isset($columnStructure['default']) ? ' DEFAULT ' . $columnStructure['default'] : '');
+				$query = 'ALTER TABLE `' . $tableName . '` ' . $queryActions['change'] . ' ' . $columnStructure['type'] . ' ' . $columnNull . $columnDefault;
 
 				if (
-					$columnName !== $columnKey &&
-					mysqli_query($database, $query) === false
+					($columnName !== $columnKey) &&
+					(mysqli_query($database, $query) === false)
 				) {
 					$queries[] = str_replace($queryActions['change'], $queryActions['add'], $query);
 				}
 
 				if (!empty($columnStructure['primary_key'])) {
-					$queries[$columnName . $configuration->keys['start'] . $table] = 'ALTER TABLE `' . $table . '` ADD PRIMARY KEY(`' . $columnName . '`)';
+					$queries[$columnName . $system->settings['keys']['start'] . $tableName] = 'ALTER TABLE `' . $tableName . '` ADD PRIMARY KEY(`' . $columnName . '`)';
 
 					if (!empty($columnStructure['auto_increment'])) {
 						$queries[] = $query . ' AUTO_INCREMENT';
@@ -604,7 +602,7 @@
 				}
 
 				if (!empty($columnStructure['index'])) {
-					$queries[$columnName . $configuration->keys['start'] . $table] = 'ALTER TABLE `' . $table . '` ADD INDEX(`' . $columnName . '`)';
+					$queries[$columnName . $system->settings['keys']['start'] . $tableName] = 'ALTER TABLE `' . $tableName . '` ADD INDEX(`' . $columnName . '`)';
 				}
 			}
 		}
@@ -612,29 +610,29 @@
 
 	foreach ($queries as $queryKey => $query) {
 		if (
+			(is_numeric($queryKey) === false) &&
 			(
-				strpos($query, 'ADD INDEX') !== false ||
-				strpos($query, 'ADD PRIMARY KEY') !== false
-			) &&
-			!is_numeric($queryKey) &&
-			($queryKey = explode($configuration->keys['start'], $queryKey)) &&
-			!empty($queryKey[0]) &&
-			!empty($queryKey[1]) &&
-			mysqli_query($database, 'SHOW KEYS FROM `' . $queryKey[1] . '` WHERE Column_name=\'' . $queryKey[0] . '\'')->num_rows
+				(strpos($query, 'ADD INDEX') !== false) ||
+				(strpos($query, 'ADD PRIMARY KEY') !== false)
+			)
 		) {
-			continue;
+			$queryKey = explode($system->settings['keys']['start'], $queryKey);
+
+			if (empty(mysqli_query($database, 'SHOW KEYS FROM `' . $queryKey[1] . '` WHERE Column_name=\'' . $queryKey[0] . '\'')->num_rows) === false) {
+				continue;
+			}
 		}
 
 		$queryResult = mysqli_query($database, $query);
 
-		if (!$queryResult) {
-			echo 'Error: Unable to run the following database query, please try restarting the install script. ' . $query;
+		if ($queryResult === false) {
+			echo 'Error executing database query, please try again.';
 			exit;
 		}
 	}
 
-	if (mysqli_query($database, 'SELECT `id` FROM `users` LIMIT 1')->num_rows) {
-		echo 'Website and database already installed.' . "\n";
+	if (empty(mysqli_query($database, 'SELECT `id` FROM `users` LIMIT 1')->num_rows) === false) {
+		echo 'System already installed.' . "\n";
 		exit;
 	}
 
@@ -648,36 +646,34 @@
 		"'" . date('Y-m-d H:i:s', time()) . "'",
 		"'keys'",
 		"'" . date('Y-m-d H:i:s', time()) . "'",
-		"'" . sha1($configuration->keys['start'] . $configuration->keys['stop']) . "'"
+		"'" . sha1($system->settings['keys']['start'] . $system->settings['keys']['stop']) . "'"
 	);
 	$userDataFields = array(
+		'authentication_password',
 		'created',
 		'id',
 		'modified',
-		'password',
-		'whitelisted_ips'
 	);
 	$userDataValues = array(
+		"'" . ($password = 'x' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz01234567890123456789'), 0, 14)) . "'",
 		"'" . date('Y-m-d H:i:s', time()) . "'",
 		1,
-		"'" . date('Y-m-d H:i:s', time()) . "'",
-		"'" . ($password = 'x' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz01234567890123456789'), 0, 14)) . "'",
-		"''"
+		"'" . date('Y-m-d H:i:s', time()) . "'"
 	);
 	mysqli_query($database, 'INSERT IGNORE INTO `settings` (`' . implode('`, `', $settingDataFields) . '`) VALUES (' . implode(', ', $settingDataValues) . ')');
 	mysqli_query($database, 'INSERT IGNORE INTO `users` (`' . implode('`, `', $userDataFields) . '`) VALUES (' . implode(', ', $userDataValues) . ')');
 
 	if (
-		!mysqli_query($database, 'SELECT `id` FROM `settings`')->num_rows ||
-		!mysqli_query($database, 'SELECT `id` FROM `users`')->num_rows
+		(empty(mysqli_query($database, 'SELECT `id` FROM `settings`')->num_rows === true) ||
+		(empty(mysqli_query($database, 'SELECT `id` FROM `users`')->num_rows === true)
 	) {
-		echo 'Unable to create user account. Please try restarting the install script.' . "\n";
+		echo 'Error creating system user, please try again.' . "\n";
 		exit;
 	}
 
 	echo 'System installed successfully.' . "\n";
 	echo 'You can now log in at ' . $url . ' with this password:' . "\n";
 	echo 'Password: ' . $password . "\n";
-	shell_exec('sudo rm /tmp/system.php');
+	shell_exec('sudo rm /tmp/deploy_system.php');
 	exit;
 ?>
