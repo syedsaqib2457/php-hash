@@ -1734,7 +1734,12 @@
 		let response = [];
 		high = +high;
 		low = +low;
-		step = step || 1;
+
+		if (step) {
+			step = step;
+		} else {
+			step = 1;
+		}
 
 		if (low < high) {
 			while (low <= high) {
