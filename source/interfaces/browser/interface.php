@@ -952,27 +952,53 @@
 </style>
 </head>
 <body>
-<div class="hidden process-container" process="login">
-	<div class="process">
+<div class="hidden" process="configure">
+	<div class="process-container">
+		<div class="message-container password"></div>
+		<label>Account Password</label>
+		<input class="account-password" name="authentication_password" placeholder="Enter an account password" type="password">
+		<label>Endpoint Whitelist</label>
+		<textarea class="authentication-whitelist" name="authentication_whitelist" placeholder="<?php echo "127.0.0.1\n127.0.0.2\netc..." ?>" type="text"></textarea>
+		<div class="clear"></div>
+		<a class="button close" href="/">Close</a>
+		<a class="button submit" href="javascript:void(0);" process="configure">Save Changes</a>
+	</div>
+	<div class="process-overlay"></div>
+</div>
+<div class="hidden" process="login">
+	<div class="process-container">
 		<div class="login message-container"></div>
 		<label>Password</label>
 		<input class="password" name="password" placeholder="Enter password" type="password">
 		<div class="clear"></div>
-		<a class="button main-button submit" href="javascript:void(0);" process="login">Log In</a>
+		<a class="button submit" href="javascript:void(0);" process="login">Log In</a>
 	</div>
 	<div class="process-overlay"></div>
 </div>
-<main process="nodes">
-	<section class="section">
-		<div class="container">
-			<div class="hidden list-processing-container"></div>
-			<div class="list-container">
-				<div class="list" from="nodes">
-					<p class="message">Loading</p>
-				</div>
-			</div>
+<div class="hidden" process="search" search="node_list">
+	<div class="process-container">
+		<div class="message-container search"></div>
+		<label>Search Terms</label>
+		<input class="broad-search" name="broad_search" placeholder="<?php echo "Enter broad search terms (e.g. tag, username, etc)"; ?>" type="text">
+		<label>Filter List of Specific IPs or Subnets</label>
+		<textarea class="granular-search" name="granular_search" placeholder="<?php echo "Enter list of specific node IPs or subnets\n127.0.0.1\n192.168\n127.0.0.0/8\netc..."; ?>"></textarea>
+		<div class="checkbox-container">
+			<span checked="0" class="checkbox" name="match_all_search"></span>
+			<label class="custom-checkbox-label" name="match_all_search">Require All Search Terms to Match Proxy Results</label>
 		</div>
+		<div class="clear"></div>
+		<a class="button close" href="javascript:void(0);">Close</a>
+		<a class="button submit" href="javascript:void(0);" process="search">Search</a>
 	</section>
+	<div class="process-overlay"></div>
+</div>
+<main process="nodes">
+	<div class="hidden list-processing-container"></div>
+	<div class="list-container">
+		<div class="list" from="nodes">
+			<p class="message">Loading</p>
+		</div>
+	</div>
 </main>
 <div class="hidden settings">{"baseDomain":"<?php echo $configuration->settings['base_domain']; ?>","uniqueId":"<?php echo sha1($configuration->settings['source_ip'] . uniqid()) . md5(time() . uniqid()); ?>"}</div>
 <script type="text/javascript">
