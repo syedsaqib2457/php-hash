@@ -975,6 +975,27 @@
 	</div>
 	<div class="process-overlay"></div>
 </div>
+<div class="hidden" process="node_add">
+	<div class="process-container">
+	<label>External IPv4</label>
+	<input name="external_ip_version_4" placeholder="Enter external IPv4 address" type="text">
+	<label>Internal IPv4</label>
+	<input name="internal_ip_version_4" placeholder="Enter internal IPv4 address" type="text">
+	<label>External IPv6</label>
+	<input name="external_ip_version_6" placeholder="Enter external IPv6 address" type="text">
+	<label>Internal IPv6</label>
+	<input name="internal_ip_version_6" placeholder="Enter internal IPv6 address" type="text">
+	<div class="clear"></div>
+	<div class="checkbox-container">
+		<span checked="0" class="checkbox" name="additional_node" toggle="main_ip"></span>
+		<label class="custom-checkbox-label" name="additional_node">Attach to an existing node</label>
+	</div>
+	<div class="hidden" name="main_ip">
+		<input name="main_ip" placeholder="Enter existing node external IPv4 or IPv6 address" type="text">
+	</div>
+	<a class="button close" href="/">Close</a>
+	<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
+</div>
 <div class="hidden" process="search" search="node_list">
 	<div class="process-container">
 		<div class="message-container search"></div>
