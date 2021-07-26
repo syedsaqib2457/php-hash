@@ -987,11 +987,11 @@
 	<input name="internal_ip_version_6" placeholder="Enter internal IPv6 address" type="text">
 	<div class="clear"></div>
 	<div class="checkbox-container">
-		<span checked="0" class="checkbox" name="additional_node" toggle="main_ip"></span>
+		<span checked="0" class="checkbox" name="additional_node" toggle="node_id"></span>
 		<label class="custom-checkbox-label" name="additional_node">Attach to an existing node</label>
 	</div>
-	<div class="hidden" name="main_ip">
-		<input name="main_ip" placeholder="Enter existing node external IPv4 or IPv6 address" type="text">
+	<div class="hidden" name="node_id">
+		<input name="node_id" placeholder="Enter existing node external IP address or node ID" type="text">
 	</div>
 	<a class="button close" href="/">Close</a>
 	<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
