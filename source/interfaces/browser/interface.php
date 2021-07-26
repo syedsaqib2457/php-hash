@@ -1298,13 +1298,13 @@
 			elementContent += '</div>';
 
 			if (
-				(typeof itemListParameters.options === 'object') &&
-				itemListParameters.options
+				(typeof listParameters.options === 'object') &&
+				listParameters.options
 			) {
 				elementContent += '<div class="align-left hidden item-control-button-container item-controls selectable-item-controls">';
 
-				for (let optionKey in itemListParameters.options) {
-					let option = itemListParameters.options[optionKey];
+				for (let optionKey in listParameters.options) {
+					let option = listParameters.options[optionKey];
 					elementContent += '<' + option.tag;
 
 					if (
@@ -1346,26 +1346,25 @@
 			elementContent += '<div class="item-body">';
 			elementContent += '<div class="items" previous_checked="0"></div>';
 			elementContent += '</div>';
-			elements.html(itemListParameters.selector, elementContent);
-			Object.defineProperty(itemListParameters, 'listName', {
+			elements.html(listParameters.selector, elementContent);
+			Object.defineProperty(listParameters, 'listName', {
 				configurable: true,
 				enumerable: true,
-				value: itemListName,
+				value: listName,
 				writable: false
 			});
-			Object.defineProperty(itemListParameters, 'listContentSelector', {
+			Object.defineProperty(listParameters, 'listContentSelector', {
 				configurable: true,
 				enumerable: true,
-				value: itemListParameters.selector + ' > .item-container > div > div > .item-body',
+				value: listParameters.selector + ' > .item-container > div > div > .item-body',
 				writable: false
 			});
-			Object.defineProperty(itemListParameters, 'listControlContainerSelector', {
+			Object.defineProperty(listParameters, 'listControlContainerSelector', {
 				configurable: true,
 				enumerable: true,
-				value: itemListParameters.selector + ' > .item-container > div > div > .item-controls-container',
+				value: listParameters.selector + ' > .item-container > div > div > .item-controls-container',
 				writable: false
 			});
-			elements.html(itemListParameters.listControlContainerSelector + ' > .item-header > p .total-checked', +(apiRequestParameters[itemListName].selectedItemCount || 0));
 		}
 
 		const listControlButtonContainerSelector = listParameters.listControlContainerSelector + ' > .item-header > .item-control-button-container';
@@ -1666,36 +1665,29 @@
 		}
 	};
 	var processSearch = function() {
-		let itemListName = camelCaseString(elements.getAttribute('.process-container[process="search"]', 'search'));
-		let itemListParameters = apiRequestParameters[itemListName];
+		let listName = camelCaseString(elements.getAttribute('.process-container[process="search"]', 'search'));
+		let listParameters = apiRequestParameters[listName];
 
 		if (
 			apiRequestParameters.processing &&
-			typeof itemListParameters !== 'undefined'
+			typeof listParameters !== 'undefined'
 		) {
 			api.setRequestParameters({
-				action: 'search',
-				encodeItemList: true,
-				url: itemListParameters.url
+				method: 'search',
+				url: listParameters.url
 			});
 			api.sendRequest(function(response) {
 				delete apiRequestParameters.processing;
-				elements.html('.search-configuration .message-container.search', response.message.html);
+				elements.html('.search-configuration .message-container.search', response.message);
 
-				if (response.message.status === 'success') {
-					delete apiRequestParameters.items[itemListName].data;
-
-					if (response.search) {
-						var mergeRequestParameters = {
-							data: {},
-							search: {}
-						};
-						mergeRequestParameters.search[itemListName] = response.search;
-						api.setRequestParameters(mergeRequestParameters, true);
-					}
-
+				if (response.statusValid === true) {
+					var mergeRequestParameters = {
+						search: {}
+					};
+					mergeRequestParameters.search[listName] = response.search;
+					api.setRequestParameters(mergeRequestParameters, true);
 					closeProcesses();
-					processItemList(itemListName);
+					processList(listName);
 				}
 			});
 		}
