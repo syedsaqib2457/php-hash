@@ -952,6 +952,16 @@
 </style>
 </head>
 <body>
+<div class="hidden process-container" process="login">
+	<div class="process">
+		<div class="login message-container"></div>
+		<label>Password</label>
+		<input class="password" name="password" placeholder="Enter password" type="password">
+		<div class="clear"></div>
+		<a class="button main-button submit" href="javascript:void(0);" process="login">Log In</a>
+	</div>
+	<div class="process-overlay"></div>
+</div>
 <main process="nodes">
 	<section class="section">
 		<div class="container">
