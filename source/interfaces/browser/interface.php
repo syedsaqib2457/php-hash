@@ -1692,21 +1692,26 @@
 			});
 		}
 	};
-	var processSettings = function(processElement, processSubmit) {
+	var processConfigure = function(processElement, processSubmit) {
 		api.setRequestParameters({
-			action: 'settings',
-			url: '/endpoint/main'
+			method: 'configure',
+			url: '/endpoint/system'
 		});
 		api.sendRequest(function(response) {
 			delete apiRequestParameters.processing;
-			elements.get('.account-password').value = response.user.password;
-			elements.get('.account-whitelisted-ips').value = response.user.whitelistedIps;
+			elements.get('.authentication-password').value = response.user.authenticationPassword;
+			elements.get('.authentication-whitelist').value = response.user.authenticationWhitelist;
 
 			if (processSubmit) {
-				elements.get('.account-password').value = apiRequestParameters.data.accountPassword || response.user.password;
-				elements.get('.account-whitelisted-ips').value = response.data.whitelistedIps;
-				elements.html('.password.message-container', response.message.html);
-				elements.setAttribute('.account-password', 'value', response.user.password);
+				elements.html('.configure.message-container', response.message);
+
+				if (apiRequestParameters.data.authenticationPassword) {
+					elements.get('.authentication-password').value = apiRequestParameters.data.authenticationPassword;
+				}
+
+				if (apiRequestParameters.data.authenticationWhitelist) {
+					elements.get('.authentication-whitelist').value = apiRequestParameters.data.authenticationWhitelist;
+				}
 			}
 		});
 	};
