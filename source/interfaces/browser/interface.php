@@ -954,7 +954,7 @@
 <body>
 <div class="hidden" process="configure">
 	<div class="process-container">
-		<div class="message-container password"></div>
+		<p class="message password"></p>
 		<label>Account Password</label>
 		<input class="account-password" name="authentication_password" placeholder="Enter an account password" type="password">
 		<label>Endpoint Whitelist</label>
@@ -967,7 +967,7 @@
 </div>
 <div class="hidden" process="login">
 	<div class="process-container">
-		<div class="login message-container"></div>
+		<p class="login message"></p>
 		<label>Password</label>
 		<input class="password" name="password" placeholder="Enter password" type="password">
 		<div class="clear"></div>
@@ -977,28 +977,30 @@
 </div>
 <div class="hidden" process="node_add">
 	<div class="process-container">
-	<label>External IPv4</label>
-	<input name="external_ip_version_4" placeholder="Enter external IPv4 address" type="text">
-	<label>Internal IPv4</label>
-	<input name="internal_ip_version_4" placeholder="Enter internal IPv4 address" type="text">
-	<label>External IPv6</label>
-	<input name="external_ip_version_6" placeholder="Enter external IPv6 address" type="text">
-	<label>Internal IPv6</label>
-	<input name="internal_ip_version_6" placeholder="Enter internal IPv6 address" type="text">
-	<div class="clear"></div>
-	<div class="checkbox-container">
-		<span checked="0" class="checkbox" name="additional_node" toggle="node_id"></span>
-		<label class="custom-checkbox-label" name="additional_node">Attach to an existing node</label>
+		<p class="message node-add"></p>
+		<label>External IPv4</label>
+		<input name="external_ip_version_4" placeholder="Enter external IPv4 address" type="text">
+		<label>Internal IPv4</label>
+		<input name="internal_ip_version_4" placeholder="Enter internal IPv4 address" type="text">
+		<label>External IPv6</label>
+		<input name="external_ip_version_6" placeholder="Enter external IPv6 address" type="text">
+		<label>Internal IPv6</label>
+		<input name="internal_ip_version_6" placeholder="Enter internal IPv6 address" type="text">
+		<div class="clear"></div>
+		<div class="checkbox-container">
+			<span checked="0" class="checkbox" name="additional_node" toggle="node_id"></span>
+			<label class="custom-checkbox-label" name="additional_node">Attach to an existing node</label>
+		</div>
+		<div class="hidden" name="node_id">
+			<input name="node_id" placeholder="Enter existing node external IP address or node ID" type="text">
+		</div>
+		<a class="button close" href="/">Close</a>
+		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
 	</div>
-	<div class="hidden" name="node_id">
-		<input name="node_id" placeholder="Enter existing node external IP address or node ID" type="text">
-	</div>
-	<a class="button close" href="/">Close</a>
-	<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
 </div>
 <div class="hidden" process="search" search="node_list">
 	<div class="process-container">
-		<div class="message-container search"></div>
+		<p class="message search"></p>
 		<label>Search Terms</label>
 		<input class="broad-search" name="broad_search" placeholder="<?php echo "Enter broad search terms (e.g. tag, username, etc)"; ?>" type="text">
 		<label>Filter List of Specific IPs or Subnets</label>
@@ -1014,7 +1016,6 @@
 	<div class="process-overlay"></div>
 </div>
 <main process="nodes">
-	<div class="hidden list-processing-container"></div>
 	<div class="list-container">
 		<div class="list" from="nodes">
 			<p class="message">Loading</p>
@@ -1658,32 +1659,16 @@
 				});
 			});
 		});
-		selectAllElements('.button.process-button, .process .button.submit', function(selectedElementKey, selectedElement) {
+		selectAllElements('.submit[process]', function(selectedElementKey, selectedElement) {
 			render(function() {
 				elements.addEventListener(selectedElement, {
 					method: function() {
-						let processSubmit = elements.hasClass(selectedElement, 'submit');
-
-						if (processSubmitButtonText) {
-							elements.html(selectedElement, processSubmitButtonText);
-						}
-
-						elements.removeAttribute(selectedElement, 'disabled');
-						window.scroll(0, 0);
-						const processSubmitButtonText = elements.html(selectedElement);
-
-						if (processSubmit) {
-							api.setRequestParameters({
-								processing: true
-							});
-							elements.setAttribute(selectedElement, 'disabled', 'disabled');
-
-							if (!elements.hasClass(selectedElement, 'icon')) {
-								elements.html(selectedElement, 'Processing');
-							}
-						}
-
-						processProcess(selectedElement, processSubmit);
+						api.setRequestParameters({
+							processing: true
+						});
+						elements.setAttribute(selectedElement, 'disabled', 'disabled');
+						elements.html(selectedElement, 'Processing');
+						processProcess(selectedElement, true);
 					},
 					type: 'click'
 				});
@@ -2594,6 +2579,10 @@
 							{
 								name: 'option_title',
 								value: 'Add node'
+							},
+							{
+								name: 'process',
+								value: 'node_add'
 							}
 						],
 						tag: 'span'
@@ -2739,7 +2728,260 @@
 			processList('nodeList');
 		});
 	};
-	// ..
+	var processNodeAdd = function(processElement, processSubmit) {
+		if (processSubmit) {
+			delete apiRequestParameters.from;
+			api.setRequestParameters({
+				data: {
+					externalIpVersion4: elements.get('[process="node_add"] [name="external_ip_version_4"]').value,
+					externalIpVersion6: elements.get('[process="node_add"] [name="external_ip_version_6"]').value,
+					internalIpVersion4: elements.get('[process="node_add"] [name="internal_ip_version_4"]').value,
+					internalIpVersion6: elements.get('[process="node_add"] [name="internal_ip_version_6"]').value,
+					nodeId: elements.get('[process="node_add"] [name="node_id"]').value
+				},
+				method: 'add',
+				url: '/endpoint/nodes'
+			});
+			api.sendRequest(function(response) {
+				elements.html('.message.node-add', response.message);
+				elements.html('.submit[process="node_add"]', 'Save Changes');
+				elements.removeAttribute('.submit[process="node_add"]', 'disabled');
+
+				if (response.statusValid === true) {
+					closeProcesses();
+					processList('listNodes', function() {
+						elements.html('.message-container.list-nodes', response.message);
+					});
+				}
+			});
+		} else {
+			elements.get('[process="node_add"] input').value = '';
+		}
+	};
+	var processNodeList = function(response, listParameters) {
+		if (typeof listParameters !== 'object') {
+			processList('nodeList');
+		} else {
+			// ..
+			var serverNodeElementContent = '<label>External IP</label>';
+			serverNodeElementContent += '<div class="field-group no-margin-top">';
+			serverNodeElementContent += '<input class="no-margin server-node-external-ip-field" name="server_external_node_external_ip" placeholder="Enter external IP address" type="text">';
+			serverNodeElementContent += '</div>';
+			serverNodeElementContent += '<div class="clear"></div>';
+			serverNodeElementContent += '<label>Internal IP</label>';
+			serverNodeElementContent += '<div class="field-group no-margin-top">';
+			serverNodeElementContent += '<input class="no-margin server-node-internal-ip-field" name="server_node_internal_ip" placeholder="Enter optional internal IP address if already routed by the host" type="text">';
+			serverNodeElementContent += '</div>';
+			/*const processServerNodeAdd = function() {
+				api.setRequestParameters({
+					action: 'add',
+					data: {
+						externalIp: elements.get(itemListParameters.selector + ' .create-server-node .server-node-external-ip-field').value,
+						internalIp: elements.get(itemListParameters.selector + ' .create-server-node .server-node-internal-ip-field').value,
+						serverId: apiRequestParameters.serverId
+					},
+					url: '/endpoint/server-nodes'
+				});
+				delete apiRequestParameters.from;
+				elements.html(itemListParameters.selector + ' .create-server-node .add-server-node-button', 'Adding Server Node');
+				elements.setAttribute(itemListParameters.selector + ' .create-server-node .add-server-node-button', 'disabled', 'disabled');
+				api.sendRequest(function(response) {
+					processItemList('listServerNodeItems', function() {
+						elements.html(itemListParameters.selector + ' .message-container.list-server-node-items', response.message.html);
+					});
+				});
+			};*/
+			const processServerNodeEdit = function(selectedElementSelector, serverNodeId) {
+				const processServerNodeEdit = function(selectedElementSelector, serverNodeId) {
+					api.setRequestParameters({
+						action: 'edit',
+						data: {
+							externalIp: elements.get(selectedElementSelector + ' .server-node-external-ip-field').value,
+							internalIp: elements.get(selectedElementSelector + ' .server-node-internal-ip-field').value
+						},
+						url: '/endpoint/server-nodes',
+						where: {
+							id: serverNodeId
+						}
+					});
+					delete apiRequestParameters.from;
+					elements.setAttribute(selectedElementSelector + ' .editing .save-edit-button', 'disabled');
+					elements.html(itemListParameters.selector + ' .editing .save-edit-button', 'Processing');
+					api.sendRequest(function(response) {
+						processItemList('listServerNodeItems', function() {
+							if (
+								typeof response.data.server !== 'undefined' &&
+								typeof response.data.server.ip !== 'undefined'
+							) {
+								elements.html('.server-name', 'Server ' + response.data.server.ip);
+							}
+
+							elements.html(itemListParameters.selector + ' .message-container.list-server-node-items', response.message.html);
+						});
+					});
+				};
+				api.setRequestParameters({
+					action: 'fetch',
+					editing: {
+						content: elements.html(selectedElementSelector + ' .table-text')
+					},
+					from: 'server_nodes',
+					offset: 0,
+					url: '/endpoint/server-nodes',
+					where: {
+						id: serverNodeId
+					}
+				});
+				elements.addClass(itemListParameters.selector + ' .edit.icon', 'hidden');
+				elements.html(selectedElementSelector + ' .table-text', '<label class="label">Loading</label>');
+				api.sendRequest(function(response) {
+					if (
+						response.message.status &&
+						response.message.status !== 'success'
+					) {
+						elements.html(selectedElementSelector + ' .table-text', '<p class="error message no-margin">' + response.message.text + '</p>');
+						elements.removeClass(itemListParameters.selector + ' .edit.icon', 'hidden');
+					}
+
+					if (response.data) {
+						var elementContent = '<div class="field-group no-margin">';
+						elementContent += serverNodeElementContent;
+						elementContent += '<button class="alternate-button button no-margin-bottom server-node-cancel-edit-button margin-right">Cancel</button>';
+						elementContent += '<button class="button main-button no-margin-bottom save-edit-button server-node-save-edit-button">Save Changes</button>';
+						elementContent += '</div>';
+						elements.addClass(selectedElementSelector + ' td:last-child', 'editing');
+						elements.html(selectedElementSelector + ' .table-text', elementContent);
+						render(function() {
+							elements.setAttribute(selectedElementSelector + ' .table-text .server-node-external-ip-field', 'value', response.data[0].externalIp);
+
+							if (response.data[0].internalIp) {
+								elements.setAttribute(selectedElementSelector + ' .table-text .server-node-internal-ip-field', 'value', response.data[0].internalIp);
+							}
+
+							render(function() {
+								elements.addEventListener(selectedElementSelector + ' .server-node-cancel-edit-button', {
+									method: function() {
+										elements.html(selectedElementSelector + ' .table-text', apiRequestParameters.editing.content);
+										elements.removeClass(itemListParameters.selector + ' .edit.icon', 'hidden');
+										elements.removeClass(selectedElementSelector + ' .editing', 'editing');
+										delete apiRequestParameters.editing;
+									},
+									type: 'click'
+								});
+							});
+							render(function() {
+								elements.addEventListener(selectedElementSelector + ' .server-node-external-ip-field', {
+									method: function() {
+										if (event.key == 'Enter') {
+											processServerNodeEdit(selectedElementSelector, serverNodeId);
+										}
+									},
+									type: 'keydown'
+								});
+							});
+							render(function() {
+								elements.addEventListener(selectedElementSelector + ' .server-node-internal-ip-field', {
+									method: function() {
+										if (event.key == 'Enter') {
+											processServerNodeEdit(selectedElementSelector, serverNodeId);
+										}
+									},
+									type: 'keydown'
+								});
+							});
+							render(function() {
+								elements.addEventListener(selectedElementSelector + ' .server-node-save-edit-button', {
+									method: function() {
+										processServerNodeEdit(selectedElementSelector, serverNodeId);
+									},
+									type: 'click'
+								});
+							});
+						});
+					}
+				});
+			};
+			var elementContent = '<div class="additional-item-controls">';
+			elementContent += '<a class="align-right button main-button no-margin-bottom" href="javascript:void(0);" show="create-server-node">Create Server Node</a>';
+			elementContent += '<div class="create-server-node form hidden">';
+			elementContent += serverNodeElementContent;
+			elementContent += '<div class="clear"></div>';
+			elementContent += '<a class="alternate-button button margin-right" hide="create-server-node" href="javascript:void(0)">Cancel</a>';
+			elementContent += '<a class="add-server-node-button button main-button" href="javascript:void(0)">Add Server Node</a>';
+			elementContent += '</div>';
+			elementContent += '</div>';
+			elements.html(itemListParameters.selector + ' .additional-item-controls-container', elementContent);
+			elements.html(itemListParameters.selector + ' .items', '<table class="no-margin-bottom table"><thead><tr><th></th><th>External IP <span disabled>[Internal IP]</span></th></tr></thead><tbody></tbody></table>');
+			var elementContent = '';
+
+			for (let serverNodeKey in response.data) {
+				let serverNode = response.data[serverNodeKey];
+				elementContent += '<tr server_node_id="' + serverNode.id + '">';
+				elementContent += '<td class="checkbox-container">';
+				elementContent += '<span checked="0" class="checkbox" index="' + serverNodeKey + '">';
+				elementContent += '</span>';
+				elementContent += '</td>';
+				elementContent += '<td>';
+				elementContent += '<span class="table-text">';
+				elementContent += serverNode.externalIp + ' <span disabled>[' + (serverNode.internalIp ? serverNode.internalIp : serverNode.externalIp) + ']</span>';
+				elementContent += '</span>';
+				elementContent += '<span class="table-actions">';
+				elementContent += '<span class="button edit icon" server_node_id="' + serverNode.id + '"></span>';
+				elementContent += '</span>';
+				elementContent += '</td>';
+				elementContent += '</tr>';
+			}
+
+			elements.html(itemListParameters.selector + ' .items table tbody', elementContent);
+			render(function() {
+				selectAllElements(itemListParameters.selector + ' .items tbody tr', function(selectedElementKey, selectedElement) {
+					const serverNodeId = elements.getAttribute(selectedElement, 'server_node_id');
+					const selectedElementSelector = itemListParameters.selector + ' .items tbody tr[server_node_id="' + serverNodeId + '"]';
+					let serverNodeEditButton = elements.get(selectedElementSelector + ' .edit');
+					elements.addEventListener(serverNodeEditButton, {
+						method: function() {
+							processServerNodeEdit(selectedElementSelector, serverNodeId);
+						},
+						type: 'click'
+					});
+				});
+			});
+			render(function() {
+				elements.addEventListener(itemListParameters.selector + ' .create-server-node .add-server-node-button', {
+					method: function() {
+						processServerNodeAdd();
+					},
+					type: 'click'
+				});
+			});
+			render(function() {
+				elements.addEventListener(itemListParameters.selector + ' .create-server-node .server-node-external-ip-field', {
+					method: function() {
+						if (event.key == 'Enter') {
+							processServerNodeAdd();
+						}
+					},
+					type: 'keydown'
+				});
+			});
+			render(function() {
+				elements.addEventListener(itemListParameters.selector + ' .create-server-node .server-node-internal-ip-field', {
+					method: function() {
+						if (event.key == 'Enter') {
+							processServerNodeAdd();
+						}
+					},
+					type: 'keydown'
+				});
+			});
+			elements.html(itemListParameters.selector + ' .message-container.list-server-node-items', response.message.html);
+			processProcesses();
+		}
+	};
+
+
+
+
 	// todo: refactor code below for nodes (previously servers.js)
 	var processActivate = function() {
 		elements.html('.activate-container', '<p class="message">Loading</p>');
