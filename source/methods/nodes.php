@@ -83,12 +83,18 @@
 			if (empty($parameters['data']['node_id']) === false) {
 				$node = $this->fetch(array(
 					'fields' => array(
+						'id',
+						'node_id',
 						'status_active',
 						'status_deployed'
 					),
 					'from' => 'nodes',
 					'where' => array(
-						'id' => ($nodeId = $parameters['data']['node_id'])
+						'OR' => array(
+							'external_ip_version_4' => ($nodeId = $parameters['data']['node_id']),
+							'external_ip_version_6' => $nodeId
+							'id' => $nodeId
+						)
 					)
 				));
 				$response['status_valid'] = ($node !== false);
@@ -98,12 +104,20 @@
 				}
 
 				$response['status_valid'] = (empty($node) === false);
-				$parameters['data'] = array_merge($parameters['data'], $node);
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Invalid node ID, please try again.';
 					return $response;
 				}
+
+				$nodeId = $parameters['data']['node_id'] = $node['id'];
+
+				if (empty($node['node_id']) === false) {
+					$nodeId = $parameters['data']['node_id'] = $node['node_id'];
+				}
+
+				$parameters['data']['status_active'] = $node['status_active'];
+				$parameters['data']['status_deployed'] = $node['status_deployed'];
 			}
 
 			$nodeExternalIps = $nodeExternalIpVersions = array();
