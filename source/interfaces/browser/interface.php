@@ -955,9 +955,9 @@
 <main process="nodes">
 	<section class="section">
 		<div class="container">
-			<div class="hidden item-list-processing-container"></div>
-			<div class="item-list-container">
-				<div class="item-list" from="nodes" page="all">
+			<div class="hidden list-processing-container"></div>
+			<div class="list-container">
+				<div class="list" from="nodes">
 					<p class="message">Loading</p>
 				</div>
 			</div>
@@ -1615,10 +1615,7 @@
 						window.scroll(0, 0);
 						const processSubmitButtonText = elements.html(selectedElement);
 
-						if (
-							elements.hasAttribute(selectedElement, 'item_function') ||
-							processSubmit
-						) {
+						if (processSubmit) {
 							api.setRequestParameters({
 								processing: true
 							});
@@ -1699,18 +1696,18 @@
 		});
 		api.sendRequest(function(response) {
 			delete apiRequestParameters.processing;
-			elements.get('.authentication-password').value = response.user.authenticationPassword;
-			elements.get('.authentication-whitelist').value = response.user.authenticationWhitelist;
+			elements.get('.configure .authentication-password').value = response.user.authenticationPassword;
+			elements.get('.configure .authentication-whitelist').value = response.user.authenticationWhitelist;
 
 			if (processSubmit) {
 				elements.html('.configure.message-container', response.message);
 
 				if (apiRequestParameters.data.authenticationPassword) {
-					elements.get('.authentication-password').value = apiRequestParameters.data.authenticationPassword;
+					elements.get('.configure .authentication-password').value = apiRequestParameters.data.authenticationPassword;
 				}
 
 				if (apiRequestParameters.data.authenticationWhitelist) {
-					elements.get('.authentication-whitelist').value = apiRequestParameters.data.authenticationWhitelist;
+					elements.get('.configure .authentication-whitelist').value = apiRequestParameters.data.authenticationWhitelist;
 				}
 			}
 		});
@@ -2520,6 +2517,172 @@
 			processProcesses();
 		}
 	};
+	var processNodes = function() {
+		api.setRequestParameters({
+			nodeList: {
+				callbacks: {
+					onReady: function(response, listParameters) {
+						processNodeList(response, listParameters);
+					}
+				},
+				from: 'nodes',
+				initial: true,
+				options: [
+					{
+						attributes: [
+							{
+								name: 'class',
+								value: 'button hidden icon process-button tooltip tooltip-bottom'
+							},
+							{
+								name: 'option_title',
+								value: 'Add node'
+							}
+						],
+						tag: 'span'
+					},
+					{
+						attributes: [
+							{
+								name: 'class',
+								value: 'button icon process-button tooltip tooltip-bottom'
+							},
+							{
+								name: 'option_title',
+								value: 'Search nodes'
+							},
+							{
+								name: 'process',
+								value: 'search'
+							}
+						],
+						tag: 'span'
+					},
+					{
+						attributes: [
+							{
+								name: 'class',
+								value: 'button hidden icon process-button tooltip tooltip-bottom'
+							},
+							{
+								name: 'option_title',
+								value: 'Manage request destinations'
+							},
+							{
+								name: 'process',
+								value: 'request_destinations'
+							}
+						],
+						tag: 'span'
+					},
+					{
+						attributes: [
+							{
+								name: 'class',
+								value: 'button hidden icon process-button tooltip tooltip-bottom'
+							},
+							{
+								name: 'option_title',
+								value: 'Manage request limit rules'
+							},
+							{
+								name: 'process',
+								value: 'request_limit_rules'
+							}
+						],
+						tag: 'span'
+					},
+					{
+						attributes: [
+							{
+								name: 'class',
+								value: 'button hidden icon process-button tooltip tooltip-bottom'
+							},
+							{
+								name: 'option_title',
+								value: 'Manage users'
+							},
+							{
+								name: 'process',
+								value: 'users'
+							}
+						],
+						tag: 'span'
+					},
+					/*{
+						attributes: [
+							{
+								name: 'class',
+								value: 'button icon process-button tooltip tooltip-bottom'
+							},
+							{
+								name: 'item_title',
+								value: 'Manage server nameserver processes'
+							},
+							{
+								name: 'process',
+								value: 'server_nameserver_processes'
+							}
+						],
+						tag: 'span'
+					},
+					{
+						attributes: [
+							{
+								name: 'class',
+								value: 'button icon process-button tooltip tooltip-bottom'
+							},
+							{
+								name: 'item_title',
+								value: 'Manage server proxy processes'
+							},
+							{
+								name: 'process',
+								value: 'server_proxy_processes'
+							}
+						],
+						tag: 'span'
+					},
+					{
+						attributes: [
+							{
+								name: 'class',
+								value: 'button icon process-button remove tooltip tooltip-bottom'
+							},
+							{
+								name: 'item_function'
+							},
+							{
+								name: 'item_list_name',
+								value: 'list_server_node_items'
+							},
+							{
+								name: 'item_title',
+								value: 'Remove selected server nodes'
+							},
+							{
+								name: 'process',
+								value: 'remove'
+							}
+						],
+						tag: 'span'
+					}*/
+				],
+				page: 1,
+				resultsPerPage: 100,
+				selector: '.list[from="nodes"]',
+				url: '/endpoint/nodes'
+			}
+		});
+		onNodeReady([
+			'apiRequestParameters',
+			'nodeList'
+		], function() {
+			elements.removeClass('.list-container .icon.previous', 'hidden');
+			processList('nodeList');
+		});
+	};
+	// ..
 	// todo: refactor code below for nodes (previously servers.js)
 	var processActivate = function() {
 		elements.html('.activate-container', '<p class="message">Loading</p>');
