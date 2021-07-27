@@ -206,53 +206,6 @@
 				}
 			}
 
-			$response['status_valid'] = (
-				(empty($parameters['data']['enable_reverse_proxy_forwarding']) === true) ||
-				(
-					(
-						empty($parameters['data']['destination_address_version_4']) === false &&
-						empty($parameters['data']['destination_port_version_4']) === false
-					) ||
-					(
-						empty($parameters['data']['destination_address_version_6']) === false &&
-						empty($parameters['data']['destination_port_version_6']) === false
-					)
-				)
-			);
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'IP version 4 or IP version 6 destination address and port are required for reverse proxy forwarding, please try again.';
-			}
-
-			if (empty($parameters['data']['enable_reverse_proxy_forwarding']) === false) {
-				foreach ($nodeIpVersions as $nodeIpVersion) {
-					$response['status_valid'] = (
-						(empty($parameters['data']['destination_port_version_' . $nodeIpVersion]) === true) ||
-						($this->_validatePort($parameters['data']['destination_port_version_' . $nodeIpVersion]) === false)
-					);
-
-					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination port, please try again.';
-						return $response;
-					}
-
-					$response['status_valid'] = (
-						(empty($parameters['data']['destination_address_version_' . $nodeIpVersion]) === true) ||
-						($this->_validateHostname($parameters['data']['destination_address_version_' . $nodeIpVersion]) !== false)
-					);
-
-					if ($response['status_valid'] === false) {
-						$nodeDestinationIp = $this->_sanitizeIps(array($parameters['data']['destination_address_version_' . $nodeIpVersion]))[];
-						$response['status_valid'] = (empty($nodeDestinationIp[$nodeIpVersion]) === false);
-					}
-
-					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination, please try again.';
-						return $response;
-					}
-				}
-			}
-
 			if (empty($parameters['data']['node_user_id']) === false) {
 				$userCount = $this->count(array(
 					'in' => 'users',
@@ -868,6 +821,57 @@
 				}
 			}
 
+			$response['status_valid'] = (
+				(empty($parameters['data']['enable_reverse_proxy_forwarding']) === true) ||
+				(
+					(
+						empty($parameters['data']['destination_address_version_4']) === false &&
+						empty($parameters['data']['destination_port_version_4']) === false
+					) ||
+					(
+						empty($parameters['data']['destination_address_version_6']) === false &&
+						empty($parameters['data']['destination_port_version_6']) === false
+					)
+				)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Both destination address and port are required for reverse proxy forwarding, please try again.';
+				return $response;
+			}
+
+			foreach ($nodeIpVersions as $nodeIpVersion) {
+				if (empty($parameters['data']['enable_reverse_proxy_forwarding']) === false) {
+					$response['status_valid'] = (
+						(empty($parameters['data']['destination_port_version_' . $nodeIpVersion]) === true) ||
+						($this->_validatePort($parameters['data']['destination_port_version_' . $nodeIpVersion]) === false)
+					);
+
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination port, please try again.';
+						return $response;
+					}
+
+					$response['status_valid'] = (
+						(empty($parameters['data']['destination_address_version_' . $nodeIpVersion]) === true) ||
+						($this->_validateHostname($parameters['data']['destination_address_version_' . $nodeIpVersion]) !== false)
+					);
+
+					if ($response['status_valid'] === false) {
+						$nodeDestinationIp = $this->_sanitizeIps(array($parameters['data']['destination_address_version_' . $nodeIpVersion]))[];
+						$response['status_valid'] = (empty($nodeDestinationIp[$nodeIpVersion]) === false);
+					}
+
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination, please try again.';
+						return $response;
+					}
+				} else {
+					unset($parameters['data']['destination_address_version_' . $nodeIpVersion]);
+					unset($parameters['data']['destination_port_version_' . $nodeIpVersion]);
+				}
+			}
+
 			$conflictingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
@@ -1034,6 +1038,10 @@
 
 			$nodeDataUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
+					'destination_address_version_4' => true,
+					'destination_address_version_6' => true,
+					'destination_port_version_4' => true,
+					'destination_port_version_6' => true,
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
 					'id' => true,
