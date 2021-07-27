@@ -320,6 +320,30 @@
 			}
 
 			if (empty($nodeId) === true) {
+				$nodeNameserverProcessCount = $this->count(array(
+					'in' => 'node_processes',
+					'where' => array(
+						'node_id' => $nodeId,
+						'type' => 'nameserver'
+					)
+				));
+				$nodeProxyProcessCount = $this->count(array(
+					'in' => 'node_processes',
+					'where' => array(
+						'node_id' => $nodeId,
+						'type' => 'proxy'
+					)
+				));
+				$response['status_valid'] = (
+					($nodeNameserverProcessCount === false) ||
+					($nodeProxyProcessCount === false)
+				);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				// start with 10 processes each, then auto scale
 				// todo: automatically create nameserver and proxy processes for primary nodes that haven't been deployed yet
 			}
 
