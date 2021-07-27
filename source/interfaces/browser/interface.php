@@ -979,6 +979,46 @@
 	<div class="process-container">
 		<p class="message node-add"></p>
 		<label>External IPv4</label>
+		<input name="external_ip_version_4" type="text">
+		<label>Internal IPv4</label>
+		<input name="internal_ip_version_4" type="text">
+		<label>External IPv6</label>
+		<input name="external_ip_version_6" type="text">
+		<label>Internal IPv6</label>
+		<input name="internal_ip_version_6" type="text">
+		<div class="checkbox-container">
+			<span checked="0" class="checkbox" name="forward_to_destination" toggle="destination"></span>
+			<label class="custom-checkbox-label" name="forward_to_destination">Forward proxy requests to specific destination address</label>
+		</div>
+		<div class="hidden" name="destination">
+			<label>IPv4 Destination IP Address or URL</label>
+			<input name="destination_address_version_4" type="text">
+			<label>IPv4 Destination Port</label>
+			<input name="destination_port_version_4" type="text">
+			<label>IPv6 Destination IP Address or URL</label>
+			<input name="destination_address_version_6" type="text">
+			<label>IPv6 Destination Port</label>
+			<input name="destination_port_version_6" type="text">
+		</div>
+		<div class="checkbox-container">
+			<span checked="0" class="checkbox" name="additional_node" toggle="node_id"></span>
+			<label class="custom-checkbox-label" name="additional_node">Attach to an existing node</label>
+		</div>
+		<div class="hidden" name="node_id">
+			<label>Existing Node External IP Address or Node ID</label>
+			<input name="node_id" placeholder="Enter existing node external IP address or node ID" type="text">
+		</div>
+		<div class="clear"></div>
+		<a class="button close" href="/">Close</a>
+		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
+	</div>
+</div>
+<div class="hidden" process="node_edit">
+	<div class="process-container">
+		<p class="message node-edit"></p>
+		<label>Status</label>
+		<div name="node_status"></div>
+		<label>External IPv4</label>
 		<input name="external_ip_version_4" placeholder="Enter external IPv4 address" type="text">
 		<label>Internal IPv4</label>
 		<input name="internal_ip_version_4" placeholder="Enter internal IPv4 address" type="text">
@@ -986,14 +1026,12 @@
 		<input name="external_ip_version_6" placeholder="Enter external IPv6 address" type="text">
 		<label>Internal IPv6</label>
 		<input name="internal_ip_version_6" placeholder="Enter internal IPv6 address" type="text">
+		<label>Users</label>
+		<!--todo: add node user by tag-->
+		<div class="list" from="users">
+			<p class="message">Loading</p>
+		</div>
 		<div class="clear"></div>
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="additional_node" toggle="node_id"></span>
-			<label class="custom-checkbox-label" name="additional_node">Attach to an existing node</label>
-		</div>
-		<div class="hidden" name="node_id">
-			<input name="node_id" placeholder="Enter existing node external IP address or node ID" type="text">
-		</div>
 		<a class="button close" href="/">Close</a>
 		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
 	</div>
@@ -1913,7 +1951,7 @@
 		}
 	});
 	// todo: refactor code below for nodes (previously proxies.js)
-	var processAuthenticate = function(processElement, processSubmit) {
+	/*var processAuthenticate = function(processElement, processSubmit) {
 		if (processSubmit) {
 			processItemList('listProxyItems', function() {
 				api.setRequestParameters({
@@ -2558,7 +2596,7 @@
 			elements.html(itemListParameters.selector + ' .message-container.list-proxy-url-request-limitation-items', response.message.html);
 			processProcesses();
 		}
-	};
+	};*/
 	var processNodes = function() {
 		api.setRequestParameters({
 			nodeList: {
@@ -2762,16 +2800,6 @@
 		if (typeof listParameters !== 'object') {
 			processList('nodeList');
 		} else {
-			// ..
-			var serverNodeElementContent = '<label>External IP</label>';
-			serverNodeElementContent += '<div class="field-group no-margin-top">';
-			serverNodeElementContent += '<input class="no-margin server-node-external-ip-field" name="server_external_node_external_ip" placeholder="Enter external IP address" type="text">';
-			serverNodeElementContent += '</div>';
-			serverNodeElementContent += '<div class="clear"></div>';
-			serverNodeElementContent += '<label>Internal IP</label>';
-			serverNodeElementContent += '<div class="field-group no-margin-top">';
-			serverNodeElementContent += '<input class="no-margin server-node-internal-ip-field" name="server_node_internal_ip" placeholder="Enter optional internal IP address if already routed by the host" type="text">';
-			serverNodeElementContent += '</div>';
 			/*const processServerNodeAdd = function() {
 				api.setRequestParameters({
 					action: 'add',
