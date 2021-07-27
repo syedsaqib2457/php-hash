@@ -987,22 +987,22 @@
 		<label>Internal IPv6</label>
 		<input name="internal_ip_version_6" type="text">
 		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="forward_to_destination" toggle="destination"></span>
-			<label class="custom-checkbox-label" name="forward_to_destination">Forward proxy requests to specific destination address</label>
+			<span checked="0" class="checkbox" name="enable_reverse_proxy_forwarding" toggle="destination"></span>
+			<label class="custom-checkbox-label" name="enable_reverse_proxy_forwarding">Enable reverse proxy forwarding</label>
 		</div>
 		<div class="hidden" name="destination">
-			<label>IPv4 Destination IP Address or URL</label>
+			<label>IPv4 Destination IP Address or External URL</label>
 			<input name="destination_address_version_4" type="text">
 			<label>IPv4 Destination Port</label>
 			<input name="destination_port_version_4" type="text">
-			<label>IPv6 Destination IP Address or URL</label>
+			<label>IPv6 Destination IP Address or External URL</label>
 			<input name="destination_address_version_6" type="text">
 			<label>IPv6 Destination Port</label>
 			<input name="destination_port_version_6" type="text">
 		</div>
 		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="additional_node" toggle="node_id"></span>
-			<label class="custom-checkbox-label" name="additional_node">Attach to an existing node</label>
+			<span checked="0" class="checkbox" name="enable_binding_to_existing_node" toggle="node_id"></span>
+			<label class="custom-checkbox-label" name="enable_binding_to_existing_node">Enable binding to existing node</label>
 		</div>
 		<div class="hidden" name="node_id">
 			<label>Existing Node External IP Address or Node ID</label>
