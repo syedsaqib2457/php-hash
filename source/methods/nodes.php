@@ -333,13 +333,58 @@
 					'status_active' => true,
 					'status_deployed' => true
 				)),
-				'data' => $nodeData,
 				'to' => 'nodes'
 			));
 			$response['status_valid'] = ($nodeDataSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
+			}
+
+			if (empty($userIds) === false) {
+				$node = $this->fetch(array(
+					'fields' => array(
+						'id'
+					),
+					'from' => 'nodes',
+					'where' => ($nodeIps = ($nodeExternalIps + $nodeInternalIps))
+				));
+				$response['status_valid'] = (
+					($node !== false) &&
+					(empty($node['id']) === false)
+				);
+
+				if ($response['status_valid'] === false) {
+					$this->delete(array(
+						'from' => 'nodes',
+						'where' => $nodeIps
+					));
+					return $response;
+				}
+
+				$nodeUserData = array();
+
+				foreach ($userIds as $userId) {
+					$nodeUserData[] = array(
+						'node_id' => $node['id'],
+						'type' => 'proxy',
+						'user_id' => $userId
+					);
+				}
+
+				$nodeUserDataSaved = $this->save(array(
+					'data' => $nodeUserData,
+					'to' => 'node_users'
+				));
+				$response['status_valid'] = ($nodeUserDataSaved === true);
+
+				if ($response['status_valid'] === false) {
+					$this->delete(array(
+						'from' => 'nodes',
+						'where' => $nodeIps
+					));
+					return $response;
+				}
 			}
 
 			$response = array(
