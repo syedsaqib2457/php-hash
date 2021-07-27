@@ -1017,6 +1017,28 @@
 			<label>Enable nameserver processes</label>
 		</div>
 		<div class="container hidden" name="enable_nameserver_processes">
+			<div name="nameserver_process_details">
+				<label>Nameserver Processes</label>
+				<!-- list_statistics_for_process_usage -->
+				<label>Nameserver Process Ports</label>
+				<div name="nameserver_process_ports">
+					<!-- list_open_process_ports -->
+				</div>
+			</div>
+			<div class="checkbox-container" toggle="enable_opening_custom_nameserver_process_ports">
+				<span checked="0"></span>
+				<label>Enable opening custom nameserver process ports</label>
+			</div>
+			<div class="container hidden" name="enable_opening_custom_nameserver_process_ports">
+				<div class="list" from="ports"></div>
+			</div>
+			<div class="checkbox-container" toggle="enable_closing_custom_nameserver_process_ports">
+				<span checked="0"></span>
+				<label>Enable closing custom nameserver process ports</label>
+			</div>
+			<div class="container hidden" name="enable_closing_custom_nameserver_process_ports">
+				<div class="list" from="ports"></div>
+			</div>
 			<label>Nameserver Users</label>
 			<div class="list" from="users"></div>
 		</div>
@@ -1028,7 +1050,7 @@
 			<div name="http_proxy_process_details">
 				<label>HTTP Proxy Processes</label>
 				<!-- list_statistics_for_process_usage -->
-				<label>HTTP Proxy Ports</label>
+				<label>HTTP Proxy Process Ports</label>
 				<div name="http_proxy_process_ports">
 					<!-- list_open_process_ports -->
 				</div>
@@ -1054,7 +1076,29 @@
 			<span checked="0"></span>
 			<label>Enable SOCKS proxy processes</label>
 		</div>
-		<div class="hidden" name="enable_socks_proxy_processes">
+		<div class="container hidden" name="enable_socks_proxy_processes">
+			<div name="socks_proxy_process_details">
+				<label>SOCKS Proxy Processes</label>
+				<!-- list_statistics_for_process_usage -->
+				<label>SOCKS Proxy Process Ports</label>
+				<div name="socks_proxy_process_ports">
+					<!-- list_open_process_ports -->
+				</div>
+			</div>
+			<div class="checkbox-container" toggle="enable_opening_custom_socks_proxy_process_ports">
+				<span checked="0"></span>
+				<label>Enable opening custom SOCKS proxy process ports</label>
+			</div>
+			<div class="container hidden" name="enable_opening_custom_socks_proxy_process_ports">
+				<div class="list" from="ports"></div>
+			</div>
+			<div class="checkbox-container" toggle="enable_closing_custom_socks_proxy_process_ports">
+				<span checked="0"></span>
+				<label>Enable closing custom SOCKS proxy process ports</label>
+			</div>
+			<div class="container hidden" name="enable_closing_custom_socks_proxy_process_ports">
+				<div class="list" from="ports"></div>
+			</div>
 			<label>SOCKS Proxy Users</label>
 			<div class="list" from="users"></div>
 		</div>
