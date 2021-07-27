@@ -770,6 +770,19 @@
 			return $response;
 		}
 
+		protected function _validateHostname($hostname) {
+			$response = false;
+
+			if (
+				(strpos($hostname, '://') === false) &&
+				(filter_var('http://' . $hostname, FILTER_VALIDATE_URL) === filter_var('http://' . $hostname, FILTER_SANITIZE_URL))
+			) {
+				$response = $hostname;
+			}
+
+			return $response;
+		}
+
 		protected function _verifyKeys() {
 			$response = (
 				(empty($this->settings['keys']['start']) === false) &&
