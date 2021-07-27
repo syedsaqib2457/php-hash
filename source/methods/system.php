@@ -647,6 +647,19 @@
 			return $response;
 		}
 
+		protected function _validateHostname($hostname) {
+			$response = false;
+
+			if (
+				(strpos($hostname, '://') === false) &&
+				(filter_var('http://' . $hostname, FILTER_SANITIZE_URL) === filter_var('http://' . $hostname, FILTER_VALIDATE_URL))
+			) {
+				$response = $hostname;
+			}
+
+			return $response;
+		}
+
 		protected function _validateIp($ip, $ipVersion, $allowRanges = false, $allowRangeParts = false) {
 			$response = false;
 
@@ -765,19 +778,6 @@
 				)
 			) {
 				$response = intval(trim($port));
-			}
-
-			return $response;
-		}
-
-		protected function _validateHostname($hostname) {
-			$response = false;
-
-			if (
-				(strpos($hostname, '://') === false) &&
-				(filter_var('http://' . $hostname, FILTER_VALIDATE_URL) === filter_var('http://' . $hostname, FILTER_SANITIZE_URL))
-			) {
-				$response = $hostname;
 			}
 
 			return $response;
