@@ -32,10 +32,10 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'port' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(11)'
+							'port_id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
 							),
 							'status_allowing' => array(
 								'default' => 0,
@@ -216,6 +216,26 @@
 								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
+							)
+						),
+						'ports' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'port' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(11)'
 							)
 						),
 						'request_destinations' => array(
