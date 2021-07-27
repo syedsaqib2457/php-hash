@@ -1005,20 +1005,44 @@
 		<label>Status</label>
 		<div name="node_status"></div>
 		<label>External IPv4</label>
-		<input name="external_ip_version_4" placeholder="Enter external IPv4 address" type="text">
+		<input name="external_ip_version_4" type="text">
 		<label>Internal IPv4</label>
-		<input name="internal_ip_version_4" placeholder="Enter internal IPv4 address" type="text">
+		<input name="internal_ip_version_4" type="text">
 		<label>External IPv6</label>
-		<input name="external_ip_version_6" placeholder="Enter external IPv6 address" type="text">
+		<input name="external_ip_version_6" type="text">
 		<label>Internal IPv6</label>
-		<input name="internal_ip_version_6" placeholder="Enter internal IPv6 address" type="text">
-		<label>Nameserver Users</label>
-		<div class="list" from="users" where="nameserver">
-			<p class="message">Loading</p>
+		<input name="internal_ip_version_6" type="text">
+		<div class="checkbox-container">
+			<span checked="0" class="checkbox" name="enable_nameserver_processes" toggle="nameserver_users"></span>
+			<label class="custom-checkbox-label" name="enable_nameserver_processes">Enable nameserver processes</label>
 		</div>
-		<label>Proxy Users</label>
-		<div class="list" from="users" where="proxy">
-			<p class="message">Loading</p>
+		<div class="hidden" name="nameserver_users">
+			<label>Nameserver Users</label>
+			<div class="list" from="users" where="nameserver">
+				<p class="message">Loading</p>
+			</div>
+		</div>
+		<div class="checkbox-container">
+			<span checked="0" class="checkbox" name="enable_http_proxy_processes" toggle="http_proxy_processes"></span>
+			<label class="custom-checkbox-label" name="enable_http_proxy_processes">Enable HTTP proxy processes</label>
+		</div>
+		<div class="hidden" name="http_proxy_processes">
+			// list current number of processes, memory and cpu usage stats
+			// list custom ports to open and close, otherwise use defaults
+			<label>HTTP Proxy Ports</label>
+			<label>HTTP Proxy Users</label>
+			<div class="list" from="users" where="http_proxy">
+				<p class="message">Loading</p>
+			</div>
+		</div>
+		<div class="checkbox-container">
+			<span checked="0" class="checkbox" name="enable_socks_proxy_processes" toggle="socks_proxy_users"></span>
+			<label class="custom-checkbox-label" name="enable_socks_proxy_processes">Enable SOCKS proxy processes</label>
+		</div>
+		<div class="hidden" name="socks_proxy_users">
+			<label>SOCKS Proxy Users</label>
+			<div class="list" from="users" where="socks_proxy">
+			</div>
 		</div>
 		<div class="checkbox-container">
 			<span checked="0" class="checkbox" name="enable_reverse_proxy_forwarding" toggle="destination"></span>

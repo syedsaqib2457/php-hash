@@ -13,6 +13,46 @@
 					'name' => 'overlord',
 					'password' => 'password',
 					'structure' => array(
+						'node_ports' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'port' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(11)'
+							),
+							'status_allowing' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_denying' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							)
+						),
 						'node_processes' => array(
 							'application_protocol' => array(
 								'default' => null,
