@@ -223,8 +223,6 @@
 			}
 
 			if (empty($parameters['data']['enable_reverse_proxy_forwarding']) === false) {
-				// destinations can be internal ip, external ip or external host
-
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					$response['status_valid'] = (
 						(empty($parameters['data']['destination_port_version_' . $nodeIpVersion]) === true) ||
@@ -233,11 +231,23 @@
 
 					if ($response['status_valid'] === false) {
 						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination port, please try again.';
+						return $response;
 					}
 
 					$response['status_valid'] = (
-						// ..
+						(empty($parameters['data']['destination_address_version_' . $nodeIpVersion]) === true) ||
+						($this->_validateHostname($parameters['data']['destination_address_version_' . $nodeIpVersion]) !== false)
 					);
+
+					if ($response['status_valid'] === false) {
+						$nodeDestinationIp = $this->_sanitizeIps(array($parameters['data']['destination_address_version_' . $nodeIpVersion]))[];
+						$response['status_valid'] = (empty($nodeDestinationIp[$nodeIpVersion]) === false);
+					}
+
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination, please try again.';
+						return $response;
+					}
 				}
 			}
 

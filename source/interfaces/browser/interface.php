@@ -991,11 +991,11 @@
 			<label class="custom-checkbox-label" name="enable_reverse_proxy_forwarding">Enable reverse proxy forwarding</label>
 		</div>
 		<div class="hidden" name="destination">
-			<label>IPv4 Destination IP Address or External URL</label>
+			<label>IPv4 Destination IP Address or External Hostname</label>
 			<input name="destination_address_version_4" type="text">
 			<label>IPv4 Destination Port</label>
 			<input name="destination_port_version_4" type="text">
-			<label>IPv6 Destination IP Address or External URL</label>
+			<label>IPv6 Destination IP Address or External Hostname</label>
 			<input name="destination_address_version_6" type="text">
 			<label>IPv6 Destination Port</label>
 			<input name="destination_port_version_6" type="text">
