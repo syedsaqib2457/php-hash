@@ -109,17 +109,52 @@
 		}
 
 		protected function _fetchIpType($ip, $ipVersion) {
-			// todo: validate ipv6 private ip ranges
 			$response = 'public';
-			$ipInteger = ip2long($ip);
 
-			foreach ($this->settings['private_ip_ranges'] as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
-				if (
-					($ipInteger >= $privateIpRangeIntegerStart) &&
-					($ipInteger <= $privateIpRangeIntegerEnd)
-				) {
-					$response = 'private';
-				}
+			switch ($ipVersion) {
+				case 4:
+					$ipInteger = ip2long($ip);
+
+					foreach ($this->settings['private_ip_ranges'][4] as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
+						if (
+							($ipInteger >= $privateIpRangeIntegerStart) &&
+							($ipInteger <= $privateIpRangeIntegerEnd)
+						) {
+							$response = 'private';
+						}
+					}
+
+					break;
+				case 6:
+					$ipParts = explode(':', $ip);
+
+					foreach ($ipParts as $ipPartKey => $ipPart) {
+						$ipParts[$ipPartKey] = str_pad($ipPart, 4, '0', STR_PAD_LEFT);
+					}
+
+					$ipBlocks = array(
+						implode(':', $ipParts)
+					);
+					$ipBlockVariables = str_repeat(':x', 4);
+					$ipParts = array_slice($ipParts, 0, count($ipParts) - 4);
+					$ipBlocks[] = implode(':', $ipParts) . $ipBlockVariables;
+					$ipBlockVariables .= str_repeat(':x', 2);
+					$ipParts = array_slice($ipParts, 0, count($ipParts) - 2);
+					$ipBlocks = array_merge($ipBlocks, array(
+						implode(':', $ipParts) . $ipBlockVariables,
+						$ipParts[0] . ':' . substr($ipParts[1], 0, 3) . 'x' . $ipBlockVariables
+					);
+					$ipBlockVariables .= ':x';
+					$ipBlocks = array_merge($ipBlocks, array(
+						$ipParts[0] . $ipBlockVariables,
+						substr($ipParts[0], 0, 2) . 'x' . $ipBlockVariables
+					));
+
+					if (array_intersect($ipBlocks, $this->settings['private_ip_ranges'][6]) !== array()) {
+						$response = 'private';
+					}
+
+					break;
 			}
 
 			return $response;
