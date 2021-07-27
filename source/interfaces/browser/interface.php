@@ -986,24 +986,6 @@
 		<input name="external_ip_version_6" type="text">
 		<label>Internal IPv6</label>
 		<input name="internal_ip_version_6" type="text">
-		<label>Users</label>
-		<div class="list" from="users">
-			<p class="message">Loading</p>
-		</div>
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_reverse_proxy_forwarding" toggle="destination"></span>
-			<label class="custom-checkbox-label" name="enable_reverse_proxy_forwarding">Enable reverse proxy forwarding</label>
-		</div>
-		<div class="hidden" name="destination">
-			<label>IPv4 Destination IP Address or External Hostname</label>
-			<input name="destination_address_version_4" type="text">
-			<label>IPv4 Destination Port</label>
-			<input name="destination_port_version_4" type="text">
-			<label>IPv6 Destination IP Address or External Hostname</label>
-			<input name="destination_address_version_6" type="text">
-			<label>IPv6 Destination Port</label>
-			<input name="destination_port_version_6" type="text">
-		</div>
 		<div class="checkbox-container">
 			<span checked="0" class="checkbox" name="enable_binding_to_existing_node" toggle="node_id"></span>
 			<label class="custom-checkbox-label" name="enable_binding_to_existing_node">Enable binding to existing node</label>
@@ -1030,8 +1012,12 @@
 		<input name="external_ip_version_6" placeholder="Enter external IPv6 address" type="text">
 		<label>Internal IPv6</label>
 		<input name="internal_ip_version_6" placeholder="Enter internal IPv6 address" type="text">
-		<label>Users</label>
-		<div class="list" from="users">
+		<label>Nameserver Users</label>
+		<div class="list" from="users" where="nameserver">
+			<p class="message">Loading</p>
+		</div>
+		<label>Proxy Users</label>
+		<div class="list" from="users" where="proxy">
 			<p class="message">Loading</p>
 		</div>
 		<div class="checkbox-container">
@@ -1047,14 +1033,6 @@
 			<input name="destination_address_version_6" type="text">
 			<label>IPv6 Destination Port</label>
 			<input name="destination_port_version_6" type="text">
-		</div>
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_binding_to_existing_node" toggle="node_id"></span>
-			<label class="custom-checkbox-label" name="enable_binding_to_existing_node">Enable binding to existing node</label>
-		</div>
-		<div class="hidden" name="node_id">
-			<label>Existing Node External IP Address or Node ID</label>
-			<input name="node_id" placeholder="Enter existing node external IP address or node ID" type="text">
 		</div>
 		<div class="clear"></div>
 		<a class="button close" href="/">Close</a>
