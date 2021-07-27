@@ -80,8 +80,6 @@
 				'status_valid' => false
 			);
 
-			// todo: configure reverse proxy forwarding and user authentication after node is added
-
 			if (
 				(empty($parameters['data']['enable_binding_to_existing_node']) === false) &&
 				(empty($parameters['data']['node_id']) === false)
@@ -206,6 +204,8 @@
 				}
 			}
 
+			// todo: automatically overwrite conflictions for auto-generated local IPs from process scaling
+
 			if (empty($parameters['data']['node_user_id']) === false) {
 				$userCount = $this->count(array(
 					'in' => 'users',
@@ -292,10 +292,7 @@
 				return $response;
 			}
 
-			if (
-				(empty($nodeNodeId) === true) ||
-				(empty($nodeUserIds) === false)
-			) {
+			if (empty($nodeNodeId) === true) {
 				$node = $this->fetch(array(
 					'fields' => array(
 						'id'
@@ -307,11 +304,6 @@
 					($node !== false) &&
 					(empty($node['id']) === false)
 				);
-				$nodeId = $node['id'];
-				$nodeUserTypes = array(
-					'nameserver',
-					'proxy'
-				);
 
 				if ($response['status_valid'] === false) {
 					$this->delete(array(
@@ -321,70 +313,61 @@
 					return $response;
 				}
 
-				// todo: create different user authentication tags for nameserver and proxy processes
+				$nodeId = $node['id'];
+				$nodeProcesses = array(
+					array(
+						'internal_ip_version_4' => '10.0.100.1',
+						'internal_ip_version_6' => 'fc34::0000:',
+						'type' => 'nameserver',
+						'port' => 53
+					),
+					array(
+						'application_protocol' => 'http',
+						'internal_ip_version_4' => '10.10.100.1',
+						'internal_ip_version_6' => 'fc34::1111:',
+						'port' => 80,
+						'transport_protocol' => 'tcp',
+						'type' => 'proxy'
+					),
+					array(
+						'application_protocol' => 'socks',
+						'internal_ip_version_4' => '10.100.100.1',
+						'internal_ip_version_6' => 'fc34::2222:',
+						'port' => 1080,
+						'type' => 'proxy'
+					)
+				);
 
-				if (empty($nodeNodeId) === false) {
-					foreach ($nodeUserTypes as $nodeUserTypeKey => $nodeUserType) {
-						$nodeProcessCount = $this->count(array(
-							'in' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeNodeId,
-								'type' => $nodeUserType
-							)
+				foreach ($nodeProcesses as $nodeProcess) {
+					$nodeProcessData = array();
+
+					foreach (range(0, 9) as $processNumber) {
+						$nodeProcessData[] = array_merge($nodeProcess, array(
+							'internal_ip_version_4' => (ip2long($nodeProcess['internal_ip_version_4']) + $processNumber),
+							'internal_ip_version_6' => $nodeProcess['internal_ip_version_6'] . str_pad(($processNumber + 1), 4, '0', STR_PAD_LEFT),
+							'node_id' => $nodeId,
+							'port' => ($nodeProcess['port'] + $processNumber)
 						));
-						$response['status_valid'] = (is_int($nodeProcessCount) === true);
-
-						if ($response['status_valid'] === false) {
-							$this->delete(array(
-								'from' => 'nodes',
-								'where' => array(
-									'id' => $nodeId
-								)
-							));
-							return $response;
-						}
-
-						if ($nodeProcessCount === 0) {
-							unset($nodeUserTypes[$nodeUserTypeKey]);
-						}
-					}
-				} else {
-					// start with 10 processes each, then auto scale
-					// todo: automatically create nameserver and proxy processes for primary nodes that haven't been deployed yet
-				}
-
-				if (empty($userIds) === false) {
-					$nodeUserData = array();
-
-					foreach ($userIds as $userId) {
-						foreach ($nodeUserTypes as $nodeUserType) {
-							$nodeUserData[] = array(
-								'node_id' => $nodeId,
-								'type' => $nodeUserType,
-								'user_id' => $userId
-							);
-						}
 					}
 
-					$nodeUserDataSaved = $this->save(array(
-						'data' => $nodeUserData,
-						'to' => 'node_users'
+					$nodeProcessDataSaved = $this->save(array(
+						'data' => $nodeProcessData,
+						'to' => 'node_processes'
 					));
-					$response['status_valid'] = ($nodeUserDataSaved === true);
+					$response['status_valid'] = ($nodeProcessDataSaved !== false);
 
 					if ($response['status_valid'] === false) {
-						if (empty($nodeNodeId) === true) {
-							$this->delete(array(
-								'from' => 'node_processes',
-								'where' => array(
-									'node_id' => $nodeId
-								)
-							));
-						}
-
+						$this->delete(array(
+							'from' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId
+							)
+						));
 						$this->delete(array(
 							'from' => 'nodes',
-							'where' => $nodeIps
+							'where' => array(
+								'id' => $nodeId
+							)
 						));
 						return $response;
 					}
