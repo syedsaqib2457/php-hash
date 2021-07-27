@@ -206,30 +206,6 @@
 
 			// todo: automatically overwrite conflictions for auto-generated local IPs from process scaling
 
-			if (empty($parameters['data']['node_user_id']) === false) {
-				$userCount = $this->count(array(
-					'in' => 'users',
-					'where' => array(
-						'id' => ($nodeUserIds = $parameters['data']['node_user_id'])
-					)
-				));
-				$response['status_valid'] = (is_int($userCount) === true);
-
-				if ($response['status_valid'] === false) {
-					return $response;
-				}
-
-				$response['status_valid'] = (
-					end($nodeUserIds) &&
-					($userCount === (intval(key($nodeUserIds)) + 1))
-				);
-
-				if ($response['status_valid'] === false) {
-					$response['message'] = 'Invalid node user IDs, please try again';
-					return $response;
-				}
-			}
-
 			$conflictingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
@@ -1038,7 +1014,19 @@
 					'id' => $nodeId
 				)
 			));
-			$response['status_valid'] = ($nodeDataUpdated === true);
+			$nodeUserDataUpdated = $this->update(array(
+				'data' => array(
+					'status_processed' => true
+				),
+				'in' => 'node_users',
+				'where' => array(
+					'node_id' => $nodeId
+				)
+			));
+			$response['status_valid'] = (
+				($nodeDataUpdated === true) &&
+				($nodeUserDataUpdated === true)
+			);
 
 			if ($response['status_valid'] === false) {
 				return $response;
