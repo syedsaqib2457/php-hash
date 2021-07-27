@@ -251,6 +251,30 @@
 				}
 			}
 
+			if (empty($parameters['data']['node_user_id']) === false) {
+				$userCount = $this->count(array(
+					'in' => 'users',
+					'where' => array(
+						'id' => ($userIds = $parameters['data']['node_user_id'])
+					)
+				));
+				$response['status_valid'] = (is_int($userCount) === true);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				$response['status_valid'] = (
+					end($userIds) &&
+					($userCount === (intval(key($userIds)) + 1))
+				);
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Invalid node user IDs ,please try again';
+					return $response;
+				}
+			}
+
 			$conflictingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
