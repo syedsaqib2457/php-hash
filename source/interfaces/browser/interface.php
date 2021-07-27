@@ -956,7 +956,7 @@
 	<div class="process-container">
 		<p class="message password"></p>
 		<label>Account Password</label>
-		<input class="account-password" name="authentication_password" placeholder="Enter an account password" type="password">
+		<input class="account-password" name="authentication_password" type="password">
 		<label>Endpoint Whitelist</label>
 		<textarea class="authentication-whitelist" name="authentication_whitelist" placeholder="<?php echo "127.0.0.1\n127.0.0.2\netc..." ?>" type="text"></textarea>
 		<div class="clear"></div>
@@ -969,7 +969,7 @@
 	<div class="process-container">
 		<p class="login message"></p>
 		<label>Password</label>
-		<input class="password" name="password" placeholder="Enter password" type="password">
+		<input class="password" name="password" type="password">
 		<div class="clear"></div>
 		<a class="button submit" href="javascript:void(0);" process="login">Log In</a>
 	</div>
@@ -986,13 +986,13 @@
 		<input name="external_ip_version_6" type="text">
 		<label>Internal IPv6</label>
 		<input name="internal_ip_version_6" type="text">
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_binding_to_existing_node" toggle="node_id"></span>
-			<label class="custom-checkbox-label" name="enable_binding_to_existing_node">Enable binding to existing node</label>
+		<div class="checkbox-container" toggle="enable_binding_to_existing_node">
+			<span checked="0"></span>
+			<label>Enable binding to existing node</label>
 		</div>
-		<div class="container hidden" name="node_id">
+		<div class="container hidden" name="enable_binding_to_existing_node">
 			<label>Existing Node External IP Address or Node ID</label>
-			<input name="node_id" placeholder="Enter existing node external IP address or node ID" type="text">
+			<input name="node_id" type="text">
 		</div>
 		<div class="clear"></div>
 		<a class="button close" href="/">Close</a>
@@ -1012,56 +1012,57 @@
 		<input name="external_ip_version_6" type="text">
 		<label>Internal IPv6</label>
 		<input name="internal_ip_version_6" type="text">
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_nameserver_processes" toggle="nameserver_processes"></span>
-			<label class="custom-checkbox-label" name="enable_nameserver_processes">Enable nameserver processes</label>
+		<div class="checkbox-container" toggle="enable_nameserver_processes">
+			<span checked="0"></span>
+			<label>Enable nameserver processes</label>
 		</div>
-		<div class="container hidden" name="nameserver_processes">
+		<div class="container hidden" name="enable_nameserver_processes">
 			<label>Nameserver Users</label>
-			<div class="list" from="users" where="nameserver"></div>
+			<div class="list" from="users"></div>
 		</div>
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_http_proxy_processes" toggle="http_proxy_processes"></span>
-			<label class="custom-checkbox-label" name="enable_http_proxy_processes">Enable HTTP proxy processes</label>
+		<div class="checkbox-container" toggle="enable_http_proxy_processes">
+			<span checked="0"></span>
+			<label>Enable HTTP proxy processes</label>
 		</div>
-		<div class="container hidden" name="http_proxy_processes">
+		<div class="container hidden" name="enable_http_proxy_processes">
 			<div name="http_proxy_process_details">
 				<label>HTTP Proxy Processes</label>
 				<!-- list_statistics_for_process_usage -->
+				<label>HTTP Proxy Ports</label>
 				<div name="http_proxy_process_ports">
 					<!-- list_open_process_ports -->
 				</div>
 			</div>
-			<div class="checkbox-container">
-				<span checked="0" class="checkbox" name="enable_opening_custom_http_proxy_process_ports" toggle="open_custom_http_proxy_process_ports"></span>
-				<label class="custom-checkbox-label" name="enable_opening_custom_http_proxy_process_ports">Enable opening custom HTTP proxy process ports</label>
+			<div class="checkbox-container" toggle="enable_opening_custom_http_proxy_process_ports">
+				<span checked="0"></span>
+				<label>Enable opening custom HTTP proxy process ports</label>
 			</div>
-			<div class="container hidden" name="open_custom_http_proxy_process_ports">
-				<div class="list" from="ports" where="http_open"></div>
+			<div class="container hidden" name="enable_opening_custom_http_proxy_process_ports">
+				<div class="list" from="ports"></div>
 			</div>
-			<div class="checkbox-container">
-				<span checked="0" class="checkbox" name="enable_closing_custom_http_proxy_process_ports" toggle="close_custom_http_proxy_process_ports"></span>
-				<label class="custom-checkbox-label" name="enable_closing_custom_http_proxy_process_ports">Enable closing custom HTTP proxy process ports</label>
+			<div class="checkbox-container" toggle="enable_closing_custom_http_proxy_process_ports">
+				<span checked="0"></span>
+				<label>Enable closing custom HTTP proxy process ports</label>
 			</div>
-			<div class="container hidden" name="close_custom_http_proxy_process_ports">
-				<div class="list" from="ports" where="http_close"></div>
+			<div class="container hidden" name="enable_closing_custom_http_proxy_process_ports">
+				<div class="list" from="ports"></div>
 			</div>
 			<label>HTTP Proxy Users</label>
-			<div class="list" from="users" where="http"></div>
+			<div class="list" from="users"></div>
 		</div>
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_socks_proxy_processes" toggle="socks_proxy_processes"></span>
-			<label class="custom-checkbox-label" name="enable_socks_proxy_processes">Enable SOCKS proxy processes</label>
+		<div class="checkbox-container" toggle="enable_socks_proxy_processes">
+			<span checked="0"></span>
+			<label>Enable SOCKS proxy processes</label>
 		</div>
-		<div class="hidden" name="socks_proxy_processes">
+		<div class="hidden" name="enable_socks_proxy_processes">
 			<label>SOCKS Proxy Users</label>
-			<div class="list" from="users" where="socks"></div>
+			<div class="list" from="users"></div>
 		</div>
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_reverse_proxy_forwarding" toggle="destination"></span>
-			<label class="custom-checkbox-label" name="enable_reverse_proxy_forwarding">Enable reverse proxy forwarding</label>
+		<div class="checkbox-container" toggle="enable_reverse_proxy_forwarding">
+			<span checked="0"></span>
+			<label>Enable reverse proxy forwarding</label>
 		</div>
-		<div class="container hidden" name="destination">
+		<div class="container hidden" name="enable_reverse_proxy_forwarding">
 			<label>IPv4 Destination IP Address or External Hostname</label>
 			<input name="destination_address_version_4" type="text">
 			<label>IPv4 Destination Port</label>
@@ -1083,9 +1084,9 @@
 		<input class="broad-search" name="broad_search" placeholder="<?php echo "Enter broad search terms (e.g. tag, username, etc)"; ?>" type="text">
 		<label>Filter List of Specific IPs or Subnets</label>
 		<textarea class="granular-search" name="granular_search" placeholder="<?php echo "Enter list of specific node IPs or subnets\n127.0.0.1\n192.168\n127.0.0.0/8\netc..."; ?>"></textarea>
-		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="match_all_search"></span>
-			<label class="custom-checkbox-label" name="match_all_search">Require All Search Terms to Match Proxy Results</label>
+		<div class="checkbox-container" toggle="match_all_search">
+			<span checked="0"></span>
+			<label>Require All Search Terms to Match Proxy Results</label>
 		</div>
 		<div class="clear"></div>
 		<a class="button close" href="javascript:void(0);">Close</a>
