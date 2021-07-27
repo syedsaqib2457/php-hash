@@ -990,7 +990,7 @@
 			<span checked="0" class="checkbox" name="enable_binding_to_existing_node" toggle="node_id"></span>
 			<label class="custom-checkbox-label" name="enable_binding_to_existing_node">Enable binding to existing node</label>
 		</div>
-		<div class="hidden" name="node_id">
+		<div class="container hidden" name="node_id">
 			<label>Existing Node External IP Address or Node ID</label>
 			<input name="node_id" placeholder="Enter existing node external IP address or node ID" type="text">
 		</div>
@@ -1013,42 +1013,55 @@
 		<label>Internal IPv6</label>
 		<input name="internal_ip_version_6" type="text">
 		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_nameserver_processes" toggle="nameserver_users"></span>
+			<span checked="0" class="checkbox" name="enable_nameserver_processes" toggle="nameserver_processes"></span>
 			<label class="custom-checkbox-label" name="enable_nameserver_processes">Enable nameserver processes</label>
 		</div>
-		<div class="hidden" name="nameserver_users">
+		<div class="container hidden" name="nameserver_processes">
 			<label>Nameserver Users</label>
-			<div class="list" from="users" where="nameserver">
-				<p class="message">Loading</p>
-			</div>
+			<div class="list" from="users" where="nameserver"></div>
 		</div>
 		<div class="checkbox-container">
 			<span checked="0" class="checkbox" name="enable_http_proxy_processes" toggle="http_proxy_processes"></span>
 			<label class="custom-checkbox-label" name="enable_http_proxy_processes">Enable HTTP proxy processes</label>
 		</div>
-		<div class="hidden" name="http_proxy_processes">
-			// list current number of processes, memory and cpu usage stats
-			// list custom ports to open and close, otherwise use defaults
-			<label>HTTP Proxy Ports</label>
-			<label>HTTP Proxy Users</label>
-			<div class="list" from="users" where="http_proxy">
-				<p class="message">Loading</p>
+		<div class="container hidden" name="http_proxy_processes">
+			<div name="http_proxy_process_details">
+				<label>HTTP Proxy Processes</label>
+				<!-- list_statistics_for_process_usage -->
+				<div name="http_proxy_process_ports">
+					<!-- list_open_process_ports -->
+				</div>
 			</div>
+			<div class="checkbox-container">
+				<span checked="0" class="checkbox" name="enable_opening_custom_http_proxy_process_ports" toggle="open_custom_http_proxy_process_ports"></span>
+				<label class="custom-checkbox-label" name="enable_opening_custom_http_proxy_process_ports">Enable opening custom HTTP proxy process ports</label>
+			</div>
+			<div class="container hidden" name="open_custom_http_proxy_process_ports">
+				<div class="list" from="ports" where="http_open"></div>
+			</div>
+			<div class="checkbox-container">
+				<span checked="0" class="checkbox" name="enable_closing_custom_http_proxy_process_ports" toggle="close_custom_http_proxy_process_ports"></span>
+				<label class="custom-checkbox-label" name="enable_closing_custom_http_proxy_process_ports">Enable closing custom HTTP proxy process ports</label>
+			</div>
+			<div class="container hidden" name="close_custom_http_proxy_process_ports">
+				<div class="list" from="ports" where="http_close"></div>
+			</div>
+			<label>HTTP Proxy Users</label>
+			<div class="list" from="users" where="http"></div>
 		</div>
 		<div class="checkbox-container">
-			<span checked="0" class="checkbox" name="enable_socks_proxy_processes" toggle="socks_proxy_users"></span>
+			<span checked="0" class="checkbox" name="enable_socks_proxy_processes" toggle="socks_proxy_processes"></span>
 			<label class="custom-checkbox-label" name="enable_socks_proxy_processes">Enable SOCKS proxy processes</label>
 		</div>
-		<div class="hidden" name="socks_proxy_users">
+		<div class="hidden" name="socks_proxy_processes">
 			<label>SOCKS Proxy Users</label>
-			<div class="list" from="users" where="socks_proxy">
-			</div>
+			<div class="list" from="users" where="socks"></div>
 		</div>
 		<div class="checkbox-container">
 			<span checked="0" class="checkbox" name="enable_reverse_proxy_forwarding" toggle="destination"></span>
 			<label class="custom-checkbox-label" name="enable_reverse_proxy_forwarding">Enable reverse proxy forwarding</label>
 		</div>
-		<div class="hidden" name="destination">
+		<div class="container hidden" name="destination">
 			<label>IPv4 Destination IP Address or External Hostname</label>
 			<input name="destination_address_version_4" type="text">
 			<label>IPv4 Destination Port</label>
@@ -1081,10 +1094,8 @@
 	<div class="process-overlay"></div>
 </div>
 <main process="nodes">
-	<div class="list-container">
-		<div class="list" from="nodes">
-			<p class="message">Loading</p>
-		</div>
+	<div class="process-container">
+		<div class="list" from="nodes"></div>
 	</div>
 </main>
 <div class="hidden settings">{"baseDomain":"<?php echo $configuration->settings['base_domain']; ?>","uniqueId":"<?php echo sha1($configuration->settings['source_ip'] . uniqid()) . md5(time() . uniqid()); ?>"}</div>
