@@ -1042,6 +1042,14 @@
 			</div>
 			<label>Nameserver Users</label>
 			<div class="list" from="users"></div>
+			<div class="checkbox-container" toggle="enable_nameserver_on_external_ip_version_4">
+				<span checked="0"></span>
+				<label>Enable nameserver on external IPv4</label>
+			</div>
+			<div class="checkbox-container" toggle="enable_nameserver_on_external_ip_version_6">
+				<span checked="0"></span>
+				<label>Enable nameserver on external IPv6</label>
+			</div>
 		</div>
 		<div class="checkbox-container" toggle="enable_http_proxy_processes">
 			<span checked="0"></span>
