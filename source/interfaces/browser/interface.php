@@ -1016,6 +1016,7 @@
 		<div class="checkbox-container" toggle="enable_nameserver_processes">
 			<span checked="0"></span>
 			<label>Enable nameserver processes</label>
+			<!-- Add note that process / port settings will affect all nodes on [node_id] if node_id exists. users can create 1 node per machine or eventually create 1 vm per node -->
 		</div>
 		<div class="container hidden" name="enable_nameserver_processes">
 			<div name="nameserver_process_details">
