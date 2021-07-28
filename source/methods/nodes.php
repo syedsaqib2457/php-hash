@@ -163,11 +163,10 @@
 				}
 			}
 
-			if (count($nodeExternalIpTypes) !== 1) {
-				$response = array(
-					'message' => 'Node external IPs must be either private or public, please try again.',
-					'status_valid' => false
-				);
+			$response['status_valid'] = (count($nodeExternalIpTypes) === 1);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Node external IPs must be either private or public, please try again.';
 				return $response;
 			}
 
@@ -195,11 +194,10 @@
 			}
 
 			foreach ($nodeInternalIpVersions as $nodeInternalIpVersion => $nodeInternalIpVersionIps) {
-				if ($this->_fetchIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) !== 'private') {
-					$response = array(
-						'message' => 'Node internal IPs must be private, please try again.',
-						'status_valid' => false
-					);
+				$response['status_valid'] = ($this->_fetchIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) === 'private');
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Node internal IPs must be private, please try again.';
 					return $response;
 				}
 			}
@@ -737,11 +735,10 @@
 				}
 			}
 
-			if (count($nodeExternalIpTypes) !== 1) {
-				$response = array(
-					'message' => 'Node external IPs must be either private or public, please try again.',
-					'status_valid' => false
-				);
+			$response['status_valid'] = (count($nodeExternalIpTypes) === 1);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Node external IPs must be either private or public, please try again.';
 				return $response;
 			}
 
@@ -769,11 +766,10 @@
 			}
 
 			foreach ($nodeInternalIpVersions as $nodeInternalIpVersion => $nodeInternalIpVersionIps) {
-				if ($this->_fetchIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) !== 'private') {
-					$response = array(
-						'message' => 'Node internal IPs must be private, please try again.',
-						'status_valid' => false
-					);
+				$response['status_valid'] = ($this->_fetchIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) === 'private');
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Node internal IPs must be private, please try again.';
 					return $response;
 				}
 			}
