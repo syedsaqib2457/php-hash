@@ -1032,6 +1032,10 @@
 			</div>
 			<div class="container hidden" name="enable_opening_custom_nameserver_process_ports">
 				<div class="list" from="ports"></div>
+				<div class="checkbox-container" toggle="enable_only_allowing_custom_nameserver_process_ports">
+					<span checked="0"></span>
+					<label>Enable only allowing custom nameserver process ports</label>
+				</div>
 			</div>
 			<div class="checkbox-container" toggle="enable_closing_custom_nameserver_process_ports">
 				<span checked="0"></span>
@@ -1070,6 +1074,10 @@
 			</div>
 			<div class="container hidden" name="enable_opening_custom_http_proxy_process_ports">
 				<div class="list" from="ports"></div>
+				<div class="checkbox-container" toggle="enable_only_allowing_custom_http_proxy_process_ports">
+					<span checked="0"></span>
+					<label>Enable only allowing custom HTTP proxy process ports</label>
+				</div>
 			</div>
 			<div class="checkbox-container" toggle="enable_closing_custom_http_proxy_process_ports">
 				<span checked="0"></span>
