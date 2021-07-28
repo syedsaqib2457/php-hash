@@ -1100,6 +1100,10 @@
 			</div>
 			<div class="container hidden" name="enable_opening_custom_socks_proxy_process_ports">
 				<div class="list" from="ports"></div>
+				<div class="checkbox-container" toggle="enable_only_allowing_custom_socks_proxy_process_ports">
+					<span checked="0"></span>
+					<label>Enable only allowing custom SOCKS proxy process ports</label>
+				</div>
 			</div>
 			<div class="checkbox-container" toggle="enable_closing_custom_socks_proxy_process_ports">
 				<span checked="0"></span>
