@@ -662,8 +662,6 @@
 				'status_valid' => (empty($parameters['data']['id']) === false)
 			);
 
-			// todo: combine authenticate and request_limit functions into edit() function
-
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
@@ -1102,63 +1100,6 @@
 				'message' => 'Nodes removed successfully.',
 				'status_valid' => true
 			);
-			return $response;
-		}
-
-		public function search($parameters) {
-			$response = array(
-				'message' => 'Error searching nodes, please try again.',
-				'status_valid' => false
-			);
-
-			/*
-			if (!empty($parameters['data']['broad_search'])) {
-				$broadSearchFields = array(
-					'password',
-					'status',
-					'username'
-				);
-				$broadSearchValues = array_filter(explode(' ', $parameters['data']['broad_search']));
-				$response['search'] = array_map(function($broadSearchValue) use ($broadSearchFields) {
-					$broadSearchFieldValues = array(
-						'OR' => array()
-					);
-
-					foreach ($broadSearchFields as $broadSearchField) {
-						$broadSearchFieldValues['OR'][$broadSearchField . ' LIKE'] = '%' . $broadSearchValue . '%';
-					}
-
-					return $broadSearchFieldValues;
-				}, $broadSearchValues);
-			}
-
-			if (
-				!empty($parameters['data']['granular_search']) &&
-				($granularSearchIps = $this->_validateIps($parameters['data']['granular_search'], true, true))
-			) {
-				$response['search']['external_ip LIKE'] = $response['search']['internal_ip LIKE'] = array();
-
-				foreach ($granularSearchIps as $ipVersion => $ips) {
-					$formattedGranularSearchIps = array();
-
-					foreach ($ips as $ipKey => $ip) {
-						$formattedGranularSearchIps[] = $ip . '%';
-					}
-
-					$response['search']['external_ip LIKE'] += $formattedGranularSearchIps;
-					$response['search']['internal_ip LIKE'] += $formattedGranularSearchIps;
-				}
-			}
-
-			if (!empty($response['search'])) {
-				$response['search'] = array(
-					($parameters['data']['match_all_search'] ? 'AND' : 'OR') => $response['search']
-				);
-
-				unset($parameters['data']['id']);
-			}
-			*/
-
 			return $response;
 		}
 
