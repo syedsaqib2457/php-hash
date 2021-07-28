@@ -202,8 +202,6 @@
 				}
 			}
 
-			// todo: automatically overwrite conflictions for auto-generated local IPs from process scaling
-
 			$conflictingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
@@ -290,23 +288,23 @@
 				$nodeId = $node['id'];
 				$nodeProcesses = array(
 					array(
-						'internal_ip_version_4' => '10.0.100.1',
-						'internal_ip_version_6' => 'fc34::0000:',
+						'internal_ip_version_4' => '10.100.100.1',
+						'internal_ip_version_6' => 'fc34:0000:0000:0000:0000:0000:0000:0001',
 						'port_id' => 53,
 						'type' => 'nameserver'
 					),
 					array(
 						'application_protocol' => 'http',
-						'internal_ip_version_4' => '10.10.100.1',
-						'internal_ip_version_6' => 'fc34::1111:',
+						'internal_ip_version_4' => '10.120.100.1',
+						'internal_ip_version_6' => 'fc34:1111:0000:0000:0000:0000:0000:0001',
 						'port_id' => 80,
 						'transport_protocol' => 'tcp',
 						'type' => 'proxy'
 					),
 					array(
 						'application_protocol' => 'socks',
-						'internal_ip_version_4' => '10.100.100.1',
-						'internal_ip_version_6' => 'fc34::2222:',
+						'internal_ip_version_4' => '10.140.100.1',
+						'internal_ip_version_6' => 'fc34:2222:0000:0000:0000:0000:0000:0001',
 						'port_id' => 1080,
 						'type' => 'proxy'
 					)
@@ -315,12 +313,12 @@
 				foreach ($nodeProcesses as $nodeProcess) {
 					$nodeProcessData = array();
 
-					foreach (range(0, 9) as $processNumber) {
+					foreach (range(0, 9) as $processPortId) {
 						$nodeProcessData[] = array_merge($nodeProcess, array(
-							'internal_ip_version_4' => (ip2long($nodeProcess['internal_ip_version_4']) + $processNumber),
-							'internal_ip_version_6' => $nodeProcess['internal_ip_version_6'] . str_pad(($processNumber + 1), 4, '0', STR_PAD_LEFT),
+							'internal_ip_version_4' => $nodeProcess['internal_ip_version_4'],
+							'internal_ip_version_6' => $nodeProcess['internal_ip_version_6'],
 							'node_id' => $nodeId,
-							'port_id' => ($nodeProcess['port_id'] + $processNumber)
+							'port_id' => ($nodeProcess['port_id'] + $processPortId)
 						));
 					}
 
