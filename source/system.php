@@ -102,10 +102,10 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'port' => array(
+							'port_id' => array(
 								'default' => null,
 								'null' => true,
-								'type' => 'INT(5)'
+								'type' => 'BIGINT(11)'
 							),
 							'transport_protocol' => array(
 								'default' => null,
@@ -236,11 +236,6 @@
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
-							),
-							'port' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(11)'
 							)
 						),
 						'request_destinations' => array(

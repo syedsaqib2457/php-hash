@@ -292,14 +292,14 @@
 					array(
 						'internal_ip_version_4' => '10.0.100.1',
 						'internal_ip_version_6' => 'fc34::0000:',
-						'type' => 'nameserver',
-						'port' => 53
+						'port_id' => 53,
+						'type' => 'nameserver'
 					),
 					array(
 						'application_protocol' => 'http',
 						'internal_ip_version_4' => '10.10.100.1',
 						'internal_ip_version_6' => 'fc34::1111:',
-						'port' => 80,
+						'port_id' => 80,
 						'transport_protocol' => 'tcp',
 						'type' => 'proxy'
 					),
@@ -307,7 +307,7 @@
 						'application_protocol' => 'socks',
 						'internal_ip_version_4' => '10.100.100.1',
 						'internal_ip_version_6' => 'fc34::2222:',
-						'port' => 1080,
+						'port_id' => 1080,
 						'type' => 'proxy'
 					)
 				);
@@ -320,7 +320,7 @@
 							'internal_ip_version_4' => (ip2long($nodeProcess['internal_ip_version_4']) + $processNumber),
 							'internal_ip_version_6' => $nodeProcess['internal_ip_version_6'] . str_pad(($processNumber + 1), 4, '0', STR_PAD_LEFT),
 							'node_id' => $nodeId,
-							'port' => ($nodeProcess['port'] + $processNumber)
+							'port_id' => ($nodeProcess['port_id'] + $processNumber)
 						));
 					}
 
@@ -783,19 +783,19 @@
 					'application_protocol' => 'http',
 					'internal_ip_version_4' => '10.10.100.1',
 					'internal_ip_version_6' => 'fc34::1111:',
-					'port' => 80,
+					'port_id' => 80,
 					'transport_protocol' => 'tcp'
 				),
 				'nameserver' => array(
 					'internal_ip_version_4' => '10.0.100.1',
 					'internal_ip_version_6' => 'fc34::0000:',
-					'port' => 53
+					'port_id' => 53
 				),
 				'socks_proxy' => array(
 					'application_protocol' => 'socks',
 					'internal_ip_version_4' => '10.100.100.1',
 					'internal_ip_version_6' => 'fc34::2222:',
-					'port' => 1080
+					'port_id' => 1080
 				)
 			);
 
@@ -834,7 +834,7 @@
 					$nodePorts = $this->fetch(array(
 						'fields' => array(
 							'id',
-							'port',
+							'port_id',
 							'status_allowing',
 							'status_denying'
 						),
@@ -918,7 +918,6 @@
 							'node_id' => $nodeIds
 						)
 					));
-					// include external ipv4 and/or ipv6 nameserver listening ips for each process if enabled
 				}
 			}
 
