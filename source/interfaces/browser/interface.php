@@ -2695,23 +2695,6 @@
 						attributes: [
 							{
 								name: 'class',
-								value: 'button icon process-button tooltip tooltip-bottom'
-							},
-							{
-								name: 'option_title',
-								value: 'Search nodes'
-							},
-							{
-								name: 'process',
-								value: 'search'
-							}
-						],
-						tag: 'span'
-					},
-					{
-						attributes: [
-							{
-								name: 'class',
 								value: 'button hidden icon process-button tooltip tooltip-bottom'
 							},
 							{
