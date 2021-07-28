@@ -1827,34 +1827,6 @@
 			delete apiRequestParameters.processing;
 		}
 	};
-	var processSearch = function() {
-		let listName = camelCaseString(elements.getAttribute('.process-container[process="search"]', 'search'));
-		let listParameters = apiRequestParameters[listName];
-
-		if (
-			apiRequestParameters.processing &&
-			typeof listParameters !== 'undefined'
-		) {
-			api.setRequestParameters({
-				method: 'search',
-				url: listParameters.url
-			});
-			api.sendRequest(function(response) {
-				delete apiRequestParameters.processing;
-				elements.html('.search-configuration .message-container.search', response.message);
-
-				if (response.statusValid === true) {
-					var mergeRequestParameters = {
-						search: {}
-					};
-					mergeRequestParameters.search[listName] = response.search;
-					api.setRequestParameters(mergeRequestParameters, true);
-					closeProcesses();
-					processList(listName);
-				}
-			});
-		}
-	};
 	var processConfigure = function(processElement, processSubmit) {
 		api.setRequestParameters({
 			method: 'configure',

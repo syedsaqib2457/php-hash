@@ -928,13 +928,6 @@
 			$query = ' FROM ' . $parameters['from'];
 
 			if (
-				(empty($parameters['item_list_name']) === false) &&
-				(empty($parameters['search'][$parameters['item_list_name']]) === false)
-			) {
-				$parameters['where']['_search'] = $parameters['search'][$parameters['item_list_name']];
-			}
-
-			if (
 				(empty($parameters['where']) === false) &&
 				(is_array($parameters['where']) === true)
 			) {
