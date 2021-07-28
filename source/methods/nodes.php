@@ -860,38 +860,62 @@
 						return $response;
 					}
 
-					$nodePortStatusAllowing = $nodePortStatusDenying = array();
+					$nodePortIds = $nodePortStatusAllowingPortIds = $nodePortStatusDenyingPortIds = array();
 
-					foreach ($nodePorts as $nodePortKey => $nodePort) {
+					foreach ($nodePorts as $nodePort) {
 						if ($nodePort['status_allowing'] === true) {
-							$nodePortStatusAllowing[] = $nodePort['port'];
+							$nodePortStatusAllowingPortIds[$nodePort['port_id']] = $nodePort['port_id'];
 						}
 
 						if ($nodePort['status_denying'] === true) {
-							$nodePortStatusDenying[] = $nodePort['port'];
+							$nodePortStatusDenyingPortIds[$nodePort['port_id']] = $nodePort['port_id'];
 						}
 
-						$nodePorts[$nodePortKey] = $nodePort['port'];
+						$nodePortIds[$nodePort['port_id']] = $nodePort['port_id'];
 					}
 
-					if (empty($nodePortStatusAllowing) === false) {
-						$nodeProcessesDeleted = $this->delete(array(
-							'from' => 'node_processes',
-							'where' => array(
-								'port !=' => $nodePortStatusAllowing,
-								'type' => $nodeProcessType
+					$nodes = $this->fetch(array(
+						'fields' => array(
+							'external_ip_version_4',
+							'external_ip_version_6'
+						),
+						'from' => 'nodes',
+						'where' => array(
+							'OR' => array(
+								'id' => $nodeIds,
+								'node_id' => $nodeIds
 							)
-						));
-						$response['status_valid'] = ($nodeProcessesDeleted === true);
+						)
+					));
+					$response['status_valid'] = ($nodes !== false);
+
+					if ($response['status_valid'] === false) {
+						return $response;
 					}
 
-					if (empty($nodePortStatusDenying) === false) {
+					$existingNodeExternalIps = array(
+						'external_ip_version_4' => '',
+						'external_ip_version_6' => ''
+					);
+
+					foreach ($nodeExternalIps as $nodeExternalIpKey => $nodeExternalIp) {
+						$existingNodeExternalIps[$nodeExternalIpKey][] = $nodeExternalIp;
+					}
+
+					foreach ($nodes as $node) {
+						foreach (array_filter($node) as $nodeFieldKey => $nodeFieldValue) {
+							$existingNodeExternalIps[$nodeFieldKey][] = $nodeFieldValue;
+						}
+					}
+
+					if (empty($nodePortStatusAllowingPortIds) === false) {
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
-							'where' => array(
-								'port' => $nodePortStatusDenying,
+							'where' => array_merge($existingNodeExternalIps, array(
+								'node_id' => $nodeIds,
+								'port_id !=' => $nodePortStatusAllowingPortIds,
 								'type' => $nodeProcessType
-							)
+							))
 						));
 						$response['status_valid'] = ($nodeProcessesDeleted === true);
 					}
@@ -900,11 +924,49 @@
 						return $response;
 					}
 
-					$existingPorts = $this->fetch(array(
-						// ..
-					));
+					if (empty($nodePortStatusDenyingPortIds) === false) {
+						$nodeProcessesDeleted = $this->delete(array(
+							'from' => 'node_processes',
+							'where' => array_merge($existingNodeExternalIps, array(
+								'node_id' => $nodeIds,
+								'port_id' => $nodePortStatusDenyingPortIds,
+								'type' => $nodeProcessType
+							))
+						));
+						$response['status_valid'] = ($nodeProcessesDeleted === true);
+					}
 
-					// fetch existing ports
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+
+					$existingNodePortProcesses = $this->fetch(array(
+						'fields' => array(
+							'external_ip_version_4',
+							'external_ip_version_6',
+							'internal_ip_version_4',
+							'internal_ip_version_6',
+							'port_id'
+						),
+						'from' => 'node_processes',
+						'where' => array_merge($existingNodeExternalIps, array(
+							'node_id' => $nodeIds,
+							'type' => $nodeProcessType
+						))
+					));
+					$response['status_valid'] = ($existingNodePortProcesses !== false);
+
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+
+					$existingNodePortIds = array();
+
+					foreach ($existingNodePortProcesses as $existingNodePortProcess) {
+						$existingNodePortIds[$existingNodePortProcess['port_id']] = $existingNodePortProcess['port_id'];
+					}
+
+					// ..
 					// add processes for all nonexisting ports in nodeports
 					// add remaining processes if < 10 ports and nodeportstatusallowing is empty
 					// autoscale after saving changes
