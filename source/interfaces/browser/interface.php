@@ -1121,23 +1121,6 @@
 		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
 	</div>
 </div>
-<div class="hidden" process="search" search="node_list">
-	<div class="process-container">
-		<p class="message search"></p>
-		<label>Search Terms</label>
-		<input class="broad-search" name="broad_search" placeholder="<?php echo "Enter broad search terms (e.g. tag, username, etc)"; ?>" type="text">
-		<label>Filter List of Specific IPs or Subnets</label>
-		<textarea class="granular-search" name="granular_search" placeholder="<?php echo "Enter list of specific node IPs or subnets\n127.0.0.1\n192.168\n127.0.0.0/8\netc..."; ?>"></textarea>
-		<div class="checkbox-container" toggle="match_all_search">
-			<span checked="0"></span>
-			<label>Require All Search Terms to Match Proxy Results</label>
-		</div>
-		<div class="clear"></div>
-		<a class="button close" href="javascript:void(0);">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="search">Search</a>
-	</section>
-	<div class="process-overlay"></div>
-</div>
 <main process="nodes">
 	<div class="process-container">
 		<div class="list" from="nodes"></div>
