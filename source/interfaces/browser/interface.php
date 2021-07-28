@@ -1123,6 +1123,18 @@
 	</div>
 	<div class="process-overlay"></div>
 </div>
+<div class="hidden" process="request_destinations">
+	<div class="process-container">
+		<div class="list" from="request_destinations"></div>
+	</div>
+	<div class="process-overlay"></div>
+</div>
+<div class="hidden" process="request_limit_rules">
+	<div class="process-container">
+		<div class="list" from="request_limit_rules"></div>
+	</div>
+	<div class="process-overlay"></div>
+</div>
 <div class="hidden" process="users">
 	<div class="process-container">
 		<div class="list" from="users"></div>
