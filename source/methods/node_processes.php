@@ -5,6 +5,7 @@
 	class NodeProcessMethods extends SystemMethods {
 
 		public function add($parameters) {
+			// todo: add http_proxy and socks_proxy types instead of proxy
 			$response = array(
 				'message' => 'Error adding node process, please try again.',
 				'status_valid' => (

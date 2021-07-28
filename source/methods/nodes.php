@@ -391,10 +391,10 @@
 			$response['status_valid'] = (
 				(empty($parameters['data']['authentication_username']) === true) ||
 				(
-					(strlen($parameters['data']['authentication_username']) > 10) &&
-					(strlen($parameters['data']['authentication_username']) < 20) &&
 					(strlen($parameters['data']['authentication_password']) > 10) &&
-					(strlen($parameters['data']['authentication_password']) < 20)
+					(strlen($parameters['data']['authentication_password']) < 20) &&
+					(strlen($parameters['data']['authentication_username']) > 10) &&
+					(strlen($parameters['data']['authentication_username']) < 20)
 				)
 			);
 
@@ -775,6 +775,55 @@
 						'status_valid' => false
 					);
 					return $response;
+				}
+			}
+
+			$nodeProcessTypes = array(
+				'http_proxy',
+				'nameserver',
+				'socks_proxy'
+			);
+
+			foreach ($nodeProcessTypes as $nodeProcessType) {
+				$response['status_valid'] = (isset($parameters['data']['enable_' . $nodeProcessType . '_processes']) === true);
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Processes must be either enabled or disabled, please try again.';
+					return $response;
+				}
+
+				if ($parameters['data']['enable_' . $nodeProcessType . '_processes'] === false) {
+					$nodePortsDeleted = $this->delete(array(
+						'from' => 'node_ports',
+						'where' => array(
+							'node_id' => array(
+								$nodeId,
+								$node['node_id']
+							),
+							'type' => $nodeProcessType
+						)
+					));
+					$nodeProcessesDeleted = $this->delete(array(
+						'from' => 'node_processes',
+						'where' => array(
+							'node_id' => array(
+								$nodeId,
+								$node['node_id']
+							),
+							'type' => $nodeProcessType
+						)
+					));
+					$response['status_valid'] = (
+						$nodePortsDeleted === true &&
+						$nodeProcessesDeleted === true
+					);
+
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+				} else {
+					// count processes for type + add base processes with custom opened / closed ports
+					// include external ipv4 and/or ipv6 nameserver listening ips for each process if enabled
 				}
 			}
 
