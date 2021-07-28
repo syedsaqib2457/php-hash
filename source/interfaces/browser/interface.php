@@ -998,6 +998,7 @@
 		<a class="button close" href="/">Close</a>
 		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
 	</div>
+	<div class="process-overlay"></div>
 </div>
 <div class="hidden" process="node_edit">
 	<div class="process-container">
@@ -1120,6 +1121,13 @@
 		<a class="button close" href="/">Close</a>
 		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
 	</div>
+	<div class="process-overlay"></div>
+</div>
+<div class="hidden" process="users">
+	<div class="process-container">
+		<div class="list" from="users"></div>
+	</div>
+	<div class="process-overlay"></div>
 </div>
 <main process="nodes">
 	<div class="process-container">
