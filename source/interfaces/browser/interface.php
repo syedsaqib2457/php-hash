@@ -1155,6 +1155,17 @@
 	</div>
 	<div class="process-overlay"></div>
 </div>
+<div class="hidden" process="request_destination_edit">
+	<div class="process-container">
+		<p class="message request-destination-edit"></p>
+		<label>Destination Address</label>
+		<input name="destination" type="text">
+		<div class="clear"></div>
+		<a class="button close" href="/">Close</a>
+		<a class="button submit" href="javascript:void(0);" process="request_destination_edit">Save Changes</a>
+	</div>
+	<div class="process-overlay"></div>
+</div>
 <div class="hidden" process="request_destinations">
 	<div class="process-container">
 		<div class="list" from="request_destinations"></div>
