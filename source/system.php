@@ -418,15 +418,15 @@
 							)
 						),
 						'users' => array(
+							'authentication_interval_minutes' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'DATETIME'
+							),
 							'authentication_password' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(255)'
-							),
-							'authentication_expires' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'DATETIME'
 							),
 							'authentication_username' => array(
 								'default' => null,

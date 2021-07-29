@@ -1234,31 +1234,31 @@
 		<input name="authentication_password" type="text">
 		<label>Authentication Whitelist</label>
 		<textarea name="authentication_whitelist"></textarea>
-		<div class="checkbox-container" toggle="enable_request_logs">
+		<div class="checkbox-container" toggle="status_allowing_request_logs">
 			<span checked="1"></span>
 			<label>Enable request logs</label>
 		</div>
 		<div class="container" name="enable_request_logs">
-			<div class="checkbox-container" toggle="enable_request_limit_rules">
+			<div class="checkbox-container" toggle="request_limit_rules">
 				<span checked="0"></span>
 				<label>Enable request limit rules for specific destinations</label>
 			</div>
-			<div class="container" name="enable_request_limit_rules">
+			<div class="container" name="request_limit_rules">
 				<label>Request Destinations</label>
 				<div class="list" from="request_destinations"></div>
 				<label>Request Limit Rules</label>
 				<div class="list" from="request_limit_rules"></div>
-				<div class="checkbox-container" toggle="enable_only_allowing_requests_to_specific_destinations">
+				<div class="checkbox-container" toggle="status_allowing_requests_destinations_only">
 					<span checked="0"></span>
 					<label>Enable only allowing requests to specific destinations</label>
 				</div>
 			</div>
 		</div>
-		<div class="checkbox-container" toggle="enable_temporary_authentication">
+		<div class="checkbox-container" toggle="temporary_authentication">
 			<span checked="0"></span>
 			<label>Enable temporary authentication</label>
 		</div>
-		<div class="container" name="enable_temporary_authentication">
+		<div class="container" name="temporary_authentication">
 			<label>Interval in Minutes Before Authentication Expires</label>
 			<input name="authentication_interval_minutes" type="text">
 		</div>
@@ -1279,31 +1279,31 @@
 		<input name="authentication_password" type="text">
 		<label>Authentication Whitelist</label>
 		<textarea name="authentication_whitelist"></textarea>
-		<div class="checkbox-container" toggle="enable_request_logs">
+		<div class="checkbox-container" toggle="status_allowing_request_logs">
 			<span checked="1"></span>
 			<label>Enable request logs</label>
 		</div>
-		<div class="container" name="enable_request_logs">
-			<div class="checkbox-container" toggle="enable_request_limit_rules">
+		<div class="container" name="status_allowing_request_logs">
+			<div class="checkbox-container" toggle="request_limit_rules">
 				<span checked="0"></span>
 				<label>Enable request limit rules for specific destinations</label>
 			</div>
-			<div class="container" name="enable_request_limit_rules">
+			<div class="container" name="request_limit_rules">
 				<label>Request Destinations</label>
 				<div class="list" from="request_destinations"></div>
 				<label>Request Limit Rules</label>
 				<div class="list" from="request_limit_rules"></div>
-				<div class="checkbox-container" toggle="enable_only_allowing_requests_to_specific_destinations">
+				<div class="checkbox-container" toggle="status_allowing_request_destinations_only">
 					<span checked="0"></span>
 					<label>Enable only allowing requests to specific destinations</label>
 				</div>
 			</div>
 		</div>
-		<div class="checkbox-container" toggle="enable_temporary_authentication">
+		<div class="checkbox-container" toggle="temporary_authentication">
 			<span checked="0"></span>
 			<label>Enable temporary authentication</label>
 		</div>
-		<div class="container" name="enable_temporary_authentication">
+		<div class="container" name="temporary_authentication">
 			<label>Interval in Minutes Before Authentication Expires</label>
 			<input name="authentication_interval_minutes" type="text">
 		</div>

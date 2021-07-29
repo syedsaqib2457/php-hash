@@ -56,6 +56,25 @@
 				$parameters['data']['authentication_whitelist'] = implode("\n", $authenticationWhitelist);
 			}
 
+			if (isset($parameters['data']['status_allowing_request_logs']) === true) {
+				$parameters['data']['status_allowing_request_logs'] = boolval($parameters['data']['status_allowing_request_logs']);
+			}
+
+			if (isset($parameters['data']['authentication_interval_minutes']) === true) {
+				$parameters['data']['authentication_interval_minutes'] = intval($parameters['data']['authentication_interval_minutes']);
+
+				if ($parameters['data']['authentication_interval_minutes'] !== false) {
+					$response['status_valid'] = (is_int($parameters['data']['authentication_interval_minutes']) === true);
+
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid temporary authentication interval, please try again.';
+						return $response;
+					}
+
+					$parameters['data']['authentication_interval_minutes'] = date('Y-m-d H:i:s', strtotime('+' . $parameters['data']['authentication_interval_minutes'] . ' minutes'))
+				}
+			}
+
 			if (empty($parameters['data']['tag']) === false) {
 				$response['status_valid'] = (strval($parameters['data']['tag']) <= 100);
 
@@ -96,9 +115,11 @@
 			$userDataSaved = $this->save(array(
 				'data' => array(
 					array_intersect_key($parameters['data'], array(
+						'authentication_interval_minutes',
 						'authentication_password',
 						'authentication_username',
 						'authentication_whitelist',
+						'status_allowing_request_logs',
 						'tag',
 						// ..
 					))
