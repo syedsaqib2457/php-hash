@@ -239,6 +239,10 @@
 							)
 						),
 						'request_destinations' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
 							'destination' => array(
 								'default' => null,
 								'null' => true,
@@ -249,17 +253,24 @@
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'type' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(6)'
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
 							)
 						),
 						'request_limit_rules' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
 							'id' => array(
 								'auto_increment' => true,
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
 							),
 							'request_interval_minutes' => array(
 								'default' => 1,
@@ -286,6 +297,10 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
 							'destination_id' => array(
 								'default' => null,
 								'null' => true,
@@ -305,6 +320,10 @@
 								'auto_increment' => true,
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
 							),
 							'node_user_id' => array(
 								'default' => null,
