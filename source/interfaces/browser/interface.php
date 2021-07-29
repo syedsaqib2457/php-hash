@@ -1150,6 +1150,21 @@
 	</div>
 	<div class="process-overlay"></div>
 </div>
+<div class="hidden" process="request_limit_rules_add">
+	<div class="process-container">
+		<p class="message request-limit-rules-add"></p>
+		<label>Interval in Minutes</label>
+		<input name="request_interval_minutes" type="text">
+		<label>Maximum Number of Requests Allowed During Interval</label>
+		<input name="request_maximum" type="text">
+		<label>Number of Minutes to Limit Requests After Maximum Number of Requests</label>
+		<input name="request_limit_interval_minutes" type="text">
+		<div class="clear"></div>
+		<a class="button close" href="/">Close</a>
+		<a class="button submit" href="javascript:void(0);" process="request_limit_rules_add">Save Changes</a>
+	</div>
+	<div class="process-overlay"></div>
+</div>
 <div class="hidden" process="request_limit_rules">
 	<div class="process-container">
 		<div class="list" from="request_limit_rules"></div>

@@ -261,21 +261,18 @@
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'request_interval_type' => array(
-								'default' => "'minute'",
-								'type' => 'VARCHAR(255)'
-							),
-							'request_interval_value' => array(
+							'request_interval_minutes' => array(
 								'default' => 1,
 								'type' => 'SMALLINT(3)'
 							),
-							'request_limit_interval_type' => array(
-								'default' => "'minute'",
-								'type' => 'VARCHAR(255)'
-							),
-							'request_limit_interval_value' => array(
+							'request_limit_interval_minutes' => array(
 								'default' => 1,
 								'type' => 'SMALLINT(3)'
+							),
+							'request_maximum' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
 							)
 						),
 						'request_logs' => array(
