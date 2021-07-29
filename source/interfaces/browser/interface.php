@@ -960,8 +960,8 @@
 		<label>Endpoint Whitelist</label>
 		<textarea class="authentication-whitelist" name="authentication_whitelist" placeholder="<?php echo "127.0.0.1\n127.0.0.2\netc..." ?>" type="text"></textarea>
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="configure">Save Changes</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="configure">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -971,7 +971,7 @@
 		<label>Password</label>
 		<input class="password" name="password" type="password">
 		<div class="clear"></div>
-		<a class="button submit" href="javascript:void(0);" process="login">Log In</a>
+		<span class="button submit" process="login">Log In</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -979,7 +979,7 @@
 	<div class="process-container">
 		<p class="message node-activate"></p>
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
+		<span class="button close">Close</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1003,8 +1003,8 @@
 			<input name="node_id" type="text">
 		</div>
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="node_add">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1012,8 +1012,8 @@
 	<div class="process-container">
 		<p class="message node-deactivate"></p>
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" process="node_deactivate">Confirm Deactivation</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="node_deactivate">Confirm Deactivation</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1156,8 +1156,8 @@
 			<input name="destination_port_version_6" type="text">
 		</div>
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="node_add">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1167,8 +1167,8 @@
 		<label>Destination Address</label>
 		<input name="destination" type="text">
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="request_destination_add">Save Changes</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="request_destination_add">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1178,8 +1178,8 @@
 		<label>Destination Address</label>
 		<input name="destination" type="text">
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="request_destination_edit">Save Changes</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="request_destination_edit">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1199,8 +1199,8 @@
 		<label>Interval in Minutes to Limit Requests After Reaching Maximum Allowed</label>
 		<input name="request_limit_interval_minutes" type="text">
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="request_limit_rules_add">Save Changes</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="request_limit_rules_add">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1214,8 +1214,8 @@
 		<label>Interval in Minutes to Limit Requests After Reaching Maximum Allowed</label>
 		<input name="request_limit_interval_minutes" type="text">
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="request_limit_rules_edit">Save Changes</a>
+		<span class="button close:>Close</span>
+		<span class="button submit" process="request_limit_rules_edit">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1265,8 +1265,8 @@
 		<label>Tag</label>
 		<input name="tag" type="text">
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="user_add">Save Changes</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="user_add">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
@@ -1310,8 +1310,8 @@
 		<label>Tag</label>
 		<input name="tag" type="text">
 		<div class="clear"></div>
-		<a class="button close" href="/">Close</a>
-		<a class="button submit" href="javascript:void(0);" process="user_edit">Save Changes</a>
+		<span class="button close">Close</span>
+		<span class="button submit" process="user_edit">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
