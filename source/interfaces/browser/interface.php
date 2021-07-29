@@ -1017,6 +1017,7 @@
 	</div>
 	<div class="process-overlay"></div>
 </div>
+// todo: change keys to match database, don't require enable_ field values in validation for API consistency
 <div class="hidden" process="node_edit">
 	<div class="process-container">
 		<p class="message node-edit"></p>
