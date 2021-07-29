@@ -56,6 +56,15 @@
 				$parameters['data']['authentication_whitelist'] = implode("\n", $authenticationWhitelist);
 			}
 
+			if (empty($parameters['data']['tag']) === false) {
+				$response['status_valid'] = (strval($parameters['data']['tag']) <= 100);
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'User tag must be 100 characters or less, please try again.';
+					return $response;
+				}
+			}
+
 			$userParameters = array(
 				'fields' => array(
 					'id'
