@@ -975,6 +975,13 @@
 	</div>
 	<div class="process-overlay"></div>
 </div>
+<div class="hidden" process="node_activate">
+	<div class="process-container">
+		<p class="message node-activate"></p>
+		<a class="button close" href="/">Close</a>
+	</div>
+	<div class="process-overlay"></div>
+</div>
 <div class="hidden" process="node_add">
 	<div class="process-container">
 		<p class="message node-add"></p>
