@@ -5,7 +5,7 @@
 <meta content="initial-scale=1, width=device-width" name="viewport">
 <title>Overlord</title>
 <style type="text/css">
-	.align-left { float: left !important; }
+	/*.align-left { float: left !important; }
 	.align-right { float: right !important; }
 	.clear { clear: both !important; float: none !important; }
 	.full-width { width: 100% !important; }
@@ -422,7 +422,7 @@
 		background: url('../png/icon-download.png') center no-repeat;
 	}
 	.icon[process="limit"] {
-		background: url('../png/icon-limit.png') center no-repeat; /* todo: design icons for proxy + dns request limits */
+		background: url('../png/icon-limit.png') center no-repeat;
 	}
 	.icon[process="search"] {
 		background: url('../png/icon-search.png') center no-repeat;
@@ -433,7 +433,6 @@
 	.icon[process="server_proxy_processes"] {
 		background: url('../png/icon-server-proxy-processes.png') center no-repeat;
 	}
-	/* todo: design info tooltip icon */
 	.icon.edit,
 	.icon.next,
 	.icon.previous,
@@ -949,6 +948,7 @@
 			margin-left: -10px;
 			margin-top: 22px;
 		}
+	*/
 </style>
 </head>
 <body>
