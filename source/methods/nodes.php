@@ -797,6 +797,27 @@
 				)
 			);
 
+			$existingNodePorts = $this->fetch(array(
+				'fields' => array(
+					'port_id'
+				),
+				'from' => 'node_ports',
+				'where' => array(
+					'node_id' => $nodeIds
+				)
+			));
+			$response['status_valid'] = ($existingNodePorts !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$existingNodePortIds = array();
+
+			foreach ($existingNodePorts as $existingNodePort) {
+				$existingNodePortIds[$existingNodePort['port_id']] = $existingNodePort['port_id'];
+			}
+
 			foreach ($nodeProcessTypes as $nodeProcessType => $nodeProcess) {
 				$response['status_valid'] = (isset($parameters['data']['enable_' . $nodeProcessType . '_processes']) === true);
 
@@ -842,17 +863,7 @@
 							'type' => $nodeProcessType
 						)
 					));
-					$nodeProcessCount = $this->count(array(
-						'in' => 'node_processes',
-						'where' => array(
-							'node_id' => $nodeIds,
-							'type' => $nodeProcessType
-						)
-					));
-					$response['status_valid'] = (
-						($nodePorts !== false) &&
-						(is_int($nodeProcessCount) === true)
-					);
+					$response['status_valid'] = ($nodePorts !== false);
 
 					if ($response['status_valid'] === false) {
 						return $response;
@@ -938,31 +949,24 @@
 						return $response;
 					}
 
-					$existingNodePorts = $this->fetch(array(
-						'fields' => array(
-							'port_id'
-						),
-						'from' => 'node_ports',
+					$nodePortCount = $this->count(array(
+						'in' => 'node_ports',
 						'where' => array(
-							'node_id' => $nodeIds,
+							'status_denying' => false,
 							'type' => $nodeProcessType
 						)
 					));
-					$response['status_valid'] = ($existingNodePorts !== false);
+					$response['status_valid'] = (is_int($nodePortCount) === true);
 
 					if ($response['status_valid'] === false) {
 						return $response;
 					}
 
-					$existingNodePortIds = array();
-
-					foreach ($existingNodePorts as $existingNodePort) {
-						$existingNodePortIds[$existingNodePort['port_id']] = $existingNodePort['port_id'];
-					}
-
 					if (empty($nodePortStatusAllowingPortIds) === false) {
 						$nodePortIds = $nodePortStatusAllowingPortIds;
 					}
+
+					$nodePortIds = array_diff($nodePortIds, $existingNodePortIds, $nodePortStatusDenyingPortIds);
 
 					foreach (array(4, 6) as $internalNodeIpVersion) {
 						if (empty($nodeProcess['internal_ip_version_' . $internalNodeIpVersion]) === true) {
@@ -970,24 +974,42 @@
 						}
 					}
 
-					$nodePortIds = array_diff($nodePortIds, $existingNodePortIds);
 					$nodeProcessData = array();
+					$nodeProcessPortId = $nodeProcess['port_id'];
 
 					foreach ($nodePortIds as $nodePortId) {
-						$nodeProcessData[] = array_merge($nodeProcess, array(
-							'port_id' => $nodePortId
-						));
+						$nodeProcess['port_id'] = $nodePortId;
+						$nodeProcessData[] = $nodeProcess;
 					}
+
+					$existingNodePortIds = array_merge($existingNodePortIds, $nodePortIds);
+					$nodePortCount = (count($nodePortIds) + $nodePortCount);
 
 					if (
-						(empty($nodePortStatusAllowingPortIds) === true) ||
-						(count($nodePortIds) + ) < 10)
+						(empty($nodePortStatusAllowingPortIds) === true) &&
+						($nodePortCount < 10)
 					) {
-						// ..
+						foreach (range($nodePortCount, 10) as $nodeProcessIndex) {
+							while (
+								($nodeProcessPortId <= 65535) &&
+								(in_array($nodeProcessPortId, $existingNodePortIds) === true)
+							) {
+								$nodeProcessPortId++;
+							}
+
+							if (in_array($nodeProcessPortId, $existingNodePortIds) === true) {
+								break;
+							}
+
+							$existingNodePortIds[] = $nodeProcess['port_id'] = $nodeProcessPortId;
+							$nodeProcessData[] = $nodeProcess;
+						}
 					}
 
-					// ..
-
+					$nodeProcessesSaved = $this->save(array(
+						'data' => $nodeProcessData,
+						'to' => 'node_processes'
+					));
 					$nodePortsUpdated = $this->update(array(
 						'data' => array(
 							'status_processed' => true
@@ -997,6 +1019,14 @@
 							'node_id' => $nodeIds
 						)
 					));
+					$response['status_valid'] = (
+						($nodeProcessesSaved === true) &&
+						($nodePortsUpdated === true)
+					);
+
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
 				}
 			}
 
