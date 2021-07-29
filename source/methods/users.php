@@ -43,6 +43,21 @@
 				return $response;
 			}
 
+			if (isset($parameters['data']['authentication_interval_minutes']) === true) {
+				$parameters['data']['authentication_interval_minutes'] = intval($parameters['data']['authentication_interval_minutes']);
+
+				if ($parameters['data']['authentication_interval_minutes'] !== false) {
+					$response['status_valid'] = (is_int($parameters['data']['authentication_interval_minutes']) === true);
+
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid temporary authentication interval, please try again.';
+						return $response;
+					}
+
+					$parameters['data']['authentication_interval_minutes'] = date('Y-m-d H:i:s', strtotime('+' . $parameters['data']['authentication_interval_minutes'] . ' minutes'))
+				}
+			}
+
 			if (empty($parameters['data']['authentication_whitelist']) === false) {
 				$authenticationWhitelist = array();
 				$authenticationWhitelistSourceVersions = $this->_sanitizeIps($parameters['data']['authentication_whitelist'], true);
@@ -58,21 +73,6 @@
 
 			if (isset($parameters['data']['status_allowing_request_logs']) === true) {
 				$parameters['data']['status_allowing_request_logs'] = boolval($parameters['data']['status_allowing_request_logs']);
-			}
-
-			if (isset($parameters['data']['authentication_interval_minutes']) === true) {
-				$parameters['data']['authentication_interval_minutes'] = intval($parameters['data']['authentication_interval_minutes']);
-
-				if ($parameters['data']['authentication_interval_minutes'] !== false) {
-					$response['status_valid'] = (is_int($parameters['data']['authentication_interval_minutes']) === true);
-
-					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid temporary authentication interval, please try again.';
-						return $response;
-					}
-
-					$parameters['data']['authentication_interval_minutes'] = date('Y-m-d H:i:s', strtotime('+' . $parameters['data']['authentication_interval_minutes'] . ' minutes'))
-				}
 			}
 
 			if (empty($parameters['data']['tag']) === false) {
