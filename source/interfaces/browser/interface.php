@@ -978,6 +978,7 @@
 <div class="hidden" process="node_activate">
 	<div class="process-container">
 		<p class="message node-activate"></p>
+		<div class="clear"></div>
 		<a class="button close" href="/">Close</a>
 	</div>
 	<div class="process-overlay"></div>
@@ -1004,6 +1005,15 @@
 		<div class="clear"></div>
 		<a class="button close" href="/">Close</a>
 		<a class="button submit" href="javascript:void(0);" process="node_add">Save Changes</a>
+	</div>
+	<div class="process-overlay"></div>
+</div>
+<div class="hidden" process="node_deactivate">
+	<div class="process-container">
+		<p class="message node-deactivate"></p>
+		<div class="clear"></div>
+		<a class="button close" href="/">Close</a>
+		<a class="button submit" process="node_deactivate">Confirm Deactivation</a>
 	</div>
 	<div class="process-overlay"></div>
 </div>
