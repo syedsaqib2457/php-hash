@@ -1155,9 +1155,9 @@
 		<p class="message request-limit-rules-add"></p>
 		<label>Interval in Minutes</label>
 		<input name="request_interval_minutes" type="text">
-		<label>Maximum Number of Requests Allowed During Interval</label>
+		<label>Maximum Requests Allowed During Interval</label>
 		<input name="request_maximum" type="text">
-		<label>Number of Minutes to Limit Requests After Maximum Number of Requests</label>
+		<label>Interval in Minutes to Limit Requests After Reaching Maximum Allowed</label>
 		<input name="request_limit_interval_minutes" type="text">
 		<div class="clear"></div>
 		<a class="button close" href="/">Close</a>
