@@ -382,13 +382,13 @@
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
 							),
-							'status_request_limit_exceeded' => array(
-								'default' => 0,
+							'request_limit_rule_id' => array(
+								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'user_request_limit_rule_id' => array(
-								'default' => null,
+							'status_request_limit_exceeded' => array(
+								'default' => 0,
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
