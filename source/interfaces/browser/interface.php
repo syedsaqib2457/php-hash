@@ -1208,6 +1208,47 @@
 	</div>
 	<div class="process-overlay"></div>
 </div>
+<div class="hidden" process="user_add">
+	<div class="process-container">
+		<p class="message user-add"></p>
+		<label>Authentication Username</label>
+		<input name="authentication_username" type="text">
+		<label>Authentication Password</label>
+		<input name="authentication_password" type="text">
+		<label>Authentication Whitelist</label>
+		<textarea name="authentication_whitelist"></textarea>
+		<div class="checkbox-container" toggle="enable_request_logs">
+			<span checked="1"></span>
+			<label>Enable request logs</label>
+		</div>
+		<div class="container" name="enable_request_logs">
+			<div class="checkbox-container" toggle="enable_request_limit_rules">
+				<span checked="0"></span>
+				<label>Enable request limit rules for specific destinations</label>
+			</div>
+			<div class="container" name="enable_request_limit_rules">
+				<label>Request Destinations</label>
+				<div class="list" from="request_destinations"></div>
+				<label>Request Limit Rules</label>
+				<div class="list" from="request_limit_rules"></div>
+				<div class="checkbox-container" toggle="enable_only_allowing_requests_to_specific_destinations">
+					<span checked="0"></span>
+					<label>Enable only allowing requests to specific destinations</label>
+				</div>
+			</div>
+		</div>
+		<div class="checkbox-container" toggle="enable_temporary_authentication">
+			<label>Interval in Minutes Before Authentication Expires</label>
+			<input name="authentication_interval_minutes" type="text">
+		</div>
+		<label>Tag</label>
+		<input name="tag" type="text">
+		<div class="clear"></div>
+		<a class="button close" href="/">Close</a>
+		<a class="button submit" href="javascript:void(0);" process="user_add">Save Changes</a>
+	</div>
+	<div class="process-overlay"></div>
+</div>
 <div class="hidden" process="users">
 	<div class="process-container">
 		<div class="list" from="users"></div>
