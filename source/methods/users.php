@@ -110,8 +110,6 @@
 				return $response;
 			}
 
-			// ..
-
 			$userDataSaved = $this->save(array(
 				'data' => array(
 					array_intersect_key($parameters['data'], array(
@@ -132,18 +130,6 @@
 				return $response;
 			}
 
-			$user = $this->fetch($userParameters);
-			$response['status_valid'] = (
-				($user !== false) &&
-				(empty($user) === false)
-			);
-
-			if ($response['status_valid'] === false) {
-				return $response;
-			}
-
-			$userId = $user['id'];
-			// ..
 			$response = array(
 				'message' => 'User added successfully.',
 				'status_valid' => true

@@ -1239,22 +1239,6 @@
 			<span checked="1"></span>
 			<label>Enable request logs</label>
 		</div>
-		<div class="container" name="enable_request_logs">
-			<div class="checkbox-container" toggle="request_limit_rules">
-				<span checked="0"></span>
-				<label>Enable request limit rules for specific destinations</label>
-			</div>
-			<div class="container" name="request_limit_rules">
-				<label>Request Destinations</label>
-				<div class="list" from="request_destinations"></div>
-				<label>Request Limit Rules</label>
-				<div class="list" from="request_limit_rules"></div>
-				<div class="checkbox-container" toggle="status_allowing_requests_destinations_only">
-					<span checked="0"></span>
-					<label>Enable only allowing requests to specific destinations</label>
-				</div>
-			</div>
-		</div>
 		<div class="checkbox-container" toggle="temporary_authentication">
 			<span checked="0"></span>
 			<label>Enable temporary authentication</label>
