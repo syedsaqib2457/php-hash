@@ -38,24 +38,21 @@
 				return $response;
 			}
 
-			$conflictingRequestLimitRule = $this->fetch(array(
-				'fields' => array(
-					'id'
-				),
-				'from' => 'request_limit_rules',
+			$conflictingRequestLimitRuleCount = $this->count(array(
+				'in' => 'request_limit_rules',
 				'where' => array_intersect_key($parameters['data'], array(
 					'request_interval_minutes' => true,
 					'request_limit' => true,
 					'request_limit_interval' => true
 				))
 			));
-			$response['status_valid'] = ($conflictingRequestLimitRule !== false);
+			$response['status_valid'] = (is_int($conflictingRequestLimitRuleCount) === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = (empty($conflictingRequestLimitRule) === true);
+			$response['status_valid'] = ($conflictingRequestLimitRuleCount === 0);
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Request limit rule already exists, please try again.';
@@ -144,24 +141,21 @@
 				return $response;
 			}
 
-			$conflictingRequestLimitRule = $this->fetch(array(
-				'fields' => array(
-					'id'
-				),
-				'from' => 'request_limit_rules',
+			$conflictingRequestLimitRuleCount = $this->count(array(
+				'in' => 'request_limit_rules',
 				'where' => array_intersect_key($parameters['data'], array(
 					'request_interval_minutes' => true,
 					'request_limit' => true,
 					'request_limit_interval' => true
 				))
 			));
-			$response['status_valid'] = ($conflictingRequestLimitRule !== false);
+			$response['status_valid'] = (is_int($conflictingRequestLimitRuleCount) === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = (empty($conflictingRequestLimitRule) === true);
+			$response['status_valid'] = ($conflictingRequestLimitRuleCount === 0);
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Request limit rule already exists, please try again.';

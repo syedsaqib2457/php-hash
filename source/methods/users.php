@@ -84,11 +84,8 @@
 				}
 			}
 
-			$conflictingUser = $this->fetch(array(
-				'fields' => array(
-					'id'
-				),
-				'from' => 'users',
+			$conflictingUserCount = $this->count(array(
+				'in' => 'users',
 				'where' => array_intersect_key($parameters['data'], array(
 					'authentication_password' => true,
 					'authentication_username' => true,
@@ -96,13 +93,13 @@
 					'tag' => true
 				))
 			));
-			$response['status_valid'] = ($conflictingUser !== false);
+			$response['status_valid'] = (is_int($conflictingUserCount) === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = (empty($conflictingUser) === true);
+			$response['status_valid'] = ($conflictingUserCount === 0);
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'User already exists, please try again.';
@@ -135,7 +132,7 @@
 
 		public function edit($parameters) {
 			$response = array(
-				'message' => 'Error adding user, please try again.',
+				'message' => 'Error editing user, please try again.',
 				'status_valid' => (empty($parameters['data']['id']) === false)
 			);
 
@@ -240,6 +237,8 @@
 					return $response;
 				}
 			}
+
+			// ..
 
 			$userDataUpdated = $this->update(array(
 				'data' => array(
