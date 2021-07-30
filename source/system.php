@@ -340,6 +340,16 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'status_processed' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_processing' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'response_code' => array(
 								'default' => null,
 								'null' => true,
