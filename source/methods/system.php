@@ -624,8 +624,6 @@
 				$validatedIp = false;
 
 				if (empty($ip) === false) {
-					$ip = trim($ip, '.');
-
 					if (
 						(strpos($ip, ':') !== false) &&
 						(strpos($ip, ':::') === false)
