@@ -119,9 +119,9 @@
 						'authentication_password',
 						'authentication_username',
 						'authentication_whitelist',
+						'status_allowing_request_destinations_only',
 						'status_allowing_request_logs',
-						'tag',
-						// ..
+						'tag'
 					))
 				),
 				'to' => 'users'
