@@ -144,7 +144,29 @@
 				return $response;
 			}
 
-			// todo: check for duplicate request limit rule before updating
+			$conflictingRequestLimitRule = $this->fetch(array(
+				'fields' => array(
+					'id'
+				),
+				'from' => 'request_limit_rules',
+				'where' => array_intersect_key($parameters['data'], array(
+					'request_interval_minutes' => true,
+					'request_limit' => true,
+					'request_limit_interval' => true
+				))
+			));
+			$response['status_valid'] = ($conflictingRequestLimitRule !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($conflictingRequestLimitRule) === true);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Request limit rule already exists, please try again.';
+				return $response;
+			}
 
 			$requestLimitRuleDataUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
