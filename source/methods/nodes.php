@@ -346,10 +346,7 @@
 				}
 			}
 
-			$response = array(
-				'message' => 'Node added successfully.',
-				'status_valid' => true
-			);
+			$response['message'] = 'Node added successfully.';
 			return $response;
 		}
 
@@ -1132,10 +1129,7 @@
 				return $response;
 			}
 
-			$response = array(
-				'message' => 'Node edited successfully.',
-				'status_valid' => true
-			);
+			$response['message'] = 'Node edited successfully.';
 			return $response;
 		}
 
@@ -1198,10 +1192,7 @@
 				return $response;
 			}
 
-			$response = array(
-				'message' => 'Nodes removed successfully.',
-				'status_valid' => true
-			);
+			$response['message'] = 'Nodes removed successfully.';
 			return $response;
 		}
 

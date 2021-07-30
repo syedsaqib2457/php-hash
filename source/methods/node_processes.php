@@ -256,10 +256,7 @@
 				return $response;
 			}
 
-			$response = array(
-				'message' => 'Node process added successfully.',
-				'status_valid' => true
-			);
+			$response['message'] = 'Node process added successfully.';
 			return $response;
 		}
 
@@ -542,10 +539,7 @@
 				return $response;
 			}
 
-			$response = array(
-				'message' => 'Node process edited successfully.',
-				'status_valid' => true
-			);
+			$response['message'] = 'Node process edited successfully.';
 			return $response;
 		}
 
@@ -590,10 +584,7 @@
 				return $response;
 			}
 
-			$response = array(
-				'message' => 'Node processes removed successfully.',
-				'status_valid' => true
-			);
+			$response['message'] = 'Node processes removed successfully.';
 			return $response;
 		}
 

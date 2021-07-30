@@ -130,10 +130,7 @@
 				return $response;
 			}
 
-			$response = array(
-				'message' => 'User added successfully.',
-				'status_valid' => true
-			);
+			$response['message'] = 'User added successfully.';
 			return $response;
 		}
 
@@ -308,10 +305,7 @@
 				return $response;
 			}
 
-			$response = array(
-				'message' => 'User edited successfully.',
-				'status_valid' => true
-			);
+			$response['message'] = 'User edited successfully.';
 			return $response;
 		}
 

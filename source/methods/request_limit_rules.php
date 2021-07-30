@@ -54,10 +54,89 @@
 				return $response;
 			}
 
+			$response['message'] = 'Request limit rule added successfully.';
+			return $response;
+		}
+
+		public function edit($parameters) {
 			$response = array(
-				'message' => 'Request limit rule added successfully.',
-				'status_valid' => true
+				'message' => 'Error editing request limit rule, please try again.',
+				'status_valid' => (empty($parameters['data']['id']) === false)
 			);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$requestLimitRule = $this->fetch(array(
+				'fields' => array(
+					'id'
+				),
+				'from' => 'request_limit_rules',
+				'where' => array(
+					'id' => ($requestLimitRuleId = $parameters['data']['id'])
+				)
+			));
+			$response['status_valid'] = ($requestLimitRule !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($requestLimitRule) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid request limit rule ID, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				(empty($parameters['data']['request_interval_minutes']) === false) &&
+				(is_int($parameters['data']['request_interval_minutes']) === true)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid request interval, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				(empty($parameters['data']['request_limit']) === false) &&
+				(is_int($parameters['data']['request_limit']) === true)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid request limit, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				(empty($parameters['data']['request_limit_interval']) === false) &&
+				(is_int($parameters['data']['request_limit_interval']) === true)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid request limit interval, please try again.';
+				return $response;
+			}
+
+			$requestLimitRuleDataSaved = $this->save(array(
+				'data' => array(
+					array_intersect_key($parameters['data'], array(
+						'request_interval_minutes' => true,
+						'request_limit' => true,
+						'request_limit_interval' => true
+					))
+				),
+				'to' => 'users'
+			));
+			$response['status_valid'] = ($requestLimitRuleDataSaved === true);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['message'] = 'Request limit rule edited successfully.';
 			return $response;
 		}
 
