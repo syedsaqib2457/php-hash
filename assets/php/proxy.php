@@ -260,7 +260,7 @@
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux',
 		'sudo /etc/init.d/apache2 stop',
 	);
-	$rootPath = '/overlord/';
+	$rootPath = '/ghostcompute/';
 
 	if (is_dir($rootPath)) {
 		$commands[] = 'sudo rm -rf ' . $rootPath;
@@ -537,8 +537,8 @@
 		exit;
 	}
 
-	$connectScriptFile = '/overlord/connect.php';
-	$connectionScriptFile = '/overlord/connection.php';
+	$connectScriptFile = '/ghostcompute/connect.php';
+	$connectionScriptFile = '/ghostcompute/connection.php';
 	$commands = array(
 		'sudo wget -O ' . escapeshellarg($connectionScriptFile) . ' ' . $wgetParameters . ' "' . ($connectionScriptUrl = $url . '/assets/php/connection.php?' . time()) . '"'
 	);

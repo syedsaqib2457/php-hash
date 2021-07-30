@@ -454,7 +454,7 @@
 		'sudo apt-get update',
 		'sleep 1',
 		'sudo rm -rf ' . $websitePath . '/*',
-		'cd ' . $websitePath . ' && sudo wget -O overlord.tar.gz ' . $wgetParameters . ' https://github.com/williamstaffordparsons/overlord/archive/refs/heads/master.tar.gz'
+		'cd ' . $websitePath . ' && sudo wget -O ghostcompute.tar.gz ' . $wgetParameters . ' https://github.com/ghostcompute/ghostcompute/archive/refs/heads/master.tar.gz'
 	);
 	applyCommands($commands);
 
@@ -464,8 +464,8 @@
 	}
 
 	$commands = array(
-		'cd ' . $websitePath . ' && sudo tar -xvzf overlord.tar.gz && cd overlord-master && mv .* * ../',
-		'cd ' . $websitePath . ' && sudo rm -rf overlord.tar.gz overlord-master'
+		'cd ' . $websitePath . ' && sudo tar -xvzf ghostcompute.tar.gz && cd ghostcompute-master && mv .* * ../',
+		'cd ' . $websitePath . ' && sudo rm -rf ghostcompute.tar.gz ghostcompute-master'
 	);
 	applyCommands($commands);
 

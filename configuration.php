@@ -53,7 +53,7 @@
 						'server_proxy_processes' => 'server_id'
 					),
 					'hostname' => 'localhost',
-					'name' => 'overlord',
+					'name' => 'ghostcompute',
 					'password' => 'password',
 					'schema' => $schema,
 					'username' => 'root'

@@ -1041,7 +1041,7 @@
 
 				$this->decodedServerData = $serverResponse['data'];
 				$this->encodedServerData = json_encode($serverResponse['data']);
-				$this->rootPath = '/overlord/';
+				$this->rootPath = '/ghostcompute/';
 			}
 
 			return;
