@@ -15,6 +15,8 @@ The upcoming version 19 release is designed with these additional features and o
 + Request logging and system performance monitoring
 + System update scripts for each official release after version 19
 
+Releases after version 19 will include VM instance and VPN node types
+
 The current unofficial version 18 is functional and suitable as a visual interface for deploying and managing temporary proxy networks as forwarding IPv4 SOCKS proxies with authentication rules, automatic load balancing and programmatic scaling of internal nameserver and proxy processes.
 
 ## Version 18 Installation
