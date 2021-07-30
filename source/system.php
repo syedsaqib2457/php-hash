@@ -286,14 +286,14 @@
 								'default' => 1,
 								'type' => 'SMALLINT(3)'
 							),
-							'request_limit_interval_minutes' => array(
-								'default' => 1,
-								'type' => 'SMALLINT(3)'
-							),
-							'request_maximum' => array(
+							'request_limit' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'request_limit_interval_minutes' => array(
+								'default' => 1,
+								'type' => 'SMALLINT(3)'
 							)
 						),
 						'request_logs' => array(

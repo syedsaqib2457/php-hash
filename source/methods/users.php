@@ -90,10 +90,10 @@
 				),
 				'from' => 'users',
 				'where' => array_intersect_key($parameters['data'], array(
-					'authentication_password',
-					'authentication_username',
-					'authentication_whitelist',
-					'tag'
+					'authentication_password' => true,
+					'authentication_username' => true,
+					'authentication_whitelist' => true,
+					'tag' => true
 				))
 			));
 			$conflictingUser = $this->fetch($userParameters);
@@ -113,13 +113,13 @@
 			$userDataSaved = $this->save(array(
 				'data' => array(
 					array_intersect_key($parameters['data'], array(
-						'authentication_interval_minutes',
-						'authentication_password',
-						'authentication_username',
-						'authentication_whitelist',
-						'status_allowing_request_destinations_only',
-						'status_allowing_request_logs',
-						'tag'
+						'authentication_interval_minutes' => true,
+						'authentication_password' => true,
+						'authentication_username' => true,
+						'authentication_whitelist' => true,
+						'status_allowing_request_destinations_only' => true,
+						'status_allowing_request_logs' => true,
+						'tag' => true
 					))
 				),
 				'to' => 'users'
@@ -248,13 +248,13 @@
 			$userDataUpdated = $this->update(array(
 				'data' => array(
 					array_intersect_key($parameters['data'], array(
-						'authentication_interval_minutes',
-						'authentication_password',
-						'authentication_username',
-						'authentication_whitelist',
-						'status_allowing_request_destinations_only',
-						'status_allowing_request_logs',
-						'tag'
+						'authentication_interval_minutes' => true,
+						'authentication_password' => true,
+						'authentication_username' => true,
+						'authentication_whitelist' => true,
+						'status_allowing_request_destinations_only' => true,
+						'status_allowing_request_logs' => true,
+						'tag' => true
 					))
 				),
 				'in' => 'users',
