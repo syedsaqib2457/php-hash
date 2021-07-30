@@ -1264,17 +1264,26 @@
 					'id' => $nodeId
 				)
 			));
+			$nodeUserDataDeleted = $this->delete(array(
+				'in' => 'node_users',
+				'where' => array(
+					'status_removed' => true,
+					'node_id' => $nodeId
+				)
+			));
 			$nodeUserDataUpdated = $this->update(array(
 				'data' => array(
 					'status_processed' => true
 				),
 				'in' => 'node_users',
 				'where' => array(
+					'status_removed' => false,
 					'node_id' => $nodeId
 				)
 			));
 			$response['status_valid'] = (
 				($nodeDataUpdated === true) &&
+				($nodeUserDataDeleted === true) &&
 				($nodeUserDataUpdated === true)
 			);
 

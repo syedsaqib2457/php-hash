@@ -293,7 +293,6 @@
 				),
 				'in' => 'user_request_limit_rules',
 				'where' => array(
-					'status_processed' => false,
 					'status_removed' => false,
 					'user_id' => $userId
 				)
