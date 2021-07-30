@@ -123,6 +123,115 @@
 								'type' => 'CHAR(10)'
 							)
 						),
+						'node_process_resource_usage_logs' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							),
+							// ..
+						),
+						'node_resource_usage_logs' => array(
+							'bytes_received' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'bytes_sent' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'cpu_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'memory_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'storage_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							)
+						),
+						'node_process_user_resource_usage_logs' => array(
+							// ..
+						),
+						'node_user_resource_usage_logs' => array(
+							'bytes_received' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'bytes_sent' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_user_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							)
+						),
 						'node_users' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
@@ -363,6 +472,11 @@
 							'username' => array(
 								'default' => "'-'",
 								'type' => 'VARCHAR(15)'
+							),
+							'type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
 							)
 						),
 						'settings' => array(
@@ -381,6 +495,9 @@
 							'value' => array(
 								'type' => 'VARCHAR(255)'
 							)
+						),
+						'system_resource_usage_logs' => array(
+							// ..
 						),
 						'user_request_destinations' => array(
 							'created' => array(
