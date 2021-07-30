@@ -4,58 +4,55 @@
 
 	class RequestLogMethods extends SystemMethods {
 
-		public function archive($parameters) {
+		public function add($parameters) {
 			$response = array(
-				'message' => array(
-					'status' => 'error',
-					'text' => 'Error archiving proxy URL request logs, please try again.'
+				'message' => 'Error adding request logs, please try again.',
+				'status_valid' = (
+					(empty($_FILES['data']['tmp_name']) === false) &&
+					(empty($parameters['user']['endpoint']) === false)
 				)
 			);
 
-			if (
-				!empty($_FILES['data']['tmp_name']) &&
-				!empty($parameters['user']['endpoint'])
-			) {
-				$proxyUrlRequestLogData = array();
-				$proxyUrlRequestLogKeys = array(
-					'bytes_received',
-					'bytes_sent',
-					'client_ip',
-					'code',
-					'created',
-					'proxy_id',
-					'server_id',
-					'target_ip',
-					'target_url',
-					'username'
-				);
-				$proxyUrlRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
-				array_pop($proxyUrlRequestLogs);
-
-				foreach ($proxyUrlRequestLogs as $proxyUrlRequestLog) {
-					$proxyUrlRequestLogParts = explode(' _ ', $proxyUrlRequestLog);
-
-					if (!empty($proxyUrlRequestLogParts[0])) {
-						$proxyUrlRequestLogData[] = array_combine($proxyUrlRequestLogKeys, $proxyUrlRequestLogParts);
-					}
-				}
-
-				if ($this->save(array(
-					 'data' => $proxyUrlRequestLogData,
-					'to' => 'proxy_url_request_logs'
-				))) {
-					$response = array(
-						'data' => array(
-							'most_recent_proxy_url_request_log' => $proxyUrlRequestLog
-						),
-						'message' => array(
-							'status' => 'success',
-							'text' => 'Proxy url request logs archived successfully.'
-						)
-					);
-                        	}
+			if ($response['status_valid'] === false) {
+				return $response;
 			}
 
+			$requestLogData = array();
+			$requestLogKeys = array(
+				'bytes_received',
+				'bytes_sent',
+				'created',
+				'destination_hostname',
+				'destination_ip',
+				'node_id',
+				'node_user_id',
+				'response_code',
+				'source_ip',
+				'username'
+			);
+			$requestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
+			array_pop($requestLogs);
+
+			foreach ($requestLogs as $requestLog) {
+				$requestLogParts = explode(' _ ', $requestLog);
+
+				if (empty($requestLogParts[0]) === false) {
+					$requestLogData[] = array_combine($requestLogKeys, $requestLogParts);
+				}
+			}
+
+			$requestLogsSaved = $this->save(array(
+				'data' => $requestLogData,
+				'to' => 'request_logs'
+			));
+			$response['status_valid'] = ($requestLogsSaved === true);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['data']['most_recent_request_log'] = $requestLog;
+			$response['message'] = 'Request logs added successfully.';
 			return $response;
 		}
 
@@ -98,7 +95,7 @@
 					}
 				}
 
-				// ..
+				// todo: process request logs for exceeding limits
 
 				$this->delete(array(
 					'from' => 'request_logs',
