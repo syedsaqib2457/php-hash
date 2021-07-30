@@ -238,7 +238,27 @@
 				}
 			}
 
-			// ..
+			$conflictingUserCount = $this->count(array(
+				'in' => 'users',
+				'where' => array_intersect_key($parameters['data'], array(
+					'authentication_password' => true,
+					'authentication_username' => true,
+					'authentication_whitelist' => true,
+					'tag' => true
+				))
+			));
+			$response['status_valid'] = (is_int($conflictingUserCount) === true);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = ($conflictingUserCount === 0);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'User already exists, please try again.';
+				return $response;
+			}
 
 			$userDataUpdated = $this->update(array(
 				'data' => array(
