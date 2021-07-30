@@ -381,6 +381,11 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'status_processed' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'user_id' => array(
 								'default' => null,
 								'null' => true,
@@ -403,6 +408,11 @@
 							),
 							'request_limit_rule_id' => array(
 								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_processed' => array(
+								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
