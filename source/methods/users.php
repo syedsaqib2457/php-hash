@@ -84,7 +84,7 @@
 				}
 			}
 
-			$userParameters = array(
+			$conflictingUser = $this->fetch(array(
 				'fields' => array(
 					'id'
 				),
@@ -96,7 +96,6 @@
 					'tag' => true
 				))
 			));
-			$conflictingUser = $this->fetch($userParameters);
 			$response['status_valid'] = ($conflictingUser !== false);
 
 			if ($response['status_valid'] === false) {
