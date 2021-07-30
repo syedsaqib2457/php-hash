@@ -1,6 +1,23 @@
-Note: It's recommended to wait until the first official release of version 19 when process auto-scaling, IPv6, proxy request logging, public-facing DNS, reverse proxies and system monitoring features are completed. It will likely require new installations and server deployments if upgrading from version 18 to version 19.
+Note: It's recommended to wait until the first official release of version 19 when process auto-scaling, IPv6, proxy request logging, public-facing DNS, reverse proxies and system monitoring features are completed. It will require new installations and server deployments if upgrading from version 18 to version 19, but there will be automated update scripts available for version 19+.
 
-## Installation
+Overlord is a free, open-source cloud automation system for deploying, monitoring, optimizing, scaling, securing and simplifying critical internet infrastructure.
+
+The upcoming version 19 release is designed with these additional features and optimized for both bare-metal and cloud VM environments, with or without Docker and Kubernetes. 
+
++ Additional anti-DDoS security and multi-user authentication
++ Automatic process scaling with improved load balancing
++ Better connection stability during reconfiguration
++ Extensions and modules for deploying and integrating with various cloud platforms
++ IPv6 support with IPv4 to IPv6 and IPv6 to IPv4 compatibility
++ Granular rate limiting rules for specific destination IPs and URLs
++ HTTP proxy support and reverse proxy configurations
++ Public-facing nameservers with authentication and TCP + UDP
++ Request logging and system performance monitoring
++ System update scripts for each official release after version 19
+
+The current unofficial version 18 is functional and suitable as a visual interface for deploying and managing temporary proxy networks as forwarding IPv4 SOCKS proxies with authentication rules, automatic load balancing and programmatic scaling of internal nameserver and proxy processes.
+
+## Version 18 Installation
 
 Log in to a server using one of these supported Linux distributions with root user and HTTP traffic allowed.
 
