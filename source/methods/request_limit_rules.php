@@ -46,7 +46,7 @@
 						'request_limit_interval' => true
 					))
 				),
-				'to' => 'users'
+				'to' => 'request_limit_rules'
 			));
 			$response['status_valid'] = ($requestLimitRuleDataSaved === true);
 
@@ -120,17 +120,18 @@
 				return $response;
 			}
 
-			$requestLimitRuleDataSaved = $this->save(array(
-				'data' => array(
-					array_intersect_key($parameters['data'], array(
-						'request_interval_minutes' => true,
-						'request_limit' => true,
-						'request_limit_interval' => true
-					))
-				),
-				'to' => 'users'
+			$requestLimitRuleDataUpdated = $this->update(array(
+				'data' => array_intersect_key($parameters['data'], array(
+					'request_interval_minutes' => true,
+					'request_limit' => true,
+					'request_limit_interval' => true
+				)),
+				'in' => 'request_limit_rules',
+				'where' => array(
+					'id' => $requestLimitRuleId
+				)
 			));
-			$response['status_valid'] = ($requestLimitRuleDataSaved === true);
+			$response['status_valid'] = ($requestLimitRuleDataUpdated === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
