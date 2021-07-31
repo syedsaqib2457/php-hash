@@ -97,19 +97,21 @@
 
 				// todo: process request logs for exceeding limits
 
-				$this->delete(array(
+				$requestLogsDeleted = $this->delete(array(
 					'from' => 'request_logs',
 					'where' => array(
 						'modified <' => date('Y-m-d H:i:s', strtotime('-1 hour')),
 						'node_user_id' => null
 					)
 				));
-				$response = array(
-					'message' => array(
-						'status' => 'success',
-						'text' => 'Request logs processed successfully.'
-					)
-				);
+				$response['status_valid'] = ($requestLogsDeleted === true);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				$response['message'] = 'Request logs processed successfully.';
+				return $response;
 			}
 
 			// todo: clear proxy logs every 20 minutes
