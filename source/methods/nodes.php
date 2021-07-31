@@ -1033,6 +1033,88 @@
 			return array();
 		}
 
+		public function process() {
+			$response = array(
+				'message' => 'Error processing nodes, please try again.',
+				'status_valid' => (empty($parameters['where']['id']) === false)
+			);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$nodeId = $parameters['where']['id'];
+
+			if (empty($parameters['data']['processed']) === false) {
+				$nodeDataUpdated = $this->update(array(
+					'data' => array(
+						'status_processed' => true
+					),
+					'in' => 'nodes',
+					'where' => array(
+						'id' => $nodeId,
+						'node_id' => $nodeId
+					)
+				));
+				$response['status_valid'] = $nodeDataUpdated;
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				$response['message'] = 'Nodes processed successfully.';
+				return $response;
+			}
+
+			$nodeCount = $this->count(array(
+				'in' => 'nodes',
+				'where' => array(
+					'id' => $nodeId,
+					'node_id' => $nodeId,
+					'status_processed' => false
+				)
+			));
+			$response['status_valid'] = (
+				(is_int($nodeCount) === true) &&
+				($nodeCount > 0)
+			);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$nodes = $this->fetch(array(
+				'fields' => array(
+					'id',
+					'node_id',
+					'status_active',
+					'status_deployed'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'id' => $nodeId,
+					'node_id' => $nodeId
+				)
+			);
+			$response['status_valid'] = ($nodes !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($nodes) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node ID, please try again.';
+				return $response;
+			}
+
+			// ..
+
+			$response['message'] = 'Nodes processed successfully.'
+			return $response;
+		}
+
 		public function remove($parameters) {
 			$response = array(
 				'message' => 'Error removing nodes, please try again.',
@@ -1090,8 +1172,12 @@
 		public function view($parameters = array()) {
 			$response = array(
 				'message' => 'Error viewing node, please try again.',
-				'status_valid' => false
+				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
 
 			/*
 			if (
