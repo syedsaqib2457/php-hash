@@ -156,48 +156,8 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'CHAR(10)'
-							)
-						),
-						'node_resource_usage_logs' => array(
-							'bytes_received' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
 							),
-							'bytes_sent' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'cpu_percentage' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'id' => array(
-								'auto_increment' => true,
-								'primary_key' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'memory_percentage' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'node_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'storage_percentage' => array(
+							'requests' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -237,10 +197,65 @@
 								'null' => true,
 								'type' => 'CHAR(10)'
 							),
+							'request_limit' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
 							'user_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
+							)
+						),
+						'node_resource_usage_logs' => array(
+							'bytes_received' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'bytes_sent' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'cpu_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'memory_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'requests' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'storage_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
 							)
 						),
 						'node_user_resource_usage_logs' => array(
@@ -268,6 +283,11 @@
 								'type' => 'DATETIME'
 							),
 							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'requests' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -368,6 +388,11 @@
 								'null' => true,
 								'type' => 'VARCHAR(39)'
 							),
+							'memory_capacity' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -386,6 +411,11 @@
 								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
+							),
+							'storage_capacity' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
 							)
 						),
 						'ports' => array(
