@@ -651,11 +651,6 @@
 							)
 						),
 						'users' => array(
-							'authentication_interval_minutes' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'DATETIME'
-							),
 							'authentication_password' => array(
 								'default' => null,
 								'null' => true,

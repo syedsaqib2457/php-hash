@@ -1088,7 +1088,8 @@
 					'id',
 					'node_id',
 					'status_active',
-					'status_deployed'
+					'status_deployed',
+					// ..
 				),
 				'from' => 'nodes',
 				'where' => array(
@@ -1111,6 +1112,87 @@
 
 			// ..
 
+			$nodeProcessTypes = array(
+				'http_proxy',
+				'nameserver',
+				'socks_proxy'
+			);
+			$response['data'] = array();
+
+			foreach ($nodeProcessTypes as $nodeProcessType) {
+				$nodeProcesses = $this->fetch(array(
+					'fields' => array(
+						'application_protocol',
+						'external_ip_version_4',
+						'external_ip_version_6',
+						'internal_ip_version_4',
+						'internal_ip_version_6',
+						'port_id',
+						'transport_protocol'
+					),
+					'from' => 'node_processes',
+					'where' => array(
+						'node_id' => $nodeId,
+						'type' => $nodeProcessType
+					)
+				));
+				$nodeUsers = $this->fetch(array(
+					'fields' => array(
+						'user_id'
+					),
+					'from' => 'node_users',
+					'where' => array(
+						'node_id' => $nodeId,
+						'status_removed' => false,
+						'type' => $nodeProcessType
+					)
+				));
+				$response['status_valid'] = (
+					($nodeProcesses !== false) &&
+					($nodeUsers !== false)
+				);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				if (empty($nodeProcesses) === false) {
+					$response['data']['node_processes'][$nodeProcessType] = $nodeProcesses;
+				}
+
+				if (empty($nodeUsers) === false) {
+					$nodeUserIds = array();
+
+					foreach ($nodeUsers as $nodeUser) {
+						$nodeUserIds[$nodeUser['user_id']] = $nodeUser['user_id'];
+					}
+
+					$nodeUsers = $this->fetch(array(
+						'fields' => array(
+							'authentication_password',
+							'authentication_username',
+							'authentication_whitelist',
+							'id',
+							'status_allowing_request_destinations_only',
+							'status_allowing_request_logs'
+							'tag'
+						),
+						'where' => array(
+							'id' => $nodeUserIds
+						)
+					));
+					$response['status_valid'] = ($nodeUsers !== false);
+
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+
+					$response['data']['node_users'][$nodeProcessType] = $nodeUsers;
+					// ..
+				}
+			}
+
+			// ..
 			$response['message'] = 'Nodes processed successfully.'
 			return $response;
 		}
