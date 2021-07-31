@@ -124,6 +124,16 @@
 							)
 						),
 						'node_process_resource_usage_logs' => array(
+							'bytes_received' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'bytes_sent' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -146,8 +156,7 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'CHAR(10)'
-							),
-							// ..
+							)
 						),
 						'node_resource_usage_logs' => array(
 							'bytes_received' => array(
@@ -195,7 +204,44 @@
 							)
 						),
 						'node_process_user_resource_usage_logs' => array(
-							// ..
+							'bytes_received' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'bytes_sent' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							),
+							'user_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							)
 						),
 						'node_user_resource_usage_logs' => array(
 							'bytes_received' => array(
@@ -226,7 +272,7 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'node_user_id' => array(
+							'user_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
