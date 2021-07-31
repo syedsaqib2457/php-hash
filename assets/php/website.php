@@ -458,7 +458,7 @@
 	);
 	applyCommands($commands);
 
-	if (!file_exists($websitePath . '/overlord.tar.gz')) {
+	if (!file_exists($websitePath . '/ghostcompute.tar.gz')) {
 		echo 'Error: Unable to download website files.' . "\n";
 		exit;
 	}
