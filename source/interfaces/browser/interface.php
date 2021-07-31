@@ -1239,14 +1239,6 @@
 			<span checked="1"></span>
 			<label>Enable request logs</label>
 		</div>
-		<div class="checkbox-container" toggle="temporary_authentication">
-			<span checked="0"></span>
-			<label>Enable temporary authentication</label>
-		</div>
-		<div class="container" name="temporary_authentication">
-			<label>Interval in Minutes Before Authentication Expires</label>
-			<input name="authentication_interval_minutes" type="text">
-		</div>
 		<label>Tag</label>
 		<input name="tag" type="text">
 		<div class="clear"></div>
@@ -1283,14 +1275,6 @@
 					<label>Enable only allowing requests to specific destinations</label>
 				</div>
 			</div>
-		</div>
-		<div class="checkbox-container" toggle="temporary_authentication">
-			<span checked="0"></span>
-			<label>Enable temporary authentication</label>
-		</div>
-		<div class="container" name="temporary_authentication">
-			<label>Interval in Minutes Before Authentication Expires</label>
-			<input name="authentication_interval_minutes" type="text">
 		</div>
 		<label>Tag</label>
 		<input name="tag" type="text">
