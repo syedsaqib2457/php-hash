@@ -537,8 +537,8 @@
 		exit;
 	}
 
-	$connectScriptFile = '/overlord/connect.php';
-	$connectionScriptFile = '/overlord/connection.php';
+	$connectScriptFile = '/ghostcompute/connect.php';
+	$connectionScriptFile = '/ghostcompute/connection.php';
 	$commands = array(
 		'sudo wget -O ' . escapeshellarg($connectionScriptFile) . ' ' . $wgetParameters . ' "' . ($connectionScriptUrl = $url . '/assets/php/connection.php?' . time()) . '"'
 	);

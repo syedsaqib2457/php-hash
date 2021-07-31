@@ -10,7 +10,7 @@
 				'base_path' => __DIR__,
 				'database' => array(
 					'hostname' => 'localhost',
-					'name' => 'overlord',
+					'name' => 'ghostcompute',
 					'password' => 'password',
 					'structure' => array(
 						'node_ports' => array(

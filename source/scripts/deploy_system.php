@@ -427,18 +427,18 @@
 		'sudo ' . $binaryFiles['service'] . ' mysql restart',
 		'sudo apt-get update',
 		'sudo rm -rf ' . $systemPath . '/*',
-		'cd ' . $systemPath . ' && sudo wget -O overlord.tar.gz ' . $wgetParameters . ' https://github.com/williamstaffordparsons/overlord/archive/refs/heads/develop.tar.gz'
+		'cd ' . $systemPath . ' && sudo wget -O ghostcompute.tar.gz ' . $wgetParameters . ' https://github.com/ghostcompute/ghostcompute/archive/refs/heads/develop.tar.gz'
 	);
 	applyCommands($commands);
 
-	if (file_exists($systemPath . '/overlord.tar.gz') === false) {
+	if (file_exists($systemPath . '/ghostcompute.tar.gz') === false) {
 		echo 'Error downloading system files, please try again.' . "\n";
 		exit;
 	}
 
 	$commands = array(
-		'cd ' . $systemPath . ' && sudo tar -xvzf overlord.tar.gz && cd overlord-develop && mv .* * ../',
-		'cd ' . $systemPath . ' && sudo rm -rf overlord.tar.gz overlord-develop'
+		'cd ' . $systemPath . ' && sudo tar -xvzf ghostcompute.tar.gz && cd ghostcompute-develop && mv .* * ../',
+		'cd ' . $systemPath . ' && sudo rm -rf ghostcompute.tar.gz ghostcompute-develop'
 	);
 	applyCommands($commands);
 
