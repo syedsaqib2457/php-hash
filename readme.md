@@ -1,6 +1,8 @@
+## Internet Privacy at Scale
+
 Note: It's recommended to wait until the first official release of version 19 when process auto-scaling, IPv6, proxy request logging, public-facing DNS, reverse proxies and system monitoring features are completed. It will require new installations and server deployments if upgrading from version 18 to version 19, but there will be automated update scripts available for version 19+.
 
-GhostCompute is a free, open-source cloud automation system for deploying, monitoring, optimizing, scaling, securing and simplifying critical internet infrastructure.
+**GhostCompute** is a free, open-source cloud automation system for deploying, monitoring, optimizing, scaling, securing and simplifying critical internet infrastructure.
 
 The upcoming version 19 release is designed with these additional features and optimized for both bare-metal and cloud VM environments, with or without Docker and Kubernetes. 
 
