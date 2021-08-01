@@ -368,8 +368,8 @@
 		'<VirtualHost *:80>',
 		'ServerAlias ' . $url,
 		'ServerName ' . $url,
-		'DocumentRoot ' . $systemPath . '/source',
-		'<Directory ' . $systemPath . '/source' . '>',
+		'DocumentRoot ' . $systemPath,
+		'<Directory ' . $systemPath . '>',
 		'Allow from all',
 		'Options FollowSymLinks',
 		'AllowOverride All',
@@ -459,7 +459,7 @@
 
 	$crontabCommands = array(
 		'# [Start]',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/source/interfaces/command/interface.php system processRequestLogs',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system processRequestLogs',
 		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
 		'# [Stop]'
 	);
@@ -598,15 +598,15 @@
 					$queries[] = str_replace($queryActions['change'], $queryActions['add'], $query);
 				}
 
-				if (!empty($columnStructure['primary_key'])) {
+				if (empty($columnStructure['primary_key']) === false) {
 					$queries[$columnName . $system->settings['keys']['start'] . $tableName] = 'ALTER TABLE `' . $tableName . '` ADD PRIMARY KEY(`' . $columnName . '`)';
 
-					if (!empty($columnStructure['auto_increment'])) {
+					if (empty($columnStructure['auto_increment']) === false) {
 						$queries[] = $query . ' AUTO_INCREMENT';
 					}
 				}
 
-				if (!empty($columnStructure['index'])) {
+				if (empty($columnStructure['index']) === false) {
 					$queries[$columnName . $system->settings['keys']['start'] . $tableName] = 'ALTER TABLE `' . $tableName . '` ADD INDEX(`' . $columnName . '`)';
 				}
 			}
