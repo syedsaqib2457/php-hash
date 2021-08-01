@@ -238,6 +238,16 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
+							'memory_percentage_tcp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_udp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
