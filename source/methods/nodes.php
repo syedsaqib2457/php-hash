@@ -1085,11 +1085,18 @@
 
 			$nodes = $this->fetch(array(
 				'fields' => array(
+					'destination_address_version_4',
+					'destination_address_version_6',
+					'destination_port_version_4',
+					'destination_port_version_6',
+					'external_ip_version_4',
+					'external_ip_version_6',
 					'id',
+					'internal_ip_version_4',
+					'internal_ip_version_6',
 					'node_id',
 					'status_active',
-					'status_deployed',
-					// ..
+					'status_deployed'
 				),
 				'from' => 'nodes',
 				'where' => array(
@@ -1109,8 +1116,6 @@
 				$response['message'] = 'Invalid node ID, please try again.';
 				return $response;
 			}
-
-			// ..
 
 			$nodeProcessTypes = array(
 				'http_proxy',
@@ -1197,7 +1202,6 @@
 							'id',
 							'status_allowing_request_destinations_only',
 							'status_allowing_request_logs'
-							'tag'
 						),
 						'from' => 'users',
 						'where' => array(
@@ -1217,7 +1221,6 @@
 					if (empty($users) === false) {
 						foreach ($users as $user) {
 							$response['data']['node_users'][$nodeProcessType][$user['id']] = $user;
-							// ..
 						}
 
 						if (empty($userRequestDestinations) === false) {

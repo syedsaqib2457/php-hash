@@ -412,6 +412,11 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
+							'status_processed' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'storage_capacity' => array(
 								'default' => null,
 								'null' => true,
