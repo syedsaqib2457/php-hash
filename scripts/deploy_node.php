@@ -32,7 +32,7 @@
 		}
 
 		file_put_contents($commandsFile, implode("\n", $commands));
-		shell_exec('sudo chmod +x ' . $commandsFile);
+		chmod($commandsFile, 0755);
 		exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
 		$binaryFile = current($binaryFile);
 		unlink($commandsFile);
@@ -263,7 +263,8 @@
 		rmdir($rootPath);
 	}
 
-	mkdir($rootPath, 0755, true);
+	mkdir($rootPath);
+	chmod($rootPath, 0755);
 	$binaries = array(
 		array(
 			'command' => $uniqueId,

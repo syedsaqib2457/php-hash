@@ -32,7 +32,7 @@
 		}
 
 		file_put_contents($commandsFile, implode("\n", $commands));
-		shell_exec('sudo chmod +x ' . $commandsFile);
+		chmod($commandsFile, 0755);
 		exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
 		$binaryFile = current($binaryFile);
 		unlink($commandsFile);
@@ -332,8 +332,8 @@
 	$totalSystemMemory = current($totalSystemMemory);
 
 	if (
-		is_numeric($kernelPageSize) &&
-		is_numeric($totalSystemMemory)
+		(is_numeric($kernelPageSize) === true) &&
+		(is_numeric($totalSystemMemory) === true)
 	) {
 		$maximumMemoryBytes = ceil($totalSystemMemory * 0.34);
 		$maximumMemoryPages = ceil($maximumMemoryBytes / $kernelPageSize);
@@ -358,12 +358,12 @@
 		}
 	}
 
-	$commands = array(
-		'sudo rm -rf ' . ($systemPath = '/var/www/' . ($url = $_SERVER['argv'][1])),
-		'sudo mkdir -p ' . $systemPath,
-		'sudo ' . $binaryFiles['systemctl'] . ' start apache2'
-	);
-	applyCommands($commands);
+	$url = $_SERVER['argv'][1];
+	$systemPath = '/var/www/' . $url;
+	rmdir($systemPath);
+	mkdir($systemPath);
+	chmod($systemPath, 0755);
+	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	$virtualHostContents = array(
 		'<VirtualHost *:80>',
 		'ServerAlias ' . $url,
@@ -420,13 +420,13 @@
 		'socket = /var/run/mysqld/mysqld.sock'
 	);
 	file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', implode("\n", $mysqlConfigurationContents));
+	rmdir($systemPath);
 	$commands = array(
 		'sudo ' . $binaryFiles['service'] . ' mysql restart',
 		'sudo mysql -u root -p"password" -e "DELETE FROM mysql.user WHERE User=\'\'; DELETE FROM mysql.user WHERE User=\'root\' AND Host NOT IN (\'localhost\', \'127.0.0.1\', \'::1\');"',
 		'sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"',
 		'sudo ' . $binaryFiles['service'] . ' mysql restart',
 		'sudo apt-get update',
-		'sudo rm -rf ' . $systemPath . '/*',
 		'cd ' . $systemPath . ' && sudo wget -O ghostcompute.tar.gz ' . $wgetParameters . ' https://github.com/ghostcompute/ghostcompute/archive/refs/heads/develop.tar.gz'
 	);
 	applyCommands($commands);
@@ -436,11 +436,7 @@
 		exit;
 	}
 
-	$commands = array(
-		'cd ' . $systemPath . ' && sudo tar -xvzf ghostcompute.tar.gz && cd ghostcompute-develop && mv .* * ../',
-		'cd ' . $systemPath . ' && sudo rm -rf ghostcompute.tar.gz ghostcompute-develop'
-	);
-	applyCommands($commands);
+	shell_exec('cd ' . $systemPath . ' && sudo tar -xvzf ghostcompute.tar.gz && cd ghostcompute-develop && mv .* * ../');
 
 	if (file_exists($systemPath . '/license.txt') === false) {
 		echo 'Error extracting system files, please try again.' . "\n";
@@ -512,14 +508,14 @@
 	}
 
 	$firewallRules[] = 'COMMIT';
-	$firewallRuleParts = array_chunk($firewallRules, 1000);
 	$firewallRulesFile = '/tmp/firewall';
 
-	if (file_exists($firewallRulesFile)) {
+	if (file_exists($firewallRulesFile) === true) {
 		unlink($firewallRulesFile);
 	}
 
 	touch($firewallRulesFile);
+	$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 	foreach ($firewallRuleParts as $firewallRulePart) {
 		$saveFirewallRules = implode("\n", $firewallRulePart);
@@ -528,8 +524,8 @@
 
 	shell_exec('sudo ' . $binaryFiles['iptables-restore'] . ' < ' . $firewallRulesFile);
 	sleep(1 * count($firewallRuleParts));
-	shell_exec('sudo rm /tmp/firewall');
-	require_once('/var/www/' . $url . '/source/system.php');
+	unlink($firewallRulesFile);
+	require_once('/var/www/' . $url . '/system.php');
 	$database = mysqli_connect($system->settings['database']['hostname'], $system->settings['database']['username'], $system->settings['database']['password']);
 	$queries = array();
 
@@ -679,6 +675,8 @@
 	echo 'System installed successfully.' . "\n";
 	echo 'You can now log in at ' . $url . ' with this password:' . "\n";
 	echo 'Password: ' . $password . "\n";
-	shell_exec('sudo rm /tmp/deploy_system.php');
+	rmdir($systemPath . '/ghostcompute.tar.gz');
+	rmdir($systemPath . '/ghostcompute-develop');
+	unlink('/tmp/deploy_system.php');
 	exit;
 ?>
