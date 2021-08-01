@@ -1,25 +1,17 @@
 <?php
 	if (
-		empty($_SERVER['argv'][1]) ||
-		($id = $_SERVER['argv'][1]) === false
+		(empty($_SERVER['argv'][1]) === true) ||
+		(empty($_SERVER['argv'][2]) === true)
 	) {
-		echo 'Error: ID parameter is required for installation.' . "\n";
-		exit;
-	}
-
-	if (
-		empty($_SERVER['argv'][2]) ||
-		($url = $_SERVER['argv'][2]) === false
-	) {
-		echo 'Error: URL parameter is required for installation.' . "\n";
+		echo 'Error deploying node, please try again.' . "\n";
 		exit;
 	}
 
 	function applyCommands($commands) {
 		foreach ($commands as $command) {
 			if (
-				!empty($command) &&
-				is_string($command)
+				(empty($command) === false) &&
+				(is_string($command) === true)
 			) {
 				echo shell_exec($command);
 			}
@@ -35,7 +27,7 @@
 		);
 		$commandsFile = '/tmp/commands.sh';
 
-		if (file_exists($commandsFile)) {
+		if (file_exists($commandsFile) === true) {
 			unlink($commandsFile);
 		}
 
@@ -45,8 +37,8 @@
 		$binaryFile = current($binaryFile);
 		unlink($commandsFile);
 
-		if (empty($binaryFile)) {
-			echo 'Error: Binary file for ' . $binary['name'] . ' not found, please run the install script again.' . "\n";
+		if (empty($binaryFile) === true) {
+			echo 'Error fetching required binary file, please try again.' . "\n";
 			shell_exec('sudo apt-get update');
 			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
 			exit;
@@ -130,25 +122,25 @@
 	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
 		$operatingSystemDetail = explode('=', $operatingSystemDetail);
 
-		if (!empty($operatingSystemDetail[1])) {
+		if (empty($operatingSystemDetail[1]) === false) {
 			$operatingSystemDetails[strtolower($operatingSystemDetail[0])] = trim($operatingSystemDetail[1], '"');
 		}
 
 		unset($operatingSystemDetails[$operatingSystemDetailKey]);
 	}
 
-	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']])) {
-		echo 'Error: Unsupported operating system ' . $operatingSystemDetails['pretty_name'] . "\n";
+	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
+		echo 'Error detecting a supported operating system, please try again.' . "\n";
 		exit;
 	}
 
 	$operatingSystemConfiguration = $supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']];
 
 	if (
-		!file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) ||
-		!file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents']))
+		(file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) === false) ||
+		(file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents'])) === false)
 	) {
-		echo 'Error: Unable to update package sources at ' . $operatingSystemConfiguration['sources']['aptitude']['path'] . '.' . "\n";
+		echo 'Error updating package sources, please try again.' . "\n";
 		exit;
 	}
 
@@ -186,7 +178,7 @@
 
 	$commands = array(
 		'sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0',
-		'sudo wget -O ' . ($serverResponseFile = '/tmp/serverResponse.json') . ' ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' --post-data "json={\"action\":\"activate\",\"where\":{\"id\":\"' . $id . '\"}}" ' . $url . '/endpoint/servers'
+		'sudo wget -O ' . ($serverResponseFile = '/tmp/serverResponse.json') . ' ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' --post-data "json={\"action\":\"activate\",\"where\":{\"id\":\"' . ($id = $_SERVER['argv'][1]) . '\"}}" ' . ($url = $_SERVER['argv'][2]) . '/endpoint/servers'
 	);
 	applyCommands($commands);
 
