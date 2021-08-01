@@ -1124,6 +1124,10 @@
 			);
 			$response['data'] = array();
 
+			foreach ($nodes as $node) {
+				$response['data']['nodes'][$node['id']] = $node;
+			}
+
 			foreach ($nodeProcessTypes as $nodeProcessType) {
 				$nodeProcesses = $this->fetch(array(
 					'fields' => array(
@@ -1143,6 +1147,7 @@
 				));
 				$nodeUsers = $this->fetch(array(
 					'fields' => array(
+						'node_id',
 						'user_id'
 					),
 					'from' => 'node_users',
@@ -1169,6 +1174,7 @@
 					$userIds = array();
 
 					foreach ($nodeUsers as $nodeUser) {
+						$response['data']['node_users'][$nodeProcessType][$nodeUser['node_id']][$nodeUser['user_id']] = $nodeUser['user_id'];
 						$userIds[$nodeUser['user_id']] = $nodeUser['user_id'];
 					}
 
@@ -1220,14 +1226,14 @@
 
 					if (empty($users) === false) {
 						foreach ($users as $user) {
-							$response['data']['node_users'][$nodeProcessType][$user['id']] = $user;
+							$response['data']['users'][$nodeProcessType][$user['id']] = $user;
 						}
 
 						if (empty($userRequestDestinations) === false) {
 							$requestDestinationIds = array();
 
 							foreach ($userRequestDestinations as $userRequestDestination) {
-								$requestDestinationIds[$userRequestDestination['request_destination_id']] = $response['data']['node_users'][$nodeProcessType][$user['id']]['request_destination_id'][] = $userRequestDestination['request_destination_id'];
+								$requestDestinationIds[$userRequestDestination['request_destination_id']] = $response['data']['users'][$nodeProcessType][$user['id']]['request_destination_id'][] = $userRequestDestination['request_destination_id'];
 							}
 
 							$requestDestinations = $this->fetch(array(
