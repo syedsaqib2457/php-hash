@@ -35,7 +35,7 @@
 							'port_id' => array(
 								'auto_increment' => true,
 								'primary_key' => true,
-								'type' => 'BIGINT(11)'
+								'type' => 'MEDIUMINT(3)'
 							),
 							'status_allowing' => array(
 								'default' => 0,
@@ -110,7 +110,7 @@
 							'port_id' => array(
 								'default' => null,
 								'null' => true,
-								'type' => 'BIGINT(11)'
+								'type' => 'MEDIUMINT(3)'
 							),
 							'transport_protocol' => array(
 								'default' => null,
