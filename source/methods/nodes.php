@@ -1224,8 +1224,10 @@
 						}
 
 						if (empty($userRequestDestinations) === false) {
+							$requestDestinationIds = array();
+
 							foreach ($userRequestDestinations as $userRequestDestination) {
-								$response['data']['node_users'][$nodeProcessType][$user['id']]['request_destination_id'][] = $userRequestDestination['request_destination_id'];
+								$requestDestinationIds[$userRequestDestination['request_destination_id']] = $response['data']['node_users'][$nodeProcessType][$user['id']]['request_destination_id'][] = $userRequestDestination['request_destination_id'];
 							}
 
 							$requestDestinations = $this->fetch(array(
@@ -1235,7 +1237,7 @@
 								),
 								'from' => 'request_destinations',
 								'where' => array(
-									'id' => $userRequestDestinations
+									'id' => $requestDestinationIds
 								)
 							));
 							$response['status_valid'] = ($requestDestinations !== false);
