@@ -156,7 +156,7 @@
 			$nodeExternalIpTypes = array();
 
 			foreach ($nodeExternalIpVersions as $nodeExternalIpVersion => $nodeExternalIpVersionIps) {
-				$nodeExternalIpTypes[$this->_fetchIpType(current($nodeExternalIpVersionIps), $nodeExternalIpVersion)] = true;
+				$nodeExternalIpTypes[$this->_detectIpType(current($nodeExternalIpVersionIps), $nodeExternalIpVersion)] = true;
 
 				if (empty($nodeExternalIpTypes['private']) === false) {
 					unset($parameters['data']['internal_ip_version_' . $nodeExternalIpVersion]);
@@ -194,7 +194,7 @@
 			}
 
 			foreach ($nodeInternalIpVersions as $nodeInternalIpVersion => $nodeInternalIpVersionIps) {
-				$response['status_valid'] = ($this->_fetchIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) === 'private');
+				$response['status_valid'] = ($this->_detectIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) === 'private');
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node internal IPs must be private, please try again.';
@@ -564,7 +564,7 @@
 			$nodeExternalIpTypes = array();
 
 			foreach ($nodeExternalIpVersions as $nodeExternalIpVersion => $nodeExternalIpVersionIps) {
-				$nodeExternalIpTypes[$this->_fetchIpType(current($nodeExternalIpVersionIps), $nodeExternalIpVersion)] = true;
+				$nodeExternalIpTypes[$this->_detectIpType(current($nodeExternalIpVersionIps), $nodeExternalIpVersion)] = true;
 
 				if (empty($nodeExternalIpTypes['private']) === false) {
 					unset($parameters['data']['internal_ip_version_' . $nodeExternalIpVersion]);
@@ -602,7 +602,7 @@
 			}
 
 			foreach ($nodeInternalIpVersions as $nodeInternalIpVersion => $nodeInternalIpVersionIps) {
-				$response['status_valid'] = ($this->_fetchIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) === 'private');
+				$response['status_valid'] = ($this->_detectIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) === 'private');
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node internal IPs must be private, please try again.';

@@ -8,9 +8,9 @@
 		}
 
 		public function process() {
-			$this->_fetchSshPorts();
-
-			if (!is_dir($this->rootPath . 'cache')) {
+			if (is_dir($this->data['root_path'] . 'cache') === false) {
+				mkdir(this->data['root_path'] . 'cache');
+				
 				shell_exec('sudo mkdir -m 755 -p ' . $this->rootPath . 'cache');
 				$this->_applyFirewall($this->decodedServerData['proxy_process_ports']);
 			}
@@ -569,96 +569,6 @@
 			return;
 		}
 
-		protected function _fetchBinaryFiles() {
-			$uniqueId = '_' . uniqid() . time();
-			$binaries = array(
-				array(
-					'command' => $uniqueId,
-					'name' => 'ifconfig',
-					'output' => 'interface',
-					'package' => 'net-tools'
-				),
-				array(
-					'command' => '-h',
-					'name' => 'iptables-restore',
-					'output' => 'tables-restore ',
-					'package' => 'iptables'
-				),
-				array(
-					'command' => '-' . $uniqueId,
-					'name' => 'netstat',
-					'output' => 'invalid option',
-					'package' => 'net-tools'
-				),
-				array(
-					'command' => '-v',
-					'name' => 'php',
-					'output' => 'PHP ',
-					'package' => 'php'
-				),
-				array(
-					'command' => '-' . $uniqueId,
-					'name' => 'prlimit',
-					'output' => 'invalid option',
-					'package' => 'util-linux'
-				),
-				array(
-					'command' => $uniqueId,
-					'name' => 'service',
-					'output' => 'unrecognized service',
-					'package' => 'systemd'
-				),
-				array(
-					'command' => $uniqueId,
-					'name' => 'sysctl',
-					'output' => 'cannot',
-					'package' => 'procps'
-				),
-				array(
-					'command' => '-' . $uniqueId,
-					'name' => 'systemctl',
-					'output' => 'invalid option',
-					'package' => 'systemd'
-				),
-				array(
-					'command' => $uniqueId,
-					'name' => 'telinit',
-					'output' => 'single',
-					'package' => 'systemd'
-				)
-			);
-			$this->binaryFiles = array();
-
-			foreach ($binaries as $binary) {
-				$commands = array(
-					'#!/bin/bash',
-					'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
-				);
-				$commandsFile = '/tmp/commands.sh';
-
-				if (file_exists($commandsFile)) {
-					unlink($commandsFile);
-				}
-
-				file_put_contents($commandsFile, implode("\n", $commands));
-				shell_exec('sudo chmod +x ' . $commandsFile);
-				exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
-				$binaryFile = current($binaryFile);
-				unlink($commandsFile);
-
-				if (empty($binaryFile)) {
-					echo 'Error: Binary file for ' . $binary['name'] . ' not found.' . "\n";
-					shell_exec('sudo apt-get update');
-					shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
-					exit;
-				}
-
-				$this->binaryFiles[$binary['name']] = $binaryFile;
-			}
-
-			return;
-		}
-
 		protected function _killProcessIds($processIds) {
 			$commands = array(
 				'#!/bin/bash'
@@ -980,12 +890,9 @@
 			return $processIds;
 		}
 
-		public function fetchData() {
+		public function processData() {
 			if (empty($this->data) === true) {
-				$this->data = array(
-					'root_path' => '/usr/local/ghostcompute/';
-				);
-				$this->_fetchBinaryFiles();
+				unlink($nodeProcessResponseFile);
 				shell_exec('sudo wget -O ' . ($nodeProcessResponseFile = '/tmp/nodeProcessResponse.json') . ' --no-dns-cache --post-data "json={\"action\":\"process\",\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/nodes');
 
 				if (file_exists($nodeProcessResponseFile) === false) {
@@ -994,23 +901,108 @@
 				}
 
 				$nodeProcessResponse = json_decode(file_get_contents($nodeProcessResponseFile), true);
-				unlink($nodeProcessResponseFile);
-				$this->data = $nodeProcessResponse['data'];
 
-				if (file_exists('/etc/ssh/sshd_config') === true) {
-					exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPorts);
+				if (empty($nodeProcessResponse['data']) === false) {
+					$this->data = $nodeProcessResponse['data'];
+					$binaries = array(
+						array(
+							'command' => ($uniqueId = '_' . uniqid() . time()),
+							'name' => 'ifconfig',
+							'output' => 'interface',
+							'package' => 'net-tools'
+						),
+						array(
+							'command' => '-h',
+							'name' => 'iptables-restore',
+							'output' => 'tables-restore ',
+							'package' => 'iptables'
+						),
+						array(
+							'command' => '-' . $uniqueId,
+							'name' => 'netstat',
+							'output' => 'invalid option',
+							'package' => 'net-tools'
+						),
+						array(
+							'command' => '-v',
+							'name' => 'php',
+							'output' => 'PHP ',
+							'package' => 'php'
+						),
+						array(
+							'command' => '-' . $uniqueId,
+							'name' => 'prlimit',
+							'output' => 'invalid option',
+							'package' => 'util-linux'
+						),
+						array(
+							'command' => $uniqueId,
+							'name' => 'service',
+							'output' => 'unrecognized service',
+							'package' => 'systemd'
+						),
+						array(
+							'command' => $uniqueId,
+							'name' => 'sysctl',
+							'output' => 'cannot',
+							'package' => 'procps'
+						),
+						array(
+							'command' => '-' . $uniqueId,
+							'name' => 'systemctl',
+							'output' => 'invalid option',
+							'package' => 'systemd'
+						),
+						array(
+							'command' => $uniqueId,
+							'name' => 'telinit',
+							'output' => 'single',
+							'package' => 'systemd'
+						)
+					);
 
-					foreach ($sshPorts as $sshPortKey => $sshPort) {
-						if (
-							(strlen($sshPort) > 5) ||
-							(is_numeric($sshPort) === false)
-						) {
-							unset($sshPorts[$sshPortKey]);
+					foreach ($binaries as $binary) {
+						$commands = array(
+							'#!/bin/bash',
+							'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
+						);
+						$commandsFile = '/tmp/commands.sh';
+
+						if (file_exists($commandsFile)) {
+							unlink($commandsFile);
 						}
+
+						file_put_contents($commandsFile, implode("\n", $commands));
+						shell_exec('sudo chmod +x ' . $commandsFile);
+						exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
+						$binaryFile = current($binaryFile);
+						unlink($commandsFile);
+
+						if (empty($binaryFile) === true) {
+							echo 'Error detecting ' . $binary['name'] . ' binary file, please try again.' . "\n";
+							shell_exec('sudo apt-get update');
+							shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
+							exit;
+						}
+
+						$this->data['binary_files'][$binary['name']] = $binaryFile;
 					}
 
-					if (empty($sshPorts) === false) {
-						$this->data['ssh_ports'] = $sshPorts;
+					if (file_exists('/etc/ssh/sshd_config') === true) {
+						exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPorts);
+
+						foreach ($sshPorts as $sshPortKey => $sshPort) {
+							if (
+								(strlen($sshPort) > 5) ||
+								(is_numeric($sshPort) === false)
+							) {
+								unset($sshPorts[$sshPortKey]);
+							}
+						}
+
+						if (empty($sshPorts) === false) {
+							$this->data['ssh_ports'] = $sshPorts;
+						}
 					}
 				}
 			}

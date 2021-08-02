@@ -141,7 +141,7 @@
 							$nodeProcessExternalIps[$nodeProcessIpKey] = $nodeProcessIp;
 						}
 
-						$response['status_valid'] = ($nodeProcessIpType === $this->_fetchIpType($nodeProcessIp, $nodeProcessIpVersion));
+						$response['status_valid'] = ($nodeProcessIpType === $this->_detectIpType($nodeProcessIp, $nodeProcessIpVersion));
 
 						if ($response['status_valid'] === false) {
 							$response['message'] = 'Node process ' . $nodeProcessIpInterface . ' IPs must be ' . $nodeProcessIpType . ', please try again.';
@@ -419,7 +419,7 @@
 							$nodeProcessExternalIps[$nodeProcessIpKey] = $nodeProcessIp;
 						}
 
-						$response['status_valid'] = ($nodeProcessIpType === $this->_fetchIpType($nodeProcessIp, $nodeProcessIpVersion));
+						$response['status_valid'] = ($nodeProcessIpType === $this->_detectIpType($nodeProcessIp, $nodeProcessIpVersion));
 
 						if ($response['status_valid'] === false) {
 							$response['message'] = 'Node process ' . $nodeProcessIpInterface . ' IPs must be ' . $nodeProcessIpType . ', please try again.';

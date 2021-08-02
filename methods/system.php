@@ -108,7 +108,7 @@
 			return $response;
 		}
 
-		protected function _fetchIpType($ip, $ipVersion) {
+		protected function _detectIpType($ip, $ipVersion) {
 			$response = 'public';
 
 			switch ($ipVersion) {
