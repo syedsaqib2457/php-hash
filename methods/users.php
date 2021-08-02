@@ -71,12 +71,9 @@
 
 			$conflictingUserCount = $this->count(array(
 				'in' => 'users',
-				'where' => array_intersect_key($parameters['data'], array(
-					'authentication_password' => true,
-					'authentication_username' => true,
-					'authentication_whitelist' => true,
-					'tag' => true
-				))
+				'where' => array(
+					'authentication_username' => $parameters['data']['authentication_username']
+				)
 			));
 			$response['status_valid'] = (is_int($conflictingUserCount) === true);
 
