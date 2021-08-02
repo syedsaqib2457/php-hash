@@ -8,40 +8,44 @@
 		}
 
 		public function process() {
-			/*
-			// todo: process with nameserver internal ips
-			// todo: add ipv6 with ip command instead of ifconfig (test with an ipv6 vpc)
-			$this->nameserverListeningIps = array_keys($this->decodedServerData['nameserver_process_external_ips']);
-			$interfaceIps = array_unique(array_merge($this->nameserverListeningIps, $this->serverNodes));
-			exec('sudo ' . $this->binaryFiles['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
-			$interfaceName = current($interfaceName);
-			exec('sudo ' . $this->binaryFiles['ifconfig'] . ' | grep "' . $interfaceName . ':" | grep -v "' . $interfaceName . ': " | awk \'{print substr($1, ' . (strlen($interfaceName) + 1) . ')}\' | tr -d \':\' 2>&1', $existingInterfaces);
-			$interfaces = array_map('ip2long', $interfaceIps);
-			$interfacesToRemove = array_diff($existingInterfaces, $interfaces);
+			$nodeIpVersions = array(
+				'4' => array(
+					'network_mask' => '/32',
+					'type' => 'inet'
+				),
+				'6' => array(
+					'network_mask' => '/128',
+					'type' => 'inet6'
+				)
+			);
 
-			if (!empty($interfacesToRemove)) {
-				foreach ($interfacesToRemove as $interfaceToRemove) {
-					shell_exec('sudo ' . $this->binaryFiles['ifconfig'] . ' ' . $interfaceName . ':' . $interfaceToRemove . ' down');
+			foreach ($nodeIpVersions as $nodeIpVersion => $nodeIpVersionData) {
+				exec('sudo ' . $this->nodeData['binary_files']['ip'] . ' addr show dev ' . $this->nodeData['interface_name'] . ' | grep "' . $nodeIpVersionData['type'] . ' " | grep "' . $nodeIpVersionData['network_mask'] . ' " | awk \'{print substr($2, 0, length($2) - ' . ($nodeIpVersion / 2) . ')}\'', $existingInterfaceNodeIps);
+				$existingInterfaceNodeIps = current($existingInterfaceNodeIps);
+				$interfaceNodeIpFileContents = array(
+					'<?php'
+				);
+				$interfaceNodeIpsToProcess = array(
+					'add' => array_diff($this->nodeData['node_ip'][$nodeIpVersion], $existingInterfaceNodeIps),
+					'delete' => array_diff($existingInterfaceNodeIps, $this->nodeData['node_ip'][$nodeIpVersion])
+				);
+
+				foreach ($interfaceNodeIpsToProcess as $interfaceNodeIpAction => $interfaceNodeIps) {
+					$interfaceNodeIpAction = substr($interfaceNodeIpAction, 3);
+
+					foreach ($interfaceNodeIps as $interfaceNodeIp) {
+						$command = 'sudo ' . $this->nodeData['binary_files']['ip'] . ' -' . $nodeIpVersion . ' addr ' . $interfaceNodeIpAction . ' ' . $interfaceNodeIp . $nodeIpVersionData['network_mask'] . ' dev ' . $this->nodeData['interface_name'];
+						shell_exec($command);
+
+						if ($interfaceNodeIpAction === 'add') {
+							$interfaceNodeIpFileContents[] = 'shell_exec(\'' . $command . '\');';
+						}
+					}
 				}
 			}
 
-			$interfacesFile = $this->rootPath . 'interfaces.php';
-			$interfacesFileContents = array(
-				'<?php'
-			);
-
-			foreach ($interfaceIps as $interfaceIp) {
-				$interfacesFileContents[] = 'shell_exec(\'sudo ' . $this->binaryFiles['ifconfig'] . ' ' . $interfaceName . ':' . ip2long($interfaceIp) . ' ' . $interfaceIp . ' netmask 255.255.255.0\');';
-			}
-
-			file_put_contents($interfacesFile, implode("\n", $interfacesFileContents));
-			shell_exec('sudo ' . $this->data['binary_files']['php'] . ' ' . $interfacesFile);
-			*/
-
-			$nodeIpVersions = array(
-				'4',
-				'6'
-			);
+			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
+			$nodeIpVersions = array_keys($nodeIpVersions);
 			$proxyNodeConfiguration = array(
 				'maxconn 20000',
 				'nobandlimin',
@@ -951,9 +955,9 @@
 					$binaries = array(
 						array(
 							'command' => ($uniqueId = '_' . uniqid() . time()),
-							'name' => 'ifconfig',
-							'output' => 'interface',
-							'package' => 'net-tools'
+							'name' => 'ip',
+							'output' => 'ip help',
+							'package' => 'iproute2'
 						),
 						array(
 							'command' => '-h',
@@ -1031,6 +1035,9 @@
 
 						$this->nodeData['binary_files'][$binary['name']] = $binaryFile;
 					}
+
+					exec('sudo ' . $this->nodeData['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
+					$this->nodeData['interface_name'] = current($interfaceName);
 
 					if (file_exists('/etc/ssh/sshd_config') === true) {
 						exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPorts);
