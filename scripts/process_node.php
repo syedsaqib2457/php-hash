@@ -8,15 +8,120 @@
 		}
 
 		public function process() {
-			if (is_dir($this->data['root_path'] . 'cache') === false) {
-				mkdir(this->data['root_path'] . 'cache');
-				
-				shell_exec('sudo mkdir -m 755 -p ' . $this->rootPath . 'cache');
-				$this->_applyFirewall($this->decodedServerData['proxy_process_ports']);
+			/*
+			// todo: process with nameserver internal ips
+			// todo: add ipv6 with ip command instead of ifconfig (test with an ipv6 vpc)
+			$this->nameserverListeningIps = array_keys($this->decodedServerData['nameserver_process_external_ips']);
+			$interfaceIps = array_unique(array_merge($this->nameserverListeningIps, $this->serverNodes));
+			exec('sudo ' . $this->binaryFiles['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
+			$interfaceName = current($interfaceName);
+			exec('sudo ' . $this->binaryFiles['ifconfig'] . ' | grep "' . $interfaceName . ':" | grep -v "' . $interfaceName . ': " | awk \'{print substr($1, ' . (strlen($interfaceName) + 1) . ')}\' | tr -d \':\' 2>&1', $existingInterfaces);
+			$interfaces = array_map('ip2long', $interfaceIps);
+			$interfacesToRemove = array_diff($existingInterfaces, $interfaces);
+
+			if (!empty($interfacesToRemove)) {
+				foreach ($interfacesToRemove as $interfaceToRemove) {
+					shell_exec('sudo ' . $this->binaryFiles['ifconfig'] . ' ' . $interfaceName . ':' . $interfaceToRemove . ' down');
+				}
 			}
 
-			$this->_createInterfaces();
-			$this->_createProxyConfiguration();
+			$interfacesFile = $this->rootPath . 'interfaces.php';
+			$interfacesFileContents = array(
+				'<?php'
+			);
+
+			foreach ($interfaceIps as $interfaceIp) {
+				$interfacesFileContents[] = 'shell_exec(\'sudo ' . $this->binaryFiles['ifconfig'] . ' ' . $interfaceName . ':' . ip2long($interfaceIp) . ' ' . $interfaceIp . ' netmask 255.255.255.0\');';
+			}
+
+			file_put_contents($interfacesFile, implode("\n", $interfacesFileContents));
+			shell_exec('sudo ' . $this->data['binary_files']['php'] . ' ' . $interfacesFile);
+			*/
+
+			//$proxyAuthentication = $proxyConnectAuthentication = $proxyConnect = $proxyIps = array();
+			$nodeIpVersions = array(
+				'4',
+				'6'
+			);
+			$proxyNodeConfiguration = array(
+				'maxconn 20000',
+				'nobandlimin',
+				'nobandlimout',
+				'nameserver_ip_version_4' => false,
+				'nameserver_ip_version_6' => false,
+				'process_id' => false,
+				'stacksize 0',
+				'flush',
+				'allow * * * * HTTP',
+				'allow * * * * HTTPS',
+				'log /var/log/proxy'
+			);
+			$proxyNodeProcessTypes = array(
+				'proxy' => 'http_proxy',
+				'socks' => 'socks_proxy'
+			);
+
+			foreach ($proxyNodeProcessTypes as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
+				if (empty($this->nodeData['data']['node_processes'][$proxyNodeProcessType]) === false) {
+					$proxyNodeUsers = array();
+
+					foreach ($this->nodeData['node_users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUserIds) {
+						$proxyNode = $this->nodeData['nodes'][$proxyNodeId];
+						$proxyNodeIpVersionPriority = 46;
+
+						foreach ($nodeIpVersions as $nodeIpVersion) {
+							if (empty($proxyNode['external_ip_version_' . $nodeIpVersion]) === true) {
+								$proxyNodeIpVersionPriority = 10 - $nodeIpVersion;
+							}
+						}
+
+						$proxyNodeUserAuthentication[] = 'auth iponly strong';
+						$proxyNodeUserAuthenticationUsernames = $proxyNodeUserAuthenticationWhitelists = array();
+						$proxyNodeUsers = $this->nodeData['users'][$proxyNodeProcessType];
+
+						foreach ($proxyNodeUserIds as $proxyNodeUserId) {
+							$proxyNodeUser = $proxyNodeUsers[$proxyNodeUserId];
+							$proxyNodeLogFormat = 'nolog';
+
+							if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
+								$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
+							}
+
+							if (empty($proxyNodeUser['authentication_whitelist']) === false) {
+								$proxyNodeUserAuthenticationWhitelists[] = 'allow * ' . $proxyNodeUser['authentication_whitelist'] . ' *';
+								$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
+							}
+
+							if (empty($proxyNodeUser['authentication_username']) === false) {
+								$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' *';
+								$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
+							}
+
+							// ..
+						}
+
+						$proxyNodeUserAuthentication['_' . $proxyNodeId] = false;
+						$proxyNodeUserAuthentication[] = 'deny *';
+						$proxyNodeUserAuthentication[] = 'flush';
+
+					}
+
+					foreach ($this->nodeData['users'][$proxyNodeProcessType] as $proxyNodeUser) {
+						$proxyNodeUsers[$proxyNodeUser['authentication_username']] = $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
+					}
+
+					foreach (array_chunk($proxyNodeUsers, 10) as $nodeProxyUserPartKey => $proxyNodeUserParts) {
+						$proxyNodeUsers[$proxyNodeUserPartKey] = 'users ' . implode(' ', $proxyNodeUserParts);
+					}
+
+					$this->nodeData['proxy_node_configuration'][$proxyNodeType] = array_merge($proxyNodeConfiguration, $proxyNodeUsers, $proxyNodeUserAuthentication, array(
+						'deny *'
+					));
+				}
+			}
+
+			// ..
+
 			$this->_sendProxyUrlRequestLogData();
 			$this->_verifyNameserverProcesses();
 			$this->_verifyProxyProcesses(); // ..
@@ -91,9 +196,7 @@
 				}
 			}
 
-			file_put_contents($this->rootPath . 'cache/data', $this->encodedServerData);
 			$this->_optimizeKernel();
-			$this->_killProcessIds(array_merge($this->fetchProcessIds('3proxy', '3proxy/3proxy'), $this->fetchProcessIds('squid')));
 			$allProxyProcessPorts = array();
 
 			if (!empty($decodedServerData['proxy_process_ports'])) {
@@ -346,37 +449,8 @@
 			return;
 		}
 
-		protected function _createInterfaces() {
-			$this->nameserverListeningIps = array_keys($this->decodedServerData['nameserver_process_external_ips']);
-			$interfaceIps = array_unique(array_merge($this->nameserverListeningIps, $this->serverNodes));
-			exec('sudo ' . $this->binaryFiles['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
-			$interfaceName = current($interfaceName);
-			exec('sudo ' . $this->binaryFiles['ifconfig'] . ' | grep "' . $interfaceName . ':" | grep -v "' . $interfaceName . ': " | awk \'{print substr($1, ' . (strlen($interfaceName) + 1) . ')}\' | tr -d \':\' 2>&1', $existingInterfaces);
-			$interfaces = array_map('ip2long', $interfaceIps);
-			$interfacesToRemove = array_diff($existingInterfaces, $interfaces);
-
-			if (!empty($interfacesToRemove)) {
-				foreach ($interfacesToRemove as $interfaceToRemove) {
-					shell_exec('sudo ' . $this->binaryFiles['ifconfig'] . ' ' . $interfaceName . ':' . $interfaceToRemove . ' down');
-				}
-			}
-
-			$interfacesFile = $this->rootPath . 'interfaces.php';
-			$interfacesFileContents = array(
-				'<?php'
-			);
-
-			foreach ($interfaceIps as $interfaceIp) {
-				$interfacesFileContents[] = 'shell_exec(\'sudo ' . $this->binaryFiles['ifconfig'] . ' ' . $interfaceName . ':' . ip2long($interfaceIp) . ' ' . $interfaceIp . ' netmask 255.255.255.0\');';
-			}
-
-			$interfacesFileContents[] = '?>';
-			file_put_contents($interfacesFile, implode("\n", $interfacesFileContents));
-			shell_exec('sudo ' . $this->binaryFiles['php'] . ' ' . $interfacesFile);
-			return;
-		}
-
 		protected function _createNameserverProcess($nameserverListeningIp, $nameserverSourceIp) {
+			// todo: create views for nameserver process authentication
 			$nameserverProcessName = ip2long($nameserverSourceIp) . '_' . ip2long($nameserverListeningIp);
 			$this->_removeNameserverProcess($nameserverProcessName);
 			$commands = array(
@@ -466,75 +540,8 @@
 			return;
 		}
 
-		protected function _createProxyConfiguration() {
-			// todo: add HTTP processes again
-			$proxyAuthentication = $proxyConnectAuthentication = $proxyConnect = $proxyIps = array();
-			$proxyConfiguration = array(
-				'maxconn 20000',
-				'nobandlimin',
-				'nobandlimout',
-				'nserver ' . key($this->decodedServerData['nameserver_process_external_ips']),
-				'process_id' => false,
-				'stacksize 0',
-				'flush',
-				'allow * * * * HTTP',
-				'allow * * * * HTTPS'
-			);
-
-			if (empty($this->decodedServerData['proxies'])) {
-				$proxyConnect[] = 'deny *';
-				$proxyConnect[] = 'flush';
-			}
-
-			foreach ($this->decodedServerData['proxies'] as $proxyKey => $proxy) {
-				$proxyIp = !empty($proxy['internal_ip']) ? $proxy['internal_ip'] : $proxy['external_ip'];
-				$proxyIps[$proxy['id']] = $proxyIp;
-
-				if (
-					!empty($proxy['username']) &&
-					empty($proxyConnectAuthentication[$proxy['username']]) &&
-					$proxy['status'] === 'active'
-				) {
-					$proxyConnectAuthentication[$proxy['username']] = 'users ' . $proxy['username'] . ':CL:' . $proxy['password'];
-					$proxyAuthentication[$proxy['username']] = $proxy['password'];
-				}
-
-				$proxyConnect[] = 'auth' . (!empty($proxy['whitelisted_ips']) ? ' iponly ' : ' ') . 'strong';
-
-				if ($proxy['status'] === 'active') {
-					if (!empty($proxy['whitelisted_ips'])) {
-						$proxyWhitelistedIpParts = array_chunk(explode("\n", $proxy['whitelisted_ips']), 10);
-
-						foreach ($proxyWhitelistedIpParts as $proxyWhitelistedIps) {
-							$proxyConnect[] = 'allow * ' . implode(',', $proxyWhitelistedIps) . ' *';
-						}
-					}
-
-					if (!empty($proxy['username'])) {
-						$proxyConnect[] = 'allow ' . $proxy['username'] . ' *';
-					}
-				}
-
-				if ($proxy['enable_url_request_logs']) {
-					$proxyConnect[] = 'log /var/log/proxy';
-					$proxyConnect[] = 'logformat " %O _ %I _ %C _ %E _ %Y-%m-%d %H-%M-%S.%. _ ' . $proxy['id'] . ' _ ' . $this->parameters['id'] . ' _ %R _ %U _ %n"';
-				} else {
-					$proxyConnect[] = 'nolog';
-				}
-
-				$proxyConnect[$proxyIps[$proxy['id']]] = false;
-				$proxyConnect[] = 'deny *';
-				$proxyConnect[] = 'flush';
-				$this->decodedServerData['proxies'][$proxyKey] = $proxyIp;
-			}
-
-			$this->decodedServerData['proxy_configuration'] = array_merge($proxyConfiguration, $proxyConnectAuthentication, $proxyConnect, array(
-				'deny *'
-			));
-			return;
-		}
-
 		protected function _createProxyProcess($proxyProcessPort) {
+			// create different http and socks processes with destination url rules included, chunk each rule by 10 destinations and 10 whitelisted source IPs
 			$proxyProcessConfiguration = $this->decodedServerData['proxy_configuration'];
 			$proxyProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . ($proxyProcessName = 'socks_' . $proxyProcessPort) . '.pid';
 			$proxyProcessConfigurationPath = '/etc/3proxy/' . $proxyProcessName . '.cfg';
@@ -585,18 +592,20 @@
 			));
 			$commandsFile = '/tmp/commands.sh';
 
-			if (file_exists($commandsFile)) {
+			if (file_exists($commandsFile) === true) {
 				unlink($commandsFile);
 			}
 
 			file_put_contents($commandsFile, implode("\n", $commands));
-			shell_exec('sudo chmod +x ' . $commandsFile);
+			chmod($commandsFile, 0755);
 			shell_exec('cd /tmp/ && sudo ./' . basename($commandsFile));
 			unlink($commandsFile);
 			return;
 		}
 
 		protected function _optimizeKernel() {
+			// todo: revisit each setting to verify they're optimal
+			// apply dynamic mem settings based on 10 min usage values
 			$kernelOptions = array(
 				'fs.aio-max-nr = 1000000000',
 				'fs.file-max = 1000000000',
@@ -871,15 +880,15 @@
 			$processIds = array();
 			exec('ps -h -o pid -o cmd $(pgrep ' . $processName . ') | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
 
-			if (!empty($processes)) {
+			if (empty($processes) === false) {
 				foreach ($processes as $process) {
 					$processColumns = array_filter(explode(' ', $process));
 
 					if (
-						!empty($processColumns) &&
+						(empty($processColumns) === false) &&
 						(
-							empty($processFile) ||
-							strpos($process, $processFile) !== false
+							(empty($processFile) === true) ||
+							(strpos($process, $processFile) !== false)
 						)
 					) {
 						$processIds[] = $processColumns[key($processColumns)];
@@ -890,8 +899,8 @@
 			return $processIds;
 		}
 
-		public function processData() {
-			if (empty($this->data) === true) {
+		public function processNodeData() {
+			if (empty($this->nodeData) === true) {
 				unlink($nodeProcessResponseFile);
 				shell_exec('sudo wget -O ' . ($nodeProcessResponseFile = '/tmp/nodeProcessResponse.json') . ' --no-dns-cache --post-data "json={\"action\":\"process\",\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/nodes');
 
@@ -903,7 +912,7 @@
 				$nodeProcessResponse = json_decode(file_get_contents($nodeProcessResponseFile), true);
 
 				if (empty($nodeProcessResponse['data']) === false) {
-					$this->data = $nodeProcessResponse['data'];
+					$this->nodeData = $nodeProcessResponse['data'];
 					$binaries = array(
 						array(
 							'command' => ($uniqueId = '_' . uniqid() . time()),
@@ -968,7 +977,7 @@
 						);
 						$commandsFile = '/tmp/commands.sh';
 
-						if (file_exists($commandsFile)) {
+						if (file_exists($commandsFile) === true) {
 							unlink($commandsFile);
 						}
 
@@ -985,7 +994,7 @@
 							exit;
 						}
 
-						$this->data['binary_files'][$binary['name']] = $binaryFile;
+						$this->nodeData['binary_files'][$binary['name']] = $binaryFile;
 					}
 
 					if (file_exists('/etc/ssh/sshd_config') === true) {
@@ -1001,7 +1010,7 @@
 						}
 
 						if (empty($sshPorts) === false) {
-							$this->data['ssh_ports'] = $sshPorts;
+							$this->nodeData['ssh_ports'] = $sshPorts;
 						}
 					}
 				}
