@@ -1117,6 +1117,10 @@
 				return $response;
 			}
 
+			$nodeIpVersions = array(
+				'4',
+				'6'
+			);
 			$nodeProcessTypes = array(
 				'http_proxy',
 				'nameserver',
@@ -1126,6 +1130,17 @@
 
 			foreach ($nodes as $node) {
 				$response['data']['nodes'][$node['id']] = $node;
+
+				foreach ($nodeIpVersions as $nodeIpVersion) {
+					$nodeIps = array_intersect_key($node, array(
+						'external_ip_version_' . $nodeIpVersion => true,
+						'internal_ip_version_' . $nodeIpVersion => true
+					));
+
+					foreach (array_filter($nodeIps) as $nodeIp) {
+						$response['data']['node_ip'][$nodeIpVersion][$nodeIp] = $nodeIp;
+					}
+				}
 			}
 
 			foreach ($nodeProcessTypes as $nodeProcessType) {
@@ -1168,6 +1183,19 @@
 
 				if (empty($nodeProcesses) === false) {
 					$response['data']['node_processes'][$nodeProcessType] = $nodeProcesses;
+
+					foreach($nodeProcesses as $nodeProcess) {
+						foreach ($nodeIpVersions as $nodeIpVersion) {
+							$nodeIp = $nodeProcess['internal_ip_version_' . $nodeIpVersion];
+
+							if (
+								(empty($nodeIp) === false) &&
+								(empty($response['data']['node_ip'][$nodeIpVersion][$nodeIp]) === true)
+							) {
+								$response['data']['node_ip'][$nodeIpVersion][$nodeIp] = $nodeIp;
+							}
+						}
+					}
 				}
 
 				if (empty($nodeUsers) === false) {
