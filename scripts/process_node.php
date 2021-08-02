@@ -1,5 +1,5 @@
 <?php
-	class Connection {
+	class Process {
 
 		public $parameters;
 
@@ -7,13 +7,7 @@
 			$this->parameters = $parameters;
 		}
 
-		protected function _applyConnection() {
-			$this->serverNodes = !empty($this->decodedServerData['nodes']) ? $this->decodedServerData['nodes'] : array();
-
-			if (empty($this->serverNodes)) {
-				exit;
-			}
-
+		public function process() {
 			$this->_fetchSshPorts();
 
 			if (!is_dir($this->rootPath . 'cache')) {
@@ -25,12 +19,12 @@
 			$this->_createProxyConfiguration();
 			$this->_sendProxyUrlRequestLogData();
 			$this->_verifyNameserverProcesses();
+			$this->_verifyProxyProcesses(); // ..
 			$firewallRulePorts = $serverData = array();
 			$firewallRulePortsFile = $this->rootPath . 'cache/ports';
 
 			if (
-				($serverData = file_exists($this->rootPath . 'cache/data') ? file_get_contents($this->rootPath . 'cache/data') : '') &&
-				$serverData === $this->encodedServerData
+				// ..
 			) {
 				foreach ($this->decodedServerData['proxy_process_ports'] as $proxyProcessPort) {
 					if ($this->_verifyProxyPort($proxyProcessPort) === true) {
@@ -665,27 +659,6 @@
 			return;
 		}
 
-		protected function _fetchSshPorts() {
-			if (file_exists('/etc/ssh/sshd_config')) {
-				exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPorts);
-
-				foreach ($sshPorts as $sshPortKey => $sshPort) {
-					if (
-						strlen($sshPort) > 5 ||
-						!is_numeric($sshPort)
-					) {
-						unset($sshPorts[$sshPortKey]);
-					}
-				}
-
-				if (!empty($sshPorts)) {
-					$this->sshPorts = $sshPorts;
-				}
-			}
-
-			return;
-		}
-
 		protected function _killProcessIds($processIds) {
 			$commands = array(
 				'#!/bin/bash'
@@ -1007,48 +980,42 @@
 			return $processIds;
 		}
 
-		public function fetchServerData() {
-			if (empty($this->decodedServerData)) {
+		public function fetchData() {
+			if (empty($this->data) === true) {
+				$this->data = array(
+					'root_path' => '/usr/local/ghostcompute/';
+				);
 				$this->_fetchBinaryFiles();
-				shell_exec('sudo wget -O ' . ($serverResponseFile = '/tmp/serverResponse.json') . ' --no-dns-cache --post-data "json={\"action\":\"view\",\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/servers');
+				shell_exec('sudo wget -O ' . ($nodeProcessResponseFile = '/tmp/nodeProcessResponse.json') . ' --no-dns-cache --post-data "json={\"action\":\"process\",\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/nodes');
 
-				if (!file_exists($serverResponseFile)) {
-					echo 'Error: Unable to fetch server API response at ' . $this->parameters['url'] . '/endpoint/servers.' . "\n";
+				if (file_exists($nodeProcessResponseFile) === false) {
+					echo 'Error processing node, please try again.' . "\n";
 					exit;
 				}
 
-				$serverResponse = json_decode(file_get_contents($serverResponseFile), true);
-				shell_exec('sudo rm ' . $serverResponseFile);
+				$nodeProcessResponse = json_decode(file_get_contents($nodeProcessResponseFile), true);
+				unlink($nodeProcessResponseFile);
+				$this->data = $nodeProcessResponse['data'];
 
-				if (empty($serverResponse['data'])) {
-					echo 'Error: Unable to decode server API data in ' . $serverResponseFile . '.' . "\n";
+				if (file_exists('/etc/ssh/sshd_config') === true) {
+					exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPorts);
 
-					if (!empty($serverResponse['message'])) {
-						$proxyProcessIds = $this->fetchProcessIds('socks', '3proxy');
-
-						if (!empty($proxyProcessIds)) {
-							$proxyProcessIdParts = array_chunk($proxyProcessIds, 10);
-
-							foreach ($proxyProcessIdParts as $proxyProcessIds) {
-								$this->_killProcessIds($proxyProcessIds);
-							}
+					foreach ($sshPorts as $sshPortKey => $sshPort) {
+						if (
+							(strlen($sshPort) > 5) ||
+							(is_numeric($sshPort) === false)
+						) {
+							unset($sshPorts[$sshPortKey]);
 						}
 					}
 
-					exit;
+					if (empty($sshPorts) === false) {
+						$this->data['ssh_ports'] = $sshPorts;
+					}
 				}
-
-				$this->decodedServerData = $serverResponse['data'];
-				$this->encodedServerData = json_encode($serverResponse['data']);
-				$this->rootPath = '/ghostcompute/';
 			}
 
 			return;
-		}
-
-		public function start() {
-			$response = $this->_applyConnection();
-			return $response;
 		}
 
 	}
