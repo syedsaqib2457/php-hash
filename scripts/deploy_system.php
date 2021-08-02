@@ -175,10 +175,9 @@
 		exit;
 	}
 
-	$uniqueId = '_' . uniqid() . time();
 	$binaries = array(
 		array(
-			'command' => $uniqueId,
+			'command' => ($uniqueId = '_' . uniqid() . time()),
 			'name' => 'a2enmod',
 			'output' => 'Module ' . $uniqueId,
 			'package' => 'apache2'

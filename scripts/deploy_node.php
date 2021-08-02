@@ -149,10 +149,9 @@
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps systemd'
 	);
 	applyCommands($commands);
-	$uniqueId = '_' . uniqid() . time();
 	$binaries = array(
 		array(
-			'command' => $uniqueId,
+			'command' => ($uniqueId = '_' . uniqid() . time()),
 			'name' => 'service',
 			'output' => 'unrecognized service',
 			'package' => 'systemd'
