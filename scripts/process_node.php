@@ -38,7 +38,6 @@
 			shell_exec('sudo ' . $this->data['binary_files']['php'] . ' ' . $interfacesFile);
 			*/
 
-			//$proxyAuthentication = $proxyConnectAuthentication = $proxyConnect = $proxyIps = array();
 			$nodeIpVersions = array(
 				'4',
 				'6'
@@ -81,23 +80,59 @@
 
 						foreach ($proxyNodeUserIds as $proxyNodeUserId) {
 							$proxyNodeUser = $proxyNodeUsers[$proxyNodeUserId];
-							$proxyNodeLogFormat = 'nolog';
 
-							if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
-								$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
+							if (
+								(
+									(empty($proxyNodeUser['status_allowing_request_destinations_only']) === true) ||
+									(empty($proxyNodeUser['request_destination_id']) === false)
+								) &&
+								(
+									empty($proxyNodeUser['authentication_username']) === false ||
+									empty($proxyNodeUser['authentication_whitelist']) === false
+								)
+							) {
+								$proxyNodeLogFormat = 'nolog';
+
+								if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
+									$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
+								}
+
+								$proxyNodeUserDestinationParts = array(
+									array(
+										'*'
+									)
+								);
+
+								if (empty($proxyNodeUser['status_allowing_request_destinations_only']) === false) {
+									$proxyNodeUserDestinations = $proxyNodeUser['request_destination_id'];
+
+									foreach ($proxyNodeUserDestinations as $proxyNodeUserDestinationKey => $proxyNodeUserDestinationId) {
+										$proxyNodeUserDestinations[$proxyNodeUserDestinationKey] = $this->nodeData['request_destinations'][$proxyNodeProcessType][$proxyNodeUserDestinationId];
+									}
+
+									$proxyNodeUserDestinationParts = array_map(function($proxyNodeUserDestinationPart) {
+										return implode(',', $proxyNodeUserDestinationPart);
+									}, array_chunk($proxyNodeUserDestinations, 10);
+								}
+
+								if (empty($proxyNodeUser['authentication_whitelist']) === false) {
+									$proxyNodeUserAuthenticationWhitelistParts = array_chunk(explode("\n", $proxyNodeUser['authentication_whitelist']), 10);
+
+									foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
+										foreach ($proxyNodeUserDestinationParts as $proxyNodeUserDestinationPart) {
+											$proxyNodeUserAuthenticationWhitelists[] = 'allow * ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
+											$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
+										}
+									}
+								}
+
+								if (empty($proxyNodeUser['authentication_username']) === false) {
+									foreach ($proxyNodeUserDestinationParts as $proxyNodeUserDestinationPart) {
+										$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' * ' . $proxyNodeUserDestinationPart;
+										$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
+									}
+								}
 							}
-
-							if (empty($proxyNodeUser['authentication_whitelist']) === false) {
-								$proxyNodeUserAuthenticationWhitelists[] = 'allow * ' . $proxyNodeUser['authentication_whitelist'] . ' *';
-								$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
-							}
-
-							if (empty($proxyNodeUser['authentication_username']) === false) {
-								$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' *';
-								$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
-							}
-
-							// ..
 						}
 
 						$proxyNodeUserAuthentication['_' . $proxyNodeId] = false;
