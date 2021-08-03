@@ -302,7 +302,10 @@
 			file_put_contents($firewallRulePortsFile, $firewallRulePortsIdentifier);
 			file_put_contents($nameserverIpsFile, $nameserverIpsIdentifier);
 			$this->_optimizeProcesses();
-			return true;
+			// ..
+			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+			$response = json_decode(current($response), true);
+			return $response;
 		}
 
 		protected function _applyFirewall($proxyProcessPorts) {
