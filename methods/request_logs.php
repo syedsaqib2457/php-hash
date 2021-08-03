@@ -17,6 +17,20 @@
 				return $response;
 			}
 
+			$response['status_valid'] = (
+				(empty($parameters['data']['type']) === false) &&
+				(in_array(array(
+					'http_proxy',
+					'nameserver',
+					'socks_proxy'
+				)) === true)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid request log type, please try again.';
+				return $response;
+			}
+
 			$requestLogData = array();
 			$requestLogKeys = array(
 				'bytes_received',
@@ -37,16 +51,8 @@
 			foreach ($requestLogs as $requestLog) {
 				$requestLogParts = explode(' _ ', $requestLog);
 
-				if (empty($requestLogParts[10]) === false) {
-					switch ($requestLogParts[10]) {
-						case 'PROXY':
-							$requestLogsParts[10] = 'http_proxy';
-							break;
-						case 'SOCKS':
-							$requestLogsParts[10] = 'socks_proxy';
-							break;
-					}
-
+				if (empty($requestLogParts[0]) === false) {
+					$requestLogParts[] = $parameters['data']['type'];
 					$requestLogData[] = array_combine($requestLogKeys, $requestLogParts);
 				}
 			}

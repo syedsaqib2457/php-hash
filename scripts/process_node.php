@@ -8,6 +8,7 @@
 		}
 
 		public function process() {
+			$this->_sendNodeRequestLogData();
 			$nodeIpVersions = array(
 				'4' => array(
 					'network_mask' => '/32',
@@ -57,7 +58,7 @@
 				'flush',
 				'allow * * * * HTTP',
 				'allow * * * * HTTPS',
-				'log /var/log/proxy'
+				'log' => false
 			);
 			$proxyNodeProcessTypes = array(
 				'proxy' => 'http_proxy',
@@ -66,6 +67,7 @@
 
 			foreach ($proxyNodeProcessTypes as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 				if (empty($this->nodeData['data']['node_processes'][$proxyNodeProcessType]) === false) {
+					$proxyNodeConfiguration['log'] = 'log /var/log/' . $proxyNodeProcessType;
 					$proxyNodeUsers = array();
 
 					foreach ($this->nodeData['node_users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUserIds) {
@@ -159,9 +161,7 @@
 				}
 			}
 
-			// ..
-
-			$this->_sendProxyUrlRequestLogData();
+			$this->_sendNodeRequestLogData();
 			$this->_verifyNameserverProcesses();
 			$this->_verifyProxyProcesses(); // ..
 			$firewallRulePorts = $serverData = array();
@@ -824,26 +824,33 @@
 			return;
 		}
 
-		protected function _sendProxyUrlRequestLogData() {
-			$proxyUrlRequestLogFile = '/var/log/proxy';
-
-			if (!file_exists($proxyUrlRequestLogFile)) {
+		protected function _sendNodeRequestLogData() {
+			if (file_exists($nodeRequestLogFile) === false) {
 				return;
 			}
 
-			exec('sudo curl -s --form "data=@' . $proxyUrlRequestLogFile . '" --form-string "json={\"action\":\"archive\"}" ' . $this->parameters['url'] . '/endpoint/proxy-url-request-logs 2>&1', $response);
-			$response = json_decode($response[0], true);
+			$nodeProcessTypes = array(
+				'http_proxy',
+				'nameserver',
+				'socks_proxy'
+			);
 
-			if (!empty($response['data']['most_recent_proxy_url_request_log'])) {
-				$mostRecentProxyUrlRequestLog = $response['data']['most_recent_proxy_url_request_log'];
-				$proxyUrlRequestLogFileContents = file_get_contents($proxyUrlRequestLogFile);
-				$updatedProxyUrlRequestLogs = substr($proxyUrlRequestLogFileContents, strpos($proxyUrlRequestLogFileContents, $mostRecentProxyUrlRequestLog) + strlen($mostRecentProxyUrlRequestLog));
-				file_put_contents($proxyUrlRequestLogFile, trim($updatedProxyUrlRequestLogs));
+			foreach ($nodeProcessTypes as $nodeProcessType) {
+				$nodeRequestLogFile = '/var/log/' . $nodeProcessType;
+
+				if (file_exists($nodeRequestLogFile) === true) {
+					exec('sudo curl -s --form "data=@' . $nodeRequestLogFile . '" --form-string "json={\"action\":\"archive\",\"data\":{\"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/request-logs 2>&1', $response);
+					$response = json_decode(current($response), true);
+
+					if (empty($response['data']['most_recent_request_log']) === false) {
+						$mostRecentNodeRequestLog = $response['data']['most_recent_request_log'];
+						$nodeRequestLogFileContents = file_get_contents($proxyNodeRequestLogFile);
+						$updateNodeRequestLogs = substr($nodeRequestLogFileContents, strpos($nodeRequestLogFileContents, $mostRecentNodeRequestLog) + strlen($mostRecentNodeRequestLog));
+						file_put_contents($nodeRequestLogFile, trim($updatedNodeRequestLogs));
+					}
+				}
 			}
 
-			// todo: dynamically increase PHP ini limits for apache in control panel and cli in proxy servers
-			// todo: call _sendProxyUrlRequestLogData() frequently through connection/firewall process
-			// todo: test with 100k+ records per minute per server, add background processing with additional servers if necessary
 			return;
 		}
 
