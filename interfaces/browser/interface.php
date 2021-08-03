@@ -1230,6 +1230,10 @@
 			<span checked="1"></span>
 			<label>Enable request logs</label>
 		</div>
+		<div class="checkbox-container" toggle="status_requiring_strict_authentication">
+			<span checked="0"></span>
+			<label>Enable strict authentication</label>
+		</div>
 		<label>Tag</label>
 		<input name="tag" type="text">
 		<div class="clear"></div>

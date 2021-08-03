@@ -60,6 +60,10 @@
 				$parameters['data']['status_allowing_request_logs'] = boolval($parameters['data']['status_allowing_request_logs']);
 			}
 
+			if (isset($parameters['data']['status_requiring_strict_authentication']) === true) {
+				$parameters['data']['status_requiring_strict_authentication'] = boolval($parameters['data']['status_requiring_strict_authentication']);
+			}
+
 			if (empty($parameters['data']['tag']) === false) {
 				$response['status_valid'] = (strval($parameters['data']['tag']) <= 100);
 
@@ -96,6 +100,7 @@
 						'authentication_whitelist' => true,
 						'status_allowing_request_destinations_only' => true,
 						'status_allowing_request_logs' => true,
+						'status_requiring_strict_authentication' => true,
 						'tag' => true
 					))
 				),

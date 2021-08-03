@@ -704,6 +704,11 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
+							'status_requiring_strict_authentication' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'tag' => array(
 								'default' => null,
 								'null' => true,
