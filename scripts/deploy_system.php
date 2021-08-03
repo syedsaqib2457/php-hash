@@ -437,7 +437,7 @@
 
 	shell_exec('cd ' . $systemPath . ' && sudo tar -xvzf ghostcompute.tar.gz && cd ghostcompute-develop && mv .* * ../');
 
-	if (file_exists($systemPath . '/license.txt') === false) {
+	if (file_exists($systemPath . '/LICENSE') === false) {
 		echo 'Error extracting system files, please try again.' . "\n";
 		exit;
 	}
