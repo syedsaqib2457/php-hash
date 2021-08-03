@@ -219,7 +219,22 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'cpu_percentage' => array(
+							'cpu_capacity_cores' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'cpu_capacity_megahertz' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'cpu_percentage_node_processing' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'cpu_percentage_node_usage' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
@@ -233,7 +248,17 @@
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'memory_percentage' => array(
+							'memory_capacity_megabytes' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'memory_percentage_node_processing' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_node_usage' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
@@ -258,6 +283,11 @@
 								'type' => 'BIGINT(11)'
 							),
 							'requests' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'storage_capacity_megabytes' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
