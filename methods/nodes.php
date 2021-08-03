@@ -868,30 +868,33 @@
 				}
 			}
 
-			$response['status_valid'] = (
-				(empty($parameters['data']['enable_reverse_proxy_forwarding']) === true) ||
-				(
-					(
-						empty($parameters['data']['destination_address_version_4']) === false &&
-						empty($parameters['data']['destination_port_version_4']) === false
-					) ||
-					(
-						empty($parameters['data']['destination_address_version_6']) === false &&
-						empty($parameters['data']['destination_port_version_6']) === false
-					)
-				)
-			);
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Both destination address and port are required for reverse proxy forwarding, please try again.';
-				return $response;
-			}
-
 			foreach ($nodeIpVersions as $nodeIpVersion) {
-				if (empty($parameters['data']['enable_reverse_proxy_forwarding']) === false) {
+				$response['status_valid'] = (
+					(
+						(empty($parameters['data']['destination_address_version_' . $nodeIpVersion]) === false) ||
+						(empty($parameters['data']['destination_port_version_' . $nodeIpVersion]) === false)
+					) &&
+					(
+						(empty($parameters['data']['destination_address_version_' . $nodeIpVersion]) === true) ||
+						(empty($parameters['data']['destination_port_version_' . $nodeIpVersion]) === true)
+					)
+				);
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Both destination address and port are required for reverse proxy forwarding, please try again.';
+					return $response;
+				}
+
+				$nodeDestinationAddress = $parameters['data']['destination_address_version_' . $nodeIpVersion];
+				$nodeDestinationPort = $parameters['data']['destination_port_version_' . $nodeIpVersion];
+
+				if (
+					(empty($nodeDestinationAddress) === false) &&
+					(empty($nodeDestinationPort) === false)
+				) {
 					$response['status_valid'] = (
-						(empty($parameters['data']['destination_port_version_' . $nodeIpVersion]) === true) ||
-						($this->_validatePort($parameters['data']['destination_port_version_' . $nodeIpVersion]) === false)
+						(empty($nodeDestinationPort) === true) ||
+						($this->_validatePort(nodeDestinationPort) === false)
 					);
 
 					if ($response['status_valid'] === false) {
@@ -900,12 +903,12 @@
 					}
 
 					$response['status_valid'] = (
-						(empty($parameters['data']['destination_address_version_' . $nodeIpVersion]) === true) ||
-						($this->_validateHostname($parameters['data']['destination_address_version_' . $nodeIpVersion]) !== false)
+						(empty($nodeDestinationAddress) === true) ||
+						($this->_validateHostname($nodeDestinationAddress) !== false)
 					);
 
 					if ($response['status_valid'] === false) {
-						$nodeDestinationIp = $this->_sanitizeIps(array($parameters['data']['destination_address_version_' . $nodeIpVersion]))[];
+						$nodeDestinationIp = $this->_sanitizeIps(array($nodeDestinationAddress));
 						$response['status_valid'] = (empty($nodeDestinationIp[$nodeIpVersion]) === false);
 					}
 
