@@ -1182,7 +1182,8 @@
 				}
 
 				if (empty($nodeProcesses) === false) {
-					$response['data']['node_processes'][$nodeProcessType] = $nodeProcesses;
+					end($nodeProcesses);
+					$response['data']['node_processes'][$nodeProcessType] = array_chunk($nodeProcesses, ((key($nodeProcesses) + 1) / 2));
 
 					foreach($nodeProcesses as $nodeProcess) {
 						foreach ($nodeIpVersions as $nodeIpVersion) {
