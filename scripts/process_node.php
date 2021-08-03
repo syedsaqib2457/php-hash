@@ -10,6 +10,8 @@
 		public function process() {
 			$this->_sendNodeRequestLogData();
 
+			// todo: write nameserver node ips and ports to /tmp cache file for nameserver process recovery
+
 			if (empty($this->nodeData['nodes'])) {
 				// todo: log node processing errors, processing time per request, timeouts, number of logs processed for each request, etc
 				return;
@@ -386,6 +388,7 @@
 		protected function _connect($proxyProcessPort) {
 			$proxyProcessName = 'socks_' . $proxyProcessPort;
 			$proxyProcessIds = $this->fetchProcessIds($proxyProcessName, '/etc/3proxy/' . $proxyProcessName . '.cfg');
+			// todo: wait for process connections to be completed before killing process
 
 			if (!empty($proxyProcessIds)) {
 				$this->_killProcessIds($proxyProcessIds);
@@ -891,6 +894,8 @@
 		}
 
 		public function processNodeData() {
+			$this->_verifyNameserverProcesses();
+
 			if (empty($this->nodeData) === true) {
 				unlink($nodeProcessResponseFile);
 				shell_exec('sudo wget -O ' . ($nodeProcessResponseFile = '/tmp/nodeProcessResponse.json') . ' --no-dns-cache --post-data "json={\"action\":\"process\",\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/nodes');
