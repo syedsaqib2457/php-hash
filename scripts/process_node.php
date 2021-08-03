@@ -11,6 +11,7 @@
 			$this->_sendNodeRequestLogData();
 
 			if (empty($this->nodeData['nodes'])) {
+				// todo: log node processing errors, processing time per request, timeouts, number of logs processed for each request, etc
 				return;
 			}
 
