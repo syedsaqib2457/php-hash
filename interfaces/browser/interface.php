@@ -1030,6 +1030,40 @@
 		<input name="external_ip_version_6" type="text">
 		<label>Internal IPv6</label>
 		<input name="internal_ip_version_6" type="text">
+		<div class="checkbox-container" toggle="enable_http_proxy_processes">
+			<span checked="0"></span>
+			<label>Enable HTTP proxy processes</label>
+		</div>
+		<div class="container hidden" name="enable_http_proxy_processes">
+			<div name="http_proxy_process_details">
+				<label>HTTP Proxy Processes</label>
+				<!-- list_statistics_for_process_usage -->
+				<label>HTTP Proxy Process Ports</label>
+				<div name="http_proxy_process_ports">
+					<!-- list_open_process_ports -->
+				</div>
+			</div>
+			<div class="checkbox-container" toggle="enable_opening_custom_http_proxy_process_ports">
+				<span checked="0"></span>
+				<label>Enable opening custom HTTP proxy process ports</label>
+			</div>
+			<div class="container hidden" name="enable_opening_custom_http_proxy_process_ports">
+				<div class="list" from="ports"></div>
+				<div class="checkbox-container" toggle="enable_only_allowing_custom_http_proxy_process_ports">
+					<span checked="0"></span>
+					<label>Enable only allowing custom HTTP proxy process ports</label>
+				</div>
+			</div>
+			<div class="checkbox-container" toggle="enable_closing_custom_http_proxy_process_ports">
+				<span checked="0"></span>
+				<label>Enable closing custom HTTP proxy process ports</label>
+			</div>
+			<div class="container hidden" name="enable_closing_custom_http_proxy_process_ports">
+				<div class="list" from="ports"></div>
+			</div>
+			<label>HTTP Proxy Users</label>
+			<div class="list" from="users"></div>
+		</div>
 		<div class="checkbox-container" toggle="enable_nameserver_processes">
 			<span checked="0"></span>
 			<label>Enable nameserver processes</label>
@@ -1063,40 +1097,6 @@
 				<div class="list" from="ports"></div>
 			</div>
 			<label>Nameserver Users</label>
-			<div class="list" from="users"></div>
-		</div>
-		<div class="checkbox-container" toggle="enable_http_proxy_processes">
-			<span checked="0"></span>
-			<label>Enable HTTP proxy processes</label>
-		</div>
-		<div class="container hidden" name="enable_http_proxy_processes">
-			<div name="http_proxy_process_details">
-				<label>HTTP Proxy Processes</label>
-				<!-- list_statistics_for_process_usage -->
-				<label>HTTP Proxy Process Ports</label>
-				<div name="http_proxy_process_ports">
-					<!-- list_open_process_ports -->
-				</div>
-			</div>
-			<div class="checkbox-container" toggle="enable_opening_custom_http_proxy_process_ports">
-				<span checked="0"></span>
-				<label>Enable opening custom HTTP proxy process ports</label>
-			</div>
-			<div class="container hidden" name="enable_opening_custom_http_proxy_process_ports">
-				<div class="list" from="ports"></div>
-				<div class="checkbox-container" toggle="enable_only_allowing_custom_http_proxy_process_ports">
-					<span checked="0"></span>
-					<label>Enable only allowing custom HTTP proxy process ports</label>
-				</div>
-			</div>
-			<div class="checkbox-container" toggle="enable_closing_custom_http_proxy_process_ports">
-				<span checked="0"></span>
-				<label>Enable closing custom HTTP proxy process ports</label>
-			</div>
-			<div class="container hidden" name="enable_closing_custom_http_proxy_process_ports">
-				<div class="list" from="ports"></div>
-			</div>
-			<label>HTTP Proxy Users</label>
 			<div class="list" from="users"></div>
 		</div>
 		<div class="checkbox-container" toggle="enable_socks_proxy_processes">
