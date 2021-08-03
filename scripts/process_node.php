@@ -98,7 +98,7 @@
 								$proxyNodeLogFormat = 'nolog';
 
 								if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
-									$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
+									$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U _ %N"';
 								}
 
 								$proxyNodeUserDestinationParts = array(

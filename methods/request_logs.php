@@ -28,7 +28,8 @@
 				'node_user_id',
 				'response_code',
 				'source_ip',
-				'username'
+				'username',
+				'type'
 			);
 			$requestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
 			array_pop($requestLogs);
@@ -36,7 +37,16 @@
 			foreach ($requestLogs as $requestLog) {
 				$requestLogParts = explode(' _ ', $requestLog);
 
-				if (empty($requestLogParts[0]) === false) {
+				if (empty($requestLogParts[10]) === false) {
+					switch ($requestLogParts[10]) {
+						case 'PROXY':
+							$requestLogsParts[10] = 'http_proxy';
+							break;
+						case 'SOCKS':
+							$requestLogsParts[10] = 'socks_proxy';
+							break;
+					}
+
 					$requestLogData[] = array_combine($requestLogKeys, $requestLogParts);
 				}
 			}
