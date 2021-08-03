@@ -80,10 +80,7 @@
 				'status_valid' => false
 			);
 
-			if (
-				(empty($parameters['data']['enable_binding_to_existing_node']) === false) &&
-				(empty($parameters['data']['node_id']) === false)
-			) {
+			if (empty($parameters['data']['node_id']) === false) {
 				$node = $this->fetch(array(
 					'fields' => array(
 						'id',

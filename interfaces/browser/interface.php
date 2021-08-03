@@ -1017,7 +1017,6 @@
 	</div>
 	<div class="process-overlay"></div>
 </div>
-// todo: change keys to match database, don't require enable_ field values in validation for API consistency
 <div class="hidden" process="node_edit">
 	<div class="process-container">
 		<p class="message node-edit"></p>
@@ -1065,14 +1064,6 @@
 			</div>
 			<label>Nameserver Users</label>
 			<div class="list" from="users"></div>
-			<div class="checkbox-container" toggle="enable_nameserver_on_external_ip_version_4">
-				<span checked="0"></span>
-				<label>Enable nameserver on external IPv4</label>
-			</div>
-			<div class="checkbox-container" toggle="enable_nameserver_on_external_ip_version_6">
-				<span checked="0"></span>
-				<label>Enable nameserver on external IPv6</label>
-			</div>
 		</div>
 		<div class="checkbox-container" toggle="enable_http_proxy_processes">
 			<span checked="0"></span>
