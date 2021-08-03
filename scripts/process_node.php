@@ -172,79 +172,10 @@
 				}
 			}
 
-			$this->_sendNodeRequestLogData();
 			$this->_verifyNameserverProcesses();
-			$this->_verifyProxyProcesses(); // ..
-			$firewallRulePorts = $serverData = array();
-			$firewallRulePortsFile = $this->rootPath . 'cache/ports';
+			$this->_sendNodeRequestLogData();
 
-			if (
-				// ..
-			) {
-				foreach ($this->decodedServerData['proxy_process_ports'] as $proxyProcessPort) {
-					if ($this->_verifyProxyPort($proxyProcessPort) === true) {
-						$firewallRulePorts[] = $proxyProcessPort;
-					}
-				}
-
-				if (
-					!empty($firewallRulePorts) &&
-					file_exists($firewallRulePortsFile) &&
-					($firewallRulePortData = (integer) file_get_contents($firewallRulePortsFile)) &&
-					$firewallRulePortData === array_sum($firewallRulePorts)
-				) {
-					exit;
-				}
-
-				$firewallRulePorts = array();
-			}
-
-			$decodedServerData = json_decode($serverData, true);
-			$nameserverIpsFile = $this->rootPath . 'cache/nameserver_ips';
-			$nameserverIpsIdentifier = $firewallRulePortsIdentifier = 0;
-			$nameserverProcessesToRemove = $proxyProcessesToRemove = array();
-
-			foreach ($this->decodedServerData['nameserver_process_external_ips'] as $nameserverListeningIp => $nameserverSourceIps) {
-				$nameserverIpsIdentifier += ip2long($nameserverListeningIp);
-
-				foreach ($nameserverSourceIps as $nameserverSourceIp) {
-					$nameserverIpsIdentifier += ip2long($nameserverSourceIp);
-					$nameserverProcesses[ip2long($nameserverSourceIp) . '_' . ip2long($nameserverListeningIp)] = array(
-						'listening_ip' => $nameserverListeningIp,
-						'source_ip' => $nameserverSourceIp
-					);
-				}
-			}
-
-			if (
-				!empty($nameserverIpsIdentifier) &&
-				(
-					!file_exists($nameserverIpsFile) ||
-					(
-						file_exists($nameserverIpsFile) &&
-						($nameserverIpData = (integer) file_get_contents($nameserverIpsFile)) &&
-						$nameserverIpData !== $nameserverIpsIdentifier
-					)
-				)
-			) {
-				if (!empty($decodedServerData['nameserver_process_external_ips'])) {
-					foreach ($decodedServerData['nameserver_process_external_ips'] as $nameserverListeningIp => $nameserverSourceIps) {
-						foreach ($nameserverSourceIps as $nameserverSourceIp) {
-							$nameserverProcessName = long2ip($nameserverSourceIp) . '_' . long2ip($nameserverListeningIp);
-
-							if (empty($nameserverProcesses[$nameserverProcessName])) {
-								$nameserverProcessesToRemove[$nameserverProcessName] = current($this->fetchProcessIds('named', 'named_' . $nameserverProcessName . ' -f -c'));
-							}
-						}
-					}
-				}
-
-				foreach ($nameserverProcesses as $nameserverProcessName => $nameserverProcessIps) {
-					if (empty($this->fetchProcessIds('named', 'named_' . $nameserverProcessName . ' -f -c'))) {
-						$this->_createNameserverProcess($nameserverProcessIps['listening_ip'], $nameserverProcessIps['source_ip']);
-					}
-				}
-			}
+			// todo: format nameserver processes to remove into an array, create new nameserver processes
 
 			$this->_optimizeKernel();
 			$allProxyProcessPorts = array();
