@@ -9,6 +9,11 @@
 
 		public function process() {
 			$this->_sendNodeRequestLogData();
+
+			if (empty($this->nodeData['nodes'])) {
+				return;
+			}
+
 			$nodeIpVersions = array(
 				'4' => array(
 					'network_mask' => '/32',
