@@ -36,12 +36,12 @@ Execute the command below after changing **STATIC_IP_ADDRESS** to the public IP 
 
 After the control panel is installed, log in as instructed and start deploying connected SOCKS proxy servers.
 
-+ [Amazon EC2](https://gist.github.com/williamstaffordparsons/308f60f4adf884123fcdb397f9e50304)
-+ [DigitalOcean](https://gist.github.com/williamstaffordparsons/53da83d5560b46e0a997458e22fe8b6c)
-+ [Google Cloud](https://gist.github.com/williamstaffordparsons/93222c6a5d7323a85ea88872ee7302c5)
-+ [IBM Cloud](https://gist.github.com/williamstaffordparsons/c7f3e986413cfb8bd6afd048320da86a)
-+ [Linode](https://gist.github.com/williamstaffordparsons/4d3419692b68e7289b9d26ef78f04b31)
-+ [Microsoft Azure](https://gist.github.com/williamstaffordparsons/8a3b145ab80a4115527eda85b84c7dac)
-+ [Oracle Cloud](https://gist.github.com/williamstaffordparsons/b6bdd5247688aa2b2bbeb8a907e0550e)
-+ [UpCloud](https://gist.github.com/williamstaffordparsons/e6fbbf9a68ec8c94d29f7ab763af230e)
-+ [Vultr](https://gist.github.com/williamstaffordparsons/e73d940a4a7a142925e5bea5c8164faf)
++ [Amazon EC2](https://gist.github.com/ghostcompute/308f60f4adf884123fcdb397f9e50304)
++ [DigitalOcean](https://gist.github.com/ghostcompute/53da83d5560b46e0a997458e22fe8b6c)
++ [Google Cloud](https://gist.github.com/ghostcompute/93222c6a5d7323a85ea88872ee7302c5)
++ [IBM Cloud](https://gist.github.com/ghostcompute/c7f3e986413cfb8bd6afd048320da86a)
++ [Linode](https://gist.github.com/ghostcompute/4d3419692b68e7289b9d26ef78f04b31)
++ [Microsoft Azure](https://gist.github.com/ghostcompute/8a3b145ab80a4115527eda85b84c7dac)
++ [Oracle Cloud](https://gist.github.com/ghostcompute/b6bdd5247688aa2b2bbeb8a907e0550e)
++ [UpCloud](https://gist.github.com/ghostcompute/e6fbbf9a68ec8c94d29f7ab763af230e)
++ [Vultr](https://gist.github.com/ghostcompute/e73d940a4a7a142925e5bea5c8164faf)
