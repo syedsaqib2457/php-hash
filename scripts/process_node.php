@@ -10,7 +10,7 @@
 		public function process() {
 			$this->_sendNodeRequestLogData();
 
-			// todo: write nameserver node ips and ports to /tmp cache file for nameserver process recovery
+			// todo: write nameserver and proxy node ips and ports to /tmp cache file for process creation, deletion and recovery
 
 			if (empty($this->nodeData['nodes'])) {
 				// todo: log node processing errors, processing time per request, timeouts, number of logs processed for each request, etc
@@ -164,13 +164,24 @@
 						$proxyNodeUsers[$proxyNodeUser['authentication_username']] = $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
 					}
 
-					foreach (array_chunk($proxyNodeUsers, 10) as $nodeProxyUserPartKey => $proxyNodeUserParts) {
+					foreach (array_chunk($proxyNodeUsers, 10) as $proxyNodeUserPartKey => $proxyNodeUserParts) {
 						$proxyNodeUsers[$proxyNodeUserPartKey] = 'users ' . implode(' ', $proxyNodeUserParts);
 					}
 
 					$this->nodeData['proxy_node_configuration'][$proxyNodeType] = array_merge($proxyNodeConfiguration, $proxyNodeUsers, $proxyNodeUserAuthentication, array(
 						'deny *'
 					));
+
+					foreach (0, 1 as $proxyNodeProcessPartKey) {
+						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey] as $proxyNode) {
+							if (file_exists('/etc/3proxy/$proxyNodeProcessType . '_proxy_' . $proxyNode['id']) === false) {
+								$this->_createProxyNodeProcess($proxyNode);
+								// ..
+							}
+						}
+					}
+
+					// todo: format proxy processes to remove from cache file
 				}
 			}
 
@@ -181,15 +192,6 @@
 
 			$this->_optimizeKernel();
 			$allProxyProcessPorts = array();
-
-			if (!empty($decodedServerData['proxy_process_ports'])) {
-				foreach ($decodedServerData['proxy_process_ports'] as $proxyProcessPort) {
-					if (empty($this->decodedServerData['proxy_process_ports'][$proxyProcessPort])) {
-						$proxyProcessName = 'socks_' . $proxyProcessPort;
-						$proxyProcessesToRemove[$proxyProcessName] = current($this->fetchProcessIds($proxyProcessName, $proxyProcessName . '.cfg'));
-					}
-				}
-			}
 
 			$proxyProcessPortParts = array_chunk($this->decodedServerData['proxy_process_ports'], round(count($this->decodedServerData['proxy_process_ports']) / 2), false);
 
@@ -527,7 +529,9 @@
 			return;
 		}
 
-		protected function _createProxyProcess($proxyProcessPort) {
+		protected function _createProxyNodeProcess($proxyNode) {
+			// ..
+
 			// create different http and socks processes with destination url rules included, chunk each rule by 10 destinations and 10 whitelisted source IPs
 			$proxyProcessConfiguration = $this->decodedServerData['proxy_configuration'];
 			$proxyProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . ($proxyProcessName = 'socks_' . $proxyProcessPort) . '.pid';
