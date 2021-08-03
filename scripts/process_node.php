@@ -93,8 +93,8 @@
 									(empty($proxyNodeUser['request_destination_id']) === false)
 								) &&
 								(
-									empty($proxyNodeUser['authentication_username']) === false ||
-									empty($proxyNodeUser['authentication_whitelist']) === false
+									(empty($proxyNodeUser['authentication_username']) === false) ||
+									(empty($proxyNodeUser['authentication_whitelist']) === false)
 								)
 							) {
 								$proxyNodeLogFormat = 'nolog';
@@ -121,21 +121,27 @@
 									}, array_chunk($proxyNodeUserDestinations, 10);
 								}
 
+								$proxyNodeUsername = $proxyNodeUser['authentication_username'];
+
+								if (empty($proxyNodeUser['status_requiring_strict_authentication']) === true) {
+									if (empty($proxyNodeUsername) === false) {
+										foreach ($proxyNodeUserDestinationParts as $proxyNodeUserDestinationPart) {
+											$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUsername . ' * ' . $proxyNodeUserDestinationPart;
+											$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
+										}
+									}
+
+									$proxyNodeUsername = '*';
+								}
+
 								if (empty($proxyNodeUser['authentication_whitelist']) === false) {
 									$proxyNodeUserAuthenticationWhitelistParts = array_chunk(explode("\n", $proxyNodeUser['authentication_whitelist']), 10);
 
 									foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
 										foreach ($proxyNodeUserDestinationParts as $proxyNodeUserDestinationPart) {
-											$proxyNodeUserAuthenticationWhitelists[] = 'allow * ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
+											$proxyNodeUserAuthenticationWhitelists[] = 'allow ' . $proxyNodeUserName . ' ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
 											$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
 										}
-									}
-								}
-
-								if (empty($proxyNodeUser['authentication_username']) === false) {
-									foreach ($proxyNodeUserDestinationParts as $proxyNodeUserDestinationPart) {
-										$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' * ' . $proxyNodeUserDestinationPart;
-										$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
 									}
 								}
 							}
@@ -144,7 +150,6 @@
 						$proxyNodeUserAuthentication['_' . $proxyNodeId] = false;
 						$proxyNodeUserAuthentication[] = 'deny *';
 						$proxyNodeUserAuthentication[] = 'flush';
-
 					}
 
 					foreach ($this->nodeData['users'][$proxyNodeProcessType] as $proxyNodeUser) {

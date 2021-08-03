@@ -1255,6 +1255,10 @@
 			<span checked="1"></span>
 			<label>Enable request logs</label>
 		</div>
+		<div class="checkbox-container" toggle="status_requiring_strict_authentication">
+			<span checked="0"></span>
+			<label>Enable strict authentication</label>
+		</div>
 		<div class="container" name="status_allowing_request_logs">
 			<div class="checkbox-container" toggle="request_limit_rules">
 				<span checked="0"></span>

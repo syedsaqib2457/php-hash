@@ -1235,7 +1235,8 @@
 							'authentication_whitelist',
 							'id',
 							'status_allowing_request_destinations_only',
-							'status_allowing_request_logs'
+							'status_allowing_request_logs',
+							'status_requiring_strict_authentication'
 						),
 						'from' => 'users',
 						'where' => array(
