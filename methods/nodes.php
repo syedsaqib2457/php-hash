@@ -1045,10 +1045,10 @@
 
 			$nodeId = $parameters['where']['id'];
 
-			if (empty($parameters['data']['processed']) === false) {
+			if (isset($parameters['data']['processed']) === true) {
 				$nodeDataUpdated = $this->update(array(
 					'data' => array(
-						'status_processed' => true
+						'status_processed' => boolval($parameters['data']['processed'])
 					),
 					'in' => 'nodes',
 					'where' => array(
@@ -1062,7 +1062,12 @@
 					return $response;
 				}
 
-				$response['message'] = 'Nodes processed successfully.';
+				$response['message'] = 'Nodes updated for processing successfully.';
+
+				if (empty($parameters['data']['processed']) === false) {
+					$response['message'] = 'Nodes processed successfully.';
+				}
+
 				return $response;
 			}
 

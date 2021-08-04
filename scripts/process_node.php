@@ -16,6 +16,7 @@
 
 			if (empty($this->nodeData['nodes'])) {
 				// todo: verify all previously-verified cached processes. if a process fails, remove the process from the firewall and send notification back to system to flag node for re-processing
+				// exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 				// todo: log node processing errors, processing time per request, timeouts, number of logs processed for each request, etc
 				return;
 			}
