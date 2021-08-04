@@ -10,6 +10,7 @@
 		public function process() {
 			$this->_sendNodeRequestLogData();
 
+			// todo create 2 different processes for processing request log data and processing reconfig
 			// todo: write nameserver and proxy node ips and ports to /tmp cache file for process creation, deletion and recovery
 
 			if (empty($this->nodeData['nodes'])) {
@@ -175,7 +176,15 @@
 
 					foreach (0, 1 as $proxyNodeProcessPartKey) {
 						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey] as $proxyNodeProcess) {
-							// $proxyNodeProcesses[$proxyNodeProcess['id']] = $proxyNodeProcess;
+							$proxyNodeProcessIps = array_filter(array(
+								$proxyNodeProcess['internal_ip_version_4'],
+								$proxyNodeProcess['internal_ip_version_6'],
+								$proxyNode['internal_ip_version_4'],
+								$proxyNode['internal_ip_version_6'],
+								$proxyNode['external_ip_version_4'],
+								$proxyNode['external_ip_version_6']
+							));
+							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIp) . ':' . $proxyNodeProcessPort;
 
 							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id']) === false) {
 								$proxyNodeProcess += array(
@@ -200,21 +209,10 @@
 			// todo: format nameserver processes to remove into an array, create new nameserver processes
 
 			$this->_optimizeKernel();
-			$allProxyProcessPorts = array();
-
-			$proxyProcessPortParts = array_chunk($this->decodedServerData['proxy_process_ports'], round(count($this->decodedServerData['proxy_process_ports']) / 2), false);
 
 			foreach (array(0, 1) as $proxyProcessPortPartKey) {
-				foreach ($proxyProcessPortParts[$proxyProcessPortPartKey] as $proxyProcessPort) {
-					$allProxyProcessPorts[] = $proxyProcessPort;
+				$firewallRulePorts = array();
 
-					if (!file_exists('/etc/3proxy/socks_' . $proxyProcessPort . '.cfg')) {
-						$this->_createProxyProcess($proxyProcessPort);
-					}
-				}
-			}
-
-			foreach (array(0, 1) as $proxyProcessPortPartKey) {
 				foreach ($proxyProcessPortParts[$proxyProcessPortPartKey] as $proxyProcessPort) {
 					if ($this->_verifyProxyPort($proxyProcessPort)) {
 						$firewallRulePorts[] = $proxyProcessPort;
@@ -222,7 +220,6 @@
 				}
 
 				$this->_applyFirewall($firewallRulePorts);
-				$firewallRulePorts = array();
 				$proxyProcessPorts = $proxyProcessPortParts[($proxyProcessPortPartKey ? 0 : 1)];
 
 				foreach ($proxyProcessPorts as $proxyProcessPort) {
@@ -230,12 +227,16 @@
 				}
 			}
 
-			foreach ($allProxyProcessPorts as $proxyProcessPort) {
+			foreach ($proxyNodeProcesses as $proxyNodeProcess) {
+				// ..
+			}
+
+			/*foreach ($allProxyProcessPorts as $proxyProcessPort) {
 				if ($this->_verifyProxyPort($proxyProcessPort)) {
 					$firewallRulePorts[] = $proxyProcessPort;
 					$firewallRulePortsIdentifier += $proxyProcessPort;
 				}
-			}
+			}*/
 
 			$this->_applyFirewall($firewallRulePorts);
 
