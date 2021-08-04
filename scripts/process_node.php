@@ -10,10 +10,12 @@
 		public function process() {
 			$this->_sendNodeRequestLogData();
 
+			// todo: don't allow different proxy process types to share the same public-facing port (allow duplicate ports for same process type for internal load balancing)
 			// todo create 2 different processes for processing request log data and processing reconfig
 			// todo: write nameserver and proxy node ips and ports to /tmp cache file for process creation, deletion and recovery
 
 			if (empty($this->nodeData['nodes'])) {
+				// todo: verify all previously-verified cached processes. if a process fails, remove the process from the firewall and send notification back to system to flag node for re-processing
 				// todo: log node processing errors, processing time per request, timeouts, number of logs processed for each request, etc
 				return;
 			}
@@ -185,13 +187,19 @@
 								$proxyNode['external_ip_version_6']
 							));
 							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIp) . ':' . $proxyNodeProcessPort;
+							$proxyNodeProcess += array(
+								'name' => $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'],
+								'service_name' => $proxyNodeProcessTypeServiceName
+							);
 
-							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id']) === false) {
-								$proxyNodeProcess += array(
-									'name' => $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'],
-									'service_name' => $proxyNodeProcessTypeServiceName
-								);
+							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'] . '.cfg') === false) {
 								$this->_createProxyNodeProcess($proxyNodeProcess);
+							} else {
+								$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcess['name'], '/etc/3proxy/' . $proxyNodeProcess['name'] . '.cfg');
+
+								if (empty($proxyNodeProcessIds) === false) {
+									$this->nodeData['node_process_process_id'][$proxyNodeProcessType][$proxyNodeProcessPartKey][] = current($proxyNodeProcessProcessIds);
+								}
 							}
 						}
 					}
@@ -207,28 +215,37 @@
 			$this->_sendNodeRequestLogData();
 
 			// todo: format nameserver processes to remove into an array, create new nameserver processes
+			// todo: include nameserver processes in config reloading
 
-			$this->_optimizeKernel();
+			$nodeProcessTypes = array(
+				'http_proxy',
+				'nameserver',
+				'socks_proxy'
+			);
 
-			foreach (array(0, 1) as $proxyProcessPortPartKey) {
-				$firewallRulePorts = array();
-
-				foreach ($proxyProcessPortParts[$proxyProcessPortPartKey] as $proxyProcessPort) {
-					if ($this->_verifyProxyPort($proxyProcessPort)) {
-						$firewallRulePorts[] = $proxyProcessPort;
+			foreach (array(0, 1) as $nodeProcessPartKey) {
+				foreach ($nodeProcessTypes as $nodeProcessType) {
+					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
+						if ($this->verifyNodeProcess($nodeProcess) === false) {
+							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessKey]);
+						}
 					}
 				}
 
-				$this->_applyFirewall($firewallRulePorts);
-				$proxyProcessPorts = $proxyProcessPortParts[($proxyProcessPortPartKey ? 0 : 1)];
+				$this->_applyFirewall($nodeProcessPartKey);
+				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
 
-				foreach ($proxyProcessPorts as $proxyProcessPort) {
-					$this->_connect($proxyProcessPort);
+				foreach ($nodeProcessTypes as $nodeProcessType) {
+					if (empty($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]) === false) {
+						$this->_killProcessIds($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]);
+					}
 				}
-			}
 
-			foreach ($proxyNodeProcesses as $proxyNodeProcess) {
-				// ..
+				// todo: start nameserver processes
+
+				foreach ($proxyNodeProcessTypes as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
+					// todo: start proxy processes
+				}
 			}
 
 			/*foreach ($allProxyProcessPorts as $proxyProcessPort) {
@@ -236,7 +253,7 @@
 					$firewallRulePorts[] = $proxyProcessPort;
 					$firewallRulePortsIdentifier += $proxyProcessPort;
 				}
-			}*/
+			}
 
 			$this->_applyFirewall($firewallRulePorts);
 
@@ -252,7 +269,7 @@
 			$this->_verifyNameserverProcesses();
 			file_put_contents($firewallRulePortsFile, $firewallRulePortsIdentifier);
 			file_put_contents($nameserverIpsFile, $nameserverIpsIdentifier);
-			$this->_optimizeProcesses();
+			$this->_optimizeProcesses();*/
 			// ..
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
@@ -399,7 +416,7 @@
 			return;
 		}
 
-		protected function _connect($proxyProcessPort) {
+		protected function _process($proxyNodeProcessPort) {
 			$proxyProcessName = 'socks_' . $proxyProcessPort;
 			$proxyProcessIds = $this->fetchProcessIds($proxyProcessName, '/etc/3proxy/' . $proxyProcessName . '.cfg');
 			// todo: wait for process connections to be completed before killing process
@@ -576,7 +593,7 @@
 			shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyProcess['name']);
 			$systemdServiceContents = array(
 				'[Service]',
-				'ExecStart=/bin/' . $proxyProcess['name'] . ' ' . ($proxyProcessConfigurationPath = '/etc/3proxy/' . $proxyProcess['name'])
+				'ExecStart=/bin/' . $proxyProcess['name'] . ' ' . ($proxyProcessConfigurationPath = '/etc/3proxy/' . $proxyProcess['name'] . '.cfg')
 			);
 			file_put_contents('/etc/systemd/system/' . $proxyProcessName . '.service', implode("\n", $systemdServiceContents));
 			file_put_contents($proxyProcessConfigurationPath, implode("\n", $proxyProcessConfiguration));
