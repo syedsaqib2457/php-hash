@@ -54,7 +54,7 @@
 			}
 
 			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
-			$nodeIpVersions = array_keys($nodeIpVersions);
+			$this->nodeData['data']['node_ip_versions'] = array_keys($nodeIpVersions);
 			$proxyNodeConfiguration = array(
 				'maxconn 20000',
 				'nobandlimin',
@@ -68,6 +68,7 @@
 				'allow * * * * HTTPS',
 				'log' => false
 			);
+			$proxyNodeProcesses = array();
 			$proxyNodeProcessTypes = array(
 				'proxy' => 'http_proxy',
 				'socks' => 'socks_proxy'
@@ -82,7 +83,7 @@
 						$proxyNode = $this->nodeData['nodes'][$proxyNodeId];
 						$proxyNodeIpVersionPriority = 46;
 
-						foreach ($nodeIpVersions as $nodeIpVersion) {
+						foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
 							if (empty($proxyNode['external_ip_version_' . $nodeIpVersion]) === true) {
 								$proxyNodeIpVersionPriority = 10 - $nodeIpVersion;
 							}
@@ -173,17 +174,25 @@
 					));
 
 					foreach (0, 1 as $proxyNodeProcessPartKey) {
-						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey] as $proxyNode) {
-							if (file_exists('/etc/3proxy/$proxyNodeProcessType . '_proxy_' . $proxyNode['id']) === false) {
-								$this->_createProxyNodeProcess($proxyNode);
-								// ..
+						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey] as $proxyNodeProcess) {
+							// $proxyNodeProcesses[$proxyNodeProcess['id']] = $proxyNodeProcess;
+
+							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id']) === false) {
+								$proxyNodeProcess += array(
+									'name' => $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'],
+									'service_name' => $proxyNodeProcessTypeServiceName
+								);
+								$this->_createProxyNodeProcess($proxyNodeProcess);
 							}
 						}
 					}
 
+					shell_exec('sudo ' . $this->binaryFiles['systemctl'] . ' daemon-reload');
 					// todo: format proxy processes to remove from cache file
 				}
 			}
+
+			// ..
 
 			$this->_verifyNameserverProcesses();
 			$this->_sendNodeRequestLogData();
@@ -250,6 +259,8 @@
 		}
 
 		protected function _applyFirewall($proxyProcessPorts) {
+			// todo: use ipset with additional internal ips with ports for load balancing without reaching the ~25k iptables rule limit
+
 			if (empty($proxyProcessPorts)) {
 				return;
 			}
@@ -400,7 +411,6 @@
 				unlink('/var/run/3proxy/' . $proxyProcessName . '.pid');
 			}
 
-			$this->_createProxyProcess($proxyProcessPort);
 			$proxyProcessEnded = false;
 			$proxyProcessEndedTime = time();
 
@@ -529,41 +539,47 @@
 			return;
 		}
 
-		protected function _createProxyNodeProcess($proxyNode) {
-			// ..
+		protected function _createProxyNodeProcess($proxyNodeProcess) {
+			// todo: add nameserver IPs into config here
+			$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
+			$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid';
+			$proxyNodeProcessService = $proxyNodeProcess['service'] . ' -a';
+			// todo: set correct ipv4 and ipv6 internal + external ips for each service (including proxy process local listening ips)
+			// todo: set option to enable anonymizing headers for HTTP
+			// todo: set option to prioritize ipv6 or ipv4
 
-			// create different http and socks processes with destination url rules included, chunk each rule by 10 destinations and 10 whitelisted source IPs
-			$proxyProcessConfiguration = $this->decodedServerData['proxy_configuration'];
-			$proxyProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . ($proxyProcessName = 'socks_' . $proxyProcessPort) . '.pid';
-			$proxyProcessConfigurationPath = '/etc/3proxy/' . $proxyProcessName . '.cfg';
+			foreach ($this->nodeData['nodes'][$proxyNodeProcess]['type'] as $proxyNode) {
+				$proxyNodeProcessIpVersionPriority = '-';
 
-			foreach ($this->decodedServerData['proxies'] as $proxyIp) {
-				$proxyProcessConfiguration[$proxyIp] = 'socks -a -e' . $proxyIp . ' -i' . $proxyIp . ' -n -p' . $proxyProcessPort . ' -46';
+				foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+					if (empty($proxyNode['external_ip_version_' . $nodeIpVersion]) === false) {
+						$proxyNodeProcessIpVersionPriority .= $nodeIpVersion;
+						$proxyNodeProcessServiceInterfaceExternalIp = $proxyNodeProcessServiceInterfaceInternalIp = $proxyNode['external_ip_version_' . $nodeIpVersion];
+
+						if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+							$proxyNodeProcessServiceInterfaceExternalIp = $proxyNodeProcessServiceInterfaceInternalIp = $proxyNode['internal_ip_version_' . $nodeIpVersion];
+						}
+
+						if (empty($proxyNodeProcess['internal_ip_version_' . $nodeIpVersion]) === false) {
+							$proxyNodeProcessServiceInterfaceInternalIp = $proxyNodeProcess['internal_ip_version_' . $nodeIpVersion];
+						}
+
+						$proxyNodeProcessService .= ' -e ' . $proxyNodeProcessServiceInterfaceExternalIp . ' -i ' . $proxyNodeProcessServiceInterfaceInternalIp;
+					}
+				}
+
+				$proxyNodeProcessService .= ' -n -p' . $proxyProcess['port_id'] . ' ' . $proxyNodeProcessIpVersionPriority;
+				$proxyNodeProcessConfiguration['_' . $proxyNode['id']] = $proxyNodeProcessService;
 			}
 
-			shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyProcessName);
+			shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyProcess['name']);
 			$systemdServiceContents = array(
-				'[Unit]',
-				'After=network.target',
 				'[Service]',
-				'ExecStart=/bin/' . $proxyProcessName . ' ' . $proxyProcessConfigurationPath,
-				'User=root',
-				'[Install]',
-				'WantedBy=multi-user.target'
+				'ExecStart=/bin/' . $proxyProcess['name'] . ' ' . ($proxyProcessConfigurationPath = '/etc/3proxy/' . $proxyProcess['name'])
 			);
 			file_put_contents('/etc/systemd/system/' . $proxyProcessName . '.service', implode("\n", $systemdServiceContents));
 			file_put_contents($proxyProcessConfigurationPath, implode("\n", $proxyProcessConfiguration));
-			$commands = array(
-				'sudo chmod +x ' . $proxyProcessConfigurationPath,
-				'sudo chown root:root ' . $proxyProcessConfigurationPath,
-				'sudo chmod 0755 ' . $proxyProcessConfigurationPath,
-				'sudo ' . $this->binaryFiles['systemctl'] . ' daemon-reload'
-			);
-
-			foreach ($commands as $command) {
-				shell_exec($command);
-			}
-
+			chmod($proxyProcessConfigurationPath, 0755);
 			return;
 		}
 
@@ -867,6 +883,8 @@
 		}
 
 		protected function _verifyProxyPort($proxyPort, $timeout = 2) {
+			// todo: add http verification
+			// todo: change to verifyProxyProcess() to include process internal ip
 			$response = false;
 			exec('curl --socks5-hostname ' . $this->decodedServerData['server']['ip'] . ':' . $proxyPort . ' http://domain' . uniqid() . time() . ' -v --connect-timeout ' . $timeout . ' --max-time ' . $timeout . ' 2>&1', $proxyResponse);
 			$proxyResponse = end($proxyResponse);
