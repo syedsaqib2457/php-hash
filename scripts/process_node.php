@@ -950,6 +950,12 @@
 						),
 						array(
 							'command' => '-h',
+							'name' => 'ip6tables-restore',
+							'output' => 'tables-restore ',
+							'package' => 'iptables'
+						),
+						array(
+							'command' => '-h',
 							'name' => 'iptables-restore',
 							'output' => 'tables-restore ',
 							'package' => 'iptables'
