@@ -21,19 +21,19 @@
 				return;
 			}
 
-			$nodeIpVersions = array(
-				'4' => array(
-					'network_mask' => '/32',
-					'type' => 'inet'
-				),
-				'6' => array(
-					'network_mask' => '/128',
-					'type' => 'inet6'
-				)
+			$this->nodeData['node_ip_versions'] = array(
+				32 => 4,
+				128 => 6
 			);
 
-			foreach ($nodeIpVersions as $nodeIpVersion => $nodeIpVersionData) {
-				exec('sudo ' . $this->nodeData['binary_files']['ip'] . ' addr show dev ' . $this->nodeData['interface_name'] . ' | grep "' . $nodeIpVersionData['type'] . ' " | grep "' . $nodeIpVersionData['network_mask'] . ' " | awk \'{print substr($2, 0, length($2) - ' . ($nodeIpVersion / 2) . ')}\'', $existingInterfaceNodeIps);
+			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
+				$nodeIpVersionInterfaceType = 'inet';
+
+				if ($nodeIpVersion === 6) {
+					$nodeIpVersionInterfaceType .= 6;
+				}
+
+				exec('sudo ' . $this->nodeData['binary_files']['ip'] . ' addr show dev ' . $this->nodeData['interface_name'] . ' | grep "' . $nodeIpVersionInterfaceType . ' " | grep "' . $nodeIpVersionData['network_mask'] . ' " | awk \'{print substr($2, 0, length($2) - ' . ($nodeIpVersion / 2) . ')}\'', $existingInterfaceNodeIps);
 				$existingInterfaceNodeIps = current($existingInterfaceNodeIps);
 				$interfaceNodeIpFileContents = array(
 					'<?php'
@@ -47,7 +47,7 @@
 					$interfaceNodeIpAction = substr($interfaceNodeIpAction, 3);
 
 					foreach ($interfaceNodeIps as $interfaceNodeIp) {
-						$command = 'sudo ' . $this->nodeData['binary_files']['ip'] . ' -' . $nodeIpVersion . ' addr ' . $interfaceNodeIpAction . ' ' . $interfaceNodeIp . $nodeIpVersionData['network_mask'] . ' dev ' . $this->nodeData['interface_name'];
+						$command = 'sudo ' . $this->nodeData['binary_files']['ip'] . ' -' . $nodeIpVersion . ' addr ' . $interfaceNodeIpAction . ' ' . $interfaceNodeIp . '/' . $nodeIpVersionNetworkMask . ' dev ' . $this->nodeData['interface_name'];
 						shell_exec($command);
 
 						if ($interfaceNodeIpAction === 'add') {
@@ -58,7 +58,6 @@
 			}
 
 			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
-			$this->nodeData['data']['node_ip_versions'] = array_keys($nodeIpVersions);
 			$proxyNodeConfiguration = array(
 				'maxconn 20000',
 				'nobandlimin',
@@ -79,7 +78,7 @@
 			);
 
 			foreach ($proxyNodeProcessTypes as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-				if (empty($this->nodeData['data']['node_processes'][$proxyNodeProcessType]) === false) {
+				if (empty($this->nodeData['node_processes'][$proxyNodeProcessType]) === false) {
 					$proxyNodeConfiguration['log'] = 'log /var/log/' . $proxyNodeProcessType;
 					$proxyNodeUsers = array();
 
@@ -87,7 +86,7 @@
 						$proxyNode = $this->nodeData['nodes'][$proxyNodeId];
 						$proxyNodeIpVersionPriority = 46;
 
-						foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 							if (empty($proxyNode['external_ip_version_' . $nodeIpVersion]) === true) {
 								$proxyNodeIpVersionPriority = 10 - $nodeIpVersion;
 							}
