@@ -343,7 +343,7 @@
 		}
 
 		protected function _applyFirewall($proxyProcessPorts) {
-			// todo: use ipset with additional internal ips with ports for load balancing without reaching the ~25k iptables rule limit
+			// todo: use ip6tables with --persistent using same ports as iptables
 
 			if (empty($proxyProcessPorts)) {
 				return;
@@ -812,7 +812,7 @@
 			return;
 		}
 
-		protected function _verifyNameserverProcesses() {
+		/*protected function _verifyNameserverProcesses() {
 			$serverData = file_exists($this->rootPath . 'cache/data') ? file_get_contents($this->rootPath . 'cache/data') : '';
 			$decodedServerData = json_decode($serverData, true);
 
@@ -870,9 +870,27 @@
 			}
 
 			return;
+		}*/
+
+		protected function _verifyNodeProcess($nodeProcess) {
+			response = false;
+
+			switch ($nodeProcess['type']) {
+				case 'http_proxy':
+					// ..
+					break;
+				case 'nameserver':
+					// ..
+					break;
+				case 'socks_proxy':
+					// ..
+					break;
+			}
+
+			return $response;
 		}
 
-		protected function _verifyProxyPort($proxyPort, $timeout = 2) {
+		/*protected function _verifyProxyPort($proxyPort, $timeout = 2) {
 			// todo: add http verification
 			// todo: change to verifyProxyProcess() to include process internal ip
 			$response = false;
@@ -880,7 +898,7 @@
 			$proxyResponse = end($proxyResponse);
 			$response = (strpos(strtolower($proxyResponse), 'empty ') !== false);
 			return $response;
-		}
+		}*/
 
 		public function fetchProcessIds($processName, $processFile = false) {
 			$processIds = array();
