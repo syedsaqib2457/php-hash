@@ -339,38 +339,33 @@
 			return $response;
 		}
 
-		protected function _applyFirewall($nodeProcessPartKey) {
+		protected function _processFirewall($nodeProcessPartKey) {
 			// todo: use ip6tables with --persistent using same ports as iptables
+			$firewallBinaryFiles = array(
+				4 => $this->binaryFiles['iptables-restore'],
+				6 => $this->binaryFiles['ip6tables-restore']
+			);
 
 			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
-				// ..
-
-				//if (empty($proxyProcessPorts)) {
-					//return;
-				//}
-
 				$firewallRules = array(
 					'*filter',
 					':INPUT ACCEPT [0:0]',
 					':FORWARD ACCEPT [0:0]',
 					':OUTPUT ACCEPT [0:0]',
-					'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask 32 -j DROP'
+					'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP'
 				);
 
-				if (
-					!empty($this->sshPorts) &&
-					is_array($this->sshPorts)
-				) {
-					foreach ($this->sshPorts as $sshPort) {
-						$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask 32 -j DROP';
+				if (empty($this->nodeData['ssh_ports']) === false) {
+					foreach ($this->nodeData['ssh_ports'] as $sshPort) {
+						$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
 					}
 				}
 
-				$nameserverProcessLoadBalanceIps = array();
+				/*$nameserverProcessLoadBalanceIps = array();
 				$nameserverProcessLoadBalanceIpKeys = array(
 					'nameserver_process_external_ips',
 					'nameserver_process_internal_ips'
-				);
+				);*/
 				$firewallRules[] = 'COMMIT';
 				$firewallRules[] = '*nat';
 				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
@@ -378,7 +373,9 @@
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
 
-				foreach ($nameserverProcessLoadBalanceIpKeys as $nameserverProcessLoadBalanceIpKey) {
+				// ..
+
+				/*foreach ($nameserverProcessLoadBalanceIpKeys as $nameserverProcessLoadBalanceIpKey) {
 					foreach ($this->decodedServerData[$nameserverProcessLoadBalanceIpKey] as $sourceIp => $destinationIps) {
 						if (count($destinationIps) > 1) {
 							if ($nameserverProcessLoadBalanceIpKey === 'nameserver_process_external_ips') {
@@ -434,7 +431,9 @@
 							$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . $this->decodedServerData['server']['ip'] . ' --dports ' . implode(',', $proxyProcessPortPartPorts) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $proxyProcessPort . ' --persistent';
 						}
 					}
-				}
+				}*/
+
+				// ..
 
 				$firewallRules[] = 'COMMIT';
 				$firewallRules[] = '*raw';
@@ -463,22 +462,18 @@
 				}
 
 				$firewallRules[] = 'COMMIT';
-				$firewallRuleParts = array_chunk($firewallRules, 1000);
-				$firewallRulesFile = $this->rootPath . 'cache/firewall';
-
-				if (file_exists($firewallRulesFile)) {
-					unlink($firewallRulesFile);
-				}
-
+				$firewallRulesFile = '/tmp/firewall_' . $nodeIpVersion;
+				unlink($firewallRulesFile);
 				touch($firewallRulesFile);
+				$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 				foreach ($firewallRuleParts as $firewallRulePart) {
 					$saveFirewallRules = implode("\n", $firewallRulePart);
 					shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
 				}
 
-				shell_exec('sudo ' . $this->binaryFiles['iptables-restore'] . ' < ' . $firewallRulesFile);
-				sleep(1 * count($firewallRuleParts));
+				shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpVersion] . ' < ' . $firewallRulesFile);
+				sleep(1);
 			}
 
 			return;
