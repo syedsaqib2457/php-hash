@@ -178,18 +178,17 @@
 					));
 
 					foreach (0, 1 as $proxyNodeProcessPartKey) {
-						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey] as $proxyNodeProcess) {
+						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
 							$proxyNodeProcessIps = array_filter(array(
 								$proxyNode['internal_ip_version_4'],
 								$proxyNode['internal_ip_version_6'],
 								$proxyNode['external_ip_version_4'],
 								$proxyNode['external_ip_version_6']
 							));
-							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIps); $proxyNodeProcessPort;
-							$proxyNodeProcess += array(
-								'name' => $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'],
-								'service_name' => $proxyNodeProcessTypeServiceName
-							);
+							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIps) . ':' . $proxyNodeProcessPort;
+							$proxyNodeProcess['name'] = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
+							$proxyNodeProcess['service_name'] = $proxyNodeProcessTypeServiceName;
+							$this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey][$proxyNodeProcessKey] = $proxyNodeProcess;
 
 							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'] . '.cfg') === true) {
 								$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcess['name'], '/etc/3proxy/' . $proxyNodeProcess['name'] . '.cfg');
@@ -232,6 +231,8 @@
 				$this->_applyFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
 
+				// todo: verify no active sockets for processes using $nodeProcessPartKey
+
 				foreach ($nodeProcessTypes as $nodeProcessType) {
 					if (empty($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]) === false) {
 						$this->_killProcessIds($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]);
@@ -241,7 +242,76 @@
 				// todo: start nameserver processes
 
 				foreach ($proxyNodeProcessTypes as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-					// todo: start proxy processes
+					end($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
+					$proxyNodeProcessEndKey = key($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
+
+					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
+						// todo: add nameserver IPs into config here
+						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
+						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid';
+						$proxyNodeProcessService = $proxyNodeProcess['service'] . ' -a';
+						// todo: set option to enable anonymizing headers for HTTP
+						// todo: set option to prioritize ipv6 or ipv4
+
+						foreach ($this->nodeData['nodes'][$proxyNodeProcess]['type'] as $proxyNode) {
+							$proxyNodeProcessIpVersionPriority = '-';
+
+							foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+								if (empty($proxyNode['external_ip_version_' . $nodeIpVersion]) === false) {
+									$proxyNodeProcessIpVersionPriority .= $nodeIpVersion;
+									$proxyNodeProcessServiceInterfaceIp = $proxyNode['external_ip_version_' . $nodeIpVersion];
+
+									if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+										$proxyNodeProcessServiceInterfaceIp = $proxyNode['internal_ip_version_' . $nodeIpVersion];
+									}
+
+									$proxyNodeProcessService .= ' -e ' . $proxyNodeProcessServiceInterfaceIp . ' -i ' . $proxyNodeProcessServiceInterfaceIp;
+								}
+							}
+
+							$proxyNodeProcessService .= ' -n -p' . $proxyNodeProcess['port_id'] . ' ' . $proxyNodeProcessIpVersionPriority;
+							$proxyNodeProcessConfiguration['_' . $proxyNode['id']] = $proxyNodeProcessService;
+						}
+
+						shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcess['name']);
+						$systemdServiceContents = array(
+							'[Service]',
+							'ExecStart=/bin/' . $proxyNodeProcess['name'] . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcess['name'] . '.cfg')
+						);
+						file_put_contents('/etc/systemd/system/' . $proxyNodeProcess['name'] . '.service', implode("\n", $systemdServiceContents));
+						file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
+						chmod($proxyNodeProcessConfigurationPath, 0755);
+
+						if (file_exists('/var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid') === true) {
+							unlink('/var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid');
+						}
+
+						$proxyNodeProcessEnded = false;
+						$proxyNodeProcessEndedTime = time();
+
+						while ($proxyNodeProcessEnded === false) {
+							$proxyNodeProcessEnded = (
+								($this->_verifyNodeProcess($proxyNodeProcess) === false) ||
+								((time() - $proxyProcessEndedTime) > 60)
+							);
+							sleep(1);
+						}
+
+						$proxyNodeProcessStarted = false;
+						$proxyNodeProcessStartedTime = time();
+
+						while ($proxyProcessStarted === false) {
+							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcess['name'] . ' start');
+
+							if ($proxyNodeProcessKey === $proxyNodeProcessEndKey) {
+								$proxyNodeProcessStarted = (
+									($this->_verifyProxyPort($proxyProcessPort) === true) ||
+									((time() - $proxyProcessStartedTime) > 60)
+								);
+								sleep(2);
+							}
+						}
+					}
 				}
 			}
 
@@ -551,46 +621,6 @@
 				shell_exec($command);
 			}
 
-			return;
-		}
-
-		protected function _createProxyNodeProcess($proxyNodeProcess) {
-			// todo: add nameserver IPs into config here
-			$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
-			$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid';
-			$proxyNodeProcessService = $proxyNodeProcess['service'] . ' -a';
-			// todo: set correct ipv4 and ipv6 internal + external ips for each service (including proxy process local listening ips)
-			// todo: set option to enable anonymizing headers for HTTP
-			// todo: set option to prioritize ipv6 or ipv4
-
-			foreach ($this->nodeData['nodes'][$proxyNodeProcess]['type'] as $proxyNode) {
-				$proxyNodeProcessIpVersionPriority = '-';
-
-				foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-					if (empty($proxyNode['external_ip_version_' . $nodeIpVersion]) === false) {
-						$proxyNodeProcessIpVersionPriority .= $nodeIpVersion;
-						$proxyNodeProcessServiceInterfaceIp = $proxyNode['external_ip_version_' . $nodeIpVersion];
-
-						if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-							$proxyNodeProcessServiceInterfaceIp = $proxyNode['internal_ip_version_' . $nodeIpVersion];
-						}
-
-						$proxyNodeProcessService .= ' -e ' . $proxyNodeProcessServiceInterfaceIp . ' -i ' . $proxyNodeProcessServiceInterfaceIp;
-					}
-				}
-
-				$proxyNodeProcessService .= ' -n -p' . $proxyProcess['port_id'] . ' ' . $proxyNodeProcessIpVersionPriority;
-				$proxyNodeProcessConfiguration['_' . $proxyNode['id']] = $proxyNodeProcessService;
-			}
-
-			shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyProcess['name']);
-			$systemdServiceContents = array(
-				'[Service]',
-				'ExecStart=/bin/' . $proxyProcess['name'] . ' ' . ($proxyProcessConfigurationPath = '/etc/3proxy/' . $proxyProcess['name'] . '.cfg')
-			);
-			file_put_contents('/etc/systemd/system/' . $proxyProcessName . '.service', implode("\n", $systemdServiceContents));
-			file_put_contents($proxyProcessConfigurationPath, implode("\n", $proxyProcessConfiguration));
-			chmod($proxyProcessConfigurationPath, 0755);
 			return;
 		}
 
