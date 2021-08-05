@@ -191,9 +191,7 @@
 								'service_name' => $proxyNodeProcessTypeServiceName
 							);
 
-							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'] . '.cfg') === false) {
-								$this->_createProxyNodeProcess($proxyNodeProcess);
-							} else {
+							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'] . '.cfg') === true) {
 								$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcess['name'], '/etc/3proxy/' . $proxyNodeProcess['name'] . '.cfg');
 
 								if (empty($proxyNodeProcessIds) === false) {
