@@ -67,7 +67,7 @@
 				'log' => false
 			);
 			$proxyNodeProcesses = array();
-			$proxyNodeProcessTypes = array(
+			$proxyNodeProcessTypes = $this->nodeData['proxy_node_process_types'] = array(
 				'proxy' => 'http_proxy',
 				'socks' => 'socks_proxy'
 			);
@@ -373,24 +373,12 @@
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
 
-				// ..
-
-				/*foreach ($nameserverProcessLoadBalanceIpKeys as $nameserverProcessLoadBalanceIpKey) {
-					foreach ($this->decodedServerData[$nameserverProcessLoadBalanceIpKey] as $sourceIp => $destinationIps) {
-						if (count($destinationIps) > 1) {
-							if ($nameserverProcessLoadBalanceIpKey === 'nameserver_process_external_ips') {
-								$destinationIps = array_values($destinationIps);
-								krsort($destinationIps);
-							} else {
-								$sourceIp = ' ' . current($destinationIps);
-							}
-
-							$nameserverProcessLoadBalanceIps[$sourceIp] = $destinationIps;
-						}
-					}
+				// todo: create two different arrays with node nameserver processes and other nameserver processes
+				if (empty($this->nodeData['node_processes']['nameserver'][$nodeProcessPartKey]) === false) {
+					// ..
 				}
 
-				foreach ($nameserverProcessLoadBalanceIps as $sourceIp => $destinationIps) {
+				/*foreach ($nameserverProcessLoadBalanceIps as $sourceIp => $destinationIps) {
 					$nameserverProcessLoadBalanceSourceIpParts = array(
 						array(
 							$sourceIp
@@ -414,31 +402,44 @@
 							}
 						}
 					}
-				}
-
-				krsort($proxyProcessPorts);
-				$proxyProcessPortParts = array_chunk($this->decodedServerData['proxy_process_ports'], 10);
-
-				foreach ($proxyProcessPortParts as $proxyProcessPortPartPorts) {
-					foreach ($proxyProcessPorts as $proxyProcessPortKey => $proxyProcessPort) {
-						$loadBalancer = $proxyProcessPortKey > 0 ? '-m statistic --mode nth --every ' . ($proxyProcessPortKey + 1) . ' --packet 0 ' : '';
-						$protocols = array(
-							'tcp',
-							'udp'
-						);
-
-						foreach ($protocols as $protocol) {
-							$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . $this->decodedServerData['server']['ip'] . ' --dports ' . implode(',', $proxyProcessPortPartPorts) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $proxyProcessPort . ' --persistent';
-						}
-					}
 				}*/
 
-				// ..
+				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessType) {
+					krsort($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
+					$proxyNodeProcessParts = array_chunk($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey], 10);
+
+					foreach ($proxyNodeProcessParts as $proxyNodeProcessPart) {
+						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
+							$loadBalancer = '';
+
+							if ($proxyNodeProcessKey > 0) {
+								$loadBalancer = '-m statistic --mode nth --every ' . ($proxyNodeProcessKey + 1) . ' --packet 0 ';
+							}
+
+							$protocols = array(
+								'tcp',
+								'udp'
+							);
+
+							if (empty($proxyNodeProcess['transport_protocol']) === false) {
+								$protocols = array(
+									$proxyNodeProcess['transport_protocol']
+								);
+							}
+
+							foreach ($protocols as $protocol) {
+								// todo: use main node IP for ! s rule, should retrieve this from each node instead of system-defined main nodes
+								//$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . [main_node_ip_goes_here] . ' --dports ' . implode(',', $proxyNodeProcessPart) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $proxyNodeProcess['port_id'] . ' --persistent';
+							}
+						}
+					}
+				}
 
 				$firewallRules[] = 'COMMIT';
 				$firewallRules[] = '*raw';
 				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
+				// todo: define blocks in system settings, allow dropping external packets from additional blocks with per-node
 				$reservedIpRanges = array(
 					'0.0.0.0/8',
 					'10.0.0.0/8',
