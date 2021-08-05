@@ -303,13 +303,12 @@
 						while ($proxyProcessStarted === false) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcess['name'] . ' start');
 
-							if ($proxyNodeProcessKey === $proxyNodeProcessEndKey) {
-								$proxyNodeProcessStarted = (
-									($this->_verifyProxyPort($proxyProcessPort) === true) ||
-									((time() - $proxyProcessStartedTime) > 60)
-								);
-								sleep(2);
-							}
+							$proxyNodeProcessStarted = (
+								($proxyNodeProcessKey !== $proxyNodeProcessEndKey) ||
+								($this->_verifyNodeProcess($proxyNodeProcess) === true) ||
+								((time() - $proxyNodeProcessStartedTime) > 60)
+							);
+							sleep(2);
 						}
 					}
 				}
@@ -480,56 +479,6 @@
 
 			shell_exec('sudo ' . $this->binaryFiles['iptables-restore'] . ' < ' . $firewallRulesFile);
 			sleep(1 * count($firewallRuleParts));
-			return;
-		}
-
-		protected function _process($proxyNodeProcessPort) {
-			$proxyProcessName = 'socks_' . $proxyProcessPort;
-			$proxyProcessIds = $this->fetchProcessIds($proxyProcessName, '/etc/3proxy/' . $proxyProcessName . '.cfg');
-			// todo: wait for process connections to be completed before killing process
-
-			if (!empty($proxyProcessIds)) {
-				$this->_killProcessIds($proxyProcessIds);
-			}
-
-			if (file_exists('/var/run/3proxy/' . $proxyProcessName . '.pid')) {
-				unlink('/var/run/3proxy/' . $proxyProcessName . '.pid');
-			}
-
-			$proxyProcessEnded = false;
-			$proxyProcessEndedTime = time();
-
-			while ($proxyProcessEnded === false) {
-				$proxyProcessEnded = true;
-
-				if (
-					$this->_verifyProxyPort($proxyProcessPort) === true ||
-					(time() - $proxyProcessEndedTime) > 60
-				) {
-					$proxyProcessEnded = false;
-					break;
-				}
-
-				sleep(1);
-			}
-
-			$proxyProcessStarted = false;
-			$proxyProcessStartedTime = time();
-
-			while ($proxyProcessStarted === false) {
-				shell_exec('sudo ' . $this->binaryFiles['service'] . ' ' . $proxyProcessName . ' start');
-				sleep(1);
-
-				if (
-					$this->_verifyProxyPort($proxyProcessPort) === true ||
-					(time() - $proxyProcessStartedTime) > 60
-				) {
-					$proxyProcessStarted = true;
-					break;
-				}
-			}
-
-			$this->_verifyNameserverProcesses();
 			return;
 		}
 
