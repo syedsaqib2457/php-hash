@@ -180,14 +180,12 @@
 					foreach (0, 1 as $proxyNodeProcessPartKey) {
 						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey] as $proxyNodeProcess) {
 							$proxyNodeProcessIps = array_filter(array(
-								$proxyNodeProcess['internal_ip_version_4'],
-								$proxyNodeProcess['internal_ip_version_6'],
 								$proxyNode['internal_ip_version_4'],
 								$proxyNode['internal_ip_version_6'],
 								$proxyNode['external_ip_version_4'],
 								$proxyNode['external_ip_version_6']
 							));
-							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIp) . ':' . $proxyNodeProcessPort;
+							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIps); $proxyNodeProcessPort;
 							$proxyNodeProcess += array(
 								'name' => $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'],
 								'service_name' => $proxyNodeProcessTypeServiceName
