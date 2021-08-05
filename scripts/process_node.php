@@ -21,11 +21,6 @@
 				return;
 			}
 
-			$this->nodeData['node_ip_versions'] = array(
-				32 => 4,
-				128 => 6
-			);
-
 			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
 				$nodeIpVersionInterfaceType = 'inet';
 

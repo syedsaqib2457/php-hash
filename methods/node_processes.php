@@ -119,8 +119,8 @@
 				'internal' => 'private'
 			);
 			$nodeProcessIpVersions = array(
-				'4',
-				'6'
+				4,
+				6
 			);
 
 			foreach ($nodeProcessIpTypes as $nodeProcessIpInterface => $nodeProcessIpType) {
@@ -397,8 +397,8 @@
 				'internal' => 'private'
 			);
 			$nodeProcessIpVersions = array(
-				'4',
-				'6'
+				4,
+				6
 			);
 
 			foreach ($nodeProcessIpTypes as $nodeProcessIpInterface => $nodeProcessIpType) {

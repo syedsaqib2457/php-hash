@@ -122,8 +122,8 @@
 
 			$nodeExternalIps = $nodeExternalIpVersions = array();
 			$nodeIpVersions = array(
-				'4',
-				'6'
+				4,
+				6
 			);
 
 			foreach ($nodeIpVersions as $nodeIpVersion) {
@@ -530,8 +530,8 @@
 
 			$nodeExternalIps = $nodeExternalIpVersions = array();
 			$nodeIpVersions = array(
-				'4',
-				'6'
+				4,
+				6
 			);
 
 			foreach ($nodeIpVersions as $nodeIpVersion) {
@@ -1122,16 +1122,17 @@
 				return $response;
 			}
 
-			$nodeIpVersions = array(
-				'4',
-				'6'
-			);
 			$nodeProcessTypes = array(
 				'http_proxy',
 				'nameserver',
 				'socks_proxy'
 			);
-			$response['data'] = array();
+			$response['data'] = array(
+				'node_ip_versions' => ($nodeIpVersions = array(
+					32 => 4,
+					128 => 6
+				))
+			);
 
 			foreach ($nodes as $node) {
 				$response['data']['nodes'][$node['id']] = $node;
