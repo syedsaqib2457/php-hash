@@ -339,143 +339,148 @@
 			return $response;
 		}
 
-		protected function _applyFirewall($proxyProcessPorts) {
+		protected function _applyFirewall($nodeProcessPartKey) {
 			// todo: use ip6tables with --persistent using same ports as iptables
 
-			if (empty($proxyProcessPorts)) {
-				return;
-			}
+			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
+				// ..
 
-			$firewallRules = array(
-				'*filter',
-				':INPUT ACCEPT [0:0]',
-				':FORWARD ACCEPT [0:0]',
-				':OUTPUT ACCEPT [0:0]',
-				'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask 32 -j DROP'
-			);
+				//if (empty($proxyProcessPorts)) {
+					//return;
+				//}
 
-			if (
-				!empty($this->sshPorts) &&
-				is_array($this->sshPorts)
-			) {
-				foreach ($this->sshPorts as $sshPort) {
-					$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask 32 -j DROP';
-				}
-			}
-
-			$nameserverProcessLoadBalanceIps = array();
-			$nameserverProcessLoadBalanceIpKeys = array(
-				'nameserver_process_external_ips',
-				'nameserver_process_internal_ips'
-			);
-			$firewallRules[] = 'COMMIT';
-			$firewallRules[] = '*nat';
-			$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
-			$firewallRules[] = ':INPUT ACCEPT [0:0]';
-			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
-			$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
-
-			foreach ($nameserverProcessLoadBalanceIpKeys as $nameserverProcessLoadBalanceIpKey) {
-				foreach ($this->decodedServerData[$nameserverProcessLoadBalanceIpKey] as $sourceIp => $destinationIps) {
-					if (count($destinationIps) > 1) {
-						if ($nameserverProcessLoadBalanceIpKey === 'nameserver_process_external_ips') {
-							$destinationIps = array_values($destinationIps);
-							krsort($destinationIps);
-						} else {
-							$sourceIp = ' ' . current($destinationIps);
-						}
-
-						$nameserverProcessLoadBalanceIps[$sourceIp] = $destinationIps;
-					}
-				}
-			}
-
-			foreach ($nameserverProcessLoadBalanceIps as $sourceIp => $destinationIps) {
-				$nameserverProcessLoadBalanceSourceIpParts = array(
-					array(
-						$sourceIp
-					)
+				$firewallRules = array(
+					'*filter',
+					':INPUT ACCEPT [0:0]',
+					':FORWARD ACCEPT [0:0]',
+					':OUTPUT ACCEPT [0:0]',
+					'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask 32 -j DROP'
 				);
 
-				if ($sourceIp !== trim($sourceIp)) {
-					$nameserverProcessLoadBalanceSourceIpParts = array_chunk($destinationIps, 10);
+				if (
+					!empty($this->sshPorts) &&
+					is_array($this->sshPorts)
+				) {
+					foreach ($this->sshPorts as $sshPort) {
+						$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask 32 -j DROP';
+					}
 				}
 
-				foreach ($nameserverProcessLoadBalanceSourceIpParts as $nameserverProcessLoadBalanceSourceIps) {
-					$destinationIps = array_values($destinationIps);
-					krsort($destinationIps);
+				$nameserverProcessLoadBalanceIps = array();
+				$nameserverProcessLoadBalanceIpKeys = array(
+					'nameserver_process_external_ips',
+					'nameserver_process_internal_ips'
+				);
+				$firewallRules[] = 'COMMIT';
+				$firewallRules[] = '*nat';
+				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
+				$firewallRules[] = ':INPUT ACCEPT [0:0]';
+				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
+				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
 
-					foreach ($destinationIps as $destinationIpKey => $destinationIp) {
-						$loadBalancer = $destinationIpKey > 0 ? '-m statistic --mode nth --every ' . ($destinationIpKey + 1) . ' --packet 0 ' : '';
+				foreach ($nameserverProcessLoadBalanceIpKeys as $nameserverProcessLoadBalanceIpKey) {
+					foreach ($this->decodedServerData[$nameserverProcessLoadBalanceIpKey] as $sourceIp => $destinationIps) {
+						if (count($destinationIps) > 1) {
+							if ($nameserverProcessLoadBalanceIpKey === 'nameserver_process_external_ips') {
+								$destinationIps = array_values($destinationIps);
+								krsort($destinationIps);
+							} else {
+								$sourceIp = ' ' . current($destinationIps);
+							}
 
-						foreach ($nameserverProcessLoadBalanceSourceIps as $nameserverProcessLoadBalanceSourceIp) {
-							// todo: change dport to dports to allow custom DNS ports
-							$firewallRules[] = '-A OUTPUT -d ' . $nameserverProcessLoadBalanceSourceIp . ' -p udp --dport 53 ' . $loadBalancer . '-j DNAT --to-destination ' . $destinationIp;
+							$nameserverProcessLoadBalanceIps[$sourceIp] = $destinationIps;
 						}
 					}
 				}
-			}
 
-			krsort($proxyProcessPorts);
-			$proxyProcessPortParts = array_chunk($this->decodedServerData['proxy_process_ports'], 10);
-
-			foreach ($proxyProcessPortParts as $proxyProcessPortPartPorts) {
-				foreach ($proxyProcessPorts as $proxyProcessPortKey => $proxyProcessPort) {
-					$loadBalancer = $proxyProcessPortKey > 0 ? '-m statistic --mode nth --every ' . ($proxyProcessPortKey + 1) . ' --packet 0 ' : '';
-					$protocols = array(
-						'tcp',
-						'udp'
+				foreach ($nameserverProcessLoadBalanceIps as $sourceIp => $destinationIps) {
+					$nameserverProcessLoadBalanceSourceIpParts = array(
+						array(
+							$sourceIp
+						)
 					);
 
-					foreach ($protocols as $protocol) {
-						$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . $this->decodedServerData['server']['ip'] . ' --dports ' . implode(',', $proxyProcessPortPartPorts) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $proxyProcessPort . ' --persistent';
+					if ($sourceIp !== trim($sourceIp)) {
+						$nameserverProcessLoadBalanceSourceIpParts = array_chunk($destinationIps, 10);
+					}
+
+					foreach ($nameserverProcessLoadBalanceSourceIpParts as $nameserverProcessLoadBalanceSourceIps) {
+						$destinationIps = array_values($destinationIps);
+						krsort($destinationIps);
+
+						foreach ($destinationIps as $destinationIpKey => $destinationIp) {
+							$loadBalancer = $destinationIpKey > 0 ? '-m statistic --mode nth --every ' . ($destinationIpKey + 1) . ' --packet 0 ' : '';
+
+							foreach ($nameserverProcessLoadBalanceSourceIps as $nameserverProcessLoadBalanceSourceIp) {
+								// todo: change dport to dports to allow custom DNS ports
+								$firewallRules[] = '-A OUTPUT -d ' . $nameserverProcessLoadBalanceSourceIp . ' -p udp --dport 53 ' . $loadBalancer . '-j DNAT --to-destination ' . $destinationIp;
+							}
+						}
 					}
 				}
+
+				krsort($proxyProcessPorts);
+				$proxyProcessPortParts = array_chunk($this->decodedServerData['proxy_process_ports'], 10);
+
+				foreach ($proxyProcessPortParts as $proxyProcessPortPartPorts) {
+					foreach ($proxyProcessPorts as $proxyProcessPortKey => $proxyProcessPort) {
+						$loadBalancer = $proxyProcessPortKey > 0 ? '-m statistic --mode nth --every ' . ($proxyProcessPortKey + 1) . ' --packet 0 ' : '';
+						$protocols = array(
+							'tcp',
+							'udp'
+						);
+
+						foreach ($protocols as $protocol) {
+							$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . $this->decodedServerData['server']['ip'] . ' --dports ' . implode(',', $proxyProcessPortPartPorts) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $proxyProcessPort . ' --persistent';
+						}
+					}
+				}
+
+				$firewallRules[] = 'COMMIT';
+				$firewallRules[] = '*raw';
+				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
+				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
+				$reservedIpRanges = array(
+					'0.0.0.0/8',
+					'10.0.0.0/8',
+					'100.64.0.0/10',
+					'127.0.0.0/8',
+					'172.16.0.0/12',
+					'192.0.0.0/24',
+					'192.0.2.0/24',
+					'192.88.99.0/24',
+					'192.168.0.0/16',
+					'198.18.0.0/15',
+					'198.51.100.0/24',
+					'203.0.113.0/24',
+					'224.0.0.0/4',
+					'240.0.0.0/4',
+					'255.255.255.255/32'
+				);
+
+				foreach ($reservedIpRanges as $reservedIpRange) {
+					$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $reservedIpRange . ' -j DROP';
+				}
+
+				$firewallRules[] = 'COMMIT';
+				$firewallRuleParts = array_chunk($firewallRules, 1000);
+				$firewallRulesFile = $this->rootPath . 'cache/firewall';
+
+				if (file_exists($firewallRulesFile)) {
+					unlink($firewallRulesFile);
+				}
+
+				touch($firewallRulesFile);
+
+				foreach ($firewallRuleParts as $firewallRulePart) {
+					$saveFirewallRules = implode("\n", $firewallRulePart);
+					shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
+				}
+
+				shell_exec('sudo ' . $this->binaryFiles['iptables-restore'] . ' < ' . $firewallRulesFile);
+				sleep(1 * count($firewallRuleParts));
 			}
 
-			$firewallRules[] = 'COMMIT';
-			$firewallRules[] = '*raw';
-			$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
-			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
-			$reservedIpRanges = array(
-				'0.0.0.0/8',
-				'10.0.0.0/8',
-				'100.64.0.0/10',
-				'127.0.0.0/8',
-				'172.16.0.0/12',
-				'192.0.0.0/24',
-				'192.0.2.0/24',
-				'192.88.99.0/24',
-				'192.168.0.0/16',
-				'198.18.0.0/15',
-				'198.51.100.0/24',
-				'203.0.113.0/24',
-				'224.0.0.0/4',
-				'240.0.0.0/4',
-				'255.255.255.255/32'
-			);
-
-			foreach ($reservedIpRanges as $reservedIpRange) {
-				$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $reservedIpRange . ' -j DROP';
-			}
-
-			$firewallRules[] = 'COMMIT';
-			$firewallRuleParts = array_chunk($firewallRules, 1000);
-			$firewallRulesFile = $this->rootPath . 'cache/firewall';
-
-			if (file_exists($firewallRulesFile)) {
-				unlink($firewallRulesFile);
-			}
-
-			touch($firewallRulesFile);
-
-			foreach ($firewallRuleParts as $firewallRulePart) {
-				$saveFirewallRules = implode("\n", $firewallRulePart);
-				shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
-			}
-
-			shell_exec('sudo ' . $this->binaryFiles['iptables-restore'] . ' < ' . $firewallRulesFile);
-			sleep(1 * count($firewallRuleParts));
 			return;
 		}
 
