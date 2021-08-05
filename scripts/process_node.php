@@ -303,10 +303,13 @@
 						while ($proxyProcessStarted === false) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcess['name'] . ' start');
 
+							if ($proxyNodeProcessKey !== $proxyNodeProcessEndKey) {
+								break;
+							}
+
 							$proxyNodeProcessStarted = (
-								($proxyNodeProcessKey !== $proxyNodeProcessEndKey) ||
 								($this->_verifyNodeProcess($proxyNodeProcess) === true) ||
-								((time() - $proxyNodeProcessStartedTime) > 60)
+								((time() - $proxyNodeProcessStartedTime) > 100)
 							);
 							sleep(2);
 						}
