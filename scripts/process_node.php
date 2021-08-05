@@ -194,7 +194,7 @@
 						}
 					}
 
-					shell_exec('sudo ' . $this->binaryFiles['systemctl'] . ' daemon-reload');
+					shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
 					// todo: format proxy processes to remove from cache file
 				}
 			}
@@ -342,8 +342,8 @@
 		protected function _processFirewall($nodeProcessPartKey) {
 			// todo: use ip6tables with --persistent using same ports as iptables
 			$firewallBinaryFiles = array(
-				4 => $this->binaryFiles['iptables-restore'],
-				6 => $this->binaryFiles['ip6tables-restore']
+				4 => $this->nodeData['binary_files']['iptables-restore'],
+				6 => $this->nodeData['binary_files']['ip6tables-restore']
 			);
 
 			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
@@ -582,7 +582,7 @@
 
 			$commands = array_merge($commands, array(
 				'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')',
-				'sudo ' . $this->binaryFiles['telinit'] . ' u'
+				'sudo ' . $this->nodeData['binary_files']['telinit'] . ' u'
 			));
 			$commandsFile = '/tmp/commands.sh';
 
