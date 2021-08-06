@@ -199,6 +199,9 @@
 				}
 			}
 
+			$nameserverNodeProcessTypes = $this->nodeData['nameserver_node_process_types'] = array(
+				'nameserver'
+			);
 			// ..
 
 			$this->_verifyNameserverProcesses();
@@ -207,11 +210,7 @@
 			// todo: format nameserver processes to remove into an array, create new nameserver processes
 			// todo: include nameserver processes in config reloading
 
-			$nodeProcessTypes = array(
-				'http_proxy',
-				'nameserver',
-				'socks_proxy'
-			);
+			$nodeProcessTypes = $this->nodeData['node_process_types'] = array_merge($nameserverNodeProcessTypes, $proxyNodeProcessTypes);
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($nodeProcessTypes as $nodeProcessType) {
@@ -361,11 +360,6 @@
 					}
 				}
 
-				/*$nameserverProcessLoadBalanceIps = array();
-				$nameserverProcessLoadBalanceIpKeys = array(
-					'nameserver_process_external_ips',
-					'nameserver_process_internal_ips'
-				);*/
 				$firewallRules[] = 'COMMIT';
 				$firewallRules[] = '*nat';
 				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
@@ -373,47 +367,16 @@
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
 
-				// todo: create two different arrays with node nameserver processes and other nameserver processes
-				if (empty($this->nodeData['node_processes']['nameserver'][$nodeProcessPartKey]) === false) {
-					// ..
-				}
+				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
+					krsort($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey]);
+					$nodeProcessParts = array_chunk($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey], 10);
 
-				/*foreach ($nameserverProcessLoadBalanceIps as $sourceIp => $destinationIps) {
-					$nameserverProcessLoadBalanceSourceIpParts = array(
-						array(
-							$sourceIp
-						)
-					);
-
-					if ($sourceIp !== trim($sourceIp)) {
-						$nameserverProcessLoadBalanceSourceIpParts = array_chunk($destinationIps, 10);
-					}
-
-					foreach ($nameserverProcessLoadBalanceSourceIpParts as $nameserverProcessLoadBalanceSourceIps) {
-						$destinationIps = array_values($destinationIps);
-						krsort($destinationIps);
-
-						foreach ($destinationIps as $destinationIpKey => $destinationIp) {
-							$loadBalancer = $destinationIpKey > 0 ? '-m statistic --mode nth --every ' . ($destinationIpKey + 1) . ' --packet 0 ' : '';
-
-							foreach ($nameserverProcessLoadBalanceSourceIps as $nameserverProcessLoadBalanceSourceIp) {
-								// todo: change dport to dports to allow custom DNS ports
-								$firewallRules[] = '-A OUTPUT -d ' . $nameserverProcessLoadBalanceSourceIp . ' -p udp --dport 53 ' . $loadBalancer . '-j DNAT --to-destination ' . $destinationIp;
-							}
-						}
-					}
-				}*/
-
-				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessType) {
-					krsort($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
-					$proxyNodeProcessParts = array_chunk($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey], 10);
-
-					foreach ($proxyNodeProcessParts as $proxyNodeProcessPart) {
-						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
+					foreach ($nodeProcessParts as $nodeProcessPart) {
+						foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
 							$loadBalancer = '';
 
-							if ($proxyNodeProcessKey > 0) {
-								$loadBalancer = '-m statistic --mode nth --every ' . ($proxyNodeProcessKey + 1) . ' --packet 0 ';
+							if ($nodeProcessKey > 0) {
+								$loadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
 							}
 
 							$protocols = array(
@@ -421,15 +384,15 @@
 								'udp'
 							);
 
-							if (empty($proxyNodeProcess['transport_protocol']) === false) {
+							if (empty($nodeProcess['transport_protocol']) === false) {
 								$protocols = array(
-									$proxyNodeProcess['transport_protocol']
+									$nodeProcess['transport_protocol']
 								);
 							}
 
 							foreach ($protocols as $protocol) {
 								// todo: use main node IP for ! s rule, should retrieve this from each node instead of system-defined main nodes
-								//$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . [main_node_ip_goes_here] . ' --dports ' . implode(',', $proxyNodeProcessPart) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $proxyNodeProcess['port_id'] . ' --persistent';
+								//$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . [main_node_ip_goes_here] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
 							}
 						}
 					}
