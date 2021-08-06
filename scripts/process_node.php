@@ -10,7 +10,6 @@
 		public function process() {
 			$this->_sendNodeRequestLogData();
 
-			// todo: don't allow different proxy process types to share the same public-facing port (allow duplicate ports for same process type for internal load balancing)
 			// todo create 2 different processes for processing request log data and processing reconfig
 			// todo: write nameserver and proxy node ips and ports to /tmp cache file for process creation, deletion and recovery
 
@@ -339,7 +338,6 @@
 		}
 
 		protected function _processFirewall($nodeProcessPartKey) {
-			// todo: use ip6tables with --persistent using same ports as iptables
 			$firewallBinaryFiles = array(
 				4 => $this->nodeData['binary_files']['iptables-restore'],
 				6 => $this->nodeData['binary_files']['ip6tables-restore']

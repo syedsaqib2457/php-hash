@@ -103,116 +103,39 @@
 				return $response;
 			}
 
-			if (empty($parameters['data']['port']) === false) {
-				$nodeProcessPort = $this->_validatePort($parameters['data']['port']);
-				$response['status_valid'] = (is_int($nodeProcessPort) === true);
+			if (empty($parameters['data']['port_id']) === false) {
+				$nodeProcessPortId = $this->_validatePort($parameters['data']['port_id']);
+				$response['status_valid'] = (is_int($nodeProcessPortId) === true);
 			}
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid node process port, please try again.';
+				$response['message'] = 'Invalid node process port ID, please try again.';
 				return $response;
 			}
 
-			$nodeProcessExternalIps = $nodeProcessIps = $nodeProcessIpVersions = array();
-			$nodeProcessIpTypes = array(
-				'external' => 'public',
-				'internal' => 'private'
-			);
 			$nodeProcessIpVersions = array(
 				4,
 				6
 			);
 
-			foreach ($nodeProcessIpTypes as $nodeProcessIpInterface => $nodeProcessIpType) {
-				foreach ($nodeProcessIpVersions as $nodeProcessIpVersion) {
-					$nodeProcessIpKey = $nodeProcessIpInterface . '_ip_version_' . $nodeProcessIpVersion;
+			foreach ($nodeProcessIpVersions as $nodeProcessIpVersion) {
+				$nodeProcessIpKey = 'external_ip_version_' . $nodeProcessIpVersion;
 
-					if (empty($parameters['data'][$nodeIpKey]) === false) {
-						$response['status_valid'] = (empty($node['external_ip_version_' . $nodeProcessIpVersion]) === false);
+				if (empty($parameters['data'][$nodeProcessIpKey]) === false) {
+					$nodeProcessIp = $parameters['data'][$nodeProcessIpKey];
+					$response['status_valid'] = ($this->_detectIpType($nodeProcessIp, $nodeProcessIpVersion) === 'public');
 
-						if ($response['status_valid'] === false) {
-							$response['message'] = 'Node must have an external IP version ' . $nodeProcessIpVersion . ' before adding a node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.';
-							return $response;
-						}
-
-						$nodeProcessIp = $nodeProcessIps[$nodeProcessIpKey] = $nodeProcessIpVersions[$nodeProcessIpVersion][] = $parameters['data'][$nodeProcessIpKey];
-
-						if ($nodeProcessIpInterface === 'external') {
-							$nodeProcessExternalIps[$nodeProcessIpKey] = $nodeProcessIp;
-						}
-
-						$response['status_valid'] = ($nodeProcessIpType === $this->_detectIpType($nodeProcessIp, $nodeProcessIpVersion));
-
-						if ($response['status_valid'] === false) {
-							$response['message'] = 'Node process ' . $nodeProcessIpInterface . ' IPs must be ' . $nodeProcessIpType . ', please try again.';
-							return $response;
-						}
-
-						$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($nodeProcessIp))));
-
-						if ($response['status_valid'] === false) {
-							$response['message'] = 'Invalid node process ' . $nodeProcessIpInterface . ' IP version ' . $nodeProcessIpVersion . ', please try again.';
-							return $response;
-						}
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Node process external IP version ' . $nodeProcessIpVersion . ' must be public, please try again.';
+						return $response;
 					}
-				}
-			}
 
-			if (empty($nodeIps) === false) {
-				$conflictingNodeIpCountParameters = array(
-					'in' => 'nodes',
-					'where' => array(
-						'OR' => array(
-							array(
-								'id' => $nodeProcessNodeId,
-								'OR' => $nodeProcessIps
-							),
-							array(
-								'node_id' => $nodeProcessNodeId,
-								'OR' => $nodeProcessIps
-							)
-						)
-					)
-				));
-				$conflictingNodeProcessIpCountParameters = array(
-					'in' => 'node_processes',
-					'where' => array(
-						'node_id' => $nodeProcessNodeId,
-						'OR' => $nodeProcessIps
-					)
-				);
+					$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($nodeProcessIp))));
 
-				if (empty($nodeProcessExternalIps) === false) {
-					$conflictingNodeIpCountParameters['where']['OR'][] = array(
-						'OR' => $nodeProcessExternalIps
-					);
-					$conflictingNodeProcessIpCountParameters['where']['OR'] = array(
-						$conflictingNodeProcessIpCountParameters['where'],
-						array(
-							'OR' => $nodeProcessExternalIps
-						)
-					);
-				}
-
-				$conflictingNodeIpCount = $this->count($conflictingNodeIpCountParameters);
-				$conflictingNodeProcessIpCount = $this->count($conflictingNodeProcessIpCountParameters);
-				$response['status_valid'] = (
-					(is_int($conflictingNodeIpCount) === true) &&
-					(is_int($conflictingNodeProcessIpCount) === true)
-				);
-
-				if ($response['status_valid'] === false) {
-					return $response;
-				}
-
-				$response['status_valid'] = (
-					($conflictingNodeIpCount === 0) &&
-					($conflictingNodeProcessIpCount === 0)
-				);
-
-				if ($response['status_valid'] === false) {
-					$response['message'] = 'Node process IP already in use, please try again.';
-					return $response;
+					if ($response['status_valid'] === false) {
+						$response['message'] = 'Invalid node process external IP version ' . $nodeProcessIpVersion . ', please try again.';
+						return $response;
+					}
 				}
 			}
 
@@ -220,7 +143,7 @@
 				'in' => 'node_processes',
 				'where' => array(
 					'node_id' => $nodeProcessNodeId,
-					'port' => $nodeProcessPort
+					'port_id' => $nodeProcessPortId
 				)
 			));
 			$response['status_valid'] = (is_int($conflictingNodeProcessPortCount) === true);
@@ -232,7 +155,7 @@
 			$response['status_valid'] = ($conflictingNodeProcessPortCount === 0);
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Node process port already in use, please try again.';
+				$response['message'] = 'Node process port ID already in use, please try again.';
 				return $response;
 			}
 
@@ -241,10 +164,8 @@
 					'application_protocol' => true,
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
-					'internal_ip_version_4' => true,
-					'internal_ip_version_6' => true,
 					'node_id' => true,
-					'port' => true,
+					'port_id' => true,
 					'transport_protocol' => true,
 					'type' => true
 				)),

@@ -286,22 +286,16 @@
 				$nodeProcesses = array(
 					array(
 						'application_protocol' => 'http',
-						'internal_ip_version_4' => '10.100.100.1',
-						'internal_ip_version_6' => 'fc34:0000:0000:0000:0000:0000:0000:0001',
 						'port_id' => 80,
 						'transport_protocol' => 'tcp',
 						'type' => 'http_proxy'
 					),
 					array(
-						'internal_ip_version_4' => '10.120.100.1',
-						'internal_ip_version_6' => 'fc34:1111:0000:0000:0000:0000:0000:0001',
 						'port_id' => 53,
 						'type' => 'nameserver'
 					),
 					array(
 						'application_protocol' => 'socks',
-						'internal_ip_version_4' => '10.140.100.1',
-						'internal_ip_version_6' => 'fc34:2222:0000:0000:0000:0000:0000:0001',
 						'port_id' => 1080,
 						'type' => 'socks_proxy'
 					)
@@ -312,8 +306,6 @@
 
 					foreach (range(0, 9) as $processPortId) {
 						$nodeProcessData[] = array_merge($nodeProcess, array(
-							'internal_ip_version_4' => $nodeProcess['internal_ip_version_4'],
-							'internal_ip_version_6' => $nodeProcess['internal_ip_version_6'],
 							'node_id' => $nodeId,
 							'port_id' => ($nodeProcess['port_id'] + $processPortId)
 						));
@@ -614,20 +606,14 @@
 			$nodeProcessTypes = array(
 				'http_proxy' => array(
 					'application_protocol' => 'http',
-					'internal_ip_version_4' => '10.100.100.1',
-					'internal_ip_version_6' => 'fc34:0000:0000:0000:0000:0000:0000:0001',
 					'port_id' => 80,
 					'transport_protocol' => 'tcp'
 				),
 				'nameserver' => array(
-					'internal_ip_version_4' => '10.120.100.1',
-					'internal_ip_version_6' => 'fc34:1111:0000:0000:0000:0000:0000:0001',
 					'port_id' => 53
 				),
 				'socks_proxy' => array(
 					'application_protocol' => 'socks',
-					'internal_ip_version_4' => '10.140.100.1',
-					'internal_ip_version_6' => 'fc34:2222:0000:0000:0000:0000:0000:0001',
 					'port_id' => 1080
 				)
 			);
@@ -802,15 +788,7 @@
 					}
 
 					$nodePortIds = array_diff($nodePortIds, $existingNodePortIds, $nodePortStatusDenyingPortIds);
-
-					foreach (array(4, 6) as $internalNodeIpVersion) {
-						if (empty($nodeProcess['internal_ip_version_' . $internalNodeIpVersion]) === true) {
-							unset($nodeProcess['internal_ip_version_' . $internalNodeIpVersion]);
-						}
-					}
-
 					$nodeProcessData = array();
-					$nodeProcessPortId = $nodeProcess['port_id'];
 
 					foreach ($nodePortIds as $nodePortId) {
 						$nodeProcess['port_id'] = $nodePortId;
@@ -824,6 +802,8 @@
 						(empty($nodePortStatusAllowingPortIds) === true) &&
 						($nodePortCount < 10)
 					) {
+						$nodeProcessPortId = $nodeProcess['port_id'];
+
 						foreach (range($nodePortCount, 10) as $nodeProcessIndex) {
 							while (
 								($nodeProcessPortId <= 65535) &&
@@ -841,10 +821,6 @@
 						}
 					}
 
-					$nodeProcessesSaved = $this->save(array(
-						'data' => $nodeProcessData,
-						'to' => 'node_processes'
-					));
 					$nodePortsUpdated = $this->update(array(
 						'data' => array(
 							'status_processed' => true
@@ -854,9 +830,13 @@
 							'node_id' => $nodeIds
 						)
 					));
+					$nodeProcessesSaved = $this->save(array(
+						'data' => $nodeProcessData,
+						'to' => 'node_processes'
+					));
 					$response['status_valid'] = (
-						($nodeProcessesSaved === true) &&
-						($nodePortsUpdated === true)
+						($nodePortsUpdated === true) &&
+						($nodeProcessesSaved === true)
 					);
 
 					if ($response['status_valid'] === false) {

@@ -88,16 +88,6 @@
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'internal_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(15)'
-							),
-							'internal_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(39)'
-							),
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
