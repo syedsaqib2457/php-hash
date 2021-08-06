@@ -122,15 +122,14 @@
 				$nodeProcessIpKey = 'external_ip_version_' . $nodeProcessIpVersion;
 
 				if (empty($parameters['data'][$nodeProcessIpKey]) === false) {
-					$nodeProcessIp = $parameters['data'][$nodeProcessIpKey];
-					$response['status_valid'] = ($this->_detectIpType($nodeProcessIp, $nodeProcessIpVersion) === 'public');
+					$response['status_valid'] = ($this->_detectIpType($parameters['data'][$nodeProcessIpKey], $nodeProcessIpVersion) === 'public');
 
 					if ($response['status_valid'] === false) {
 						$response['message'] = 'Node process external IP version ' . $nodeProcessIpVersion . ' must be public, please try again.';
 						return $response;
 					}
 
-					$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($nodeProcessIp))));
+					$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($parameters['data'][$nodeProcessIpKey]))));
 
 					if ($response['status_valid'] === false) {
 						$response['message'] = 'Invalid node process external IP version ' . $nodeProcessIpVersion . ', please try again.';
@@ -321,15 +320,14 @@
 				$nodeProcessIpKey = 'external_ip_version_' . $nodeProcessIpVersion;
 
 				if (empty($parameters['data'][$nodeProcessIpKey]) === false) {
-					$nodeProcessIp = $parameters['data'][$nodeProcessIpKey];
-					$response['status_valid'] = ($this->_detectIpType($nodeProcessIp, $nodeProcessIpVersion) === 'public');
+					$response['status_valid'] = ($this->_detectIpType($parameters['data'][$nodeProcessIpKey], $nodeProcessIpVersion) === 'public');
 
 					if ($response['status_valid'] === false) {
 						$response['message'] = 'Node process external IP version ' . $nodeProcessIpVersion . ' must be public, please try again.';
 						return $response;
 					}
 
-					$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($nodeProcessIp))));
+					$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($parameters['data'][$nodeProcessIpKey]))));
 
 					if ($response['status_valid'] === false) {
 						$response['message'] = 'Invalid node process external IP version ' . $nodeProcessIpVersion . ', please try again.';
