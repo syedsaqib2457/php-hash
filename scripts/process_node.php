@@ -400,27 +400,12 @@
 				$firewallRules[] = '*raw';
 				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
-				// todo: define blocks in system settings, allow dropping external packets from additional blocks with per-node
-				$reservedIpRanges = array(
-					'0.0.0.0/8',
-					'10.0.0.0/8',
-					'100.64.0.0/10',
-					'127.0.0.0/8',
-					'172.16.0.0/12',
-					'192.0.0.0/24',
-					'192.0.2.0/24',
-					'192.88.99.0/24',
-					'192.168.0.0/16',
-					'198.18.0.0/15',
-					'198.51.100.0/24',
-					'203.0.113.0/24',
-					'224.0.0.0/4',
-					'240.0.0.0/4',
-					'255.255.255.255/32'
-				);
+				// todo: allow dropping external packets from additional public IP blocks with per-node settings
 
-				foreach ($reservedIpRanges as $reservedIpRange) {
-					$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $reservedIpRange . ' -j DROP';
+				if (empty($this->nodeData['private_network']['ip_blocks'][$nodeIpVersion]) === false) {
+					foreach ($this->nodeData['private_network']['ip_blocks'][$nodeIpVersion] as $privateNetworkIpBlock) {
+						$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $privateNetworkIpBlock . ' -j DROP';
+					}
 				}
 
 				$firewallRules[] = 'COMMIT';

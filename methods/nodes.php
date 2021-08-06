@@ -1111,7 +1111,8 @@
 				'node_ip_versions' => ($nodeIpVersions = array(
 					32 => 4,
 					128 => 6
-				))
+				)),
+				'private_network' => $this->settings['private_network']
 			);
 
 			foreach ($nodes as $node) {

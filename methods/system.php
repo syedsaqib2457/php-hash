@@ -115,10 +115,10 @@
 				case 4:
 					$ipInteger = ip2long($ip);
 
-					foreach ($this->settings['private_ip_ranges'][4] as $privateIpRangeIntegerStart => $privateIpRangeIntegerEnd) {
+					foreach ($this->settings['private_network']['ip_ranges'][4] as $privateNetworkIpRangeIntegerStart => $privateNetworkIpRangeIntegerEnd) {
 						if (
-							($ipInteger >= $privateIpRangeIntegerStart) &&
-							($ipInteger <= $privateIpRangeIntegerEnd)
+							($ipInteger >= $privateNetworkRangeIntegerStart) &&
+							($ipInteger <= $privateNetworkRangeIntegerEnd)
 						) {
 							$response = 'private';
 						}
@@ -132,30 +132,30 @@
 						$ipParts[$ipPartKey] = str_pad($ipPart, 4, '0', STR_PAD_LEFT);
 					}
 
-					$ipBlocks = array(
+					$ipRanges = array(
 						implode(':', $ipParts)
 					);
 
 					if (count($ipParts) === 7) {
 						array_pop($ipParts);
-						$ipBlocks[] = $ipParts . ':y';
+						$ipRanges[] = $ipParts . ':y';
 					} else {
-						$ipBlockVariables = str_repeat(':x', 4);
+						$ipRangeVariables = str_repeat(':x', 4);
 						$ipParts = array_slice($ipParts, 0, count($ipParts) - 4);
-						$ipBlocks[] = implode(':', $ipParts) . $ipBlockVariables;
-						$ipBlockVariables .= str_repeat(':x', 2);
+						$ipRanges[] = implode(':', $ipParts) . $ipRangeVariables;
+						$ipRangeVariables .= str_repeat(':x', 2);
 						$ipParts = array_slice($ipParts, 0, count($ipParts) - 2);
-						$ipBlocks = array_merge($ipBlocks, array(
-							implode(':', $ipParts) . $ipBlockVariables,
-							$ipParts[0] . ':' . substr($ipParts[1], 0, 3) . 'x' . $ipBlockVariables
+						$ipRanges = array_merge($ipRanges, array(
+							implode(':', $ipParts) . $ipRangeVariables,
+							$ipParts[0] . ':' . substr($ipParts[1], 0, 3) . 'x' . $ipRangeVariables
 						);
-						$ipBlockVariables .= ':x';
-						$ipBlocks = array_merge($ipBlocks, array(
-							$ipParts[0] . $ipBlockVariables,
-							substr($ipParts[0], 0, 2) . 'x' . $ipBlockVariables
+						$ipRangeVariables .= ':x';
+						$ipRanges = array_merge($ipRanges, array(
+							$ipParts[0] . $ipRangeVariables,
+							substr($ipParts[0], 0, 2) . 'x' . $ipRangeVariables
 						));
 
-						if (array_intersect($ipBlocks, $this->settings['private_ip_ranges'][6]) !== array()) {
+						if (array_intersect($ipRanges, $this->settings['private_network']['ip_ranges'][6]) !== array()) {
 							$response = 'private';
 						}
 					}
