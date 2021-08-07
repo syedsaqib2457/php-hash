@@ -809,6 +809,10 @@
 							'fdx:x:x:x:x:x:x:x',
 							'ffx:x:x:x:x:x:x:x'
 						)
+					),
+					'reserved_internal_ip' => array(
+						4 => '10.10.10.10',
+						6 => 'fc10.1010.1010.1010.1010.1010.1010.1010'
 					)
 				),
 				'version' => 1

@@ -36,6 +36,7 @@
 					'add' => array_diff($this->nodeData['node_ip'][$nodeIpVersion], $existingInterfaceNodeIps),
 					'delete' => array_diff($existingInterfaceNodeIps, $this->nodeData['node_ip'][$nodeIpVersion])
 				);
+				$interfaceNodeIpsToProcess['add'][] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
 
 				foreach ($interfaceNodeIpsToProcess as $interfaceNodeIpAction => $interfaceNodeIps) {
 					$interfaceNodeIpAction = substr($interfaceNodeIpAction, 3);
@@ -158,6 +159,10 @@
 						$proxyNodeUserAuthentication[] = 'flush';
 					}
 
+					$proxyNodeUserAuthentication['_reserved'] = false;
+					$proxyNodeUserAuthentication[] = 'deny *';
+					$proxyNodeUserAuthentication[] = 'flush';
+
 					foreach ($this->nodeData['users'][$proxyNodeProcessType] as $proxyNodeUser) {
 						$proxyNodeUsers[$proxyNodeUser['authentication_username']] = $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
 					}
@@ -265,6 +270,15 @@
 							$proxyNodeProcessConfiguration['_' . $proxyNode['id']] = $proxyNodeProcessService;
 						}
 
+						$proxyNodeProcessService = $proxyNodeProcess['service'];
+
+						foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+							$proxyNodeProcessService .= ' -e ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+							$proxyNodeProcessService .= ' -i ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+						}
+
+						$proxyNodeProcessService .= ' -n -p' . $proxyNodeProcess['port_id'] . ' -46';
+						$proxyNodeProcessConfiguration['_reserved'] = $proxyNodeProcessService;
 						shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcess['name']);
 						$systemdServiceContents = array(
 							'[Service]',
@@ -308,6 +322,8 @@
 					}
 				}
 			}
+
+			// ..
 
 			/*foreach ($allProxyProcessPorts as $proxyProcessPort) {
 				if ($this->_verifyProxyPort($proxyProcessPort)) {
@@ -389,8 +405,7 @@
 							}
 
 							foreach ($protocols as $protocol) {
-								// todo: use main node IP for ! s rule, should retrieve this from each node instead of system-defined main nodes
-								//$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . [main_node_ip_goes_here] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
+								$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
 							}
 						}
 					}
