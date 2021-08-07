@@ -86,7 +86,7 @@
 			foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
 				if (empty($this->nodeData['node_processes'][$nameserverNodeProcessType]) === false) {
 					foreach ($this->nodeData['nodes'] as $nameserverNode) {
-						foreach ($this->nodeData['node_users'] as $nameserverNodeId => $nameserverNodeUser)
+						foreach ($this->nodeData['node_users'] as $nameserverNodeId => $nameserverNodeUser) {
 							$nameserverNodeConfiguration[] = 'acl ' . $nameserverNode['id'] . '_' . $nameserverNodeUser['id'] . ' {';
 							$nameserverNodeUserAuthentication[] = 'view ' . $nameserverNode['id'] . '_' . $nameserverNodeUser['id'] . ' {';
 							$nameserverNodeUserAuthentication[] = 'match-clients {';
@@ -96,7 +96,7 @@
 							} elseif (empty($this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUser['id']]['whitelist']) === false) {
 								$nameserverNodeUserAuthenticationWhitelists = explode("\n", $this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUser['id']]['authentication_whitelist']);
 
-								foreach ($nameserverNodeUserAuthenticationWhitelists as $nameserverNodeUserAuthenticationWhitelist)
+								foreach ($nameserverNodeUserAuthenticationWhitelists as $nameserverNodeUserAuthenticationWhitelist) {
 									$nameserverNodeUserAuthentication[] = $nameserverNodeUserAuthenticationWhitelist . ';';
 								}
 							} else {
