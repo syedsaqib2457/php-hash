@@ -317,7 +317,9 @@
 					}
 				}
 
-				// todo: start nameserver processes
+				foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
+					// ..
+				}
 
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 					end($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
