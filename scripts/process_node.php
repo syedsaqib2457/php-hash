@@ -203,10 +203,60 @@
 				}
 			}
 
+			$nameserverNodeConfiguration = array(
+				'acl privateNetworkIpBlocks {',
+				$this->nodeData['private_network']['ip_blocks'][4],
+				$this->nodeData['private_network']['ip_blocks'][6],
+				$this->nodeData['private_network']['reserved_internal_ip'][4],
+				$this->nodeData['private_network']['reserved_internal_ip'][6],
+				'};',
+				'options {',
+				'allow-query {',
+				'privateNetworkIpBlocks;',
+				// todo: add option to allow DNS with no authentication
+				'authentication_whitelist' => false,
+				'};',
+				'allow-recursion {',
+				'privateNetworkIpBlocks;',
+				'};',
+				'auth-nxdomain yes;',
+				'cleaning-interval 1;',
+				'directory "/var/cache/bind_' . $nameserverProcessName . '";',
+				'dnssec-enable yes;',
+				'dnssec-must-be-secure mydomain.local no;',
+				'dnssec-validation yes;',
+				'empty-zones-enable no;',
+				'lame-ttl 0;',
+				'listen-on {',
+				'listening_port_version_4' => false,
+				'};',
+				'listen-on-v6 {',
+				'listening_port_version_6' => false,
+				'};',
+				'max-cache-ttl 1;',
+				'max-ncache-ttl 1;',
+				'max-zone-ttl 1;',
+				'process_id' => false,
+				'source_ip_version_4' => false,
+				'source_ip_version_6' => false,
+				'rate-limit {',
+				'exempt-clients {',
+				'any;',
+				'};',
+				'};',
+				'resolver-query-timeout 10;',
+				'tcp' => false,
+				'};'
+			);
 			$nameserverNodeProcessTypes = $this->nodeData['nameserver_node_process_types'] = array(
 				'nameserver'
 			);
-			// ..
+
+			foreach ($nameserverNodeProcessTypes as $nameserverNodeProcessType) {
+				if (empty($this->nodeData['node_processes'][$nameserverNodeProcessType]) === false) {
+					// ..
+				}
+			}
 
 			$this->_verifyNameserverProcesses();
 			$this->_sendNodeRequestLogData();
