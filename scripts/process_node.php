@@ -53,6 +53,93 @@
 			}
 
 			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
+			$nameserverNodeConfiguration = array(
+				'acl privateNetworkIpBlocks {',
+				$this->nodeData['private_network']['ip_blocks'][4],
+				$this->nodeData['private_network']['ip_blocks'][6],
+				$this->nodeData['private_network']['reserved_internal_ip'][4],
+				$this->nodeData['private_network']['reserved_internal_ip'][6],
+				'};'
+				'options {';
+				'cleaning-interval 1;',
+				'dnssec-enable yes;',
+				'dnssec-must-be-secure mydomain.local no;',
+				'dnssec-validation yes;',
+				'empty-zones-enable no;',
+				'lame-ttl 0;',
+				'max-cache-ttl 1;',
+				'max-ncache-ttl 1;',
+				'max-zone-ttl 1;',
+				'rate-limit {',
+				'exempt-clients {',
+				'any;',
+				'};',
+				'};',
+				'resolver-query-timeout 10;',
+				'};',
+			);
+			$nameserverNodeUserAuthentication = array();
+			$this->nodeData['nameserver_node_process_types'] = array(
+				'nameserver'
+			);
+
+			foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
+				if (empty($this->nodeData['node_processes'][$nameserverNodeProcessType]) === false) {
+					foreach ($this->nodeData['nodes'] as $nameserverNode) {
+						foreach ($this->nodeData['node_users'] as $nameserverNodeId => $nameserverNodeUser)
+							$nameserverNodeConfiguration[] = 'acl ' . $nameserverNode['id'] . '_' . $nameserverNodeUser['id'] . ' {';
+							$nameserverNodeUserAuthentication[] = 'view ' . $nameserverNode['id'] . '_' . $nameserverNodeUser['id'] . ' {';
+							$nameserverNodeUserAuthentication[] = 'match-clients {';
+
+							if (empty($this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUser['id']]) === true) {
+								$nameserverNodeUserAuthentication[] = 'any;';
+							} elseif (empty($this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUser['id']]['whitelist']) === false) {
+								$nameserverNodeUserAuthenticationWhitelists = explode("\n", $this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUser['id']]['authentication_whitelist']);
+
+								foreach ($nameserverNodeUserAuthenticationWhitelists as $nameserverNodeUserAuthenticationWhitelist)
+									$nameserverNodeUserAuthentication[] = $nameserverNodeUserAuthenticationWhitelist . ';';
+								}
+							} else {
+								$nameserverNodeUserAuthentication[] = 'none;';
+							}
+
+							$nameserverNodeUserAuthentication[] = '};';
+							$nameserverNodeUserAuthentication[] = 'options {',
+							$nameserverNodeUserAuthentication[] = 'allow-query {',
+							$nameserverNodeUserAuthentication[] = 'privateNetworkIpBlocks;',
+
+							foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+								$nameserverNodeIps = array_filter(array(
+									$nameserverNode['internal_ip_version_' . $nodeIpVersion],
+									$nameserverNode['external_ip_version_' . $nodeIpVersion]
+								));
+
+								if (empty($nameserverNodeIps) === false) {
+									$nameserverNodeConfiguration[] = current($nameserverNodeIps) . ';';
+								}
+							}
+
+							$nameserverNodeConfiguration[] = $nameserverNodeUserAuthentication[] = '};';
+
+							/*
+							'directory "/var/cache/bind_' . $nameserverProcessName . '";',
+							'listen-on {',
+							'listening_port_version_4' => false,
+							'};',
+							'listen-on-v6 {',
+							'listening_port_version_6' => false,
+							'};',
+							'process_id' => false,
+							'source_ip_version_4' => false,
+							'source_ip_version_6' => false,
+							'tcp' => false,
+							*/
+							// ..
+						}
+					}
+				}
+			}
+
 			$proxyNodeConfiguration = array(
 				'maxconn 20000',
 				'nobandlimin',
@@ -67,12 +154,12 @@
 				'log' => false
 			);
 			$proxyNodeProcesses = array();
-			$proxyNodeProcessTypes = $this->nodeData['proxy_node_process_types'] = array(
+			$this->nodeData['proxy_node_process_types'] = array(
 				'proxy' => 'http_proxy',
 				'socks' => 'socks_proxy'
 			);
 
-			foreach ($proxyNodeProcessTypes as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
+			foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 				if (empty($this->nodeData['node_processes'][$proxyNodeProcessType]) === false) {
 					$proxyNodeConfiguration['log'] = 'log /var/log/' . $proxyNodeProcessType;
 					$proxyNodeUsers = array();
@@ -194,107 +281,16 @@
 				}
 			}
 
-			$nameserverNodeConfiguration = array(
-				//'view' => false,
-				'acl privateNetworkIpBlocks {',
-				$this->nodeData['private_network']['ip_blocks'][4],
-				$this->nodeData['private_network']['ip_blocks'][6],
-				$this->nodeData['private_network']['reserved_internal_ip'][4],
-				$this->nodeData['private_network']['reserved_internal_ip'][6],
-				'};',
-			);
-			$nameserverNodeUserAuthentication = array();
-
-			foreach ($this->nodeData['nodes'] as $nameserverNode) {
-				$nameserverNodeConfiguration[] = 'acl _' . $nameserverNode['id'] . ' {';
-				$nameserverNodeUserAuthentication[] = 'view _' . $nameserverNode['id'] . ' {';
-				$nameserverNodeUserAuthentication[] = 'match-clients {';
-				// ..
-				$nameserverNodeUserAuthentication[] = '};';
-				$nameserverNodeUserAuthentication[] = 'options {',
-				$nameserverNodeUserAuthentication[] = 'allow-query {',
-				$nameserverNodeUserAuthentication[] = 'privateNetworkIpBlocks;',
-
-				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-					$nameserverNodeIps = array_filter(array(
-						$nameserverNode['internal_ip_version_' . $nodeIpVersion],
-						$nameserverNode['external_ip_version_' . $nodeIpVersion]
-					));
-
-					if (empty($nameserverNodeIps) === false) {
-						$nameserverNodeConfiguration[] = current($nameserverNodeIps) . ';';
-					}
-				}
-
-				// ..
-
-				$nameserverNodeConfiguration[] = $nameserverNodeUserAuthentication[] = '};'
-			}
-
-			/*$nameserverNodeUserAuthentication = array(
-				'options {',
-				'allow-query {',
-				'privateNetworkIpBlocks;',
-				// todo: add option to allow DNS with no authentication
-				'authentication_whitelist' => false,
-				'};',
-				'allow-recursion {',
-				'privateNetworkIpBlocks;',
-				'};',
-				'auth-nxdomain yes;',
-				'cleaning-interval 1;',
-				'directory "/var/cache/bind_' . $nameserverProcessName . '";',
-				'dnssec-enable yes;',
-				'dnssec-must-be-secure mydomain.local no;',
-				'dnssec-validation yes;',
-				'empty-zones-enable no;',
-				'lame-ttl 0;',
-				'listen-on {',
-				'listening_port_version_4' => false,
-				'};',
-				'listen-on-v6 {',
-				'listening_port_version_6' => false,
-				'};',
-				'max-cache-ttl 1;',
-				'max-ncache-ttl 1;',
-				'max-zone-ttl 1;',
-				'process_id' => false,
-				'source_ip_version_4' => false,
-				'source_ip_version_6' => false,
-				'rate-limit {',
-				'exempt-clients {',
-				'any;',
-				'};',
-				'};',
-				'resolver-query-timeout 10;',
-				'tcp' => false,
-				'};',
-				'};'
-			);
-			$nameserverNodeProcessTypes = $this->nodeData['nameserver_node_process_types'] = array(
-				'nameserver'
-			);
-
-			foreach ($nameserverNodeProcessTypes as $nameserverNodeProcessType) {
-				if (empty($this->nodeData['node_users'][$nameserverNodeProcessType]) === false) {
-					foreach ($this->nodeData['node_users'][$nameserverNodeProcessType] as $nameserverNodeId => $nameserverNodeUserIds) {
-						$nameserverNodeConfiguration['view'] = 'view _' . $nameserverNodeId . ' {';
-					}
-				}
-
-				$this->nodeData['nameserver_node_configuration'][$nameserverNodeType] = array_merge($nameserverNodeConfiguration, $proxyNodeUsers);
-			}
-
 			$this->_verifyNameserverProcesses(); */
 			$this->_sendNodeRequestLogData();
 
 			// todo: format nameserver processes to remove into an array, create new nameserver processes
 			// todo: include nameserver processes in config reloading
 
-			$nodeProcessTypes = $this->nodeData['node_process_types'] = array_merge($nameserverNodeProcessTypes, $proxyNodeProcessTypes);
+			$this->nodeData['node_process_types'] = array_merge($this->nodeData['nameserver_node_process_types'], $this->nodeData['proxy_node_process_types']);
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
-				foreach ($nodeProcessTypes as $nodeProcessType) {
+				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
 						if ($this->verifyNodeProcess($nodeProcess) === false) {
 							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessKey]);
@@ -307,7 +303,7 @@
 
 				// todo: verify no active sockets for processes using $nodeProcessPartKey
 
-				foreach ($nodeProcessTypes as $nodeProcessType) {
+				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					if (empty($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]) === false) {
 						$this->_killProcessIds($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]);
 					}
@@ -315,7 +311,7 @@
 
 				// todo: start nameserver processes
 
-				foreach ($proxyNodeProcessTypes as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
+				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 					end($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
 					$proxyNodeProcessEndKey = key($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
 
