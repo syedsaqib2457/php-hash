@@ -79,14 +79,6 @@
 
 					foreach ($this->nodeData['node_users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUserIds) {
 						$proxyNode = $this->nodeData['nodes'][$proxyNodeId];
-						$proxyNodeIpVersionPriority = 46;
-
-						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-							if (empty($proxyNode['external_ip_version_' . $nodeIpVersion]) === true) {
-								$proxyNodeIpVersionPriority = 10 - $nodeIpVersion;
-							}
-						}
-
 						$proxyNodeUserAuthentication[] = 'auth iponly strong';
 						$proxyNodeUserAuthenticationUsernames = $proxyNodeUserAuthenticationWhitelists = array();
 						$proxyNodeUsers = $this->nodeData['users'][$proxyNodeProcessType];
