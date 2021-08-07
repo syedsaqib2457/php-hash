@@ -674,8 +674,8 @@
 	echo 'System installed successfully.' . "\n";
 	echo 'You can now log in at ' . $url . ' with this password:' . "\n";
 	echo 'Password: ' . $password . "\n";
-	rmdir($systemPath . '/ghostcompute.tar.gz');
 	rmdir($systemPath . '/ghostcompute-develop');
+	unlink($systemPath . '/ghostcompute.tar.gz');
 	unlink('/tmp/deploy_system.php');
 	exit;
 ?>
