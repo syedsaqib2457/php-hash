@@ -190,18 +190,48 @@
 						}
 					}
 
-					shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
 					// todo: format proxy processes to remove from cache file
 				}
 			}
 
 			$nameserverNodeConfiguration = array(
+				//'view' => false,
 				'acl privateNetworkIpBlocks {',
 				$this->nodeData['private_network']['ip_blocks'][4],
 				$this->nodeData['private_network']['ip_blocks'][6],
 				$this->nodeData['private_network']['reserved_internal_ip'][4],
 				$this->nodeData['private_network']['reserved_internal_ip'][6],
 				'};',
+			);
+			$nameserverNodeUserAuthentication = array();
+
+			foreach ($this->nodeData['nodes'] as $nameserverNode) {
+				$nameserverNodeConfiguration[] = 'acl _' . $nameserverNode['id'] . ' {';
+				$nameserverNodeUserAuthentication[] = 'view _' . $nameserverNode['id'] . ' {';
+				$nameserverNodeUserAuthentication[] = 'match-clients {';
+				// ..
+				$nameserverNodeUserAuthentication[] = '};';
+				$nameserverNodeUserAuthentication[] = 'options {',
+				$nameserverNodeUserAuthentication[] = 'allow-query {',
+				$nameserverNodeUserAuthentication[] = 'privateNetworkIpBlocks;',
+
+				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+					$nameserverNodeIps = array_filter(array(
+						$nameserverNode['internal_ip_version_' . $nodeIpVersion],
+						$nameserverNode['external_ip_version_' . $nodeIpVersion]
+					));
+
+					if (empty($nameserverNodeIps) === false) {
+						$nameserverNodeConfiguration[] = current($nameserverNodeIps) . ';';
+					}
+				}
+
+				// ..
+
+				$nameserverNodeConfiguration[] = $nameserverNodeUserAuthentication[] = '};'
+			}
+
+			/*$nameserverNodeUserAuthentication = array(
 				'options {',
 				'allow-query {',
 				'privateNetworkIpBlocks;',
@@ -238,6 +268,7 @@
 				'};',
 				'resolver-query-timeout 10;',
 				'tcp' => false,
+				'};',
 				'};'
 			);
 			$nameserverNodeProcessTypes = $this->nodeData['nameserver_node_process_types'] = array(
@@ -245,12 +276,16 @@
 			);
 
 			foreach ($nameserverNodeProcessTypes as $nameserverNodeProcessType) {
-				if (empty($this->nodeData['node_processes'][$nameserverNodeProcessType]) === false) {
-					// ..
+				if (empty($this->nodeData['node_users'][$nameserverNodeProcessType]) === false) {
+					foreach ($this->nodeData['node_users'][$nameserverNodeProcessType] as $nameserverNodeId => $nameserverNodeUserIds) {
+						$nameserverNodeConfiguration['view'] = 'view _' . $nameserverNodeId . ' {';
+					}
 				}
+
+				$this->nodeData['nameserver_node_configuration'][$nameserverNodeType] = array_merge($nameserverNodeConfiguration, $proxyNodeUsers);
 			}
 
-			$this->_verifyNameserverProcesses();
+			$this->_verifyNameserverProcesses(); */
 			$this->_sendNodeRequestLogData();
 
 			// todo: format nameserver processes to remove into an array, create new nameserver processes
@@ -329,6 +364,7 @@
 						file_put_contents('/etc/systemd/system/' . $proxyNodeProcess['name'] . '.service', implode("\n", $systemdServiceContents));
 						file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
 						chmod($proxyNodeProcessConfigurationPath, 0755);
+						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
 
 						if (file_exists('/var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid') === true) {
 							unlink('/var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid');
