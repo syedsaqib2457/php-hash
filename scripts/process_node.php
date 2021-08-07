@@ -59,9 +59,10 @@
 				$this->nodeData['private_network']['ip_blocks'][6],
 				$this->nodeData['private_network']['reserved_internal_ip'][4],
 				$this->nodeData['private_network']['reserved_internal_ip'][6],
-				'};'
-				'options {';
+				'};',
+				'options {',
 				'cleaning-interval 1;',
+				'directory' => false,
 				'dnssec-enable yes;',
 				'dnssec-must-be-secure mydomain.local no;',
 				'dnssec-validation yes;',
@@ -70,31 +71,36 @@
 				'max-cache-ttl 1;',
 				'max-ncache-ttl 1;',
 				'max-zone-ttl 1;',
+				'process_id' => false,
 				'rate-limit {',
 				'exempt-clients {',
 				'any;',
 				'};',
 				'};',
 				'resolver-query-timeout 10;',
-				'};',
+				'};'
 			);
-			$nameserverNodeUserAuthentication = array();
 			$this->nodeData['nameserver_node_process_types'] = array(
 				'nameserver'
 			);
 
 			foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
 				if (empty($this->nodeData['node_processes'][$nameserverNodeProcessType]) === false) {
-					foreach ($this->nodeData['nodes'] as $nameserverNode) {
-						foreach ($this->nodeData['node_users'] as $nameserverNodeId => $nameserverNodeUser) {
-							$nameserverNodeConfiguration[] = 'acl ' . $nameserverNode['id'] . '_' . $nameserverNodeUser['id'] . ' {';
-							$nameserverNodeUserAuthentication[] = 'view ' . $nameserverNode['id'] . '_' . $nameserverNodeUser['id'] . ' {';
+					$nameserverNodeUserAuthentication = array();
+
+					foreach ($this->nodeData['node_users'][$nameserverNodeProcessType] as $nameserverNodeId => $nameserverNodeUserIds) {
+						$nameserverNodeUserIdIndex = 0;
+
+						foreach ($nameserverNodeUserIds as $nameserverNodeUserId) {
+							$nameserverNodeViewIdentifier = $nameserverNodeId . '_' . $nameserverNodeUserIdIndex;
+							$nameserverNodeConfiguration[] = 'acl ' . $nameserverNodeViewIdentifier . ' {';
+							$nameserverNodeUserAuthentication[] = 'view ' . $nameserverNodeViewIdentifier . ' {';
 							$nameserverNodeUserAuthentication[] = 'match-clients {';
 
-							if (empty($this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUser['id']]) === true) {
+							if (empty($this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUserId]) === true) {
 								$nameserverNodeUserAuthentication[] = 'any;';
-							} elseif (empty($this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUser['id']]['whitelist']) === false) {
-								$nameserverNodeUserAuthenticationWhitelists = explode("\n", $this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUser['id']]['authentication_whitelist']);
+							} elseif (empty($this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUserId]['whitelist']) === false) {
+								$nameserverNodeUserAuthenticationWhitelists = explode("\n", $this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUserId]['authentication_whitelist']);
 
 								foreach ($nameserverNodeUserAuthenticationWhitelists as $nameserverNodeUserAuthenticationWhitelist) {
 									$nameserverNodeUserAuthentication[] = $nameserverNodeUserAuthenticationWhitelist . ';';
@@ -104,39 +110,41 @@
 							}
 
 							$nameserverNodeUserAuthentication[] = '};';
-							$nameserverNodeUserAuthentication[] = 'options {',
-							$nameserverNodeUserAuthentication[] = 'allow-query {',
-							$nameserverNodeUserAuthentication[] = 'privateNetworkIpBlocks;',
+							$nameserverNodeUserAuthentication[] = 'options {';
+							$nameserverNodeUserAuthentication[] = 'allow-query {';
+							$nameserverNodeUserAuthentication[] = 'privateNetworkIpBlocks;';
 
 							foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 								$nameserverNodeIps = array_filter(array(
-									$nameserverNode['internal_ip_version_' . $nodeIpVersion],
-									$nameserverNode['external_ip_version_' . $nodeIpVersion]
+									$this->nodeData['nodes'][$nameserverNodeId]['internal_ip_version_' . $nodeIpVersion],
+									$this->nodeData['nodes'][$nameserverNodeId]['external_ip_version_' . $nodeIpVersion]
 								));
 
 								if (empty($nameserverNodeIps) === false) {
-									$nameserverNodeConfiguration[] = current($nameserverNodeIps) . ';';
+									$nameserverNodeSourceIpOption = 'query-source';
+
+									if ($nodeIpVersion === 6) {
+										$nameserverNodeSourceIpOption .= '-v6';
+									}
+
+									$nameserverNodeConfiguration[] = $nameserverNodeSourceIpOption . ' address ' . current($nameserverNodeIps) . ';';
 								}
 							}
 
+							$nameserverNodeUserAuthentication[] = 'listen-on {';
+							$nameserverNodeUserAuthentication['listening_address_version_4_' . $nameserverNodeViewIdentifier] => false;
+							$nameserverNodeUserAuthentication[] = '};';
+							$nameserverNodeUserAuthentication[] = 'listen-on-v6 {';
+							$nameserverNodeUserAuthentication['listening_address_version_6_'  . $nameserverNodeViewIdentifier] => false;
+							$nameserverNodeUserAuthentication[] = '};';
+							$nameserverNodeUserAuthentication['tcp_' . $nameserverNodeViewIdentifier] => false;
+							$nameserverNodeUserAuthentication[] = '};';
 							$nameserverNodeConfiguration[] = $nameserverNodeUserAuthentication[] = '};';
-
-							/*
-							'directory "/var/cache/bind_' . $nameserverProcessName . '";',
-							'listen-on {',
-							'listening_port_version_4' => false,
-							'};',
-							'listen-on-v6 {',
-							'listening_port_version_6' => false,
-							'};',
-							'process_id' => false,
-							'source_ip_version_4' => false,
-							'source_ip_version_6' => false,
-							'tcp' => false,
-							*/
-							// ..
+							$nameserverNodeUserIdIndex++;
 						}
 					}
+
+					$this->nodeData['nameserver_node_configuration'][$nameserverNodeType] = array_merge($nameserverNodeConfiguration, $nameserverNodeUserAuthentication));
 				}
 			}
 
@@ -162,7 +170,7 @@
 			foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 				if (empty($this->nodeData['node_processes'][$proxyNodeProcessType]) === false) {
 					$proxyNodeConfiguration['log'] = 'log /var/log/' . $proxyNodeProcessType;
-					$proxyNodeUsers = array();
+					$proxyNodeUserAuthentication = $proxyNodeUsers = array();
 
 					foreach ($this->nodeData['node_users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUserIds) {
 						$proxyNode = $this->nodeData['nodes'][$proxyNodeId];
