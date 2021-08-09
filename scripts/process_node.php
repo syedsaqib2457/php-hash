@@ -80,7 +80,6 @@
 				'resolver-query-timeout 10;',
 				'};'
 			);
-			$nameserverNodeProcesses = array();
 			$this->nodeData['nameserver_node_process_types'] = array(
 				'nameserver'
 			);
@@ -164,7 +163,6 @@
 				'allow * * * * HTTPS',
 				'log' => false
 			);
-			$proxyNodeProcesses = array();
 			$this->nodeData['proxy_node_process_types'] = array(
 				'proxy' => 'http_proxy',
 				'socks' => 'socks_proxy'
@@ -271,7 +269,6 @@
 			// $this->_sendNodeRequestLogData();
 
 			// todo: format nameserver processes to remove into an array, create new nameserver processes
-			// todo: include nameserver processes in config reloading
 
 			$nameserverNodeProcesses = $proxyNodeProcesses = array();
 			$this->nodeData['node_process_types'] = array_merge($this->nodeData['nameserver_node_process_types'], $this->nodeData['proxy_node_process_types']);
