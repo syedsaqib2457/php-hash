@@ -295,6 +295,17 @@
 							continue;
 						}
 
+						$nameserverNodeProcessName = $nameserverNodeProcessType . '_' . $nameserverNodeProcess['id'];
+
+						if (file_exists('/etc/bind_' . $nameserverNodeProcessName . '/named.conf') === true) {
+							// todo: test this with exact process names for performance instead of "named"
+							$nameserverNodeProcessProcessIds = $this->fetchProcessIds('named', '_' . $nameserverNodeProcessName . '/');
+
+							if (empty($nameserverNodeProcessProcessIds) === false) {
+								$this->_killProcessIds($nameserverNodeProcessProcessIds);
+							}
+						}
+
 						$nameserverNodeProcessConfiguration = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
 						$nameserverNodeProcessConfiguration['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
 						$nameserverNodeProcessConfiguration['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
@@ -329,8 +340,8 @@
 							}
 						}
 
+						// todo
 						// .. file_put_contents(config_file)
-						// .. kill process id
 						// .. start process id
 						// .. verify last process id
 					}
@@ -341,18 +352,18 @@
 					$proxyNodeProcessEndKey = key($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
 
 					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
-						// todo: add nameserver IPs into config here
 						$proxyNodeProcessName = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
 
-						if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'] . '.cfg') === true) {
+						if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
 							$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName, '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
 
-							if (empty($proxyNodeProcessIds) === false) {
+							if (empty($proxyNodeProcessProcessIds) === false) {
 								$this->_killProcessIds($proxyNodeProcessProcessIds);
 							}
 						}
 
 						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
+						// todo: add nameserver IPs into config here
 						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
 						$proxyNodeProcessService = $proxyNodeProcessServiceName . ' -a';
 						// todo: set option to enable anonymizing headers for HTTP
