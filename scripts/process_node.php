@@ -287,6 +287,9 @@
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
 				foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
+					end($this->nodeData['node_processes'][$nameserverNodeProcessType][$nameserverProcessPartKey]);
+					$nameserverNodeProcessEndKey = key($this->nodeData['node_processes'][$nameserverNodeProcessType][$nodeProcessPartKey]);
+
 					foreach ($this->nodeData['node_processes'][$nameserverNodeProcessType][$nodeProcessPartKey] as $nameserverNodeProcessKey => $nameserverNodeProcess) {
 						if (
 							(empty($nameserverNodeProcess['external_ip_version_4']) === false) ||
@@ -306,9 +309,9 @@
 							}
 						}
 
-						$nameserverNodeProcessConfiguration = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
-						$nameserverNodeProcessConfiguration['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
-						$nameserverNodeProcessConfiguration['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
+						$nameserverNodeProcessConfigurationOptions = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
+						$nameserverNodeProcessConfigurationOptions['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
+						$nameserverNodeProcessConfigurationOptions['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
 
 						foreach ($this->nodeData['nodes'][$nameserverNodeProcess]['type'] as $nameserverNode) {
 							$nameserverNodeProcessIps = array_filter(array(
@@ -320,7 +323,7 @@
 							$nameserverNodeProcesses[$nameserverNodeProcess['id']] = current($nameserverNodeProcessIps) . ':' . $nameserverNodeProcessPort;
 							$nameserverNodeUserIdIndex = 0;
 
-							while (empty($nameserverNodeProcessConfiguration['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]) === false) {
+							while (empty($nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]) === false) {
 								foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 									$nameserverNodeProcessUserListeningIp = $nameserverNode['external_ip_version_' . $nodeIpVersion];
 
@@ -328,11 +331,11 @@
 										$nameserverNodeProcessUserListeningIp = $nameserverNode['internal_ip_version_' . $nodeIpVersion];
 									}
 
-									$nameserverNodeProcessConfiguration['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ':' . $nameserverNodeProcess['port_id'];
-									$nameserverNodeProcessConfiguration['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
+									$nameserverNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ':' . $nameserverNodeProcess['port_id'];
+									$nameserverNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
 
 									if (empty($nameserverNode['transport_protocol']) === true) {
-										$nameserverNodeProcessConfiguration['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = 'tcp-clients: 1000000000;';
+										$nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = 'tcp-clients: 1000000000;';
 									}
 
 									$nameserverNodeUserIdIndex++;
@@ -340,10 +343,67 @@
 							}
 						}
 
-						// todo
-						// .. file_put_contents(config_file)
-						// .. start process id
-						// .. verify last process id
+						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named named_' . $nameserverNodeProcessName);
+						$nameserverNodeProcessService = array(
+							'[Service]',
+							'ExecStart=/usr/sbin/named_' . $nameserverNodeProcessName . ' -f -c /etc/bind_' . $nameserverNodeProcessName . '/named.conf -S 40000 -u root'
+						);
+
+						if (empty($nameserverNodeProcessDefaultServiceName) === true) {
+							$nameserverNodeProcessDefaultServiceName = 'named';
+
+							if (is_dir('/etc/default/bind9') === true) {
+								$nameserverNodeProcessDefaultServiceName = 'bind9';
+							}
+						}
+
+						$nameserverNodeProcessServiceName = nameserverNodeProcessDefaultServiceName . '_' . $nameserverNodeProcessName;
+						file_put_contents('/lib/systemd/system/' . $nameserverNodeProcessServiceName . '.service', implode("\n", $nameserverNodeProcessService));
+
+						if (file_exists('/etc/default/' . $nameserverNodeProcessServiceName) === false) {
+							copy('/etc/default/' . $nameserverNodeProcessDefaultServiceName, '/etc/default/' . $nameserverNodeProcessServiceName);
+						}
+
+						if (file_exists('/etc/bind_' . $nameserverNodeProcessName) === false) {
+							shell_exec('sudo cp -r /etc/bind /etc/bind_' . $nameserverNodeProcessName);
+							$nameserverNodeProcessConfiguration = array(
+								'include "/etc/bind_' . $nameserverNodeProcessName . '/named.conf.options";',
+								'include "/etc/bind_' . $nameserverNodeProcessName . '/named.conf.local";',
+								'include "/etc/bind_' . $nameserverNodeProcessName . '/named.conf.default-zones";'
+							);
+							file_put_contents('/etc/bind_' . $nameserverNodeProcessName . '/named.conf', implode("\n", $nameserverNodeProcessConfiguration));
+						}
+
+						file_put_contents('/etc/bind_' . $nameserverNodeProcessName . '/named.conf.options', implode("\n", $nameserverNodeProcessConfigurationOptions));
+
+						if (is_dir('/var/cache/bind_' . $nameserverNodeProcessName) === false) {
+							mkdir('/var/cache/bind_' . $nameserverNodeProcessName);
+						}
+
+						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
+						unlink('/var/run/named/named_' . $nameserverNodeProcessName . '.pid');
+
+						$nameserverNodeProcessEnded = false;
+						$nameserverNodeProcessEndedTime = time();
+
+						while ($nameserverNodeProcessEnded === false) {
+							$nameserverNodeProcessEnded = ($this->_verifyNodeProcess($nameserverNodeProcess) === false);
+							sleep(1);
+						}
+
+						$nameserverNodeProcessStarted = false;
+						$nameserverNodeProcessStartedTime = time();
+
+						while ($nameserverNodeProcessStarted === false) {
+							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $nameserverNodeProcessServiceName . ' start');
+
+							if ($nameserverNodeProcessKey !== $nameserverNodeProcessEndKey) {
+								break;
+							}
+
+							$nameserverNodeProcessStarted = ($this->_verifyNodeProcess($nameserverNodeProcess) === true);
+							sleep(2);
+						}
 					}
 				}
 
@@ -415,11 +475,7 @@
 						file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
 						chmod($proxyNodeProcessConfigurationPath, 0755);
 						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
-
-						if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
-							unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
-						}
-
+						unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
 						$proxyNodeProcessEnded = false;
 						$proxyNodeProcessEndedTime = time();
 
@@ -431,7 +487,7 @@
 						$proxyNodeProcessStarted = false;
 						$proxyNodeProcessStartedTime = time();
 
-						while ($proxyProcessStarted === false) {
+						while ($proxyNodeProcessStarted === false) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
 
 							if ($proxyNodeProcessKey !== $proxyNodeProcessEndKey) {
