@@ -1015,6 +1015,14 @@
 
 		public function process() {
 			$response = array(
+				'data' => array(
+					'node_ip_versions' => ($nodeIpVersions = array(
+						32 => 4,
+						128 => 6
+					)),
+					'private_network' => $this->settings['private_network'],
+					'version' => $this->settings['version']
+				),
 				'message' => 'Error processing nodes, please try again.',
 				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
@@ -1106,13 +1114,6 @@
 				'http_proxy',
 				'nameserver',
 				'socks_proxy'
-			);
-			$response['data'] = array(
-				'node_ip_versions' => ($nodeIpVersions = array(
-					32 => 4,
-					128 => 6
-				)),
-				'private_network' => $this->settings['private_network']
 			);
 
 			foreach ($nodes as $node) {

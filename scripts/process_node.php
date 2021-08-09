@@ -11,11 +11,25 @@
 			$this->_sendNodeRequestLogData();
 
 			// todo create 2 different processes for processing request log data and processing reconfig
-			// todo: write nameserver and proxy node ips and ports to /tmp cache file for process creation, deletion and recovery
 
 			if (empty($this->nodeData['nodes'])) {
-				// todo: verify all previously-verified cached processes. if a process fails, remove the process from the firewall and send notification back to system to flag node for re-processing
-				// exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+				$nodeProcesses = file_get_contents('/tmp/node_processes');
+				$nodeProcesses = json_decode($nodeProcesses, true);
+
+				foreach ($nodeProcesses as $nodeProcessType => $nodeProcessPortIds) {
+					foreach ($nodeProcessPortIds as $nodeProcessPortId) {
+						$nodeProcess = array(
+							'port_id' => $nodeProcessPortId,
+							'type' => $nodeProcessType
+						);
+
+						if ($this->verifyNodeProcess($nodeProcess) === false) {
+							exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+							exit;
+						}
+					}
+				}
+
 				// todo: log node processing errors, processing time per request, timeouts, number of logs processed for each request, etc
 				return;
 			}
@@ -265,31 +279,25 @@
 				}
 			}
 
-			// $this->_verifyNameserverProcesses();
-			// $this->_sendNodeRequestLogData();
-
-			// todo: format nameserver processes to remove into an array, create new nameserver processes
-
-			$nameserverNodeProcesses = $proxyNodeProcesses = array();
 			$this->nodeData['node_process_types'] = array_merge($this->nodeData['nameserver_node_process_types'], $this->nodeData['proxy_node_process_types']);
+			$nodeProcesses = array();
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
 						if ($this->verifyNodeProcess($nodeProcess) === false) {
+							$nodeProcesses[$nodeProcessType][] = $nodeProcess['port_id'];
+						} else {
 							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessKey]);
 						}
 					}
 				}
 
-				$this->_applyFirewall($nodeProcessPartKey);
+				$this->_processFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
 				foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
-					end($this->nodeData['node_processes'][$nameserverNodeProcessType][$nameserverProcessPartKey]);
-					$nameserverNodeProcessEndKey = key($this->nodeData['node_processes'][$nameserverNodeProcessType][$nodeProcessPartKey]);
-
 					foreach ($this->nodeData['node_processes'][$nameserverNodeProcessType][$nodeProcessPartKey] as $nameserverNodeProcessKey => $nameserverNodeProcess) {
 						if (
 							(empty($nameserverNodeProcess['external_ip_version_4']) === false) ||
@@ -320,7 +328,6 @@
 								$nameserverNode['external_ip_version_4'],
 								$nameserverNode['external_ip_version_6']
 							));
-							$nameserverNodeProcesses[$nameserverNodeProcess['id']] = current($nameserverNodeProcessIps) . ':' . $nameserverNodeProcessPort;
 							$nameserverNodeUserIdIndex = 0;
 
 							while (empty($nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]) === false) {
@@ -332,7 +339,10 @@
 									}
 
 									$nameserverNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ':' . $nameserverNodeProcess['port_id'];
-									$nameserverNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
+
+									if (empty($nameserverNodeProcessUserListeningIp) === false) {
+										$nameserverNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
+									}
 
 									if (empty($nameserverNode['transport_protocol']) === true) {
 										$nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = 'tcp-clients: 1000000000;';
@@ -374,6 +384,7 @@
 							file_put_contents('/etc/bind_' . $nameserverNodeProcessName . '/named.conf', implode("\n", $nameserverNodeProcessConfiguration));
 						}
 
+						$nameserverNodeProcessConfigurationOptions = array_filter($nameserverNodeProcessConfigurationOptions);
 						file_put_contents('/etc/bind_' . $nameserverNodeProcessName . '/named.conf.options', implode("\n", $nameserverNodeProcessConfigurationOptions));
 
 						if (is_dir('/var/cache/bind_' . $nameserverNodeProcessName) === false) {
@@ -396,11 +407,6 @@
 
 						while ($nameserverNodeProcessStarted === false) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $nameserverNodeProcessServiceName . ' start');
-
-							if ($nameserverNodeProcessKey !== $nameserverNodeProcessEndKey) {
-								break;
-							}
-
 							$nameserverNodeProcessStarted = ($this->_verifyNodeProcess($nameserverNodeProcess) === true);
 							sleep(2);
 						}
@@ -408,9 +414,6 @@
 				}
 
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-					end($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
-					$proxyNodeProcessEndKey = key($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]);
-
 					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
 						$proxyNodeProcessName = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
 
@@ -437,7 +440,6 @@
 								$proxyNode['external_ip_version_4'],
 								$proxyNode['external_ip_version_6']
 							));
-							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIps) . ':' . $proxyNodeProcessPort;
 							$proxyNodeProcessIpVersionPriority = '-';
 
 							foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
@@ -489,11 +491,6 @@
 
 						while ($proxyNodeProcessStarted === false) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
-
-							if ($proxyNodeProcessKey !== $proxyNodeProcessEndKey) {
-								break;
-							}
-
 							$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcess) === true);
 							sleep(2);
 						}
@@ -501,41 +498,27 @@
 				}
 			}
 
-			// ..
-
-			/*foreach ($allProxyProcessPorts as $proxyProcessPort) {
-				if ($this->_verifyProxyPort($proxyProcessPort)) {
-					$firewallRulePorts[] = $proxyProcessPort;
-					$firewallRulePortsIdentifier += $proxyProcessPort;
-				}
-			}
-
-			$this->_applyFirewall($firewallRulePorts);
-
-			foreach (array_keys($nameserverProcessesToRemove) as $nameserverProcessName) {
-				$this->_removeNameserverProcess($nameserverProcessName);
-			}
-
-			foreach (array_keys($proxyProcessesToRemove) as $proxyProcessName) {
-				$this->_removeProxyProcess($proxyProcessName);
-			}
-
-			$this->_killProcessIds(array_merge($nameserverProcessesToRemove, $proxyProcessesToRemove));
-			$this->_verifyNameserverProcesses();
-			file_put_contents($firewallRulePortsFile, $firewallRulePortsIdentifier);
-			file_put_contents($nameserverIpsFile, $nameserverIpsIdentifier);
-			$this->_optimizeProcesses();*/
-			// ..
+			$this->_processFirewall();
+			// todo: remove unused previous node processes to free up resources
+			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
 			return $response;
 		}
 
-		protected function _processFirewall($nodeProcessPartKey) {
+		protected function _processFirewall($nodeProcessPartKey = false) {
 			$firewallBinaryFiles = array(
 				4 => $this->nodeData['binary_files']['iptables-restore'],
 				6 => $this->nodeData['binary_files']['ip6tables-restore']
 			);
+			$nodeProcessPartKeys = array(
+				0,
+				1
+			);
+
+			if (empty($nodeProcessPartKey) === false) {
+				$nodeProcessPartKeys = array_intersect($nodeProcessPartKeys, array($nodeProcessPartKey));
+			}
 
 			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
 				$firewallRules = array(
@@ -559,31 +542,33 @@
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
 
-				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
-					krsort($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey]);
-					$nodeProcessParts = array_chunk($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey], 10);
+				foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
+					foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
+						krsort($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey]);
+						$nodeProcessParts = array_chunk($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey], 10);
 
-					foreach ($nodeProcessParts as $nodeProcessPart) {
-						foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
-							$nodeProcessLoadBalancer = '';
+						foreach ($nodeProcessParts as $nodeProcessPart) {
+							foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
+								$nodeProcessLoadBalancer = '';
 
-							if ($nodeProcessKey > 0) {
-								$nodeProcessLoadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
-							}
+								if ($nodeProcessKey > 0) {
+									$nodeProcessLoadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
+								}
 
-							$nodeProcessProtocols = array(
-								'tcp',
-								'udp'
-							);
-
-							if (empty($nodeProcess['transport_protocol']) === false) {
 								$nodeProcessProtocols = array(
-									$nodeProcess['transport_protocol']
+									'tcp',
+									'udp'
 								);
-							}
 
-							foreach ($nodeProcessProtocols as $nodeProcessProtocol) {
-								$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessProtocol . ' -m multiport ! -s ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
+								if (empty($nodeProcess['transport_protocol']) === false) {
+									$nodeProcessProtocols = array(
+										$nodeProcess['transport_protocol']
+									);
+								}
+
+								foreach ($nodeProcessProtocols as $nodeProcessProtocol) {
+									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
+								}
 							}
 						}
 					}
@@ -614,97 +599,6 @@
 
 				shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpVersion] . ' < ' . $firewallRulesFile);
 				sleep(1);
-			}
-
-			return;
-		}
-
-		protected function _createNameserverProcess($nameserverListeningIp, $nameserverSourceIp) {
-			// todo: create views for nameserver process authentication
-			$nameserverProcessName = ip2long($nameserverSourceIp) . '_' . ip2long($nameserverListeningIp);
-			$this->_removeNameserverProcess($nameserverProcessName);
-			$commands = array(
-				'cd /usr/sbin && sudo ln /usr/sbin/named named_' . $nameserverProcessName . ' && sudo cp /lib/systemd/system/' . $this->nameserverServiceName . '.service /lib/systemd/system/' . $this->nameserverServiceName . '_' . $nameserverProcessName . '.service',
-				'sudo cp /etc/default/' . $this->nameserverServiceName . ' /etc/default/' . $this->nameserverServiceName . '_' . $nameserverProcessName,
-				'sudo cp -r /etc/bind /etc/bind_' . $nameserverProcessName,
-				'sudo mkdir -m 0775 /var/cache/bind_' . $nameserverProcessName
-			);
-
-			foreach ($commands as $command) {
-				shell_exec($command);
-			}
-
-			$namedConfigurationContents = array(
-				'include "/etc/bind_' . $nameserverProcessName . '/named.conf.options";',
-				'include "/etc/bind_' . $nameserverProcessName . '/named.conf.local";',
-				'include "/etc/bind_' . $nameserverProcessName . '/named.conf.default-zones";'
-			);
-			$namedConfigurationOptionContents = array(
-				'acl internal {',
-				'0.0.0.0/8;',
-				'10.0.0.0/8;',
-				'100.64.0.0/10;',
-				'127.0.0.0/8;',
-				'172.16.0.0/12;',
-				'192.0.0.0/24;',
-				'192.0.2.0/24;',
-				'192.88.99.0/24;',
-				'192.168.0.0/16;',
-				'198.18.0.0/15;',
-				'198.51.100.0/24;',
-				'203.0.113.0/24;',
-				'224.0.0.0/4;',
-				'240.0.0.0/4;',
-				'255.255.255.255/32;',
-				'};',
-				'options {',
-				'allow-query {',
-				'internal;',
-				'};',
-				'allow-recursion {',
-				'internal;',
-				'};',
-				'auth-nxdomain yes;',
-				'cleaning-interval 10;',
-				'directory "/var/cache/bind_' . $nameserverProcessName . '";',
-				'dnssec-enable yes;',
-				'dnssec-must-be-secure mydomain.local no;',
-				'dnssec-validation yes;',
-				'empty-zones-enable no;',
-				'filter-aaaa-on-v4 yes;',
-				'lame-ttl 0;',
-				'listen-on {',
-				$nameserverListeningIp . '; ' . $nameserverSourceIp . ';',
-				'};',
-				'max-cache-ttl 1;',
-				'max-ncache-ttl 1;',
-				'max-zone-ttl 1;',
-				'pid-file "/var/run/named/named_' . $nameserverProcessName . '.pid";',
-				'query-source address ' . $nameserverSourceIp . ';',
-				'resolver-query-timeout 10;',
-				'tcp-clients 1000;',
-				'};'
-			);
-			$systemdServiceContents = array(
-				'[Unit]',
-				'After=network.target',
-				'[Service]',
-				'ExecStart=/usr/sbin/named_' . $nameserverProcessName . ' -f ' . ($configurationFile = '-c /etc/bind_' . $nameserverProcessName . '/named.conf') . ' -4 -S 40000 -u root',
-				'User=root',
-				'[Install]',
-				'WantedBy=multi-user.target'
-			);
-			file_put_contents('/etc/bind_' . $nameserverProcessName . '/named.conf', implode("\n", $namedConfigurationContents));
-			file_put_contents('/etc/bind_' . $nameserverProcessName . '/named.conf.options', implode("\n", $namedConfigurationOptionContents));
-			file_put_contents('/lib/systemd/system/' . $this->nameserverServiceName . '_' . $nameserverProcessName . '.service', implode("\n", $systemdServiceContents));
-			$commands = array(
-				'sudo ' . $this->binaryFiles['systemctl'] . ' daemon-reload',
-				'sudo ' . $this->binaryFiles['service'] . ' ' . $this->nameserverServiceName . '_' . $nameserverProcessName . ' start',
-				'sleep 10'
-			);
-
-			foreach ($commands as $command) {
-				shell_exec($command);
 			}
 
 			return;
@@ -875,6 +769,7 @@
 		}
 
 		protected function _optimizeProcesses() {
+			// todo: set prlimit for each process after starting by fetching pid from file
 			$processIds = array_merge($this->fetchProcessIds('named'), $this->fetchProcessIds('socks', '3proxy'));
 
 			foreach ($processIds as $processId) {
