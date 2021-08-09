@@ -410,6 +410,17 @@
 							$nameserverNodeProcessStarted = ($this->_verifyNodeProcess($nameserverNodeProcess) === true);
 							sleep(2);
 						}
+
+						if (file_exists('/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid') === true) {
+							$processId = file_get_contents('/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid');
+
+							if (is_numeric($processId) === true) {
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -n1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -n=1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -s"unlimited"');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -s=unlimited');
+							}
+						}
 					}
 				}
 
