@@ -336,6 +336,12 @@
 						));
 						$nameserverNodeProcesses[$nameserverNodeProcess['id']] = current($nameserverNodeProcessIps) . ':' . $nameserverNodeProcessPort;
 						$nameserverNodeProcessConfiguration = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
+						$nameserverNodeProcessConfiguration['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
+						$nameserverNodeProcessConfiguration['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
+
+						if (empty($nameserverNode['transport_protocol']) === true) {
+							$nameserverNodeProcessConfiguration['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = 'tcp-clients: 1000000000;';
+						}
 
 						foreach ($this->nodeData['nodes'][$nameserverNodeProcess]['type'] as $nameserverNode) {
 							$nameserverNodeUserIdIndex = 0;
@@ -353,6 +359,11 @@
 								}
 							}
 						}
+
+						// .. file_put_contents(config_file)
+						// .. kill process id
+						// .. start process id
+						// .. verify last process id
 					}
 				}
 
@@ -507,25 +518,25 @@
 
 					foreach ($nodeProcessParts as $nodeProcessPart) {
 						foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
-							$loadBalancer = '';
+							$nodeProcessLoadBalancer = '';
 
 							if ($nodeProcessKey > 0) {
-								$loadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
+								$nodeProcessLoadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
 							}
 
-							$protocols = array(
+							$nodeProcessProtocols = array(
 								'tcp',
 								'udp'
 							);
 
 							if (empty($nodeProcess['transport_protocol']) === false) {
-								$protocols = array(
+								$nodeProcessProtocols = array(
 									$nodeProcess['transport_protocol']
 								);
 							}
 
-							foreach ($protocols as $protocol) {
-								$firewallRules[] = '-A PREROUTING -p ' . $protocol . ' -m multiport ! -s ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $loadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
+							foreach ($nodeProcessProtocols as $nodeProcessProtocol) {
+								$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessProtocol . ' -m multiport ! -s ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
 							}
 						}
 					}
