@@ -505,6 +505,17 @@
 							$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcess) === true);
 							sleep(2);
 						}
+
+						if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
+							$processId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
+
+							if (is_numeric($processId) === true) {
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -n1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -n=1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -s"unlimited"');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -s=unlimited');
+							}
+						}
 					}
 				}
 			}
