@@ -80,6 +80,7 @@
 				'resolver-query-timeout 10;',
 				'};'
 			);
+			$nameserverNodeProcesses = array();
 			$this->nodeData['nameserver_node_process_types'] = array(
 				'nameserver'
 			);
@@ -311,6 +312,7 @@
 
 				// todo: verify no active sockets for processes using $nodeProcessPartKey
 
+				// todo: delete this after process IDs are deleted sequentially with each node and proxy process in foreach loop
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					if (empty($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]) === false) {
 						$this->_killProcessIds($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]);
@@ -318,7 +320,40 @@
 				}
 
 				foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
-					// ..
+					foreach ($this->nodeData['node_processes'][$nameserverNodeProcessType][$nodeProcessPartKey] as $nameserverNodeProcessKey => $nameserverNodeProcess) {
+						if (
+							(empty($nameserverNodeProcess['external_ip_version_4']) === false) ||
+							(empty($nameserverNodeProcess['external_ip_version_6']) === false)
+						) {
+							continue;
+						}
+
+						$nameserverNodeProcessIps = array_filter(array(
+							$nameserverNode['internal_ip_version_4'],
+							$nameserverNode['internal_ip_version_6'],
+							$nameserverNode['external_ip_version_4'],
+							$nameserverNode['external_ip_version_6']
+						));
+						$nameserverNodeProcesses[$nameserverNodeProcess['id']] = current($nameserverNodeProcessIps) . ':' . $nameserverNodeProcessPort;
+						$nameserverNodeProcessConfiguration = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
+
+						foreach ($this->nodeData['nodes'][$nameserverNodeProcess]['type'] as $nameserverNode) {
+							$nameserverNodeUserIdIndex = 0;
+
+							while (empty($nameserverNodeUserIdIndex) === false) {
+								foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+									$nameserverNodeProcessUserListeningIp = $nameserverNode['external_ip_version_' . $nodeIpVersion];
+
+									if (empty($nameserverNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+										$nameserverNodeProcessUserListeningIp = $nameserverNode['internal_ip_version_' . $nodeIpVersion];
+									}
+
+									// todo: add private network reserved address with listening port
+									$nameserverNodeProcessConfiguration['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
+								}
+							}
+						}
+					}
 				}
 
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
@@ -332,6 +367,7 @@
 						$proxyNodeProcessService = $proxyNodeProcess['service'] . ' -a';
 						// todo: set option to enable anonymizing headers for HTTP
 						// todo: set option to prioritize ipv6 or ipv4
+						// todo: move previous proxy node foreach loop with node_processes here to improve performance (looping through potentially thousands of processes 3 times is slower than killing each process synchronously)
 
 						foreach ($this->nodeData['nodes'][$proxyNodeProcess]['type'] as $proxyNode) {
 							$proxyNodeProcessIpVersionPriority = '-';
