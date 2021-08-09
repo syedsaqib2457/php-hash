@@ -133,12 +133,14 @@
 							}
 
 							$nameserverNodeUserAuthentication[] = 'listen-on {';
-							$nameserverNodeUserAuthentication['listening_address_version_4_' . $nameserverNodeViewIdentifier] => false;
+							$nameserverNodeUserAuthentication['internal_reserved_listening_address_version_4'] = false;
+							$nameserverNodeUserAuthentication['listening_address_version_4_' . $nameserverNodeViewIdentifier] = false;
 							$nameserverNodeUserAuthentication[] = '};';
 							$nameserverNodeUserAuthentication[] = 'listen-on-v6 {';
-							$nameserverNodeUserAuthentication['listening_address_version_6_'  . $nameserverNodeViewIdentifier] => false;
+							$nameserverNodeUserAuthentication['internal_reserved_listening_address_version_6'] = false;
+							$nameserverNodeUserAuthentication['listening_address_version_6_'  . $nameserverNodeViewIdentifier] = false;
 							$nameserverNodeUserAuthentication[] = '};';
-							$nameserverNodeUserAuthentication['tcp_' . $nameserverNodeViewIdentifier] => false;
+							$nameserverNodeUserAuthentication['tcp_' . $nameserverNodeViewIdentifier] = false;
 							$nameserverNodeUserAuthentication[] = '};';
 							$nameserverNodeConfiguration[] = $nameserverNodeUserAuthentication[] = '};';
 							$nameserverNodeUserIdIndex++;
@@ -354,7 +356,7 @@
 										$nameserverNodeProcessUserListeningIp = $nameserverNode['internal_ip_version_' . $nodeIpVersion];
 									}
 
-									// todo: add private network reserved address with listening port
+									$nameserverNodeProcessConfiguration['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ':' . $nameserverNodeProcess['port_id'];
 									$nameserverNodeProcessConfiguration['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
 								}
 							}
