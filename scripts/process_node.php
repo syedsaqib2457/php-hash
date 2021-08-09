@@ -264,40 +264,16 @@
 					$this->nodeData['proxy_node_configuration'][$proxyNodeType] = array_merge($proxyNodeConfiguration, $proxyNodeUsers, $proxyNodeUserAuthentication, array(
 						'deny *'
 					));
-
-					foreach (0, 1 as $proxyNodeProcessPartKey) {
-						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
-							$proxyNodeProcessIps = array_filter(array(
-								$proxyNode['internal_ip_version_4'],
-								$proxyNode['internal_ip_version_6'],
-								$proxyNode['external_ip_version_4'],
-								$proxyNode['external_ip_version_6']
-							));
-							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIps) . ':' . $proxyNodeProcessPort;
-							$proxyNodeProcess['name'] = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
-							$proxyNodeProcess['service_name'] = $proxyNodeProcessTypeServiceName;
-							$this->nodeData['node_processes'][$proxyNodeProcessType][$proxyNodeProcessPartKey][$proxyNodeProcessKey] = $proxyNodeProcess;
-
-							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'] . '.cfg') === true) {
-								$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcess['name'], '/etc/3proxy/' . $proxyNodeProcess['name'] . '.cfg');
-
-								if (empty($proxyNodeProcessIds) === false) {
-									$this->nodeData['node_process_process_id'][$proxyNodeProcessType][$proxyNodeProcessPartKey][] = current($proxyNodeProcessProcessIds);
-								}
-							}
-						}
-					}
-
-					// todo: format proxy processes to remove from cache file
 				}
 			}
 
-			$this->_verifyNameserverProcesses(); */
-			$this->_sendNodeRequestLogData();
+			// $this->_verifyNameserverProcesses();
+			// $this->_sendNodeRequestLogData();
 
 			// todo: format nameserver processes to remove into an array, create new nameserver processes
 			// todo: include nameserver processes in config reloading
 
+			$nameserverNodeProcesses = $proxyNodeProcesses = array();
 			$this->nodeData['node_process_types'] = array_merge($this->nodeData['nameserver_node_process_types'], $this->nodeData['proxy_node_process_types']);
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
@@ -311,15 +287,7 @@
 
 				$this->_applyFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
-
-				// todo: verify no active sockets for processes using $nodeProcessPartKey
-
-				// todo: delete this after process IDs are deleted sequentially with each node and proxy process in foreach loop
-				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
-					if (empty($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]) === false) {
-						$this->_killProcessIds($this->nodeData['node_process_process_id'][$nodeProcessType][$nodeProcessPartKey]);
-					}
-				}
+				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
 				foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nameserverNodeProcessType][$nodeProcessPartKey] as $nameserverNodeProcessKey => $nameserverNodeProcess) {
@@ -330,25 +298,21 @@
 							continue;
 						}
 
-						$nameserverNodeProcessIps = array_filter(array(
-							$nameserverNode['internal_ip_version_4'],
-							$nameserverNode['internal_ip_version_6'],
-							$nameserverNode['external_ip_version_4'],
-							$nameserverNode['external_ip_version_6']
-						));
-						$nameserverNodeProcesses[$nameserverNodeProcess['id']] = current($nameserverNodeProcessIps) . ':' . $nameserverNodeProcessPort;
 						$nameserverNodeProcessConfiguration = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
 						$nameserverNodeProcessConfiguration['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
 						$nameserverNodeProcessConfiguration['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
 
-						if (empty($nameserverNode['transport_protocol']) === true) {
-							$nameserverNodeProcessConfiguration['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = 'tcp-clients: 1000000000;';
-						}
-
 						foreach ($this->nodeData['nodes'][$nameserverNodeProcess]['type'] as $nameserverNode) {
+							$nameserverNodeProcessIps = array_filter(array(
+								$nameserverNode['internal_ip_version_4'],
+								$nameserverNode['internal_ip_version_6'],
+								$nameserverNode['external_ip_version_4'],
+								$nameserverNode['external_ip_version_6']
+							));
+							$nameserverNodeProcesses[$nameserverNodeProcess['id']] = current($nameserverNodeProcessIps) . ':' . $nameserverNodeProcessPort;
 							$nameserverNodeUserIdIndex = 0;
 
-							while (empty($nameserverNodeUserIdIndex) === false) {
+							while (empty($nameserverNodeProcessConfiguration['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]) === false) {
 								foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 									$nameserverNodeProcessUserListeningIp = $nameserverNode['external_ip_version_' . $nodeIpVersion];
 
@@ -358,6 +322,12 @@
 
 									$nameserverNodeProcessConfiguration['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ':' . $nameserverNodeProcess['port_id'];
 									$nameserverNodeProcessConfiguration['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
+
+									if (empty($nameserverNode['transport_protocol']) === true) {
+										$nameserverNodeProcessConfiguration['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = 'tcp-clients: 1000000000;';
+									}
+
+									$nameserverNodeUserIdIndex++;
 								}
 							}
 						}
@@ -375,14 +345,31 @@
 
 					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
 						// todo: add nameserver IPs into config here
+						$proxyNodeProcessName = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
+
+						if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'] . '.cfg') === true) {
+							$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName, '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
+
+							if (empty($proxyNodeProcessIds) === false) {
+								$this->_killProcessIds($proxyNodeProcessProcessIds);
+							}
+						}
+
 						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
-						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid';
-						$proxyNodeProcessService = $proxyNodeProcess['service'] . ' -a';
+						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
+						$proxyNodeProcessService = $proxyNodeProcessServiceName . ' -a';
 						// todo: set option to enable anonymizing headers for HTTP
 						// todo: set option to prioritize ipv6 or ipv4
 						// todo: move previous proxy node foreach loop with node_processes here to improve performance (looping through potentially thousands of processes 3 times is slower than killing each process synchronously)
 
 						foreach ($this->nodeData['nodes'][$proxyNodeProcess]['type'] as $proxyNode) {
+							$proxyNodeProcessIps = array_filter(array(
+								$proxyNode['internal_ip_version_4'],
+								$proxyNode['internal_ip_version_6'],
+								$proxyNode['external_ip_version_4'],
+								$proxyNode['external_ip_version_6']
+							));
+							$proxyNodeProcesses[$proxyNodeProcess['id']] = current($proxyNodeProcessIps) . ':' . $proxyNodeProcessPort;
 							$proxyNodeProcessIpVersionPriority = '-';
 
 							foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
@@ -402,7 +389,7 @@
 							$proxyNodeProcessConfiguration['_' . $proxyNode['id']] = $proxyNodeProcessService;
 						}
 
-						$proxyNodeProcessService = $proxyNodeProcess['service'];
+						$proxyNodeProcessService = $proxyNodeProcessServiceName;
 
 						foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
 							$proxyNodeProcessService .= ' -e ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
@@ -414,25 +401,22 @@
 						shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcess['name']);
 						$systemdServiceContents = array(
 							'[Service]',
-							'ExecStart=/bin/' . $proxyNodeProcess['name'] . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcess['name'] . '.cfg')
+							'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
 						);
-						file_put_contents('/etc/systemd/system/' . $proxyNodeProcess['name'] . '.service', implode("\n", $systemdServiceContents));
+						file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $systemdServiceContents));
 						file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
 						chmod($proxyNodeProcessConfigurationPath, 0755);
 						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
 
-						if (file_exists('/var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid') === true) {
-							unlink('/var/run/3proxy/' . $proxyNodeProcess['name'] . '.pid');
+						if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
+							unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
 						}
 
 						$proxyNodeProcessEnded = false;
 						$proxyNodeProcessEndedTime = time();
 
 						while ($proxyNodeProcessEnded === false) {
-							$proxyNodeProcessEnded = (
-								($this->_verifyNodeProcess($proxyNodeProcess) === false) ||
-								((time() - $proxyProcessEndedTime) > 60)
-							);
+							$proxyNodeProcessEnded = ($this->_verifyNodeProcess($proxyNodeProcess) === false);
 							sleep(1);
 						}
 
@@ -440,16 +424,13 @@
 						$proxyNodeProcessStartedTime = time();
 
 						while ($proxyProcessStarted === false) {
-							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcess['name'] . ' start');
+							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
 
 							if ($proxyNodeProcessKey !== $proxyNodeProcessEndKey) {
 								break;
 							}
 
-							$proxyNodeProcessStarted = (
-								($this->_verifyNodeProcess($proxyNodeProcess) === true) ||
-								((time() - $proxyNodeProcessStartedTime) > 100)
-							);
+							$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcess) === true);
 							sleep(2);
 						}
 					}
