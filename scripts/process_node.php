@@ -367,7 +367,7 @@
 					}
 				}
 
-				// todo: log node processing errors, processing time per request, timeouts, number of logs processed for each request, etc
+				// todo: log node processing errors if processes won't start after X seconds, processing time per request, timeouts, number of logs processed for each request, etc
 				return;
 			}
 
