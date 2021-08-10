@@ -1,8 +1,8 @@
-# Free Automation for Cloud Security
+# Free Automation for Hybrid Cloud Security
 
 Note: It's recommended to wait until the first official release version 1 when process auto-scaling, IPv6, proxy request logging, public-facing DNS, reverse proxies and system monitoring features are completed. It will require new installations and server deployments if upgrading from unofficial version 18 to official version 1, but there will be automated update scripts available for official version 1+.
 
-**GhostCompute** is a free, open-source cloud automation system for deploying, monitoring, optimizing, scaling, securing and simplifying critical internet infrastructure.
+**GhostCompute** is a free, open-source hybrid cloud automation system for deploying, monitoring, optimizing, scaling, securing and simplifying critical internet infrastructure.
 
 The upcoming version 1 official release is designed with these additional features and optimized for both bare-metal and cloud VM environments, with or without Docker and Kubernetes. 
 
@@ -35,6 +35,8 @@ Execute the command below after changing **STATIC_IP_ADDRESS** to the public IP 
 > url=STATIC_IP_ADDRESS && cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O website.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "https://raw.githubusercontent.com/ghostcompute/ghostcompute/master/assets/php/website.php" && sudo wget -O database.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "https://raw.githubusercontent.com/ghostcompute/ghostcompute/master/assets/php/database.php" && sudo php website.php $url && sudo php database.php $url
 
 After the control panel is installed, log in as instructed and start deploying connected SOCKS proxy servers.
+
+Here are some guides to get started with public cloud platforms.
 
 + [Amazon EC2](https://gist.github.com/ghostcompute/308f60f4adf884123fcdb397f9e50304)
 + [DigitalOcean](https://gist.github.com/ghostcompute/53da83d5560b46e0a997458e22fe8b6c)
