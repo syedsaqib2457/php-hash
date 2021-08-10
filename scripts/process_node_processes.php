@@ -644,16 +644,6 @@
 							}
 						}
 
-						/*
-							// todo: apply nameserver IPs to nameservers.conf
-							$commands = array(
-								'sudo rm /etc/resolv.conf && sudo touch /etc/nameservers.conf',
-								'sudo ln -s /etc/nameservers.conf /etc/resolv.conf'
-							);
-							applyCommands($commands);
-							file_put_contents('/etc/nameservers.conf', 'nameserver ' . key($nameserverIps));
-						*/
-
 						$nameserverNodeProcessConfigurationOptions = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
 						$nameserverNodeProcessConfigurationOptions['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
 						$nameserverNodeProcessConfigurationOptions['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
@@ -667,7 +657,7 @@
 							));
 							$nameserverNodeUserIdIndex = 0;
 
-							while (empty($nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]) === false) {
+							while (isset($nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]) === true) {
 								foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 									$nameserverNodeProcessUserListeningIp = $nameserverNode['external_ip_version_' . $nodeIpVersion];
 
@@ -749,6 +739,13 @@
 								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $nameserverNodeProcessProcessId . ' -s=unlimited');
 							}
 						}
+					}
+
+					/* todo: add option in ghostcompute to allow selecting IP addresses from specific nameserver types for each node's system-wide resolv.conf
+						(e.g. some may want to use public dns for system curl requests but internal dns for proxy processes) */
+
+					if (empty($nameserverNodeProcessUserListeningIp) === false) {
+						file_put_contents('/etc/nameservers.conf', 'nameserver ' . $nameserverNodeProcessUserListeningIp);
 					}
 				}
 
