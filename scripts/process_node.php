@@ -836,38 +836,6 @@
 			return;
 		}
 
-		protected function _removeNameserverProcess($nameserverProcessName) {
-			$commands = array(
-				'sudo rm /etc/default/' . $this->nameserverServiceName . '_' . $nameserverProcessName,
-				'sudo rm /lib/systemd/system/' . $this->nameserverServiceName . '_' . $nameserverProcessName . '.service',
-				'sudo rm /usr/sbin/named_' . $nameserverProcessName,
-				'sudo rm /var/run/named/named_' . $nameserverProcessName . '.pid',
-				'sudo rm -rf /etc/bind_' . $nameserverProcessName,
-				'sudo rm -rf /var/cache/bind_' . $nameserverProcessName
-			);
-
-			foreach ($commands as $command) {
-				shell_exec($command);
-			}
-
-			return;
-		}
-
-		protected function _removeProxyProcess($proxyProcessName) {
-			$commands = array(
-				'sudo rm /etc/systemd/system/' . $proxyProcessName . '.service',
-				'sudo rm /bin/' . $proxyProcessName,
-				'sudo rm /etc/3proxy/' . $proxyProcessName . '.cfg',
-				'sudo rm /var/run/3proxy/' . $proxyProcessName . '.pid'
-			);
-
-			foreach ($commands as $command) {
-				shell_exec($command);
-			}
-
-			return;
-		}
-
 		protected function _sendNodeRequestLogData() {
 			if (file_exists($nodeRequestLogFile) === false) {
 				return;
@@ -963,28 +931,21 @@
 
 			switch ($nodeProcess['type']) {
 				case 'http_proxy':
-					// ..
+				case 'socks_proxy':
+					$parameters = array(
+						'http_proxy' => '-x',
+						'socks_proxy' => '--socks5-hostname'
+					);
+					exec('curl ' . $parameters[$nodeProcess['type']] . ' ' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcess['port_id'] . ' http://ghostcompute' . uniqid() . time() . ' -v --connect-timeout 1 --max-time 1 2>&1', $proxyNodeProcessResponse);
+					// find similarity between http and socks responses
 					break;
 				case 'nameserver':
-					// ..
-					break;
-				case 'socks_proxy':
 					// ..
 					break;
 			}
 
 			return $response;
 		}
-
-		/*protected function _verifyProxyPort($proxyPort, $timeout = 2) {
-			// todo: add http verification
-			// todo: change to verifyProxyProcess() to include process internal ip
-			$response = false;
-			exec('curl --socks5-hostname ' . $this->decodedServerData['server']['ip'] . ':' . $proxyPort . ' http://domain' . uniqid() . time() . ' -v --connect-timeout ' . $timeout . ' --max-time ' . $timeout . ' 2>&1', $proxyResponse);
-			$proxyResponse = end($proxyResponse);
-			$response = (strpos(strtolower($proxyResponse), 'empty ') !== false);
-			return $response;
-		}*/
 
 		public function fetchProcessIds($processName, $processFile = false) {
 			$processIds = array();
