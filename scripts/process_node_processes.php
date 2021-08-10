@@ -1,5 +1,5 @@
 <?php
-	class Process {
+	class ProcessNodeProcesses {
 
 		public $parameters;
 
@@ -269,36 +269,6 @@
 			return;
 		}
 
-		protected function _sendNodeRequestLogData() {
-			if (file_exists($nodeRequestLogFile) === false) {
-				return;
-			}
-
-			$nodeProcessTypes = array(
-				'http_proxy',
-				'nameserver',
-				'socks_proxy'
-			);
-
-			foreach ($nodeProcessTypes as $nodeProcessType) {
-				$nodeRequestLogFile = '/var/log/' . $nodeProcessType;
-
-				if (file_exists($nodeRequestLogFile) === true) {
-					exec('sudo curl -s --form "data=@' . $nodeRequestLogFile . '" --form-string "json={\"action\":\"archive\",\"data\":{\"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/request-logs 2>&1', $response);
-					$response = json_decode(current($response), true);
-
-					if (empty($response['data']['most_recent_request_log']) === false) {
-						$mostRecentNodeRequestLog = $response['data']['most_recent_request_log'];
-						$nodeRequestLogFileContents = file_get_contents($proxyNodeRequestLogFile);
-						$updateNodeRequestLogs = substr($nodeRequestLogFileContents, strpos($nodeRequestLogFileContents, $mostRecentNodeRequestLog) + strlen($mostRecentNodeRequestLog));
-						file_put_contents($nodeRequestLogFile, trim($updatedNodeRequestLogs));
-					}
-				}
-			}
-
-			return;
-		}
-
 		protected function _verifyNodeProcess($nodeProcess) {
 			response = false;
 
@@ -347,7 +317,6 @@
 		}
 
 		public function process() {
-			// todo create 2 different processes for processing request log data and processing reconfig
 			$nodeProcesses = json_decode($nodeProcesses, file_get_contents('/tmp/node_processes'));
 
 			if (empty($this->nodeData['nodes'])) {
