@@ -7,6 +7,345 @@
 			$this->parameters = $parameters;
 		}
 
+		protected function _killProcessIds($processIds) {
+			$commands = array(
+				'#!/bin/bash'
+			);
+			$processIdParts = array_chunk($processIds, 10);
+
+			foreach ($processIdParts as $processIds) {
+				$commands[] = 'sudo kill -9 ' . implode(' ', $processIds);
+			}
+
+			$commands = array_merge($commands, array(
+				'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')',
+				'sudo ' . $this->nodeData['binary_files']['telinit'] . ' u'
+			));
+			$commandsFile = '/tmp/commands.sh';
+
+			if (file_exists($commandsFile) === true) {
+				unlink($commandsFile);
+			}
+
+			file_put_contents($commandsFile, implode("\n", $commands));
+			chmod($commandsFile, 0755);
+			shell_exec('cd /tmp/ && sudo ./' . basename($commandsFile));
+			unlink($commandsFile);
+			return;
+		}
+
+		protected function _optimizeKernel() {
+			// todo: revisit each setting to verify they're optimal
+			// apply dynamic mem settings based on 10 min usage values
+			$kernelOptions = array(
+				'fs.aio-max-nr = 1000000000',
+				'fs.file-max = 1000000000',
+				'fs.nr_open = 1000000000',
+				'fs.pipe-max-size = 10000000',
+				'fs.suid_dumpable = 0',
+				'kernel.core_uses_pid = 1',
+				'kernel.hung_task_timeout_secs = 2',
+				'kernel.io_delay_type = 3',
+				'kernel.kptr_restrict = 2',
+				'kernel.msgmax = 65535',
+				'kernel.msgmnb = 65535',
+				'kernel.printk = 7 7 7 7',
+				'kernel.sem = 404 256000 64 2048',
+				'kernel.shmmni = 32767',
+				'kernel.sysrq = 0',
+				'kernel.threads-max = 1000000000',
+				'net.core.default_qdisc = fq',
+				'net.core.dev_weight = 100000',
+				'net.core.netdev_max_backlog = 1000000',
+				'net.core.somaxconn = 1000000000',
+				'net.ipv4.conf.all.accept_redirects = 0',
+				'net.ipv4.conf.all.accept_source_route = 0',
+				'net.ipv4.conf.all.arp_ignore = 1',
+				'net.ipv4.conf.all.bootp_relay = 0',
+				'net.ipv4.conf.all.forwarding = 0',
+				'net.ipv4.conf.all.rp_filter = 1',
+				'net.ipv4.conf.all.secure_redirects = 0',
+				'net.ipv4.conf.all.send_redirects = 0',
+				'net.ipv4.conf.all.log_martians = 0',
+				'net.ipv4.icmp_echo_ignore_all = 0',
+				'net.ipv4.icmp_echo_ignore_broadcasts = 0',
+				'net.ipv4.icmp_ignore_bogus_error_responses = 1',
+				'net.ipv4.ip_forward = 0',
+				'net.ipv4.ip_local_port_range = 1024 65000',
+				'net.ipv4.ipfrag_high_thresh = 64000000',
+				'net.ipv4.ipfrag_low_thresh = 32000000',
+				'net.ipv4.ipfrag_time = 10',
+				'net.ipv4.neigh.default.gc_interval = 50',
+				'net.ipv4.neigh.default.gc_stale_time = 10',
+				'net.ipv4.neigh.default.gc_thresh1 = 32',
+				'net.ipv4.neigh.default.gc_thresh2 = 1024',
+				'net.ipv4.neigh.default.gc_thresh3 = 2048',
+				'net.ipv4.route.gc_timeout = 2',
+				'net.ipv4.tcp_adv_win_scale = 2',
+				'net.ipv4.tcp_congestion_control = htcp',
+				'net.ipv4.tcp_fastopen = 2',
+				'net.ipv4.tcp_fin_timeout = 2',
+				'net.ipv4.tcp_keepalive_intvl = 2',
+				'net.ipv4.tcp_keepalive_probes = 2',
+				'net.ipv4.tcp_keepalive_time = 2',
+				'net.ipv4.tcp_low_latency = 1',
+				'net.ipv4.tcp_max_orphans = 100000',
+				'net.ipv4.tcp_max_syn_backlog = 1000000',
+				'net.ipv4.tcp_max_tw_buckets = 100000000',
+				'net.ipv4.tcp_moderate_rcvbuf = 1',
+				'net.ipv4.tcp_no_metrics_save = 1',
+				'net.ipv4.tcp_orphan_retries = 0',
+				'net.ipv4.tcp_retries2 = 1',
+				'net.ipv4.tcp_rfc1337 = 0',
+				'net.ipv4.tcp_sack = 0',
+				'net.ipv4.tcp_slow_start_after_idle = 0',
+				'net.ipv4.tcp_syn_retries = 2',
+				'net.ipv4.tcp_synack_retries = 2',
+				'net.ipv4.tcp_syncookies = 0',
+				'net.ipv4.tcp_thin_linear_timeouts = 1',
+				'net.ipv4.tcp_timestamps = 1',
+				'net.ipv4.tcp_tw_reuse = 0',
+				'net.ipv4.tcp_window_scaling = 1',
+				'net.ipv4.udp_rmem_min = 1',
+				'net.ipv4.udp_wmem_min = 1',
+				'net.netfilter.nf_conntrack_max = 100000000',
+				'net.netfilter.nf_conntrack_tcp_loose = 0',
+				'net.netfilter.nf_conntrack_tcp_timeout_close = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_established = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_last_ack = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_syn_recv = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_syn_sent = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 10',
+				'net.nf_conntrack_max = 100000000',
+				'net.ipv6.conf.all.accept_redirects = 0',
+				'net.ipv6.conf.all.accept_source_route = 0',
+				'net.ipv6.conf.all.disable_ipv6 = 0',
+				'net.ipv6.conf.all.forwarding = 0',
+				'net.ipv6.ip6frag_high_thresh = 64000000',
+				'net.ipv6.ip6frag_low_thresh = 32000000',
+				'vm.dirty_background_ratio = 10',
+				'vm.dirty_expire_centisecs = 10',
+				'vm.dirty_ratio = 10',
+				'vm.dirty_writeback_centisecs = 100',
+				'vm.max_map_count = 1000000',
+				'vm.mmap_min_addr = 4096',
+				'vm.overcommit_memory = 0',
+				'vm.swappiness = 0'
+			);
+			file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
+			shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -p');
+			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
+			exec('free | grep -v free | awk \'NR==1{print $2}\'', $totalSystemMemory);
+			$kernelPageSize = current($kernelPageSize);
+			$totalSystemMemory = current($totalSystemMemory);
+
+			if (
+				is_numeric($kernelPageSize) &&
+				is_numeric($totalSystemMemory)
+			) {
+				$maximumMemoryBytes = ceil($totalSystemMemory * 0.34);
+				$maximumMemoryPages = ceil($maximumMemoryBytes / $kernelPageSize);
+				$dynamicKernelOptions = array(
+					'kernel.shmall' => floor($totalSystemMemory / $kernelPageSize),
+					'kernel.shmmax' => $totalSystemMemory,
+					'net.core.optmem_max' => ($defaultSocketBufferMemoryBytes = ceil($maximumMemoryBytes * 0.10)),
+					'net.core.rmem_default' => $defaultSocketBufferMemoryBytes,
+					'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
+					'net.ipv4.tcp_mem' => $maximumMemoryPages . ' ' . $maximumMemoryPages . ' ' . $maximumMemoryPages,
+					'net.ipv4.tcp_rmem' => 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2)
+				);
+				$dynamicKernelOptions += array(
+					'net.ipv4.tcp_wmem' => $dynamicKernelOptions['net.ipv4.tcp_rmem'],
+					'net.ipv4.udp_mem' => $dynamicKernelOptions['net.ipv4.tcp_mem'],
+					'net.core.wmem_default' => $dynamicKernelOptions['net.core.rmem_default'],
+					'net.core.wmem_max' => $dynamicKernelOptions['net.core.rmem_max']
+				);
+
+				foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
+					shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
+				}
+			}
+
+			return;
+		}
+
+		protected function _processFirewall($nodeProcessPartKey = false) {
+			$firewallBinaryFiles = array(
+				4 => $this->nodeData['binary_files']['iptables-restore'],
+				6 => $this->nodeData['binary_files']['ip6tables-restore']
+			);
+			$nodeProcessPartKeys = array(
+				0,
+				1
+			);
+
+			if (empty($nodeProcessPartKey) === false) {
+				$nodeProcessPartKeys = array_intersect($nodeProcessPartKeys, array($nodeProcessPartKey));
+			}
+
+			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
+				$firewallRules = array(
+					'*filter',
+					':INPUT ACCEPT [0:0]',
+					':FORWARD ACCEPT [0:0]',
+					':OUTPUT ACCEPT [0:0]',
+					'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP'
+				);
+
+				if (empty($this->nodeData['ssh_ports']) === false) {
+					foreach ($this->nodeData['ssh_ports'] as $sshPort) {
+						$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
+					}
+				}
+
+				$firewallRules[] = 'COMMIT';
+				$firewallRules[] = '*nat';
+				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
+				$firewallRules[] = ':INPUT ACCEPT [0:0]';
+				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
+				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
+
+				foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
+					foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
+						krsort($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey]);
+						$nodeProcessParts = array_chunk($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey], 10);
+
+						foreach ($nodeProcessParts as $nodeProcessPart) {
+							foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
+								$nodeProcessLoadBalancer = '';
+
+								if ($nodeProcessKey > 0) {
+									$nodeProcessLoadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
+								}
+
+								$nodeProcessProtocols = array(
+									'tcp',
+									'udp'
+								);
+
+								if (empty($nodeProcess['transport_protocol']) === false) {
+									$nodeProcessProtocols = array(
+										$nodeProcess['transport_protocol']
+									);
+								}
+
+								foreach ($nodeProcessProtocols as $nodeProcessProtocol) {
+									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
+								}
+							}
+						}
+					}
+				}
+
+				$firewallRules[] = 'COMMIT';
+				$firewallRules[] = '*raw';
+				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
+				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
+				// todo: allow dropping external packets from additional public IP blocks with per-node settings
+
+				if (empty($this->nodeData['private_network']['ip_blocks'][$nodeIpVersion]) === false) {
+					foreach ($this->nodeData['private_network']['ip_blocks'][$nodeIpVersion] as $privateNetworkIpBlock) {
+						$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $privateNetworkIpBlock . ' -j DROP';
+					}
+				}
+
+				$firewallRules[] = 'COMMIT';
+				$firewallRulesFile = '/tmp/firewall_' . $nodeIpVersion;
+				unlink($firewallRulesFile);
+				touch($firewallRulesFile);
+				$firewallRuleParts = array_chunk($firewallRules, 1000);
+
+				foreach ($firewallRuleParts as $firewallRulePart) {
+					$saveFirewallRules = implode("\n", $firewallRulePart);
+					shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
+				}
+
+				shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpVersion] . ' < ' . $firewallRulesFile);
+				sleep(1);
+			}
+
+			return;
+		}
+
+		protected function _sendNodeRequestLogData() {
+			if (file_exists($nodeRequestLogFile) === false) {
+				return;
+			}
+
+			$nodeProcessTypes = array(
+				'http_proxy',
+				'nameserver',
+				'socks_proxy'
+			);
+
+			foreach ($nodeProcessTypes as $nodeProcessType) {
+				$nodeRequestLogFile = '/var/log/' . $nodeProcessType;
+
+				if (file_exists($nodeRequestLogFile) === true) {
+					exec('sudo curl -s --form "data=@' . $nodeRequestLogFile . '" --form-string "json={\"action\":\"archive\",\"data\":{\"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/request-logs 2>&1', $response);
+					$response = json_decode(current($response), true);
+
+					if (empty($response['data']['most_recent_request_log']) === false) {
+						$mostRecentNodeRequestLog = $response['data']['most_recent_request_log'];
+						$nodeRequestLogFileContents = file_get_contents($proxyNodeRequestLogFile);
+						$updateNodeRequestLogs = substr($nodeRequestLogFileContents, strpos($nodeRequestLogFileContents, $mostRecentNodeRequestLog) + strlen($mostRecentNodeRequestLog));
+						file_put_contents($nodeRequestLogFile, trim($updatedNodeRequestLogs));
+					}
+				}
+			}
+
+			return;
+		}
+
+		protected function _verifyNodeProcess($nodeProcess) {
+			response = false;
+
+			switch ($nodeProcess['type']) {
+				case 'http_proxy':
+				case 'socks_proxy':
+					$parameters = array(
+						'http_proxy' => '-x',
+						'socks_proxy' => '--socks5-hostname'
+					);
+					exec('curl ' . $parameters[$nodeProcess['type']] . ' ' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcess['port_id'] . ' http://ghostcompute' . uniqid() . time() . ' -v --connect-timeout 1 --max-time 1 2>&1', $proxyNodeProcessResponse);
+					// find similarity between http and socks responses
+					break;
+				case 'nameserver':
+					/*
+					exec('dig +time=2 +tries=2 +tcp proxies @[address] | grep "Got answer" 2>&1', $nameserverNodeProcessResponse);
+					// ..
+					*/
+					break;
+			}
+
+			return $response;
+		}
+
+		public function fetchProcessIds($processName, $processFile = false) {
+			$processIds = array();
+			exec('ps -h -o pid -o cmd $(pgrep ' . $processName . ') | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
+
+			if (empty($processes) === false) {
+				foreach ($processes as $process) {
+					$processColumns = array_filter(explode(' ', $process));
+
+					if (
+						(empty($processColumns) === false) &&
+						(
+							(empty($processFile) === true) ||
+							(strpos($process, $processFile) !== false)
+						)
+					) {
+						$processIds[] = $processColumns[key($processColumns)];
+					}
+				}
+			}
+
+			return $processIds;
+		}
+
 		public function process() {
 			// todo create 2 different processes for processing request log data and processing reconfig
 			$nodeProcesses = json_decode($nodeProcesses, file_get_contents('/tmp/node_processes'));
@@ -335,6 +674,16 @@
 							}
 						}
 
+						/*
+							// todo: apply nameserver IPs to nameservers.conf
+							$commands = array(
+								'sudo rm /etc/resolv.conf && sudo touch /etc/nameservers.conf',
+								'sudo ln -s /etc/nameservers.conf /etc/resolv.conf'
+							);
+							applyCommands($commands);
+							file_put_contents('/etc/nameservers.conf', 'nameserver ' . key($nameserverIps));
+						*/
+
 						$nameserverNodeProcessConfigurationOptions = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
 						$nameserverNodeProcessConfigurationOptions['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
 						$nameserverNodeProcessConfigurationOptions['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
@@ -572,402 +921,6 @@
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
 			return $response;
-		}
-
-		protected function _processFirewall($nodeProcessPartKey = false) {
-			$firewallBinaryFiles = array(
-				4 => $this->nodeData['binary_files']['iptables-restore'],
-				6 => $this->nodeData['binary_files']['ip6tables-restore']
-			);
-			$nodeProcessPartKeys = array(
-				0,
-				1
-			);
-
-			if (empty($nodeProcessPartKey) === false) {
-				$nodeProcessPartKeys = array_intersect($nodeProcessPartKeys, array($nodeProcessPartKey));
-			}
-
-			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
-				$firewallRules = array(
-					'*filter',
-					':INPUT ACCEPT [0:0]',
-					':FORWARD ACCEPT [0:0]',
-					':OUTPUT ACCEPT [0:0]',
-					'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP'
-				);
-
-				if (empty($this->nodeData['ssh_ports']) === false) {
-					foreach ($this->nodeData['ssh_ports'] as $sshPort) {
-						$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
-					}
-				}
-
-				$firewallRules[] = 'COMMIT';
-				$firewallRules[] = '*nat';
-				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
-				$firewallRules[] = ':INPUT ACCEPT [0:0]';
-				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
-				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
-
-				foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
-					foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
-						krsort($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey]);
-						$nodeProcessParts = array_chunk($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey], 10);
-
-						foreach ($nodeProcessParts as $nodeProcessPart) {
-							foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
-								$nodeProcessLoadBalancer = '';
-
-								if ($nodeProcessKey > 0) {
-									$nodeProcessLoadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
-								}
-
-								$nodeProcessProtocols = array(
-									'tcp',
-									'udp'
-								);
-
-								if (empty($nodeProcess['transport_protocol']) === false) {
-									$nodeProcessProtocols = array(
-										$nodeProcess['transport_protocol']
-									);
-								}
-
-								foreach ($nodeProcessProtocols as $nodeProcessProtocol) {
-									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
-								}
-							}
-						}
-					}
-				}
-
-				$firewallRules[] = 'COMMIT';
-				$firewallRules[] = '*raw';
-				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
-				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
-				// todo: allow dropping external packets from additional public IP blocks with per-node settings
-
-				if (empty($this->nodeData['private_network']['ip_blocks'][$nodeIpVersion]) === false) {
-					foreach ($this->nodeData['private_network']['ip_blocks'][$nodeIpVersion] as $privateNetworkIpBlock) {
-						$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $privateNetworkIpBlock . ' -j DROP';
-					}
-				}
-
-				$firewallRules[] = 'COMMIT';
-				$firewallRulesFile = '/tmp/firewall_' . $nodeIpVersion;
-				unlink($firewallRulesFile);
-				touch($firewallRulesFile);
-				$firewallRuleParts = array_chunk($firewallRules, 1000);
-
-				foreach ($firewallRuleParts as $firewallRulePart) {
-					$saveFirewallRules = implode("\n", $firewallRulePart);
-					shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
-				}
-
-				shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpVersion] . ' < ' . $firewallRulesFile);
-				sleep(1);
-			}
-
-			return;
-		}
-
-		protected function _killProcessIds($processIds) {
-			$commands = array(
-				'#!/bin/bash'
-			);
-			$processIdParts = array_chunk($processIds, 10);
-
-			foreach ($processIdParts as $processIds) {
-				$commands[] = 'sudo kill -9 ' . implode(' ', $processIds);
-			}
-
-			$commands = array_merge($commands, array(
-				'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')',
-				'sudo ' . $this->nodeData['binary_files']['telinit'] . ' u'
-			));
-			$commandsFile = '/tmp/commands.sh';
-
-			if (file_exists($commandsFile) === true) {
-				unlink($commandsFile);
-			}
-
-			file_put_contents($commandsFile, implode("\n", $commands));
-			chmod($commandsFile, 0755);
-			shell_exec('cd /tmp/ && sudo ./' . basename($commandsFile));
-			unlink($commandsFile);
-			return;
-		}
-
-		protected function _optimizeKernel() {
-			// todo: revisit each setting to verify they're optimal
-			// apply dynamic mem settings based on 10 min usage values
-			$kernelOptions = array(
-				'fs.aio-max-nr = 1000000000',
-				'fs.file-max = 1000000000',
-				'fs.nr_open = 1000000000',
-				'fs.pipe-max-size = 10000000',
-				'fs.suid_dumpable = 0',
-				'kernel.core_uses_pid = 1',
-				'kernel.hung_task_timeout_secs = 2',
-				'kernel.io_delay_type = 3',
-				'kernel.kptr_restrict = 2',
-				'kernel.msgmax = 65535',
-				'kernel.msgmnb = 65535',
-				'kernel.printk = 7 7 7 7',
-				'kernel.sem = 404 256000 64 2048',
-				'kernel.shmmni = 32767',
-				'kernel.sysrq = 0',
-				'kernel.threads-max = 1000000000',
-				'net.core.default_qdisc = fq',
-				'net.core.dev_weight = 100000',
-				'net.core.netdev_max_backlog = 1000000',
-				'net.core.somaxconn = 1000000000',
-				'net.ipv4.conf.all.accept_redirects = 0',
-				'net.ipv4.conf.all.accept_source_route = 0',
-				'net.ipv4.conf.all.arp_ignore = 1',
-				'net.ipv4.conf.all.bootp_relay = 0',
-				'net.ipv4.conf.all.forwarding = 0',
-				'net.ipv4.conf.all.rp_filter = 1',
-				'net.ipv4.conf.all.secure_redirects = 0',
-				'net.ipv4.conf.all.send_redirects = 0',
-				'net.ipv4.conf.all.log_martians = 0',
-				'net.ipv4.icmp_echo_ignore_all = 0',
-				'net.ipv4.icmp_echo_ignore_broadcasts = 0',
-				'net.ipv4.icmp_ignore_bogus_error_responses = 1',
-				'net.ipv4.ip_forward = 0',
-				'net.ipv4.ip_local_port_range = 1024 65000',
-				'net.ipv4.ipfrag_high_thresh = 64000000',
-				'net.ipv4.ipfrag_low_thresh = 32000000',
-				'net.ipv4.ipfrag_time = 10',
-				'net.ipv4.neigh.default.gc_interval = 50',
-				'net.ipv4.neigh.default.gc_stale_time = 10',
-				'net.ipv4.neigh.default.gc_thresh1 = 32',
-				'net.ipv4.neigh.default.gc_thresh2 = 1024',
-				'net.ipv4.neigh.default.gc_thresh3 = 2048',
-				'net.ipv4.route.gc_timeout = 2',
-				'net.ipv4.tcp_adv_win_scale = 2',
-				'net.ipv4.tcp_congestion_control = htcp',
-				'net.ipv4.tcp_fastopen = 2',
-				'net.ipv4.tcp_fin_timeout = 2',
-				'net.ipv4.tcp_keepalive_intvl = 2',
-				'net.ipv4.tcp_keepalive_probes = 2',
-				'net.ipv4.tcp_keepalive_time = 2',
-				'net.ipv4.tcp_low_latency = 1',
-				'net.ipv4.tcp_max_orphans = 100000',
-				'net.ipv4.tcp_max_syn_backlog = 1000000',
-				'net.ipv4.tcp_max_tw_buckets = 100000000',
-				'net.ipv4.tcp_moderate_rcvbuf = 1',
-				'net.ipv4.tcp_no_metrics_save = 1',
-				'net.ipv4.tcp_orphan_retries = 0',
-				'net.ipv4.tcp_retries2 = 1',
-				'net.ipv4.tcp_rfc1337 = 0',
-				'net.ipv4.tcp_sack = 0',
-				'net.ipv4.tcp_slow_start_after_idle = 0',
-				'net.ipv4.tcp_syn_retries = 2',
-				'net.ipv4.tcp_synack_retries = 2',
-				'net.ipv4.tcp_syncookies = 0',
-				'net.ipv4.tcp_thin_linear_timeouts = 1',
-				'net.ipv4.tcp_timestamps = 1',
-				'net.ipv4.tcp_tw_reuse = 0',
-				'net.ipv4.tcp_window_scaling = 1',
-				'net.ipv4.udp_rmem_min = 1',
-				'net.ipv4.udp_wmem_min = 1',
-				'net.netfilter.nf_conntrack_max = 100000000',
-				'net.netfilter.nf_conntrack_tcp_loose = 0',
-				'net.netfilter.nf_conntrack_tcp_timeout_close = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_established = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_last_ack = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_syn_recv = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_syn_sent = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 10',
-				'net.nf_conntrack_max = 100000000',
-				'net.ipv6.conf.all.accept_redirects = 0',
-				'net.ipv6.conf.all.accept_source_route = 0',
-				'net.ipv6.conf.all.disable_ipv6 = 0',
-				'net.ipv6.conf.all.forwarding = 0',
-				'net.ipv6.ip6frag_high_thresh = 64000000',
-				'net.ipv6.ip6frag_low_thresh = 32000000',
-				'vm.dirty_background_ratio = 10',
-				'vm.dirty_expire_centisecs = 10',
-				'vm.dirty_ratio = 10',
-				'vm.dirty_writeback_centisecs = 100',
-				'vm.max_map_count = 1000000',
-				'vm.mmap_min_addr = 4096',
-				'vm.overcommit_memory = 0',
-				'vm.swappiness = 0'
-			);
-			file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
-			shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -p');
-			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-			exec('free | grep -v free | awk \'NR==1{print $2}\'', $totalSystemMemory);
-			$kernelPageSize = current($kernelPageSize);
-			$totalSystemMemory = current($totalSystemMemory);
-
-			if (
-				is_numeric($kernelPageSize) &&
-				is_numeric($totalSystemMemory)
-			) {
-				$maximumMemoryBytes = ceil($totalSystemMemory * 0.34);
-				$maximumMemoryPages = ceil($maximumMemoryBytes / $kernelPageSize);
-				$dynamicKernelOptions = array(
-					'kernel.shmall' => floor($totalSystemMemory / $kernelPageSize),
-					'kernel.shmmax' => $totalSystemMemory,
-					'net.core.optmem_max' => ($defaultSocketBufferMemoryBytes = ceil($maximumMemoryBytes * 0.10)),
-					'net.core.rmem_default' => $defaultSocketBufferMemoryBytes,
-					'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
-					'net.ipv4.tcp_mem' => $maximumMemoryPages . ' ' . $maximumMemoryPages . ' ' . $maximumMemoryPages,
-					'net.ipv4.tcp_rmem' => 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2)
-				);
-				$dynamicKernelOptions += array(
-					'net.ipv4.tcp_wmem' => $dynamicKernelOptions['net.ipv4.tcp_rmem'],
-					'net.ipv4.udp_mem' => $dynamicKernelOptions['net.ipv4.tcp_mem'],
-					'net.core.wmem_default' => $dynamicKernelOptions['net.core.rmem_default'],
-					'net.core.wmem_max' => $dynamicKernelOptions['net.core.rmem_max']
-				);
-
-				foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
-					shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
-				}
-			}
-
-			return;
-		}
-
-		protected function _sendNodeRequestLogData() {
-			if (file_exists($nodeRequestLogFile) === false) {
-				return;
-			}
-
-			$nodeProcessTypes = array(
-				'http_proxy',
-				'nameserver',
-				'socks_proxy'
-			);
-
-			foreach ($nodeProcessTypes as $nodeProcessType) {
-				$nodeRequestLogFile = '/var/log/' . $nodeProcessType;
-
-				if (file_exists($nodeRequestLogFile) === true) {
-					exec('sudo curl -s --form "data=@' . $nodeRequestLogFile . '" --form-string "json={\"action\":\"archive\",\"data\":{\"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/request-logs 2>&1', $response);
-					$response = json_decode(current($response), true);
-
-					if (empty($response['data']['most_recent_request_log']) === false) {
-						$mostRecentNodeRequestLog = $response['data']['most_recent_request_log'];
-						$nodeRequestLogFileContents = file_get_contents($proxyNodeRequestLogFile);
-						$updateNodeRequestLogs = substr($nodeRequestLogFileContents, strpos($nodeRequestLogFileContents, $mostRecentNodeRequestLog) + strlen($mostRecentNodeRequestLog));
-						file_put_contents($nodeRequestLogFile, trim($updatedNodeRequestLogs));
-					}
-				}
-			}
-
-			return;
-		}
-
-		/*protected function _verifyNameserverProcesses() {
-			$serverData = file_exists($this->rootPath . 'cache/data') ? file_get_contents($this->rootPath . 'cache/data') : '';
-			$decodedServerData = json_decode($serverData, true);
-
-			if (empty($this->nameserverServiceName)) {
-				$this->nameserverServiceName = is_dir('/etc/default/bind9') ? 'bind9' : 'named';
-			}
-
-			if (empty($decodedServerData['nameserver_process_external_ips'])) {
-				return;
-			}
-
-			$nameserverIps = array();
-			$nameserverProcessIps = $decodedServerData['nameserver_process_external_ips'];
-
-			foreach ($nameserverProcessIps as $nameserverListeningIp => $nameserverSourceIps) {
-				$nameserverDynamicIps = (count($nameserverSourceIps) > 1);
-
-				foreach ($nameserverSourceIps as $nameserverSourceIp) {
-					$nameserverProcesses = $nameserverResponse = array();
-					exec('dig +time=2 +tries=2 +tcp proxies @' . ($nameserverDynamicIps ? $nameserverSourceIp : $nameserverListeningIp) . ' | grep "Got answer" 2>&1', $nameserverResponse);
-
-					if (
-						(
-							empty($nameserverResponse[0]) ||
-							strpos($nameserverResponse[0], 'Got answer') === false
-						) &&
-						in_array($nameserverListeningIp, $this->nameserverListeningIps)
-					) {
-						exec('ps -h -o pid -o cmd $(pgrep named) | grep ' . ($nameserverProcessName = ip2long($nameserverSourceIp) . '_' . ip2long($nameserverListeningIp)) . ' | grep -v grep | awk \'{print $1}\' 2>&1', $nameserverProcessId);
-
-						if (!empty($nameserverProcessId)) {
-							$this->_killProcessIds($nameserverProcessId);
-							shell_exec('sudo rm /var/run/named/named_' . $nameserverProcessName . '.pid');
-						}
-
-						$this->_createNameserverProcess($nameserverListeningIp, $nameserverSourceIp);
-						$this->_verifyNameserverProcesses();
-					}
-				}
-
-				$nameserverIps[$nameserverListeningIp] = $nameserverListeningIp;
-			}
-
-			if (!empty($nameserverIps)) {
-				$commands = array(
-					'sudo rm /etc/resolv.conf && sudo touch /etc/nameservers.conf',
-					'sudo ln -s /etc/nameservers.conf /etc/resolv.conf'
-				);
-
-				foreach ($commands as $command) {
-					shell_exec($command);
-				}
-
-				file_put_contents('/etc/nameservers.conf', 'nameserver ' . key($nameserverIps));
-			}
-
-			return;
-		}*/
-
-		protected function _verifyNodeProcess($nodeProcess) {
-			response = false;
-
-			switch ($nodeProcess['type']) {
-				case 'http_proxy':
-				case 'socks_proxy':
-					$parameters = array(
-						'http_proxy' => '-x',
-						'socks_proxy' => '--socks5-hostname'
-					);
-					exec('curl ' . $parameters[$nodeProcess['type']] . ' ' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcess['port_id'] . ' http://ghostcompute' . uniqid() . time() . ' -v --connect-timeout 1 --max-time 1 2>&1', $proxyNodeProcessResponse);
-					// find similarity between http and socks responses
-					break;
-				case 'nameserver':
-					// ..
-					break;
-			}
-
-			return $response;
-		}
-
-		public function fetchProcessIds($processName, $processFile = false) {
-			$processIds = array();
-			exec('ps -h -o pid -o cmd $(pgrep ' . $processName . ') | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
-
-			if (empty($processes) === false) {
-				foreach ($processes as $process) {
-					$processColumns = array_filter(explode(' ', $process));
-
-					if (
-						(empty($processColumns) === false) &&
-						(
-							(empty($processFile) === true) ||
-							(strpos($process, $processFile) !== false)
-						)
-					) {
-						$processIds[] = $processColumns[key($processColumns)];
-					}
-				}
-			}
-
-			return $processIds;
 		}
 
 		public function processNodeData() {
