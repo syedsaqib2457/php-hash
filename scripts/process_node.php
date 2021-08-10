@@ -8,24 +8,22 @@
 		}
 
 		public function process() {
-			$this->_sendNodeRequestLogData();
-
 			// todo create 2 different processes for processing request log data and processing reconfig
+			$nodeProcesses = json_decode($nodeProcesses, file_get_contents('/tmp/node_processes'));
 
 			if (empty($this->nodeData['nodes'])) {
-				$nodeProcesses = file_get_contents('/tmp/node_processes');
-				$nodeProcesses = json_decode($nodeProcesses, true);
+				if (empty(nodeProcesses) === false) {
+					foreach ($nodeProcesses as $nodeProcessType => $nodeProcessPortIds) {
+						foreach ($nodeProcessPortIds as $nodeProcessPortId) {
+							$nodeProcess = array(
+								'port_id' => $nodeProcessPortId,
+								'type' => $nodeProcessType
+							);
 
-				foreach ($nodeProcesses as $nodeProcessType => $nodeProcessPortIds) {
-					foreach ($nodeProcessPortIds as $nodeProcessPortId) {
-						$nodeProcess = array(
-							'port_id' => $nodeProcessPortId,
-							'type' => $nodeProcessType
-						);
-
-						if ($this->verifyNodeProcess($nodeProcess) === false) {
-							exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
-							exit;
+							if ($this->verifyNodeProcess($nodeProcess) === false) {
+								exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+								exit;
+							}
 						}
 					}
 				}
@@ -97,6 +95,14 @@
 			$this->nodeData['nameserver_node_process_types'] = array(
 				'nameserver'
 			);
+
+			if (empty($nameserverNodeProcessDefaultServiceName) === true) {
+				$nameserverNodeProcessDefaultServiceName = 'named';
+
+				if (is_dir('/etc/default/bind9') === true) {
+					$nameserverNodeProcessDefaultServiceName = 'bind9';
+				}
+			}
 
 			foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
 				if (empty($this->nodeData['node_processes'][$nameserverNodeProcessType]) === false) {
@@ -280,14 +286,26 @@
 			}
 
 			$this->nodeData['node_process_types'] = array_merge($this->nodeData['nameserver_node_process_types'], $this->nodeData['proxy_node_process_types']);
-			$nodeProcesses = array();
+			$nodeProcessesToRemove = array();
+
+			foreach ($nodeProcesses as $nodeProcessType => $nodeProcessPorts) {
+				foreach ($nodeProcessPorts as $nodeProcessId => $nodeProcessPort) {
+					if (
+						(empty($this->nodeData['node_processes'][$nodeProcessType][0]) === true) &&
+						(empty($this->nodeData['node_processes'][$nodeProcessType][1]) === true)
+					) {
+						$nodeProcessesToRemove[$nodeProcessType][$nodeProcessId] = $nodeProcessId;
+					}
+				}
+			}
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
-						if ($this->verifyNodeProcess($nodeProcess) === false) {
-							$nodeProcesses[$nodeProcessType][] = $nodeProcess['port_id'];
+						if ($this->verifyNodeProcess($nodeProcess) === true) {
+							$nodeProcesses[$nodeProcessType][$nodeProcess['id']] = $nodeProcess['port_id'];
 						} else {
+							unset($nodeProcesses[$nodeProcessType][$nodeProcess['id']]);
 							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessKey]);
 						}
 					}
@@ -358,15 +376,6 @@
 							'[Service]',
 							'ExecStart=/usr/sbin/named_' . $nameserverNodeProcessName . ' -f -c /etc/bind_' . $nameserverNodeProcessName . '/named.conf -S 40000 -u root'
 						);
-
-						if (empty($nameserverNodeProcessDefaultServiceName) === true) {
-							$nameserverNodeProcessDefaultServiceName = 'named';
-
-							if (is_dir('/etc/default/bind9') === true) {
-								$nameserverNodeProcessDefaultServiceName = 'bind9';
-							}
-						}
-
 						$nameserverNodeProcessServiceName = nameserverNodeProcessDefaultServiceName . '_' . $nameserverNodeProcessName;
 						file_put_contents('/lib/systemd/system/' . $nameserverNodeProcessServiceName . '.service', implode("\n", $nameserverNodeProcessService));
 
@@ -412,13 +421,13 @@
 						}
 
 						if (file_exists('/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid') === true) {
-							$processId = file_get_contents('/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid');
+							$nameserverNodeProcessProcessId = file_get_contents('/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid');
 
-							if (is_numeric($processId) === true) {
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -n1000000000');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -n=1000000000');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -s"unlimited"');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -s=unlimited');
+							if (is_numeric($nameserverNodeProcessProcessId) === true) {
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $nameserverNodeProcessProcessId . ' -n1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $nameserverNodeProcessProcessId . ' -n=1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $nameserverNodeProcessProcessId . ' -s"unlimited"');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $nameserverNodeProcessProcessId . ' -s=unlimited');
 							}
 						}
 					}
@@ -507,13 +516,13 @@
 						}
 
 						if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
-							$processId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
+							$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
 
-							if (is_numeric($processId) === true) {
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -n1000000000');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -n=1000000000');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -s"unlimited"');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $processId . ' -s=unlimited');
+							if (is_numeric($proxyNodeProcessProcessId) === true) {
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n=1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s"unlimited"');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
 							}
 						}
 					}
@@ -521,8 +530,45 @@
 			}
 
 			$this->_processFirewall();
-			// todo: remove unused previous node processes to free up resources
 			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
+
+			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessId) {
+				$nodeProcessName = $nodeProcessType . '_' . $nodeProcessId;
+
+				switch ($nodeProcessType) {
+					case 'http_proxy':
+					case 'socks_proxy':
+						if (file_exists('/var/run/3proxy/' . $nodeProcessName . '.pid') === true) {
+							$nodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $nodeProcessName . '.pid');
+						}
+
+						unlink('/bin/' . $nodeProcessName);
+						unlink('/etc/3proxy/' . $nodeProcessName . '.cfg');
+						unlink('/etc/systemd/system/' . $nodeProcessName . '.service');
+						unlink('/var/run/3proxy/' . $nodeProcessName . '.pid');
+						break;
+					case 'nameserver':
+						if (file_exists('/var/run/named/named_' . $nodeProcess['id'] . '.pid') === true) {
+							$nodeProcessProcessId = file_get_contents('/var/run/named/named_' . $nodeProcess['id'] . '.pid');
+						}
+
+						rmdir('/etc/bind_' . $nodeProcessName);
+						rmdir('/var/cache/bind_' . $nodeProcessName);
+						unlink('/etc/default/' . $nameserverNodeProcessDefaultServiceName . '_' . $nodeProcessName);
+						unlink('/lib/systemd/system/' . $nameserverNodeProcessDefaultServiceName . '_' . $nodeProcessName . '.service');
+						unlink('/usr/sbin/named_' . $nodeProcessName);
+						unlink('/var/run/named/named_' . $nodeProcessName . '.pid');
+						break;
+				}
+
+				if (
+					(empty($nodeProcessProcessId) === false) &&
+					(is_numeric($nodeProcessProcessId) === true)
+				) {
+					$this->_killProcessIds(array($nodeProcessProcessId));
+				}
+			}
+
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
 			return $response;
@@ -785,20 +831,6 @@
 				foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
 					shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
 				}
-			}
-
-			return;
-		}
-
-		protected function _optimizeProcesses() {
-			// todo: set prlimit for each process after starting by fetching pid from file
-			$processIds = array_merge($this->fetchProcessIds('named'), $this->fetchProcessIds('socks', '3proxy'));
-
-			foreach ($processIds as $processId) {
-				shell_exec('sudo ' . $this->binaryFiles['prlimit'] . ' -p ' . $processId . ' -n1000000000');
-				shell_exec('sudo ' . $this->binaryFiles['prlimit'] . ' -p ' . $processId . ' -n=1000000000');
-				shell_exec('sudo ' . $this->binaryFiles['prlimit'] . ' -p ' . $processId . ' -s"unlimited"');
-				shell_exec('sudo ' . $this->binaryFiles['prlimit'] . ' -p ' . $processId . ' -s=unlimited');
 			}
 
 			return;
