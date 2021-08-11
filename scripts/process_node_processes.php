@@ -293,7 +293,7 @@
 
 		public function fetchProcessIds($processName, $processFile = false) {
 			$processIds = array();
-			exec('ps -h -o pid -o cmd $(pgrep ' . $processName . ') | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
+			exec('ps -h -o pid -o cmd $(pgrep -f "' . $processName . '") | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
 
 			if (empty($processes) === false) {
 				foreach ($processes as $process) {
@@ -633,8 +633,7 @@
 						$nameserverNodeProcessName = $nameserverNodeProcessType . '_' . $nameserverNodeProcess['id'];
 
 						if (file_exists('/etc/bind_' . $nameserverNodeProcessName . '/named.conf') === true) {
-							// todo: test this with exact process names for performance instead of "named"
-							$nameserverNodeProcessProcessIds = $this->fetchProcessIds('named', '_' . $nameserverNodeProcessName . '/');
+							$nameserverNodeProcessProcessIds = $this->fetchProcessIds($nameserverNodeProcessName . ' ', '_' . $nameserverNodeProcessName . '/');
 
 							if (empty($nameserverNodeProcessProcessIds) === false) {
 								$this->_killProcessIds($nameserverNodeProcessProcessIds);
@@ -708,7 +707,6 @@
 
 						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
 						unlink('/var/run/named/named_' . $nameserverNodeProcessName . '.pid');
-
 						$nameserverNodeProcessEnded = false;
 						$nameserverNodeProcessEndedTime = time();
 
@@ -751,7 +749,7 @@
 						$proxyNodeProcessName = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
 
 						if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
-							$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName, '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
+							$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName . ' ', '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
 
 							if (empty($proxyNodeProcessProcessIds) === false) {
 								$this->_killProcessIds($proxyNodeProcessProcessIds);
