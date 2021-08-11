@@ -283,11 +283,8 @@
 					// todo: test requests to find a similarity between successful http and socks responses
 					break;
 				case 'nameserver':
-					/*
-					// todo: test dig to see if @ address allows ports (documentation doesn't say)
-					exec('dig +time=1 +tries=1 ghostcompute @' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcess['port_id'] . ' | grep "Got answer" 2>&1', $nameserverNodeProcessResponse);
+					exec('dig +time=1 +tries=1 ghostcompute @' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ' -p ' . $nodeProcess['port_id'] . ' | grep "Got answer" 2>&1', $nameserverNodeProcessResponse);
 					$response = (empty($nameserverNodeProcessResponse) === false);
-					*/
 					break;
 			}
 
