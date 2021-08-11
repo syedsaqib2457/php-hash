@@ -279,8 +279,8 @@
 						'http_proxy' => '-x',
 						'socks_proxy' => '--socks5-hostname'
 					);
-					exec('curl ' . $parameters[$nodeProcess['type']] . ' ' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcess['port_id'] . ' http://ghostcompute' . uniqid() . time() . ' -v --connect-timeout 1 --max-time 1 2>&1', $proxyNodeProcessResponse);
-					// todo: test requests to find a similarity between successful http and socks responses
+					exec('curl ' . $parameters[$nodeProcess['type']] . ' ' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcess['port_id'] . ' http://ghostcompute' . uniqid() . time() . ' -v --connect-timeout 1 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+					$response = (empty($nameserverNodeProcessResponse) === true);
 					break;
 				case 'nameserver':
 					exec('dig +time=1 +tries=1 ghostcompute @' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ' -p ' . $nodeProcess['port_id'] . ' | grep "Got answer" 2>&1', $nameserverNodeProcessResponse);
