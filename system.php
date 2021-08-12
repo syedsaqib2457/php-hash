@@ -418,7 +418,7 @@
 								'null' => true,
 								'type' => 'VARCHAR(39)'
 							),
-							'memory_capacity' => array(
+							'memory_capacity_megabytes' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -447,7 +447,7 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'storage_capacity' => array(
+							'storage_capacity_megabytes' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'

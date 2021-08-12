@@ -1007,10 +1007,127 @@
 		public function list($parameters) {
 			$response = array(
 				'message' => 'Error listing nodes, please try again.',
-				'status_valid' => false
+				'status_valid' => (
+					(empty($parameters['where']['id']) === true) ||
+					(is_int($parameters['where']['id']) === true)
+				)
 			);
-			// ..
-			return array();
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$nodeParameters = array(
+				'fields' => array(
+					'id',
+					'destination_address_version_4',
+					'destination_address_version_6',
+					'destination_port_version_4',
+					'destination_port_version_6',
+					'external_ip_version_4',
+					'external_ip_version_6',
+					'internal_ip_version_4',
+					'internal_ip_version_4',
+					'memory_capacity',
+					'node_id',
+					'status_activated',
+					'status_deployed',
+					'status_processed',
+					'storage_capacity'
+				),
+				'from' => 'nodes'
+			);
+
+			if (empty($parameters['where']['id']) === false) {
+				$nodeParameters['where']['id'] = $parameters['where']['id'];
+			}
+
+			if (empty($parameters['limit']) === false) {
+				$nodeParameters['limit'] = $parameters['limit'];
+				$response['status_valid'] = (is_int($parameters['limit']) === true);
+			}
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node list limit, please try again.';
+				return $response;
+			}
+
+			if (empty($parameters['offset']) === false) {
+				$nodeParameters['offset'] = $parameters['offset'];
+				$response['status_valid'] = (is_int($parameters['offset']) === true);
+			}
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node list limit, please try again.';
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				(
+					(empty($parameters['resource_usage_log_interval_hours']) === true) &&
+					($parameters['resource_usage_log_interval_hours'] = 1)
+				) ||
+				(is_int($parameters['resource_usage_log_interval_hours']) === true)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node resource usage log interval, please try again.';
+				return $response;
+			}
+
+			$nodes = $this->fetch($nodeParameters);
+			$response['status_valid'] = ($nodes !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$nodeIds = array();
+
+			foreach ($nodes as $node) {
+				$nodeIds[] = $node['id'];
+			}
+
+			if (empty($nodeIds) === false) {
+				$nodeResourceUsageLogs = $this->fetch(array(
+					'fields' => array(
+						'bytes_received',
+						'bytes_sent',
+						'cpu_capacity_cores',
+						'cpu_capacity_megahertz',
+						'cpu_percentage_node_processing',
+						'cpu_percentage_node_usage',
+						'memory_capacity_megabytes',
+						'memory_percentage_node_processing',
+						'memory_percentage_node_usage',
+						'memory_percentage_tcp',
+						'memory_percentage_udp',
+						'node_id',
+						'requests',
+						'storage_capacity_megabytes',
+						'storage_percentage'
+					),
+					'from' => 'node_resource_usage_logs',
+					'where' => array(
+						'created >' => date('Y-m-d H:i:s', strtotime('-' . $parameters['resource_usage_log_interval_hours'])),
+						'node_id' => $nodeIds
+					)
+				));
+				$response['status_valid'] = ($nodeResourceUsageLogs !== false);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				// ..
+			}
+
+			/*
+				todo: if there's no id set, only list main nodes with empty node_id, create separate view for nodes in a node (server)
+					show additional node count, process counts per type, status and resource usage log data for main nodes
+					show proxy + dns type (reverse/forwarding + authoritative/recursive) for all nodes
+			*/
+			return $response;
 		}
 
 		public function process() {
