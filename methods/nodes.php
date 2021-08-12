@@ -1092,6 +1092,7 @@
 
 			foreach ($nodes as $node) {
 				$nodeIds[] = $node['id'];
+				$response['data']['nodes'][$node['id']] = $node;
 			}
 
 			if (empty($nodeIds) === false) {
@@ -1125,14 +1126,49 @@
 					return $response;
 				}
 
-				// ..
+				$nodeResourceUsageLogAverageKeys = array(
+					'cpu_capacity_cores',
+					'cpu_capacity_megahertz',
+					'cpu_percentage_node_processing',
+					'cpu_percentage_node_usage',
+					'memory_capacity_megabytes',
+					'memory_percentage_node_processing',
+					'memory_percentage_node_usage',
+					'memory_percentage_tcp',
+					'memory_percentage_udp',
+					'storage_capacity_megabytes',
+					'storage_percentage'
+				);
+
+				foreach ($nodeResourceUsageLogs as $nodeResourceUsageLog) {
+					$nodeResourceUsageLogNodeId = $nodeResourceUsageLog['node_id'];
+					unset($response['data']['nodes'][$nodeResourceUsageLogNodeId]['resource_usage_logs']['node_id']);
+
+					if (empty($response['data']['nodes'][$nodeResourceUsageLogNodeId]['resource_usage_logs']) === true) {
+						$nodeResourceUsageLog['count'] = 1;
+						$response['data']['nodes'][$nodeResourceUsageLogNodeId]['resource_usage_logs'] = $nodeResourceUsageLog;
+					} else {
+						foreach ($response['data']['nodes'][$nodeResourceUsageLogNodeId] as $nodeResourceUsageLogKey => $nodeResourceUsageLogValue) {
+							$response['data']['nodes'][$nodeResourceUsageLogNodeId][$nodeResourceUsageLogKey] += $nodeResourceUsageLog[$nodeResourceUsageLogKey];
+						}
+
+						$response['data']['nodes'][$nodeResourceUsageLogNodeId]['resource_usage_logs']['count']++;
+					}
+				}
+
+				foreach ($nodeIds as $nodeId) {
+					if (empty($response['data']['nodes'][$nodeId]['resource_usage_logs']['count']) === false) {
+						foreach ($nodeResourceUsageLogAverageKeys as $nodeResourceUsageLogAverageKey) {
+							$response['data']['nodes'][$nodeId][$nodeResourceUsageLogAverageKey] = ceil($response['data']['nodes'][$nodeId][$nodeResourceUsageLogAverageKey] / $response['data']['nodes'][$nodeId]['resource_usage_logs']['count']);
+						}
+
+						unset($response['data']['nodes'][$nodeId]['resource_usage_logs']['count']);
+					}
+				}
 			}
 
-			/*
-				todo: if there's no id set, only list main nodes with empty node_id, create separate view for nodes in a node (server)
-					show additional node count, process counts per type, status and resource usage log data for main nodes
-					show proxy + dns type (reverse/forwarding + authoritative/recursive) for all nodes
-			*/
+			// todo: show additional node count, process counts per type, status and resource usage log data for main nodes
+			// todo: show proxy + dns type (reverse/forwarding + authoritative/recursive) for all nodes
 			return $response;
 		}
 
