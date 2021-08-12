@@ -1126,6 +1126,54 @@
 					return $response;
 				}
 
+				foreach ($nodeIds as $nodeId) {
+					if (empty($parameters['where']['id']) === true) {
+						$nodeCount = $this->count(array(
+							'in' => 'nodes',
+							'where' => array(
+								'id' => $nodeId,
+								'node_id' => $nodeId
+							)
+						));
+						$nodeNameserverProcessCount = $this->count(array(
+							'in' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId,
+								'type' => 'nameserver'
+							)
+						));
+						$nodeHttpProxyProcessCount = $this->count(array(
+							'in' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId,
+								'type' => 'http_proxy'
+							)
+						));
+						$nodeSocksProxyProcessCount = $this->count(array(
+							'in' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId,
+								'type' => 'socks_proxy'
+							)
+						));
+						$response['status_valid'] = (
+							($nodeCount !== false) &&
+							($nodeNameserverProcessCount !== false) &&
+							($nodeHttpProxyProcessCount !== false) &&
+							($nodeSocksProxyProcessCount !== false)
+						);
+
+						if ($response['status_valid'] === false) {
+							return $response;
+						}
+
+						$response['data']['nodes'][$nodeId]['node_count'] = $nodeNodeCount;
+						$response['data']['nodes'][$nodeId]['node_nameserver_process_count'] = $nodeNameserverProcessCount;
+						$response['data']['nodes'][$nodeId]['node_http_proxy_process_count'] = $nodeHttpProxyProcessCount;
+						$response['data']['nodes'][$nodeId]['node_socks_proxy_process_count'] = nodeSocksProxyProcessCount;
+					}
+				}
+
 				$nodeResourceUsageLogAverageKeys = array(
 					'cpu_capacity_cores',
 					'cpu_capacity_megahertz',
@@ -1156,7 +1204,6 @@
 					}
 				}
 
-				// todo: move this above average calculations to catch failed count queries first
 				foreach ($nodeIds as $nodeId) {
 					if (empty($response['data']['nodes'][$nodeId]['resource_usage_logs']['count']) === false) {
 						foreach ($nodeResourceUsageLogAverageKeys as $nodeResourceUsageLogAverageKey) {
@@ -1164,53 +1211,6 @@
 						}
 
 						unset($response['data']['nodes'][$nodeId]['resource_usage_logs']['count']);
-					}
-
-					if (empty($parameters['where']['id']) === true) {
-						$nodeCount = $this->count(array(
-							'in' => 'nodes',
-							'where' => array(
-								'id' => $nodeId,
-								'node_id' => $nodeId
-							)
-						));
-						$nodeNameserverProcessCount = $this->count(array(
-							'in' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeId,
-								'type' => 'nameserver'
-							)
-						));
-						$nodeHttpProxyProcessCount = $this->count(array(
-							'in' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeId,
-								'type' => 'http_proxy'
-							)
-						));
-						$nodeSocksProxyProcessCount = $this->count(array(
-							'in' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeId,
-								'type' => 'socks_proxy'
-							)
-						));
-
-						$response['status_valid'] = (
-							($nodeCount !== false) &&
-							($nodeNameserverProcessCount !== false) &&
-							($nodeHttpProxyProcessCount !== false) &&
-							($nodeSocksProxyProcessCount !== false)
-						);
-
-						if ($response['status_valid'] === false) {
-							return $response;
-						}
-
-						$response['data']['nodes'][$nodeId]['node_count'] = $nodeNodeCount;
-						$response['data']['nodes'][$nodeId]['node_nameserver_process_count'] = $nodeNameserverProcessCount;
-						$response['data']['nodes'][$nodeId]['node_http_proxy_process_count'] = $nodeHttpProxyProcessCount;
-						$response['data']['nodes'][$nodeId]['node_socks_proxy_process_count'] = nodeSocksProxyProcessCount;
 					}
 				}
 			}
