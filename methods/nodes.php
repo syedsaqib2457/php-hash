@@ -1027,7 +1027,7 @@
 					'external_ip_version_4',
 					'external_ip_version_6',
 					'internal_ip_version_4',
-					'internal_ip_version_4',
+					'internal_ip_version_6',
 					'memory_capacity',
 					'node_id',
 					'status_activated',
@@ -1116,7 +1116,7 @@
 					),
 					'from' => 'node_resource_usage_logs',
 					'where' => array(
-						'created >' => date('Y-m-d H:i:s', strtotime('-' . $parameters['resource_usage_log_interval_hours'])),
+						'created >' => date('Y-m-d H:i:s', strtotime('-' . $parameters['resource_usage_log_interval_hours'] . ' hours')),
 						'node_id' => $nodeIds
 					)
 				));
