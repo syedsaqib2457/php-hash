@@ -1156,6 +1156,7 @@
 					}
 				}
 
+				// todo: move this above average calculations to catch failed count queries first
 				foreach ($nodeIds as $nodeId) {
 					if (empty($response['data']['nodes'][$nodeId]['resource_usage_logs']['count']) === false) {
 						foreach ($nodeResourceUsageLogAverageKeys as $nodeResourceUsageLogAverageKey) {
@@ -1163,6 +1164,23 @@
 						}
 
 						unset($response['data']['nodes'][$nodeId]['resource_usage_logs']['count']);
+					}
+
+					if (empty($parameters['where']['id']) === true) {
+						$nodeNodeCount = $this->count(array(
+							'in' => 'nodes',
+							'where' => array(
+								'node_id' => $nodeId
+							)
+						));
+						// todo: node process count
+						$response['status_valid'] = ($nodeNodeCount !== false);
+
+						if ($response['status_valid'] === false) {
+							return $response;
+						}
+
+						$response['data']['nodes'][$nodeId]['count'] = (1 + $nodeNodeCount);
 					}
 				}
 			}
