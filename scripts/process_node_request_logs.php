@@ -1,5 +1,5 @@
 <?php
-	class ProcessRequestLogs {
+	class ProcessNodeRequestLogs {
 
 		public $parameters;
 
