@@ -1167,26 +1167,54 @@
 					}
 
 					if (empty($parameters['where']['id']) === true) {
-						$nodeNodeCount = $this->count(array(
+						$nodeCount = $this->count(array(
 							'in' => 'nodes',
 							'where' => array(
+								'id' => $nodeId,
 								'node_id' => $nodeId
 							)
 						));
-						// todo: node process count
-						$response['status_valid'] = ($nodeNodeCount !== false);
+						$nodeNameserverProcessCount = $this->count(array(
+							'in' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId,
+								'type' => 'nameserver'
+							)
+						));
+						$nodeHttpProxyProcessCount = $this->count(array(
+							'in' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId,
+								'type' => 'http_proxy'
+							)
+						));
+						$nodeSocksProxyProcessCount = $this->count(array(
+							'in' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId,
+								'type' => 'socks_proxy'
+							)
+						));
+
+						$response['status_valid'] = (
+							($nodeCount !== false) &&
+							($nodeNameserverProcessCount !== false) &&
+							($nodeHttpProxyProcessCount !== false) &&
+							($nodeSocksProxyProcessCount !== false)
+						);
 
 						if ($response['status_valid'] === false) {
 							return $response;
 						}
 
-						$response['data']['nodes'][$nodeId]['count'] = (1 + $nodeNodeCount);
+						$response['data']['nodes'][$nodeId]['node_count'] = $nodeNodeCount;
+						$response['data']['nodes'][$nodeId]['node_nameserver_process_count'] = $nodeNameserverProcessCount;
+						$response['data']['nodes'][$nodeId]['node_http_proxy_process_count'] = $nodeHttpProxyProcessCount;
+						$response['data']['nodes'][$nodeId]['node_socks_proxy_process_count'] = nodeSocksProxyProcessCount;
 					}
 				}
 			}
 
-			// todo: show additional node count, process counts per type, status and resource usage log data for main nodes
-			// todo: show proxy + dns type (reverse/forwarding + authoritative/recursive) for all nodes
 			return $response;
 		}
 
