@@ -1035,11 +1035,17 @@
 					'status_processed',
 					'storage_capacity'
 				),
-				'from' => 'nodes'
+				'from' => 'nodes',
+				'where' => array(
+					'node_id' => null
+				)
 			);
 
 			if (empty($parameters['where']['id']) === false) {
-				$nodeParameters['where']['id'] = $parameters['where']['id'];
+				$nodeParameters['where'] = array(
+					'id' => $parameters['where']['id'],
+					'node_id' => $parameters['where']['id']
+				);
 			}
 
 			if (empty($parameters['limit']) === false) {
