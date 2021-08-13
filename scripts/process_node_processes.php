@@ -220,19 +220,19 @@
 									$nodeProcessLoadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
 								}
 
-								$nodeProcessProtocols = array(
+								$nodeProcessTransportProtocols = array(
 									'tcp',
 									'udp'
 								);
 
 								if (empty($nodeProcess['transport_protocol']) === false) {
-									$nodeProcessProtocols = array(
+									$nodeProcessTransportProtocols = array(
 										$nodeProcess['transport_protocol']
 									);
 								}
 
-								foreach ($nodeProcessProtocols as $nodeProcessProtocol) {
-									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
+								foreach ($nodeProcessTransportProtocols as $nodeProcessTransportProtocol) {
+									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessTransportProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
 								}
 							}
 						}

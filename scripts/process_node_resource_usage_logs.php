@@ -13,7 +13,13 @@
 			// todo: rename variables consistently with database fields
 
 			$processNodeResourceUsageLogStart = time();
-			$nodeResourceUsageLogData = array();
+			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
+			exec('free | grep -v free | awk \'NR==1{print $2}\'', $totalSystemMemory);
+			$kernelPageSize = current($kernelPageSize);
+			$totalSystemMemory = current($totalSystemMemory);
+			$nodeResourceUsageLogData = array(
+				'memory_capacity_megabytes' => ($totalSystemMemory / 1000)
+			);
 
 			while (($processNodeResourceUsageLogStart + 540) > time()) {
 				if (empty($processNodeResourceUsageLogIntervalIndex) === true) {
@@ -48,7 +54,7 @@
 
 					foreach ($nodeProcessingProcessIds as $nodeProcessingProcessId) {
 						$nodeProcessingProcessCpuResourceUsageTime = $nodeProcessingProcessCpuResourceUsageTimeStart = microtime();
-						exec('bash -c "cat /proc/' . $nodeProcessingProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\'', $nodeProcessingProcessCpuResourceUsageTime);
+						exec('bash -c "cat /proc/' . $nodeProcessingProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\' 2>&1', $nodeProcessingProcessCpuResourceUsageTime);
 						$nodeProcessingProcessCpuResourceUsageTime = current($nodeProcessingProcessCpuResourceUsageTime);
 						$nodeProcessingCpuResourceUsageTime = array_sum(explode('+', $nodeProcessingProcessCpuResourceUsageTime));
 						$nodeResourceUsageLogData['cpu_time_node_processing'][$processNodeResourceUsageLogIntervalIndex][$nodeProcessingProcessId] = array(
@@ -76,7 +82,21 @@
 					}
 
 					// todo: calculate cpu_percentage_node_usage with remainder until CPU usage for each process type is tracked
-					// todo: (TCP and UDP memory usage * PAGE_SIZE) for interval with /proc/net/sockstat
+					// todo: memory_percentage_node_processing
+					// todo: memory_percentage_node_usage
+					// todo: storage_capacity_megabytes
+					// todo: storage_percentage
+					$nodeTransportProtocols = array(
+						'tcp',
+						'udp'
+					);
+					exec('bash -c "cat /proc/net/sockstat" | grep "P: " |  2>&1', $transportProtocolMemoryUsages);
+					$transportProtocolMemoryUsages = current($transportProtocolMemoryUsages);
+
+					foreach ($transportProtocolMemoryUsages as $transportProtocolMemoryUsageKey => $transportProtocolMemoryUsage) {
+						$transportProtocolMemoryUsage = (intval(substr($transportProtocolMemoryUsage, strpos($transportProtocolMemoryUsage, 'mem ') + 4)) * $kernelPageSize) / 1000;
+						$nodeResourceUsageLogData['memory_percentage_' . $nodeTransportProtocols[$transportProtocolMemoryUsageKey]][$processNodeResourceUsageLogIntervalIndex][] = ceil(($transportProtocolMemoryUsage / $totalSystemMemory) * 100);
+					}
 				}
 
 				$processNodeResourceUsageLogIntervalIndex++;
