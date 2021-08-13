@@ -10,13 +10,12 @@
 		public function process() {
 			// todo: use same columns for system resource usage and node resource usage
 			// todo: create rule to allocate more processes if nameserver or proxy cpu percentage exceeds X
-			// todo: only calculate difference in /proc/stat once for interval
 
 			$processNodeResourceUsageLogStart = time();
 			$nodeResourceUsageLogData = array();
 
 			while (($processNodeResourceUsageLogStart + 540) > time()) {
-				if (empty($nodeResourceUsageLogData['cpu_time'][0]['interval']) === true) {
+				if (empty($nodeResourceUsageLogData['cpu_time']['interval']) === true) {
 					$nodeCpuTime = $nodeCpuTimeStart = microtime();
 					exec('sudo cat /proc/stat | grep "cpu" 2>&1', $nodeCpuTime);
 					end($nodeCpuTime);
@@ -35,28 +34,26 @@
 							'interval' => $nodeResourceUsageLogData['cpu_time'][1]['timestamp'] - $nodeResourceUsageLogData['cpu_time'][0]['timestamp']
 						);
 					}
+				} else {
+					exec('pgrep php', $nodeProcessingProcessIds);
 
-					// brb
+					/*foreach ($nodeProcessingProcessIds as $nodeProcessingProcessId) {
+						$nodeProcessingProcessCpuResourceUsageTime = array();
+						exec('bash -c "cat /proc/' . $nodeProcessingProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\'', $nodeProcessingProcessCpuResourceUsageTime);
+						$nodeProcessingProcessCpuResourceUsageTime = current($nodeProcessingProcessCpuResourceUsageTime);
+						$nodeProcessingCpuResourceUsageTime += array_sum(explode('+', $nodeProcessingProcessCpuResourceUsageTime));
+					}
+
+					$nodeResourceUsageLogData['cpu_percentage_node_processing'][] = $nodeProcessingCpuResourceUsageTime;
+
+					if (empty($nodeResourceUsageLogData['cpu_percentage_node_processing'][1]) === false) {
+						end($nodeResourceUsageLogData['cpu_time']);
+						end($nodeResourceUsageLogData['cpu_percentage_node_processing']);
+						$nodeProcessingUsageLogIndex = key($nodeResourceUsageLogData);
+						$nodeProcessingProcessCpuResourceUsageTime = $nodeResourceUsageLogData['cpu_percentage_node_processing'][$nodeProcessingUsageLogIndex] - $nodeResourceUsageLogData['cpu_percentage_node_processing'][($nodeProcessingUsageLogIndex - 1)];
+						// todo: measure cpu utilization after first interval
+					}*/
 				}
-
-				exec('pgrep php', $nodeProcessingProcessIds);
-
-				/*foreach ($nodeProcessingProcessIds as $nodeProcessingProcessId) {
-					$nodeProcessingProcessCpuResourceUsageTime = array();
-					exec('bash -c "cat /proc/' . $nodeProcessingProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\'', $nodeProcessingProcessCpuResourceUsageTime);
-					$nodeProcessingProcessCpuResourceUsageTime = current($nodeProcessingProcessCpuResourceUsageTime);
-					$nodeProcessingCpuResourceUsageTime += array_sum(explode('+', $nodeProcessingProcessCpuResourceUsageTime));
-				}
-
-				$nodeResourceUsageLogData['cpu_percentage_node_processing'][] = $nodeProcessingCpuResourceUsageTime;
-
-				if (empty($nodeResourceUsageLogData['cpu_percentage_node_processing'][1]) === false) {
-					end($nodeResourceUsageLogData['cpu_time']);
-					end($nodeResourceUsageLogData['cpu_percentage_node_processing']);
-					$nodeProcessingUsageLogIndex = key($nodeResourceUsageLogData);
-					$nodeProcessingProcessCpuResourceUsageTime = $nodeResourceUsageLogData['cpu_percentage_node_processing'][$nodeProcessingUsageLogIndex] - $nodeResourceUsageLogData['cpu_percentage_node_processing'][($nodeProcessingUsageLogIndex - 1)];
-					// todo: measure cpu utilization after first interval
-				}*/
 
 				sleep(10);
 			}
