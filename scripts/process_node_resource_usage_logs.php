@@ -28,7 +28,7 @@
 				}
 
 				$nodeCpuResourceUsageTime = array_shift($nodeCpuResourceUsage);
-				exec('echo ' . $nodeCpuResourceUsageTime . ' | awk \'{print ""$2"+"$3"+"$4"+"$5"+"$6"+"$7"+"$8"+"$9"_"$2"+"$3"+"$4"+"$6"+"$7"+"$8"+"$9""}\' 2>&1', $nodeCpuResourceUsageTime);
+				exec('echo ' . $nodeCpuResourceUsageTime . ' | awk \'{print ""$2"+"$3"+"$4"+"$5"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11"_"$2"+"$3"+"$4"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeCpuResourceUsageTime);
 				$nodeCpuResourceUsageTime = current($nodeCpuResourceUsageTime);
 				$nodeCpuResourceUsageTimeParts = explode('_', $nodeCpuResourceUsageTime);
 				$nodeCpuResourceUsageTime = $nodeProcessingCpuResourceUsageTime = 1;
