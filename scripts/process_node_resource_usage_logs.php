@@ -40,6 +40,9 @@
 						);
 					}
 				} else {
+					$nodeCpuTime = $nodeCpuTimeStart = microtime();
+					exec('sudo cat /proc/stat | grep "cpu " | awk \'{print ""$2"+"$3"+"$4"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeCpuTime);
+					// todo: process total cpu percentage based on current interval's $nodeCpuTime as a percentage of $nodeResourceUsageLogData['cpu_time']
 					$nodeProcessingCpuResourceUsageTime = $nodeProcessingProcessIds = 0;
 					exec('pgrep php', $nodeProcessingProcessIds);
 
@@ -72,6 +75,7 @@
 						$nodeResourceUsageLogData['cpu_percentage_node_processing'][$processNodeResourceUsageLogIntervalIndex] = $nodeResourceUsageCpuPercentageNodeProcessing;
 					}
 
+					// todo: calculate cpu_percentage_node_usage with remainder until CPU usage for each process type is tracked
 					// todo: (TCP and UDP memory usage * PAGE_SIZE) for interval with /proc/net/sockstat
 				}
 

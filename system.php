@@ -219,6 +219,11 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'cpu_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'cpu_percentage_node_processing' => array(
 								'default' => null,
 								'null' => true,
