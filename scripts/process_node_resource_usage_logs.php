@@ -71,6 +71,8 @@
 
 						$nodeResourceUsageLogData['cpu_percentage_node_processing'][$processNodeResourceUsageLogIntervalIndex] = $nodeResourceUsageCpuPercentageNodeProcessing;
 					}
+
+					// todo: (TCP and UDP memory usage * PAGE_SIZE) for interval with /proc/net/sockstat
 				}
 
 				$processNodeResourceUsageLogIntervalIndex++;
