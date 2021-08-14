@@ -268,7 +268,17 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
+							'memory_percentage_process_http_proxy_udp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'memory_percentage_process_socks_proxy_tcp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_process_socks_proxy_udp' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
@@ -278,7 +288,17 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
+							'memory_percentage_process_nameserver_udp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'memory_percentage_process_system_tcp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_process_system_ucp' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
