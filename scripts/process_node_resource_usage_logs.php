@@ -33,7 +33,7 @@
 					$nodeResourceUsageLogData['cpu_capacity_cores'] = key($nodeCpuTime);
 					$nodeCpuTime = array_shift($nodeCpuTime);
 					exec('echo ' . $nodeCpuTime . ' | awk \'{print ""$2"+"$3"+"$4"+"$5"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeCpuTime);
-					$nodeCpuTime = current($nodeCpuResourceUsageTime);
+					$nodeCpuTime = current($nodeCpuTime);
 					$nodeResourceUsageLogData['cpu_time'][] = array(
 						'cpu_time' => array_sum(explode('+', $nodeCpuTime)),
 						'timestamp' => $nodeCpuTimeStart
