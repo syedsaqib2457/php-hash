@@ -224,22 +224,22 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'cpu_percentage_node_process_http_proxy' => array(
+							'cpu_percentage_process_http_proxy' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'cpu_percentage_node_process_socks_proxy' => array(
+							'cpu_percentage_process_socks_proxy' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'cpu_percentage_node_process_nameserver' => array(
+							'cpu_percentage_process_nameserver' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'cpu_percentage_node_process_system' => array(
+							'cpu_percentage_process_system' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
@@ -258,16 +258,16 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'memory_percentage_node_processing' => array(
+							/*'memory_percentage_processing' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'memory_percentage_node_usage' => array(
+							'memory_percentage_usage' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
-							),
+							),*/
 							'memory_percentage_tcp' => array(
 								'default' => null,
 								'null' => true,
