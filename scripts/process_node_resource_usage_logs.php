@@ -8,8 +8,6 @@
 		}
 
 		public function process() {
-			// todo: create rule to allocate more processes if nameserver or proxy cpu percentage exceeds X
-
 			$nodeResourceUsageLogProcessSystemStart = time();
 			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
 			exec('free | grep -v free | awk \'NR==1{print $2}\'', $totalSystemMemory);
@@ -94,6 +92,7 @@
 						$nodeResourceUsageLogData['cpu_percentage_process_system'][$nodeResourceUsageLogProcessSystemIntervalIndex] = $nodeResourceUsageLogCpuPercentageProcessSystem;
 					}
 
+					// todo: ipv4 and ipv6 memory usage for tcp + udp
 					$nodeTransportProtocols = array(
 						'tcp',
 						'udp'
@@ -121,10 +120,7 @@
 				'cpu_percentage_process_socks_proxy',
 				'cpu_percentage_process_nameserver',
 				'cpu_percentage_process_system',
-				// 'memory_percentage_node_processing',
-				// 'memory_percentage_node_usage',
-				'memory_percentage_tcp',
-				'memory_percentage_udp',
+				// ..
 				'storage_percentage'
 			);
 
