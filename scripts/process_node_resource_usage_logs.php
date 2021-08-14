@@ -10,7 +10,6 @@
 		public function process() {
 			// todo: use same columns for system resource usage and node resource usage
 			// todo: create rule to allocate more processes if nameserver or proxy cpu percentage exceeds X
-			// todo: rename variables consistently with database fields
 
 			$processNodeResourceUsageLogStart = time();
 			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
@@ -48,18 +47,21 @@
 					}
 				} else {
 					exec('sudo cat /proc/stat | grep "cpu " | awk \'{print ""$2"+"$3"+"$4"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeResourceUsageLogCpuTimeNode);
-					// todo: process total cpu percentage based on current interval's $nodeCpuTime as a percentage of $nodeResourceUsageLogData['cpu_time']
 					$nodeResourceUsageLogData['cpu_time_node'][$nodeResourceUsageLogProcessingIntervalIndex] = array(
 						'cpu_time' => array_sum(explode('+', $nodeResourceUsageLogCpuTimeNode)),
 						'timestamp' => $nodeResourceUsageLogCpuTimeNodeStart
 					);
 
 					if (empty($nodeResourceUsageLogData['cpu_time_node'][($nodeResourceUsageLogProcessingIntervalIndex - 1)]) === false) {
-						// ..
 						$nodeResourceUsageLogData['cpu_percentage_node'][$nodeResourceUsageLogProcessingIntervalIndex] = array(
-							'cpu_time' => '',
-							'interval' => ''
+							'cpu_time' => $nodeResourceUsageLogData['cpu_time_node'][$nodeResourceUsageLogProcessingIntervalIndex]['cpu_time'] - $nodeResourceUsageLogData['cpu_time_node'][($nodeResourceUsageLogProcessingIntervalIndex - 1)]['cpu_time'],
+							'interval' => $nodeResourceUsageLogData['cpu_time_node'][$nodeResourceUsageLogProcessingIntervalIndex]['timestamp'] - $nodeResourceUsageLogData['cpu_time_node'][($nodeResourceUsageLogProcessingIntervalIndex - 1)]['timestamp']
 						);
+					}
+
+					if (empty($nodeResourceUsageLogData['cpu_percentage_node'][$nodeResourceUsageLogProcessingIntervalIndex]) === false) {
+						$nodeResourceUsageLogCpuPercentageNode = $nodeResourceUsageLogData['cpu_percentage_node'][$nodeResourceUsageLogProcessingIntervalIndex];
+						$nodeResourceUsageLogData['cpu_percentage_node'][$nodeResourceUsageLogProcessingIntervalIndex] = ($nodeResourceUsageLogData['cpu_time_node'][$nodeResourceUsageLogProcessingIntervalIndex]['cpu_time'] + ($nodeResourceUsageLogData['cpu_time']['interval'] - $nodeResourceUsageLogCpuPercentageNode['interval']) * ($nodeResourceUsageLogCpuPercentageNode['cpu_time'] / $nodeResourceUsageLogCpuPercentageNode['interval'])) / $nodeResourceUsageLogData['cpu_time']['interval'];
 					}
 
 					$nodeResourceUsageLogCpuTimeNodeProcessing = $nodeProcessingProcessIds = 0;
@@ -85,8 +87,8 @@
 					if (empty($nodeResourceUsageLogData['cpu_percentage_node_processing'][$nodeResourceUsageLogProcessingIntervalIndex]) === false) {
 						$nodeResourceUsageLogCpuPercentageNodeProcessing = 0;
 
-						foreach ($nodeResourceUsageLogData['cpu_percentage_node_processing'][$nodeResourceUsageLogProcessingIntervalIndex] as $nodeProcessingProcessId => $nodeProcessingProcessCpuTime) {
-							$nodeResourceUsageLogData['cpu_percentage_node_processing'][$nodeResourceUsageLogProcessingIntervalIndex][$nodeProcessingProcessId]['cpu_time'] += ($nodeResourceUsageLogData['cpu_time']['interval'] - $nodeProcessingProcessCpuResourceUsageTime['interval']) * ($nodeProcessingProcessCpuResourceUsageTime['cpu_time'] / $nodeProcessingProcessCpuResourceUsageTime['interval']);
+						foreach ($nodeResourceUsageLogData['cpu_percentage_node_processing'][$nodeResourceUsageLogProcessingIntervalIndex] as $nodeProcessingProcessId => $nodeResourceUsageLogCpuPercentageNodeProcessingProcess) {
+							$nodeResourceUsageLogData['cpu_percentage_node_processing'][$nodeResourceUsageLogProcessingIntervalIndex][$nodeProcessingProcessId]['cpu_time'] += ($nodeResourceUsageLogData['cpu_time']['interval'] - $nodeResourceUsageLogCpuPercentageNodeProcessingProcess['interval']) * ($nodeResourceUsageLogCpuPercentageNodeProcessingProcess['cpu_time'] / $nodeResourceUsageLogCpuPercentageNodeProcessingProcess['interval']);
 							$nodeResourceUsageLogCpuPercentageNodeProcessing += ($nodeResourceUsageLogData['cpu_percentage_node_processing'][$nodeResourceUsageLogProcessingIntervalIndex][$nodeProcessingProcessId]['cpu_time'] / $nodeResourceUsageLogData['cpu_time']['interval']);
 						}
 
