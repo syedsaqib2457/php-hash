@@ -105,7 +105,7 @@
 
 					foreach ($transportProtocolMemoryUsageLogs as $transportProtocolMemoryUsageLogKey => $transportProtocolMemoryUsageLog) {
 						$transportProtocolMemoryUsageLog = (intval(substr($transportProtocolMemoryUsageLog, strpos($transportProtocolMemoryUsageLog, 'mem ') + 4)) * $kernelPageSize) / 1000;
-						$nodeResourceUsageLogData['memory_percentage_' . $nodeTransportProtocols[$transportProtocolMemoryUsageKey]][$processNodeResourceUsageLogIntervalIndex][] = ceil(($transportProtocolMemoryUsage / $totalSystemMemory) * 100);
+						$nodeResourceUsageLogData['memory_percentage_' . $nodeTransportProtocols[$transportProtocolMemoryUsageKey]][$nodeResourceUsageLogProcessingIntervalIndex][] = ceil(($transportProtocolMemoryUsage / $totalSystemMemory) * 100);
 					}
 
 					exec('df -m / | tail -1 | awk \'{print $4}\'  2>&1', $storageCapacityMegabytes);
@@ -114,7 +114,7 @@
 					$nodeResourceUsageLogData['storage_percentage'] = intval(current($storagePercentage));
 				}
 
-				$processNodeResourceUsageLogIntervalIndex++;
+				$nodeResourceUsageLogProcessingIntervalIndex++;
 				sleep(10);
 			}
 
