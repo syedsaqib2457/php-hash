@@ -219,11 +219,12 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'cpu_percentage' => array(
+							'cpu_percentage_node' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
+							// todo: rename to cpu_percentage_node_application and cpu_percentage_node_processing
 							'cpu_percentage_node_processing' => array(
 								'default' => null,
 								'null' => true,

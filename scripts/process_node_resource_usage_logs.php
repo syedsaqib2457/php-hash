@@ -49,6 +49,19 @@
 					$nodeCpuTime = $nodeCpuTimeStart = microtime();
 					exec('sudo cat /proc/stat | grep "cpu " | awk \'{print ""$2"+"$3"+"$4"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeCpuTime);
 					// todo: process total cpu percentage based on current interval's $nodeCpuTime as a percentage of $nodeResourceUsageLogData['cpu_time']
+					$nodeResourceUsageLogData['cpu_time_node'][$processNodeResourceUsageLogIntervalIndex] = array(
+						'cpu_time' => array_sum(explode('+', $nodeCpuTime)),
+						'timestamp' => $nodeCpuTimeStart
+					);
+
+					if (empty($nodeResourceUsageLogData['cpu_time_node'][($processNodeResourceUsageLogIntervalIndex - 1)]) === false) {
+						// ..
+						$nodeResourceUsageLogData['cpu_percentage_node'][$processNodeResourceUsageLogIntervalIndex] = array(
+							'cpu_time' => '',
+							'interval' => ''
+						);
+					}
+
 					$nodeProcessingCpuResourceUsageTime = $nodeProcessingProcessIds = 0;
 					exec('pgrep php', $nodeProcessingProcessIds);
 
@@ -81,9 +94,10 @@
 						$nodeResourceUsageLogData['cpu_percentage_node_processing'][$processNodeResourceUsageLogIntervalIndex] = $nodeResourceUsageCpuPercentageNodeProcessing;
 					}
 
+					// todo: cpu_percentage
 					// todo: calculate cpu_percentage_node_usage with remainder until CPU usage for each process type is tracked
+					// todo: memory_percentage_node_application
 					// todo: memory_percentage_node_processing
-					// todo: memory_percentage_node_usage
 					$nodeTransportProtocols = array(
 						'tcp',
 						'udp'
@@ -105,7 +119,8 @@
 				sleep(10);
 			}
 
-			$nodeResourceUsageLogAverageKeys = array(
+			$nodeResourceUsageLogPercentageKeys = array(
+				'cpu_percentage_node',
 				'cpu_percentage_node_processing',
 				'cpu_percentage_node_usage',
 				'memory_percentage_node_processing',
@@ -115,10 +130,10 @@
 				'storage_percentage'
 			);
 
-			foreach ($nodeResourceUsageLogAverageKeys as $nodeResourceUsageLogAverageKey) {
-				if (empty($nodeResourceUsageLogData[$nodeResourceUsageLogAverageKey]) === false) {
-					rsort($nodeResourceUsageLogData[$nodeResourceUsageLogAverageKey]);
-					$nodeResourceUsageLogData[$nodeResourceUsageLogAverageKey] = current($nodeResourceUsageLogData[$nodeResourceUsageLogAverageKey]);
+			foreach ($nodeResourceUsageLogPercentageKeys as $nodeResourceUsageLogPercentageKey) {
+				if (empty($nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey]) === false) {
+					rsort($nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey]);
+					$nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey] = current($nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey]);
 				}
 			}
 
