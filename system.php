@@ -258,16 +258,31 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							/*'memory_percentage_processing' => array(
+							'memory_percentage' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'memory_percentage_usage' => array(
+							'memory_percentage_process_http_proxy_tcp' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
-							),*/
+							),
+							'memory_percentage_process_socks_proxy_tcp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_process_nameserver_tcp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_process_system_tcp' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'memory_percentage_tcp' => array(
 								'default' => null,
 								'null' => true,
