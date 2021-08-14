@@ -84,19 +84,21 @@
 					// todo: calculate cpu_percentage_node_usage with remainder until CPU usage for each process type is tracked
 					// todo: memory_percentage_node_processing
 					// todo: memory_percentage_node_usage
-					// todo: storage_capacity_megabytes
-					// todo: storage_percentage
 					$nodeTransportProtocols = array(
 						'tcp',
 						'udp'
 					);
-					exec('bash -c "cat /proc/net/sockstat" | grep "P: " |  2>&1', $transportProtocolMemoryUsages);
-					$transportProtocolMemoryUsages = current($transportProtocolMemoryUsages);
+					exec('bash -c "cat /proc/net/sockstat" | grep "P: " 2>&1', $transportProtocolMemoryUsages);
 
 					foreach ($transportProtocolMemoryUsages as $transportProtocolMemoryUsageKey => $transportProtocolMemoryUsage) {
 						$transportProtocolMemoryUsage = (intval(substr($transportProtocolMemoryUsage, strpos($transportProtocolMemoryUsage, 'mem ') + 4)) * $kernelPageSize) / 1000;
 						$nodeResourceUsageLogData['memory_percentage_' . $nodeTransportProtocols[$transportProtocolMemoryUsageKey]][$processNodeResourceUsageLogIntervalIndex][] = ceil(($transportProtocolMemoryUsage / $totalSystemMemory) * 100);
 					}
+
+					exec('df -m / | tail -1 | awk \'{print $4}\'  2>&1', $storageCapacityMegabytes);
+					exec('df / | tail -1 | awk \'{print $5}\' 2>&1', $storagePercentage);
+					$nodeResourceUsageLogData['storage_capacity_megabytes'] = current($storageCapacityMegabytes);
+					$nodeResourceUsageLogData['storage_percentage'] = intval(current($storagePercentage));
 				}
 
 				$processNodeResourceUsageLogIntervalIndex++;
