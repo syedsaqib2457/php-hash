@@ -224,12 +224,22 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'cpu_percentage_node_application' => array(
+							'cpu_percentage_node_process_http_proxy' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'cpu_percentage_node_processing' => array(
+							'cpu_percentage_node_process_socks_proxy' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'cpu_percentage_node_process_nameserver' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'cpu_percentage_node_process_system' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
