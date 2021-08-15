@@ -7,6 +7,12 @@
 			$this->parameters = $parameters;
 		}
 
+		protected function _fetchProcessUsagePercentages($processName) {
+			$response = array();
+			// ..
+			return $response;
+		}
+
 		public function process() {
 			$nodeResourceUsageLogProcessSystemStart = time();
 			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
@@ -79,6 +85,9 @@
 						'tcp',
 						'udp'
 					);
+
+					todo: use _fetchProcessUsagePercentages() for process cpu and memory usage percentages
+
 					// todo: http_proxy process IDs
 					$nodeIpVersionSocketMemoryProcessHttpProxy = $nodeIpVersionSocketMemory;
 					// todo: socks_proxy process IDs
