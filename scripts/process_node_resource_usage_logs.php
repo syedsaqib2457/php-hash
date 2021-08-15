@@ -17,7 +17,7 @@
 			}
 
 			exec($processProcessIdCommand, $processProcessIds);
-			$nodeResourceUsageLogIpVersionSocketMemoryUsageProcess = $this->nodeResourceUsageLogIpVersionSocketMemoryUsage;
+			$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcess = $this->nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage;
 
 			foreach ($processProcessIds as $processProcessId) {
 				$nodeResourceUsageLogCpuTimeProcess = $nodeResourceUsageLogCpuTimeProcessStart = microtime();
@@ -38,18 +38,18 @@
 				// todo: use ps -p [pid] -o %mem for system process total memory usage
 
 				foreach ($this->nodeResourceUsageLogIpVersionSocketUsageFiles as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogIpVersionSocketUsageFile) {
-					$nodeResourceUsageLogIpVersionSocketMemoryUsageProcessProcess = 0;
-					exec('bash -c "cat /proc/' . $processProcessId . '/net/' . $nodeResourceUsageLogIpVersionSocketUsageFile . '" | grep "P: "', $nodeResourceUsageLogIpVersionSocketMemoryUsageProcessProcess);
+					$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess = 0;
+					exec('bash -c "cat /proc/' . $processProcessId . '/net/' . $nodeResourceUsageLogIpVersionSocketUsageFile . '" | grep "P: "', $nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess);
 
-					foreach ($nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocolKey => $nodeResourceUsageLogTransportProtocol) {
-						$nodeResourceUsageLogIpVersionSocketMemoryUsageProcess[$nodeResourceUsageLogIpVersion][$nodeResourceUsageLogTransportProtocol] += (intval(substr($nodeResourceUsageLogIpVersionSocketMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], strpos($nodeResourceUsageLogMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], 'mem ') + 4)) * $kernelPageSize) / 1000;
+					foreach ($this->nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocolKey => $nodeResourceUsageLogTransportProtocol) {
+						$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcess[$nodeResourceUsageLogIpVersion][$nodeResourceUsageLogTransportProtocol] += (intval(substr($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], strpos($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], 'mem ') + 4)) * $kernelPageSize) / 1000;
 					}
 				}
 			}
 
-			foreach ($nodeIpVersionSocketMemoryProcessSystem as $nodeIpVersion => $nodeIpVersionSocketMemoryUsageLogs) {
-				foreach ($nodeIpVersionSocketMemoryUsageLogs as $nodeTransportProtocol => $nodeIpVersionSocketMemoryUsageLog) {
-					$this->nodeResourceUsageLogData['memory_percentage_process_' . $processName . '_' . $nodeTransportProtocol . '_ip_version_' . $nodeIpVersion][$this->nodeResourceUsageLogProcessIntervalIndex] = ceil(($nodeIpVersionSocketMemoryUsageLog / $totalSystemMemory) * 100);
+			foreach ($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcess as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogTransportProtocolSocketMemoryUsageProcess) {
+				foreach ($this->nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocol) {
+					$this->nodeResourceUsageLogData['memory_percentage_process_' . $processName . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion][$this->nodeResourceUsageLogProcessIntervalIndex] = ceil(($nodeResourceUsageLogTransportProtocolSocketMemoryUsageProcess[$nodeResourceUsageLogTransportProtocol] / $totalSystemMemory) * 100);
 				}
 			}
 
@@ -68,7 +68,7 @@
 		}
 
 		public function process() {
-			$nodeResourceUsageLogProcessSystemStart = time();
+			$nodeResourceUsageLogProcessStart = time();
 			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
 			exec('free | grep -v free | awk \'NR==1{print $2}\'', $totalSystemMemory);
 			$kernelPageSize = current($kernelPageSize);
@@ -86,7 +86,7 @@
 			);
 
 			while (($nodeResourceUsageLogProcessStart + 540) > time()) {
-				$this->nodeResourceUsageLogIpVersionSocketMemoryUsage = array(
+				$this->nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage = array(
 					4 => array(
 						'tcp' => 0,
 						'udp' => 0
@@ -148,12 +148,12 @@
 					// todo: use /proc/meminfo for total memory usage
 
 					foreach ($this->nodeResourceUsageLogIpVersionSocketUsageFiles as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogIpVersionSocketUsageFile) {
-						$nodeResourceUsageLogIpVersionSocketMemoryUsage = 0;
-						exec('bash -c "cat /proc/net/' . $nodeResourceUsageLogIpVersionSocketUsageFile . '" | grep "P: " 2>&1', $nodeResourceUsageLogIpVersionSocketMemoryUsage);
+						$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage = 0;
+						exec('bash -c "cat /proc/net/' . $nodeResourceUsageLogIpVersionSocketUsageFile . '" | grep "P: " 2>&1', $nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage);
 
 						foreach ($nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocolKey => $nodeResourceUsageLogTransportProtocol) {
-							$nodeResourceUsageLogIpVersionSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey] = (intval(substr($nodeResourceUsageLogIpVersionSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], strpos($nodeResourceUsageLogIpVersionSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], 'mem ') + 4)) * $kernelPageSize) / 1000;
-							$this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion][$this->nodeResourceUsageLogProcessIntervalIndex] = ceil(($nodeResourceUsageLogIpVersionSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey] / $totalSystemMemory) * 100);
+							$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey] = (intval(substr($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], strpos($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], 'mem ') + 4)) * $kernelPageSize) / 1000;
+							$this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion][$this->nodeResourceUsageLogProcessIntervalIndex] = ceil(($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey] / $totalSystemMemory) * 100);
 						}
 					}
 
