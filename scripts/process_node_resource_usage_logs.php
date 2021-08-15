@@ -61,8 +61,34 @@
 						$nodeResourceUsageLogData['cpu_percentage'][$nodeResourceUsageLogProcessSystemIntervalIndex] = ($nodeResourceUsageLogData['cpu_time'][$nodeResourceUsageLogProcessSystemIntervalIndex]['cpu_time'] + ($nodeResourceUsageLogData['cpu_capacity_time']['interval'] - $nodeResourceUsageLogCpuPercentage['interval']) * ($nodeResourceUsageLogCpuPercentage['cpu_time'] / $nodeResourceUsageLogCpuPercentage['interval'])) / $nodeResourceUsageLogData['cpu_capacity_time']['interval'];
 					}
 
+					$nodeIpVersionSocketMemory = array(
+						4 => array(
+							'tcp' => 0,
+							'udp' => 0
+						),
+						6 => array(
+							'tcp' => 0,
+							'udp' => 0
+						)
+					);
+					$nodeIpVersionSocketUsageLogFiles = array(
+						4 => 'sockstat',
+						6 => 'sockstat6'
+					);
+					$nodeTransportProtocols = array(
+						'tcp',
+						'udp'
+					);
+					// todo: http_proxy process IDs
+					$nodeIpVersionSocketMemoryProcessHttpProxy = $nodeIpVersionSocketMemory;
+					// todo: socks_proxy process IDs
+					$nodeIpVersionSocketMemoryProcessSocksProxy = $nodeIpVersionSocketMemory;
+					// todo: recursive_dns process IDs
+					$nodeIpVersionSocketMemoryProcessRecursiveDns = $nodeIpVersionSocketMemory;
+					// todo: verify /proc/[pid]/net/sockstat works for single processes
 					$nodeResourceUsageLogCpuTimeProcessSystem = $nodeProcessSystemProcessIds = 0;
 					exec('pgrep php', $systemProcessProcessIds);
+					$nodeIpVersionSocketMemoryProcessSystem = $nodeIpVersionSocketMemory;
 
 					foreach ($systemProcessProcessIds as $systemProcessProcessId) {
 						$nodeResourceUsageLogCpuTimeProcessSystemProcess = $nodeResourceUsageLogCpuTimeProcessSystemProcessStart = microtime();
@@ -79,6 +105,23 @@
 								'interval' => $nodeResourceUsageLogData['cpu_time_process_system'][$nodeResourceUsageLogProcessSystemIntervalIndex][$systemProcessProcessId]['timestamp'] - $nodeResourceUsageLogData['cpu_time_process_system'][($nodeResourceUsageLogProcessSystemIntervalIndex - 1)][$systemProcessProcessId]['timestamp']
 							);
 						}
+
+						// todo: use ps -p [pid] -o %mem for system process total memory usage
+
+						foreach ($nodeIpVersionSocketUsageLogFiles as $nodeIpVersion => $nodeIpVersionSocketUsageLogFile) {
+							$nodeResourceUsageLogMemoryUsageProcessSystem = 0;
+							exec('bash -c "cat /proc/' . $systemProcessProcessId . '/net/' . $nodeIpVersionSocketUsageLogFile . '" | grep "P: "', $nodeResourceUsageLogMemoryUsageProcessSystem);
+
+							foreach ($nodeTransportProtocols as $nodeTransportProtocolKey => $nodeTransportProtocol) {
+								$nodeIpVersionSocketMemoryProcessSystem[$nodeIpVersion][$nodeTransportProtocol] += (intval(substr($nodeResourceUsageLogMemoryUsageProcessSystem[$nodeTransportProtocolKey], strpos($nodeResourceUsageLogMemoryUsageProcessSystem[$nodeTransportProtocolKey], 'mem ') + 4)) * $kernelPageSize) / 1000;
+							}
+						}
+					}
+
+					foreach ($nodeIpVersionSocketMemoryProcessSystem as $nodeIpVersion => $nodeIpVersionSocketMemoryUsageLogs) {
+						foreach ($nodeIpVersionSocketMemoryUsageLogs as $nodeTransportProtocol => $nodeIpVersionSocketMemoryUsageLog) {
+							$nodeResourceUsageLogData['memory_percentage_process_system_' . $nodeTransportProtocol . '_ip_version_' . $nodeIpVersion][$nodeResourceUsageLogProcessSystemIntervalIndex] = ceil(($nodeIpVersionSocketMemoryUsageLog / $totalSystemMemory) * 100);
+						}
 					}
 
 					if (empty($nodeResourceUsageLogData['cpu_percentage_process_system'][$nodeResourceUsageLogProcessingIntervalIndex]) === false) {
@@ -92,16 +135,16 @@
 						$nodeResourceUsageLogData['cpu_percentage_process_system'][$nodeResourceUsageLogProcessSystemIntervalIndex] = $nodeResourceUsageLogCpuPercentageProcessSystem;
 					}
 
-					// todo: ipv4 and ipv6 memory usage for tcp + udp
-					$nodeTransportProtocols = array(
-						'tcp',
-						'udp'
-					);
-					exec('bash -c "cat /proc/net/sockstat" | grep "P: " 2>&1', $transportProtocolMemoryUsageLogs);
+					// todo: use /proc/meminfo for total memory usage
 
-					foreach ($transportProtocolMemoryUsageLogs as $transportProtocolMemoryUsageLogKey => $transportProtocolMemoryUsageLog) {
-						$transportProtocolMemoryUsageLog = (intval(substr($transportProtocolMemoryUsageLog, strpos($transportProtocolMemoryUsageLog, 'mem ') + 4)) * $kernelPageSize) / 1000;
-						$nodeResourceUsageLogData['memory_percentage_' . $nodeTransportProtocols[$transportProtocolMemoryUsageKey]][$nodeResourceUsageLogProcessSystemIntervalIndex][] = ceil(($transportProtocolMemoryUsage / $totalSystemMemory) * 100);
+					foreach ($nodeIpVersionSocketUsageLogFiles as $nodeIpVersion => $nodeIpVersionSocketUsageLogFile) {
+						$nodeResourceUsageLogMemoryUsage = 0;
+						exec('bash -c "cat /proc/net/' . $nodeIpVersionSocketUsageLogFile . '" | grep "P: " 2>&1', $nodeResourceUsageLogMemoryUsage);
+
+						foreach ($nodeTransportProtocols as $nodeTransportProtocolKey => $nodeTransportProtocol) {
+							$nodeResourceUsageLogMemoryUsage = (intval(substr($nodeResourceUsageLogMemoryUsage[$nodeTransportProtocolKey], strpos($nodeResourceUsageLogMemoryUsage[$nodeTransportProtocolKey], 'mem ') + 4)) * $kernelPageSize) / 1000;
+							$nodeResourceUsageLogData['memory_percentage_' . $nodeTransportProtocol . '_ip_version_' . $nodeIpVersion][$nodeResourceUsageLogProcessSystemIntervalIndex] = ceil(($nodeResourceUsageLogMemoryUsage / $totalSystemMemory) * 100);
+						}
 					}
 
 					exec('df -m / | tail -1 | awk \'{print $4}\'  2>&1', $storageCapacityMegabytes);
@@ -121,6 +164,14 @@
 				'cpu_percentage_process_nameserver',
 				'cpu_percentage_process_system',
 				// ..
+				'memory_percentage_process_system_tcp_ip_version_4',
+				'memory_percentage_process_system_tcp_ip_version_6',
+				'memory_percentage_process_system_udp_ip_version_4',
+				'memory_percentage_process_system_udp_ip_version_6',
+				'memory_percentage_tcp_ip_version_4',
+				'memory_percentage_tcp_ip_version_6',
+				'memory_percentage_udp_ip_version_4',
+				'memory_percentage_udp_ip_version_6',
 				'storage_percentage'
 			);
 
