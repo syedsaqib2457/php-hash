@@ -10,6 +10,20 @@
 				'memory_capacity_megabytes' => $nodeResourceUsageLogMemoryUsage[0],
 				'memory_percentage' => ceil($nodeResourceUsageLogMemoryUsage[1] / $nodeResourceUsageLogMemoryUsage[0])
 			);
+			$this->nodeResourceUsageLogIpVersionSocketUsageFiles = array(
+				4 => 'sockstat',
+				6 => 'sockstat6'
+			);
+			$this->nodeResourceUsageLogProcessTypes = array(
+				'http_proxy',
+				'nameserver',
+				'socks_proxy',
+				'system'
+			);
+			$this->nodeResourceUsageLogTransportProtocols = array(
+				'tcp',
+				'udp'
+			);
 			$this->parameters = $parameters;
 			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
 			$this->kernelPageSize = current($kernelPageSize);
@@ -80,20 +94,6 @@
 
 		public function process() {
 			$nodeResourceUsageLogProcessStart = time();
-			$this->nodeResourceUsageLogIpVersionSocketUsageFiles = array(
-				4 => 'sockstat',
-				6 => 'sockstat6'
-			);
-			$this->nodeResourceUsageLogProcessTypes = array(
-				'http_proxy',
-				'nameserver',
-				'socks_proxy',
-				'system'
-			);
-			$this->nodeResourceUsageLogTransportProtocols = array(
-				'tcp',
-				'udp'
-			);
 
 			while (($nodeResourceUsageLogProcessStart + 540) > time()) {
 				$this->nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage = array(
