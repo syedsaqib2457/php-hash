@@ -321,16 +321,10 @@
 			$proxyProcessEndedTime = time();
 
 			while ($proxyProcessEnded === false) {
-				$proxyProcessEnded = true;
-
-				if (
-					$this->_verifyProxyPort($proxyProcessPort) === true ||
-					(time() - $proxyProcessEndedTime) > 60
-				) {
-					$proxyProcessEnded = false;
-					break;
-				}
-
+				$proxyProcessEnded = (
+					($this->_verifyProxyPort($proxyProcessPort) === false) ||
+					((time() - $proxyProcessEndedTime) > 60)
+				);
 				sleep(1);
 			}
 
@@ -339,15 +333,11 @@
 
 			while ($proxyProcessStarted === false) {
 				shell_exec('sudo ' . $this->binaryFiles['service'] . ' ' . $proxyProcessName . ' start');
-				sleep(1);
-
-				if (
-					$this->_verifyProxyPort($proxyProcessPort) === true ||
-					(time() - $proxyProcessStartedTime) > 60
-				) {
-					$proxyProcessStarted = true;
-					break;
-				}
+				sleep(2);
+				$proxyProcessStarted = (
+					($this->_verifyProxyPort($proxyProcessPort) === true) ||
+					((time() - $proxyProcessStartedTime) > 60)
+				);
 			}
 
 			$this->_verifyNameserverProcesses();
