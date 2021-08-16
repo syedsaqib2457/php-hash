@@ -8,6 +8,7 @@
 		}
 
 		protected function _processProcessUsagePercentages($processType) {
+			$this->nodeResourceUsageLogData['memory_percentage_process_' . $processType][$this->nodeResourceUsageLogProcessIntervalIndex] = 0;
 			$processProcessIdCommand = 'pgrep ';
 
 			if ($processType === 'system') {
@@ -35,7 +36,9 @@
 					);
 				}
 
-				// todo: use ps -p [pid] -o %mem for system process total memory usage
+				$nodeResourceUsageLogMemoryPercentageProcessProcess = 0;
+				exec('ps -h -p ' . $processProcessId . ' -o %mem', $nodeResourceUsageLogMemoryPercentageProcessProcess);
+				$this->nodeResourceUsageLogData['memory_percentage_process_' . $processType][$this->nodeResourceUsageLogProcessIntervalIndex] += current($nodeResourceUsageLogMemoryPercentageProcessProcess);
 
 				foreach ($this->nodeResourceUsageLogIpVersionSocketUsageFiles as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogIpVersionSocketUsageFile) {
 					$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess = 0;
