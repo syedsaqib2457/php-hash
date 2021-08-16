@@ -137,9 +137,9 @@
 			file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
 			shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -p');
 			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-			exec('free | grep -v free | awk \'NR==1{print $2}\'', $memoryCapacityKilobytes);
+			exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
 			$kernelPageSize = current($kernelPageSize);
-			$memoryCapacityBytes = (current($memoryCapacityKilobytes) * 1000);
+			$memoryCapacityBytes = current($memoryCapacityBytes);
 
 			if (
 				is_numeric($kernelPageSize) &&
