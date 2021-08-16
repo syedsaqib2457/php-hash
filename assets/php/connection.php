@@ -131,6 +131,7 @@
 				}
 
 				$this->_applyFirewall($firewallRulePorts);
+				sleep(60);
 				$firewallRulePorts = array();
 				$proxyProcessPorts = $proxyProcessPortParts[($proxyProcessPortPartKey ? 0 : 1)];
 
