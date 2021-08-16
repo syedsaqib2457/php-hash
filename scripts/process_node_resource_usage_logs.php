@@ -64,10 +64,12 @@
 
 				foreach ($this->nodeResourceUsageLogIpVersionSocketUsageFiles as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogIpVersionSocketUsageFile) {
 					$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess = 0;
-					exec('sudo bash -c "sudo cat /proc/' . $processProcessId . '/net/' . $nodeResourceUsageLogIpVersionSocketUsageFile . '" | grep "P: "', $nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess);
+					exec('sudo bash -c "sudo cat /proc/' . $processProcessId . '/net/' . $nodeResourceUsageLogIpVersionSocketUsageFile . '" | grep ": inuse" | head -2', $nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess);
 
 					foreach ($this->nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocolKey => $nodeResourceUsageLogTransportProtocol) {
-						$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcess[$nodeResourceUsageLogIpVersion][$nodeResourceUsageLogTransportProtocol] += (intval(substr($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], strpos($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], 'mem ') + 4)) * $this->kernelPageSize) / 1000000;
+						if (strpos($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], 'mem ') !== false) {
+							$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcess[$nodeResourceUsageLogIpVersion][$nodeResourceUsageLogTransportProtocol] += (intval(substr($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], strpos($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsageProcessProcess[$nodeResourceUsageLogTransportProtocolKey], 'mem ') + 4)) * $this->kernelPageSize) / 1000000;
+						}
 					}
 				}
 			}
@@ -157,11 +159,15 @@
 
 					foreach ($this->nodeResourceUsageLogIpVersionSocketUsageFiles as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogIpVersionSocketUsageFile) {
 						$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage = 0;
-						exec('bash -c "cat /proc/net/' . $nodeResourceUsageLogIpVersionSocketUsageFile . '" | grep "P: " 2>&1', $nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage);
+						exec('bash -c "cat /proc/net/' . $nodeResourceUsageLogIpVersionSocketUsageFile . '" | grep ": inuse" | head -2 2>&1', $nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage);
 
 						foreach ($this->nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocolKey => $nodeResourceUsageLogTransportProtocol) {
-							$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey] = (intval(substr($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], strpos($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], 'mem ') + 4)) * $this->kernelPageSize) / 1000000;
-							$this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion][$this->nodeResourceUsageLogProcessIntervalIndex] = ceil(($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey] / $this->nodeResourceUsageLogData['memory_capacity_megabytes']) * 100);
+							$this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion][$this->nodeResourceUsageLogProcessIntervalIndex] = 0;
+
+							if (strpos($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], 'mem ') === false) {
+								$nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey] = (intval(substr($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], strpos($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey], 'mem ') + 4)) * $this->kernelPageSize) / 1000000;
+								$this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion][$this->nodeResourceUsageLogProcessIntervalIndex] = ceil(($nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage[$nodeResourceUsageLogTransportProtocolKey] / $this->nodeResourceUsageLogData['memory_capacity_megabytes']) * 100);
+							}
 						}
 					}
 
@@ -175,25 +181,21 @@
 				sleep(10);
 			}
 
-			unset($this->nodeResourceUsageLogData['cpu_capacity_time']);
-
-			$nodeResourceUsageLogPercentageKeys = array(
-				'cpu_percentage',
-				'memory_percentage',
-				'storage_percentage'
-			);
+			$nodeResourceUsageLogPercentageKeys = array();
 
 			foreach ($this->nodeResourceUsageLogIpVersionSocketUsageFiles as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogIpVersionSocketUsageFile) {
 				foreach ($this->nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocolKey => $nodeResourceUsageLogTransportProtocol) {
 					$nodeResourceUsageLogPercentageKeys[] = 'memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion;
 
 					foreach ($this->nodeResourceUsageLogProcessTypes as $nodeResourceUsageLogProcessType) {
-						$nodeResourceUsageLogPercentageKeys[] = 'cpu_percentage_process_' . $nodeResourceUsageLogProcessType;
-						$nodeResourceUsageLogPercentageKeys[] = 'memory_percentage_process_' . $nodeResourceUsageLogProcessType;
+						$nodeResourceUsageLogPercentageKeys['cpu_percentage_process_' . $nodeResourceUsageLogProcessType] = 'cpu_percentage_process_' . $nodeResourceUsageLogProcessType;
+						$nodeResourceUsageLogPercentageKeys['memory_percentage_process_' . $nodeResourceUsageLogProcessType] = 'memory_percentage_process_' . $nodeResourceUsageLogProcessType;
 						$nodeResourceUsageLogPercentageKeys[] = 'memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion;
 					}
 				}
 			}
+
+			// todo: make sure cpu percentages are calculated with correct units (hz, khz, mhz, etc)
 
 			foreach ($nodeResourceUsageLogPercentageKeys as $nodeResourceUsageLogPercentageKey) {
 				if (empty($this->nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey]) === false) {
