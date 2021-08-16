@@ -815,19 +815,19 @@
 			file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
 			shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -p');
 			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-			exec('free | grep -v free | awk \'NR==1{print $2}\'', $totalSystemMemory);
+			exec('free | grep -v free | awk \'NR==1{print $2}\'', $memoryCapacityKilobytes);
 			$kernelPageSize = current($kernelPageSize);
-			$totalSystemMemory = current($totalSystemMemory);
+			$memoryCapacityBytes = (current($memoryCapacityKilobytes) * 1000);
 
 			if (
 				is_numeric($kernelPageSize) &&
-				is_numeric($totalSystemMemory)
+				is_numeric($memoryCapacityBytes)
 			) {
-				$maximumMemoryBytes = ceil($totalSystemMemory * 0.34);
+				$maximumMemoryBytes = ceil($memoryCapacityBytes * 0.34);
 				$maximumMemoryPages = ceil($maximumMemoryBytes / $kernelPageSize);
 				$dynamicKernelOptions = array(
-					'kernel.shmall' => floor($totalSystemMemory / $kernelPageSize),
-					'kernel.shmmax' => $totalSystemMemory,
+					'kernel.shmall' => floor($memoryCapacityBytes / $kernelPageSize),
+					'kernel.shmmax' => $memoryCapacityBytes,
 					'net.core.optmem_max' => ($defaultSocketBufferMemoryBytes = ceil($maximumMemoryBytes * 0.10)),
 					'net.core.rmem_default' => $defaultSocketBufferMemoryBytes,
 					'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
