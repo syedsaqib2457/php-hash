@@ -182,32 +182,35 @@
 				sleep(mt_rand(4, 10));
 			}
 
-			$nodeResourceUsageLogPercentageKeys = array(
-				'cpu_percentage'
+			$nodeResourceUsageLogData = array(
+				'node_process_resource_usage_logs' => array(),
+				'node_resource_usage_logs' => array(
+					'cpu_percentage' => $this->nodeResourceUsageLogData['cpu_percentage']
+				)
 			);
 
 			foreach ($this->nodeResourceUsageLogIpVersionSocketUsageFiles as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogIpVersionSocketUsageFile) {
 				foreach ($this->nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocolKey => $nodeResourceUsageLogTransportProtocol) {
-					$nodeResourceUsageLogPercentageKeys[] = 'memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion;
+					rsort($this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
+					$nodeResourceUsageLogData['node_resource_usage_logs']['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion] = current($this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
 
 					foreach ($this->nodeResourceUsageLogProcessTypes as $nodeResourceUsageLogProcessType) {
-						$nodeResourceUsageLogPercentageKeys['cpu_percentage_process_' . $nodeResourceUsageLogProcessType] = 'cpu_percentage_process_' . $nodeResourceUsageLogProcessType;
-						$nodeResourceUsageLogPercentageKeys['memory_percentage_process_' . $nodeResourceUsageLogProcessType] = 'memory_percentage_process_' . $nodeResourceUsageLogProcessType;
-						$nodeResourceUsageLogPercentageKeys[] = 'memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion;
+						if (isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) {
+							rsort($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
+							$nodeResourceUsageLogData['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType] = current($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
+						}
+
+						if (isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) {
+							rsort($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
+							$nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType] = current($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
+						}
+
+						rsort($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
+						$nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion] = current($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
 					}
 				}
 			}
 
-			foreach ($nodeResourceUsageLogPercentageKeys as $nodeResourceUsageLogPercentageKey) {
-				if (empty($this->nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey]) === false) {
-					rsort($this->nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey]);
-					$this->nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey] = current($this->nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey]);
-				}
-			}
-
-			unset($this->nodeResourceUsageLogData['cpu_capacity_time']);
-			unset($this->nodeResourceUsageLogData['cpu_time']);
-			unset($this->nodeResourceUsageLogData['cpu_time_process_system']);
 			$nodeResourceUsageLogFile = '/tmp/node_resource_usage_logs';
 
 			if (
