@@ -177,7 +177,7 @@
 				}
 
 				$this->nodeResourceUsageLogProcessIntervalIndex++;
-				sleep(10);
+				sleep(mt_rand(4, 10));
 			}
 
 			$nodeResourceUsageLogPercentageKeys = array();
