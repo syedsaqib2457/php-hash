@@ -4,9 +4,11 @@
 		public $parameters;
 
 		public function __construct($parameters) {
+			exec('sudo bash -c "sudo cat /proc/cpuinfo" | grep "cpu MHz" | awk \'{print $4\'} | head -1 2>&1', $nodeResourceUsageLogCpuCapacityMegahertz);
 			exec('free -m | grep "Mem:" | grep -v free | awk \'{print $2"_"$3}\'', $nodeResourceUsageLogMemoryUsage);
 			$nodeResourceUsageLogMemoryUsage = explode('_', current($nodeResourceUsageLogMemoryUsage));
 			$this->nodeResourceUsageLogData = array(
+				'cpu_capacity_megahertz' => ceil(current($nodeResourceUsageLogCpuCapacityMegahertz)),
 				'memory_capacity_megabytes' => $nodeResourceUsageLogMemoryUsage[0],
 				'memory_percentage' => ceil($nodeResourceUsageLogMemoryUsage[1] / $nodeResourceUsageLogMemoryUsage[0])
 			);
@@ -180,7 +182,9 @@
 				sleep(mt_rand(4, 10));
 			}
 
-			$nodeResourceUsageLogPercentageKeys = array();
+			$nodeResourceUsageLogPercentageKeys = array(
+				'cpu_percentage'
+			);
 
 			foreach ($this->nodeResourceUsageLogIpVersionSocketUsageFiles as $nodeResourceUsageLogIpVersion => $nodeResourceUsageLogIpVersionSocketUsageFile) {
 				foreach ($this->nodeResourceUsageLogTransportProtocols as $nodeResourceUsageLogTransportProtocolKey => $nodeResourceUsageLogTransportProtocol) {
@@ -201,7 +205,11 @@
 				}
 			}
 
-			// ..
+			unset($this->nodeResourceUsageLogData['cpu_capacity_time']);
+			unset($this->nodeResourceUsageLogData['cpu_time']);
+			unset($this->nodeResourceUsageLogData['cpu_time_process_system']);
+
+			// todo: send interval data to API
 
 			//exec('sudo curl -s --form-string "json={\"action\":\"archive\"}" ' . $this->parameters['system_url'] . '/endpoint/resource-usage-logs 2>&1', $response);
 			$response = json_decode(current($response), true);
