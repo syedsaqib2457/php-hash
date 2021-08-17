@@ -208,11 +208,19 @@
 			unset($this->nodeResourceUsageLogData['cpu_capacity_time']);
 			unset($this->nodeResourceUsageLogData['cpu_time']);
 			unset($this->nodeResourceUsageLogData['cpu_time_process_system']);
+			$nodeResourceUsageLogFile = '/tmp/node_resource_usage_logs';
 
-			// todo: send interval data to API
-
-			//exec('sudo curl -s --form-string "json={\"action\":\"archive\"}" ' . $this->parameters['system_url'] . '/endpoint/resource-usage-logs 2>&1', $response);
-			$response = json_decode(current($response), true);
+			if (
+				(
+					file_exists($nodeResourceUsageLogFile) === false ||
+					unlink($nodeResourceUsageLogFile) === true
+				) &&
+				(file_put_contents($nodeResourceUsageLogFile, json_encode($this->nodeResourceUsageLogData)) === true)
+			) {
+				exec('sudo curl -s --form "data=@' . $nodeResourceUsageLogFile . '" --form-string "json={\"action\":\"archive\"}" ' . $this->parameters['system_url'] . '/endpoint/node-resource-usage-logs 2>&1', $response);
+				$response = json_decode(current($response), true);
+				// todo: store interval data if system_url fails and retry
+			}
 		}
 
 	}
