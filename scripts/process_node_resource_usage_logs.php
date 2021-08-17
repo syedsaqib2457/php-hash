@@ -149,8 +149,7 @@
 					}
 
 					if (empty($this->nodeResourceUsageLogData['cpu_percentage'][$this->nodeResourceUsageLogProcessIntervalIndex]) === false) {
-						$nodeResourceUsageLogCpuPercentage = $this->nodeResourceUsageLogData['cpu_percentage'][$this->nodeResourceUsageLogProcessIntervalIndex];
-						$this->nodeResourceUsageLogData['cpu_percentage'][$this->nodeResourceUsageLogProcessIntervalIndex] = ($this->nodeResourceUsageLogData['cpu_time'][$this->nodeResourceUsageLogProcessIntervalIndex]['cpu_time'] + ($this->nodeResourceUsageLogData['cpu_capacity_time']['interval'] - $nodeResourceUsageLogCpuPercentage['interval']) * ($nodeResourceUsageLogCpuPercentage['cpu_time'] / $nodeResourceUsageLogCpuPercentage['interval'])) / $this->nodeResourceUsageLogData['cpu_capacity_time']['interval'];
+						$this->nodeResourceUsageLogData['cpu_percentage'][$this->nodeResourceUsageLogProcessIntervalIndex] = ($this->nodeResourceUsageLogData['cpu_percentage'][$this->nodeResourceUsageLogProcessIntervalIndex]['cpu_time'] + ($this->nodeResourceUsageLogData['cpu_capacity_time']['interval'] - $this->nodeResourceUsageLogData['cpu_percentage'][$this->nodeResourceUsageLogProcessIntervalIndex]['interval']) * ($this->nodeResourceUsageLogData['cpu_percentage'][$this->nodeResourceUsageLogProcessIntervalIndex]['cpu_time'] / $this->nodeResourceUsageLogData['cpu_percentage'][$this->nodeResourceUsageLogProcessIntervalIndex]['interval'])) / $this->nodeResourceUsageLogData['cpu_capacity_time']['interval'];
 					}
 
 					foreach ($this->nodeResourceUsageLogProcessTypes as $nodeResourceUsageLogProcessType) {
@@ -194,8 +193,6 @@
 					}
 				}
 			}
-
-			// todo: make sure cpu percentages are calculated with correct units (hz, khz, mhz, etc)
 
 			foreach ($nodeResourceUsageLogPercentageKeys as $nodeResourceUsageLogPercentageKey) {
 				if (empty($this->nodeResourceUsageLogData[$nodeResourceUsageLogPercentageKey]) === false) {
