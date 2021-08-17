@@ -185,7 +185,7 @@
 			$nodeResourceUsageLogData = array(
 				'node_process_resource_usage_logs' => array(),
 				'node_resource_usage_logs' => array(
-					'cpu_percentage' => $this->nodeResourceUsageLogData['cpu_percentage']
+					'cpu_percentage' => max($this->nodeResourceUsageLogData['cpu_percentage'])
 				)
 			);
 
@@ -195,18 +195,23 @@
 					$nodeResourceUsageLogData['node_resource_usage_logs']['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion] = current($this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
 
 					foreach ($this->nodeResourceUsageLogProcessTypes as $nodeResourceUsageLogProcessType) {
-						if (isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) {
-							rsort($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
-							$nodeResourceUsageLogData['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType] = current($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
+						if (
+							(isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
+							(isset($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
+						) {
+							$nodeResourceUsageLogData['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType] = max($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
 						}
 
-						if (isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) {
-							rsort($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
-							$nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType] = current($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
+						if (
+							(isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
+							(isset($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
+						) {
+							$nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType] = max($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
 						}
 
-						rsort($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
-						$nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion] = current($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
+						if (isset($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]) === true) {
+							$nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion] = max($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
+						}
 					}
 				}
 			}
@@ -215,10 +220,10 @@
 
 			if (
 				(
-					file_exists($nodeResourceUsageLogFile) === false ||
-					unlink($nodeResourceUsageLogFile) === true
+					(file_exists($nodeResourceUsageLogFile) === false) ||
+					(unlink($nodeResourceUsageLogFile) === true)
 				) &&
-				(file_put_contents($nodeResourceUsageLogFile, json_encode($this->nodeResourceUsageLogData)) === true)
+				(file_put_contents($nodeResourceUsageLogFile, json_encode(nodeResourceUsageLogData)) === true)
 			) {
 				exec('sudo curl -s --form "data=@' . $nodeResourceUsageLogFile . '" --form-string "json={\"action\":\"archive\"}" ' . $this->parameters['system_url'] . '/endpoint/node-resource-usage-logs 2>&1', $response);
 				$response = json_decode(current($response), true);
