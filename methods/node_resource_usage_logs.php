@@ -83,11 +83,21 @@
 				return $response;
 			}
 
+			foreach ($nodeResourceUsageLogs['node_process_resource_usage_logs'] as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLog) {
+				unset($nodeResourceUsageLogs['node_process_resource_usage_logs'][$nodeProcessResourceUsageLogKey]['created']);
+				unset($nodeResourceUsageLogs['node_process_resource_usage_logs'][$nodeProcessResourceUsageLogKey]['node_id']);
+			}
+
+			unset($nodeResourceUsageLogs['node_resource_usage_logs']['created']);
+			unset($nodeResourceUsageLogs['node_resource_usage_logs']['modified']);
+
 			if (empty($existingNodeProcessResourceUsageLogs) === false) {
 				foreach ($existingNodeProcessResourceUsageLogs as $existingNodeProcessResourceUsageLog) { 
-					$nodeResourceUsageLogs['node_process_resource_usage_logs'][$existingNodeProcessResourceUsageLog['node_process_type']]['id'] = $nodeId;
+					$nodeResourceUsageLogs['node_process_resource_usage_logs'][$existingNodeProcessResourceUsageLog['node_process_type']]['node_id'] = $nodeId;
 				}
 			}
+
+			$nodeProcessResourceUsageLogData = array();
 
 			foreach ($nodeResourceUsageLogs['node_process_resource_usage_logs'] as $nodeProcessResourceUsageLog) {
 				if (
@@ -98,30 +108,57 @@
 					return $response;
 				}
 
-				$nodeProcessResourceUsageLogPercentages = array_intersect_key($nodeProcessResourceUsageLog, array(
-					'cpu_percentage' => true,
-					'memory_percentage' => true,
-					'memory_percentage_tcp_ip_version_4' => true,
-					'memory_percentage_tcp_ip_version_6' => true,
-					'memory_percentage_udp_ip_version_4' => true,
-					'memory_percentage_udp_ip_version_6' => true
-				));
-
-				foreach ($nodeProcessResourceUsageLogPercentages as $nodeProcessResourceUsageLogPercentage) {
-					if (is_numeric($nodeProcessResourceUsageLogPercentage) === false) {
+				foreach ($nodeProcessResourceUsageLog as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLogValue) {
+					if (
+						(strpos($nodeProcessResourceUsageLogKey, '_percentage') !== false) &&
+						(is_numeric($nodeProcessResourceUsageLogValue) === false)
+					) {
 						$response['message'] = 'Invalid node process resource usage logs, please try again.';
 						return $response;
 					}
 				}
+
+				$nodeProcessResourceUsageLogData[] = array_intersect_key($nodeProcessResourceUsageLog, array(
+					'cpu_percentage' => true,
+					'created' => true,
+					'memory_percentage' => true,
+					'memory_percentage_tcp_ip_version_4' => true,
+					'memory_percentage_tcp_ip_version_6' => true,
+					'memory_percentage_udp_ip_version_4' => true,
+					'memory_percentage_udp_ip_version_6' => true,
+					'node_id' => true,
+					'node_process_type' => true
+				));
 			}
 
 			// ..
 
 			$nodeProcessResourceUsageLogDataSaved = $this->save(array(
-				'data' => array(), // ..
+				'data' => $nodeProcessResourceUsageLogData,
 				'to' => 'node_process_resource_usage_logs'
 			));
-			$response['status_valid'] = ($nodeProcessResourceUsageLogDataSaved === true);
+			$nodeResourceUsageLogDataSaved = $this->save(array(
+				'data' => array_intersect_key($nodeResourceUsageLogs['node_resource_usage_logs'] array(
+					'cpu_capacity_cores' => true,
+					'cpu_capacity_megahertz' => true,
+					'cpu_percentage' => true,
+					'created' => true,
+					'id' => true,
+					'memory_capacity_megabytes' => true,
+					'memory_percentage' => true,
+					'memory_percentage_tcp_ip_version_4' => true,
+					'memory_percentage_tcp_ip_version_6' => true,
+					'memory_percentage_udp_ip_version_4' => true,
+					'memory_percentage_udp_ip_version_6' => true,
+					'storage_capacity_megabytes' => true,
+					'storage_percentage' => true
+				)),
+				'to' => 'node_resource_usage_logs'
+			));
+			$response['status_valid'] = (
+				($nodeProcessResourceUsageLogDataSaved === true) &&
+				($nodeResourceUsageLogDataSaved === true)
+			);
 
 			if ($response['status_valid'] === false) {
 				return $response;
