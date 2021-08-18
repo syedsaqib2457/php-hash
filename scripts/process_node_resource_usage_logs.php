@@ -31,6 +31,17 @@
 			$this->kernelPageSize = current($kernelPageSize);
 		}
 
+		protected function _calculateCpuTime($nodeResourceUsageLogCpuTimeString) {
+			$nodeResourceUsageLogCpuTime = 0;
+			$nodeResourceUsageLogCpuTimeValues = explode('+', $nodeResourceUsageLogCpuTimeString);
+
+			foreach ($nodeResourceUsageLogCpuTimeValues as $nodeResourceUsageLogCpuTimeValue) {
+				$nodeResourceUsageLogCpuTime += substr($nodeResourceUsageLogCpuTimeValue, -15);
+			}
+
+			return $nodeResourceUsageLogCpuTime;
+		}
+
 		protected function _processProcessUsagePercentages($processType) {
 			$this->nodeResourceUsageLogData['memory_percentage_process_' . $processType][$this->nodeResourceUsageLogProcessIntervalIndex] = 0;
 			$processProcessIdCommand = 'pgrep ';
@@ -94,17 +105,6 @@
 			}
 
 			return;
-		}
-
-		protected function _calculateCpuTime($nodeResourceUsageLogCpuTimeString) {
-			$nodeResourceUsageLogCpuTime = 0;
-			$nodeResourceUsageLogCpuTimeValues = explode('+', $nodeResourceUsageLogCpuTimeString);
-
-			foreach ($nodeResourceUsageLogCpuTimeValues as $nodeResourceUsageLogCpuTimeValue) {
-				$nodeResourceUsageLogCpuTime += substr($nodeResourceUsageLogCpuTimeValue, -15);
-			}
-
-			return $nodeResourceUsageLogCpuTime;
 		}
 
 		public function process() {
