@@ -23,30 +23,6 @@
 				'socks_proxy',
 				'system'
 			);
-			$nodeResourceUsageLogKeys = array(
-				'node_process_resource_usage_logs' => array(
-					'cpu_percentage',
-					'memory_percentage',
-					'memory_percentage_tcp_ip_version_4',
-					'memory_percentage_tcp_ip_version_6',
-					'memory_percentage_udp_ip_version_4',
-					'memory_percentage_udp_ip_version_6',
-					'node_process_type'
-				),
-				'node_resource_usage_logs' => array(
-					'cpu_capacity_cores',
-					'cpu_capacity_megahertz',
-					'cpu_percentage',
-					'memory_capacity_megabytes',
-					'memory_percentage',
-					'memory_percentage_tcp_ip_version_4',
-					'memory_percentage_tcp_ip_version_6',
-					'memory_percentage_udp_ip_version_4',
-					'memory_percentage_udp_ip_version_6',
-					'storage_capacity_megabytes',
-					'storage_percentage'
-				)
-			);
 			$nodeResourceUsageLogs = json_decode(file_get_contents($_FILES['data']['tmp_name']), true);
 
 			$response['status_valid'] = (
