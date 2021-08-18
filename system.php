@@ -164,6 +164,11 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'cpu_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -172,6 +177,31 @@
 								'auto_increment' => true,
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'memory_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_tcp_ip_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_tcp_ip_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_udp_ip_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'memory_percentage_udp_ip_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
 							),
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
@@ -224,26 +254,6 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'cpu_percentage_process_http_proxy' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'cpu_percentage_process_socks_proxy' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'cpu_percentage_process_nameserver' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'cpu_percentage_process_system' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -259,106 +269,6 @@
 								'type' => 'BIGINT(11)'
 							),
 							'memory_percentage' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_http_proxy' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_http_proxy_tcp_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_http_proxy_tcp_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_http_proxy_udp_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_http_proxy_udp_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_socks_proxy' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_socks_proxy_tcp_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_socks_proxy_tcp_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_socks_proxy_udp_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_socks_proxy_udp_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_nameserver' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_nameserver_tcp_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_nameserver_tcp_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_nameserver_udp_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_nameserver_udp_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_system' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_system_tcp_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_system_tcp_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_system_udp_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'memory_percentage_process_system_udp_ip_version_6' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
