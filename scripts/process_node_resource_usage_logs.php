@@ -47,9 +47,9 @@
 			foreach ($processProcessIds as $processProcessId) {
 				$nodeResourceUsageLogCpuTimeProcess = $nodeResourceUsageLogCpuTimeProcessStart = microtime(true);
 				exec('sudo bash -c "sudo cat /proc/' . $processProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\' 2>&1', $nodeResourceUsageLogCpuTimeProcess);
-				$nodeResourceUsageLogCpuTimeProcess = current($nodeResourceUsageLogCpuTimeProcess);
+
 				$this->nodeResourceUsageLogData['cpu_time_process_' . $processType][$this->nodeResourceUsageLogProcessIntervalIndex][$processProcessId] = array(
-					'cpu_time' => array_sum(explode('+', $nodeResourceUsageLogCpuTimeProcess)),
+					'cpu_time' => $this->_calculateCpuTime(current($nodeResourceUsageLogCpuTimeProcess)),
 					'timestamp' => $nodeResourceUsageLogCpuTimeProcessStart
 				);
 
@@ -96,6 +96,17 @@
 			return;
 		}
 
+		protected function _calculateCpuTime($nodeResourceUsageLogCpuTimeString) {
+			$nodeResourceUsageLogCpuTime = 0;
+			$nodeResourceUsageLogCpuTimeValues = explode('+', $nodeResourceUsageLogCpuTimeString);
+
+			foreach ($nodeResourceUsageLogCpuTimeValues as $nodeResourceUsageLogCpuTimeValue) {
+				$nodeResourceUsageLogCpuTime += substr($nodeResourceUsageLogCpuTimeValue, -15);
+			}
+
+			return $nodeResourceUsageLogCpuTime;
+		}
+
 		public function process() {
 			$nodeResourceUsageLogProcessStart = time();
 
@@ -123,9 +134,8 @@
 					$this->nodeResourceUsageLogData['cpu_capacity_cores'] = key($nodeResourceUsageLogCpuTime);
 					$nodeResourceUsageLogCpuTime = array_shift($nodeResourceUsageLogCpuTime);
 					exec('echo ' . $nodeResourceUsageLogCpuTime . ' | awk \'{print ""$2"+"$3"+"$4"+"$5"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeResourceUsageLogCpuTime);
-					$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
 					$this->nodeResourceUsageLogData['cpu_capacity_time'][] = array(
-						'cpu_time' => array_sum(explode('+', $nodeResourceUsageLogCpuTime)),
+						'cpu_time' => $this->_calculateCpuTime(current($nodeResourceUsageLogCpuTime)),
 						'timestamp' => $nodeResourceUsageLogCpuTimeStart
 					);
 
@@ -137,9 +147,8 @@
 					}
 				} else {
 					exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu " | awk \'{print ""$2"+"$3"+"$4"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeResourceUsageLogCpuTime);
-					$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
 					$this->nodeResourceUsageLogData['cpu_time'][$this->nodeResourceUsageLogProcessIntervalIndex] = array(
-						'cpu_time' => array_sum(explode('+', $nodeResourceUsageLogCpuTime)),
+						'cpu_time' => $this->_calculateCpuTime(current($nodeResourceUsageLogCpuTime)),
 						'timestamp' => $nodeResourceUsageLogCpuTimeStart
 					);
 
