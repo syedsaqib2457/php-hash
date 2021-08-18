@@ -204,22 +204,26 @@
 					$nodeResourceUsageLogData['node_resource_usage_logs']['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion] = current($this->nodeResourceUsageLogData['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
 
 					foreach ($this->nodeResourceUsageLogProcessTypes as $nodeResourceUsageLogProcessType) {
+						$nodeResourceUsageLogData['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType] = array(
+							'node_process_type' => $nodeResourceUsageLogProcessType
+						);
+
 						if (
 							(isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
 							(isset($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
 						) {
-							$nodeResourceUsageLogData['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType] = max($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
+							$nodeResourceUsageLogData['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['cpu_percentage'] = max($this->nodeResourceUsageLogData['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
 						}
 
 						if (
 							(isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
 							(isset($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
 						) {
-							$nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType] = max($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
+							$nodeResourceUsageLogData['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['memory_percentage'] = max($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
 						}
 
 						if (isset($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]) === true) {
-							$nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion] = max($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
+							$nodeResourceUsageLogData['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['memory_percentage_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion] = max($this->nodeResourceUsageLogData['memory_percentage_process_' . $nodeResourceUsageLogProcessType . '_' . $nodeResourceUsageLogTransportProtocol . '_ip_version_' . $nodeResourceUsageLogIpVersion]);
 						}
 					}
 				}
