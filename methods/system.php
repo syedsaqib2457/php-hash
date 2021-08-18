@@ -38,7 +38,6 @@
 
 			if ($response['status_valid'] === false) {
 				$response = $this->_authenticateEndpoint($response);
-				$response['user']['endpoint'] = $response['status_valid'];
 			}
 
 			return $response;
@@ -57,8 +56,11 @@
 				return $response;
 			}
 
-			$nodeCount = $this->count(array(
-				'in' => 'nodes',
+			$node = $this->fetch(array(
+				'fields' => array(
+					'id'
+				),
+				'from' => 'nodes',
 				'where' => array(
 					'node_id' => null,
 					'OR' => array(
@@ -69,14 +71,20 @@
 			));
 			$response['status_valid'] = (
 				(
-					(is_int($nodeCount) === true) &&
-					($nodeCount === 1)
+					($node !== false) &&
+					(empty($node) === false)
 				) ||
 				(in_array($_SERVER['REMOTE_ADDR'], explode("\n", $parameters['user']['authentication_whitelist'])) === true)
 			);
+			$response['user']['endpoint'] = $response['status_valid'];
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid source IP, please try again.';
+				return $response;
+			}
+
+			if (empty($node) === false) {
+				$response['user']['node_id'] = $node['id']
 			}
 
 			return $response;

@@ -453,7 +453,10 @@
 			if ($node['status_deployed'] === true) {
 				$response['message'] = 'Node is already deployed.';
 				return $response;
-			} elseif (empty($parameters['user']['endpoint']) === false) {
+			} elseif (
+				(empty($parameters['user']['node_id']) === false) &&
+				($nodeId === $parameters['user']['node_id'])
+			) {
 				$nodeDataUpdated = $this->update(array(
 					'data' => array(
 						'status_deployed' => true
