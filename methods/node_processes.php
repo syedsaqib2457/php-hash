@@ -363,7 +363,7 @@
 					'application_protocol' => true,
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
-					'ip' => true,
+					'id' => true,
 					'node_id' => true,
 					'port_id' => true,
 					'transport_protocol' => true,
