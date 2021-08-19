@@ -41,6 +41,7 @@
 			}
 
 			// todo: save created timestamp string as Y-m-d H:i0:00
+			// todo: use timestamp from beginning of script
 			$existingNodeProcessResourceUsageLogs = $this->fetch(array(
 				'fields' => array(
 					'id',
@@ -49,7 +50,7 @@
 				),
 				'from' => 'node_process_resource_usage_logs',
 				'where' => array(
-					'created >' => date('Y-m-d H:i:s', strtotime('-10 minutes')),
+					'created >=' => date('Y-m-d H:i:s', strtotime('-10 minutes')),
 					'node_id' => ($nodeId = $parameters['user']['node_id'])
 				)
 			));
@@ -59,7 +60,7 @@
 				),
 				'from' => 'node_resource_usage_logs',
 				'where' => array(
-					'created >' => date('Y-m-d H:i:s', strtotime('-10 minutes')),
+					'created >=' => date('Y-m-d H:i:s', strtotime('-10 minutes')),
 					'node_id' => $nodeId
 				)
 			));
