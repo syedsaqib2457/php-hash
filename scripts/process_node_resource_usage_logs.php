@@ -110,7 +110,6 @@
 		public function process() {
 			$nodeResourceUsageLogProcessStart = time();
 			$nodeResourceUsageLogCreated = substr(date('Y-m-d H:i', $nodeResourceUsageLogProcessStart), 0, 15) . '0:00';
-			// ..
 
 			while (($nodeResourceUsageLogProcessStart + 540) > time()) {
 				$this->nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage = array(
@@ -196,7 +195,8 @@
 			$nodeResourceUsageLogData = array(
 				'node_process_resource_usage_logs' => array(),
 				'node_resource_usage_logs' => array(
-					'cpu_percentage' => max($this->nodeResourceUsageLogData['cpu_percentage'])
+					'cpu_percentage' => max($this->nodeResourceUsageLogData['cpu_percentage']),
+					'created' => $nodeResourceUsageLogCreated
 				)
 			);
 
@@ -207,6 +207,7 @@
 
 					foreach ($this->nodeResourceUsageLogProcessTypes as $nodeResourceUsageLogProcessType) {
 						$nodeResourceUsageLogData['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType] = array(
+							'created' => $nodeResourceUsageLogCreated,
 							'node_process_type' => $nodeResourceUsageLogProcessType
 						);
 
