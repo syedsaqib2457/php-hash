@@ -1229,8 +1229,14 @@
 						128 => 6
 					)),
 					'node_transport_protocol_memory_percentages' => array(
-						'tcp' => 5,
-						'udp' => 5
+						'tcp' => array(
+							4 => 2.5,
+							6 => 2.5
+						),
+						'udp' => array(
+							4 => 2.5,
+							6 => 2.5
+						)
 					),
 					'private_network' => $this->settings['private_network'],
 					'version' => $this->settings['version']
@@ -1344,13 +1350,17 @@
 			}
 
 			// todo: calculate buffer memory percentages for each based on most recent 10-minute interval resource usage logs
-				// minimum 5% for disabled protocol
-				// minimum 15% for active protocol
-				// maximum 65% memory for combined
+				// minimum 2.5% for disabled protocol per IP version
+				// minimum 10% for active protocol per IP version
+				// maximum 80% memory for combined
 					// lower this or increase this based on system processing % (some systems will frequently change authentication while some may never change)
+				// if IPv4 or IPv6 is disabled, allocate buffers to enabled IP version
+				// add net.ipv6 sysctl options
 				// static 10% for optmem_max
 
-			foreach ($response['data']['node_transport_protocol_memory_percentages'] as $nodeTransportProtocol => $nodeTransportProtocolMemoryPercentage) {
+			$nodeTransportProtocols = array_keys($response['data']['node_transport_protocol_memory_percentages']);
+
+			foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
 				$nodeProcessTransportProtocolCountVariable = 'nodeProcessTransportProtocol' . ucwords($nodeTransportProtocol) . 'Count';
 				$$nodeProcessTransportProtocolCountVariable = $this->count(array(
 					'in' => 'node_processes',
@@ -1371,6 +1381,33 @@
 				if ($$nodeProcessTransportProtocolCountVariable > 0) {
 					$response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol] = 15;
 				}
+			}
+
+			$nodeResourceUsageLog = $this->fetch(array(
+				'fields' => array(
+					'memory_capacity_megabytes',
+					'memory_percentage',
+					'memory_percentage_tcp_ip_version_4',
+					'memory_percentage_tcp_ip_version_6',
+					'memory_percentage_udp_ip_version_4',
+					'memory_percentage_udp_ip_version_6'
+				),
+				'from' => 'node_resource_usage_logs',
+				'sort' => array(
+					'field' => 'created',
+					'order' => 'DESC'
+				),
+				'where' => array(
+					'memory_capacity_megabytes >' => 0,
+					'node_id' => $nodeId
+				)
+			));
+			$response['status_valid'] = ($nodeResourceUsageLog !== false);
+
+			if (empty($nodeResourceUsageLog) === true) {
+				// ..
+			} else {
+				// ..
 			}
 
 			// ..
