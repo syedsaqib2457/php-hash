@@ -109,7 +109,6 @@
 
 		public function process() {
 			$nodeResourceUsageLogProcessStart = time();
-			$nodeResourceUsageLogCreated = substr(date('Y-m-d H:i', $nodeResourceUsageLogProcessStart), 0, 15) . '0:00';
 
 			while (($nodeResourceUsageLogProcessStart + 340) > time()) {
 				$this->nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage = array(
@@ -192,6 +191,7 @@
 				sleep(mt_rand(4, 10));
 			}
 
+			$nodeResourceUsageLogCreated = substr(date('Y-m-d H:i', $nodeResourceUsageLogProcessStart), 0, 15) . '0:00';
 			$nodeResourceUsageLogData = array(
 				'node_process_resource_usage_logs' => array(),
 				'node_resource_usage_logs' => array(
