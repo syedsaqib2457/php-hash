@@ -10,6 +10,7 @@
 				'status_valid' => (
 					(empty($parameters['data']['destination']) === false) &&
 					(is_string($parameters['data']['destination']) === true)
+				)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -18,7 +19,7 @@
 
 			$response['status_valid'] = (
 				($this->_validateHostname($parameters['data']['destination']) !== false) ||
-				(empty($this->_sanitizeIps(array($parameters['data']['destination'])), true) === false)
+				(empty($this->_sanitizeIps(array($parameters['data']['destination']), true)) === false)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -106,7 +107,7 @@
 
 			$response['status_valid'] = (
 				($this->_validateHostname($parameters['data']['destination']) !== false) ||
-				(empty($this->_sanitizeIps(array($parameters['data']['destination'])), true) === false)
+				(empty($this->_sanitizeIps(array($parameters['data']['destination']), true)) === false)
 			);
 
 			if ($response['status_valid'] === false) {

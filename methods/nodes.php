@@ -92,7 +92,7 @@
 					'where' => array(
 						'OR' => array(
 							'external_ip_version_4' => ($nodeNodeId = $parameters['data']['node_id']),
-							'external_ip_version_6' => $nodeNodeId
+							'external_ip_version_6' => $nodeNodeId,
 							'id' => $nodeNodeId
 						)
 					)
@@ -204,7 +204,7 @@
 				'where' => array(
 					'OR' => $nodeExternalIps
 				)
-			));
+			);
 			$conflictingNodeProcessCountParameters = array(
 				'in' => 'node_processes',
 				'where' => array(
@@ -916,7 +916,7 @@
 						)
 					)
 				)
-			));
+			);
 			$conflictingNodeProcessCountParameters = array(
 				'in' => 'node_processes',
 				'where' => array(
@@ -1304,7 +1304,7 @@
 					'id' => $nodeId,
 					'node_id' => $nodeId
 				)
-			);
+			));
 			$response['status_valid'] = ($nodes !== false);
 
 			if ($response['status_valid'] === false) {
@@ -1496,7 +1496,7 @@
 				}
 			}
 
-			$response['message'] = 'Nodes processed successfully.'
+			$response['message'] = 'Nodes processed successfully.';
 			return $response;
 		}
 

@@ -336,7 +336,7 @@
 				}
 			}
 
-			if (empty($nodeProcessPortId) === false)
+			if (empty($nodeProcessPortId) === false) {
 				$conflictingNodeProcessCount = $this->count(array(
 					'in' => 'node_processes',
 					'where' => array(

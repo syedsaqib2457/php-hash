@@ -270,7 +270,7 @@
 		}
 
 		protected function _verifyNodeProcess($nodeProcess) {
-			response = false;
+			$response = false;
 
 			switch ($nodeProcess['type']) {
 				case 'http_proxy':
@@ -472,7 +472,7 @@
 						}
 					}
 
-					$this->nodeData['nameserver_node_configuration'][$nameserverNodeType] = array_merge($nameserverNodeConfiguration, $nameserverNodeUserAuthentication));
+					$this->nodeData['nameserver_node_configuration'][$nameserverNodeType] = array_merge($nameserverNodeConfiguration, $nameserverNodeUserAuthentication);
 				}
 			}
 
@@ -539,7 +539,7 @@
 
 									$proxyNodeUserDestinationParts = array_map(function($proxyNodeUserDestinationPart) {
 										return implode(',', $proxyNodeUserDestinationPart);
-									}, array_chunk($proxyNodeUserDestinations, 10);
+									}, array_chunk($proxyNodeUserDestinations, 10));
 								}
 
 								$proxyNodeUsername = $proxyNodeUser['authentication_username'];
@@ -664,7 +664,7 @@
 									$nameserverNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ':' . $nameserverNodeProcess['port_id'];
 
 									if (empty($nameserverNodeProcessUserListeningIp) === false) {
-										$nameserverNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
+										$nameserverNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
 									}
 
 									if (empty($nameserverNode['transport_protocol']) === true) {

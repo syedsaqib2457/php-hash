@@ -7,7 +7,7 @@
 		public function add($parameters) {
 			$response = array(
 				'message' => 'Error adding request logs, please try again.',
-				'status_valid' = (
+				'status_valid' => (
 					(empty($_FILES['data']['tmp_name']) === false) &&
 					(empty($parameters['user']['endpoint']) === false)
 				)

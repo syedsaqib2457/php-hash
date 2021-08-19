@@ -15,7 +15,7 @@
 					'in' => 'users',
 					'where' => array(
 						'authentication_expires >' => date('Y-m-d H:i:s', time()),
-						'authentication_username' => sha1($this->settings['keys']['start'] . '_' . $parameters['settings']['session_id'])
+						'authentication_username' => sha1($this->settings['keys']['start'] . '_' . $parameters['settings']['session_id']),
 						'id' => 1
 					)
 				));
@@ -84,7 +84,7 @@
 			}
 
 			if (empty($node) === false) {
-				$response['user']['node_id'] = $node['id']
+				$response['user']['node_id'] = $node['id'];
 			}
 
 			return $response;
@@ -156,7 +156,7 @@
 						$ipRanges = array_merge($ipRanges, array(
 							implode(':', $ipParts) . $ipRangeVariables,
 							$ipParts[0] . ':' . substr($ipParts[1], 0, 3) . 'x' . $ipRangeVariables
-						);
+						));
 						$ipRangeVariables .= ':x';
 						$ipRanges = array_merge($ipRanges, array(
 							$ipParts[0] . $ipRangeVariables,
@@ -213,7 +213,7 @@
 				$formDataItemKey => $formDataItemValue
 			);
 
-			if (!empty($formDataItemKey) {
+			if (empty($formDataItemKey) === false) {
 				$closingBracketPosition = strrpos($formDataItemKey, ']');
 				$openingBracketPosition = stripos($formDataItemKey, '[');
 
@@ -447,7 +447,7 @@
 							$conjunction = 'AND';
 						}
 
-						$where[$key] = implode(' ' . $conjunction) . ' ', $value);
+						$where[$key] = implode(' ' . $conjunction . ' ', $value);
 					}
 				}
 			}
@@ -882,7 +882,7 @@
 				'data' => array_intersect_key($parameters['data'], array(
 					'authentication_password' => true,
 					'authentication_whitelist' => true
-				),
+				)),
 				'in' => 'users',
 				'where' => array(
 					'id' => 1
@@ -1135,7 +1135,7 @@
 				$query = 'UPDATE ' . $parameters['in'] . ' SET ';
 
 				foreach ($parameters['data'] as $updateValueKey => $updateValue) {
-					$query .= $this->settings['keys']['start'] . $updateValueKey . $this->settings['keys']['stop'] .  ' = ' . $this->settings['keys']['start'] . $updateValue . $this->settings['keys']['stop'] . ','
+					$query .= $this->settings['keys']['start'] . $updateValueKey . $this->settings['keys']['stop'] .  ' = ' . $this->settings['keys']['start'] . $updateValue . $this->settings['keys']['stop'] . ',';
 				}
 
 				$query = rtrim($query, ',') . ' WHERE ' . implode(' AND ', $this->_parseQueryConditions($parameters['in'], $parameters['where']));
