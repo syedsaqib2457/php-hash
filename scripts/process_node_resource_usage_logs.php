@@ -111,7 +111,7 @@
 			$nodeResourceUsageLogProcessStart = time();
 			$nodeResourceUsageLogCreated = substr(date('Y-m-d H:i', $nodeResourceUsageLogProcessStart), 0, 15) . '0:00';
 
-			while (($nodeResourceUsageLogProcessStart + 540) > time()) {
+			while (($nodeResourceUsageLogProcessStart + 340) > time()) {
 				$this->nodeResourceUsageLogIpVersionTransportProtocolSocketMemoryUsage = array(
 					4 => array(
 						'tcp' => 0,
