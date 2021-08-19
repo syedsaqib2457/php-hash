@@ -1228,6 +1228,10 @@
 						32 => 4,
 						128 => 6
 					)),
+					'node_transport_protocol_memory_percentages' => array(
+						'tcp' => 5,
+						'udp' => 5
+					),
 					'private_network' => $this->settings['private_network'],
 					'version' => $this->settings['version']
 				),
@@ -1338,6 +1342,38 @@
 					}
 				}
 			}
+
+			// todo: calculate buffer memory percentages for each based on most recent 10-minute interval resource usage logs
+				// minimum 5% for disabled protocol
+				// minimum 15% for active protocol
+				// maximum 65% memory for combined
+					// lower this or increase this based on system processing % (some systems will frequently change authentication while some may never change)
+				// static 10% for optmem_max
+
+			foreach ($response['data']['node_transport_protocol_memory_percentages'] as $nodeTransportProtocol => $nodeTransportProtocolMemoryPercentage) {
+				$nodeProcessTransportProtocolCountVariable = 'nodeProcessTransportProtocol' . ucwords($nodeTransportProtocol) . 'Count';
+				$$nodeProcessTransportProtocolCountVariable = $this->count(array(
+					'in' => 'node_processes',
+					'where' => array(
+						'node_id' => $nodeId,
+						'transport_protocol' => array(
+							null,
+							$nodeTransportProtocol
+						)
+					)
+				));
+				$response['status_active'] = (is_int($$nodeProcessTransportProtocolCountVariable) === true);
+
+				if ($response['status_active'] === false) {
+					return $response;
+				}
+
+				if ($$nodeProcessTransportProtocolCountVariable > 0) {
+					$response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol] = 15;
+				}
+			}
+
+			// ..
 
 			foreach ($nodeProcessTypes as $nodeProcessType) {
 				$nodeProcesses = $this->fetch(array(
