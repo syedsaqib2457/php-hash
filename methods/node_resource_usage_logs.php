@@ -41,7 +41,6 @@
 			}
 
 			// todo: save created timestamp string as Y-m-d H:i0:00
-			// todo: use timestamp from beginning of script
 			$existingNodeProcessResourceUsageLogs = $this->fetch(array(
 				'fields' => array(
 					'id',
@@ -73,7 +72,6 @@
 			}
 
 			foreach ($nodeResourceUsageLogs['node_process_resource_usage_logs'] as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLog) {
-				unset($nodeResourceUsageLogs['node_process_resource_usage_logs'][$nodeProcessResourceUsageLogKey]['created']);
 				unset($nodeResourceUsageLogs['node_process_resource_usage_logs'][$nodeProcessResourceUsageLogKey]['node_id']);
 			}
 
@@ -83,7 +81,6 @@
 				}
 			}
 
-			unset($nodeResourceUsageLogs['node_resource_usage_logs']['created']);
 			unset($nodeResourceUsageLogs['node_resource_usage_logs']['node_id']);
 
 			if (empty($existingNodeResourceUsageLogs) === false) {
@@ -93,6 +90,14 @@
 			$nodeProcessResourceUsageLogData = array();
 
 			foreach ($nodeResourceUsageLogs['node_process_resource_usage_logs'] as $nodeProcessResourceUsageLog) {
+				if (
+					(strtotime($nodeProcessResourceUsageLog['created']) === false) ||
+					(substr($nodeProcessResourceUsageLog['created'], -4) !== '0:00')
+				) {
+					$response['message'] = 'Invalid node process resource usage log created date, please try again.';
+					return $response;
+				}
+
 				if (
 					(empty($nodeProcessResourceUsageLog['node_process_type']) === true) ||
 					(in_array($nodeProcessResourceUsageLog['node_process_type'], $nodeResourceUsageLogProcessTypes) === false)
