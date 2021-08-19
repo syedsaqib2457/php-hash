@@ -131,13 +131,24 @@
 
 			foreach ($nodeResourceUsageLogs['node_resource_usage_logs'] as $nodeResourceUsageLogKey => $nodeResourceUsageLogValue) {
 				if (
+					($nodeResourceUsageLogKey === 'created') &&
+					(
+						(strtotime($nodeResourceUsageLogValue) === false) ||
+						(substr($nodeResourceUsageLogValue, -4) !== '0:00')
+					)
+				) {
+					$response['message'] = 'Invalid node resource usage log created date, please try again.';
+					return $response;
+				}
+
+				if (
 					(
 						(strpos($nodeResourceUsageLogKey, '_capacity') !== false) ||
 						(strpos($nodeResourceUsageLogKey, '_percentage') !== false)
 					) &&
 					(is_numeric($nodeResourceUsageLogValue) === false)
 				) {
-					$response['message'] = 'Invalid node process resource usage logs, please try again.';
+					$response['message'] = 'Invalid node resource usage logs, please try again.';
 					return $response;
 				}
 			}
