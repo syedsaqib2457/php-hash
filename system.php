@@ -278,6 +278,13 @@
 								'type' => 'TINYINT(1)'
 							)
 						),
+						'node_user_request_destination_logs' => array(
+							// ..
+							// todo: add limit_requests_until as datetime to user_request_limit_rules
+							// todo: add boolean status limit_exceeded_destination_only to user_request_limit_rules to allow users to block the entire group of destinations after exceeding 1
+							// todo: add cidr blocking to request limit rules
+							// todo: delete status_limit_exceeded
+						),
 						'node_user_resource_usage_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
