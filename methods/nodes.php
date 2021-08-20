@@ -1031,12 +1031,10 @@
 					'external_ip_version_6',
 					'internal_ip_version_4',
 					'internal_ip_version_6',
-					'memory_capacity',
 					'node_id',
 					'status_activated',
 					'status_deployed',
-					'status_processed',
-					'storage_capacity'
+					'status_processed'
 				),
 				'from' => 'nodes',
 				'where' => array(
@@ -1098,6 +1096,9 @@
 				$response['data']['nodes'][$node['id']] = $node;
 			}
 
+			// todo: add separate $nodeResourceUsageLogs and $nodeProcessResourceUsageLogs with average and peak values for log interval hours
+
+			/*
 			if (empty($nodeIds) === false) {
 				$nodeResourceUsageLogs = $this->fetch(array(
 					'fields' => array(
@@ -1105,13 +1106,9 @@
 						'bytes_sent',
 						'cpu_capacity_cores',
 						'cpu_capacity_megahertz',
-						'cpu_percentage_node_processing',
-						'cpu_percentage_node_usage',
+						'cpu_percentage',
 						'memory_capacity_megabytes',
-						'memory_percentage_node_processing',
-						'memory_percentage_node_usage',
-						'memory_percentage_tcp',
-						'memory_percentage_udp',
+						'memory_percentage',
 						'node_id',
 						'requests',
 						'storage_capacity_megabytes',
@@ -1216,7 +1213,7 @@
 						unset($response['data']['nodes'][$nodeId]['resource_usage_logs']['count']);
 					}
 				}
-			}
+			}*/
 
 			return $response;
 		}
