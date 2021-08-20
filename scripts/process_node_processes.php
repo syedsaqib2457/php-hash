@@ -151,7 +151,7 @@
 					'kernel.shmall' => floor($memoryCapacityBytes / $kernelPageSize),
 					'kernel.shmmax' => $memoryCapacityBytes,
 					'net.core.optmem_max' => ($defaultSocketBufferMemoryBytes = ceil($maximumMemoryBytes * 0.10)),
-					'net.core.rmem_default' => $defaultSocketBufferMemoryBytes,
+					'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes * 0.0034),
 					'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
 					'net.ipv4.tcp_mem' => $maximumMemoryPages . ' ' . $maximumMemoryPages . ' ' . $maximumMemoryPages,
 					'net.ipv4.tcp_rmem' => 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2)

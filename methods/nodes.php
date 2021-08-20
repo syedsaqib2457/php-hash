@@ -1349,17 +1349,6 @@
 				}
 			}
 
-			// todo: calculate buffer memory percentages for each based on most recent 10-minute interval resource usage logs
-				// minimum 2.5% for disabled protocol per IP version
-					// * 2 if one ip version is disabled
-				// minimum 10% for active protocol per IP version
-					// * 2 if one ip version is disabled
-				// maximum 80% memory for combined
-					// lower this or increase this based on system processing % (some systems will frequently change authentication while some may never change)
-				// if IPv4 or IPv6 is disabled, allocate buffers to enabled IP version
-				// add net.ipv6 sysctl options
-				// static 10% for optmem_max
-
 			$nodeTransportProtocols = array_keys($response['data']['node_transport_protocol_memory_percentages']);
 
 			foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
@@ -1418,10 +1407,17 @@
 			$response['status_valid'] = ($nodeResourceUsageLog !== false);
 
 			if (empty($nodeResourceUsageLog) === false) {
-				// ..
-			}
+				$nodeTransportProtocolMemoryUsagePercentage = $nodeResourceUsageLog['memory_percentage_tcp_ip_version_4'] + $nodeResourceUsageLog['memory_percentage_tcp_ip_version_6'] + $nodeResourceUsageLog['memory_percentage_udp_ip_version_4'] + $nodeResourceUsageLog['memory_percentage_udp_ip_version_6'];
 
-			// ..
+				foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
+					foreach ($nodeIpVersions as $nodeIpVersion) {
+						if (empty($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][$nodeIpVersion]) === false) {
+							max($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][$nodeIpVersion],
+							$nodeResourceUsageLog['memory_percentage_' . $nodeTransportProtocol . '_ip_version_' . $nodeIpVersion] + (($nodeTransportProtocolMemoryUsagePercentage / 80) * $nodeResourceUsageLog['memory_percentage_' . $nodeTransportProtocol . '_ip_version_' . $nodeIpVersion]));
+						}
+					}
+				}
+			}
 
 			foreach ($nodeProcessTypes as $nodeProcessType) {
 				$nodeProcesses = $this->fetch(array(
