@@ -4,7 +4,11 @@
 		public $parameters;
 
 		public function __construct($parameters) {
+			exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
+			$this->memoryCapacityBytes = current($memoryCapacityBytes);
 			$this->parameters = $parameters;
+			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
+			$this->kernelPageSize = current($kernelPageSize);
 		}
 
 		protected function _killProcessIds($processIds) {
@@ -134,26 +138,22 @@
 				'vm.swappiness = 0'
 			);
 			file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
-			shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -p');
-			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-			exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
-			$kernelPageSize = current($kernelPageSize);
-			$memoryCapacityBytes = current($memoryCapacityBytes);
+			shell_exec('sudo ' . $this->nodeData['binary_files']['sysctl'] . ' -p');
 
 			if (
-				is_numeric($kernelPageSize) &&
-				is_numeric($memoryCapacityBytes)
+				is_numeric($this->kernelPageSize) &&
+				is_numeric($this->memoryCapacityBytes)
 			) {
-				$memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize);
 				$dynamicKernelOptions = array(
-					'kernel.shmall' => floor($memoryCapacityBytes / $kernelPageSize),
-					'kernel.shmmax' => $memoryCapacityBytes,
-					'net.core.optmem_max' => ceil($memoryCapacityBytes * 0.02),
-					'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034)),
+					'kernel.shmall' => floor($this->memoryCapacityBytes / $this->kernelPageSize),
+					'kernel.shmmax' => $this->memoryCapacityBytes,
+					'net.core.optmem_max' => ceil($this->memoryCapacityBytes * 0.02),
+					'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes = ceil($this->memoryCapacityBytes * 0.00034)),
 					'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
 					'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
 					'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
 				);
+				$memoryCapacityPages = ceil($this->memoryCapacityBytes / $this->kernelPageSize);
 
 				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_mem'] = $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
@@ -163,7 +163,7 @@
 				}
 
 				foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
-					shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
+					shell_exec('sudo ' . $this->nodeData['binary_files']['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
 				}
 			}
 
