@@ -1228,16 +1228,6 @@
 						32 => 4,
 						128 => 6
 					)),
-					'node_transport_protocols' => array(
-						'tcp' => array(
-							4 => true,
-							6 => true
-						),
-						'udp' => array(
-							4 => true,
-							6 => true
-						)
-					),
 					'private_network' => $this->settings['private_network'],
 					'version' => $this->settings['version']
 				),
@@ -1350,14 +1340,10 @@
 			}
 
 			$nodeIpVersions = array_values($nodeIpVersions);
-			$nodeTransportProtocols = array_keys($response['data']['node_transport_protocols']);
 
-			foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
-				foreach ($nodeIpVersions as $nodeIpVersionKey => $nodeIpVersion) {
-					if (empty($response['data']['node_ip'][$nodeIpVersion]) === true) {
-						unset($response['data']['node_ip_versions'][(128 / 4) + (96 * $nodeIpVersionKey)]);
-						unset($response['data']['node_transport_protocols'][$nodeTransportProtocol][$nodeIpVersion]);
-					}
+			foreach ($nodeIpVersions as $nodeIpVersionKey => $nodeIpVersion) {
+				if (empty($response['data']['node_ip'][$nodeIpVersion]) === true) {
+					unset($response['data']['node_ip_versions'][(128 / 4) + (96 * $nodeIpVersionKey)]);
 				}
 			}
 

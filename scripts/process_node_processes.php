@@ -36,7 +36,6 @@
 
 		protected function _optimizeKernel() {
 			// todo: revisit each setting to verify they're optimal
-			// apply dynamic mem settings based on 10 min usage values
 			$kernelOptions = array(
 				'fs.aio-max-nr = 1000000000',
 				'fs.file-max = 1000000000',
@@ -141,31 +140,27 @@
 			$kernelPageSize = current($kernelPageSize);
 			$memoryCapacityBytes = current($memoryCapacityBytes);
 
-			// todo: set static memory buffer maximums to 100% memory to prevent bottlenecks and failed connections, then enable/disable each sysctl setting based on active nodes / processes
-			// todo: set reasonable size for socket default
-			// todo: add net.ipv6 settings
-
 			if (
 				is_numeric($kernelPageSize) &&
 				is_numeric($memoryCapacityBytes)
 			) {
-				$maximumMemoryBytes = ceil($memoryCapacityBytes * 0.34);
-				$maximumMemoryPages = ceil($maximumMemoryBytes / $kernelPageSize);
+				$memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize);
 				$dynamicKernelOptions = array(
 					'kernel.shmall' => floor($memoryCapacityBytes / $kernelPageSize),
 					'kernel.shmmax' => $memoryCapacityBytes,
-					'net.core.optmem_max' => ($defaultSocketBufferMemoryBytes = ceil($maximumMemoryBytes * 0.10)),
-					'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes * 0.0034),
+					'net.core.optmem_max' => ceil($memoryCapacityBytes * 0.02),
+					'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034)),
 					'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
-					'net.ipv4.tcp_mem' => $maximumMemoryPages . ' ' . $maximumMemoryPages . ' ' . $maximumMemoryPages,
-					'net.ipv4.tcp_rmem' => 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2)
+					'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
+					'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
 				);
-				$dynamicKernelOptions += array(
-					'net.ipv4.tcp_wmem' => $dynamicKernelOptions['net.ipv4.tcp_rmem'],
-					'net.ipv4.udp_mem' => $dynamicKernelOptions['net.ipv4.tcp_mem'],
-					'net.core.wmem_default' => $dynamicKernelOptions['net.core.rmem_default'],
-					'net.core.wmem_max' => $dynamicKernelOptions['net.core.rmem_max']
-				);
+
+				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_mem'] = $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
+					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
+					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_rmem'];
+					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_mem'];
+				}
 
 				foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
 					shell_exec('sudo ' . $this->binaryFiles['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
