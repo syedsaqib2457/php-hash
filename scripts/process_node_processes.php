@@ -778,16 +778,14 @@
 							$proxyNodeProcessIpVersionPriority = '-';
 
 							foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-								if (empty($proxyNode['external_ip_version_' . $nodeIpVersion]) === false) {
-									$proxyNodeProcessIpVersionPriority .= $nodeIpVersion;
-									$proxyNodeProcessServiceInterfaceIp = $proxyNode['external_ip_version_' . $nodeIpVersion];
+								$proxyNodeProcessIpVersionPriority .= $nodeIpVersion;
+								$proxyNodeProcessServiceInterfaceIp = $proxyNode['external_ip_version_' . $nodeIpVersion];
 
-									if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-										$proxyNodeProcessServiceInterfaceIp = $proxyNode['internal_ip_version_' . $nodeIpVersion];
-									}
-
-									$proxyNodeProcessService .= ' -e ' . $proxyNodeProcessServiceInterfaceIp . ' -i ' . $proxyNodeProcessServiceInterfaceIp;
+								if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+									$proxyNodeProcessServiceInterfaceIp = $proxyNode['internal_ip_version_' . $nodeIpVersion];
 								}
+
+								$proxyNodeProcessService .= ' -e ' . $proxyNodeProcessServiceInterfaceIp . ' -i ' . $proxyNodeProcessServiceInterfaceIp;
 							}
 
 							$proxyNodeProcessService .= ' -n -p' . $proxyNodeProcess['port_id'] . ' ' . $proxyNodeProcessIpVersionPriority;
