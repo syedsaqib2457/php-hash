@@ -649,12 +649,6 @@
 						$nameserverNodeProcessConfigurationOptions['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
 
 						foreach ($this->nodeData['nodes'][$nameserverNodeProcess]['type'] as $nameserverNode) {
-							$nameserverNodeProcessIps = array_filter(array(
-								$nameserverNode['internal_ip_version_4'],
-								$nameserverNode['internal_ip_version_6'],
-								$nameserverNode['external_ip_version_4'],
-								$nameserverNode['external_ip_version_6']
-							));
 							$nameserverNodeUserIdIndex = 0;
 
 							while (isset($nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]) === true) {
@@ -769,12 +763,6 @@
 						// todo: move previous proxy node foreach loop with node_processes here to improve performance (looping through potentially thousands of processes 3 times is slower than killing each process synchronously)
 
 						foreach ($this->nodeData['nodes'][$proxyNodeProcess]['type'] as $proxyNode) {
-							$proxyNodeProcessIps = array_filter(array(
-								$proxyNode['internal_ip_version_4'],
-								$proxyNode['internal_ip_version_6'],
-								$proxyNode['external_ip_version_4'],
-								$proxyNode['external_ip_version_6']
-							));
 							$proxyNodeProcessIpVersionPriority = '-';
 
 							foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
