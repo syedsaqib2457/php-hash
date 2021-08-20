@@ -38,138 +38,6 @@
 			return;
 		}
 
-		protected function _optimizeKernel() {
-			// todo: revisit each setting to verify they're optimal
-			$kernelOptions = array(
-				'fs.aio-max-nr = 1000000000',
-				'fs.file-max = 1000000000',
-				'fs.nr_open = 1000000000',
-				'fs.pipe-max-size = 10000000',
-				'fs.suid_dumpable = 0',
-				'kernel.core_uses_pid = 1',
-				'kernel.hung_task_timeout_secs = 2',
-				'kernel.io_delay_type = 3',
-				'kernel.kptr_restrict = 2',
-				'kernel.msgmax = 65535',
-				'kernel.msgmnb = 65535',
-				'kernel.printk = 7 7 7 7',
-				'kernel.sem = 404 256000 64 2048',
-				'kernel.shmmni = 32767',
-				'kernel.sysrq = 0',
-				'kernel.threads-max = 1000000000',
-				'net.core.default_qdisc = fq',
-				'net.core.dev_weight = 100000',
-				'net.core.netdev_max_backlog = 1000000',
-				'net.core.somaxconn = 1000000000',
-				'net.ipv4.conf.all.accept_redirects = 0',
-				'net.ipv4.conf.all.accept_source_route = 0',
-				'net.ipv4.conf.all.arp_ignore = 1',
-				'net.ipv4.conf.all.bootp_relay = 0',
-				'net.ipv4.conf.all.forwarding = 0',
-				'net.ipv4.conf.all.rp_filter = 1',
-				'net.ipv4.conf.all.secure_redirects = 0',
-				'net.ipv4.conf.all.send_redirects = 0',
-				'net.ipv4.conf.all.log_martians = 0',
-				'net.ipv4.icmp_echo_ignore_all = 0',
-				'net.ipv4.icmp_echo_ignore_broadcasts = 0',
-				'net.ipv4.icmp_ignore_bogus_error_responses = 1',
-				'net.ipv4.ip_forward = 0',
-				'net.ipv4.ip_local_port_range = 1024 65000',
-				'net.ipv4.ipfrag_high_thresh = 64000000',
-				'net.ipv4.ipfrag_low_thresh = 32000000',
-				'net.ipv4.ipfrag_time = 10',
-				'net.ipv4.neigh.default.gc_interval = 50',
-				'net.ipv4.neigh.default.gc_stale_time = 10',
-				'net.ipv4.neigh.default.gc_thresh1 = 32',
-				'net.ipv4.neigh.default.gc_thresh2 = 1024',
-				'net.ipv4.neigh.default.gc_thresh3 = 2048',
-				'net.ipv4.route.gc_timeout = 2',
-				'net.ipv4.tcp_adv_win_scale = 2',
-				'net.ipv4.tcp_congestion_control = htcp',
-				'net.ipv4.tcp_fastopen = 2',
-				'net.ipv4.tcp_fin_timeout = 2',
-				'net.ipv4.tcp_keepalive_intvl = 2',
-				'net.ipv4.tcp_keepalive_probes = 2',
-				'net.ipv4.tcp_keepalive_time = 2',
-				'net.ipv4.tcp_low_latency = 1',
-				'net.ipv4.tcp_max_orphans = 100000',
-				'net.ipv4.tcp_max_syn_backlog = 1000000',
-				'net.ipv4.tcp_max_tw_buckets = 100000000',
-				'net.ipv4.tcp_moderate_rcvbuf = 1',
-				'net.ipv4.tcp_no_metrics_save = 1',
-				'net.ipv4.tcp_orphan_retries = 0',
-				'net.ipv4.tcp_retries2 = 1',
-				'net.ipv4.tcp_rfc1337 = 0',
-				'net.ipv4.tcp_sack = 0',
-				'net.ipv4.tcp_slow_start_after_idle = 0',
-				'net.ipv4.tcp_syn_retries = 2',
-				'net.ipv4.tcp_synack_retries = 2',
-				'net.ipv4.tcp_syncookies = 0',
-				'net.ipv4.tcp_thin_linear_timeouts = 1',
-				'net.ipv4.tcp_timestamps = 1',
-				'net.ipv4.tcp_tw_reuse = 0',
-				'net.ipv4.tcp_window_scaling = 1',
-				'net.ipv4.udp_rmem_min = 1',
-				'net.ipv4.udp_wmem_min = 1',
-				'net.netfilter.nf_conntrack_max = 100000000',
-				'net.netfilter.nf_conntrack_tcp_loose = 0',
-				'net.netfilter.nf_conntrack_tcp_timeout_close = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_established = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_last_ack = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_syn_recv = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_syn_sent = 10',
-				'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 10',
-				'net.nf_conntrack_max = 100000000',
-				'net.ipv6.conf.all.accept_redirects = 0',
-				'net.ipv6.conf.all.accept_source_route = 0',
-				'net.ipv6.conf.all.disable_ipv6 = 0',
-				'net.ipv6.conf.all.forwarding = 0',
-				'net.ipv6.ip6frag_high_thresh = 64000000',
-				'net.ipv6.ip6frag_low_thresh = 32000000',
-				'vm.dirty_background_ratio = 10',
-				'vm.dirty_expire_centisecs = 10',
-				'vm.dirty_ratio = 10',
-				'vm.dirty_writeback_centisecs = 100',
-				'vm.max_map_count = 1000000',
-				'vm.mmap_min_addr = 4096',
-				'vm.overcommit_memory = 0',
-				'vm.swappiness = 0'
-			);
-			file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
-			shell_exec('sudo ' . $this->nodeData['binary_files']['sysctl'] . ' -p');
-
-			if (
-				is_numeric($this->kernelPageSize) &&
-				is_numeric($this->memoryCapacityBytes)
-			) {
-				$dynamicKernelOptions = array(
-					'kernel.shmall' => floor($this->memoryCapacityBytes / $this->kernelPageSize),
-					'kernel.shmmax' => $this->memoryCapacityBytes,
-					'net.core.optmem_max' => ceil($this->memoryCapacityBytes * 0.02),
-					'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes = ceil($this->memoryCapacityBytes * 0.00034)),
-					'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
-					'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
-					'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
-				);
-				$memoryCapacityPages = ceil($this->memoryCapacityBytes / $this->kernelPageSize);
-
-				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_mem'] = $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
-					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
-					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_rmem'];
-					$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_mem'];
-				}
-
-				foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
-					shell_exec('sudo ' . $this->nodeData['binary_files']['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
-				}
-			}
-
-			return;
-		}
-
 		protected function _processFirewall($nodeProcessPartKey = false) {
 			$firewallBinaryFiles = array(
 				4 => $this->nodeData['binary_files']['iptables-restore'],
@@ -337,7 +205,135 @@
 				return;
 			}
 
+			// todo: verify each static kernel option value is optimal
+			// todo: add static net.ipv6 settings
+			$kernelOptions = array(
+				'fs.aio-max-nr = 1000000000',
+				'fs.file-max = 1000000000',
+				'fs.nr_open = 1000000000',
+				'fs.pipe-max-size = 10000000',
+				'fs.suid_dumpable = 0',
+				'kernel.core_uses_pid = 1',
+				'kernel.hung_task_timeout_secs = 2',
+				'kernel.io_delay_type = 3',
+				'kernel.kptr_restrict = 2',
+				'kernel.msgmax = 65535',
+				'kernel.msgmnb = 65535',
+				'kernel.printk = 7 7 7 7',
+				'kernel.sem = 404 256000 64 2048',
+				'kernel.shmmni = 32767',
+				'kernel.sysrq = 0',
+				'kernel.threads-max = 1000000000',
+				'net.core.default_qdisc = fq',
+				'net.core.dev_weight = 100000',
+				'net.core.netdev_max_backlog = 1000000',
+				'net.core.somaxconn = 1000000000',
+				'net.ipv4.conf.all.accept_redirects = 0',
+				'net.ipv4.conf.all.accept_source_route = 0',
+				'net.ipv4.conf.all.arp_ignore = 1',
+				'net.ipv4.conf.all.bootp_relay = 0',
+				'net.ipv4.conf.all.forwarding = 0',
+				'net.ipv4.conf.all.rp_filter = 1',
+				'net.ipv4.conf.all.secure_redirects = 0',
+				'net.ipv4.conf.all.send_redirects = 0',
+				'net.ipv4.conf.all.log_martians = 0',
+				'net.ipv4.icmp_echo_ignore_all = 0',
+				'net.ipv4.icmp_echo_ignore_broadcasts = 0',
+				'net.ipv4.icmp_ignore_bogus_error_responses = 1',
+				'net.ipv4.ip_forward = 0',
+				'net.ipv4.ip_local_port_range = 1024 65000',
+				'net.ipv4.ipfrag_high_thresh = 64000000',
+				'net.ipv4.ipfrag_low_thresh = 32000000',
+				'net.ipv4.ipfrag_time = 10',
+				'net.ipv4.neigh.default.gc_interval = 50',
+				'net.ipv4.neigh.default.gc_stale_time = 10',
+				'net.ipv4.neigh.default.gc_thresh1 = 32',
+				'net.ipv4.neigh.default.gc_thresh2 = 1024',
+				'net.ipv4.neigh.default.gc_thresh3 = 2048',
+				'net.ipv4.route.gc_timeout = 2',
+				'net.ipv4.tcp_adv_win_scale = 2',
+				'net.ipv4.tcp_congestion_control = htcp',
+				'net.ipv4.tcp_fastopen = 2',
+				'net.ipv4.tcp_fin_timeout = 2',
+				'net.ipv4.tcp_keepalive_intvl = 2',
+				'net.ipv4.tcp_keepalive_probes = 2',
+				'net.ipv4.tcp_keepalive_time = 2',
+				'net.ipv4.tcp_low_latency = 1',
+				'net.ipv4.tcp_max_orphans = 100000',
+				'net.ipv4.tcp_max_syn_backlog = 1000000',
+				'net.ipv4.tcp_max_tw_buckets = 100000000',
+				'net.ipv4.tcp_moderate_rcvbuf = 1',
+				'net.ipv4.tcp_no_metrics_save = 1',
+				'net.ipv4.tcp_orphan_retries = 0',
+				'net.ipv4.tcp_retries2 = 1',
+				'net.ipv4.tcp_rfc1337 = 0',
+				'net.ipv4.tcp_sack = 0',
+				'net.ipv4.tcp_slow_start_after_idle = 0',
+				'net.ipv4.tcp_syn_retries = 2',
+				'net.ipv4.tcp_synack_retries = 2',
+				'net.ipv4.tcp_syncookies = 0',
+				'net.ipv4.tcp_thin_linear_timeouts = 1',
+				'net.ipv4.tcp_timestamps = 1',
+				'net.ipv4.tcp_tw_reuse = 0',
+				'net.ipv4.tcp_window_scaling = 1',
+				'net.ipv4.udp_rmem_min = 1',
+				'net.ipv4.udp_wmem_min = 1',
+				'net.netfilter.nf_conntrack_max = 100000000',
+				'net.netfilter.nf_conntrack_tcp_loose = 0',
+				'net.netfilter.nf_conntrack_tcp_timeout_close = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_established = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_last_ack = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_syn_recv = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_syn_sent = 10',
+				'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 10',
+				'net.nf_conntrack_max = 100000000',
+				'net.ipv6.conf.all.accept_redirects = 0',
+				'net.ipv6.conf.all.accept_source_route = 0',
+				'net.ipv6.conf.all.disable_ipv6 = 0',
+				'net.ipv6.conf.all.forwarding = 0',
+				'net.ipv6.ip6frag_high_thresh = 64000000',
+				'net.ipv6.ip6frag_low_thresh = 32000000',
+				'vm.dirty_background_ratio = 10',
+				'vm.dirty_expire_centisecs = 10',
+				'vm.dirty_ratio = 10',
+				'vm.dirty_writeback_centisecs = 100',
+				'vm.max_map_count = 1000000',
+				'vm.mmap_min_addr = 4096',
+				'vm.overcommit_memory = 0',
+				'vm.swappiness = 0'
+			);
+			file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
+			shell_exec('sudo ' . $this->nodeData['binary_files']['sysctl'] . ' -p');
+			$dynamicKernelOptions = array(
+				'kernel.shmall' => floor($this->memoryCapacityBytes / $this->kernelPageSize),
+				'kernel.shmmax' => $this->memoryCapacityBytes,
+				'net.core.optmem_max' => ceil($this->memoryCapacityBytes * 0.02),
+				'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes = ceil($this->memoryCapacityBytes * 0.00034)),
+				'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
+				'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
+				'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
+			);
+			$memoryCapacityPages = ceil($this->memoryCapacityBytes / $this->kernelPageSize);
+
 			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
+				$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_mem'] = $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
+				$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
+				$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_rmem'];
+				$dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $nodeIpVersion . '.tcp_mem'];
+			}
+
+			foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
+				shell_exec('sudo ' . $this->nodeData['binary_files']['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
+			}
+
+			$nodeIpVersions = array(
+				32 => 4,
+				128 => 6
+			);
+
+			foreach ($nodeIpVersions as $nodeIpVersionNetworkMask => $nodeIpVersion) {
 				$nodeIpVersionInterfaceType = 'inet';
 
 				if ($nodeIpVersion === 6) {
@@ -871,8 +867,6 @@
 		}
 
 		public function processNodeData() {
-			$this->_verifyNameserverProcesses();
-
 			if (empty($this->nodeData) === true) {
 				unlink($nodeProcessResponseFile);
 				shell_exec('sudo wget -O ' . ($nodeProcessResponseFile = '/tmp/nodeProcessResponse.json') . ' --no-dns-cache --post-data "json={\"action\":\"process\",\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/nodes');
