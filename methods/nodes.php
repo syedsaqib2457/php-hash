@@ -1351,7 +1351,9 @@
 
 			// todo: calculate buffer memory percentages for each based on most recent 10-minute interval resource usage logs
 				// minimum 2.5% for disabled protocol per IP version
+					// * 2 if one ip version is disabled
 				// minimum 10% for active protocol per IP version
+					// * 2 if one ip version is disabled
 				// maximum 80% memory for combined
 					// lower this or increase this based on system processing % (some systems will frequently change authentication while some may never change)
 				// if IPv4 or IPv6 is disabled, allocate buffers to enabled IP version
@@ -1359,6 +1361,15 @@
 				// static 10% for optmem_max
 
 			$nodeTransportProtocols = array_keys($response['data']['node_transport_protocol_memory_percentages']);
+
+			foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
+				foreach ($nodeIpVersions as $nodeIpVersion) {
+					if (empty($response['data']['node_ip'][$nodeIpVersion]) === true) {
+						unset($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][$nodeIpVersion]);
+						$response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][(10 - $nodeIpVersion)] = ($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][(10 - $nodeIpVersion)] * 2);
+					}
+				}
+			}
 
 			foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
 				$nodeProcessTransportProtocolCountVariable = 'nodeProcessTransportProtocol' . ucwords($nodeTransportProtocol) . 'Count';
@@ -1379,7 +1390,9 @@
 				}
 
 				if ($$nodeProcessTransportProtocolCountVariable > 0) {
-					$response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol] = 15;
+					foreach ($nodeIpVersions as $nodeIpVersion) {
+						$response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][$nodeIpVersion] = (20 / count($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol]));
+					}
 				}
 			}
 
@@ -1404,9 +1417,7 @@
 			));
 			$response['status_valid'] = ($nodeResourceUsageLog !== false);
 
-			if (empty($nodeResourceUsageLog) === true) {
-				// ..
-			} else {
+			if (empty($nodeResourceUsageLog) === false) {
 				// ..
 			}
 
