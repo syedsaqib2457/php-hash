@@ -141,6 +141,10 @@
 			$kernelPageSize = current($kernelPageSize);
 			$memoryCapacityBytes = current($memoryCapacityBytes);
 
+			// todo: set static memory buffer maximums to 100% memory to prevent bottlenecks and failed connections, then enable/disable each sysctl setting based on active nodes / processes
+			// todo: set reasonable size for socket default
+			// todo: add net.ipv6 settings
+
 			if (
 				is_numeric($kernelPageSize) &&
 				is_numeric($memoryCapacityBytes)

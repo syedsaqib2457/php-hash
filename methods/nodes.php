@@ -1228,14 +1228,14 @@
 						32 => 4,
 						128 => 6
 					)),
-					'node_transport_protocol_memory_percentages' => array(
+					'node_transport_protocols' => array(
 						'tcp' => array(
-							4 => 2.5,
-							6 => 2.5
+							4 => true,
+							6 => true
 						),
 						'udp' => array(
-							4 => 2.5,
-							6 => 2.5
+							4 => true,
+							6 => true
 						)
 					),
 					'private_network' => $this->settings['private_network'],
@@ -1349,72 +1349,12 @@
 				}
 			}
 
-			$nodeTransportProtocols = array_keys($response['data']['node_transport_protocol_memory_percentages']);
+			$nodeTransportProtocols = array_keys($response['data']['node_transport_protocols']);
 
 			foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					if (empty($response['data']['node_ip'][$nodeIpVersion]) === true) {
-						unset($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][$nodeIpVersion]);
-						$response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][(10 - $nodeIpVersion)] = ($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][(10 - $nodeIpVersion)] * 2);
-					}
-				}
-			}
-
-			foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
-				$nodeProcessTransportProtocolCountVariable = 'nodeProcessTransportProtocol' . ucwords($nodeTransportProtocol) . 'Count';
-				$$nodeProcessTransportProtocolCountVariable = $this->count(array(
-					'in' => 'node_processes',
-					'where' => array(
-						'node_id' => $nodeId,
-						'transport_protocol' => array(
-							null,
-							$nodeTransportProtocol
-						)
-					)
-				));
-				$response['status_active'] = (is_int($$nodeProcessTransportProtocolCountVariable) === true);
-
-				if ($response['status_active'] === false) {
-					return $response;
-				}
-
-				if ($$nodeProcessTransportProtocolCountVariable > 0) {
-					foreach ($nodeIpVersions as $nodeIpVersion) {
-						$response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][$nodeIpVersion] = (20 / count($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol]));
-					}
-				}
-			}
-
-			$nodeResourceUsageLog = $this->fetch(array(
-				'fields' => array(
-					'memory_capacity_megabytes',
-					'memory_percentage',
-					'memory_percentage_tcp_ip_version_4',
-					'memory_percentage_tcp_ip_version_6',
-					'memory_percentage_udp_ip_version_4',
-					'memory_percentage_udp_ip_version_6'
-				),
-				'from' => 'node_resource_usage_logs',
-				'sort' => array(
-					'field' => 'created',
-					'order' => 'DESC'
-				),
-				'where' => array(
-					'memory_capacity_megabytes >' => 0,
-					'node_id' => $nodeId
-				)
-			));
-			$response['status_valid'] = ($nodeResourceUsageLog !== false);
-
-			if (empty($nodeResourceUsageLog) === false) {
-				$nodeTransportProtocolMemoryUsagePercentage = $nodeResourceUsageLog['memory_percentage_tcp_ip_version_4'] + $nodeResourceUsageLog['memory_percentage_tcp_ip_version_6'] + $nodeResourceUsageLog['memory_percentage_udp_ip_version_4'] + $nodeResourceUsageLog['memory_percentage_udp_ip_version_6'];
-
-				foreach ($nodeTransportProtocols as $nodeTransportProtocol) {
-					foreach ($nodeIpVersions as $nodeIpVersion) {
-						if (empty($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][$nodeIpVersion]) === false) {
-							max($response['data']['node_transport_protocol_memory_percentages'][$nodeTransportProtocol][$nodeIpVersion],
-							$nodeResourceUsageLog['memory_percentage_' . $nodeTransportProtocol . '_ip_version_' . $nodeIpVersion] + (($nodeTransportProtocolMemoryUsagePercentage / 80) * $nodeResourceUsageLog['memory_percentage_' . $nodeTransportProtocol . '_ip_version_' . $nodeIpVersion]));
-						}
+						unset($response['data']['node_transport_protocols'][$nodeTransportProtocol][$nodeIpVersion]);
 					}
 				}
 			}
