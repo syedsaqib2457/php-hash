@@ -120,10 +120,6 @@
 					'cpu_percentage' => true,
 					'created' => true,
 					'memory_percentage' => true,
-					'memory_percentage_tcp_ip_version_4' => true,
-					'memory_percentage_tcp_ip_version_6' => true,
-					'memory_percentage_udp_ip_version_4' => true,
-					'memory_percentage_udp_ip_version_6' => true,
 					'node_id' => true,
 					'node_process_type' => true
 				));
@@ -165,10 +161,6 @@
 					'created' => true,
 					'memory_capacity_megabytes' => true,
 					'memory_percentage' => true,
-					'memory_percentage_tcp_ip_version_4' => true,
-					'memory_percentage_tcp_ip_version_6' => true,
-					'memory_percentage_udp_ip_version_4' => true,
-					'memory_percentage_udp_ip_version_6' => true,
 					'node_id' => true,
 					'storage_capacity_megabytes' => true,
 					'storage_percentage' => true
