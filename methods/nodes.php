@@ -1365,8 +1365,6 @@
 						'application_protocol',
 						'external_ip_version_4',
 						'external_ip_version_6',
-						'internal_ip_version_4',
-						'internal_ip_version_6',
 						'port_id',
 						'transport_protocol'
 					),
@@ -1400,19 +1398,6 @@
 				if (empty($nodeProcesses) === false) {
 					end($nodeProcesses);
 					$response['data']['node_processes'][$nodeProcessType] = array_chunk($nodeProcesses, ((key($nodeProcesses) + 1) / 2));
-
-					foreach($nodeProcesses as $nodeProcess) {
-						foreach ($nodeIpVersions as $nodeIpVersion) {
-							$nodeIp = $nodeProcess['internal_ip_version_' . $nodeIpVersion];
-
-							if (
-								(empty($nodeIp) === false) &&
-								(empty($response['data']['node_ip'][$nodeIpVersion][$nodeIp]) === true)
-							) {
-								$response['data']['node_ip'][$nodeIpVersion][$nodeIp] = $nodeIp;
-							}
-						}
-					}
 				}
 
 				if (empty($nodeUsers) === false) {
