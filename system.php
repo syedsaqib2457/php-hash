@@ -587,58 +587,6 @@
 								'type' => 'CHAR(10)'
 							)
 						),
-						'settings' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'id' => array(
-								'primary_key' => true,
-								'type' => 'VARCHAR(255)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'value' => array(
-								'type' => 'VARCHAR(255)'
-							)
-						),
-						'user_request_destinations' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'id' => array(
-								'auto_increment' => true,
-								'primary_key' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'request_destination_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'status_processed' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'status_removed' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'user_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							)
-						),
 						'resource_usage_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
@@ -697,6 +645,58 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
+							)
+						),
+						'settings' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'primary_key' => true,
+								'type' => 'VARCHAR(255)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'value' => array(
+								'type' => 'VARCHAR(255)'
+							)
+						),
+						'user_request_destinations' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'request_destination_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'status_processed' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_removed' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'user_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
 							)
 						),
 						'user_request_limit_rules' => array(
