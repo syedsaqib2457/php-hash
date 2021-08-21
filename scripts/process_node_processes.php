@@ -205,8 +205,6 @@
 				return;
 			}
 
-			// todo: verify each static kernel option value is optimal
-			// todo: add static net.ipv6 settings
 			$kernelOptions = array(
 				'fs.aio-max-nr = 1000000000',
 				'fs.file-max = 1000000000',
@@ -293,8 +291,15 @@
 				'net.ipv6.conf.all.accept_source_route = 0',
 				'net.ipv6.conf.all.disable_ipv6 = 0',
 				'net.ipv6.conf.all.forwarding = 0',
+				// todo: review all static ipv4 and ipv6 options
+				'net.ipv6.bindv6only = 0',
 				'net.ipv6.ip6frag_high_thresh = 64000000',
 				'net.ipv6.ip6frag_low_thresh = 32000000',
+				'net.ipv6.neigh.default.gc_interval = 50',
+				'net.ipv6.neigh.default.gc_stale_time = 10',
+				'net.ipv6.neigh.default.gc_thresh1 = 32',
+				'net.ipv6.neigh.default.gc_thresh2 = 1024',
+				'net.ipv6.neigh.default.gc_thresh3 = 2048',
 				'vm.dirty_background_ratio = 10',
 				'vm.dirty_expire_centisecs = 10',
 				'vm.dirty_ratio = 10',
