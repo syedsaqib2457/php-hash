@@ -1406,15 +1406,17 @@
 					));
 					$userRequestLimitRules = $this->fetch(array(
 						'fields' => array(
-							'request_limit_rule_id'
+							'request_limit_rule_id',
+							'status_limit_exceeded_destination_only'
 						),
 						'from' => 'user_request_limit_rules',
 						'where' => array(
+							'limit_until !=' => null,
 							'status_removed' => false,
-							'status_request_limit_exceeded' => true,
 							'user_id' => $userIds
 						)
 					));
+					// todo: add limiting for status_limit_exceeded_destination_only based on node_user_request_destination_logs
 					$users = $this->fetch(array(
 						'fields' => array(
 							'authentication_password',

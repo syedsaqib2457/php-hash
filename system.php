@@ -709,12 +709,22 @@
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'limit_until' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'DATETIME'
+							),
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
 							),
 							'request_limit_rule_id' => array(
 								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_limit_exceeded_destination_only' => array(
+								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
@@ -727,11 +737,6 @@
 								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
-							),
-							'status_request_limit_exceeded' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'BIGINT(11)'
 							),
 							'user_id' => array(
 								'default' => null,
