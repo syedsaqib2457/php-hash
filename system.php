@@ -604,9 +604,6 @@
 								'type' => 'VARCHAR(255)'
 							)
 						),
-						'system_resource_usage_logs' => array(
-							// ..
-						),
 						'user_request_destinations' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
@@ -640,6 +637,66 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
+							)
+						),
+						'resource_usage_logs' => array(
+							'bytes_received' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'bytes_sent' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'cpu_capacity_cores' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'cpu_capacity_megahertz' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'cpu_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'memory_capacity_megabytes' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'memory_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'storage_capacity_megabytes' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'storage_percentage' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
 							)
 						),
 						'user_request_limit_rules' => array(
