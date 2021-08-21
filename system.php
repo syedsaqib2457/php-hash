@@ -279,11 +279,39 @@
 							)
 						),
 						'node_user_request_destination_logs' => array(
-							// ..
-							// todo: add limit_requests_until as datetime to user_request_limit_rules
-							// todo: add boolean status limit_exceeded_destination_only to user_request_limit_rules to allow users to block the entire group of destinations after exceeding 1
-							// todo: add cidr blocking to request limit rules
-							// todo: delete status_limit_exceeded
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'request_destination_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'requests' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'user_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							)
 						),
 						'node_user_resource_usage_logs' => array(
 							'bytes_received' => array(
