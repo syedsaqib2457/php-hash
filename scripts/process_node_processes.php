@@ -622,6 +622,7 @@
 				$this->_processFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
+				// todo: use node_processes node_id for internal nameserver or external_ip field with no node_id for external nameserver
 
 				foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nameserverNodeProcessType][$nodeProcessPartKey] as $nameserverNodeProcessKey => $nameserverNodeProcess) {
@@ -645,6 +646,9 @@
 						$nameserverNodeProcessConfigurationOptions = $this->nodeData['nameserver_node_configuration'][$nameserverNodeProcess['type']];
 						$nameserverNodeProcessConfigurationOptions['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
 						$nameserverNodeProcessConfigurationOptions['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
+
+						/*
+						todo: only set nameserver views for node DNS IP and node_users for recursive_dns
 
 						foreach ($this->nodeData['nodes'][$nameserverNodeProcess]['type'] as $nameserverNode) {
 							$nameserverNodeUserIdIndex = 0;
@@ -671,6 +675,7 @@
 								}
 							}
 						}
+						*/
 
 						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named named_' . $nameserverNodeProcessName);
 						$nameserverNodeProcessService = array(
@@ -754,9 +759,9 @@
 						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
 						$proxyNodeProcessService = $proxyNodeProcessServiceName . ' -a';
 						// todo: set option to enable anonymizing headers for HTTP
-						// todo: set option to prioritize ipv6 or ipv4
-						// todo: move previous proxy node foreach loop with node_processes here to improve performance (looping through potentially thousands of processes 3 times is slower than killing each process synchronously)
 
+						/*
+						todo: only loop through node IPs with active proxy node_users
 						foreach ($this->nodeData['nodes'][$proxyNodeProcess]['type'] as $proxyNode) {
 							$proxyNodeProcessIpVersionPriority = '-';
 
@@ -774,6 +779,7 @@
 							$proxyNodeProcessService .= ' -n -p' . $proxyNodeProcess['port_id'] . ' ' . $proxyNodeProcessIpVersionPriority;
 							$proxyNodeProcessConfiguration['_' . $proxyNode['id']] = $proxyNodeProcessService;
 						}
+						*/
 
 						$proxyNodeProcessService = $proxyNodeProcessServiceName;
 

@@ -1350,6 +1350,7 @@
 						'application_protocol',
 						'external_ip_version_4',
 						'external_ip_version_6',
+						'node_id',
 						'port_id',
 						'transport_protocol'
 					),
