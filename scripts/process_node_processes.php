@@ -732,9 +732,6 @@
 						}
 					}
 
-					/* todo: add option in ghostcompute to allow selecting IP addresses from specific nameserver types for each node's system-wide resolv.conf
-						(e.g. some may want to use public dns for system curl requests but internal dns for proxy processes) */
-
 					if (empty($nameserverNodeProcessUserListeningIp) === false) {
 						file_put_contents('/etc/nameservers.conf', 'nameserver ' . $nameserverNodeProcessUserListeningIp);
 					}
