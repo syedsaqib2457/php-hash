@@ -295,7 +295,6 @@
 				'net.ipv6.conf.all.accept_source_route = 0',
 				'net.ipv6.conf.all.disable_ipv6 = 0',
 				'net.ipv6.conf.all.forwarding = 0',
-				'net.ipv6.bindv6only = 0',
 				'net.ipv6.ip6frag_high_thresh = 64000000',
 				'net.ipv6.ip6frag_low_thresh = 32000000',
 				'net.ipv6.neigh.default.gc_interval = 50',
