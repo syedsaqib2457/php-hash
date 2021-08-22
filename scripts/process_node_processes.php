@@ -586,7 +586,7 @@
 							}
 						}
 
-						$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ' . ;
+						$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ';
 
 						foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
 							$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['external_ip_version_' . $nodeIpVersion];
@@ -603,10 +603,10 @@
 						$proxyNodeIndex++;
 					}
 
-					$proxyNodeUserAuthentication['internal_reserved_listening_address] = $proxyNodeProcessTypeServiceName . ' -a ';
+					$proxyNodeUserAuthentication['internal_reserved_listening_address'] = $proxyNodeProcessTypeServiceName . ' -a ';
 
 					foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-						$proxyNodeUserAuthentication['internal_reserved_listening_address] .= ' -e' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' -i' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+						$proxyNodeUserAuthentication['internal_reserved_listening_address'] .= ' -e' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' -i' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
 					}
 
 					$proxyNodeUserAuthentication[] = 'deny *';
