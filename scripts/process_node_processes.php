@@ -413,20 +413,21 @@
 				}
 			}
 
-			$recursiveDnsNode = current($this->nodeData['node_processes']['nameserver']);
-			$this->nodeData['recursive_dns_node_ips'] = array(
-				4 => $recursiveDnsNode['external_ip_version_4'],
-				6 => $recursiveDnsNode['external_ip_version_6']
-			);
+			$recursiveDnsNodeProcess = current($this->nodeData['node_processes']['nameserver']);
+			$this->nodeData['node_recursive_dns'] = array();
 
-			if (empty($recursiveDnsNode['node_id']) === false) {
-				$recursiveDnsNode = $this->nodeData['nodes'][$recursiveDnsNode['node_id']];
+			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+				$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNodeProcess['external_ip_version_' . $nodeIpVersion];
 
-				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-					$this->nodeData['recursive_dns_node_ips'][$nodeIpVersion] = $recursiveDnsNode['external_ip_version_' . $nodeIpVersion];
+				if (empty($recursiveDnsNode['node_id']) === false) {
+					$recursiveDnsNodeProcess = $this->nodeData['nodes'][$recursiveDnsNodeProcess['node_id']];
 
-					if (empty($recursiveDnsNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-						$this->nodeData['recursive_dns_node_ips'][$nodeIpVersion] = $recursiveDnsNode['internal_ip_version_' . $nodeIpVersion];
+					foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+						$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNodeProcess['external_ip_version_' . $nodeIpVersion];
+
+						if (empty($recursiveDnsNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+							$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNodeProcess['internal_ip_version_' . $nodeIpVersion];
+						}
 					}
 				}
 			}
@@ -504,8 +505,8 @@
 				'log' => false
 			);
 
-			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-				$proxyNodeConfiguration[$nodeIpVersion] = 'nserver ' . $this->nodeData['recursive_dns_node_ips'][$nodeIpVersion];
+			foreach ($this->nodeData['node_recursive_dns'] as $nodeRecursiveDnsIp) {
+				$proxyNodeConfiguration[] = 'nserver ' . $nodeRecursiveDnsIp;
 			}
 
 			$this->nodeData['proxy_node_process_types'] = array(
@@ -655,7 +656,6 @@
 				$this->_processFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
-				// todo: use node_processes node_id for internal nameserver or external_ip field with no node_id for external nameserver
 
 				foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nameserverNodeProcessType][$nodeProcessPartKey] as $nameserverNodeProcessKey => $nameserverNodeProcess) {
@@ -749,10 +749,6 @@
 							}
 						}
 					}
-
-					if (empty($nameserverNodeProcessUserListeningIp) === false) {
-						file_put_contents('/etc/nameservers.conf', 'nameserver ' . $nameserverNodeProcessUserListeningIp);
-					}
 				}
 
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
@@ -820,6 +816,7 @@
 			}
 
 			$this->_processFirewall();
+			file_put_contents('/etc/nameservers.conf', 'nameserver ' . implode("\n" . 'nameserver ', $this->nodeData['node_recursive_dns']));
 			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
 
 			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessId) {
