@@ -398,6 +398,7 @@
 				'};',
 				'};',
 				'resolver-query-timeout 10;',
+				'tcp-clients 1000000000;',
 				'};'
 			);
 			$this->nodeData['nameserver_node_process_types'] = array(
@@ -412,12 +413,32 @@
 				}
 			}
 
+			$recursiveDnsNode = current($this->nodeData['node_processes']['nameserver']);
+			$this->nodeData['recursive_dns_node_ips'] = array(
+				4 => $recursiveDnsNode['external_ip_version_4'],
+				6 => $recursiveDnsNode['external_ip_version_6']
+			);
+
+			if (empty($recursiveDnsNode['node_id']) === false) {
+				$recursiveDnsNode = $this->nodeData['nodes'][$recursiveDnsNode['node_id']];
+
+				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+					$this->nodeData['recursive_dns_node_ips'][$nodeIpVersion] = $recursiveDnsNode['external_ip_version_' . $nodeIpVersion];
+
+					if (empty($recursiveDnsNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+						$this->nodeData['recursive_dns_node_ips'][$nodeIpVersion] = $recursiveDnsNode['internal_ip_version_' . $nodeIpVersion];
+					}
+				}
+			}
+
 			foreach ($this->nodeData['nameserver_node_process_types'] as $nameserverNodeProcessType) {
 				if (empty($this->nodeData['node_processes'][$nameserverNodeProcessType]) === false) {
+					$nameserverNodeIndex = 0;
 					$nameserverNodeUserAuthentication = array();
 
 					foreach ($this->nodeData['node_users'][$nameserverNodeProcessType] as $nameserverNodeId => $nameserverNodeUserIds) {
 						$nameserverNodeUserIdIndex = 0;
+						// todo: add $this->nodeData['node_users']['nameserver'] with $nameserverNodeId 0 and whitelist containing privateNetworkIpBlocks ACL string
 
 						foreach ($nameserverNodeUserIds as $nameserverNodeUserId) {
 							$nameserverNodeViewIdentifier = $nameserverNodeId . '_' . $nameserverNodeUserIdIndex;
@@ -441,35 +462,31 @@
 							$nameserverNodeUserAuthentication[] = 'options {';
 							$nameserverNodeUserAuthentication[] = 'allow-query {';
 							$nameserverNodeUserAuthentication[] = 'privateNetworkIpBlocks;';
+							$nameserverNodeUserAuthentication[] = '};';
 
 							foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 								$nameserverNodeIps = array_filter(array(
 									$this->nodeData['nodes'][$nameserverNodeId]['internal_ip_version_' . $nodeIpVersion],
 									$this->nodeData['nodes'][$nameserverNodeId]['external_ip_version_' . $nodeIpVersion]
 								));
+								$nameserverNodeIp = current($nameserverNodeIps);
+								$nameserverNodeListeningIpOption = 'listen-on';
+								$nameserverNodeSourceIpOption = 'query-source';
 
-								if (empty($nameserverNodeIps) === false) {
-									$nameserverNodeSourceIpOption = 'query-source';
-
-									if ($nodeIpVersion === 6) {
-										$nameserverNodeSourceIpOption .= '-v6';
-									}
-
-									$nameserverNodeConfiguration[] = $nameserverNodeSourceIpOption . ' address ' . current($nameserverNodeIps) . ';';
+								if ($nodeIpVersion === 6) {
+									$nameserverNodeListeningIpOption .= '-v6';
+									$nameserverNodeSourceIpOption .= '-v6';
 								}
+
+								$nameserverNodeConfiguration[] = $nameserverNodeSourceIpOption . ' address ' . $nameserverNodeIp . ';';
+								$nameserverNodeUserAuthentication[] = $nameserverNodeListeningIpOption . ' {';
+								$nameserverNodeUserAuthentication['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+								$nameserverNodeUserAuthentication['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNodeIndex] = $nameserverNodeIp;
+								$nameserverNodeUserAuthentication[] = '};';
 							}
 
-							$nameserverNodeUserAuthentication[] = 'listen-on {';
-							$nameserverNodeUserAuthentication['internal_reserved_listening_address_version_4'] = false;
-							$nameserverNodeUserAuthentication['listening_address_version_4_' . $nameserverNodeViewIdentifier] = false;
-							$nameserverNodeUserAuthentication[] = '};';
-							$nameserverNodeUserAuthentication[] = 'listen-on-v6 {';
-							$nameserverNodeUserAuthentication['internal_reserved_listening_address_version_6'] = false;
-							$nameserverNodeUserAuthentication['listening_address_version_6_'  . $nameserverNodeViewIdentifier] = false;
-							$nameserverNodeUserAuthentication[] = '};';
-							$nameserverNodeUserAuthentication['tcp_' . $nameserverNodeViewIdentifier] = false;
-							$nameserverNodeUserAuthentication[] = '};';
 							$nameserverNodeConfiguration[] = $nameserverNodeUserAuthentication[] = '};';
+							$nameserverNodeIndex++;
 							$nameserverNodeUserIdIndex++;
 						}
 					}
@@ -630,6 +647,13 @@
 							(empty($nameserverNodeProcess['external_ip_version_4']) === false) ||
 							(empty($nameserverNodeProcess['external_ip_version_6']) === false)
 						) {
+							if ($nameserverNodeProcessType === 'nameserver') {
+								$nodeNameservers = array(
+									4 => $nameserverNodeProcess['external_ip_version_4'],
+									6 => $nameserverNodeProcess['external_ip_version_6']
+								);
+							}
+
 							continue;
 						}
 
@@ -647,35 +671,15 @@
 						$nameserverNodeProcessConfigurationOptions['directory'] = '"/var/cache/bind_' . $nameserverNodeProcess['id'] . '";';
 						$nameserverNodeProcessConfigurationOptions['process_id'] = 'pid-file "/var/run/named/named_' . $nameserverNodeProcess['id'] . '.pid";';
 
-						/*
-						todo: only set nameserver views for node DNS IP and node_users for recursive_dns
+						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+							$nameserverNodeIndex = 0;
+							$nameserverNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] .= ':' . $nameserverNodeProcess['port_id'];
 
-						foreach ($this->nodeData['nodes'][$nameserverNodeProcess]['type'] as $nameserverNode) {
-							$nameserverNodeUserIdIndex = 0;
-
-							while (isset($nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex]) === true) {
-								foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-									$nameserverNodeProcessUserListeningIp = $nameserverNode['external_ip_version_' . $nodeIpVersion];
-
-									if (empty($nameserverNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-										$nameserverNodeProcessUserListeningIp = $nameserverNode['internal_ip_version_' . $nodeIpVersion];
-									}
-
-									$nameserverNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ':' . $nameserverNodeProcess['port_id'];
-
-									if (empty($nameserverNodeProcessUserListeningIp) === false) {
-										$nameserverNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = $nameserverNodeProcessUserListeningIp . ':' . $nameserverNodeProcess['port_id'];
-									}
-
-									if (empty($nameserverNode['transport_protocol']) === true) {
-										$nameserverNodeProcessConfigurationOptions['tcp_' . $nameserverNode['id'] . '_' . $nameserverNodeUserIdIndex] = 'tcp-clients: 1000000000;';
-									}
-
-									$nameserverNodeUserIdIndex++;
-								}
+							while (isset($nameserverNodeProcessConfigurationOptions['listening_address_version_4_' . $nameserverNodeIndex]) === true) {
+								$nameserverNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $nameserverNodeIndex] .= ':' . $nameserverNodeProcess['port_id'];
+								$nameserverNodeIndex++;
 							}
 						}
-						*/
 
 						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named named_' . $nameserverNodeProcessName);
 						$nameserverNodeProcessService = array(
