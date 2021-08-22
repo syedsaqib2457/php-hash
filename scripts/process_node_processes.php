@@ -437,13 +437,11 @@
 					$nameserverNodeUserAuthentication = array();
 
 					foreach ($this->nodeData['node_users'][$nameserverNodeProcessType] as $nameserverNodeId => $nameserverNodeUserIds) {
-						$nameserverNodeUserIdIndex = 0;
 						// todo: add $this->nodeData['node_users']['nameserver'] with $nameserverNodeId 0 and whitelist containing privateNetworkIpBlocks ACL string
 
 						foreach ($nameserverNodeUserIds as $nameserverNodeUserId) {
-							$nameserverNodeViewIdentifier = $nameserverNodeId . '_' . $nameserverNodeUserIdIndex;
-							$nameserverNodeConfiguration[] = 'acl ' . $nameserverNodeViewIdentifier . ' {';
-							$nameserverNodeUserAuthentication[] = 'view ' . $nameserverNodeViewIdentifier . ' {';
+							$nameserverNodeConfiguration[] = 'acl ' . $nameserverNodeId . '_' . $nameserverNodeUserId . ' {';
+							$nameserverNodeUserAuthentication[] = 'view ' . $nameserverNodeId . '_' . $nameserverNodeUserId . ' {';
 							$nameserverNodeUserAuthentication[] = 'match-clients {';
 
 							if (empty($this->nodeData['users'][$nameserverNodeProcessType][$nameserverNodeUserId]) === true) {
@@ -487,7 +485,6 @@
 
 							$nameserverNodeConfiguration[] = $nameserverNodeUserAuthentication[] = '};';
 							$nameserverNodeIndex++;
-							$nameserverNodeUserIdIndex++;
 						}
 					}
 
@@ -499,8 +496,6 @@
 				'maxconn 20000',
 				'nobandlimin',
 				'nobandlimout',
-				'nameserver_ip_version_4' => false,
-				'nameserver_ip_version_6' => false,
 				'process_id' => false,
 				'stacksize 0',
 				'flush',
@@ -508,6 +503,11 @@
 				'allow * * * * HTTPS',
 				'log' => false
 			);
+
+			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+				$proxyNodeConfiguration[$nodeIpVersion] = 'nserver ' . $this->nodeData['recursive_dns_node_ips'][$nodeIpVersion];
+			}
+
 			$this->nodeData['proxy_node_process_types'] = array(
 				'proxy' => 'http_proxy',
 				'socks' => 'socks_proxy'
@@ -516,16 +516,15 @@
 			foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 				if (empty($this->nodeData['node_processes'][$proxyNodeProcessType]) === false) {
 					$proxyNodeConfiguration['log'] = 'log /var/log/' . $proxyNodeProcessType;
+					$proxyNodeIndex = 0;
 					$proxyNodeUserAuthentication = $proxyNodeUsers = array();
 
 					foreach ($this->nodeData['node_users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUserIds) {
-						$proxyNode = $this->nodeData['nodes'][$proxyNodeId];
 						$proxyNodeUserAuthentication[] = 'auth iponly strong';
 						$proxyNodeUserAuthenticationUsernames = $proxyNodeUserAuthenticationWhitelists = array();
-						$proxyNodeUsers = $this->nodeData['users'][$proxyNodeProcessType];
 
 						foreach ($proxyNodeUserIds as $proxyNodeUserId) {
-							$proxyNodeUser = $proxyNodeUsers[$proxyNodeUserId];
+							$proxyNodeUser = $this->nodeData['users'][$proxyNodeProcessType][$proxyNodeUserId];
 
 							if (
 								(
@@ -587,16 +586,33 @@
 							}
 						}
 
-						$proxyNodeUserAuthentication['_' . $proxyNodeId] = false;
+						$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ' . ;
+
+						foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+							$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['external_ip_version_' . $nodeIpVersion];
+
+							if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+								$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['internal_ip_version_' . $nodeIpVersion];
+							}
+
+							$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
+						}
+
 						$proxyNodeUserAuthentication[] = 'deny *';
 						$proxyNodeUserAuthentication[] = 'flush';
+						$proxyNodeIndex++;
 					}
 
-					$proxyNodeUserAuthentication['_reserved'] = false;
+					$proxyNodeUserAuthentication['internal_reserved_listening_address] = $proxyNodeProcessTypeServiceName . ' -a ';
+
+					foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+						$proxyNodeUserAuthentication['internal_reserved_listening_address] .= ' -e' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' -i' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+					}
+
 					$proxyNodeUserAuthentication[] = 'deny *';
 					$proxyNodeUserAuthentication[] = 'flush';
 
-					foreach ($this->nodeData['users'][$proxyNodeProcessType] as $proxyNodeUser) {
+					foreach ($this->nodeData['users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUser) {
 						$proxyNodeUsers[$proxyNodeUser['authentication_username']] = $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
 					}
 
@@ -751,43 +767,18 @@
 							}
 						}
 
+						$proxyNodeIndex = 0;
 						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
 						// todo: add nameserver IPs into config here
+						$proxyNodeProcessConfiguration['internal_reserved_listening_address'] .= ':' . $proxyNodeProcess['port_id'];
+
+						while (isset($nameserverNodeProcessConfigurationOptions['listening_address_' . $proxyNodeIndex]) === true) {
+							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcess['port_id'];
+							$proxyNodeIndex++;
+						}
+
 						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
-						$proxyNodeProcessService = $proxyNodeProcessServiceName . ' -a';
-						// todo: set option to enable anonymizing headers for HTTP
-
-						/*
-						todo: only loop through node IPs with active proxy node_users
-						foreach ($this->nodeData['nodes'][$proxyNodeProcess]['type'] as $proxyNode) {
-							$proxyNodeProcessIpVersionPriority = '-';
-
-							foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-								$proxyNodeProcessIpVersionPriority .= $nodeIpVersion;
-								$proxyNodeProcessServiceInterfaceIp = $proxyNode['external_ip_version_' . $nodeIpVersion];
-
-								if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-									$proxyNodeProcessServiceInterfaceIp = $proxyNode['internal_ip_version_' . $nodeIpVersion];
-								}
-
-								$proxyNodeProcessService .= ' -e ' . $proxyNodeProcessServiceInterfaceIp . ' -i ' . $proxyNodeProcessServiceInterfaceIp;
-							}
-
-							$proxyNodeProcessService .= ' -n -p' . $proxyNodeProcess['port_id'] . ' ' . $proxyNodeProcessIpVersionPriority;
-							$proxyNodeProcessConfiguration['_' . $proxyNode['id']] = $proxyNodeProcessService;
-						}
-						*/
-
-						$proxyNodeProcessService = $proxyNodeProcessServiceName;
-
-						foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-							$proxyNodeProcessService .= ' -e ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
-							$proxyNodeProcessService .= ' -i ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
-						}
-
-						$proxyNodeProcessService .= ' -n -p' . $proxyNodeProcess['port_id'] . ' -46';
-						$proxyNodeProcessConfiguration['_reserved'] = $proxyNodeProcessService;
-						shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcess['name']);
+						shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
 						$systemdServiceContents = array(
 							'[Service]',
 							'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
