@@ -647,13 +647,6 @@
 							(empty($nameserverNodeProcess['external_ip_version_4']) === false) ||
 							(empty($nameserverNodeProcess['external_ip_version_6']) === false)
 						) {
-							if ($nameserverNodeProcessType === 'nameserver') {
-								$nodeNameservers = array(
-									4 => $nameserverNodeProcess['external_ip_version_4'],
-									6 => $nameserverNodeProcess['external_ip_version_6']
-								);
-							}
-
 							continue;
 						}
 
