@@ -206,7 +206,6 @@
 			}
 
 			// todo: make sure options are set to primary interface and lo instead of just default
-			// todo: set all ipv4 and ipv6 options regardless of default values
 
 			$kernelOptions = array(
 				'fs.aio-max-nr = 1000000000',
