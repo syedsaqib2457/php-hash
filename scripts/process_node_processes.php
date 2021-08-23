@@ -373,34 +373,6 @@
 			}
 
 			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
-			$recursiveDnsNodeConfiguration = array(
-				'acl privateNetworkIpBlocks {',
-				$this->nodeData['private_network']['ip_blocks'][4],
-				$this->nodeData['private_network']['ip_blocks'][6],
-				$this->nodeData['private_network']['reserved_internal_ip'][4],
-				$this->nodeData['private_network']['reserved_internal_ip'][6],
-				'};',
-				'options {',
-				'cleaning-interval 1;',
-				'directory' => false,
-				'dnssec-enable yes;',
-				'dnssec-must-be-secure mydomain.local no;',
-				'dnssec-validation yes;',
-				'empty-zones-enable no;',
-				'lame-ttl 0;',
-				'max-cache-ttl 1;',
-				'max-ncache-ttl 1;',
-				'max-zone-ttl 1;',
-				'process_id' => false,
-				'rate-limit {',
-				'exempt-clients {',
-				'any;',
-				'};',
-				'};',
-				'resolver-query-timeout 10;',
-				'tcp-clients 1000000000;',
-				'};'
-			);
 
 			if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
 				$recursiveDnsNodeProcessDefaultServiceName = 'named';
@@ -427,65 +399,6 @@
 						}
 					}
 				}
-			}
-
-			if (empty($this->nodeData['node_processes']['recursive_dns']) === false) {
-				$recursiveDnsNodeIndex = 0;
-				$recursiveDnsNodeUserAuthentication = array();
-
-				foreach ($this->nodeData['node_users']{'recursive_dns'] as $recursiveDnsNodeId => $recursiveDnsNodeUserIds) {
-					// todo: add $this->nodeData['node_users']['recursive_dns'] with $recursiveDnsNodeId 0 and whitelist containing privateNetworkIpBlocks ACL string
-
-					foreach ($recursiveDnsNodeUserIds as $recursiveDnsNodeUserId) {
-						$recursiveDnsNodeConfiguration[] = 'acl ' . $recursiveDnsNodeId . '_' . $recursiveDnsNodeUserId . ' {';
-						$recursiveDnsNodeUserAuthentication[] = 'view ' . $recursiveDnsNodeId . '_' . $recursiveDnsNodeUserId . ' {';
-						$recursiveDnsNodeUserAuthentication[] = 'match-clients {';
-
-						if (empty($this->nodeData['users']['recursive_dns'][$recursiveDnsNodeUserId]) === true) {
-							$recursiveDnsNodeUserAuthentication[] = 'any;';
-						} elseif (empty($this->nodeData['users'][$recursiveDnsNodeProcessType][$recursiveDnsNodeUserId]['whitelist']) === false) {
-							$recursiveDnsNodeUserAuthenticationWhitelists = explode("\n", $this->nodeData['users']['recursive_dns'][$recursiveDnsNodeUserId]['authentication_whitelist']);
-
-							foreach ($recursiveDnsNodeUserAuthenticationWhitelists as $recursiveDnsNodeUserAuthenticationWhitelist) {
-								$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeUserAuthenticationWhitelist . ';';
-							}
-						} else {
-							$recursiveDnsNodeUserAuthentication[] = 'none;';
-						}
-
-						$recursiveDnsNodeUserAuthentication[] = '};';
-						$recursiveDnsNodeUserAuthentication[] = 'options {';
-						$recursiveDnsNodeUserAuthentication[] = 'allow-query {';
-						$recursiveDnsNodeUserAuthentication[] = 'privateNetworkIpBlocks;';
-						$recursiveDnsNodeUserAuthentication[] = '};';
-
-						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-							$recursiveDnsNodeIps = array_filter(array(
-								$this->nodeData['nodes'][$recursiveDnsNodeId]['internal_ip_version_' . $nodeIpVersion],
-								$this->nodeData['nodes'][$recursiveDnsNodeId]['external_ip_version_' . $nodeIpVersion]
-							));
-							$recursiveDnsNodeIp = current($recursiveDnsNodeIps);
-							$recursiveDnsNodeListeningIpOption = 'listen-on';
-							$recursiveDnsNodeSourceIpOption = 'query-source';
-
-							if ($nodeIpVersion === 6) {
-								$recursiveDnsNodeListeningIpOption .= '-v6';
-								$recursiveDnsNodeSourceIpOption .= '-v6';
-							}
-
-							$recursiveDnsNodeConfiguration[] = $recursiveDnsNodeSourceIpOption . ' address ' . $recursiveDnsNodeIp . ';';
-							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
-							$recursiveDnsNodeUserAuthentication['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
-							$recursiveDnsNodeUserAuthentication['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] = $recursiveDnsNodeIp;
-							$recursiveDnsNodeUserAuthentication[] = '};';
-						}
-
-						$recursiveDnsNodeConfiguration[] = $recursiveDnsNodeUserAuthentication[] = '};';
-						$recursiveDnsNodeIndex++;
-					}
-				}
-
-				$this->nodeData['recursive_dns_node_configuration'] = array_merge($recursiveDnsNodeConfiguration, $recursiveDnsNodeUserAuthentication);
 			}
 
 			$proxyNodeConfiguration = array(
@@ -622,6 +535,94 @@
 				}
 			}
 
+			$recursiveDnsNodeConfiguration = array(
+				'acl privateNetworkIpBlocks {',
+				$this->nodeData['private_network']['ip_blocks'][4],
+				$this->nodeData['private_network']['ip_blocks'][6],
+				$this->nodeData['private_network']['reserved_internal_ip'][4],
+				$this->nodeData['private_network']['reserved_internal_ip'][6],
+				'};',
+				'options {',
+				'cleaning-interval 1;',
+				'directory' => false,
+				'dnssec-enable yes;',
+				'dnssec-must-be-secure mydomain.local no;',
+				'dnssec-validation yes;',
+				'empty-zones-enable no;',
+				'lame-ttl 0;',
+				'max-cache-ttl 1;',
+				'max-ncache-ttl 1;',
+				'max-zone-ttl 1;',
+				'process_id' => false,
+				'rate-limit {',
+				'exempt-clients {',
+				'any;',
+				'};',
+				'};',
+				'resolver-query-timeout 10;',
+				'tcp-clients 1000000000;',
+				'};'
+			);
+
+			if (empty($this->nodeData['node_processes']['recursive_dns']) === false) {
+				$recursiveDnsNodeIndex = 0;
+				$recursiveDnsNodeUserAuthentication = array();
+
+				foreach ($this->nodeData['node_users']{'recursive_dns'] as $recursiveDnsNodeId => $recursiveDnsNodeUserIds) {
+					// todo: add $this->nodeData['node_users']['recursive_dns'] with $recursiveDnsNodeId 0 and whitelist containing privateNetworkIpBlocks ACL string
+
+					foreach ($recursiveDnsNodeUserIds as $recursiveDnsNodeUserId) {
+						$recursiveDnsNodeConfiguration[] = 'acl ' . $recursiveDnsNodeId . '_' . $recursiveDnsNodeUserId . ' {';
+						$recursiveDnsNodeUserAuthentication[] = 'view ' . $recursiveDnsNodeId . '_' . $recursiveDnsNodeUserId . ' {';
+						$recursiveDnsNodeUserAuthentication[] = 'match-clients {';
+
+						if (empty($this->nodeData['users']['recursive_dns'][$recursiveDnsNodeUserId]) === true) {
+							$recursiveDnsNodeUserAuthentication[] = 'any;';
+						} elseif (empty($this->nodeData['users'][$recursiveDnsNodeProcessType][$recursiveDnsNodeUserId]['whitelist']) === false) {
+							$recursiveDnsNodeUserAuthenticationWhitelists = explode("\n", $this->nodeData['users']['recursive_dns'][$recursiveDnsNodeUserId]['authentication_whitelist']);
+
+							foreach ($recursiveDnsNodeUserAuthenticationWhitelists as $recursiveDnsNodeUserAuthenticationWhitelist) {
+								$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeUserAuthenticationWhitelist . ';';
+							}
+						} else {
+							$recursiveDnsNodeUserAuthentication[] = 'none;';
+						}
+
+						$recursiveDnsNodeUserAuthentication[] = '};';
+						$recursiveDnsNodeUserAuthentication[] = 'options {';
+						$recursiveDnsNodeUserAuthentication[] = 'allow-query {';
+						$recursiveDnsNodeUserAuthentication[] = 'privateNetworkIpBlocks;';
+						$recursiveDnsNodeUserAuthentication[] = '};';
+
+						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+							$recursiveDnsNodeIps = array_filter(array(
+								$this->nodeData['nodes'][$recursiveDnsNodeId]['internal_ip_version_' . $nodeIpVersion],
+								$this->nodeData['nodes'][$recursiveDnsNodeId]['external_ip_version_' . $nodeIpVersion]
+							));
+							$recursiveDnsNodeIp = current($recursiveDnsNodeIps);
+							$recursiveDnsNodeListeningIpOption = 'listen-on';
+							$recursiveDnsNodeSourceIpOption = 'query-source';
+
+							if ($nodeIpVersion === 6) {
+								$recursiveDnsNodeListeningIpOption .= '-v6';
+								$recursiveDnsNodeSourceIpOption .= '-v6';
+							}
+
+							$recursiveDnsNodeConfiguration[] = $recursiveDnsNodeSourceIpOption . ' address ' . $recursiveDnsNodeIp . ';';
+							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
+							$recursiveDnsNodeUserAuthentication['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+							$recursiveDnsNodeUserAuthentication['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] = $recursiveDnsNodeIp;
+							$recursiveDnsNodeUserAuthentication[] = '};';
+						}
+
+						$recursiveDnsNodeConfiguration[] = $recursiveDnsNodeUserAuthentication[] = '};';
+						$recursiveDnsNodeIndex++;
+					}
+				}
+
+				$this->nodeData['recursive_dns_node_configuration'] = array_merge($recursiveDnsNodeConfiguration, $recursiveDnsNodeUserAuthentication);
+			}
+
 			$this->nodeData['node_process_types'] = array_merge($this->nodeData['proxy_node_process_types'], array('recursive_dns'));
 			$nodeProcessesToRemove = array();
 
@@ -651,6 +652,68 @@
 				$this->_processFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
+
+				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
+					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
+						$proxyNodeProcessName = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
+
+						if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
+							$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName . ' ', '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
+
+							if (empty($proxyNodeProcessProcessIds) === false) {
+								$this->_killProcessIds($proxyNodeProcessProcessIds);
+							}
+						}
+
+						$proxyNodeIndex = 0;
+						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
+						$proxyNodeProcessConfiguration['internal_reserved_listening_address'] .= ':' . $proxyNodeProcess['port_id'];
+
+						while (isset($proxyNodeProcessConfigurationOptions['listening_address_' . $proxyNodeIndex]) === true) {
+							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcess['port_id'];
+							$proxyNodeIndex++;
+						}
+
+						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
+						shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
+						$systemdServiceContents = array(
+							'[Service]',
+							'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
+						);
+						file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $systemdServiceContents));
+						file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
+						chmod($proxyNodeProcessConfigurationPath, 0755);
+						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
+						unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
+						$proxyNodeProcessEnded = false;
+						$proxyNodeProcessEndedTime = time();
+
+						while ($proxyNodeProcessEnded === false) {
+							$proxyNodeProcessEnded = ($this->_verifyNodeProcess($proxyNodeProcess) === false);
+							sleep(1);
+						}
+
+						$proxyNodeProcessStarted = false;
+						$proxyNodeProcessStartedTime = time();
+
+						while ($proxyNodeProcessStarted === false) {
+							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
+							$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcess) === true);
+							sleep(2);
+						}
+
+						if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
+							$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
+
+							if (is_numeric($proxyNodeProcessProcessId) === true) {
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n=1000000000');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s"unlimited"');
+								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
+							}
+						}
+					}
+				}
 
 				foreach ($this->nodeData['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessKey => $recursiveDnsNodeProcess) {
 					if (
@@ -740,68 +803,6 @@
 							shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n=1000000000');
 							shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s"unlimited"');
 							shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s=unlimited');
-						}
-					}
-				}
-
-				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
-						$proxyNodeProcessName = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
-
-						if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
-							$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName . ' ', '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
-
-							if (empty($proxyNodeProcessProcessIds) === false) {
-								$this->_killProcessIds($proxyNodeProcessProcessIds);
-							}
-						}
-
-						$proxyNodeIndex = 0;
-						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
-						$proxyNodeProcessConfiguration['internal_reserved_listening_address'] .= ':' . $proxyNodeProcess['port_id'];
-
-						while (isset($proxyNodeProcessConfigurationOptions['listening_address_' . $proxyNodeIndex]) === true) {
-							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcess['port_id'];
-							$proxyNodeIndex++;
-						}
-
-						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
-						shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
-						$systemdServiceContents = array(
-							'[Service]',
-							'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
-						);
-						file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $systemdServiceContents));
-						file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
-						chmod($proxyNodeProcessConfigurationPath, 0755);
-						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
-						unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
-						$proxyNodeProcessEnded = false;
-						$proxyNodeProcessEndedTime = time();
-
-						while ($proxyNodeProcessEnded === false) {
-							$proxyNodeProcessEnded = ($this->_verifyNodeProcess($proxyNodeProcess) === false);
-							sleep(1);
-						}
-
-						$proxyNodeProcessStarted = false;
-						$proxyNodeProcessStartedTime = time();
-
-						while ($proxyNodeProcessStarted === false) {
-							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
-							$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcess) === true);
-							sleep(2);
-						}
-
-						if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
-							$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
-
-							if (is_numeric($proxyNodeProcessProcessId) === true) {
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n1000000000');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n=1000000000');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s"unlimited"');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
-							}
 						}
 					}
 				}
