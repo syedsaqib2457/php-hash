@@ -92,10 +92,8 @@
 									'udp'
 								);
 
-								if (empty($nodeProcess['transport_protocol']) === false) {
-									$nodeProcessTransportProtocols = array(
-										$nodeProcess['transport_protocol']
-									);
+								if ($nodeProcessType === 'http_proxy') {
+									unset($nodeProcessTransportProtocols[1]);
 								}
 
 								foreach ($nodeProcessTransportProtocols as $nodeProcessTransportProtocol) {
