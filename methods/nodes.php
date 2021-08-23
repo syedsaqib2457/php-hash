@@ -285,9 +285,7 @@
 				$nodeId = $node['id'];
 				$nodeProcesses = array(
 					array(
-						'application_protocol' => 'http',
 						'port_id' => 80,
-						'transport_protocol' => 'tcp',
 						'type' => 'http_proxy'
 					),
 					array(
@@ -295,7 +293,6 @@
 						'type' => 'recursive_dns'
 					),
 					array(
-						'application_protocol' => 'socks',
 						'port_id' => 1080,
 						'type' => 'socks_proxy'
 					)
@@ -608,15 +605,12 @@
 			);
 			$nodeProcessTypes = array(
 				'http_proxy' => array(
-					'application_protocol' => 'http',
-					'port_id' => 80,
-					'transport_protocol' => 'tcp'
+					'port_id' => 80
 				),
 				'recursive_dns' => array(
 					'port_id' => 53
 				),
 				'socks_proxy' => array(
-					'application_protocol' => 'socks',
 					'port_id' => 1080
 				)
 			);
@@ -1347,12 +1341,10 @@
 			foreach ($nodeProcessTypes as $nodeProcessType) {
 				$nodeProcesses = $this->fetch(array(
 					'fields' => array(
-						'application_protocol',
 						'external_ip_version_4',
 						'external_ip_version_6',
 						'node_id',
-						'port_id',
-						'transport_protocol'
+						'port_id'
 					),
 					'from' => 'node_processes',
 					'where' => array(

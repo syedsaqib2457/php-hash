@@ -22,19 +22,6 @@
 				return $response;
 			}
 
-			$response['status_valid'] = (
-				(empty($parameters['data']['transport_protocol']) === false) &&
-				(in_array($parameters['data']['transport_protocol'], array(
-					'tcp',
-					'udp'
-				)) === true)
-			);
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid node process transport protocol, please try again.';
-				return $response;
-			}
-
 			if (empty($parameters['data']['node_id']) === false) {
 				$nodeParameters = array(
 					'fields' => array(
@@ -80,22 +67,6 @@
 			$nodeProcessNodeId = $parameters['data']['node_id'] = $node['id'];
 
 			if ($response['status_valid'] === false) {
-				return $response;
-			}
-
-			if (empty($parameters['data']['application_protocol']) === false) {
-				$response['status_valid'] = (in_array($parameters['data']['application_protocol'], array(
-					'http',
-					'socks'
-				)) === true);
-
-				if ($parameters['data']['application_protocol'] === 'http') {
-					$parameters['data']['transport_protocol'] = 'tcp';
-				}
-			}
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid node process application protocol, please try again.';
 				return $response;
 			}
 
@@ -156,12 +127,10 @@
 
 			$nodeProcessDataSaved = $this->save(array(
 				'data' => array_intersect_key($parameters['data'], array(
-					'application_protocol' => true,
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
 					'node_id' => true,
 					'port_id' => true,
-					'transport_protocol' => true,
 					'type' => true
 				)),
 				'to' => 'nodes'
@@ -191,19 +160,6 @@
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid node process type, please try again.';
-				return $response;
-			}
-
-			$response['status_valid'] = (
-				(empty($parameters['data']['transport_protocol']) === true) ||
-				(in_array($parameters['data']['transport_protocol'], array(
-					'tcp',
-					'udp'
-				)) === true)
-			);
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid node process transport protocol, please try again.';
 				return $response;
 			}
 
@@ -277,22 +233,6 @@
 				return $response;
 			}
 
-			if (empty($parameters['data']['application_protocol']) === false) {
-				$response['status_valid'] = (in_array($parameters['data']['application_protocol'], array(
-					'http',
-					'socks'
-				)) === true);
-
-				if ($parameters['data']['application_protocol'] === 'http') {
-					$parameters['data']['transport_protocol'] = 'tcp';
-				}
-
-				if ($response['status_valid'] === false) {
-					$response['message'] = 'Invalid node process application protocol, please try again.';
-					return $response;
-				}
-			}
-
 			if (empty($parameters['data']['port_id']) === false) {
 				$nodeProcessPortId = $this->_validatePort($parameters['data']['port_id']);
 				$response['status_valid'] = (is_int($nodeProcessPortId) === true);
@@ -352,13 +292,11 @@
 
 			$nodeProcessDataUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
-					'application_protocol' => true,
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
 					'id' => true,
 					'node_id' => true,
 					'port_id' => true,
-					'transport_protocol' => true,
 					'type' => true
 				)),
 				'in' => 'node_processs',

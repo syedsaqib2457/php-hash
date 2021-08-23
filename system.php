@@ -64,11 +64,6 @@
 							)
 						),
 						'node_processes' => array(
-							'application_protocol' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(4)'
-							),
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -101,11 +96,6 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'MEDIUMINT(3)'
-							),
-							'transport_protocol' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(3)'
 							),
 							'type' => array(
 								'default' => null,
