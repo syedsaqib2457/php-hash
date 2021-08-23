@@ -292,7 +292,7 @@
 					),
 					array(
 						'port_id' => 53,
-						'type' => 'nameserver'
+						'type' => 'recursive_dns'
 					),
 					array(
 						'application_protocol' => 'socks',
@@ -612,7 +612,7 @@
 					'port_id' => 80,
 					'transport_protocol' => 'tcp'
 				),
-				'nameserver' => array(
+				'recursive_dns' => array(
 					'port_id' => 53
 				),
 				'socks_proxy' => array(
@@ -1135,18 +1135,18 @@
 								'node_id' => $nodeId
 							)
 						));
-						$nodeNameserverProcessCount = $this->count(array(
-							'in' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeId,
-								'type' => 'nameserver'
-							)
-						));
 						$nodeHttpProxyProcessCount = $this->count(array(
 							'in' => 'node_processes',
 							'where' => array(
 								'node_id' => $nodeId,
 								'type' => 'http_proxy'
+							)
+						));
+						$nodeRecursiveDnsProcessCount = $this->count(array(
+							'in' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId,
+								'type' => 'recursive_dns'
 							)
 						));
 						$nodeSocksProxyProcessCount = $this->count(array(
@@ -1158,8 +1158,8 @@
 						));
 						$response['status_valid'] = (
 							($nodeCount !== false) &&
-							($nodeNameserverProcessCount !== false) &&
 							($nodeHttpProxyProcessCount !== false) &&
+							($nodeRecursiveDnsProcessCount !== false) &&
 							($nodeSocksProxyProcessCount !== false)
 						);
 
@@ -1168,8 +1168,8 @@
 						}
 
 						$response['data']['nodes'][$nodeId]['node_count'] = $nodeNodeCount;
-						$response['data']['nodes'][$nodeId]['node_nameserver_process_count'] = $nodeNameserverProcessCount;
 						$response['data']['nodes'][$nodeId]['node_http_proxy_process_count'] = $nodeHttpProxyProcessCount;
+						$response['data']['nodes'][$nodeId]['node_recursive_dns_process_count'] = $nodeRecursiveDnsProcessCount;
 						$response['data']['nodes'][$nodeId]['node_socks_proxy_process_count'] = nodeSocksProxyProcessCount;
 					}
 				}
@@ -1317,7 +1317,7 @@
 
 			$nodeProcessTypes = array(
 				'http_proxy',
-				'nameserver',
+				'recursive_dns',
 				'socks_proxy'
 			);
 

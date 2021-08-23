@@ -18,7 +18,7 @@
 			);
 			$this->nodeResourceUsageLogProcessTypes = array(
 				'http_proxy',
-				'nameserver',
+				'recursive_dns',
 				'socks_proxy',
 				'system'
 			);

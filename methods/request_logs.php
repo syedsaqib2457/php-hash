@@ -21,7 +21,7 @@
 				(empty($parameters['data']['type']) === false) &&
 				(in_array(array(
 					'http_proxy',
-					'nameserver',
+					'recursive_dns',
 					'socks_proxy'
 				)) === true)
 			);

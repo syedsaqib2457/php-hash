@@ -1,4 +1,6 @@
 <?php
+	// todo: refactor for version 1 release
+
 	if (
 		(empty($_SERVER['argv'][1]) === true) ||
 		(empty($_SERVER['argv'][2]) === true)
@@ -430,11 +432,11 @@
 		}
 
 		$commands = array(
-			'sudo rm /etc/resolv.conf && sudo touch /etc/nameservers.conf',
-			'sudo ln -s /etc/nameservers.conf /etc/resolv.conf'
+			'sudo rm /etc/resolv.conf && sudo touch /etc/recursive_dns.conf',
+			'sudo ln -s /etc/recursive_dns.conf /etc/resolv.conf'
 		);
 		applyCommands($commands);
-		file_put_contents('/etc/nameservers.conf', 'nameserver ' . key($nameserverIps));
+		file_put_contents('/etc/recursive_dns.conf', 'nameserver ' . key($nameserverIps));
 		echo 'Nameserver processes created successfully.' . "\n";
 	}
 

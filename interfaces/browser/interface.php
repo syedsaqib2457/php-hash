@@ -1068,34 +1068,34 @@
 			<span checked="0"></span>
 			<label>Enable nameserver processes</label>
 		</div>
-		<div class="container hidden" name="enable_nameserver_processes">
-			<div name="nameserver_process_details">
-				<label>Nameserver Processes</label>
+		<div class="container hidden" name="enable_recursive_dns_processes">
+			<div name="recursive_dns_process_details">
+				<label>Recursive DNS Processes</label>
 				<!-- list_statistics_for_process_usage -->
-				<label>Nameserver Process Ports</label>
-				<div name="nameserver_process_ports">
+				<label>Recursive DNS Process Ports</label>
+				<div name="recursive_dns_process_ports">
 					<!-- list_open_process_ports -->
 				</div>
 			</div>
-			<div class="checkbox-container" toggle="enable_opening_custom_nameserver_process_ports">
+			<div class="checkbox-container" toggle="enable_opening_custom_recursive_dns_process_ports">
 				<span checked="0"></span>
-				<label>Enable opening custom nameserver process ports</label>
+				<label>Enable opening custom recursive DNS process ports</label>
 			</div>
-			<div class="container hidden" name="enable_opening_custom_nameserver_process_ports">
+			<div class="container hidden" name="enable_opening_custom_recursive_dns_process_ports">
 				<div class="list" from="ports"></div>
-				<div class="checkbox-container" toggle="enable_only_allowing_custom_nameserver_process_ports">
+				<div class="checkbox-container" toggle="enable_only_allowing_custom_recursive_dns_process_ports">
 					<span checked="0"></span>
-					<label>Enable only allowing custom nameserver process ports</label>
+					<label>Enable only allowing custom recursive DNS process ports</label>
 				</div>
 			</div>
-			<div class="checkbox-container" toggle="enable_closing_custom_nameserver_process_ports">
+			<div class="checkbox-container" toggle="enable_closing_custom_recursive_dns_process_ports">
 				<span checked="0"></span>
-				<label>Enable closing custom nameserver process ports</label>
+				<label>Enable closing custom recursive DNS process ports</label>
 			</div>
-			<div class="container hidden" name="enable_closing_custom_nameserver_process_ports">
+			<div class="container hidden" name="enable_closing_custom_recursive_dns_process_ports">
 				<div class="list" from="ports"></div>
 			</div>
-			<label>Nameserver Users</label>
+			<label>Recursive DNS Users</label>
 			<div class="list" from="users"></div>
 		</div>
 		<div class="checkbox-container" toggle="enable_socks_proxy_processes">

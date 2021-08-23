@@ -11,7 +11,7 @@
 					(empty($parameters['data']['type']) === false) &&
 					(in_array($parameters['data']['type'], array(
 						'http_proxy',
-						'nameserver',
+						'recursive_dns',
 						'socks_proxy'
 					)) === true)
 				)
@@ -81,10 +81,6 @@
 
 			if ($response['status_valid'] === false) {
 				return $response;
-			}
-
-			if ($node['type'] === 'nameserver') {
-				unset($parameters['data']['application_protocol']);
 			}
 
 			if (empty($parameters['data']['application_protocol']) === false) {
@@ -187,7 +183,7 @@
 					(empty($parameters['data']['type']) === true) ||
 					(in_array($parameters['data']['type'], array(
 						'http_proxy',
-						'nameserver',
+						'recursive_dns',
 						'socks_proxy'
 					)) === true)
 				)
@@ -279,10 +275,6 @@
 
 			if ($response['status_valid'] === false) {
 				return $response;
-			}
-
-			if ($node['type'] === 'nameserver') {
-				unset($parameters['data']['application_protocol']);
 			}
 
 			if (empty($parameters['data']['application_protocol']) === false) {

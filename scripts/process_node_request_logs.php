@@ -10,7 +10,7 @@
 		public function process() {
 			$nodeProcessTypeRequestLogFiles = array(
 				'http_proxy' => '/var/log/http_proxy',
-				'nameserver' => '/var/log/nameserver', // ..
+				'recursive_dns' => '/var/log/recursive_dns',
 				'socks_proxy' => '/var/log/socks_proxy'
 			);
 

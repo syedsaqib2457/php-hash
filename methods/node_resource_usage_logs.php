@@ -19,7 +19,7 @@
 
 			$nodeResourceUsageLogProcessTypes = array(
 				'http_proxy',
-				'nameserver',
+				'recursive_dns',
 				'socks_proxy',
 				'system'
 			);
@@ -40,7 +40,6 @@
 				return $response;
 			}
 
-			// todo: save created timestamp string as Y-m-d H:i0:00
 			$existingNodeProcessResourceUsageLogs = $this->fetch(array(
 				'fields' => array(
 					'id',
