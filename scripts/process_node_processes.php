@@ -568,7 +568,7 @@
 				$recursiveDnsNodeIndex = 0;
 				$recursiveDnsNodeUserAuthentication = array();
 
-				foreach ($this->nodeData['node_users']{'recursive_dns'] as $recursiveDnsNodeId => $recursiveDnsNodeUserIds) {
+				foreach ($this->nodeData['node_users']['recursive_dns'] as $recursiveDnsNodeId => $recursiveDnsNodeUserIds) {
 					// todo: add $this->nodeData['node_users']['recursive_dns'] with $recursiveDnsNodeId 0 and whitelist containing privateNetworkIpBlocks ACL string
 
 					foreach ($recursiveDnsNodeUserIds as $recursiveDnsNodeUserId) {
