@@ -827,7 +827,7 @@
 
 								$recursiveDnsNodeId = null;
 
-								if ((empty($node) === false) {
+								if (empty($node) === false) {
 									$recursiveDnsNodeId = $node['id'];
 								} elseif (in_array($nodeRecursiveDnsIp, $nodeIps) === true) {
 									$recursiveDnsNodeId = $nodeId;
