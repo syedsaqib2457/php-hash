@@ -1147,6 +1147,10 @@
 			<input name="destination_port_version_6" type="text">
 		</div>
 		<div class="clear"></div>
+		<label>Recursive DNS IPv4</label>
+		<input name="recursive_dns_ip_version_4" type="text">
+		<label>Recursive DNS IPv6</label>
+		<input name="recursive_dns_ip_version_6" type="text">
 		<span class="button close">Close</span>
 		<span class="button submit" process="node_add">Save Changes</span>
 	</div>
