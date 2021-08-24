@@ -623,6 +623,7 @@
 				$existingNodePortIds[$existingNodePort['port_id']] = $existingNodePort['port_id'];
 			}
 
+			$nodeIps = $nodeExternalIps + $nodeInternalIps;
 			$nodeProcessTypes = array(
 				'http_proxy' => array(
 					'port_id' => 80
@@ -784,15 +785,82 @@
 					}
 
 					if ($nodeProcessType === 'recursive_dns') {
+						$nodeRecursiveDnsProcessData = array();
+
 						foreach ($nodeIpVersions as $nodeIpVersion) {
 							if (empty($parameters['data']['recursive_dns_ip_version_' . $nodeIpVersion]) === false) {
-								if (in_array($parameters['data']['recursive_dns_ip_version_' . $nodeIpVersion], $existingNodeIps['external_ip_version_' . $nodeIpVersion]) === true) {
-									// ..
+								$nodeRecursiveDnsIp = $this->_sanitizeIps(array($parameters['data']['recursive_dns_ip_version_' . $nodeIpVersion]));
+								$response['status_valid'] = (empty($nodeRecursiveDnsIp[$nodeIpVersion]) === false);
+
+								if ($response['status_valid'] === false) {
+									$response['message'] = 'Invalid node recursive DNS IP, please try again.';
+									return $response;
 								}
 
-								// todo: both ipv4 and ipv6 must be either internal processes or external public IPs
-									// if recursive dns IP doesn't exist on node, delete all node processes and set 1 node process with external_ip_version_
-									// if recursive dns IP exists, update all node processes with the node_id of the recursive dns IP (ipv4 and ipv6 must be on same node)
+								$node = $this->fetch(array(
+									'fields' => array(
+										'external_ip_version_' . $nodeIpVersion,
+										'id',
+										'internal_ip_version_' . $nodeIpVersion
+									),
+									'from' => 'nodes',
+									'where' => array(
+										array(
+											'OR' => array(
+												'external_ip_version_' . $nodeIpVersion => ($nodeRecursiveDnsIp = current($nodeRecursiveDnsIp)),
+												'internal_ip_version_' . $nodeIpVersion => $nodeRecursiveDnsIp
+											)
+										),
+										array(
+											'OR' => array(
+												'id' => $nodeIds,
+												'node_id' => $nodeIds
+											)
+										)
+									)
+								));
+								$response['status_valid'] = ($node !== false);
+
+								if ($response['status_valid'] === false) {
+									return $response;
+								}
+
+								$recursiveDnsNodeId = null;
+
+								if ((empty($node) === false) {
+									$recursiveDnsNodeId = $node['id'];
+								} elseif (in_array($nodeRecursiveDnsIp, $nodeIps) === true) {
+									$recursiveDnsNodeId = $nodeId;
+								}
+
+								if (empty($recursiveDnsNodeId) === true) {
+									$nodeRecursiveDnsData[$recursiveDnsNodeId]['destination_ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsIp;
+								}
+
+								// todo: validate recursive DNS ports,
+								// todo: create recursive_dns process in $nodeProcessData if port_id doesn't exist
+								// todo: validate port with list of allowed ports
+								// todo: prevent auto-scaling from deleting current recursive_dns port
+							}
+						}
+
+						if (empty($nodeRecursiveDnsData) === false) {
+							$response['status_valid'] = (count($nodeRecursiveDnsData) === 1);
+
+							if ($response['status_valid'] === false) {
+								$response['message'] = 'Node recursive DNS IPs must be on the same node, please try again.';
+
+								if (empty($nodeRecursiveDnsData[null]) === false) {
+									$response['message'] = 'Node recursive DNS IPs must be either private or public, please try again.';
+								}
+
+								return $response;
+							}
+
+							if (empty($nodeRecursiveDnsData[null]) === false) {
+								// todo: delete all node recursive_dns processes and set 1 node process in $nodeProcessData with destination_ip_version_
+							} else {
+								// todo: update all node processes in $nodeProcessData with the node_id and internal_ip_version_ of the recursive dns IP
 							}
 						}
 					}
@@ -885,7 +953,7 @@
 						),
 						array(
 							'node_id' => $nodeId,
-							'OR' => ($nodeIps = ($nodeExternalIps + $nodeInternalIps))
+							'OR' => $nodeIps
 						)
 					)
 				)

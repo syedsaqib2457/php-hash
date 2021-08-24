@@ -68,15 +68,25 @@
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
 							),
-							'external_ip_version_4' => array(
+							'destination_ip_version_4' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(15)'
 							),
-							'external_ip_version_6' => array(
+							'destination_ip_version_6' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(39)'
+							),
+							'destination_port_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'destination_port_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
 							),
 							'id' => array(
 								'auto_increment' => true,

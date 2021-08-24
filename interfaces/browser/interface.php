@@ -1147,7 +1147,6 @@
 			<input name="destination_port_version_6" type="text">
 		</div>
 		<div class="clear"></div>
-		<!-- todo: only add recursive dns field to proxy processes -->
 		<label>Recursive DNS IPv4 Address</label>
 		<input name="recursive_dns_ip_version_4" type="text">
 		<label>Recursive DNS IPv4 Port</label>
