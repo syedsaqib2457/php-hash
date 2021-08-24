@@ -599,29 +599,16 @@
 				}
 			}
 
-			$nodeIds = array(
-				$nodeId,
-				$node['node_id']
-			);
-			$nodeProcessTypes = array(
-				'http_proxy' => array(
-					'port_id' => 80
-				),
-				'recursive_dns' => array(
-					'port_id' => 53
-				),
-				'socks_proxy' => array(
-					'port_id' => 1080
-				)
-			);
-
 			$existingNodePorts = $this->fetch(array(
 				'fields' => array(
 					'port_id'
 				),
 				'from' => 'node_ports',
 				'where' => array(
-					'node_id' => $nodeIds
+					'node_id' => ($nodeIds = array(
+						$nodeId,
+						$node['node_id']
+					))
 				)
 			));
 			$response['status_valid'] = ($existingNodePorts !== false);
@@ -635,6 +622,18 @@
 			foreach ($existingNodePorts as $existingNodePort) {
 				$existingNodePortIds[$existingNodePort['port_id']] = $existingNodePort['port_id'];
 			}
+
+			$nodeProcessTypes = array(
+				'http_proxy' => array(
+					'port_id' => 80
+				),
+				'recursive_dns' => array(
+					'port_id' => 53
+				),
+				'socks_proxy' => array(
+					'port_id' => 1080
+				)
+			);
 
 			foreach ($nodeProcessTypes as $nodeProcessType => $nodeProcess) {
 				$response['status_valid'] = (isset($parameters['data']['enable_' . $nodeProcessType . '_processes']) === true);
@@ -701,48 +700,14 @@
 						$nodePortIds[$nodePort['port_id']] = $nodePort['port_id'];
 					}
 
-					$nodes = $this->fetch(array(
-						'fields' => array(
-							'external_ip_version_4',
-							'external_ip_version_6'
-						),
-						'from' => 'nodes',
-						'where' => array(
-							'OR' => array(
-								'id' => $nodeIds,
-								'node_id' => $nodeIds
-							)
-						)
-					));
-					$response['status_valid'] = ($nodes !== false);
-
-					if ($response['status_valid'] === false) {
-						return $response;
-					}
-
-					$existingNodeExternalIps = array(
-						'external_ip_version_4' => '',
-						'external_ip_version_6' => ''
-					);
-
-					foreach ($nodeExternalIps as $nodeExternalIpKey => $nodeExternalIp) {
-						$existingNodeExternalIps[$nodeExternalIpKey][] = $nodeExternalIp;
-					}
-
-					foreach ($nodes as $node) {
-						foreach (array_filter($node) as $nodeFieldKey => $nodeFieldValue) {
-							$existingNodeExternalIps[$nodeFieldKey][] = $nodeFieldValue;
-						}
-					}
-
 					if (empty($nodePortStatusAllowingPortIds) === false) {
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
-							'where' => array_merge($existingNodeExternalIps, array(
+							'where' => array(
 								'node_id' => $nodeIds,
 								'port_id !=' => $nodePortStatusAllowingPortIds,
 								'type' => $nodeProcessType
-							))
+							)
 						));
 						$response['status_valid'] = ($nodeProcessesDeleted === true);
 					}
@@ -754,11 +719,11 @@
 					if (empty($nodePortStatusDenyingPortIds) === false) {
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
-							'where' => array_merge($existingNodeExternalIps, array(
+							'where' => array(
 								'node_id' => $nodeIds,
 								'port_id' => $nodePortStatusDenyingPortIds,
 								'type' => $nodeProcessType
-							))
+							)
 						));
 						$response['status_valid'] = ($nodeProcessesDeleted === true);
 					}
@@ -815,6 +780,20 @@
 
 							$existingNodePortIds[] = $nodeProcess['port_id'] = $nodeProcessPortId;
 							$nodeProcessData[] = $nodeProcess;
+						}
+					}
+
+					if ($nodeProcessType === 'recursive_dns') {
+						foreach ($nodeIpVersions as $nodeIpVersion) {
+							if (empty($parameters['data']['recursive_dns_ip_version_' . $nodeIpVersion]) === false) {
+								if (in_array($parameters['data']['recursive_dns_ip_version_' . $nodeIpVersion], $existingNodeIps['external_ip_version_' . $nodeIpVersion]) === true) {
+									// ..
+								}
+
+								// todo: both ipv4 and ipv6 must be either internal processes or external public IPs
+									// if recursive dns IP doesn't exist on node, delete all node processes and set 1 node process with external_ip_version_
+									// if recursive dns IP exists, update all node processes with the node_id of the recursive dns IP (ipv4 and ipv6 must be on same node)
+							}
 						}
 					}
 
