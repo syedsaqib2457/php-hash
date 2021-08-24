@@ -386,17 +386,20 @@
 			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 				$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNodeProcess['external_ip_version_' . $nodeIpVersion];
 
-				if (empty($recursiveDnsNode['node_id']) === false) {
-					$recursiveDnsNodeProcess = $this->nodeData['nodes'][$recursiveDnsNodeProcess['node_id']];
+				if (empty($recursiveDnsNodeProcess['node_id']) === false) {
+					$recursiveDnsNode = $this->nodeData['nodes'][$recursiveDnsNodeProcess['node_id']];
 
 					foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-						$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNodeProcess['external_ip_version_' . $nodeIpVersion];
+						$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNode['external_ip_version_' . $nodeIpVersion];
 
-						if (empty($recursiveDnsNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-							$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNodeProcess['internal_ip_version_' . $nodeIpVersion];
+						if (empty($recursiveDnsNodeProcess['internal_ip_version_' . $nodeIpVersion]) === false) {
+							$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNode['internal_ip_version_' . $nodeIpVersion];
 						}
 					}
 				}
+
+				// todo: format recursive_dns ips and ports in /methods/nodes.php process() to save node resources
+				// todo: add recursive dns port from $recursiveDnsNodeProcess['destionation_ip_version_'] in correct resolv.conf format
 			}
 
 			$proxyNodeConfiguration = array(

@@ -1388,8 +1388,10 @@
 			foreach ($nodeProcessTypes as $nodeProcessType) {
 				$nodeProcesses = $this->fetch(array(
 					'fields' => array(
-						'external_ip_version_4',
-						'external_ip_version_6',
+						'destination_ip_version_4',
+						'destination_ip_version_6',
+						'destination_port_version_4',
+						'destination_port_version_6',
 						'node_id',
 						'port_id'
 					),

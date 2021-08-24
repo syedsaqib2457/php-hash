@@ -86,20 +86,20 @@
 			);
 
 			foreach ($nodeProcessIpVersions as $nodeProcessIpVersion) {
-				$nodeProcessIpKey = 'external_ip_version_' . $nodeProcessIpVersion;
+				$nodeProcessIpKey = 'destination_ip_version_' . $nodeProcessIpVersion;
 
 				if (empty($parameters['data'][$nodeProcessIpKey]) === false) {
 					$response['status_valid'] = ($this->_detectIpType($parameters['data'][$nodeProcessIpKey], $nodeProcessIpVersion) === 'public');
 
 					if ($response['status_valid'] === false) {
-						$response['message'] = 'Node process external IP version ' . $nodeProcessIpVersion . ' must be public, please try again.';
+						$response['message'] = 'Node process destination IP version ' . $nodeProcessIpVersion . ' must be public, please try again.';
 						return $response;
 					}
 
 					$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($parameters['data'][$nodeProcessIpKey]))));
 
 					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid node process external IP version ' . $nodeProcessIpVersion . ', please try again.';
+						$response['message'] = 'Invalid node process destination IP version ' . $nodeProcessIpVersion . ', please try again.';
 						return $response;
 					}
 				}
@@ -127,8 +127,8 @@
 
 			$nodeProcessDataSaved = $this->save(array(
 				'data' => array_intersect_key($parameters['data'], array(
-					'external_ip_version_4' => true,
-					'external_ip_version_6' => true,
+					'destination_ip_version_4' => true,
+					'destination_ip_version_6' => true,
 					'node_id' => true,
 					'port_id' => true,
 					'type' => true
@@ -249,20 +249,20 @@
 			);
 
 			foreach ($nodeProcessIpVersions as $nodeProcessIpVersion) {
-				$nodeProcessIpKey = 'external_ip_version_' . $nodeProcessIpVersion;
+				$nodeProcessIpKey = 'destination_ip_version_' . $nodeProcessIpVersion;
 
 				if (empty($parameters['data'][$nodeProcessIpKey]) === false) {
 					$response['status_valid'] = ($this->_detectIpType($parameters['data'][$nodeProcessIpKey], $nodeProcessIpVersion) === 'public');
 
 					if ($response['status_valid'] === false) {
-						$response['message'] = 'Node process external IP version ' . $nodeProcessIpVersion . ' must be public, please try again.';
+						$response['message'] = 'Node process destination IP version ' . $nodeProcessIpVersion . ' must be public, please try again.';
 						return $response;
 					}
 
 					$response['status_valid'] = ($nodeProcessIpVersion === key($this->_sanitizeIps(array($parameters['data'][$nodeProcessIpKey]))));
 
 					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid node process external IP version ' . $nodeProcessIpVersion . ', please try again.';
+						$response['message'] = 'Invalid node process destination IP version ' . $nodeProcessIpVersion . ', please try again.';
 						return $response;
 					}
 				}
@@ -292,8 +292,8 @@
 
 			$nodeProcessDataUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
-					'external_ip_version_4' => true,
-					'external_ip_version_6' => true,
+					'destination_ip_version_4' => true,
+					'destination_ip_version_6' => true,
 					'id' => true,
 					'node_id' => true,
 					'port_id' => true,
