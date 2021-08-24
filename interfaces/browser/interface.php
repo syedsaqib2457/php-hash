@@ -1064,9 +1064,9 @@
 			<label>HTTP Proxy Users</label>
 			<div class="list" from="users"></div>
 		</div>
-		<div class="checkbox-container" toggle="enable_nameserver_processes">
+		<div class="checkbox-container" toggle="enable_recursive_dns_processes">
 			<span checked="0"></span>
-			<label>Enable nameserver processes</label>
+			<label>Enable recursive DNS processes</label>
 		</div>
 		<div class="container hidden" name="enable_recursive_dns_processes">
 			<div name="recursive_dns_process_details">
@@ -1137,20 +1137,25 @@
 			<label>Enable reverse proxy forwarding</label>
 		</div>
 		<div class="container hidden" name="enable_reverse_proxy_forwarding">
-			<label>IPv4 Destination IP Address or External Hostname</label>
+			<label>Destination IPv4 Address or External Hostname</label>
 			<input name="destination_address_version_4" type="text">
-			<label>IPv4 Destination Port</label>
+			<label>Destination IPv4 Port</label>
 			<input name="destination_port_version_4" type="text">
-			<label>IPv6 Destination IP Address or External Hostname</label>
+			<label>Destination IPv6 Address or External Hostname</label>
 			<input name="destination_address_version_6" type="text">
-			<label>IPv6 Destination Port</label>
+			<label>Destination IPv6 Port</label>
 			<input name="destination_port_version_6" type="text">
 		</div>
 		<div class="clear"></div>
-		<label>Recursive DNS IPv4</label>
+		<label>Recursive DNS IPv4 Address</label>
 		<input name="recursive_dns_ip_version_4" type="text">
-		<label>Recursive DNS IPv6</label>
+		<label>Recursive DNS IPv4 Port</label>
+		<input name="recursive_dns_port_version_4" type="text">
+		<label>Recursive DNS IPv6 Address</label>
 		<input name="recursive_dns_ip_version_6" type="text">
+		<label>Recursive DNS IPv6 Port</label>
+		<input name="recursive_dns_port_version_6" type="text">
+		<div class="clear"></div>
 		<span class="button close">Close</span>
 		<span class="button submit" process="node_add">Save Changes</span>
 	</div>
