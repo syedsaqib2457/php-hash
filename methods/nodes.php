@@ -1515,7 +1515,7 @@
 						(empty($response['data']['node_system_recursive_dns_destinations'][$nodeIpVersion]) === true) ||
 						($nodeRecursiveDnsProcess === true)
 					) {
-						$response['data']['node_system_recursive_dns_destinations'][$nodeIpVersion] = 'nameserver ' . $nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] . '[:' . $nodeRecursiveDnsDestination['port_version_' . $nodeIpVersion] . ']';
+						$response['data']['node_system_recursive_dns_destinations'][$nodeIpVersion] = 'nameserver [' . $nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] . ']:' . $nodeRecursiveDnsDestination['port_version_' . $nodeIpVersion];
 					}
 				}
 			}
