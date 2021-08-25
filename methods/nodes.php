@@ -1329,7 +1329,7 @@
 					);
 
 					foreach (array_filter($nodeIps) as $nodeIpKey => $nodeIp) {
-						$response['data']['node_ip'][$nodeIpVersion][$nodeIpKey] = $nodeIp;
+						$response['data']['node_ips'][$nodeIpVersion][$nodeIpKey] = $nodeIp;
 					}
 				}
 			}
@@ -1337,7 +1337,7 @@
 			$nodeIpVersions = array_values($nodeIpVersions);
 
 			foreach ($nodeIpVersions as $nodeIpVersionKey => $nodeIpVersion) {
-				if (empty($response['data']['node_ip'][$nodeIpVersion]) === true) {
+				if (empty($response['data']['node_ips'][$nodeIpVersion]) === true) {
 					unset($response['data']['node_ip_versions'][(128 / 4) + (96 * $nodeIpVersionKey)]);
 				}
 			}
@@ -1502,10 +1502,12 @@
                                 return $response;
 			}
 
+			// todo: prioritize primary node recursive DNS with internal recursive_dns processes, set as $response['data']['node_recursive_dns_destination']
+
 			foreach ($nodeRecursiveDnsDestinations as $nodeRecursiveDnsDestination) {
 				foreach ($nodeIpVersions as $nodeIpVersion) {
-					if (empty($response['data']['node_ip'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]]) === false) {
-						$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] = $response['data']['node_ip'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]];
+					if (empty($response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]]) === false) {
+						$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] = $response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]];
 					}
 				}
 

@@ -351,8 +351,8 @@
 					'<?php'
 				);
 				$interfaceNodeIpsToProcess = array(
-					'add' => array_diff($this->nodeData['node_ip'][$nodeIpVersion], $existingInterfaceNodeIps),
-					'delete' => array_diff($existingInterfaceNodeIps, $this->nodeData['node_ip'][$nodeIpVersion])
+					'add' => array_diff($this->nodeData['node_ips'][$nodeIpVersion], $existingInterfaceNodeIps),
+					'delete' => array_diff($existingInterfaceNodeIps, $this->nodeData['node_ips'][$nodeIpVersion])
 				);
 				$interfaceNodeIpsToProcess['add'][] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
 
