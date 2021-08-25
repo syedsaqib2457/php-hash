@@ -1502,12 +1502,23 @@
                                 return $response;
 			}
 
-			// todo: prioritize primary node recursive DNS with internal recursive_dns processes, set as $response['data']['node_recursive_dns_destination']
-
 			foreach ($nodeRecursiveDnsDestinations as $nodeRecursiveDnsDestination) {
 				foreach ($nodeIpVersions as $nodeIpVersion) {
+					$nodeRecursiveDnsProcess = (empty($response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['node_id'] . '_' . $nodeIpVersion]) === false);
+
 					if (empty($response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]]) === false) {
 						$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] = $response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]];
+						$nodeRecursiveDnsProcess = true;
+					}
+
+					if (
+						(empty($response['data']['node_recursive_dns_destination'][$nodeIpVersion]) === true) ||
+						($nodeRecursiveDnsProcess === true)
+					) {
+						$response['data']['node_recursive_dns_destination'][$nodeIpVersion] = array(
+							'ip_version_' . $nodeIpVersion => $nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion],
+							'port_version_' . $nodeIpVersion => $nodeRecursiveDnsDestination['port_version_' . $nodeIpVersion]
+						);
 					}
 				}
 
