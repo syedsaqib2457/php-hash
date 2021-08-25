@@ -692,13 +692,6 @@
 				}
 
 				foreach ($this->nodeData['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessKey => $recursiveDnsNodeProcess) {
-					if (
-						(empty($recursiveDnsNodeProcess['external_ip_version_4']) === false) ||
-						(empty($recursiveDnsNodeProcess['external_ip_version_6']) === false)
-					) {
-						continue;
-					}
-
 					$recursiveDnsNodeProcessName = $recursiveDnsNodeProcessType . '_' . $recursiveDnsNodeProcess['id'];
 
 					if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
@@ -785,7 +778,7 @@
 			}
 
 			$this->_processFirewall();
-			file_put_contents('/etc/recursive_dns.conf', implode("\n", $this->nodeData['node_system_recursive_dns_destinations']);
+			file_put_contents('/etc/recursive_dns.conf', implode("\n", $this->nodeData['node_system_recursive_dns_destinations']));
 			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
 
 			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessId) {
