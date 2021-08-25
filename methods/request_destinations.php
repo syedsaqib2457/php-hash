@@ -8,8 +8,8 @@
 			$response = array(
 				'message' => 'Error adding request destination, please try again.',
 				'status_valid' => (
-					(empty($parameters['data']['destination']) === false) &&
-					(is_string($parameters['data']['destination']) === true)
+					(empty($parameters['data']['address']) === false) &&
+					(is_string($parameters['data']['address']) === true)
 				)
 			);
 
@@ -18,19 +18,19 @@
 			}
 
 			$response['status_valid'] = (
-				($this->_validateHostname($parameters['data']['destination']) !== false) ||
-				(empty($this->_sanitizeIps(array($parameters['data']['destination']), true)) === false)
+				($this->_validateHostname($parameters['data']['address']) !== false) ||
+				(empty($this->_sanitizeIps(array($parameters['data']['address']), true)) === false)
 			);
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid destination, please try again.';
+				$response['message'] = 'Invalid destination address, please try again.';
 				return $response;
 			}
 
 			$conflictingRequestDestinationCount = $this->count(array(
 				'in' => 'request_destinations',
 				'where' => array(
-					'destination' => $parameters['data']['destination']
+					'address' => $parameters['data']['address']
 				)
 			));
 			$response['status_valid'] = (is_int($conflictingRequestDestinationCount) === true);
@@ -42,14 +42,14 @@
 			$response['status_valid'] = ($conflictingRequestDestinationCount === 0);
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Request destination already exists, please try again.';
+				$response['message'] = 'Request destination address already in use, please try again.';
 				return $response;
 			}
 
 			$requestDestinationDataSaved = $this->save(array(
 				'data' => array(
 					array(
-						'destination' => $parameters['data']['destination']
+						'address' => $parameters['data']['address']
 					)
 				),
 				'to' => 'request_destinations'
@@ -97,8 +97,8 @@
 			}
 
 			$response['status_valid'] = (
-				(empty($parameters['data']['destination']) === false) &&
-				(is_string($parameters['data']['destination']) === true)
+				(empty($parameters['data']['address']) === false) &&
+				(is_string($parameters['data']['address']) === true)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -106,19 +106,19 @@
 			}
 
 			$response['status_valid'] = (
-				($this->_validateHostname($parameters['data']['destination']) !== false) ||
-				(empty($this->_sanitizeIps(array($parameters['data']['destination']), true)) === false)
+				($this->_validateHostname($parameters['data']['address']) !== false) ||
+				(empty($this->_sanitizeIps(array($parameters['data']['address']), true)) === false)
 			);
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid destination, please try again.';
+				$response['message'] = 'Invalid destination address, please try again.';
 				return $response;
 			}
 
 			$conflictingRequestDestinationCount = $this->count(array(
 				'in' => 'request_destinations',
 				'where' => array(
-					'destination' => $parameters['data']['destination']
+					'address' => $parameters['data']['address']
 				)
 			));
 			$response['status_valid'] = (is_int($conflictingRequestDestinationCount) === true);
@@ -130,13 +130,13 @@
 			$response['status_valid'] = ($conflictingRequestDestinationCount === 0);
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Request destination already exists, please try again.';
+				$response['message'] = 'Request destination address already in use, please try again.';
 				return $response;
 			}
 
 			$requestDestinationDataUpdated = $this->update(array(
 				'data' => array(
-					'destination' => $parameters['data']['destination']
+					'address' => $parameters['data']['address']
 				),
 				'in' => 'request_destinations',
 				'where' => array(

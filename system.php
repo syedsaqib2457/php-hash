@@ -188,35 +188,25 @@
 								'type' => 'BIGINT(11)'
 							)
 						),
-						'node_recursive_dns' => array(
+						'node_recursive_dns_destinations' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
-							),
-							'destination_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(15)'
-							),
-							'destination_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(39)'
-							),
-							'destination_port_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
-							),
-							'destination_port_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
 							),
 							'id' => array(
 								'auto_increment' => true,
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'ip_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(15)'
+							),
+							'ip_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(39)'
 							),
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
@@ -226,6 +216,16 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'port_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'port_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
 							)
 						),
 						'node_resource_usage_logs' => array(
@@ -514,14 +514,14 @@
 							)
 						),
 						'request_destinations' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'destination' => array(
+							'address' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(1000)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
 							),
 							'id' => array(
 								'auto_increment' => true,

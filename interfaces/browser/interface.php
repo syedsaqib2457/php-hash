@@ -1021,7 +1021,7 @@
 	<div class="process-container">
 		<p class="message node-edit"></p>
 		<label>Status</label>
-		<div name="node_status"></div>
+		<div name="status"></div>
 		<label>External IPv4</label>
 		<input name="external_ip_version_4" type="text">
 		<label>Internal IPv4</label>
@@ -1147,14 +1147,14 @@
 			<input name="destination_port_version_6" type="text">
 		</div>
 		<div class="clear"></div>
-		<label>Recursive DNS IPv4 Address</label>
-		<input name="recursive_dns_ip_version_4" type="text">
-		<label>Recursive DNS IPv4 Port</label>
-		<input name="recursive_dns_port_version_4" type="text">
-		<label>Recursive DNS IPv6 Address</label>
-		<input name="recursive_dns_ip_version_6" type="text">
-		<label>Recursive DNS IPv6 Port</label>
-		<input name="recursive_dns_port_version_6" type="text">
+		<label>Recursive DNS Destination IPv4 Address</label>
+		<input name="recursive_dns_destination_ip_version_4" type="text">
+		<label>Recursive DNS Destination IPv4 Port</label>
+		<input name="recursive_dns_destination_port_version_4" type="text">
+		<label>Recursive DNS Destination IPv6 Address</label>
+		<input name="recursive_dns_destination_ip_version_6" type="text">
+		<label>Recursive DNS Destination IPv6 Port</label>
+		<input name="recursive_dns_port_ip_version_6" type="text">
 		<div class="clear"></div>
 		<span class="button close">Close</span>
 		<span class="button submit" process="node_add">Save Changes</span>
