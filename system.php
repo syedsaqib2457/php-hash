@@ -68,26 +68,6 @@
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
 							),
-							'destination_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(15)'
-							),
-							'destination_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(39)'
-							),
-							'destination_port_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
-							),
-							'destination_port_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
-							),
 							'id' => array(
 								'auto_increment' => true,
 								'primary_key' => true,
@@ -203,6 +183,46 @@
 								'type' => 'BIGINT(11)'
 							),
 							'user_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							)
+						),
+						'node_recursive_dns' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'destination_ip_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(15)'
+							),
+							'destination_ip_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(39)'
+							),
+							'destination_port_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'destination_port_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
