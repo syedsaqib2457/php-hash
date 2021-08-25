@@ -371,37 +371,6 @@
 			}
 
 			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
-
-			if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
-				$recursiveDnsNodeProcessDefaultServiceName = 'named';
-
-				if (is_dir('/etc/default/bind9') === true) {
-					$recursiveDnsNodeProcessDefaultServiceName = 'bind9';
-				}
-			}
-
-			$recursiveDnsNodeProcess = current($this->nodeData['node_processes']['recursive_dns']);
-			$this->nodeData['node_recursive_dns'] = array();
-
-			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-				$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNodeProcess['external_ip_version_' . $nodeIpVersion];
-
-				if (empty($recursiveDnsNodeProcess['node_id']) === false) {
-					$recursiveDnsNode = $this->nodeData['nodes'][$recursiveDnsNodeProcess['node_id']];
-
-					foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-						$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNode['external_ip_version_' . $nodeIpVersion];
-
-						if (empty($recursiveDnsNodeProcess['internal_ip_version_' . $nodeIpVersion]) === false) {
-							$this->nodeData['node_recursive_dns'][$nodeIpVersion] = $recursiveDnsNode['internal_ip_version_' . $nodeIpVersion];
-						}
-					}
-				}
-
-				// todo: format recursive_dns ips and ports in /methods/nodes.php process() to save node resources
-				// todo: add recursive dns port from $recursiveDnsNodeProcess['destionation_ip_version_'] in correct resolv.conf format
-			}
-
 			$proxyNodeConfiguration = array(
 				'maxconn 20000',
 				'nobandlimin',
@@ -413,7 +382,6 @@
 				'allow * * * * HTTPS',
 				'log' => false
 			);
-
 			$this->nodeData['proxy_node_process_types'] = array(
 				'proxy' => 'http_proxy',
 				'socks' => 'socks_proxy'
@@ -637,6 +605,14 @@
 				}
 			}
 
+			if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
+				$recursiveDnsNodeProcessDefaultServiceName = 'named';
+
+				if (is_dir('/etc/default/bind9') === true) {
+					$recursiveDnsNodeProcessDefaultServiceName = 'bind9';
+				}
+			}
+
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
@@ -809,7 +785,7 @@
 			}
 
 			$this->_processFirewall();
-			file_put_contents('/etc/recursive_dns.conf', 'nameserver ' . implode("\n" . 'nameserver ', $this->nodeData['node_recursive_dns']));
+			file_put_contents('/etc/recursive_dns.conf', implode("\n", $this->nodeData['node_system_recursive_dns_destinations']);
 			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
 
 			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessId) {
