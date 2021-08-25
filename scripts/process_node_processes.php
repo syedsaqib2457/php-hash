@@ -414,10 +414,6 @@
 				'log' => false
 			);
 
-			foreach ($this->nodeData['node_recursive_dns'] as $nodeRecursiveDnsIp) {
-				$proxyNodeConfiguration[] = 'nserver ' . $nodeRecursiveDnsIp;
-			}
-
 			$this->nodeData['proxy_node_process_types'] = array(
 				'proxy' => 'http_proxy',
 				'socks' => 'socks_proxy'
@@ -506,6 +502,8 @@
 							}
 
 							$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
+							// todo: test per-ACL nserver options
+							$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_version_' . $nodeIpVersion] . ']';
 						}
 
 						$proxyNodeUserAuthentication[] = 'deny *';
@@ -517,6 +515,7 @@
 
 					foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
 						$proxyNodeUserAuthentication['internal_reserved_listening_address'] .= ' -e' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' -i' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+						$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_version_' . $nodeIpVersion] . ']';
 					}
 
 					$proxyNodeUserAuthentication[] = 'deny *';
