@@ -1323,13 +1323,13 @@
 				$response['data']['nodes'][$node['id']] = $node;
 
 				foreach ($nodeIpVersions as $nodeIpVersion) {
-					$nodeIps = array_intersect_key($node, array(
-						'external_ip_version_' . $nodeIpVersion => true,
-						'internal_ip_version_' . $nodeIpVersion => true
-					));
+					$nodeIps = array(
+						$node['id'] . '_' . $nodeIpVersion => $node['external_ip_version_' . $nodeIpVersion],
+						$node['external_ip_version_' . $nodeIpVersion] => $node['internal_ip_version_' . $nodeIpVersion]
+					);
 
-					foreach (array_filter($nodeIps) as $nodeIp) {
-						$response['data']['node_ip'][$nodeIpVersion][$nodeIp] = $nodeIp;
+					foreach (array_filter($nodeIps) as $nodeIpKey => $nodeIp) {
+						$response['data']['node_ip'][$nodeIpVersion][$nodeIpKey] = $nodeIp;
 					}
 				}
 			}
@@ -1503,10 +1503,14 @@
 			}
 
 			foreach ($nodeRecursiveDnsDestinations as $nodeRecursiveDnsDestination) {
+				foreach ($nodeIpVersions as $nodeIpVersion) {
+					if (empty($response['data']['node_ip'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]]) === false) {
+						$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] = $response['data']['node_ip'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]];
+					}
+				}
+
 				$response['data']['node_recursive_dns_destinations'][$nodeRecursiveDnsDestination['node_id']] = $nodeRecursiveDnsDestination;
 			}
-
-			// todo: set each recursive dns to response['data'] with internal ip as destination if it exists
 
 			$response['message'] = 'Nodes processed successfully.';
 			return $response;
