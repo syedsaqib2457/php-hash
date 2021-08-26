@@ -16,7 +16,7 @@
 
 			foreach ($nodeProcessTypeRequestLogFiles as $nodeProcessType => $nodeProcessTypeRequestLogFile) {
 				if (file_exists($nodeProcessTypeRequestLogFile) === true) {
-					exec('sudo curl -s --form "data=@' . $nodeProcessTypeRequestLogFile . '" --form-string "json={\"action\":\"archive\",\"data\":{\"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/request-logs 2>&1', $response);
+					exec('sudo curl -s --form "data=@' . $nodeProcessTypeRequestLogFile . '" --form-string "json={\"action\":\"add\",\"data\":{\"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/request-logs 2>&1', $response);
 					$response = json_decode(current($response), true);
 
 					if (empty($response['data']['most_recent_request_log']) === false) {
