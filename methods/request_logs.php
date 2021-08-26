@@ -72,13 +72,38 @@
 			return $response;
 		}
 
-		public function processRequestLogs($parameters) {
+		public function processNodeRequestLogs($parameters) {
 			$response = array(
 				'message' => 'Error processing request logs, please try again.',
 				'status_valid' => false
 			);
+			$requestLogsToProcessCount = $this->count(array(
+				'in' => 'request_logs',
+				'where' => array(
+					'node_user_id !=' => null,
+					'status_processed' => false
+				)
+			));
+			$response['status_valid'] = (
+				(is_int($requestLogsToProcessCount) === true) &&
+				($requestLogsToProcessCount !== 0)
+			);
 
-			// ..
+			if ($response['status_valid'] === true) {
+				// todo: set request logs as processing to avoid stacking processes
+				// todo: fetch destinations and format destination_hostname values into array
+				// todo: assign destination_id for each destination_hostname for tracking request limits
+				// todo: support additional VMs for processing request logs if necessary for millions of logs per minute
+			}
+
+			return $response;
+		}
+
+		public function processSystemRequestLogs($parameters) {
+			$response = array(
+				'message' => 'Error processing request logs, please try again.',
+				'status_valid' => false
+			);
 			$requestLogsToProcess = $this->fetch(array(
 				'fields' => array(
 					'id',
@@ -90,8 +115,9 @@
 					'response_code >=' => 10
 				)
 			));
+			$response['status_valid'] = (empty($requestLogsToProcess) === false);
 
-			if (empty($requestLogsToProcess) === false) {
+			if ($response['status_valid'] === true) {
 				$requestLogsPath = $this->settings['base_path'] . '/request_logs/';
 
 				if (is_dir($requestLogsPath) === false) {
@@ -112,7 +138,6 @@
 					}
 				}
 
-				// todo: process request logs for exceeding limits
 				// todo: limit prefixes instead of addresses for ipv6
 
 				$requestLogsDeleted = $this->delete(array(
