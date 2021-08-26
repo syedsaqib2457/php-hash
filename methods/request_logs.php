@@ -73,11 +73,12 @@
 		}
 
 		public function processRequestLogs($parameters) {
-			// todo: limit prefixes instead of addresses for ipv6
 			$response = array(
 				'message' => 'Error processing request logs, please try again.',
 				'status_valid' => false
 			);
+
+			// ..
 			$requestLogsToProcess = $this->fetch(array(
 				'fields' => array(
 					'id',
@@ -112,6 +113,7 @@
 				}
 
 				// todo: process request logs for exceeding limits
+				// todo: limit prefixes instead of addresses for ipv6
 
 				$requestLogsDeleted = $this->delete(array(
 					'from' => 'request_logs',

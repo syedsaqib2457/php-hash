@@ -1342,6 +1342,8 @@
 				}
 			}
 
+			// todo: scale node processes based on usage before fetching processes
+
 			foreach ($nodeProcessTypes as $nodeProcessType) {
 				$nodeProcesses = $this->fetch(array(
 					'fields' => array(
