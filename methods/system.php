@@ -677,6 +677,8 @@
 						(count($ipParts) === 4) ||
 						($allowRangeParts === true)
 					) {
+						$ip = '';
+
 						foreach ($ipParts as $ipPartKey => $ipPart) {
 							if (
 								(is_numeric($ipPart) === false) ||
@@ -685,54 +687,47 @@
 								($ipPart < 0)
 							) {
 								if (
-									($allowRanges === true) &&
-									($ipPart === end($ipParts)) &&
-									(substr_count($ipPart, '/') === 1)
+									($allowRanges === false) ||
+									($ipPart !== end($ipParts)) ||
+									(substr_count($ipPart, '/') !== 1)
 								) {
-									$ipBlockParts = explode('/', $ipPart);
-
-									if (is_numeric($ipBlockParts[0]) === true) {
-										$ipPart = $ipBlockParts[0];
-
-										if (
-											($ipPart !== false) &&
-											(strlen($ipPart) >= 1) &&
-											(strlen($ipPart) <= 3) &&
-											($ipPart <= 255) &&
-											($ipPart >= 0) &&
-											(is_numeric($ipBlockParts[1]) === true) &&
-											($ipBlockParts[1] <= 30) &&
-											($ipBloclParts[1] >= 8)
-										) {
-											$ipPart .= '/' . $ipBlockParts[1];
-										} else {
-											return false;
-										}
-									} else {
-										return false;
-									}
-								} else {
 									return false;
 								}
-							} else {
-								$ipPart = intval($ipPart);
-							}
 
-							$ipParts[$ipPartKey] = $ipPart;
+								$ipBlockParts = explode('/', $ipPart);
+
+								if (
+									(is_numeric($ipBlockParts[0]) === false) ||
+									(strlen(intval($ipBlockParts[0])) > 3) ||
+									($ipBlockParts[0] > 255) ||
+									($ipBlockParts[0] < 0) ||
+									(is_numeric($ipBlockParts[1]) === false) ||
+									($ipBlockParts[1] > 30) ||
+									($ipBlockParts[1] < 8)
+								) {
+									return false;
+								}
+
+								$ip .= '.' . intval($ipBlockParts[0]) . '/' . intval($ipBlockParts[1]);
+							} else {
+								if ($ipPartKey !== 0) {
+									$ip .= '.';
+								}
+
+								$ip .= intval($ipPart);
+							}
 						}
 
-						$response = implode('.', $ipParts);
+						$response = $ip;
 					}
 
 					break;
 				case 6:
-					// todo: validate ipv6 prefix formatting
-
 					if (strpos($ip, '::') !== false) {
-						$ip = str_replace('::', str_repeat(':0', 7 - (substr_count($ip, ':') - 1)) . ':', $ip);
+						$ip = str_replace('::', str_repeat(':0000', 7 - (substr_count($ip, ':') - 1)) . ':', $ip);
 
 						if ($ip[0] === ':') {
-							$ip = '0' . $ip;
+							$ip = '0000' . $ip;
 						}
 					}
 
@@ -747,20 +742,55 @@
 						(count($ipParts) === 8) ||
 						($mappedIpVersion4 !== false)
 					) {
-						foreach ($ipParts as $ipPart) {
-							if (
-								(strlen($ipPart) > 4) &&
-								($ipPart !== $mappedIpVersion4)
-							) {
-								return false;
-							}
+						$ip = '';
 
-							if (is_numeric($ipPart) === false) {
-								foreach (range(0, strlen($ipPart) - 1) as $ipPartIndex) {
-									if (strpos('0123456789ABCDEF', $ipPart[$ipPartIndex]) === false) {
-										return false;
-									}
+						foreach ($ipParts as $ipPartKey => $ipPart) {
+							if (strlen($ipPart) > 4) {
+								if (
+									($mappedIpVersion4 !== false) &&
+									($ipPart !== $mappedIpVersion4)
+								) {
+									return false;
 								}
+
+								if (
+									($allowRanges === false) ||
+									($ipPart !== end($ipParts)) ||
+									(substr_count($ipPart, '/') !== 1)
+								) {
+									return false;
+								}
+
+								$ipBlockParts = explode('/', $ipPart);
+
+								if (
+									$mappedIpVersion4 === false &&
+									(
+										(strlen($ipBlockParts[0]) > 4) ||
+										(str_replace('0123456789ABCDEF', '', $ipBlockParts[0]) !== '') ||
+										(is_numeric($ipBlockParts[1]) === false) ||
+										($ipBlockParts[1] > 128) ||
+										($ipBlockParts[1] < 8
+									)
+								) {
+									return false;
+								}
+
+								$ip .= ':' . str_pad($ipBlockParts[0], 4, '0', STR_PAD_LEFT);
+
+								if (empty($ipBlockParts[1]) === false) {
+									$ip .= '/' . $ipBlockParts[1];
+								}
+							} else {
+								if (str_replace('0123456789ABCDEF', '', $ipPart) !== '') {
+									return false;
+								}
+
+								if ($ipPartKey !== 0) {
+									$ip .= ':';
+								}
+
+								$ip .= str_pad($ipPart, 4, '0', STR_PAD_LEFT);
 							}
 						}
 
