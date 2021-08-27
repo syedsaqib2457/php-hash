@@ -87,7 +87,7 @@
 						'status_processing' => false
 					)
 				)
-			));
+			);
 			$requestLogsToProcessCount = $this->count($requestLogsToProcessParameters);
 			$response['status_valid'] = (
 				(is_int($requestLogsToProcessCount) === true) &&
