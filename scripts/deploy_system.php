@@ -454,7 +454,8 @@
 
 	$crontabCommands = array(
 		'# [Start]',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system processRequestLogs',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system processNodeRequestLogs',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system processSystemRequestLogs',
 		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
 		'# [Stop]'
 	);
