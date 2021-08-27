@@ -77,7 +77,7 @@
 				'message' => 'Error processing request logs, please try again.',
 				'status_valid' => false
 			);
-			$requestLogsToProcessCount = $this->count(array(
+			$requestLogsToProcessParameters = array(
 				'in' => 'request_logs',
 				'where' => array(
 					'node_user_id !=' => null,
@@ -88,26 +88,76 @@
 					)
 				)
 			));
+			$requestLogsToProcessCount = $this->count($requestLogsToProcessParameters);
 			$response['status_valid'] = (
 				(is_int($requestLogsToProcessCount) === true) &&
 				($requestLogsToProcessCount !== 0)
 			);
 
 			if ($response['status_valid'] === true) {
-				$requestLogsToProcessUpdated = $this->update(array(
-					'data' => array(
-						'status_processing' => true
-					),
-					'in' => 'request_logs',
-					'where' => array(
-						'node_user_id !=' => null,
-						'status_processed' => false
-					)
-				));
+				$requestLogsToProcessParameters['data'] = array(
+					'status_processing' => true
+				);
+				$requestLogsToProcessUpdated = $this->update($requestLogsToProcessParameters);
 
 				if ($requestLogsToProcessUpdated === true) {
-					// todo: fetch destinations and format destination_hostname values into array
-					// todo: assign destination_id for each destination_hostname for tracking request limits
+					$requestDestinationIds = $requestLogData = array();
+					$requestLogsToProcessParameters['fields'] = array(
+						'bytes_received',
+						'bytes_sent',
+						'created',
+						'destination_hostname',
+						'destination_ip',
+						'id',
+						'node_id',
+						'node_user_id',
+						'response_code',
+						'source_ip',
+						'username',
+						'type'
+					);
+					$requestLogsToProcessParameters['from'] = 'request_logs';
+					$requestLogsToProcess = $this->fetch($requestLogsToProcessParameters);
+					// todo: reset $requestLogData for every 10000 logs parsed
+
+					foreach ($requestLogsToProcess as $requestLogToProcess) {
+						$requestLogData[$requestLogToProcess['id']] = array(
+							'id' => $requestLogToProcess['id']
+						);
+
+						if (
+							(isset($requestDestinationIds[$requestLogToProcess['destination_hostname']]) === false) &&
+							($this->_validateHostname($requestLogToProcess['destination_hostname']) !== false)
+						) {
+							$requestDestination = $this->fetch(array(
+								'fields' => array(
+									'id'
+								),
+								'from' => 'request_destinations',
+								'where' => array(
+									'address' => $requestLogToProcess['destination_hostname']
+								)
+							));
+							$response['status_valid'] = ($requestDestination !== false);
+
+							if ($response['status_valid'] === false) {
+								continue;
+							}
+
+							if (empty($requestDestination['id']) === false) {
+								$requestDestinationIds[$requestLogToProcess['destination_hostname']] = $requestDestination['id'];
+							}
+						}
+
+						if (empty($requestDestinationIds[$requestLogToProcess['destination_hostname']]) === false) {
+							$requestLogData[$requestLogToProcess['id']]['destination_id'] = $requestDestinationIds[$requestLogToProcess['destination_hostname']];
+							$requestLogData[$requestLogToProcess['id']]['status_processed'] = true;
+						}
+
+						// ..
+					}
+
+					// todo: track node_user_id bandwidth usage
 				}
 
 				// todo: support additional VMs for processing request logs if necessary for millions of logs per minute
