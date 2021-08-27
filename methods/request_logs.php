@@ -218,7 +218,7 @@
 					}
 				}
 
-				// todo: limit prefixes instead of addresses for ipv6
+				// todo: limit ipv6 addresses
 
 				$requestLogsDeleted = $this->delete(array(
 					'from' => 'request_logs',
