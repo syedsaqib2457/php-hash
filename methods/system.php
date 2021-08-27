@@ -770,7 +770,7 @@
 										(str_replace('0123456789ABCDEF', '', $ipBlockParts[0]) !== '') ||
 										(is_numeric($ipBlockParts[1]) === false) ||
 										($ipBlockParts[1] > 128) ||
-										($ipBlockParts[1] < 8
+										($ipBlockParts[1] < 8)
 									)
 								) {
 									return false;
