@@ -102,6 +102,7 @@
 
 				if ($requestLogsToProcessUpdated === true) {
 					$requestDestinationIds = $requestLogData = array();
+					$requestLogsToProcessIndex = 0;
 					$requestLogsToProcessParameters['fields'] = array(
 						'bytes_received',
 						'bytes_sent',
@@ -118,11 +119,11 @@
 					);
 					$requestLogsToProcessParameters['from'] = 'request_logs';
 					$requestLogsToProcess = $this->fetch($requestLogsToProcessParameters);
-					// todo: reset $requestLogData for every 10000 logs parsed
 
-					foreach ($requestLogsToProcess as $requestLogToProcess) {
+					foreach ($requestLogsToProcess as $requestLogToProcessKey => $requestLogToProcess) {
 						$requestLogData[$requestLogToProcess['id']] = array(
-							'id' => $requestLogToProcess['id']
+							'id' => $requestLogToProcess['id'],
+							'status_processed' => true
 						);
 
 						if (
@@ -151,10 +152,21 @@
 
 						if (empty($requestDestinationIds[$requestLogToProcess['destination_hostname']]) === false) {
 							$requestLogData[$requestLogToProcess['id']]['destination_id'] = $requestDestinationIds[$requestLogToProcess['destination_hostname']];
-							$requestLogData[$requestLogToProcess['id']]['status_processed'] = true;
 						}
 
-						// ..
+						$requestLogsToProcessIndex++;
+
+						if (
+							($requestLogsToProcessIndex === 10000) ||
+							(empty($requestLogsToProcess[($requestLogToProcessKey + 1)]) === true)
+						) {
+							$requestLogsToProcessIndex = 0;
+							$this->save(array(
+								'data' => $requestLogData,
+								'to' => 'request_logs'
+							));
+							$requestLogData = array();
+						}
 					}
 
 					// todo: track node_user_id bandwidth usage
