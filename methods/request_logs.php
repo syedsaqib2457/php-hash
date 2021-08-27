@@ -81,7 +81,11 @@
 				'in' => 'request_logs',
 				'where' => array(
 					'node_user_id !=' => null,
-					'status_processed' => false
+					'status_processed' => false,
+					'OR' => array(
+						'modified >' => date('Y-m-d H:i:s', strtotime('-10 minutes')),
+						'status_processing' => false
+					)
 				)
 			));
 			$response['status_valid'] = (
@@ -90,9 +94,22 @@
 			);
 
 			if ($response['status_valid'] === true) {
-				// todo: set request logs as processing to avoid stacking processes
-				// todo: fetch destinations and format destination_hostname values into array
-				// todo: assign destination_id for each destination_hostname for tracking request limits
+				$requestLogsToProcessUpdated = $this->update(array(
+					'data' => array(
+						'status_processing' => true
+					),
+					'in' => 'request_logs',
+					'where' => array(
+						'node_user_id !=' => null,
+						'status_processed' => false
+					)
+				));
+
+				if ($requestLogsToProcessUpdated === true) {
+					// todo: fetch destinations and format destination_hostname values into array
+					// todo: assign destination_id for each destination_hostname for tracking request limits
+				}
+
 				// todo: support additional VMs for processing request logs if necessary for millions of logs per minute
 			}
 
