@@ -618,7 +618,7 @@
 			return $response;
 		}
 
-		protected function _sanitizeIps($ips = array(), $allowSubnets = false, $allowSubnetParts = false) {
+		protected function _sanitizeIps($ips = array(), $allowRanges = false) {
 			$validatedIps = array();
 
 			if (is_array($ips) === false) {
@@ -639,7 +639,7 @@
 						$ipVersion = 6;
 					}
 
-					$validatedIp = $this->_validateIp($ip, $ipVersion, $allowSubnets, $allowSubnetParts);
+					$validatedIp = $this->_validateIp($ip, $ipVersion, $allowRanges);
 
 					if ($validatedIp === false) {
 						continue;
@@ -666,17 +666,14 @@
 			return $response;
 		}
 
-		protected function _validateIp($ip, $ipVersion, $allowRanges = false, $allowRangeParts = false) {
+		protected function _validateIp($ip, $ipVersion, $allowRanges = false) {
 			$response = false;
 
 			switch ($ipVersion) {
 				case 4:
 					$ipParts = explode('.', $ip);
 
-					if (
-						(count($ipParts) === 4) ||
-						($allowRangeParts === true)
-					) {
+					if (count($ipParts) === 4) {
 						$ip = '';
 
 						foreach ($ipParts as $ipPartKey => $ipPart) {
@@ -723,6 +720,8 @@
 
 					break;
 				case 6:
+					$validIpPartLetters = 'ABCDEF';
+
 					if (strpos($ip, '::') !== false) {
 						$ip = str_replace('::', str_repeat(':0000', 7 - (substr_count($ip, ':') - 1)) . ':', $ip);
 
@@ -731,11 +730,11 @@
 						}
 					}
 
-					$ipParts = explode(':', $ip);
+					$ipParts = explode(':', strtoupper($ip));
 					$mappedIpVersion4 = false;
 
 					if (count($ipParts) === 7) {
-						$mappedIpVersion4 = $this->_validateIp(end($ipParts), 4);
+						$mappedIpVersion4 = validateIp(end($ipParts), 4);
 					}
 
 					if (
@@ -746,28 +745,18 @@
 
 						foreach ($ipParts as $ipPartKey => $ipPart) {
 							if (strlen($ipPart) > 4) {
-								if (
-									($mappedIpVersion4 !== false) &&
-									($ipPart !== $mappedIpVersion4)
-								) {
-									return false;
-								}
-
-								if (
-									($allowRanges === false) ||
-									($ipPart !== end($ipParts)) ||
-									(substr_count($ipPart, '/') !== 1)
-								) {
+								if (empty($ipParts[($ipPartKey + 1)]) === false) {
 									return false;
 								}
 
 								$ipBlockParts = explode('/', $ipPart);
 
 								if (
-									$mappedIpVersion4 === false &&
+									($mappedIpVersion4 === false) &&
 									(
-										(strlen($ipBlockParts[0]) > 4) ||
-										(str_replace('0123456789ABCDEF', '', $ipBlockParts[0]) !== '') ||
+										($allowRanges === false) ||
+										(empty($ipBlockParts[1]) === true) ||
+										(empty($ipBlockParts[2]) === false) ||
 										(is_numeric($ipBlockParts[1]) === false) ||
 										($ipBlockParts[1] > 128) ||
 										($ipBlockParts[1] < 8)
@@ -776,21 +765,36 @@
 									return false;
 								}
 
-								$ip .= ':' . str_pad($ipBlockParts[0], 4, '0', STR_PAD_LEFT);
+								$ipPart = current($ipBlockParts);
+								$ip .= ':' . str_pad($ipPart, 4, '0', STR_PAD_LEFT);
+							}
 
-								if (empty($ipBlockParts[1]) === false) {
-									$ip .= '/' . $ipBlockParts[1];
-								}
-							} else {
-								if (str_replace('0123456789ABCDEF', '', $ipPart) !== '') {
+							if (
+								($mappedIpVersion4 === false) &&
+								(is_numeric($ipPart) === false)
+							) {
+								if (ctype_alnum($ipPart) === false) {
 									return false;
 								}
 
-								if ($ipPartKey !== 0) {
-									$ip .= ':';
+								foreach (range(0, (strlen($ipPart) - 1)) as $ipPartCharacterIndex) {
+									if (
+										(is_numeric($ipPart[$ipPartCharacterIndex]) === false) &&
+										(strpos($validIpPartLetters, $ipPart[$ipPartCharacterIndex]) === false)
+									) {
+										return false;
+									}
 								}
+							}
 
-								$ip .= str_pad($ipPart, 4, '0', STR_PAD_LEFT);
+							if ($ipPartKey !== 0) {
+								$ip .= ':';
+							}
+
+							$ip .= str_pad($ipPart, 4, '0', STR_PAD_LEFT);
+
+							if (empty($ipBlockParts[1]) === false) {
+								$ip .= '/' . $ipBlockParts[1];
 							}
 						}
 
