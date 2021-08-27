@@ -561,6 +561,7 @@
 								'type' => 'SMALLINT(3)'
 							)
 						),
+						// todo: add 2 separate tables for node_request_logs and system_request logs
 						'request_logs' => array(
 							'bytes_received' => array(
 								'default' => null,

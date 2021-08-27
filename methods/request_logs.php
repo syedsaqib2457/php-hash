@@ -101,7 +101,7 @@
 				$requestLogsToProcessUpdated = $this->update($requestLogsToProcessParameters);
 
 				if ($requestLogsToProcessUpdated === true) {
-					$requestDestinationIds = $requestLogData = array();
+					$nodeUserRequestLogData = $requestDestinationIds = $requestLogData = array();
 					$requestLogsToProcessIndex = 0;
 					$requestLogsToProcessParameters['fields'] = array(
 						'bytes_received',
@@ -121,10 +121,13 @@
 					$requestLogsToProcess = $this->fetch($requestLogsToProcessParameters);
 
 					foreach ($requestLogsToProcess as $requestLogToProcessKey => $requestLogToProcess) {
+						$nodeRequestLogCreated = substr(date('Y-m-d H:i', $requestLogToProcess['created']), 0, 15) . '0:00';
 						$requestLogData[$requestLogToProcess['id']] = array(
 							'id' => $requestLogToProcess['id'],
 							'status_processed' => true
 						);
+
+						// todo: track node_user_id bandwidth usage
 
 						if (
 							(isset($requestDestinationIds[$requestLogToProcess['destination_hostname']]) === false) &&
@@ -168,8 +171,6 @@
 							$requestLogData = array();
 						}
 					}
-
-					// todo: track node_user_id bandwidth usage
 				}
 
 				// todo: support additional VMs for processing request logs if necessary for millions of logs per minute
