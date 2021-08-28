@@ -11,7 +11,7 @@
 			);
 			$systemRequestLogsToProcessParameters = array(
 				'in' => 'system_request_logs',
-				'limit' => 10000,
+				'limit' => 100000,
 				'where' => array(
 					'status_processed' => false,
 					'OR' => array(
