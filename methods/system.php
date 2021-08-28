@@ -912,7 +912,7 @@
 				unset($parameters['data']['password']);
 			}
 
-			$userDataUpdated = $this->update(array(
+			$usersUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'authentication_password' => true,
 					'authentication_whitelist' => true
@@ -922,7 +922,7 @@
 					'id' => 1
 				)
 			));
-			$response['status_valid'] = ($userDataUpdated === true);
+			$response['status_valid'] = ($usersUpdated === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -1049,7 +1049,7 @@
 				return $response;
 			}
 
-			$userDataUpdated = $this->update(array(
+			$usersUpdated = $this->update(array(
 				'data' => array(
 					'authentication_expires' => date('Y-m-d H:i:s', strtotime('+1 month')),
 					'authentication_username' => sha1($this->settings['keys']['start'] . '_' . $parameters['settings']['session_id'])
@@ -1060,8 +1060,8 @@
 				)
 			));
 			$response['status_valid'] = (
-				($userDataUpdated !== false) &&
-				(empty($userDataUpdated) === false)
+				($usersUpdated !== false) &&
+				(empty($usersUpdated) === false)
 			);
 			return $response;
 		}

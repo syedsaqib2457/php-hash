@@ -19,7 +19,7 @@
 
 			$response['status_valid'] = (
 				($this->_validateHostname($parameters['data']['address']) !== false) ||
-				(empty($this->_sanitizeIps(array($parameters['data']['address']), true)) === false)
+				(empty($this->_sanitizeIps($parameters['data']['address'], true)) === false)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -46,7 +46,7 @@
 				return $response;
 			}
 
-			$requestDestinationDataSaved = $this->save(array(
+			$requestDestinationsSaved = $this->save(array(
 				'data' => array(
 					array(
 						'address' => $parameters['data']['address']
@@ -54,7 +54,7 @@
 				),
 				'to' => 'request_destinations'
 			));
-			$response['status_valid'] = ($requestDestinationDataSaved === true);
+			$response['status_valid'] = ($requestDestinationsSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -107,7 +107,7 @@
 
 			$response['status_valid'] = (
 				($this->_validateHostname($parameters['data']['address']) !== false) ||
-				(empty($this->_sanitizeIps(array($parameters['data']['address']), true)) === false)
+				(empty($this->_sanitizeIps($parameters['data']['address'], true)) === false)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -134,7 +134,7 @@
 				return $response;
 			}
 
-			$requestDestinationDataUpdated = $this->update(array(
+			$requestDestinationsUpdated = $this->update(array(
 				'data' => array(
 					'address' => $parameters['data']['address']
 				),
@@ -143,7 +143,7 @@
 					'id' => $requestDestinationId
 				)
 			));
-			$response['status_valid'] = ($requestDestinationDataSaved === true);
+			$response['status_valid'] = ($requestDestinationsSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;

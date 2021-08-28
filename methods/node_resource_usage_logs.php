@@ -148,11 +148,11 @@
 				}
 			}
 
-			$nodeProcessResourceUsageLogDataSaved = $this->save(array(
+			$nodeProcessResourceUsageLogsSaved = $this->save(array(
 				'data' => $nodeProcessResourceUsageLogData,
 				'to' => 'node_process_resource_usage_logs'
 			));
-			$nodeResourceUsageLogDataSaved = $this->save(array(
+			$nodeResourceUsageLogsSaved = $this->save(array(
 				'data' => array_intersect_key($nodeProcessResourceUsageLogs['node_resource_usage_logs'], array(
 					'cpu_capacity_cores' => true,
 					'cpu_capacity_megahertz' => true,
@@ -167,8 +167,8 @@
 				'to' => 'node_resource_usage_logs'
 			));
 			$response['status_valid'] = (
-				($nodeProcessResourceUsageLogDataSaved === true) &&
-				($nodeResourceUsageLogDataSaved === true)
+				($nodeProcessResourceUsageLogsSaved === true) &&
+				($nodeResourceUsageLogsSaved === true)
 			);
 
 			if ($response['status_valid'] === false) {

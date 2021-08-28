@@ -57,11 +57,11 @@
 				}
 			}
 
-			$nodeUserRequestLogDataSaved = $this->save(array(
+			$nodeUserRequestLogsSaved = $this->save(array(
 				'data' => $nodeUserRequestLogData,
 				'to' => 'node_user_request_logs'
 			));
-			$response['status_valid'] = ($nodeUserRequestLogDataSaved === true);
+			$response['status_valid'] = ($nodeUserRequestLogsSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;

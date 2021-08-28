@@ -100,15 +100,15 @@
 				return $response;
 			}
 
-			$nodeProcessDataSaved = $this->save(array(
+			$nodeProcessesSaved = $this->save(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'node_id' => true,
 					'port_id' => true,
 					'type' => true
 				)),
-				'to' => 'nodes'
+				'to' => 'node_processes'
 			));
-			$response['status_valid'] = ($nodeProcessDataSaved === true);
+			$response['status_valid'] = ($nodeProcessesSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -238,7 +238,7 @@
 				}
 			}
 
-			$nodeProcessDataUpdated = $this->update(array(
+			$nodeProcessesUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'id' => true,
 					'node_id' => true,
@@ -250,7 +250,7 @@
 					'id' => $nodeProcessId
 				)
 			));
-			$response['status_valid'] = ($nodeProcessDataUpdated === true);
+			$response['status_valid'] = ($nodeProcessesUpdated === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -289,13 +289,13 @@
 				return $response;
 			}
 
-			$nodeProcessDataDeleted = $this->delete(array(
+			$nodeProcessesDeleted = $this->delete(array(
 				'from' => 'node_processes',
 				'where' => array(
 					'id' => $nodeProcessIds
 				)
 			));
-			$response['status_valid'] = ($nodeProcessDataDeleted === true);
+			$response['status_valid'] = ($nodeProcessesDeleted === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;

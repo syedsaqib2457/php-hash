@@ -18,11 +18,11 @@
 
 			// ..
 			$systemRequestLogData = array();
-			$systemRequestLogDataSaved = $this->save(array(
+			$systemRequestLogsSaved = $this->save(array(
 				'data' => $systemRequestLogData,
 				'to' => 'system_request_logs'
 			));
-			$response['status_valid'] = ($systemRequestLogDataSaved === true);
+			$response['status_valid'] = ($systemRequestLogsSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -34,7 +34,7 @@
 
 		public function process($parameters) {
 			$response = array(
-				'message' => 'Error processing request logs, please try again.',
+				'message' => 'Error processing system request logs, please try again.',
 				'status_valid' => false
 			);
 			$systemRequestLogsToProcess = $this->fetch(array(
@@ -42,57 +42,57 @@
 					'id',
 					'source_ip'
 				),
-				'from' => 'request_logs',
+				'from' => 'system_request_logs',
 				'where' => array(
 					'status_processed' => false,
 					// ..
 				)
 			));
-			$response['status_valid'] = (empty($requestLogsToProcess) === false);
+			$response['status_valid'] = (empty($systemRequestLogsToProcess) === false);
 
 			if ($response['status_valid'] === true) {
-				$requestLogsPath = $this->settings['base_path'] . '/request_logs/';
+				$systemRequestLogsPath = $this->settings['base_path'] . '/request_logs/';
 
-				if (is_dir($requestLogsPath) === false) {
-					mkdir($requestLogsPath, 0755);
+				if (is_dir($systemRequestLogsPath) === false) {
+					mkdir($systemRequestLogsPath, 0755);
 				}
 
-				foreach ($requestLogsToProcess as $requestLogToProcess) {
-					$requestLogSourceIp = $this->_sanitizeIps($requestLogToProcessPath['source_ip']);
-					$requestLogSourceIpDelimiter = '.';
+				foreach ($systemRequestLogsToProcess as $systemRequestLogToProcess) {
+					$systemRequestLogSourceIp = $this->_sanitizeIps($systemRequestLogToProcessPath['source_ip']);
+					$systemRequestLogSourceIpDelimiter = '.';
 
-					if (empty($requestLogSourceIp[6]) === false) {
-						$requestLogSourceIpDelimiter = ':';
+					if (empty($systemRequestLogSourceIp[6]) === false) {
+						$systemRequestLogSourceIpDelimiter = ':';
 					}
 
-					$requestLogSourceIp = current($requestLogSourceIp);
-					$requestLogToProcessPath = $requestLogsPath . implode('/', explode($requestLogSourceIpDelimiter, $requestLogSourceIp)) . '/';
+					$systemRequestLogSourceIp = current($systemRequestLogSourceIp);
+					$systemRequestLogToProcessPath = $systemRequestLogsPath . implode('/', explode($systemRequestLogSourceIpDelimiter, $systemRequestLogSourceIp)) . '/';
 
-					if (is_dir($requestLogToProcessPath) === false) {
-						mkdir($requestLogToProcessPath, 0755, true);
+					if (is_dir($systemRequestLogToProcessPath) === false) {
+						mkdir($systemRequestLogToProcessPath, 0755, true);
 					}
 
-					$requestLogToProcessFile = $requestLogToProcessPath . '.';
+					$systemRequestLogToProcessFile = $systemRequestLogToProcessPath . '.';
 
-					if (filemtime($requestLogToProcessFile) < strtotime('-1 hour')) {
-						rmdir($requestLogToProcessPath);
+					if (filemtime($systemRequestLogToProcessFile) < strtotime('-1 hour')) {
+						rmdir($systemRequestLogToProcessPath);
 					}
 				}
 
-				$requestLogsDeleted = $this->delete(array(
-					'from' => 'request_logs',
+				$systemRequestLogsDeleted = $this->delete(array(
+					'from' => 'system_request_logs',
 					'where' => array(
 						'modified <' => date('Y-m-d H:i:s', strtotime('-1 hour')),
 						'node_user_id' => null
 					)
 				));
-				$response['status_valid'] = ($requestLogsDeleted === true);
+				$response['status_valid'] = ($systemRequestLogsDeleted === true);
 
 				if ($response['status_valid'] === false) {
 					return $response;
 				}
 
-				$response['message'] = 'Request logs processed successfully.';
+				$response['message'] = 'System request logs processed successfully.';
 				return $response;
 			}
 

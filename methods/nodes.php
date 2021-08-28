@@ -49,10 +49,11 @@
 				$response['message'] = 'Node is already activated.';
 				return $response;
 			} elseif (empty($parameters['user']['endpoint']) === false) {
-				$nodeDataUpdated = $this->update(array(
+				$nodesUpdated = $this->update(array(
 					'data' => array(
 						'status_active' => true
 					),
+					'in' => 'nodes',
 					'where' => array(
 						'OR' => array(
 							'id' => $nodeId,
@@ -60,7 +61,7 @@
 						)
 					)
 				));
-				$response['status_valid'] = ($nodeDataUpdated === true);
+				$response['status_valid'] = ($nodesUpdated === true);
 
 				if ($response['status_valid'] === false) {
 					return $response;
@@ -243,7 +244,7 @@
 				return $response;
 			}
 
-			$nodeDataSaved = $this->save(array(
+			$nodesSaved = $this->save(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
@@ -255,7 +256,7 @@
 				)),
 				'to' => 'nodes'
 			));
-			$response['status_valid'] = ($nodeDataSaved === true);
+			$response['status_valid'] = ($nodesSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -309,11 +310,11 @@
 						));
 					}
 
-					$nodeProcessDataSaved = $this->save(array(
+					$nodeProcessesSaved = $this->save(array(
 						'data' => $nodeProcessData,
 						'to' => 'node_processes'
 					));
-					$response['status_valid'] = ($nodeProcessDataSaved !== false);
+					$response['status_valid'] = ($nodeProcessesSaved !== false);
 
 					if ($response['status_valid'] === false) {
 						$this->delete(array(
@@ -378,7 +379,7 @@
 				$response['message'] = 'Node is already deactivated.';
 				return $response;
 			} elseif (empty($parameters['user']['endpoint']) === false) {
-				$nodeDataUpdated = $this->update(array(
+				$nodesUpdated = $this->update(array(
 					'data' => array(
 						'status_active' => false
 					),
@@ -389,7 +390,7 @@
 						)
 					)
 				));
-				$response['status_valid'] = ($nodeDataUpdated === true);
+				$response['status_valid'] = ($nodesUpdated === true);
 
 				if ($response['status_valid'] === false) {
 					return $response;
@@ -455,7 +456,7 @@
 				(empty($parameters['user']['node_id']) === false) &&
 				($nodeId === $parameters['user']['node_id'])
 			) {
-				$nodeDataUpdated = $this->update(array(
+				$nodesUpdated = $this->update(array(
 					'data' => array(
 						'status_deployed' => true
 					),
@@ -466,7 +467,7 @@
 						)
 					)
 				));
-				$response['status_valid'] = ($nodeDataUpdated === true);
+				$response['status_valid'] = ($nodesUpdated === true);
 
 				if ($response['status_valid'] === false) {
 					return $response;
@@ -624,7 +625,7 @@
 				$existingNodePortIds[$existingNodePort['port_id']] = $existingNodePort['port_id'];
 			}
 
-			$nodeIps = $nodeExternalIps + $nodeInternalIps;
+			$nodeIps = ($nodeExternalIps + $nodeInternalIps);
 			$nodeProcessTypes = array(
 				'http_proxy' => array(
 					'port_id' => 80
@@ -947,7 +948,7 @@
 				}
 			}
 
-			$nodeDataUpdated = $this->update(array(
+			$nodesUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'destination_address_version_4' => true,
 					'destination_address_version_6' => true,
@@ -966,21 +967,21 @@
 					'id' => $nodeId
 				)
 			));
-			$nodeRecursiveDnsDestinationDataUpdated = $this->update(array(
+			$nodeRecursiveDnsDestinationsUpdated = $this->update(array(
 				'data' => $nodeRecursiveDnsDestinationData,
 				'in' => 'node_recursive_dns_destinations',
 				'where' => array(
 					'node_id' => $nodeId
 				)
 			));
-			$nodeUserDataDeleted = $this->delete(array(
+			$nodeUsersDeleted = $this->delete(array(
 				'in' => 'node_users',
 				'where' => array(
 					'status_removed' => true,
 					'node_id' => $nodeId
 				)
 			));
-			$nodeUserDataUpdated = $this->update(array(
+			$nodeUsersUpdated = $this->update(array(
 				'data' => array(
 					'status_processed' => true
 				),
@@ -991,10 +992,10 @@
 				)
 			));
 			$response['status_valid'] = (
-				($nodeDataUpdated === true) &&
-				($nodeRecursiveDnsDataUpdated === true) &&
-				($nodeUserDataDeleted === true) &&
-				($nodeUserDataUpdated === true)
+				($nodesUpdated === true) &&
+				($nodeRecursiveDnssUpdated === true) &&
+				($nodeUsersDeleted === true) &&
+				($nodeUsersUpdated === true)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -1555,21 +1556,21 @@
 				return $response;
 			}
 
-			$nodeDataDeleted = $this->delete(array(
+			$nodesDeleted = $this->delete(array(
 				'from' => 'nodes',
 				'where' => array(
 					'id' => $nodeIds
 				)
 			));
-			$nodeUserDataDeleted = $this->delete(array(
+			$nodeUsersDeleted = $this->delete(array(
 				'from' => 'node_users',
 				'where' => array(
 					'node_id' => $nodeIds
 				)
 			));
 			$response['status_valid'] = (
-				($nodeDataDeleted === true) &&
-				($nodeUserDataDeleted === true)
+				($nodesDeleted === true) &&
+				($nodeUsersDeleted === true)
 			);
 
 			if ($response['status_valid'] === false) {

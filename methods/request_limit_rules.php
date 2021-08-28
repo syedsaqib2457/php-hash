@@ -59,7 +59,7 @@
 				return $response;
 			}
 
-			$requestLimitRuleDataSaved = $this->save(array(
+			$requestLimitRulesSaved = $this->save(array(
 				'data' => array(
 					array_intersect_key($parameters['data'], array(
 						'request_interval_minutes' => true,
@@ -69,7 +69,7 @@
 				),
 				'to' => 'request_limit_rules'
 			));
-			$response['status_valid'] = ($requestLimitRuleDataSaved === true);
+			$response['status_valid'] = ($requestLimitRulesSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -162,7 +162,7 @@
 				return $response;
 			}
 
-			$requestLimitRuleDataUpdated = $this->update(array(
+			$requestLimitRulesUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'request_interval_minutes' => true,
 					'request_limit' => true,
@@ -173,7 +173,7 @@
 					'id' => $requestLimitRuleId
 				)
 			));
-			$response['status_valid'] = ($requestLimitRuleDataUpdated === true);
+			$response['status_valid'] = ($requestLimitRulesUpdated === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
