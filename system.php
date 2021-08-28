@@ -228,6 +228,80 @@
 								'type' => 'INT(5)'
 							)
 						),
+						'node_request_logs' => array(
+							'bytes_received' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'bytes_sent' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'destination_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'destination_ip' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(30)'
+							),
+							'destination_url' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(1000)'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_user_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'response_code' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'SMALLINT(3)'
+							),
+							'source_ip' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(30)'
+							),
+							'status_processed' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_processing' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'username' => array(
+								'default' => "'-'",
+								'type' => 'VARCHAR(15)'
+							),
+							'type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							)
+						),
 						'node_resource_usage_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
@@ -561,6 +635,23 @@
 								'type' => 'SMALLINT(3)'
 							)
 						),
+						'settings' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'primary_key' => true,
+								'type' => 'VARCHAR(255)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'value' => array(
+								'type' => 'VARCHAR(255)'
+							)
+						),
 						'system_request_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
@@ -618,80 +709,6 @@
 							'username' => array(
 								'default' => "'-'",
 								'type' => 'VARCHAR(15)'
-							)
-						),
-						'node_request_logs' => array(
-							'bytes_received' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'bytes_sent' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'destination_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'destination_ip' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(30)'
-							),
-							'destination_url' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(1000)'
-							),
-							'id' => array(
-								'auto_increment' => true,
-								'primary_key' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'node_user_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'response_code' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'SMALLINT(3)'
-							),
-							'source_ip' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(30)'
-							),
-							'status_processed' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'status_processing' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'username' => array(
-								'default' => "'-'",
-								'type' => 'VARCHAR(15)'
-							),
-							'type' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(10)'
 							)
 						),
 						'system_resource_usage_logs' => array(
@@ -752,23 +769,6 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'TINYINT(1)'
-							)
-						),
-						'settings' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'id' => array(
-								'primary_key' => true,
-								'type' => 'VARCHAR(255)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'value' => array(
-								'type' => 'VARCHAR(255)'
 							)
 						),
 						'user_request_destinations' => array(
