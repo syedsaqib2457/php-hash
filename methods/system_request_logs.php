@@ -4,86 +4,98 @@
 
 	class SystemRequestLogMethods extends SystemMethods {
 
-		public function add($parameters) {
-			$response = array(
-				'message' => 'Error adding request logs, please try again.',
-				'status_valid' => (
-					// ..
-				)
-			);
-
-			if ($response['status_valid'] === false) {
-				return $response;
-			}
-
-			// ..
-			$systemRequestLogData = array();
-			$systemRequestLogsSaved = $this->save(array(
-				'data' => $systemRequestLogData,
-				'to' => 'system_request_logs'
-			));
-			$response['status_valid'] = ($systemRequestLogsSaved === true);
-
-			if ($response['status_valid'] === false) {
-				return $response;
-			}
-
-			$response['message'] = 'System request logs added successfully.';
-			return $response;
-		}
-
 		public function process($parameters) {
 			$response = array(
 				'message' => 'Error processing system request logs, please try again.',
 				'status_valid' => false
 			);
-			$systemRequestLogsToProcess = $this->fetch(array(
-				'fields' => array(
-					'id',
-					'source_ip'
-				),
-				'from' => 'system_request_logs',
+			$systemRequestLogsToProcessParameters = array(
+				'in' => 'system_request_logs',
+				'limit' => 10000,
 				'where' => array(
 					'status_processed' => false,
-					// ..
+					'OR' => array(
+						'modified >' => date('Y-m-d H:i:s', strtotime('-10 minutes')),
+						'status_processing' => false
+					)
 				)
-			));
-			$response['status_valid'] = (empty($systemRequestLogsToProcess) === false);
+			);
+			$systemRequestLogsToProcessCount = $this->count($systemRequestLogsToProcessParameters);
+			$response['status_valid'] = (
+				(is_int($systemRequestLogsToProcessCount) === true) &&
+				($systemRequestLogsToProcessCount !== 0)
+			);
 
 			if ($response['status_valid'] === true) {
-				$systemRequestLogsPath = $this->settings['base_path'] . '/request_logs/';
+				$systemRequestLogsToProcessParameters['data'] = array(
+					'status_processing' => true
+				);
+				$systemRequestLogsToProcessUpdated = $this->update($systemRequestLogsToProcessParameters);
 
-				if (is_dir($systemRequestLogsPath) === false) {
-					mkdir($systemRequestLogsPath, 0755);
-				}
+				if ($systemRequestLogsToProcessUpdated === true) {
+					$systemRequestLogData = array();
+					$systemRequestLogsPath = $this->settings['base_path'] . '/request_logs/';
 
-				foreach ($systemRequestLogsToProcess as $systemRequestLogToProcess) {
-					$systemRequestLogSourceIp = $this->_sanitizeIps($systemRequestLogToProcessPath['source_ip']);
-					$systemRequestLogSourceIpDelimiter = '.';
-
-					if (empty($systemRequestLogSourceIp[6]) === false) {
-						$systemRequestLogSourceIpDelimiter = ':';
+					if (is_dir($systemRequestLogsPath) === false) {
+						mkdir($systemRequestLogsPath, 0755);
 					}
 
-					$systemRequestLogSourceIp = current($systemRequestLogSourceIp);
-					$systemRequestLogToProcessPath = $systemRequestLogsPath . implode('/', explode($systemRequestLogSourceIpDelimiter, $systemRequestLogSourceIp)) . '/';
+					$systemRequestLogsToProcessIndex = 0;
+					$systemRequestLogsToProcessParameters['fields'] = array(
+						'id',
+						'source_ip'
+					);
+					$systemRequestLogsToProcessParameters['from'] = 'system_request_logs';
+					$systemRequestLogsToProcess = $this->fetch($systemRequestLogsToProcessParameters);
 
-					if (is_dir($systemRequestLogToProcessPath) === false) {
-						mkdir($systemRequestLogToProcessPath, 0755, true);
-					}
+					foreach ($systemRequestLogsToProcess as $systemRequestLogToProcessKey => $systemRequestLogToProcess) {
+						$systemRequestLogSourceIp = $this->_sanitizeIps($systemRequestLogToProcess['source_ip']);
+						$systemRequestLogSourceIpDelimiter = '.';
 
-					$systemRequestLogToProcessFile = $systemRequestLogToProcessPath . '.';
+						if (empty($systemRequestLogSourceIp[6]) === false) {
+							// todo: block ipv6 prefixes based on the amount of IPs in a prefix making unauthorized requests unless nested file structure works for /128
+							$systemRequestLogSourceIpDelimiter = ':';
+						}
 
-					if (filemtime($systemRequestLogToProcessFile) < strtotime('-1 hour')) {
-						rmdir($systemRequestLogToProcessPath);
+						$systemRequestLogSourceIp = current($systemRequestLogSourceIp);
+						$systemRequestLogToProcessPath = $systemRequestLogsPath . implode('/', explode($systemRequestLogSourceIpDelimiter, $systemRequestLogSourceIp)) . '/';
+
+						if (is_dir($systemRequestLogToProcessPath) === false) {
+							mkdir($systemRequestLogToProcessPath, 0755, true);
+						}
+
+						$systemRequestLogToProcessFile = $systemRequestLogToProcessPath . '.';
+
+						if (filemtime($systemRequestLogToProcessFile) < strtotime('-1 hour')) {
+							rmdir($systemRequestLogToProcessPath);
+						}
+
+						$systemRequestLogToProcess['status_processed'] = true;
+						$systemRequestLogToProcess['status_processing'] = false;
+						$systemRequestLogData[] = $systemRequestLogToProcess;
+						$systemRequestLogsToProcessIndex++;
+
+						if (
+							($systemRequestLogsToProcessIndex === 10000) ||
+							(empty($systemRequestLogsToProcess[($systemRequestLogToProcessKey + 1)]) === true)
+						) {
+							$systemRequestLogsToProcessIndex = 0;
+							$this->save(array(
+								'data' => $systemRequestLogData,
+								'to' => 'system_request_logs'
+							));
+							$systemRequestLogData = array();
+						}
 					}
 				}
 
 				$systemRequestLogsDeleted = $this->delete(array(
 					'from' => 'system_request_logs',
 					'where' => array(
-						'modified <' => date('Y-m-d H:i:s', strtotime('-1 hour')),
-						'node_user_id' => null
+						'created <' => date('Y-m-d H:i:s', strtotime('-1 hour')),
+						'status_authorized' => false,
+						'status_processed' => false,
+						'status_processing' => false
 					)
 				));
 				$response['status_valid'] = ($systemRequestLogsDeleted === true);
@@ -96,9 +108,6 @@
 				return $response;
 			}
 
-			// todo: clear proxy logs every 20 minutes
-			// todo: create api for downloading proxy log files for elapsed 10 minute time period
-			// ..
 			return $response;
 		}
 

@@ -174,36 +174,36 @@
 			return $response;
 		}
 
-		protected function _logInvalidRequest() {
-			$requestLogs = $this->fetch(array(
+		protected function _logUnauthorizedRequest() {
+			$systemRequestLogs = $this->fetch(array(
 				'fields' => array(
 					'id',
 					'request_attempts'
 				),
-				'from' => 'request_logs',
+				'from' => 'system_request_logs',
 				'where' => array(
-					'node_user_id' => null,
-					'source_ip' => $_SERVER['REQUEST_URI']
+					'source_ip' => $_SERVER['REQUEST_URI'],
+					'status_authorized' => false
 				)
 			));
-			$requestLogData = array(
+			$systemRequestLogData = array(
 				'source_ip' => $_SERVER['REQUEST_URI'],
 				'request_attempts' => 1
 			);
 
 			if (
-				($requestLogs !== false) &&
-				(empty($requestLogs) === false)
+				($systemRequestLogs !== false) &&
+				(empty($systemRequestLogs) === false)
 			) {
-				$requestLogs['request_attempts']++;
-				$requestLogData = $requestLogs;
+				$systemRequestLogs['request_attempts']++;
+				$systemRequestLogData = $systemRequestLogs;
 			}
 
 			$this->save(array(
 				'data' => array(
-					$requestLogData
+					$systemRequestLogData
 				),
-				'to' => 'request_logs'
+				'to' => 'system_request_logs'
 			));
 			return;
 		}
