@@ -993,7 +993,7 @@
 			));
 			$response['status_valid'] = (
 				($nodesUpdated === true) &&
-				($nodeRecursiveDnssUpdated === true) &&
+				($nodeRecursiveDnsDestinationsUpdated === true) &&
 				($nodeUsersDeleted === true) &&
 				($nodeUsersUpdated === true)
 			);
