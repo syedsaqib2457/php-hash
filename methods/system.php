@@ -520,7 +520,7 @@
 			);
 
 			if ($parameters['status_valid'] === false) {
-				$this->_logInvalidRequest();
+				$this->_logUnauthorizedRequest();
 				return $response;
 			}
 
@@ -575,7 +575,7 @@
 			);
 
 			if ($parameters['status_valid'] === false) {
-				$this->_logInvalidRequest();
+				$this->_logUnauthorizedRequest();
 			} else {
 				$response = $this->_authenticate($parameters);
 				$parameters['user'] = $response['user'];
@@ -585,7 +585,7 @@
 					($parameters['method'] !== 'login')
 				) {
 					if ($response['status_valid'] === false) {
-						$this->_logInvalidRequest();
+						$this->_logUnauthorizedRequest();
 					}
 				} else {
 					$methodName = $parameters['method'];
@@ -595,7 +595,7 @@
 						($response['status_valid'] === false) &&
 						($parameters['method'] === 'login')
 					) {
-						$this->_logInvalidRequest();
+						$this->_logUnauthorizedRequest();
 					} else {
 						$response = array_merge($response, array(
 							'user' => $parameters['user']
