@@ -90,32 +90,6 @@
 			return $response;
 		}
 
-		protected function _call($parameters = array()) {
-			$response = false;
-			$methodFromParts = explode('_', $parameters['method_from']);
-			$methodObjectName = implode('', array_map(function($methodFrom) {
-				return ucwords($methodFrom);
-			}, $methodFromParts)) . 'Methods';
-
-			if (class_exists($methodObjectName) === false) {
-				$system = new System();
-				require_once($this->settings['base_path'] . '/methods/' . $parameters['method_from'] . '.php');
-			}
-
-			if (empty($this->$methodObjectName) === true) {
-				$this->$methodObjectName = new $methodObjectName();
-			}
-
-			if (
-				(empty($parameters['method_name']) === false) &&
-				(method_exists($this->$methodObjectName, $parameters['method_name']) === true)
-			) {
-				$response = call_user_func_array(array($this->$methodObjectName, $parameters['method_name']), $parameters['method_parameters']);
-			}
-
-			return $response;
-		}
-
 		protected function _detectIpType($ip, $ipVersion) {
 			$response = 'public';
 
