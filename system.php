@@ -561,8 +561,66 @@
 								'type' => 'SMALLINT(3)'
 							)
 						),
-						// todo: add 2 separate tables for node_request_logs and system_request logs
-						'request_logs' => array(
+						'system_request_logs' => array(
+							'bytes_received' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'bytes_sent' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'requests' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'SMALLINT(3)'
+							),
+							'source_ip' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(30)'
+							),
+							'status_authorized' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_processed' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_processing' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'username' => array(
+								'default' => "'-'",
+								'type' => 'VARCHAR(15)'
+							)
+						),
+						'node_request_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
 								'null' => true,
@@ -606,16 +664,6 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'status_processed' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'status_processing' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
 							'response_code' => array(
 								'default' => null,
 								'null' => true,
@@ -625,6 +673,16 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(30)'
+							),
+							'status_processed' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'status_processing' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
 							),
 							'username' => array(
 								'default' => "'-'",
@@ -636,7 +694,7 @@
 								'type' => 'CHAR(10)'
 							)
 						),
-						'resource_usage_logs' => array(
+						'system_resource_usage_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
 								'null' => true,
