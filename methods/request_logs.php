@@ -205,7 +205,15 @@
 				}
 
 				foreach ($requestLogsToProcess as $requestLogToProcess) {
-					$requestLogToProcessPath = $requestLogsPath . implode('/', explode('.', $requestLogToProcessPath['source_ip'])) . '/';
+					$requestLogSourceIp = $this->_sanitizeIps($requestLogToProcessPath['source_ip']);
+					$requestLogSourceIpDelimiter = '.';
+
+					if (empty($requestLogSourceIp[6]) === false) {
+						$requestLogSourceIpDelimiter = ':';
+					}
+
+					$requestLogSourceIp = current($requestLogSourceIp);
+					$requestLogToProcessPath = $requestLogsPath . implode('/', explode($requestLogSourceIpDelimiter, $requestLogSourceIp)) . '/';
 
 					if (is_dir($requestLogToProcessPath) === false) {
 						mkdir($requestLogToProcessPath, 0755, true);
@@ -217,8 +225,6 @@
 						rmdir($requestLogToProcessPath);
 					}
 				}
-
-				// todo: limit ipv6 addresses
 
 				$requestLogsDeleted = $this->delete(array(
 					'from' => 'request_logs',
