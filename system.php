@@ -63,36 +63,6 @@
 								'type' => 'TINYINT(1)'
 							)
 						),
-						'node_processes' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'id' => array(
-								'auto_increment' => true,
-								'primary_key' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'node_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'port_number' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'MEDIUMINT(3)'
-							),
-							'type' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(10)'
-							)
-						),
 						'node_process_resource_usage_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
@@ -186,6 +156,36 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
+							)
+						),
+						'node_processes' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'port_number' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'MEDIUMINT(3)'
+							),
+							'type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
 							)
 						),
 						'node_recursive_dns_destinations' => array(
