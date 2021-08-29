@@ -298,7 +298,6 @@
 						'type' => 'socks_proxy'
 					)
 				);
-				// todo: add default port 53 to node_recursive_dns
 
 				foreach ($nodeProcesses as $nodeProcess) {
 					$nodeProcessData = array();
@@ -613,6 +612,7 @@
 					))
 				)
 			));
+			// todo: rename port_id field to number so $existingNodePortIds is $existingNodePortNumbers
 			$response['status_valid'] = ($existingNodePorts !== false);
 
 			if ($response['status_valid'] === false) {
@@ -626,19 +626,8 @@
 			}
 
 			$nodeIps = $nodeExternalIps + $nodeInternalIps;
-			$nodeProcessTypes = array(
-				'http_proxy' => array(
-					'port_id' => 80
-				),
-				'recursive_dns' => array(
-					'port_id' => 53
-				),
-				'socks_proxy' => array(
-					'port_id' => 1080
-				)
-			);
 
-			foreach ($nodeProcessTypes as $nodeProcessType => $nodeProcess) {
+			foreach ($this->settings['node_process_type_default_ports'] as $nodeProcessType => $nodeProcessPort) {
 				$response['status_valid'] = (isset($parameters['data']['enable_' . $nodeProcessType . '_processes']) === true);
 
 				if ($response['status_valid'] === false) {
@@ -670,7 +659,7 @@
 						return $response;
 					}
 				} else {
-					$nodePorts = $this->fetch(array(
+					$nodeProcessPorts = $this->fetch(array(
 						'fields' => array(
 							'id',
 							'port_id',
@@ -683,7 +672,7 @@
 							'node_process_type' => $nodeProcessType
 						)
 					));
-					$response['status_valid'] = ($nodePorts !== false);
+					$response['status_valid'] = ($nodeProcessPorts !== false);
 
 					if ($response['status_valid'] === false) {
 						return $response;
@@ -691,16 +680,16 @@
 
 					$nodePortIds = $nodePortStatusAllowingPortIds = $nodePortStatusDenyingPortIds = array();
 
-					foreach ($nodePorts as $nodePort) {
+					foreach ($nodeProcessPorts as $nodeProcessPort) {
 						if ($nodePort['status_allowing'] === true) {
-							$nodePortStatusAllowingPortIds[$nodePort['port_id']] = $nodePort['port_id'];
+							$nodePortStatusAllowingPortIds[$nodeProcessPort['port_id']] = $nodeProcessPort['port_id'];
 						}
 
 						if ($nodePort['status_denying'] === true) {
-							$nodePortStatusDenyingPortIds[$nodePort['port_id']] = $nodePort['port_id'];
+							$nodePortStatusDenyingPortIds[$nodeProcessPort['port_id']] = $nodeProcessPort['port_id'];
 						}
 
-						$nodePortIds[$nodePort['port_id']] = $nodePort['port_id'];
+						$nodePortIds[$nodeProcessPort['port_id']] = $nodeProcessPort['port_id'];
 					}
 
 					if (empty($nodePortStatusAllowingPortIds) === false) {
@@ -756,12 +745,15 @@
 					$nodeProcessData = array();
 
 					foreach ($nodePortIds as $nodePortId) {
-						$nodeProcess['port_id'] = $nodePortId;
-						$nodeProcessData[] = $nodeProcess;
+						$nodeProcessData[] = array(
+							'port_id' => $nodePortId,
+							'type' => $nodeProcessType
+						);
 					}
 
 					$existingNodePortIds = array_merge($existingNodePortIds, $nodePortIds);
 					$nodePortCount = (count($nodePortIds) + $nodePortCount);
+					// ..
 
 					if (
 						(empty($nodePortStatusAllowingPortIds) === true) &&
@@ -781,8 +773,11 @@
 								break;
 							}
 
-							$existingNodePortIds[] = $nodeProcess['port_id'] = $nodeProcessPortId;
-							$nodeProcessData[] = $nodeProcess;
+							$existingNodePortIds[] = $nodeProcessPortId;
+							$nodeProcessData[] = array(
+								'port_id' => $nodeProcessPortId,
+								'type' => $nodeProcessType
+							);
 						}
 					}
 
@@ -1276,6 +1271,8 @@
 				($nodeCount > 0)
 			);
 
+			// todo: verify if processes need to be scaled before exiting
+
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
@@ -1314,12 +1311,6 @@
 				return $response;
 			}
 
-			$nodeProcessTypes = array(
-				'http_proxy',
-				'recursive_dns',
-				'socks_proxy'
-			);
-
 			foreach ($nodes as $node) {
 				$response['data']['nodes'][$node['id']] = $node;
 
@@ -1343,14 +1334,38 @@
 				}
 			}
 
-			foreach ($nodeProcessTypes as $nodeProcessType) {
+			$existingNodePorts = $this->fetch(array(
+				'fields' => array(
+					'number',
+					'status_allowing',
+					'status_denying'
+				),
+				'from' => 'node_ports',
+				'where' => array(
+					'node_id' => $nodeId
+					// ..
+				)
+			));
+			$response['status_valid'] = ($existingNodePorts !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$existingNodePortNumbers = array();
+
+			foreach ($existingNodePorts as $existingNodePort) {
+				$existingNodePortNumbers[$existingNodePort['number']] = $existingNodePort['number'];
+			}
+
+			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
 				$nodePorts = $this->fetch(array(
 					'fields' => array(
-						'port_id',
+						'number',
 						'status_allowing',
 						'status_denying'
 					),
-					'from' => 'node_ports',
+					'from' => 'node_process_ports',
 					'where' => array(
 						'node_id' => $nodeId,
 						'node_process_type' => $nodeProcessType,
@@ -1392,8 +1407,8 @@
 					)
 				));
 				$response['status_valid'] = (
-					($nodePorts !== false) &&
 					($nodeProcesses !== false) &&
+					($nodeProcessPorts !== false) &&
 					($nodeProcessResourceUsageLogs !== false) &&
 					($nodeUsers !== false)
 				);
@@ -1410,10 +1425,96 @@
 						($nodePorts[0]['status_allowing'] === false) &&
 						($nodeProcessCount < 100)
 					) {
-						// todo: divide percentage of cpu resource usage for specific process type by number of processes
-						// todo: if per-process cpu usage exceeds 0.5% of total cpu time, add 5 processes with maximum of 100 processes/ports for each type (100 processes can be exceeded with manual process port selection)
-						// todo: scale processes down with a minimum of 10 if per-process cpu usage is below 0.25% for 1 hour
-						// todo: scale by cpu percentage since there's no caching for DNS and proxy process types
+						$nodeProcessResourceUsageLogCpuPercentage = $nodeProcessResourceUsageLogs[0]['cpu_percentage'] / $nodeProcessCount;
+
+						if ($nodeProcessResourceUsageLogCpuPercentage > 0.5) {
+							$nodeProcessPortNumber = $nodeProcessTypeDefaultPortNumber;
+
+							foreach (range(1, min(5, 100 - $nodeProcessCount)) as $nodeProcessIndex) {
+								while (
+									($nodeProcessPortNumber <= 65535) &&
+									(in_array($nodeProcessPortNumber, $existingNodePortNumbers) === true)
+								) {
+									$nodeProcessPortNumber++;
+								}
+
+								if (in_array($nodeProcessPortNumber, $existingNodePortIds) === true) {
+									break;
+								}
+
+								$nodeProcessPortNumbers[] = $nodeProcessPortNumber;
+								$nodeProcessCount++;
+								$nodeProcessData[] = array(
+									'port_number' => $nodeProcessPortNumber,
+									'type' => $nodeProcessType
+								);
+							}
+						}
+					} elseif ($nodeProcessCount !== 10) {
+						foreach ($nodeProcessResourceUsageLogs as $nodeProcessResourceUsageLog) {
+							if (($nodeProcessResourceUsageLog['cpu_percentage'] / $nodeProcessCount) > 0.25) {
+								break;
+							}
+
+							$nodeProcessPortNumberIndex = 0;
+							$nodeProcessPortNumbersToDelete = array();
+
+							while (
+								(count($nodeProcessPortNumbersToDelete) < 5) &&
+								($nodeProcessCount > 10)
+							) {
+								if ($nodeProcesses[$nodeProcessPortNumberIndex]['number'] !== $nodeProcessTypeDefaultPortNumber) {
+									$nodeProcessCount--;
+									$nodeProcessPortNumbersToDelete[] = $nodeProcesses[$nodeProcessPortNumberIndex]['number'];
+								}
+
+								$nodeProcessPortNumberIndex++;
+							}
+
+							$nodeProcessesDeleted = $this->delete(array(
+								'in' => 'node_processes',
+								'where' => array(
+									'node_id' => $nodeId,
+									'number' => $nodeProcessPortNumbersToDelete,
+									// ..
+								)
+							));
+							$nodeProcessPortsDeleted = $this->delete(array(
+								'in' => 'node_process_ports',
+								'where' => array(
+									'node_id' => $nodeId,
+									'number' => $nodeProcessPortNumbersToDelete,
+									// ..
+								)
+							));
+							$response['status_valid'] = (
+								($nodeProcessesDeleted !== false) &&
+								($nodeProcessPortsDeleted !== false)
+							);
+
+							if ($response['status_valid'] === false) {
+								return $response;
+							}
+						}
+					}
+
+					if ($nodeProcessCount !== key($nodeProcesses) + 1) {
+						$nodeProcesses = $this->fetch(array(
+							'fields' => array(
+								'node_id',
+								'port_id'
+							),
+							'from' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeId,
+								'type' => $nodeProcessType
+							)
+						));
+						$response['status_valid'] = ($nodeProcesses !== false);
+
+						if ($response['status_valid'] === false) {
+							return $response;
+						}
 					}
 
 					$response['data']['node_processes'][$nodeProcessType] = array_chunk($nodeProcesses, ($nodeProcessCount / 2));
