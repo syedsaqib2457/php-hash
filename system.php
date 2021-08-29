@@ -13,7 +13,7 @@
 					'name' => 'ghostcompute',
 					'password' => 'password',
 					'structure' => array(
-						'node_ports' => array(
+						'node_process_ports' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -37,7 +37,7 @@
 								'null' => true,
 								'type' => 'CHAR(10)'
 							),
-							'port_id' => array(
+							'number' => array(
 								'auto_increment' => true,
 								'primary_key' => true,
 								'type' => 'MEDIUMINT(3)'
@@ -82,7 +82,7 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'port_id' => array(
+							'port_number' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'MEDIUMINT(3)'
