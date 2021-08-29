@@ -587,11 +587,11 @@
 				}
 			}
 
-			$existingNodePorts = $this->fetch(array(
+			$existingNodeProcessPorts = $this->fetch(array(
 				'fields' => array(
-					'port_id'
+					'number'
 				),
-				'from' => 'node_ports',
+				'from' => 'node_process_ports',
 				'where' => array(
 					'node_id' => ($nodeIds = array(
 						$nodeId,
@@ -599,22 +599,21 @@
 					))
 				)
 			));
-			// todo: rename port_id field to number so $existingNodePortIds is $existingNodePortNumbers
-			$response['status_valid'] = ($existingNodePorts !== false);
+			$response['status_valid'] = ($existingNodeProcessPorts !== false);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$existingNodePortIds = array();
+			$existingNodeProcessPortNumbers = array();
 
-			foreach ($existingNodePorts as $existingNodePort) {
-				$existingNodePortIds[$existingNodePort['port_id']] = $existingNodePort['port_id'];
+			foreach ($existingNodeProcessPorts as $existingNodeProcessPort) {
+				$existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['number'];
 			}
 
 			$nodeIps = $nodeExternalIps + $nodeInternalIps;
 
-			foreach ($this->settings['node_process_type_default_ports'] as $nodeProcessType => $nodeProcessPort) {
+			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
 				$response['status_valid'] = (isset($parameters['data']['enable_' . $nodeProcessType . '_processes']) === true);
 
 				if ($response['status_valid'] === false) {
@@ -649,11 +648,11 @@
 					$nodeProcessPorts = $this->fetch(array(
 						'fields' => array(
 							'id',
-							'port_id',
+							'number',
 							'status_allowing',
 							'status_denying'
 						),
-						'from' => 'node_ports',
+						'from' => 'node_process_ports',
 						'where' => array(
 							'node_id' => $nodeIds,
 							'node_process_type' => $nodeProcessType
@@ -665,26 +664,26 @@
 						return $response;
 					}
 
-					$nodePortIds = $nodePortStatusAllowingPortIds = $nodePortStatusDenyingPortIds = array();
+					$nodeProcessPortNumbers = $nodeProcessPortStatusAllowingPortNumbers = $nodeProcessPortStatusDenyingPortNumbers = array();
 
 					foreach ($nodeProcessPorts as $nodeProcessPort) {
 						if ($nodePort['status_allowing'] === true) {
-							$nodePortStatusAllowingPortIds[$nodeProcessPort['port_id']] = $nodeProcessPort['port_id'];
+							$nodeProcessPortStatusAllowingPortNumbers[$nodeProcessPort['number']] = $nodeProcessPort['number'];
 						}
 
 						if ($nodePort['status_denying'] === true) {
-							$nodePortStatusDenyingPortIds[$nodeProcessPort['port_id']] = $nodeProcessPort['port_id'];
+							$nodeProcessPortStatusDenyingPortNumbers[$nodeProcessPort['number']] = $nodeProcessPort['number'];
 						}
 
-						$nodePortIds[$nodeProcessPort['port_id']] = $nodeProcessPort['port_id'];
+						$nodeProcessPortNumbers[$nodeProcessPort['number']] = $nodeProcessPort['number'];
 					}
 
-					if (empty($nodePortStatusAllowingPortIds) === false) {
+					if (empty($nodeProcessPortStatusAllowingPortNumbers) === false) {
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
 							'where' => array(
 								'node_id' => $nodeIds,
-								'port_id !=' => $nodePortStatusAllowingPortIds,
+								'port_number !=' => $nodeProcessPortStatusAllowingPortNumbers,
 								'type' => $nodeProcessType
 							)
 						));
@@ -695,12 +694,12 @@
 						return $response;
 					}
 
-					if (empty($nodePortStatusDenyingPortIds) === false) {
+					if (empty($nodeProcessPortStatusDenyingPortNumbers) === false) {
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
 							'where' => array(
 								'node_id' => $nodeIds,
-								'port_id' => $nodePortStatusDenyingPortIds,
+								'port_number' => $nodeProcessPortStatusDenyingPortNumbers,
 								'type' => $nodeProcessType
 							)
 						));
@@ -711,68 +710,83 @@
 						return $response;
 					}
 
-					$nodePortCount = $this->count(array(
-						'in' => 'node_ports',
+					$nodeProcessPortCount = $this->count(array(
+						'in' => 'node_process_ports',
 						'where' => array(
 							'node_process_type' => $nodeProcessType,
 							'status_denying' => false
 						)
 					));
-					$response['status_valid'] = (is_int($nodePortCount) === true);
+					$response['status_valid'] = (is_int($nodeProcessPortCount) === true);
 
 					if ($response['status_valid'] === false) {
 						return $response;
 					}
 
-					if (empty($nodePortStatusAllowingPortIds) === false) {
-						$nodePortIds = $nodePortStatusAllowingPortIds;
+					if (empty($nodeProcessPortStatusAllowingPortNumbers) === false) {
+						$nodeProcessPortNumbers = $nodeProcessPortStatusAllowingPortNumbers;
 					}
 
-					$nodePortIds = array_diff($nodePortIds, $existingNodePortIds, $nodePortStatusDenyingPortIds);
+					$nodeProcessPortNumbers = array_diff($nodeProcessPortNumbers, $existingNodeProcessPortNumbers, $nodeProcessPortStatusDenyingPortNumbers);
 					$nodeProcessData = array();
 
-					foreach ($nodePortIds as $nodePortId) {
+					foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
 						$nodeProcessData[] = array(
-							'port_id' => $nodePortId,
+							'port_number' => $nodeProcessPortNumber,
 							'type' => $nodeProcessType
 						);
 					}
 
-					$existingNodePortIds = array_merge($existingNodePortIds, $nodePortIds);
-					$nodePortCount = (count($nodePortIds) + $nodePortCount);
-					// ..
+					$existingNodeProcessPortNumbers = array_merge($existingNodeProcessPortNumbers, $nodeProcessPortNumbers);
+					$nodeProcessPortCount = (count($nodeProcessPortNumbers) + $nodeProcessPortCount);
 
 					if (
-						(empty($nodePortStatusAllowingPortIds) === true) &&
-						($nodePortCount < 10)
+						(empty($nodeProcessPortStatusAllowingPortNumbers) === true) &&
+						($nodeProcessPortCount < 10)
 					) {
-						$nodeProcessPortId = $nodeProcess['port_id'];
+						
+						$nodeProcessPortNumber = $nodeProcess['port_number'];
+						$nodeProcessPortData = array();
 
-						foreach (range($nodePortCount, 10) as $nodeProcessIndex) {
+						foreach (range($nodeProcessPortCount, 10) as $nodeProcessIndex) {
 							while (
-								($nodeProcessPortId <= 65535) &&
-								(in_array($nodeProcessPortId, $existingNodePortIds) === true)
+								($nodeProcessPortNumber <= 65535) &&
+								(in_array($nodeProcessPortNumber, $existingNodeProcessPortNumbers) === true)
 							) {
-								$nodeProcessPortId++;
+								$nodeProcessPortNumber++;
 							}
 
-							if (in_array($nodeProcessPortId, $existingNodePortIds) === true) {
+							if (in_array($nodeProcessPortNumber, $existingNodeProcessPortNumbers) === true) {
 								break;
 							}
 
-							$existingNodePortIds[] = $nodeProcessPortId;
+							$existingNodeProcessPortNumbers[] = $nodeProcessPortNumber;
 							$nodeProcessData[] = array(
-								'port_id' => $nodeProcessPortId,
+								'port_number' => $nodeProcessPortNumber,
 								'type' => $nodeProcessType
 							);
+							$nodeProcessPortData[] = array(
+								'node_process_type' => $nodeProcessType,
+								'number' => $nodeProcessPortNumber
+							);
+						}
+
+						$nodeProcessPortsSaved = $this->save(array(
+							'data' => $nodeProcessPortData,
+							'to' => 'node_process_ports'
+						));
+						$response['status_valid'] = ($nodeProcessPortsSaved === true);
+
+						if ($response['status_valid'] === false) {
+							return $response;
 						}
 					}
 
-					$nodePortsUpdated = $this->update(array(
+					$nodeProcessPortsUpdated = $this->update(array(
 						'data' => array(
 							'status_processed' => true
 						),
-						'in' => 'node_ports',
+						'in' => 'node_process_ports',
 						'where' => array(
 							'node_id' => $nodeIds
 						)
@@ -805,24 +819,24 @@
 				);
 
 				if ($response['status_valid'] === false) {
-					$response['message'] = 'Both destination address and port are required for reverse proxy forwarding, please try again.';
+					$response['message'] = 'Both destination address and port number are required for reverse proxy forwarding, please try again.';
 					return $response;
 				}
 
 				$nodeDestinationAddress = $parameters['data']['destination_address_version_' . $nodeIpVersion];
-				$nodeDestinationPort = $parameters['data']['destination_port_version_' . $nodeIpVersion];
+				$nodeDestinationPort = $parameters['data']['destination_port_number_version_' . $nodeIpVersion];
 
 				if (
 					(empty($nodeDestinationAddress) === false) &&
-					(empty($nodeDestinationPort) === false)
+					(empty($nodeDestinationPortNumber) === false)
 				) {
 					$response['status_valid'] = (
-						(empty($nodeDestinationPort) === true) ||
-						($this->_validatePort($nodeDestinationPort) === false)
+						(empty($nodeDestinationPortNumber) === true) ||
+						($this->_validatePort($nodeDestinationPortNumber) === false)
 					);
 
 					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination port, please try again.';
+						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination port number, please try again.';
 						return $response;
 					}
 
@@ -837,12 +851,12 @@
 					}
 
 					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination, please try again.';
+						$response['message'] = 'Invalid IP version ' . $nodeIpVersion . ' destination address, please try again.';
 						return $response;
 					}
 				} else {
 					unset($parameters['data']['destination_address_version_' . $nodeIpVersion]);
-					unset($parameters['data']['destination_port_version_' . $nodeIpVersion]);
+					unset($parameters['data']['destination_port_number_version_' . $nodeIpVersion]);
 				}
 			}
 
@@ -918,15 +932,15 @@
 					$nodeRecursiveDnsData['ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
 				}
 
-				if (empty($parameters['data']['recursive_dns_port_version_' . $nodeIpVersion]) === false) {
-					$response['status_valid'] = ($this->_validatePort($parameters['data']['recursive_dns_destination_port_version_' . $nodeIpVersion]) === false);
+				if (empty($parameters['data']['recursive_dns_port_number_version_' . $nodeIpVersion]) === false) {
+					$response['status_valid'] = ($this->_validatePortNumber($parameters['data']['recursive_dns_destination_port_number_version_' . $nodeIpVersion]) === false);
 
 					if ($response['status_valid'] === false) {
-						$response['message'] = 'Invalid node recursive DNS port, please try again.';
+						$response['message'] = 'Invalid node recursive DNS port number, please try again.';
 						return $response;
 					}
 
-					$nodeRecursiveDnsDestinationData['port_version_' . $nodeIpVersion] = $parameters['data']['recursive_dns_destination_port_version_' . $nodeIpVersion];
+					$nodeRecursiveDnsDestinationData['port_version_' . $nodeIpVersion] = $parameters['data']['recursive_dns_destination_port_number_version_' . $nodeIpVersion];
 				}
 			}
 
@@ -934,8 +948,8 @@
 				'data' => array_intersect_key($parameters['data'], array(
 					'destination_address_version_4' => true,
 					'destination_address_version_6' => true,
-					'destination_port_version_4' => true,
-					'destination_port_version_6' => true,
+					'destination_port_number_version_4' => true,
+					'destination_port_number_version_6' => true,
 					'external_ip_version_4' => true,
 					'external_ip_version_6' => true,
 					'id' => true,
@@ -1006,8 +1020,8 @@
 					'id',
 					'destination_address_version_4',
 					'destination_address_version_6',
-					'destination_port_version_4',
-					'destination_port_version_6',
+					'destination_port_number_version_4',
+					'destination_port_number_version_6',
 					'external_ip_version_4',
 					'external_ip_version_6',
 					'internal_ip_version_4',
@@ -1268,8 +1282,8 @@
 				'fields' => array(
 					'destination_address_version_4',
 					'destination_address_version_6',
-					'destination_port_version_4',
-					'destination_port_version_6',
+					'destination_port_number_version_4',
+					'destination_port_number_version_6',
 					'external_ip_version_4',
 					'external_ip_version_6',
 					'id',
@@ -1346,7 +1360,7 @@
 			}
 
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
-				$nodePorts = $this->fetch(array(
+				$nodeProcessPorts = $this->fetch(array(
 					'fields' => array(
 						'number',
 						'status_allowing',
@@ -1359,6 +1373,7 @@
 						// ..
 					)
 				));
+				// ..
 				$nodeProcesses = $this->fetch(array(
 					'fields' => array(
 						'node_id',
