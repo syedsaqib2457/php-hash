@@ -1,6 +1,7 @@
 <?php
 	if (
 		// todo: ipv6
+		// todo: add /node_ips/ directory to avoid blocking IPs in blocked ipv6 subnets
 		(empty($_SERVER['REMOTE_ADDR']) === false) &&
 		(file_exists(__DIR__ . '/request_logs/' . implode('/', explode('.', $_SERVER['REMOTE_ADDR'])) . '/.') === true)
 	) {
