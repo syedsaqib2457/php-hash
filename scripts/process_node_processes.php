@@ -61,9 +61,9 @@
 					'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP'
 				);
 
-				if (empty($this->nodeData['ssh_ports']) === false) {
-					foreach ($this->nodeData['ssh_ports'] as $sshPort) {
-						$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
+				if (empty($this->nodeData['ssh_port_numbers']) === false) {
+					foreach ($this->nodeData['ssh_port_numbers'] as $sshPortNumber) {
+						$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
 					}
 				}
 
@@ -97,7 +97,7 @@
 								}
 
 								foreach ($nodeProcessTransportProtocols as $nodeProcessTransportProtocol) {
-									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessTransportProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_id'] . ' --persistent';
+									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessTransportProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_number'] . ' --persistent';
 								}
 							}
 						}
@@ -144,11 +144,11 @@
 						'http_proxy' => '-x',
 						'socks_proxy' => '--socks5-hostname'
 					);
-					exec('curl ' . $parameters[$nodeProcess['type']] . ' ' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcess['port_id'] . ' http://ghostcompute' . uniqid() . time() . ' -v --connect-timeout 1 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+					exec('curl ' . $parameters[$nodeProcess['type']] . ' ' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcess['port_number'] . ' http://ghostcompute' . uniqid() . time() . ' -v --connect-timeout 1 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 					$response = (empty($proxyNodeProcessResponse) === true);
 					break;
 				case 'recursive_dns':
-					exec('dig +time=1 +tries=1 ghostcompute @' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ' -p ' . $nodeProcess['port_id'] . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+					exec('dig +time=1 +tries=1 ghostcompute @' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ' -p ' . $nodeProcess['port_number'] . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 					$response = (empty($recursiveDnsNodeProcessResponse) === false);
 					break;
 			}
@@ -184,10 +184,10 @@
 
 			if (empty($this->nodeData['nodes']) === true) {
 				if (empty(nodeProcesses) === false) {
-					foreach ($nodeProcesses as $nodeProcessType => $nodeProcessPortIds) {
-						foreach ($nodeProcessPortIds as $nodeProcessPortId) {
+					foreach ($nodeProcesses as $nodeProcessType => $nodeProcessPortNumbers) {
+						foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
 							$nodeProcess = array(
-								'port_id' => $nodeProcessPortId,
+								'port_number' => $nodeProcessPortNumber,
 								'type' => $nodeProcessType
 							);
 
@@ -471,7 +471,7 @@
 
 							$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
 							// todo: test per-ACL nserver options
-							$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_version_' . $nodeIpVersion] . ']';
+							$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
 						}
 
 						$proxyNodeUserAuthentication[] = 'deny *';
@@ -483,7 +483,7 @@
 
 					foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
 						$proxyNodeUserAuthentication['internal_reserved_listening_address'] .= ' -e' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' -i' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
-						$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_version_' . $nodeIpVersion] . ']';
+						$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
 					}
 
 					$proxyNodeUserAuthentication[] = 'deny *';
@@ -617,7 +617,7 @@
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
 						if ($this->verifyNodeProcess($nodeProcess) === true) {
-							$nodeProcesses[$nodeProcessType][$nodeProcess['id']] = $nodeProcess['port_id'];
+							$nodeProcesses[$nodeProcessType][$nodeProcess['id']] = $nodeProcess['port_number'];
 						} else {
 							unset($nodeProcesses[$nodeProcessType][$nodeProcess['id']]);
 							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessKey]);
@@ -643,10 +643,10 @@
 
 						$proxyNodeIndex = 0;
 						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
-						$proxyNodeProcessConfiguration['internal_reserved_listening_address'] .= ':' . $proxyNodeProcess['port_id'];
+						$proxyNodeProcessConfiguration['internal_reserved_listening_address'] .= ':' . $proxyNodeProcess['port_number'];
 
 						while (isset($proxyNodeProcessConfigurationOptions['listening_address_' . $proxyNodeIndex]) === true) {
-							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcess['port_id'];
+							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcess['port_number'];
 							$proxyNodeIndex++;
 						}
 
@@ -708,10 +708,10 @@
 
 					foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 						$recursiveDnsNodeIndex = 0;
-						$recursiveDnsNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcess['port_id'];
+						$recursiveDnsNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcess['port_number'];
 
 						while (isset($recursiveDnsNodeProcessConfigurationOptions['listening_address_version_4_' . $recursiveDnsNodeIndex]) === true) {
-							$recursiveDnsNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] .= ':' . $recursiveDnsNodeProcess['port_id'];
+							$recursiveDnsNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] .= ':' . $recursiveDnsNodeProcess['port_number'];
 							$recursiveDnsNodeIndex++;
 						}
 					}
@@ -931,19 +931,19 @@
 					$this->nodeData['interface_name'] = current($interfaceName);
 
 					if (file_exists('/etc/ssh/sshd_config') === true) {
-						exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPorts);
+						exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
 
-						foreach ($sshPorts as $sshPortKey => $sshPort) {
+						foreach ($sshPortNumbers as $sshPortNumberKey => $sshPortNumber) {
 							if (
-								(strlen($sshPort) > 5) ||
-								(is_numeric($sshPort) === false)
+								(strlen($sshPortNumber) > 5) ||
+								(is_numeric($sshPortNumber) === false)
 							) {
-								unset($sshPorts[$sshPortKey]);
+								unset($sshPorts[$sshPortNumberKey]);
 							}
 						}
 
-						if (empty($sshPorts) === false) {
-							$this->nodeData['ssh_ports'] = $sshPorts;
+						if (empty($sshPortNumbers) === false) {
+							$this->nodeData['ssh_port_numbers'] = $sshPortNumbers;
 						}
 					}
 				}

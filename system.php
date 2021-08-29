@@ -217,12 +217,12 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'port_version_4' => array(
+							'port_number_version_4' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'INT(5)'
 							),
-							'port_version_6' => array(
+							'port_number_version_6' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'INT(5)'

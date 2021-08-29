@@ -299,6 +299,8 @@
 					)
 				);
 
+				// ..
+
 				foreach ($nodeProcesses as $nodeProcess) {
 					$nodeProcessData = array();
 
@@ -1628,8 +1630,8 @@
 					'ip_version_4',
 					'ip_version_6',
 					'node_id',
-					'port_version_4',
-					'port_version_6'
+					'port_number_version_4',
+					'port_number_version_6'
 				),
 				'from' => 'node_recursive_dns_destinations',
 				'where' => array(
@@ -1655,7 +1657,7 @@
 						(empty($response['data']['node_system_recursive_dns_destinations'][$nodeIpVersion]) === true) ||
 						($nodeRecursiveDnsProcess === true)
 					) {
-						$response['data']['node_system_recursive_dns_destinations'][$nodeIpVersion] = 'nameserver [' . $nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] . ']:' . $nodeRecursiveDnsDestination['port_version_' . $nodeIpVersion];
+						$response['data']['node_system_recursive_dns_destinations'][$nodeIpVersion] = 'nameserver [' . $nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $nodeIpVersion];
 					}
 				}
 			}
