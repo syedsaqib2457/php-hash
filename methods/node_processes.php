@@ -9,11 +9,7 @@
 				'message' => 'Error adding node process, please try again.',
 				'status_valid' => (
 					(empty($parameters['data']['type']) === false) &&
-					(in_array($parameters['data']['type'], array(
-						'http_proxy',
-						'recursive_dns',
-						'socks_proxy'
-					)) === true)
+					(in_array($parameters['data']['type'], array_keys($this->settings['node_process_type_default_port_numbers'])) === true)
 				)
 			);
 
@@ -26,8 +22,7 @@
 				$nodeParameters = array(
 					'fields' => array(
 						'id',
-						'node_id',
-						'type'
+						'node_id'
 					),
 					'from' => 'nodes',
 					'where' => array(
@@ -71,7 +66,7 @@
 			}
 
 			if (empty($parameters['data']['port_id']) === false) {
-				$nodeProcessPortId = $this->_validatePort($parameters['data']['port_id']);
+				$nodeProcessPortId = $this->_validatePortNumber($parameters['data']['port_id']);
 				$response['status_valid'] = (is_int($nodeProcessPortId) === true);
 			}
 
@@ -80,30 +75,31 @@
 				return $response;
 			}
 
-			$conflictingNodeProcessCount = $this->count(array(
+			$existingNodeProcessCount = $this->count(array(
 				'in' => 'node_processes',
 				'where' => array(
 					'node_id' => $nodeProcessNodeId,
-					'port_id' => $nodeProcessPortId
+					'port_number' => $nodeProcessPortId
 				)
 			));
-			$response['status_valid'] = (is_int($conflictingNodeProcessCount) === true);
+			$response['status_valid'] = (is_int($existingNodeProcessCount) === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = ($conflictingNodeProcessCount === 0);
+			$response['status_valid'] = ($existingNodeProcessCount === 0);
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Node process already in use, please try again.';
 				return $response;
 			}
 
+			// todo: save matching node_process_port_numbers record
 			$nodeProcessesSaved = $this->save(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'node_id' => true,
-					'port_id' => true,
+					'port_number' => true,
 					'type' => true
 				)),
 				'to' => 'node_processes'
@@ -123,11 +119,7 @@
 				'message' => 'Error editing node process, please try again.',
 				'status_valid' => (
 					(empty($parameters['data']['type']) === true) ||
-					(in_array($parameters['data']['type'], array(
-						'http_proxy',
-						'recursive_dns',
-						'socks_proxy'
-					)) === true)
+					(in_array($parameters['data']['type'], array_keys($this->settings['node_process_type_default_port_numbers'])) === true)
 				)
 			);
 
@@ -206,31 +198,31 @@
 				return $response;
 			}
 
-			if (empty($parameters['data']['port_id']) === false) {
-				$nodeProcessPortId = $this->_validatePort($parameters['data']['port_id']);
-				$response['status_valid'] = (is_int($nodeProcessPortId) === true);
+			if (empty($parameters['data']['port_number']) === false) {
+				$nodeProcessPortNumber = $this->_validatePortNumber($parameters['data']['port_number']);
+				$response['status_valid'] = (is_int($nodeProcessPortNumber) === true);
 
 				if ($response['status_valid'] === false) {
-					$response['message'] = 'Invalid node process port ID, please try again.';
+					$response['message'] = 'Invalid node process port number, please try again.';
 					return $response;
 				}
 			}
 
-			if (empty($nodeProcessPortId) === false) {
-				$conflictingNodeProcessCount = $this->count(array(
+			if (empty($nodeProcessPortNumber) === false) {
+				$existingNodeProcessCount = $this->count(array(
 					'in' => 'node_processes',
 					'where' => array(
 						'node_id' => $nodeProcessNodeId,
-						'port_id' => $nodeProcessPortId
+						'port_number' => $nodeProcessPortNumber
 					)
 				));
-				$response['status_valid'] = (is_int($conflictingNodeProcessCount) === true);
+				$response['status_valid'] = (is_int($existingNodeProcessCount) === true);
 
 				if ($response['status_valid'] === false) {
 					return $response;
 				}
 
-				$response['status_valid'] = ($conflictingNodeProcessCount === 0);
+				$response['status_valid'] = ($existingNodeProcessCount === 0);
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node process already in use, please try again.';
@@ -238,11 +230,12 @@
 				}
 			}
 
+			// todo: update matching node_process_port_numbers record
 			$nodeProcessesUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'id' => true,
 					'node_id' => true,
-					'port_id' => true,
+					'port_number' => true,
 					'type' => true
 				)),
 				'in' => 'node_processs',
@@ -289,6 +282,7 @@
 				return $response;
 			}
 
+			// todo: delete matching node_process_port_numbers record
 			$nodeProcessesDeleted = $this->delete(array(
 				'from' => 'node_processes',
 				'where' => array(

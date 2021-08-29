@@ -788,17 +788,17 @@
 			return $response;
 		}
 
-		protected function _validatePort($port) {
+		protected function _validatePortNumber($portNumber) {
 			$response = false;
 
 			if (
-				(is_numeric($port) === true) &&
+				(is_numeric($portNumber) === true) &&
 				(
-					($port >= 1) &&
-					($port <= 65535)
+					($portNumber >= 1) &&
+					($portNumber <= 65535)
 				)
 			) {
-				$response = intval(trim($port));
+				$response = intval(trim($portNumber));
 			}
 
 			return $response;

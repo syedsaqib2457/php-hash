@@ -810,11 +810,11 @@
 				$response['status_valid'] = (
 					(
 						(empty($parameters['data']['destination_address_version_' . $nodeIpVersion]) === false) ||
-						(empty($parameters['data']['destination_port_version_' . $nodeIpVersion]) === false)
+						(empty($parameters['data']['destination_port_number_version_' . $nodeIpVersion]) === false)
 					) &&
 					(
 						(empty($parameters['data']['destination_address_version_' . $nodeIpVersion]) === true) ||
-						(empty($parameters['data']['destination_port_version_' . $nodeIpVersion]) === true)
+						(empty($parameters['data']['destination_port_number_version_' . $nodeIpVersion]) === true)
 					)
 				);
 
@@ -832,7 +832,7 @@
 				) {
 					$response['status_valid'] = (
 						(empty($nodeDestinationPortNumber) === true) ||
-						($this->_validatePort($nodeDestinationPortNumber) === false)
+						($this->_validatePortNumber($nodeDestinationPortNumber) === false)
 					);
 
 					if ($response['status_valid'] === false) {
@@ -1360,6 +1360,17 @@
 			}
 
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
+				$nodeProcesses = $this->fetch(array(
+					'fields' => array(
+						'node_id',
+						'port_id'
+					),
+					'from' => 'node_processes',
+					'where' => array(
+						'node_id' => $nodeId,
+						'type' => $nodeProcessType
+					)
+				));
 				$nodeProcessPorts = $this->fetch(array(
 					'fields' => array(
 						'number',
@@ -1371,18 +1382,6 @@
 						'node_id' => $nodeId,
 						'node_process_type' => $nodeProcessType,
 						// ..
-					)
-				));
-				// ..
-				$nodeProcesses = $this->fetch(array(
-					'fields' => array(
-						'node_id',
-						'port_id'
-					),
-					'from' => 'node_processes',
-					'where' => array(
-						'node_id' => $nodeId,
-						'type' => $nodeProcessType
 					)
 				));
 				$nodeProcessResourceUsageLogs = $this->fetch(array(
