@@ -284,31 +284,16 @@
 				}
 
 				$nodeId = $node['id'];
-				$nodeProcesses = array(
-					array(
-						'port_id' => 80,
-						'type' => 'http_proxy'
-					),
-					array(
-						'port_id' => 53,
-						'type' => 'recursive_dns'
-					),
-					array(
-						'port_id' => 1080,
-						'type' => 'socks_proxy'
-					)
-				);
 
-				// ..
-
-				foreach ($nodeProcesses as $nodeProcess) {
+				foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
 					$nodeProcessData = array();
 
-					foreach (range(0, 9) as $processPortId) {
-						$nodeProcessData[] = array_merge($nodeProcess, array(
+					foreach (range(0, 9) as $processPortNumberIndex) {
+						$nodeProcessData[] = array(
 							'node_id' => $nodeId,
-							'port_id' => ($nodeProcess['port_id'] + $processPortId)
-						));
+							'port_number' => ($nodeProcessTypeDefaultPortNumber + $processPortNumberIndex),
+							'type' => $nodeProcessType
+						);
 					}
 
 					$nodeProcessesSaved = $this->save(array(
