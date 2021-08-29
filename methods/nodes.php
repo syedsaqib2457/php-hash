@@ -625,7 +625,7 @@
 				$existingNodePortIds[$existingNodePort['port_id']] = $existingNodePort['port_id'];
 			}
 
-			$nodeIps = ($nodeExternalIps + $nodeInternalIps);
+			$nodeIps = $nodeExternalIps + $nodeInternalIps;
 			$nodeProcessTypes = array(
 				'http_proxy' => array(
 					'port_id' => 80
@@ -651,7 +651,7 @@
 						'from' => 'node_ports',
 						'where' => array(
 							'node_id' => $nodeIds,
-							'type' => $nodeProcessType
+							'node_process_type' => $nodeProcessType
 						)
 					));
 					$nodeProcessesDeleted = $this->delete(array(
@@ -680,7 +680,7 @@
 						'from' => 'node_ports',
 						'where' => array(
 							'node_id' => $nodeIds,
-							'type' => $nodeProcessType
+							'node_process_type' => $nodeProcessType
 						)
 					));
 					$response['status_valid'] = ($nodePorts !== false);
@@ -738,8 +738,8 @@
 					$nodePortCount = $this->count(array(
 						'in' => 'node_ports',
 						'where' => array(
-							'status_denying' => false,
-							'type' => $nodeProcessType
+							'node_process_type' => $nodeProcessType,
+							'status_denying' => false
 						)
 					));
 					$response['status_valid'] = (is_int($nodePortCount) === true);
@@ -1095,7 +1095,7 @@
 				$response['data']['nodes'][$node['id']] = $node;
 			}
 
-			// todo: add separate $nodeResourceUsageLogs and $nodeProcessResourceUsageLogs with average and peak values for log interval hours
+			// todo: add separate $nodeResourceUsageLogs and $nodeProcessResourceUsageLogs with peak values for log interval hours
 
 			/*
 			if (empty($nodeIds) === false) {
@@ -1343,9 +1343,20 @@
 				}
 			}
 
-			// todo: scale node processes based on usage before fetching processes
-
 			foreach ($nodeProcessTypes as $nodeProcessType) {
+				$nodePorts = $this->fetch(array(
+					'fields' => array(
+						'port_id',
+						'status_allowing',
+						'status_denying'
+					),
+					'from' => 'node_ports',
+					'where' => array(
+						'node_id' => $nodeId,
+						'node_process_type' => $nodeProcessType,
+						// ..
+					)
+				));
 				$nodeProcesses = $this->fetch(array(
 					'fields' => array(
 						'node_id',
@@ -1355,6 +1366,17 @@
 					'where' => array(
 						'node_id' => $nodeId,
 						'type' => $nodeProcessType
+					)
+				));
+				$nodeProcessResourceUsageLogs = $this->fetch(array(
+					'fields' => array(
+						'cpu_percentage'
+					),
+					'from' => 'node_process_resource_usage_logs',
+					'where' => array(
+						'created >' => date('Y-m-d H:i:s', strtotime('-1 hour')),
+						'node_id' => $nodeId,
+						'node_process_type' => $nodeProcessType
 					)
 				));
 				$nodeUsers = $this->fetch(array(
@@ -1370,7 +1392,9 @@
 					)
 				));
 				$response['status_valid'] = (
+					($nodePorts !== false) &&
 					($nodeProcesses !== false) &&
+					($nodeProcessResourceUsageLogs !== false) &&
 					($nodeUsers !== false)
 				);
 
@@ -1380,7 +1404,19 @@
 
 				if (empty($nodeProcesses) === false) {
 					end($nodeProcesses);
-					$response['data']['node_processes'][$nodeProcessType] = array_chunk($nodeProcesses, ((key($nodeProcesses) + 1) / 2));
+					$nodeProcessCount = key($nodeProcesses) + 1;
+
+					if (
+						($nodePorts[0]['status_allowing'] === false) &&
+						($nodeProcessCount < 100)
+					) {
+						// todo: divide percentage of cpu resource usage for specific process type by number of processes
+						// todo: if per-process cpu usage exceeds 0.5% of total cpu time, add 5 processes with maximum of 100 processes/ports for each type (100 processes can be exceeded with manual process port selection)
+						// todo: scale processes down with a minimum of 10 if per-process cpu usage is below 0.25% for 1 hour
+						// todo: scale by cpu percentage since there's no caching for DNS and proxy process types
+					}
+
+					$response['data']['node_processes'][$nodeProcessType] = array_chunk($nodeProcesses, ($nodeProcessCount / 2));
 				}
 
 				if (empty($nodeUsers) === false) {

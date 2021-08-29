@@ -32,6 +32,11 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							),
 							'port_id' => array(
 								'auto_increment' => true,
 								'primary_key' => true,
@@ -56,11 +61,6 @@
 								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
-							),
-							'type' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(10)'
 							)
 						),
 						'node_processes' => array(
