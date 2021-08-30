@@ -1453,48 +1453,48 @@
 						}
 					} elseif ($nodeProcessCount !== 10) {
 						foreach ($nodeProcessResourceUsageLogs as $nodeProcessResourceUsageLog) {
-							if (($nodeProcessResourceUsageLog['cpu_percentage'] / $nodeProcessCount) > 0.25) {
-								break;
-							}
+							if (($nodeProcessResourceUsageLog['cpu_percentage'] / $nodeProcessCount) < 0.25) {
+								$nodeProcessPortNumberIndex = 0;
+								$nodeProcessPortNumbersToDelete = array();
 
-							$nodeProcessPortNumberIndex = 0;
-							$nodeProcessPortNumbersToDelete = array();
+								while (
+									(count($nodeProcessPortNumbersToDelete) < 5) &&
+									($nodeProcessCount > 10)
+								) {
+									if ($nodeProcesses[$nodeProcessPortNumberIndex]['number'] !== $nodeProcessTypeDefaultPortNumber) {
+										$nodeProcessCount--;
+										$nodeProcessPortNumbersToDelete[] = $nodeProcesses[$nodeProcessPortNumberIndex]['number'];
+									}
 
-							while (
-								(count($nodeProcessPortNumbersToDelete) < 5) &&
-								($nodeProcessCount > 10)
-							) {
-								if ($nodeProcesses[$nodeProcessPortNumberIndex]['number'] !== $nodeProcessTypeDefaultPortNumber) {
-									$nodeProcessCount--;
-									$nodeProcessPortNumbersToDelete[] = $nodeProcesses[$nodeProcessPortNumberIndex]['number'];
+									$nodeProcessPortNumberIndex++;
 								}
 
-								$nodeProcessPortNumberIndex++;
-							}
+								$nodeProcessesDeleted = $this->delete(array(
+									'in' => 'node_processes',
+									'where' => array(
+										'node_id' => $nodeId,
+										'number' => $nodeProcessPortNumbersToDelete,
+										// ..
+									)
+								));
+								$nodeProcessPortsDeleted = $this->delete(array(
+									'in' => 'node_process_ports',
+									'where' => array(
+										'node_id' => $nodeId,
+										'number' => $nodeProcessPortNumbersToDelete,
+										// ..
+									)
+								));
+								$response['status_valid'] = (
+									($nodeProcessesDeleted !== false) &&
+									($nodeProcessPortsDeleted !== false)
+								);
 
-							$nodeProcessesDeleted = $this->delete(array(
-								'in' => 'node_processes',
-								'where' => array(
-									'node_id' => $nodeId,
-									'number' => $nodeProcessPortNumbersToDelete,
-									// ..
-								)
-							));
-							$nodeProcessPortsDeleted = $this->delete(array(
-								'in' => 'node_process_ports',
-								'where' => array(
-									'node_id' => $nodeId,
-									'number' => $nodeProcessPortNumbersToDelete,
-									// ..
-								)
-							));
-							$response['status_valid'] = (
-								($nodeProcessesDeleted !== false) &&
-								($nodeProcessPortsDeleted !== false)
-							);
+								if ($response['status_valid'] === false) {
+									return $response;
+								}
 
-							if ($response['status_valid'] === false) {
-								return $response;
+								break;
 							}
 						}
 					}
