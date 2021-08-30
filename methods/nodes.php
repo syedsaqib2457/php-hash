@@ -1335,13 +1335,13 @@
 				}
 			}
 
-			$existingNodePorts = $this->fetch(array(
+			$existingNodeProcessPorts = $this->fetch(array(
 				'fields' => array(
 					'number',
 					'status_allowing',
 					'status_denying'
 				),
-				'from' => 'node_ports',
+				'from' => 'node_process_ports',
 				'where' => array(
 					'node_id' => $nodeId
 					// ..
@@ -1353,10 +1353,10 @@
 				return $response;
 			}
 
-			$existingNodePortNumbers = array();
+			$existingNodeProcessPortNumbers = array();
 
-			foreach ($existingNodePorts as $existingNodePort) {
-				$existingNodePortNumbers[$existingNodePort['number']] = $existingNodePort['number'];
+			foreach ($existingNodeProcessPorts as $existingNodeProcessPort) {
+				$existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['number'];
 			}
 
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
@@ -1426,7 +1426,7 @@
 					$nodeProcessCountMaximum = min(100, ceil(($nodeProcessResourceUsageLogs[0]['cpu_capacity_cores'] * $nodeProcessResourceUsageLogs[0]['cpu_capacity_megahertz']) / 100));
 
 					if (
-						($nodePorts[0]['status_allowing'] === false) &&
+						($nodeProcessPorts[0]['status_allowing'] === false) &&
 						($nodeProcessCount < $nodeProcessCountMaximum)
 					) {
 						$nodeProcessResourceUsageLogCpuPercentage = $nodeProcessResourceUsageLogs[0]['cpu_percentage'] / $nodeProcessCount;
@@ -1437,12 +1437,12 @@
 							foreach (range(1, min(5, $nodeProcessCountMaximum - $nodeProcessCount)) as $nodeProcessIndex) {
 								while (
 									($nodeProcessPortNumber <= 65535) &&
-									(in_array($nodeProcessPortNumber, $existingNodePortNumbers) === true)
+									(in_array($nodeProcessPortNumber, $existingNodeProcessPortNumbers) === true)
 								) {
 									$nodeProcessPortNumber++;
 								}
 
-								if (in_array($nodeProcessPortNumber, $existingNodePortIds) === true) {
+								if (in_array($nodeProcessPortNumber, $existingNodeProcessPortNumbers) === true) {
 									break;
 								}
 
