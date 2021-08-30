@@ -8,18 +8,19 @@
 	) {
 		$extend = ($_SERVER['argv'][1] !== 'system');
 		require_once($system->settings['base_path'] . '/methods/' . $_SERVER['argv'][1] . '.php');
-		$methodObjectName = ucwords($_SERVER['argv'][1]) . 'Methods';
+		$methodObjectNameParts = explode('_', $_SERVER['argv'][1]);
+		$methodObjectName = implode('', array_map('ucfirst', $methodObjectNameParts));
+		$methodObjectName = lcfirst($methodObjectName) . 'Methods';
 		$methodObject = new $methodObjectName();
 
 		if (empty($_SERVER['argv'][2]) === false) {
-			$methodName = ucwords($_SERVER['argv'][2];
+			$methodName = ucwords($_SERVER['argv'][2]);
 
 			if (method_exists($methodObject, $methodName) === true) {
-				$output = 'Command processed successfully.';
 				$methodResponse = $methodObject->$methodName();
 
-				if (empty($response['message']) === false) {
-					$output = $response['message'];
+				if (empty($methodResponse['message']) === false) {
+					$output = $methodResponse['message'];
 				}
 			}
 		}
