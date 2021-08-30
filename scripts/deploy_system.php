@@ -148,7 +148,8 @@
 		'sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)',
 		'sudo apt-get update',
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils cron curl iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux',
-		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg'
+		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg',
+		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack'
 	);
 	applyCommands($commands);
 
