@@ -1386,6 +1386,8 @@
 				));
 				$nodeProcessResourceUsageLogs = $this->fetch(array(
 					'fields' => array(
+						'cpu_capacity_cores',
+						'cpu_capacity_megahertz',
 						'cpu_percentage'
 					),
 					'from' => 'node_process_resource_usage_logs',
@@ -1421,17 +1423,18 @@
 				if (empty($nodeProcesses) === false) {
 					end($nodeProcesses);
 					$nodeProcessCount = key($nodeProcesses) + 1;
+					$nodeProcessCountMaximum = min(100, ceil(($nodeProcessResourceUsageLogs[0]['cpu_capacity_cores'] * $nodeProcessResourceUsageLogs[0]['cpu_capacity_megahertz']) / 100));
 
 					if (
 						($nodePorts[0]['status_allowing'] === false) &&
-						($nodeProcessCount < 100)
+						($nodeProcessCount < $nodeProcessCountMaximum)
 					) {
 						$nodeProcessResourceUsageLogCpuPercentage = $nodeProcessResourceUsageLogs[0]['cpu_percentage'] / $nodeProcessCount;
 
 						if ($nodeProcessResourceUsageLogCpuPercentage > 0.5) {
 							$nodeProcessPortNumber = $nodeProcessTypeDefaultPortNumber;
 
-							foreach (range(1, min(5, 100 - $nodeProcessCount)) as $nodeProcessIndex) {
+							foreach (range(1, min(5, $nodeProcessCountMaximum - $nodeProcessCount)) as $nodeProcessIndex) {
 								while (
 									($nodeProcessPortNumber <= 65535) &&
 									(in_array($nodeProcessPortNumber, $existingNodePortNumbers) === true)
