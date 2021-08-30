@@ -47,25 +47,6 @@
 		return $binaryFile;
 	}
 
-	function fetchSshPorts() {
-		$sshPorts = array();
-
-		if (file_exists('/etc/ssh/sshd_config') === true) {
-			exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPorts);
-
-			foreach ($sshPorts as $sshPortKey => $sshPort) {
-				if (
-					(strlen($sshPort) > 5) ||
-					(is_numeric($sshPort) === false)
-				) {
-					unset($sshPorts[$sshPortKey]);
-				}
-			}
-		}
-
-		return $sshPorts;
-	}
-
 	$supportedOperatingSystems = array(
 		'debian' => array(
 			'9' => array(
@@ -454,8 +435,8 @@
 
 	$crontabCommands = array(
 		'# [Start]',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system processNodeRequestLogs',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system processSystemRequestLogs',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php node_request_logs process',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system_request_logs process',
 		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
 		'# [Stop]'
 	);
@@ -486,10 +467,9 @@
 
 	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
 	file_put_contents($crontabFile, implode("\n", $crontabFileContents));
-	$commands = array(
-		'sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
-	);
-	applyCommands($commands);
+	shell_exec('sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile);
+
+	// todo: ipv6
 	$firewallRules = array(
 		'*filter',
 		':INPUT ACCEPT [0:0]',
@@ -497,13 +477,27 @@
 		':OUTPUT ACCEPT [0:0]',
 		'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask 32 -j DROP'
 	);
+	$sshPortNumbers = array();
+
+	if (file_exists('/etc/ssh/sshd_config') === true) {
+		exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
+
+		foreach ($sshPortNumbers as $sshPortNumberKey => $sshPortNumber) {
+			if (
+				(strlen($sshPortNumber) > 5) ||
+				(is_numeric($sshPortNumber) === false)
+			) {
+				unset($sshPortNumbers[$sshPortNumberKey]);
+			}
+		}
+	}
 
 	if (
-		(empty($sshPorts) === false) &&
-		(is_array($sshPorts) === true)
+		(empty($sshPortNumbers) === false) &&
+		(is_array($sshPortNumbers) === true)
 	) {
-		foreach ($sshPorts as $sshPort) {
-			$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPort . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask 32 -j DROP';
+		foreach ($sshPortNumbers as $sshPortNumber) {
+			$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask 32 -j DROP';
 		}
 	}
 
