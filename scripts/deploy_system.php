@@ -183,6 +183,12 @@
 		),
 		array(
 			'command' => '-h',
+			'name' => 'ip6tables-restore',
+			'output' => 'tables-restore ',
+			'package' => 'iptables'
+		),
+		array(
+			'command' => '-h',
 			'name' => 'iptables-restore',
 			'output' => 'tables-restore ',
 			'package' => 'iptables'
@@ -218,6 +224,7 @@
 		$binaryFiles[$binary['name']] = fetchBinaryFile($binary);
 	}
 
+	// ..
 	$kernelOptions = array(
 		'fs.aio-max-nr = 1000000000',
 		'fs.file-max = 1000000000',
@@ -468,15 +475,6 @@
 	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
 	file_put_contents($crontabFile, implode("\n", $crontabFileContents));
 	shell_exec('sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile);
-
-	// todo: ipv6
-	$firewallRules = array(
-		'*filter',
-		':INPUT ACCEPT [0:0]',
-		':FORWARD ACCEPT [0:0]',
-		':OUTPUT ACCEPT [0:0]',
-		'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask 32 -j DROP'
-	);
 	$sshPortNumbers = array();
 
 	if (file_exists('/etc/ssh/sshd_config') === true) {
@@ -492,33 +490,53 @@
 		}
 	}
 
-	if (
-		(empty($sshPortNumbers) === false) &&
-		(is_array($sshPortNumbers) === true)
-	) {
-		foreach ($sshPortNumbers as $sshPortNumber) {
-			$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask 32 -j DROP';
+	$firewallBinaryFiles = array(
+		4 => $binaryFiles['iptables-restore'],
+		6 => $binaryFiles['ip6tables-restore']
+	);
+	$nodeIpVersions = array(
+		32 => 4,
+		128 => 6
+	);
+
+	foreach ($nodeIpVersions as $nodeIpVersionNetworkMask => $nodeIpVersion) {
+		$firewallRules = array(
+			'*filter',
+			':INPUT ACCEPT [0:0]',
+			':FORWARD ACCEPT [0:0]',
+			':OUTPUT ACCEPT [0:0]',
+			'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask 32 -j DROP'
+		);
+
+		if (
+			(empty($sshPortNumbers) === false) &&
+			(is_array($sshPortNumbers) === true)
+		) {
+			foreach ($sshPortNumbers as $sshPortNumber) {
+				$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask 32 -j DROP';
+			}
 		}
-	}
 
-	$firewallRules[] = 'COMMIT';
-	$firewallRulesFile = '/tmp/firewall';
+		$firewallRules[] = 'COMMIT';
+		$firewallRulesFile = '/tmp/firewall';
 
-	if (file_exists($firewallRulesFile) === true) {
+		if (file_exists($firewallRulesFile) === true) {
+			unlink($firewallRulesFile);
+		}
+
+		touch($firewallRulesFile);
+		$firewallRuleParts = array_chunk($firewallRules, 1000);
+
+		foreach ($firewallRuleParts as $firewallRulePart) {
+			$saveFirewallRules = implode("\n", $firewallRulePart);
+			shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
+		}
+
+		shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpVersion] . ' < ' . $firewallRulesFile);
+		sleep(1 * count($firewallRuleParts));
 		unlink($firewallRulesFile);
 	}
 
-	touch($firewallRulesFile);
-	$firewallRuleParts = array_chunk($firewallRules, 1000);
-
-	foreach ($firewallRuleParts as $firewallRulePart) {
-		$saveFirewallRules = implode("\n", $firewallRulePart);
-		shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
-	}
-
-	shell_exec('sudo ' . $binaryFiles['iptables-restore'] . ' < ' . $firewallRulesFile);
-	sleep(1 * count($firewallRuleParts));
-	unlink($firewallRulesFile);
 	require_once('/var/www/' . $url . '/system.php');
 	$database = mysqli_connect($system->settings['database']['hostname'], $system->settings['database']['username'], $system->settings['database']['password']);
 	$queries = array();
