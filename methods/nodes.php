@@ -831,7 +831,25 @@
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = $parameters['data'][$nodeProcessType . '_recursive_dns_destination_port_number_version_' . $nodeIpVersion];
 							}
 
-							// todo: fetch ID for existing recursive DNS destination record for updating
+							$nodeRecursiveDnsDestination = $this->fetch(array(
+								'fields' => array(
+									'id'
+								),
+								'from' => 'node_recursive_dns_destinations',
+								'where' => array(
+									'node_id' => $nodeId,
+									'node_process_type' => $nodeProcessType
+								)
+							));
+							$response['status_valid'] = ($nodeRecursiveDnsDestination !== false);
+
+							if ($response['status_valid'] === false) {
+								return $response;
+							}
+
+							if (empty($nodeRecursiveDnsDestination['id']) === false) {
+								$nodeRecursiveDnsDestinationData[$nodeProcessType]['id'] = $nodeRecursiveDnsDestination['id'];
+							}
 						}
 					}
 
@@ -995,7 +1013,9 @@
 						return $response;
 					}
 
-					$nodeRecursiveDnsDestinationData['node']['id'] = $nodeRecursiveDnsDestination['id'];
+					if (empty($nodeRecursiveDnsDestination['id']) === false) {
+						$nodeRecursiveDnsDestinationData['node']['id'] = $nodeRecursiveDnsDestination['id'];
+					}
 				}
 			}
 
