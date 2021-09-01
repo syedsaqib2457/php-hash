@@ -262,6 +262,8 @@
 				return $response;
 			}
 
+			// todo: add default node_recursive_dns_destinations for new nodes
+
 			if (empty($nodeNodeId) === true) {
 				$node = $this->fetch(array(
 					'fields' => array(
@@ -1003,7 +1005,7 @@
 						),
 						'from' => 'node_recursive_dns_destinations',
 						'where' => array(
-							'node_id' => $nodeId,
+							'node_id' => end(array_filter($nodeIds)),
 							'node_process_type' => null
 						)
 					));
