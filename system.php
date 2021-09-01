@@ -217,6 +217,11 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							),
 							'port_number_version_4' => array(
 								'default' => null,
 								'null' => true,
