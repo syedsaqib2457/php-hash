@@ -262,6 +262,7 @@
 				return $response;
 			}
 
+			$nodeRecursiveDnsDestinationData = array();
 			// todo: add default node_recursive_dns_destinations for new nodes
 
 			if (empty($nodeNodeId) === true) {
@@ -286,10 +287,9 @@
 				}
 
 				$nodeId = $node['id'];
+				$nodeProcessData = array();
 
 				foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
-					$nodeProcessData = array();
-
 					foreach (range(0, 9) as $processPortNumberIndex) {
 						$nodeProcessData[] = array(
 							'node_id' => $nodeId,
@@ -297,28 +297,32 @@
 							'type' => $nodeProcessType
 						);
 					}
+				}
 
-					$nodeProcessesSaved = $this->save(array(
-						'data' => $nodeProcessData,
-						'to' => 'node_processes'
+				$nodeRecursiveDnsDestinationData = array();
+
+				// ..
+
+				$nodeProcessesSaved = $this->save(array(
+					'data' => $nodeProcessData,
+					'to' => 'node_processes'
+				));
+				$response['status_valid'] = ($nodeProcessesSaved !== false);
+
+				if ($response['status_valid'] === false) {
+					$this->delete(array(
+						'from' => 'node_processes',
+						'where' => array(
+							'node_id' => $nodeId
+						)
 					));
-					$response['status_valid'] = ($nodeProcessesSaved !== false);
-
-					if ($response['status_valid'] === false) {
-						$this->delete(array(
-							'from' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeId
-							)
-						));
-						$this->delete(array(
-							'from' => 'nodes',
-							'where' => array(
-								'id' => $nodeId
-							)
-						));
-						return $response;
-					}
+					$this->delete(array(
+						'from' => 'nodes',
+						'where' => array(
+							'id' => $nodeId
+						)
+					));
+					return $response;
 				}
 			}
 
