@@ -612,6 +612,7 @@
 			}
 
 			$nodeIps = $nodeExternalIps + $nodeInternalIps;
+			$nodeRecursiveDnsDestinationData = array();
 
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
 				$response['status_valid'] = (isset($parameters['data']['enable_' . $nodeProcessType . '_processes']) === true);
@@ -803,6 +804,43 @@
 					if ($response['status_valid'] === false) {
 						return $response;
 					}
+
+					$nodeRecursiveDnsDestinationData = array();
+
+					foreach ($nodeIpVersions as $nodeIpVersion) {
+						if (isset($parameters['data'][$nodeProcessType . '_recursive_dns_ip_version_' . $nodeIpVersion]) === true) {
+							$nodeRecursiveDnsDestinationIp = $this->_sanitizeIps(array($parameters['data'][$nodeProcessType . '_recursive_dns_destination_ip_version_' . $nodeIpVersion]));
+							$response['status_valid'] = (empty($nodeRecursiveDnsDestinationIp[$nodeIpVersion]) === false);
+
+							if ($response['status_valid'] === false) {
+								$response['message'] = 'Invalid node proxy process recursive DNS destination IP, please try again.';
+								return $response;
+							}
+
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = 53;
+
+							if (empty($parameters['data'][$nodeProcessType . '_recursive_dns_port_number_version_' . $nodeIpVersion]) === false) {
+								$response['status_valid'] = ($this->_validatePortNumber($parameters['data'][$nodeProcessType . '_recursive_dns_destination_port_number_version_' . $nodeIpVersion]) === false);
+
+								if ($response['status_valid'] === false) {
+									$response['message'] = 'Invalid node proxy process recursive DNS port number, please try again.';
+									return $response;
+								}
+
+								$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = $parameters['data'][$nodeProcessType . '_recursive_dns_destination_port_number_version_' . $nodeIpVersion];
+							}
+
+							// todo: fetch ID for existing recursive DNS destination record for updating
+						}
+					}
+
+					if (empty($nodeRecursiveDnsDestinationData[$nodeProcessType]) === true) {
+						$response['message'] = 'Invalid proxy process recursive DNS destinations, please try again.';
+						return $response;
+					}
 				}
 			}
 
@@ -929,7 +967,7 @@
 						return $response;
 					}
 
-					$nodeRecursiveDnsData['ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
+					$nodeRecursiveDnsDestinationData['ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
 				}
 
 				if (empty($parameters['data']['recursive_dns_port_number_version_' . $nodeIpVersion]) === false) {
@@ -943,6 +981,8 @@
 					$nodeRecursiveDnsDestinationData['port_version_' . $nodeIpVersion] = $parameters['data']['recursive_dns_destination_port_number_version_' . $nodeIpVersion];
 				}
 			}
+
+			// ..
 
 			$nodesUpdated = $this->update(array(
 				'data' => array_intersect_key($parameters['data'], array(
