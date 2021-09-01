@@ -432,8 +432,8 @@
 		}
 
 		$commands = array(
-			'sudo rm /etc/resolv.conf && sudo touch /etc/recursive_dns.conf',
-			'sudo ln -s /etc/recursive_dns.conf /etc/resolv.conf'
+			'sudo rm /etc/resolv.conf && sudo touch /etc/node_recursive_dns_destinations.conf',
+			'sudo ln -s /etc/node_recursive_dns_destinations.conf /etc/resolv.conf'
 		);
 		applyCommands($commands);
 		file_put_contents('/etc/recursive_dns.conf', 'nameserver ' . key($nameserverIps));

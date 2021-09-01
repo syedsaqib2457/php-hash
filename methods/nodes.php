@@ -1649,18 +1649,11 @@
 
 			foreach ($nodeRecursiveDnsDestinations as $nodeRecursiveDnsDestination) {
 				foreach ($nodeIpVersions as $nodeIpVersion) {
-					$nodeRecursiveDnsProcess = (empty($response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['node_id'] . '_' . $nodeIpVersion]) === false);
-
-					if (empty($response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]]) === false) {
-						$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] = $response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]];
-						$nodeRecursiveDnsProcess = true;
-					}
-
-					if (
-						(empty($response['data']['node_system_recursive_dns_destinations'][$nodeIpVersion]) === true) ||
-						($nodeRecursiveDnsProcess === true)
-					) {
-						$response['data']['node_system_recursive_dns_destinations'][$nodeIpVersion] = 'nameserver [' . $nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $nodeIpVersion];
+					if (empty($nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion]) === false) {
+						$response['data']['node_recursive_dns_destinations'][$nodeIpVersion] = array(
+							'ip' => $nodeRecursiveDnsDestination['ip_version_' . $nodeIpVersion],
+							'port_number' => $nodeRecursiveDnsDestination['port_number_version_' . $nodeIpVersion]
+						);
 					}
 				}
 			}

@@ -535,12 +535,35 @@
 			if (empty($this->nodeData['node_processes']['recursive_dns']) === false) {
 				$recursiveDnsNodeIndex = 0;
 				$recursiveDnsNodeUserAuthentication = array();
+				// todo: allow different DNS source IPs to be set for system and individual nodes
+
+				if (empty($this->nodeData['node_recursive_dns_destinations']) === false) {
+					foreach ($this->nodeData['node_recursive_dns_destinations'] as $nodeIpVersion => $nodeRecursiveDnsDestination) {
+						if (in_array($nodeRecursiveDnsDestination['ip'], $this->nodeData['node_ips'][$nodeIpVersion]) === true) {
+							$recursiveDnsNodeUserAuthentication[] = 'view _' . $nodeIpVersion . ' {';
+							$recursiveDnsNodeUserAuthentication[] = 'match-clients {';
+							$recursiveDnsNodeUserAuthentication[] = 'privateNetworkIpBlocks;';
+							$recursiveDnsNodeUserAuthentication[] = '};';
+							$recursiveDnsNodeListeningIpOption = 'listen-on';
+							$recursiveDnsNodeSourceIpOption = 'query-source';
+
+							if ($nodeIpVersion === 6) {
+								$recursiveDnsNodeListeningIpOption .= '-v6';
+								$recursiveDnsNodeSourceIpOption .= '-v6';
+							}
+
+							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeSourceIpOption . ' address ' . $nodeRecursiveDnsDestination['ip'] . ';';
+							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
+							$recursiveDnsNodeUserAuthentication['node_process_listening_address_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestination['ip'];
+							$recursiveDnsNodeUserAuthentication[] = '};';
+						}
+					}
+				}
 
 				foreach ($this->nodeData['node_users']['recursive_dns'] as $recursiveDnsNodeId => $recursiveDnsNodeUserIds) {
 					// todo: add $this->nodeData['node_users']['recursive_dns'] with $recursiveDnsNodeId 0 and whitelist containing privateNetworkIpBlocks ACL string
 
 					foreach ($recursiveDnsNodeUserIds as $recursiveDnsNodeUserId) {
-						$recursiveDnsNodeConfiguration[] = 'acl ' . $recursiveDnsNodeId . '_' . $recursiveDnsNodeUserId . ' {';
 						$recursiveDnsNodeUserAuthentication[] = 'view ' . $recursiveDnsNodeId . '_' . $recursiveDnsNodeUserId . ' {';
 						$recursiveDnsNodeUserAuthentication[] = 'match-clients {';
 
@@ -576,11 +599,21 @@
 								$recursiveDnsNodeSourceIpOption .= '-v6';
 							}
 
-							$recursiveDnsNodeConfiguration[] = $recursiveDnsNodeSourceIpOption . ' address ' . $recursiveDnsNodeIp . ';';
+							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeSourceIpOption . ' address ' . $recursiveDnsNodeIp . ';';
 							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
 							$recursiveDnsNodeUserAuthentication['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
 							$recursiveDnsNodeUserAuthentication['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] = $recursiveDnsNodeIp;
 							$recursiveDnsNodeUserAuthentication[] = '};';
+						}
+
+						if (empty($recursiveDnsNodeId) === false) {
+							// todo: verify multiple DNS processes can write to the same logfile
+							$recursiveDnsNodeUserAuthentication[] = 'logging {';
+							$recursiveDnsNodeUserAuthentication[] = 'channel ' . $recursiveDnsNodeId . ' {';
+							$recursiveDnsNodeUserAuthentication[] = 'file "/var/log/named/' . $recursiveDnsNodeId . '" versions unlimited size 10m increment';
+							$recursiveDnsNodeUserAuthentication[] = '}';
+							$recursiveDnsNodeUserAuthentication[] = 'print-time yes';
+							$recursiveDnsNodeUserAuthentication[] = '}';
 						}
 
 						$recursiveDnsNodeConfiguration[] = $recursiveDnsNodeUserAuthentication[] = '};';
@@ -710,6 +743,10 @@
 						$recursiveDnsNodeIndex = 0;
 						$recursiveDnsNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcess['port_number'];
 
+						if (empty($recursiveDnsNodeProcessConfigurationOptions['node_process_listening_address_version_' . $nodeIpVersion]) === false) {
+							$recursiveDnsNodeProcessConfigurationOptions['node_process_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcess['port_number'];
+						}
+
 						while (isset($recursiveDnsNodeProcessConfigurationOptions['listening_address_version_4_' . $recursiveDnsNodeIndex]) === true) {
 							$recursiveDnsNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] .= ':' . $recursiveDnsNodeProcess['port_number'];
 							$recursiveDnsNodeIndex++;
@@ -778,8 +815,14 @@
 			}
 
 			$this->_processFirewall();
-			file_put_contents('/etc/recursive_dns.conf', implode("\n", $this->nodeData['node_system_recursive_dns_destinations']));
+			$nodeRecursiveDnsDestinations = array();
+
+			foreach ($this->nodeData['node_recursive_dns_destinations'] as $nodeRecursiveDnsDestination) {
+				$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['ip'] . ']:' . $nodeRecursiveDnsDestination['port_number'];
+			}
+
 			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
+			file_put_contents('/etc/node_recursive_dns_destinations.conf', implode("\n", $nodeRecursiveDnsDestinations));
 
 			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessId) {
 				$nodeProcessName = $nodeProcessType . '_' . $nodeProcessId;
