@@ -535,7 +535,7 @@
 			if (empty($this->nodeData['node_processes']['recursive_dns']) === false) {
 				$recursiveDnsNodeIndex = 0;
 				$recursiveDnsNodeUserAuthentication = array();
-				// todo: allow different DNS source IPs to be set for system and individual nodes
+				// todo: allow different DNS source IPs to be set for node_system and node_processes
 
 				if (empty($this->nodeData['node_recursive_dns_destinations']) === false) {
 					foreach ($this->nodeData['node_recursive_dns_destinations'] as $nodeIpVersion => $nodeRecursiveDnsDestination) {
@@ -554,6 +554,7 @@
 
 							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeSourceIpOption . ' address ' . $nodeRecursiveDnsDestination['ip'] . ';';
 							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
+							// todo: add index with correct internal DNS IP for each node
 							$recursiveDnsNodeUserAuthentication['node_process_listening_address_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestination['ip'];
 							$recursiveDnsNodeUserAuthentication[] = '};';
 						}
