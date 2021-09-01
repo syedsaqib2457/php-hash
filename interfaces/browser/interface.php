@@ -1061,6 +1061,15 @@
 			<div class="container hidden" name="enable_closing_custom_http_proxy_process_ports">
 				<div class="list" from="ports"></div>
 			</div>
+			<div class="clear"></div>
+			<label>HTTP Proxy Recursive DNS Destination IPv4 Address</label>
+			<input name="http_proxy_recursive_dns_destination_ip_version_4" type="text">
+			<label>HTTP Proxy Recursive DNS Destination IPv4 Port</label>
+			<input name="http_proxy_recursive_dns_destination_port_version_4" type="text">
+			<label>HTTP Proxy Recursive DNS Destination IPv6 Address</label>
+			<input name="http_proxy_recursive_dns_destination_ip_version_6" type="text">
+			<label>HTTP Proxy Recursive DNS Destination IPv6 Port</label>
+			<input name="http_proxy_recursive_dns_port_ip_version_6" type="text">
 			<label>HTTP Proxy Users</label>
 			<div class="list" from="users"></div>
 		</div>
