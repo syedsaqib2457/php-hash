@@ -1106,6 +1106,7 @@
 			<div name="socks_proxy_process_details">
 				<label>SOCKS Proxy Processes</label>
 				<!-- list_statistics_for_process_usage -->
+				<!-- Add tooltip explaining process ports are for all node IPs that belong to a node -->
 				<label>SOCKS Proxy Process Ports</label>
 				<div name="socks_proxy_process_ports">
 					<!-- list_open_process_ports -->
@@ -1129,6 +1130,15 @@
 			<div class="container hidden" name="enable_closing_custom_socks_proxy_process_ports">
 				<div class="list" from="ports"></div>
 			</div>
+			<div class="clear"></div>
+			<label>SOCKS Proxy Recursive DNS Destination IPv4 Address</label>
+			<input name="socks_proxy_recursive_dns_destination_ip_version_4" type="text">
+			<label>SOCKS Proxy Recursive DNS Destination IPv4 Port</label>
+			<input name="socks_proxy_recursive_dns_destination_port_version_4" type="text">
+			<label>SOCKS Proxy Recursive DNS Destination IPv6 Address</label>
+			<input name="socks_proxy_recursive_dns_destination_ip_version_6" type="text">
+			<label>SOCKS Proxy Recursive DNS Destination IPv6 Port</label>
+			<input name="socks_proxy_recursive_dns_port_ip_version_6" type="text">
 			<label>SOCKS Proxy Users</label>
 			<div class="list" from="users"></div>
 		</div>
