@@ -368,16 +368,28 @@
 					$nodeRecursiveDnsDestinationData['node']['port_number_version_' . $nodeIpVersion] = 53;
 				}
 
-				// ..
 				$nodeProcessesSaved = $this->save(array(
 					'data' => $nodeProcessData,
 					'to' => 'node_processes'
 				));
-				$response['status_valid'] = ($nodeProcessesSaved !== false);
+				$nodeRecursiveDnsDestinationsSaved = $this->save(array(
+					'data' => $nodeRecursiveDnsDestinationData,
+					'to' => 'node_recursive_dns_destinations'
+				));
+				$response['status_valid'] = (
+					($nodeProcessesSaved !== false) &&
+					($nodeRecursiveDnsDestinationsSaved !== false)
+				);
 
 				if ($response['status_valid'] === false) {
 					$this->delete(array(
 						'from' => 'node_processes',
+						'where' => array(
+							'node_id' => $nodeId
+						)
+					));
+					$this->delete(array(
+						'from' => 'node_recursive_dns_destinations',
 						'where' => array(
 							'node_id' => $nodeId
 						)
