@@ -262,7 +262,6 @@
 			}
 
 			$nodeRecursiveDnsDestinationData = array();
-			// todo: add default node_recursive_dns_destinations for new nodes
 
 			if (empty($nodeNodeId) === true) {
 				$node = $this->fetch(array(
@@ -286,7 +285,7 @@
 				}
 
 				$nodeId = $node['id'];
-				$nodeProcessData = array();
+				$nodeProcessData = $nodeRecursiveDnsDestinationData = array();
 
 				foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
 					foreach (range(0, 9) as $processPortNumberIndex) {
@@ -296,9 +295,66 @@
 							'type' => $nodeProcessType
 						);
 					}
-				}
 
-				$nodeRecursiveDnsDestinationData = array();
+					if (strpos($nodeProcessType, 'proxy') === true) {
+						$nodeIpVersionRecursiveDnsDestinations = array();
+
+						// todo: create reusable methods in system.php methods
+						if (empty($nodeIpVersionExternalIps[4]) === false) {
+							$nodeRecursiveDnsDestinationIp = ip2long($this->settings['reserved_internal_ip'][4]);
+							$nodeRecursiveDnsDestinationIpIncrement = 1;
+
+							while (empty($nodeIpVersionRecursiveDnsDestinations[4]) === true) {
+								if (
+									($nodeRecursiveDnsDestinationIpIncrement === 1) &&
+									($this->_detectIpType(long2ip($nodeRecursiveDnsDestinationIp), 4) === 'public')
+								) {
+									$nodeRecursiveDnsDestinationIpIncrement = -1;
+								}
+
+								$nodeRecursiveDnsDestinationIp += $nodeRecursiveDnsDestinationIpIncrement;
+
+								if (in_array($nodeRecursiveDnsDestinationIp, $nodeIps) === false) {
+									$nodeIpVersionRecursiveDnsDestinations[4] = long2ip($nodeRecursiveDnsDestinationIp);
+								}
+							}
+						}
+
+						if (empty($nodeIpVersionExternalIps[6]) === false) {
+							$nodeRecursiveDnsDestinationIpBlock = substr($this->settings['reserved_internal_ip'][6], 0, -4);
+							$nodeRecursiveDnsDestinationIpIncrement = 1;
+
+							while (empty($nodeIpVersionRecursiveDnsDestinations[6]) === true) {
+								$nodeRecursiveDnsDestinationIp = str_pad($nodeRecursiveDnsDestinationIpBlock, 4, '0', STR_PAD_LEFT);
+
+								if (
+									($nodeRecursiveDnsDestinationIpIncrement === 1) &&
+									($this->_detectIpType($nodeRecursiveDnsDestinationIp, 6) === 'public')
+								) {
+									$nodeRecursiveDnsDestinationIpIncrement = -1;
+								}
+
+								$nodeRecursiveDnsDestinationIpBlock += $nodeRecursiveDnsDestinationIpIncrement;
+
+								if (in_array($nodeRecursiveDnsDestinationIp, $nodeIps) === false) {
+									$nodeIpVersionRecursiveDnsDestinations[6] = long2ip($nodeRecursiveDnsDestinationIp);
+								}
+							}
+						}
+
+						$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
+						$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
+
+						foreach ($nodeIpVersions as $nodeIpVersion) {
+							if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === true) {
+								continue;
+							}
+
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['ip_version_' . $nodeIpVersion] = $nodeIpVersionRecursiveDnsDestinations[$nodeIpVersion];
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = 53;
+						}
+					}
+				}
 
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === true) {

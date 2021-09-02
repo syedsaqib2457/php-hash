@@ -552,7 +552,9 @@
 								$recursiveDnsNodeSourceIpOption .= '-v6';
 							}
 
+							// todo: use external or internal ip with recursive DNS destination node_id
 							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeSourceIpOption . ' address ' . $nodeRecursiveDnsDestination['ip'] . ';';
+							// todo: use local IP from node_recursive_dns_destinations for listening ip
 							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
 							// todo: add index with correct internal DNS IP for each node
 							$recursiveDnsNodeUserAuthentication['node_process_listening_address_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestination['ip'];
