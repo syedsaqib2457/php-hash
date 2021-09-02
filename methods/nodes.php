@@ -4,6 +4,12 @@
 
 	class NodeMethods extends SystemMethods {
 
+		protected function _generateInternalIp($existingIps, $ipVersion) {
+			$response = false;
+			// ..
+			return $response;
+		}
+
 		public function activate($parameters) {
 			$response = array(
 				'message' => 'Error activating node, please try again.',
