@@ -198,6 +198,16 @@
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'ip_type_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(7)'
+							),
+							'ip_type_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(7)'
+							),
 							'ip_version_4' => array(
 								'default' => null,
 								'null' => true,
