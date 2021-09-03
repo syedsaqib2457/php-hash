@@ -1503,13 +1503,17 @@
 				($nodeCount > 0)
 			);
 
-			$existingNodeProcessPortNumbers = array();
+			$existingNodeProcessPortNumbers = $existingNodeProcessTypes = array();
 
 			foreach ($existingNodeProcessPorts as $existingNodeProcessPort) {
-				$existingNodeProcessPortNumbers[$existingNodeProcessPort['node_process_type']] = $existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['status_allowing'];
+				$existingNodeProcessTypes[$existingNodeProcessPort['node_process_type']] = $existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['status_allowing'];
 			}
 
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
+				if (empty($existingNodeProcessTypes[$nodeProcessType]) === true) {
+					continue;
+				}
+
 				$nodeProcessCount = $this->count(array(
 					'in' => 'node_processes',
 					'where' => array(
@@ -1544,10 +1548,7 @@
 
 				$nodeProcessCountMaximum = min(100, max(ceil(($nodeProcessResourceUsageLogs[0]['cpu_capacity_cores'] * $nodeProcessResourceUsageLogs[0]['cpu_capacity_megahertz']) / 100)), ($nodeProcessCount + 5));
 
-				if (
-					($nodeProcessCount < $nodeProcessCountMaximum) &&
-					($existingNodeProcessPortNumbers[$nodeProcessType] === false)
-				) {
+				if ($nodeProcessCount < $nodeProcessCountMaximum) {
 					$nodeProcessData = $nodeProcessPortData = array();
 					$nodeProcessResourceUsageLogCpuPercentage = $nodeProcessResourceUsageLogs[0]['cpu_percentage'] / $nodeProcessCount;
 
