@@ -727,7 +727,6 @@
 				}
 
 				if ($parameters['data']['enable_' . $nodeProcessType . '_processes'] === false) {
-					// todo: delete recursive dns records for disabled processes
 					$nodePortsDeleted = $this->delete(array(
 						'from' => 'node_process_ports',
 						'where' => array(
@@ -742,9 +741,17 @@
 							'type' => $nodeProcessType
 						)
 					));
+					$nodeRecursiveDnsDestinationsDeleted = $this->delete(array(
+						'from' => 'node_recursive_dns_destinations',
+						'where' => array(
+							'node_id' => $nodeId,
+							'node_process_type' => $nodeProcessType
+						)
+					));
 					$response['status_valid'] = (
 						($nodePortsDeleted === true) &&
-						($nodeProcessesDeleted === true)
+						($nodeProcessesDeleted === true) &&
+						($nodeRecursiveDnsDestinationsDeleted === true)
 					);
 
 					if ($response['status_valid'] === false) {
