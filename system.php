@@ -208,6 +208,16 @@
 								'null' => true,
 								'type' => 'VARCHAR(39)'
 							),
+							'listening_port_number_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'listening_port_number_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -221,16 +231,6 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'CHAR(10)'
-							),
-							'port_number_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
-							),
-							'port_number_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
 							),
 							'source_ip_version_4' => array(
 								'default' => null,
