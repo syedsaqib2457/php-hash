@@ -635,10 +635,7 @@
 				return $response;
 			}
 
-			$response['status_valid'] = (
-				($nodeIpVersionExternalIps === $this->_sanitizeIps($nodeExternalIps)) &&
-				(count(current($nodeIpVersionExternalIps)) === 1)
-			);
+			$response['status_valid'] = ($nodeIpVersionExternalIps === $this->_sanitizeIps($nodeExternalIps));
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Invalid node external IPs, please try again.';
@@ -728,7 +725,7 @@
 
 				if ($parameters['data']['enable_' . $nodeProcessType . '_processes'] === false) {
 					$nodePortsDeleted = $this->delete(array(
-						'from' => 'node_ports',
+						'from' => 'node_process_ports',
 						'where' => array(
 							'node_id' => $nodeIds,
 							'node_process_type' => $nodeProcessType
@@ -1021,7 +1018,7 @@
 				}
 			}
 
-			$conflictingNodeCountParameters = array(
+			$existingNodeCountParameters = array(
 				'in' => 'nodes',
 				'where' => array(
 					'id' != $nodeId,
@@ -1036,7 +1033,7 @@
 					)
 				)
 			);
-			$conflictingNodeProcessCountParameters = array(
+			$existingNodeProcessCountParameters = array(
 				'in' => 'node_processes',
 				'where' => array(
 					'OR' => array(
@@ -1052,30 +1049,31 @@
 			);
 
 			if (empty($node['node_id']) === false) {
-				$conflictingNodeCountParameters['where']['OR'][] = array(
+				$existingNodeCountParameters['where']['OR'][] = array(
 					'id' => $node['node_id'],
 					'OR' => $nodeIps
 				);
-				$conflictingNodeProcessCountParameters['where']['OR'][] = array(
+				$existingNodeProcessCountParameters['where']['OR'][] = array(
 					'node_id' => $node['node_id'],
 					'OR' => $nodeIps
 				);
 			}
 
-			$conflictingNodeCount = $this->count($conflictingNodeCountParameters);
-			$response['status_valid'] = (is_int($conflictingNodeCount) === true);
+			$existingNodeCount = $this->count($existingNodeCountParameters);
+			$response['status_valid'] = (is_int($existingNodeCount) === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = ($conflictingNodeCount === 0);
+			$response['status_valid'] = ($existingNodeCount === 0);
 
 			if ($response['status_valid'] === false) {
 				$response['message'] = 'Node IPs already in use, please try again.';
 				return $response;
 			}
 
+			// todo: fetch existing node recursive dns record
 			$nodeRecursiveDnsDestinationData['system'] = array(
 				'node_id' => $nodeId,
 				'node_process_type' => 'system'
@@ -1092,7 +1090,9 @@
 					}
 
 					$nodeRecursiveDnsDestinationData['system']['ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
-					$nodeRecursiveDnsDestinationData['system']['port_number_version_' . $nodeIpVersion] = 53;
+					$nodeRecursiveDnsDestinationData['system']['ip_type_version_' . $nodeIpVersion] = $this->_detectIpType($nodeRecursiveDnsDestinationIp[$nodeIpVersion], $nodeIpVersion);
+					// todo: if node recursive DNS ip exists on same node, assign internal IP with relational node_id to use as source_ip
+					$nodeRecursiveDnsDestinationData['system']['port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 
 					if (empty($parameters['data']['recursive_dns_port_number_version_' . $nodeIpVersion]) === false) {
 						$response['status_valid'] = ($this->_validatePortNumber($parameters['data']['recursive_dns_destination_port_number_version_' . $nodeIpVersion]) === false);
@@ -1112,7 +1112,7 @@
 						'from' => 'node_recursive_dns_destinations',
 						'where' => array(
 							'node_id' => end(array_filter($nodeIds)),
-							'node_process_type' => null
+							'node_process_type' => 'system'
 						)
 					));
 					$response['status_valid'] = ($nodeRecursiveDnsDestination !== false);
@@ -1122,7 +1122,7 @@
 					}
 
 					if (empty($nodeRecursiveDnsDestination['id']) === false) {
-						$nodeRecursiveDnsDestinationData['node']['id'] = $nodeRecursiveDnsDestination['id'];
+						$nodeRecursiveDnsDestinationData['system']['id'] = $nodeRecursiveDnsDestination['id'];
 					}
 				}
 			}
