@@ -314,31 +314,30 @@
 				return $response;
 			}
 
+			$node = $this->fetch(array(
+				'fields' => array(
+					'id'
+				),
+				'from' => 'nodes',
+				'where' => ($nodeIps = ($nodeExternalIps + $nodeInternalIps))
+			));
+			$response['status_valid'] = (
+				($node !== false) &&
+				(empty($node['id']) === false)
+			);
+
+			if ($response['status_valid'] === false) {
+				$this->delete(array(
+					'from' => 'nodes',
+					'where' => $nodeIps
+				));
+				return $response;
+			}
+
+			$nodeId = $node['id'];
 			$nodeProcessData = $nodeProcessPortData = $nodeRecursiveDnsDestinationData = array();
 
 			if (empty($nodeNodeId) === true) {
-				$node = $this->fetch(array(
-					'fields' => array(
-						'id'
-					),
-					'from' => 'nodes',
-					'where' => ($nodeIps = ($nodeExternalIps + $nodeInternalIps))
-				));
-				$response['status_valid'] = (
-					($node !== false) &&
-					(empty($node['id']) === false)
-				);
-
-				if ($response['status_valid'] === false) {
-					$this->delete(array(
-						'from' => 'nodes',
-						'where' => $nodeIps
-					));
-					return $response;
-				}
-
-				$nodeId = $node['id'];
-
 				foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
 					foreach (range(0, 9) as $nodeProcessPortNumberIndex) {
 						$nodeProcessData[] = array(
@@ -369,15 +368,16 @@
 
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
-						$nodeIps[] = $nodeRecursiveDnsDestinationData['system']['ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($nodeIps, $nodeIpVersion);
-						$nodeRecursiveDnsDestinationData['system']['ip_type_version_' . $nodeIpVersion] = 'private';
+						$nodeIps[] = $nodeRecursiveDnsDestinationData['system']['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($nodeIps, $nodeIpVersion);
+						$nodeRecursiveDnsDestinationData['system']['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 					}
 
 					$nodeRecursiveDnsDestinationData['system']['node_id'] = $nodeId;
 					$nodeRecursiveDnsDestinationData['system']['node_process_type'] = 'system';
-					$nodeRecursiveDnsDestinationData['system']['port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 				}
 			}
+
+			// todo: add most-recent same-node node recursive dns destination to $nodeRecursiveDnsDestinationData if $nodeRecursiveDnsDestinationData is empty for each enabled process types
 
 			$nodeProcessesSaved = $this->save(array(
 				'data' => $nodeProcessData,
