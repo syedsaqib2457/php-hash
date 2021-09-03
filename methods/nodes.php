@@ -607,6 +607,12 @@
 				return $response;
 			}
 
+			$nodeNodeId = $nodeId;
+
+			if (empty($node['node_id']) === false) {
+				$nodeNodeId = $node['node_id'];
+			}
+
 			if (isset($parameters['data']['status_active']) === false) {
 				$parameters['data']['status_active'] = boolval($parameters['data']['status_active']);
 
@@ -694,10 +700,7 @@
 				),
 				'from' => 'node_process_ports',
 				'where' => array(
-					'node_id' => ($nodeIds = array(
-						$nodeId,
-						$node['node_id']
-					))
+					'node_id' => $nodeNodeId
 				)
 			));
 			$response['status_valid'] = ($existingNodeProcessPorts !== false);
@@ -724,17 +727,18 @@
 				}
 
 				if ($parameters['data']['enable_' . $nodeProcessType . '_processes'] === false) {
+					// todo: delete recursive dns records for disabled processes
 					$nodePortsDeleted = $this->delete(array(
 						'from' => 'node_process_ports',
 						'where' => array(
-							'node_id' => $nodeIds,
+							'node_id' => $nodeNodeId,
 							'node_process_type' => $nodeProcessType
 						)
 					));
 					$nodeProcessesDeleted = $this->delete(array(
 						'from' => 'node_processes',
 						'where' => array(
-							'node_id' => $nodeIds,
+							'node_id' => $nodeNodeId,
 							'type' => $nodeProcessType
 						)
 					));
@@ -749,14 +753,15 @@
 				} else {
 					$nodeProcessPorts = $this->fetch(array(
 						'fields' => array(
-							'id',
+							'node_id',
+							'node_process_type',
 							'number',
 							'status_allowing',
 							'status_denying'
 						),
 						'from' => 'node_process_ports',
 						'where' => array(
-							'node_id' => $nodeIds,
+							'node_id' => $nodeNodeId,
 							'node_process_type' => $nodeProcessType
 						)
 					));
@@ -766,170 +771,80 @@
 						return $response;
 					}
 
-					$nodeProcessPortNumbers = $nodeProcessPortStatusAllowingPortNumbers = $nodeProcessPortStatusDenyingPortNumbers = array();
+					$nodeProcessData = $nodeProcessPortData = array();
 
 					foreach ($nodeProcessPorts as $nodeProcessPort) {
-						if ($nodePort['status_allowing'] === true) {
-							$nodeProcessPortStatusAllowingPortNumbers[$nodeProcessPort['number']] = $nodeProcessPort['number'];
-						}
-
-						if ($nodePort['status_denying'] === true) {
-							$nodeProcessPortStatusDenyingPortNumbers[$nodeProcessPort['number']] = $nodeProcessPort['number'];
-						}
-
-						$nodeProcessPortNumbers[$nodeProcessPort['number']] = $nodeProcessPort['number'];
-					}
-
-					if (empty($nodeProcessPortStatusAllowingPortNumbers) === false) {
-						$nodeProcessesDeleted = $this->delete(array(
-							'from' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeIds,
-								'port_number !=' => $nodeProcessPortStatusAllowingPortNumbers,
-								'type' => $nodeProcessType
-							)
-						));
-						// todo: format + save nodeProcessPortData with ports that haven't been added
-						$nodeProcessPortsUpdated = $this->update(array(
-							'data' => array(
-								'status_allowing' => true
-							),
-							'in' => 'node_process_ports',
-							'where' => array(
-								'node_id' => $nodeIds,
-								'number' => $nodeProcessPortStatusAllowingPortNumbers,
-								'type' => $nodeProcessType
-							)
-						));
-						$response['status_valid'] = (
-							($nodeProcessesDeleted === true) &&
-							($nodeProcessPortsUpdated === true)
-						);
-					}
-
-					if ($response['status_valid'] === false) {
-						return $response;
-					}
-
-					if (empty($nodeProcessPortStatusDenyingPortNumbers) === false) {
-						// todo: format + save nodeProcessPortData with ports that haven't been added
-						$nodeProcessesDeleted = $this->delete(array(
-							'from' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeIds,
-								'port_number' => $nodeProcessPortStatusDenyingPortNumbers,
-								'type' => $nodeProcessType
-							)
-						));
-						$nodeProcessPortsUpdated = $this->update(array(
-							'data' => array(
-								'status_denying' => true
-							),
-							'in' => 'node_process_ports',
-							'where' => array(
-								'node_id' => $nodeIds,
-								'number' => $nodeProcessPortStatusDenyingPortNumbers,
-								'type' => $nodeProcessType
-							)
-						));
-						$response['status_valid'] = (
-							($nodeProcessesDeleted === true) &&
-							($nodeProcessPortsUpdated === true)
-						);
-					}
-
-					if ($response['status_valid'] === false) {
-						return $response;
-					}
-
-					$nodeProcessPortCount = $this->count(array(
-						'in' => 'node_process_ports',
-						'where' => array(
-							'node_process_type' => $nodeProcessType,
-							'status_denying' => false
-						)
-					));
-					$response['status_valid'] = (is_int($nodeProcessPortCount) === true);
-
-					if ($response['status_valid'] === false) {
-						return $response;
-					}
-
-					if (empty($nodeProcessPortStatusAllowingPortNumbers) === false) {
-						$nodeProcessPortNumbers = $nodeProcessPortStatusAllowingPortNumbers;
-					}
-
-					$nodeProcessPortNumbers = array_diff($nodeProcessPortNumbers, $existingNodeProcessPortNumbers, $nodeProcessPortStatusDenyingPortNumbers);
-					$nodeProcessData = array();
-
-					foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
 						$nodeProcessData[] = array(
-							'port_number' => $nodeProcessPortNumber,
+							'node_id' => $nodeNodeId,
+							'port_number' => $nodeProcessPort['number'],
 							'type' => $nodeProcessType
 						);
+						$nodeProcessPortData[$nodeProcessPort['number']] = $nodeProcessPort;
 					}
 
-					$existingNodeProcessPortNumbers = array_merge($existingNodeProcessPortNumbers, $nodeProcessPortNumbers);
-					$nodeProcessPortCount = (count($nodeProcessPortNumbers) + $nodeProcessPortCount);
-
-					if (
-						(empty($nodeProcessPortStatusAllowingPortNumbers) === true) &&
-						($nodeProcessPortCount < 10)
-					) {
-						$nodeProcessPortNumber = $nodeProcess['port_number'];
-						$nodeProcessPortData = array();
-
-						foreach (range($nodeProcessPortCount, 10) as $nodeProcessIndex) {
-							while (
-								($nodeProcessPortNumber <= 65535) &&
-								(in_array($nodeProcessPortNumber, $existingNodeProcessPortNumbers) === true)
-							) {
-								$nodeProcessPortNumber++;
-							}
-
-							if (in_array($nodeProcessPortNumber, $existingNodeProcessPortNumbers) === true) {
-								break;
-							}
-
-							$existingNodeProcessPortNumbers[] = $nodeProcessPortNumber;
-							$nodeProcessData[] = array(
-								'port_number' => $nodeProcessPortNumber,
+					if (empty($nodeProcessPort['status_allowing']) === false) {
+						$nodeProcessesDeleted = $this->delete(array(
+							'from' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeNodeId,
 								'type' => $nodeProcessType
-							);
-							$nodeProcessPortData[] = array(
-								'node_process_type' => $nodeProcessType,
-								'number' => $nodeProcessPortNumber
-							);
-						}
-
+							)
+						));
+						$nodeProcessPortsDeleted = $this->delete(array(
+							'in' => 'node_process_ports',
+							'where' => array(
+								'node_id' => $nodeNodeId,
+								'type' => $nodeProcessType
+							)
+						));
+						$nodeProcessesSaved = $this->save(array(
+							'data' => $nodeProcessData,
+							'to' => 'node_processes'
+						));
 						$nodeProcessPortsSaved = $this->save(array(
 							'data' => $nodeProcessPortData,
 							'to' => 'node_process_ports'
 						));
-						$response['status_valid'] = ($nodeProcessPortsSaved === true);
-
-						if ($response['status_valid'] === false) {
-							return $response;
-						}
+						$response['status_valid'] = (
+							($nodeProcessesDeleted === true) &&
+							($nodeProcessPortsDeleted === true) &&
+							($nodeProcessesSaved === true) &&
+							($nodeProcessPortsSaved === true)
+						);
 					}
 
-					$nodeProcessPortsUpdated = $this->update(array(
-						'data' => array(
-							'status_processed' => true
-						),
-						'in' => 'node_process_ports',
-						'where' => array(
-							'node_id' => $nodeIds
-						)
-					));
-					$nodeProcessesSaved = $this->save(array(
-						'data' => $nodeProcessData,
-						'to' => 'node_processes'
-					));
-					$response['status_valid'] = (
-						($nodePortsUpdated === true) &&
-						($nodeProcessesSaved === true)
-					);
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+
+					if (empty($nodeProcessPort['status_denying']) === false) {
+						$nodeProcessPortNumbers = array_keys($nodeProcessPortData);
+						$nodeProcessesDeleted = $this->delete(array(
+							'from' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeNodeId,
+								'port_number' => $nodeProcessPortNumbers,
+								'type' => $nodeProcessType
+							)
+						));
+						$nodeProcessPortsDeleted = $this->delete(array(
+							'from' => 'node_process_ports',
+							'where' => array(
+								'node_id' => $nodeNodeId,
+								'number' => $nodeProcessPortNumbers,
+								'node_process_type' => $nodeProcessType
+							)
+						));
+						$nodeProcessPortsSaved = $this->save(array(
+							'data' => $nodeProcessPortData,
+							'to' => 'node_process_ports'
+						));
+						$response['status_valid'] = (
+							($nodeProcessesDeleted === true) &&
+							($nodeProcessPortsDeleted === true) &&
+							($nodeProcessPortsSaved === true)
+						);
+					}
 
 					if ($response['status_valid'] === false) {
 						return $response;
@@ -1140,7 +1055,7 @@
 						),
 						'from' => 'node_recursive_dns_destinations',
 						'where' => array(
-							'node_id' => end(array_filter($nodeIds)),
+							'node_id' => $nodeNodeId,
 							'node_process_type' => 'system'
 						)
 					));
