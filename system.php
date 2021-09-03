@@ -198,22 +198,12 @@
 								'primary_key' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'ip_type_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(7)'
-							),
-							'ip_type_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(7)'
-							),
-							'ip_version_4' => array(
+							'listening_ip_version_4' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(15)'
 							),
-							'ip_version_6' => array(
+							'listening_ip_version_6' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(39)'
@@ -241,6 +231,16 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'INT(5)'
+							),
+							'source_ip_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(15)'
+							),
+							'source_ip_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(39)'
 							)
 						),
 						'node_resource_usage_logs' => array(

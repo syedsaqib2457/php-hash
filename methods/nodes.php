@@ -858,8 +858,6 @@
 					}
 
 					foreach ($nodeIpVersions as $nodeIpVersion) {
-						// todo: save ip_type (public or private) to determine if source IP needs to be set + if dns destination has internal process
-
 						if (isset($parameters['data'][$nodeProcessType . '_recursive_dns_ip_version_' . $nodeIpVersion]) === true) {
 							$nodeRecursiveDnsDestinationIp = $this->_sanitizeIps(array($parameters['data'][$nodeProcessType . '_recursive_dns_destination_ip_version_' . $nodeIpVersion]));
 							$response['status_valid'] = (empty($nodeRecursiveDnsDestinationIp[$nodeIpVersion]) === false);
