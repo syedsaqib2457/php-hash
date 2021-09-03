@@ -133,8 +133,10 @@
 			);
 
 			if (empty($parameters['data']['node_id']) === false) {
-				$node = $this->fetch(array(
+				$nodeNode = $this->fetch(array(
 					'fields' => array(
+						'external_ip_version_4',
+						'external_ip_version_6',
 						'id',
 						'node_id',
 						'status_active',
@@ -155,21 +157,21 @@
 					return $response;
 				}
 
-				$response['status_valid'] = (empty($node) === false);
+				$response['status_valid'] = (empty($nodeNode) === false);
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Invalid node ID, please try again.';
 					return $response;
 				}
 
-				$nodeNodeId = $parameters['data']['node_id'] = $node['id'];
+				$nodeNodeId = $parameters['data']['node_id'] = $nodeNode['id'];
 
-				if (empty($node['node_id']) === false) {
-					$nodeNodeId = $parameters['data']['node_id'] = $node['node_id'];
+				if (empty($nodeNode['node_id']) === false) {
+					$nodeNodeId = $parameters['data']['node_id'] = $nodeNode['node_id'];
 				}
 
-				$parameters['data']['status_active'] = $node['status_active'];
-				$parameters['data']['status_deployed'] = $node['status_deployed'];
+				$parameters['data']['status_active'] = $nodeNode['status_active'];
+				$parameters['data']['status_deployed'] = $nodeNode['status_deployed'];
 			}
 
 			$nodeExternalIps = $nodeIpVersionExternalIps = array();
@@ -202,6 +204,15 @@
 			$nodeExternalIpTypes = array();
 
 			foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeIpVersionExternalIp) {
+				$response['status_valid'] = (
+					(empty($nodeNode) === true) ||
+					(empty($nodeNode['external_ip_version_' . $nodeIpVersion]) === false)
+				);
+
+				if ($response['status_valid'] === false) {
+					$response['message'] = 'Main node must have matching external IP versions, please try again.';
+				}
+
 				$nodeExternalIpTypes[$this->_detectIpType(current($nodeIpVersionExternalIp), $nodeIpVersion)] = true;
 
 				if (empty($nodeExternalIpTypes['private']) === false) {
@@ -361,6 +372,8 @@
 							}
 						}
 
+						// ..
+
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
 					}
@@ -372,12 +385,46 @@
 						$nodeRecursiveDnsDestinationData['system']['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 					}
 
+					// ..
+
 					$nodeRecursiveDnsDestinationData['system']['node_id'] = $nodeId;
 					$nodeRecursiveDnsDestinationData['system']['node_process_type'] = 'system';
 				}
-			}
+			} else {
+				foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
+					$nodeRecursiveDnsDestination = $this->fetch(array(
+						'fields' => array(
+							'listening_ip_version_4',
+							'listening_ip_version_6',
+							'listening_port_number_version_4',
+							'listening_port_number_version_6',
+							'node_process_type',
+							'source_ip_version_4',
+							'source_ip_version_6'
+						),
+						'from' => 'node_recursive_dns_destinations',
+						'where' => array(
+							'node_id' => $nodeNodeId,
+							'node_process_type' => $nodeProcessType
+						)
+					));
+					$response['status_valid'] = ($nodeRecursiveDnsDestination !== false);
 
-			// todo: add most-recent same-node node recursive dns destination to $nodeRecursiveDnsDestinationData if $nodeRecursiveDnsDestinationData is empty for each enabled process types
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+
+					if (count($nodeIpVersionExternalIps) === 1) {
+						$nodeIpVersionRecursiveDnsDestinationToDelete = (10 - key($nodeIpVersionExternalIps));
+						unset($nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersionRecursiveDnsDestinationToDelete]);
+						unset($nodeRecursiveDnsDestination['listening_port_number_version_' . $nodeIpVersionRecursiveDnsDestinationToDelete]);
+						unset($nodeRecursiveDnsDestination['source_ip_version_' . $nodeIpVersionRecursiveDnsDestinationToDelete]);
+					}
+
+					$nodeRecursiveDnsDestinationData[$nodeProcessType] = $nodeRecursiveDnsDestination;
+					$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
+				}
+			}
 
 			$nodeProcessesSaved = $this->save(array(
 				'data' => $nodeProcessData,
