@@ -862,7 +862,7 @@
 							$response['status_valid'] = (empty($nodeRecursiveDnsDestinationIp[$nodeIpVersion]) === false);
 
 							if ($response['status_valid'] === false) {
-								$response['message'] = 'Invalid node proxy node process recursive DNS destination listening IP, please try again.';
+								$response['message'] = 'Invalid proxy node process recursive DNS destination listening IP, please try again.';
 								return $response;
 							}
 
@@ -886,10 +886,10 @@
 								return $response;
 							}
 
-							$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] => $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
-							$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] => $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
-							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] => $nodeId;
-							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] => $nodeProcessType;
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
+							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
 
 							if ($existingNodeCount !== 0) {
 								// todo: assign internal ip as listening ip and $nodeRecursiveDnsDestinationIp[$nodeIpVersion] as source ip
