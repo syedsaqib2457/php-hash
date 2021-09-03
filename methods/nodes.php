@@ -876,7 +876,6 @@
 						(empty($nodeProcessPortStatusAllowingPortNumbers) === true) &&
 						($nodeProcessPortCount < 10)
 					) {
-						
 						$nodeProcessPortNumber = $nodeProcess['port_number'];
 						$nodeProcessPortData = array();
 
