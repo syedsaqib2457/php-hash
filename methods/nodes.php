@@ -789,7 +789,22 @@
 								'type' => $nodeProcessType
 							)
 						));
-						$response['status_valid'] = ($nodeProcessesDeleted === true);
+						// todo: format + save nodeProcessPortData with ports that haven't been added
+						$nodeProcessPortsUpdated = $this->update(array(
+							'data' => array(
+								'status_allowing' => true
+							),
+							'in' => 'node_process_ports',
+							'where' => array(
+								'node_id' => $nodeIds,
+								'number' => $nodeProcessPortStatusAllowingPortNumbers,
+								'type' => $nodeProcessType
+							)
+						));
+						$response['status_valid'] = (
+							($nodeProcessesDeleted === true) &&
+							($nodeProcessPortsUpdated === true)
+						);
 					}
 
 					if ($response['status_valid'] === false) {
@@ -797,6 +812,19 @@
 					}
 
 					if (empty($nodeProcessPortStatusDenyingPortNumbers) === false) {
+						// todo: format + save nodeProcessPortData with ports that haven't been added
+						$nodeProcessPortsUpdated = $this->update(array(
+							'data' => array(
+								'status_denying' => true
+							),
+							'in' => 'node_process_ports',
+							'where' => array(
+								'node_id' => $nodeIds,
+								'number' => $nodeProcessPortStatusDenyingPortNumbers,
+								'type' => $nodeProcessType
+							)
+						));
+						// ..
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
 							'where' => array(
@@ -805,7 +833,10 @@
 								'type' => $nodeProcessType
 							)
 						));
-						$response['status_valid'] = ($nodeProcessesDeleted === true);
+						$response['status_valid'] = (
+							($nodeProcessesDeleted === true) &&
+							($nodeProcessPortsUpdated === true)
+						);
 					}
 
 					if ($response['status_valid'] === false) {
