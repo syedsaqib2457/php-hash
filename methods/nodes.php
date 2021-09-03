@@ -4,48 +4,48 @@
 
 	class NodeMethods extends SystemMethods {
 
-		protected function _assignInternalIp($existingIps, $ipVersion) {
+		protected function _assignNodeInternalIp($existingNodeIps, $nodeIpVersion) {
 			$response = false;
-			$nodeRecursiveDnsDestinationIpIncrement = 1;
+			$nodeInternalIpIncrement = 1;
 
-			switch ($ipVersion) {
+			switch ($nodeIpVersion) {
 				case 4:
-					$nodeRecursiveDnsDestinationIp = ip2long($this->settings['reserved_internal_ip'][4]);
+					$nodeInternalIp = ip2long($this->settings['reserved_internal_ip'][4]);
 
 					while ($response === false) {
 						if (
-							($nodeRecursiveDnsDestinationIpIncrement === 1) &&
-							($this->_detectIpType(long2ip($nodeRecursiveDnsDestinationIp), 4) === 'public')
+							($nodeInternalIpIncrement === 1) &&
+							($this->_detectIpType(long2ip($nodeInternalIp), 4) === 'public')
 						) {
-							$nodeRecursiveDnsDestinationIpIncrement = -1;
+							$nodeInternalIpIncrement = -1;
 						}
 
-						$nodeRecursiveDnsDestinationIp += $nodeRecursiveDnsDestinationIpIncrement;
+						$nodeInternalIp += $nodeInternalIpIncrement;
 
-						if (in_array($nodeRecursiveDnsDestinationIp, $nodeIps) === false) {
-							$response = long2ip($nodeRecursiveDnsDestinationIp);
+						if (in_array($nodeInternalIp, $existingNodeIps) === false) {
+							$response = long2ip($nodeInternalIp);
 						}
 					}
 
 					break;
 				case 6:
 					// todo: increment larger block to prevent infinite loop if 9999 internal IPs are already allocated to a node
-					$nodeRecursiveDnsDestinationIpBlock = substr($this->settings['reserved_internal_ip'][6], 0, -4);
+					$nodeInternalIpBlock = substr($this->settings['reserved_internal_ip'][6], 0, -4);
 
 					while ($response === false) {
-						$nodeRecursiveDnsDestinationIp = $nodeRecursiveDnsDestinationIpBlock . str_pad($nodeRecursiveDnsDestinationIpIncrement, 4, '0', STR_PAD_LEFT);
+						$nodeInternalIp = $nodeInternalIpBlock . str_pad($nodeInternalIpIncrement, 4, '0', STR_PAD_LEFT);
 
 						if (
-							($nodeRecursiveDnsDestinationIpIncrement === 1) &&
-							($this->_detectIpType($nodeRecursiveDnsDestinationIp, 6) === 'public')
+							($nodeInternalIpIncrement === 1) &&
+							($this->_detectIpType($nodeInternalIp, 6) === 'public')
 						) {
-							$nodeRecursiveDnsDestinationIpIncrement = -1;
+							$nodeInternalIpIncrement = -1;
 						}
 
-						$nodeRecursiveDnsDestinationIpBlock += $nodeRecursiveDnsDestinationIpIncrement;
+						$nodeInternalIpBlock += $nodeInternalIpIncrement;
 
-						if (in_array($nodeRecursiveDnsDestinationIp, $nodeIps) === false) {
-							$response = $nodeRecursiveDnsDestinationIp;
+						if (in_array($nodeInternalIp, $existingNodeIps) === false) {
+							$response = $nodeInternalIp;
 						}
 					}
 
@@ -367,7 +367,7 @@
 					if (strpos($nodeProcessType, 'proxy') === true) {
 						foreach ($nodeIpVersions as $nodeIpVersion) {
 							if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
-								$existingNodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($existingNodeIps, $nodeIpVersion);
+								$existingNodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignNodeInternalIp($existingNodeIps, $nodeIpVersion);
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
 							}
@@ -380,7 +380,7 @@
 
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
-						$existingNodeIps[] = $nodeRecursiveDnsDestinationData['system']['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($existingNodeIps, $nodeIpVersion);
+						$existingNodeIps[] = $nodeRecursiveDnsDestinationData['system']['listening_ip_version_' . $nodeIpVersion] = $this->_assignNodeInternalIp($existingNodeIps, $nodeIpVersion);
 						$nodeRecursiveDnsDestinationData['system']['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 						$nodeRecursiveDnsDestinationData['system']['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
 					}
@@ -987,7 +987,7 @@
 									}
 								}
 
-								$existingNodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($existingNodeIps, $nodeIpVersion);
+								$existingNodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignNodeInternalIp($existingNodeIps, $nodeIpVersion);
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
 							}
 
