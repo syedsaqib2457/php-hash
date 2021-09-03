@@ -594,7 +594,7 @@
 				}
 			}
 
-			$nodeExternalIps = $nodeExternalIpVersions = array();
+			$nodeExternalIps = $nodeIpVersionExternalIps = array();
 			$nodeIpVersions = array(
 				4,
 				6
@@ -604,7 +604,7 @@
 				$nodeExternalIpKey = 'external_ip_version_' . $nodeIpVersion;
 
 				if (empty($parameters['data'][$nodeExternalIpKey]) === false) {
-					$nodeExternalIps[$nodeExternalIpKey] = $nodeExternalIpVersions[$nodeIpVersion][] = $parameters['data'][$nodeExternalIpKey];
+					$nodeExternalIps[$nodeExternalIpKey] = $nodeIpVersionExternalIps[$nodeIpVersion][$parameters['data'][$nodeExternalIpKey]] = $parameters['data'][$nodeExternalIpKey];
 				}
 			}
 
@@ -615,8 +615,8 @@
 			}
 
 			$response['status_valid'] = (
-				($nodeExternalIpVersions === $this->_sanitizeIps($nodeExternalIps)) &&
-				(count(current($nodeExternalIpVersions)) === 1)
+				($nodeIpVersionExternalIps === $this->_sanitizeIps($nodeExternalIps)) &&
+				(count(current($nodeIpVersionExternalIps)) === 1)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -626,11 +626,11 @@
 
 			$nodeExternalIpTypes = array();
 
-			foreach ($nodeExternalIpVersions as $nodeExternalIpVersion => $nodeExternalIpVersionIps) {
-				$nodeExternalIpTypes[$this->_detectIpType(current($nodeExternalIpVersionIps), $nodeExternalIpVersion)] = true;
+			foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeExternalIp) {
+				$nodeExternalIpTypes[$this->_detectIpType(current($nodeExternalIp), $nodeIpVersion)] = true;
 
 				if (empty($nodeExternalIpTypes['private']) === false) {
-					unset($parameters['data']['internal_ip_version_' . $nodeExternalIpVersion]);
+					unset($parameters['data']['internal_ip_version_' . $nodeIpVersion]);
 				}
 			}
 
@@ -641,22 +641,19 @@
 				return $response;
 			}
 
-			$nodeInternalIps = $nodeInternalIpVersions = array();
+			$nodeInternalIps = $nodeIpVersionInternalIps = array();
 
 			foreach ($nodeIpVersions as $nodeIpVersion) {
 				$nodeInternalIpKey = 'internal_ip_version_' . $nodeIpVersion;
 
 				if (empty($parameters['data'][$nodeInternalIpKey]) === false) {
-					$nodeInternalIps[$nodeInternalIpKey] = $nodeInternalIpVersions[$nodeIpVersion][] = $parameters['data'][$serverNodeInternalIpKey];
+					$nodeInternalIps[$nodeInternalIpKey] = $nodeIpVersionInternalIps[$nodeIpVersion][$parameters['data'][$nodeInternalIpKey]] = $parameters['data'][$nodeInternalIpKey];
 				}
 			}
 
 			$response['status_valid'] = (
 				(empty($nodeInternalIps) === true) ||
-				(
-					($nodeInternalIpVersions === $this->_sanitizeIps($nodeInternalIps)) &&
-					(count(current($nodeInternalIpVersions)) === 1)
-				)
+				($nodeIpVersionInternalIps === $this->_sanitizeIps($nodeInternalIps))
 			);
 
 			if ($response['status_valid'] === false) {
@@ -664,8 +661,8 @@
 				return $response;
 			}
 
-			foreach ($nodeInternalIpVersions as $nodeInternalIpVersion => $nodeInternalIpVersionIps) {
-				$response['status_valid'] = ($this->_detectIpType(current($nodeInternalIpVersionIps), $nodeInternalIpVersion) === 'private');
+			foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeInternalIp) {
+				$response['status_valid'] = ($this->_detectIpType(current($nodeInternalIp), $nodeIpVersion) === 'private');
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node internal IPs must be private, please try again.';
@@ -697,7 +694,7 @@
 				$existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['number'];
 			}
 
-			$nodeIps = $nodeExternalIps + $nodeInternalIps;
+			$nodeIps = array_merge($nodeExternalIps, $nodeInternalIps);
 			$nodeRecursiveDnsDestinationData = array();
 
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
@@ -1300,6 +1297,7 @@
 								'node_id' => $nodeId
 							)
 						));
+						// todo: loop through proxy process counts with default ports using system setting values
 						$nodeHttpProxyProcessCount = $this->count(array(
 							'in' => 'node_processes',
 							'where' => array(
