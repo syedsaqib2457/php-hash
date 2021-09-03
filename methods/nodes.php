@@ -365,7 +365,7 @@
 
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
-						$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = 53; // todo: use $nodeProcessTypeDefaultPortNumber for recursive_dns
+						$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 					}
 				}
 
@@ -377,7 +377,7 @@
 
 					$nodeRecursiveDnsDestinationData['system']['node_id'] = $nodeId;
 					$nodeRecursiveDnsDestinationData['system']['node_process_type'] = 'system';
-					$nodeRecursiveDnsDestinationData['system']['port_number_version_' . $nodeIpVersion] = 53;
+					$nodeRecursiveDnsDestinationData['system']['port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 				}
 
 				$nodeProcessesSaved = $this->save(array(
