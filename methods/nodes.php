@@ -607,10 +607,11 @@
 				return $response;
 			}
 
-			$nodeNodeId = $nodeId;
+			$nodeIds = array();
+			$$nodeIds[] = $nodeNodeId = $nodeId;
 
 			if (empty($node['node_id']) === false) {
-				$nodeNodeId = $node['node_id'];
+				$nodeIds[] = $nodeNodeId = $node['node_id'];
 			}
 
 			if (isset($parameters['data']['status_active']) === false) {
@@ -867,11 +868,36 @@
 								return $response;
 							}
 
-							// ..
-							$nodeRecursiveDnsDestinationData[$nodeProcessType]['ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
-							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
-							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
-							$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = 53;
+							$existingNodeCount = $this->count(array(
+								'in' => 'nodes',
+								'where' => array(
+									'external_ip_version_' . $nodeIpVersion => $nodeRecursiveDnsDestinationIp[$nodeIpVersion],
+									'OR' => array(
+										array(
+											'id' => $nodeIds
+										),
+										array(
+											'node_id' => $nodeIds
+										)
+									)
+								)
+							));
+							$response['status_valid'] = (is_int($existingNodeCount) === true);
+
+							if ($response['status_valid'] === false) {
+								return $response;
+							}
+
+							$nodeRecursiveDnsDestinationData[$nodeProcessType] = array(
+								'listening_ip_version_' . $nodeIpVersion => $nodeRecursiveDnsDestinationIp[$nodeIpVersion],
+								'node_id' => $nodeId,
+								'node_process_type' => $nodeProcessType,
+								'port_number_version_' . $nodeIpVersion => $this->settings['node_process_type_default_port_numbers']['recursive_dns']
+							);
+
+							if ($existingNodeCount !== 0) {
+								// todo: assign internal ip as listening ip and $nodeRecursiveDnsDestinationIp[$nodeIpVersion] as source ip
+							}
 
 							if (empty($parameters['data'][$nodeProcessType . '_recursive_dns_port_number_version_' . $nodeIpVersion]) === false) {
 								$response['status_valid'] = ($this->_validatePortNumber($parameters['data'][$nodeProcessType . '_recursive_dns_destination_port_number_version_' . $nodeIpVersion]) === false);
