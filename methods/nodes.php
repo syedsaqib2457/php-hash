@@ -813,6 +813,14 @@
 
 					if (empty($nodeProcessPortStatusDenyingPortNumbers) === false) {
 						// todo: format + save nodeProcessPortData with ports that haven't been added
+						$nodeProcessesDeleted = $this->delete(array(
+							'from' => 'node_processes',
+							'where' => array(
+								'node_id' => $nodeIds,
+								'port_number' => $nodeProcessPortStatusDenyingPortNumbers,
+								'type' => $nodeProcessType
+							)
+						));
 						$nodeProcessPortsUpdated = $this->update(array(
 							'data' => array(
 								'status_denying' => true
@@ -821,15 +829,6 @@
 							'where' => array(
 								'node_id' => $nodeIds,
 								'number' => $nodeProcessPortStatusDenyingPortNumbers,
-								'type' => $nodeProcessType
-							)
-						));
-						// ..
-						$nodeProcessesDeleted = $this->delete(array(
-							'from' => 'node_processes',
-							'where' => array(
-								'node_id' => $nodeIds,
-								'port_number' => $nodeProcessPortStatusDenyingPortNumbers,
 								'type' => $nodeProcessType
 							)
 						));
