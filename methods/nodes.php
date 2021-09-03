@@ -201,8 +201,8 @@
 
 			$nodeExternalIpTypes = array();
 
-			foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeExternalIp) {
-				$nodeExternalIpTypes[$this->_detectIpType(current($nodeExternalIp), $nodeExternalIpVersion)] = true;
+			foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeIpVersionExternalIp) {
+				$nodeExternalIpTypes[$this->_detectIpType(current($nodeIpVersionExternalIp), $nodeIpVersion)] = true;
 
 				if (empty($nodeExternalIpTypes['private']) === false) {
 					unset($parameters['data']['internal_ip_version_' . $nodeIpVersion]);
@@ -236,15 +236,17 @@
 				return $response;
 			}
 
-			foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeInternalIp) {
-				$response['status_valid'] = ($this->_detectIpType(current($nodeInternalIp), $nodeIpVersion) === 'private');
+			foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
+				$response['status_valid'] = ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'private');
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node internal IPs must be private, please try again.';
 					return $response;
 				}
 
-				if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === true) {
+				$response['status_valid'] = (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === true);
+
+				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node internal IPs must have a matching external IP, please try again.';
 					return $response;
 				}
@@ -336,33 +338,41 @@
 				}
 
 				$nodeId = $node['id'];
-				$nodeProcessData = $nodeRecursiveDnsDestinationData = array();
+				$nodeProcessData = $nodeProcessPortData = $nodeRecursiveDnsDestinationData = array();
 
 				foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
-					foreach (range(0, 9) as $processPortNumberIndex) {
+					foreach (range(0, 9) as $nodeProcessPortNumberIndex) {
 						$nodeProcessData[] = array(
 							'node_id' => $nodeId,
-							'port_number' => ($nodeProcessTypeDefaultPortNumber + $processPortNumberIndex),
+							'port_number' => ($nodeProcessPortNumber = ($nodeProcessTypeDefaultPortNumber + $nodeProcessPortNumberIndex)),
 							'type' => $nodeProcessType
+						);
+						$nodeProcessPortData[] = array(
+							'node_id' => $nodeId,
+							'node_process_type' => $nodeProcessType,
+							'number' => $nodeProcessPortNumber,
+							'status_processed' => true
 						);
 					}
 
 					if (strpos($nodeProcessType, 'proxy') === true) {
 						foreach ($nodeIpVersions as $nodeIpVersion) {
 							if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
-								$nodeRecursiveDnsDestinationData[$nodeProcessType]['ip_version_' . $nodeIpVersion] = $nodeIps[] = $this->_assignInternalIp($nodeIps, $nodeIpVersion);
+								$nodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($nodeIps, $nodeIpVersion);
+								$nodeRecursiveDnsDestinationData[$nodeProcessType]['ip_type_version_' . $nodeIpVersion] = 'private';
 							}
 						}
 
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
-						$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = 53;
+						$nodeRecursiveDnsDestinationData[$nodeProcessType]['port_number_version_' . $nodeIpVersion] = 53; // todo: use $nodeProcessTypeDefaultPortNumber for recursive_dns
 					}
 				}
 
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
-						$nodeRecursiveDnsDestinationData['system']['ip_version_' . $nodeIpVersion] = $nodeIps[] = $this->_assignInternalIp($nodeIps, $nodeIpVersion);
+						$nodeIps[] = $nodeRecursiveDnsDestinationData['system']['ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($nodeIps, $nodeIpVersion);
+						$nodeRecursiveDnsDestinationData['system']['ip_type_version_' . $nodeIpVersion] = 'private';
 					}
 
 					$nodeRecursiveDnsDestinationData['system']['node_id'] = $nodeId;
@@ -374,16 +384,27 @@
 					'data' => $nodeProcessData,
 					'to' => 'node_processes'
 				));
+				$nodeProcessPortsSaved = $this->save(array(
+					'data' => $nodeProcessPortData,
+					'to' => 'node_process_ports'
+				));
 				$nodeRecursiveDnsDestinationsSaved = $this->save(array(
 					'data' => $nodeRecursiveDnsDestinationData,
 					'to' => 'node_recursive_dns_destinations'
 				));
 				$response['status_valid'] = (
 					($nodeProcessesSaved !== false) &&
+					($nodeProcessPortsSaved !== false) &&
 					($nodeRecursiveDnsDestinationsSaved !== false)
 				);
 
 				if ($response['status_valid'] === false) {
+					$this->delete(array(
+						'from' => 'node_process_ports',
+						'where' => array(
+							'node_id' => $nodeId
+						)
+					));
 					$this->delete(array(
 						'from' => 'node_processes',
 						'where' => array(
@@ -626,8 +647,8 @@
 
 			$nodeExternalIpTypes = array();
 
-			foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeExternalIp) {
-				$nodeExternalIpTypes[$this->_detectIpType(current($nodeExternalIp), $nodeIpVersion)] = true;
+			foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeIpVersionExternalIp) {
+				$nodeExternalIpTypes[$this->_detectIpType(current($nodeIpVersionExternalIp), $nodeIpVersion)] = true;
 
 				if (empty($nodeExternalIpTypes['private']) === false) {
 					unset($parameters['data']['internal_ip_version_' . $nodeIpVersion]);
@@ -661,8 +682,8 @@
 				return $response;
 			}
 
-			foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeInternalIp) {
-				$response['status_valid'] = ($this->_detectIpType(current($nodeInternalIp), $nodeIpVersion) === 'private');
+			foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
+				$response['status_valid'] = ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'private');
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node internal IPs must be private, please try again.';
