@@ -937,7 +937,7 @@
 								'where' => array(
 									'external_ip_version_' . $nodeIpVersion => $nodeRecursiveDnsDestinationIp[$nodeIpVersion],
 									'OR' => array(
-										'id' => $nodeIds
+										'id' => $nodeIds,
 										'node_id' => $nodeIds
 									)
 								)
