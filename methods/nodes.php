@@ -330,7 +330,7 @@
 					'id'
 				),
 				'from' => 'nodes',
-				'where' => ($nodeIps = ($nodeExternalIps + $nodeInternalIps))
+				'where' => ($existingNodeIps = $nodeIps = ($nodeExternalIps + $nodeInternalIps))
 			));
 			$response['status_valid'] = (
 				($node !== false) &&
@@ -367,7 +367,7 @@
 					if (strpos($nodeProcessType, 'proxy') === true) {
 						foreach ($nodeIpVersions as $nodeIpVersion) {
 							if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
-								$nodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($nodeIps, $nodeIpVersion);
+								$existingNodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($existingNodeIps, $nodeIpVersion);
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
 							}
@@ -380,7 +380,7 @@
 
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
-						$nodeIps[] = $nodeRecursiveDnsDestinationData['system']['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($nodeIps, $nodeIpVersion);
+						$existingNodeIps[] = $nodeRecursiveDnsDestinationData['system']['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($existingNodeIps, $nodeIpVersion);
 						$nodeRecursiveDnsDestinationData['system']['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 						$nodeRecursiveDnsDestinationData['system']['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
 					}
@@ -833,6 +833,8 @@
 						$nodeProcessPortData[$nodeProcessPort['number']] = $nodeProcessPort;
 					}
 
+					// todo: update system-wide node recursive DNS listening ports if current listening port was deleted with custom selection to prevent connection errors from misconfig
+
 					if (empty($nodeProcessPort['status_allowing']) === false) {
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
@@ -901,6 +903,25 @@
 						return $response;
 					}
 
+					$existingNodeRecursiveDnsDestination = $this->fetch(array(
+						'fields' => array(
+							'source_ip_version_4',
+							'source_ip_version_6'
+						),
+						'from' => 'node_recursive_dns_destinations',
+						'where' => array(
+							'node_id' => $nodeId,
+							'node_process_type' => $nodeProcessType
+						)
+					));
+					$response['status_valid'] = ($existingNodeRecursiveDnsDestination !== false);
+
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+
+					$existingNodeRecursiveDnsDestinationProcess = array_filter($existingNodeRecursiveDnsDestination);
+
 					foreach ($nodeIpVersions as $nodeIpVersion) {
 						if (isset($parameters['data'][$nodeProcessType . '_recursive_dns_listening_ip_version_' . $nodeIpVersion]) === true) {
 							$nodeRecursiveDnsDestinationIp = $this->_sanitizeIps(array($parameters['data'][$nodeProcessType . '_recursive_dns_destination_listening_ip_version_' . $nodeIpVersion]));
@@ -916,12 +937,8 @@
 								'where' => array(
 									'external_ip_version_' . $nodeIpVersion => $nodeRecursiveDnsDestinationIp[$nodeIpVersion],
 									'OR' => array(
-										array(
-											'id' => $nodeIds
-										),
-										array(
-											'node_id' => $nodeIds
-										)
+										'id' => $nodeIds
+										'node_id' => $nodeIds
 									)
 								)
 							));
@@ -936,8 +953,42 @@
 							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
 							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
 
-							if ($existingNodeCount !== 0) {
-								// todo: assign internal ip as listening ip and $nodeRecursiveDnsDestinationIp[$nodeIpVersion] as source ip
+							if (
+								($existingNodeCount !== 0) &&
+								(empty($existingNodeRecursiveDnsDestinationProcess) === true)
+							) {
+								if (empty($existingNodeIps) === true) {
+									$existingNodeIps = $nodeIps;
+									$existingNodes = $this->fetch(array(
+										'fields' => array(
+											'external_ip_version_4',
+											'external_ip_version_6',
+											'internal_ip_version_4',
+											'internal_ip_version_6'
+										),
+										'from' => 'nodes',
+										'where' => array(
+											'OR' => array(
+												'id' => $nodeIds,
+												'node_id' => $nodeIds
+											)
+										)
+									));
+									$response['status_valid'] = (is_int($existingNodes) === true);
+
+									if ($response['status_valid'] === false) {
+										return $response;
+									}
+
+									foreach ($existingNodes as $existingNode) {
+										foreach (array_filter($existingNode) as $existingNodeIp) {
+											$existingNodeIps[] = $existingNodeIp;
+										}
+									}
+								}
+
+								$existingNodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignInternalIp($existingNodeIps, $nodeIpVersion);
+								$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
 							}
 
 							if (empty($parameters['data'][$nodeProcessType . '_recursive_dns_destination_listening_port_number_version_' . $nodeIpVersion]) === false) {
