@@ -243,10 +243,20 @@
 								'null' => true,
 								'type' => 'VARCHAR(15)'
 							),
+							'listening_ip_version_4_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
 							'listening_ip_version_6' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(39)'
+							),
+							'listening_ip_version_6_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
 							),
 							'listening_port_number_version_4' => array(
 								'default' => null,

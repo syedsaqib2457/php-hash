@@ -368,6 +368,7 @@
 						foreach ($nodeIpVersions as $nodeIpVersion) {
 							if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
 								$existingNodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignNodeInternalIp($existingNodeIps, $nodeIpVersion);
+								$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion . '_node_id'] = $nodeId;
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
 							}
@@ -381,6 +382,7 @@
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
 						$existingNodeIps[] = $nodeRecursiveDnsDestinationData['system']['listening_ip_version_' . $nodeIpVersion] = $this->_assignNodeInternalIp($existingNodeIps, $nodeIpVersion);
+						$nodeRecursiveDnsDestinationData['system']['listening_ip_version_' . $nodeIpVersion . '_node_id'] = $nodeId;
 						$nodeRecursiveDnsDestinationData['system']['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 						$nodeRecursiveDnsDestinationData['system']['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
 					}
@@ -771,6 +773,10 @@
 				}
 
 				if ($parameters['data']['enable_' . $nodeProcessType . '_processes'] === false) {
+					if ($nodeProcessType === 'recursive_dns') {
+						// ..
+					}
+
 					$nodePortsDeleted = $this->delete(array(
 						'from' => 'node_process_ports',
 						'where' => array(
@@ -832,8 +838,6 @@
 						);
 						$nodeProcessPortData[$nodeProcessPort['number']] = $nodeProcessPort;
 					}
-
-					// todo: update system-wide node recursive DNS listening ports if current listening port was deleted with custom selection to prevent connection errors from misconfig
 
 					if (empty($nodeProcessPort['status_allowing']) === false) {
 						$nodeProcessesDeleted = $this->delete(array(
@@ -947,8 +951,6 @@
 							if ($response['status_valid'] === false) {
 								return $response;
 							}
-
-							// ..
 
 							$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
 							$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
