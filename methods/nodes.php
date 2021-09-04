@@ -856,7 +856,9 @@
 							'node_process_type',
 							'number',
 							'status_allowing',
-							'status_denying'
+							'status_denying',
+							'status_processed',
+							'status_removed'
 						),
 						'from' => 'node_process_ports',
 						'where' => array(
@@ -870,7 +872,7 @@
 						return $response;
 					}
 
-					$nodeProcessData = $nodeProcessPortData = array();
+					$existingNodeRecursiveDnsDestinationPortNumbers = $nodeProcessData = $nodeProcessPortData = array();
 
 					foreach ($nodeProcessPorts as $nodeProcessPort) {
 						$nodeProcessData[] = array(
@@ -879,6 +881,23 @@
 							'type' => $nodeProcessType
 						);
 						$nodeProcessPortData[$nodeProcessPort['number']] = $nodeProcessPort;
+
+						if (
+							(empty($nodeProcessPort['status_processed']) === true) &&
+							(
+								(empty($nodeProcessPort['status_denying']) === false) ||
+								(
+									(empty($nodeProcessPort['status_denying']) === true) &&
+									(empty($nodeProcessPort['status_removed']) === false)
+								)
+							)
+						) {
+							$existingNodeRecursiveDnsDestinationPortNumbers[$nodeProcessPort['number']] = $nodeProcessPort['number'];
+						}
+					}
+
+					if (empty($existingNodeRecursiveDnsDestinationPortNumbers) === false) {
+						// ..
 					}
 
 					if (empty($nodeProcessPort['status_allowing']) === false) {
