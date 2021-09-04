@@ -13,6 +13,46 @@
 					'name' => 'ghostcompute',
 					'password' => 'password',
 					'structure' => array(
+						'node_process_forwarding_destinations' => array(
+							'address_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(1000)'
+							),
+							'address_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(1000)'
+							),
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							),
+							'port_number_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'port_number_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							)
+						),
 						'node_process_ports' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
@@ -506,26 +546,6 @@
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
-							),
-							'destination_address_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(1000)'
-							),
-							'destination_address_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(1000)'
-							),
-							'destination_port_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
-							),
-							'destination_port_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
 							),
 							'external_ip_version_4' => array(
 								'default' => null,

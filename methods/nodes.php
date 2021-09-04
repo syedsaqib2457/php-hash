@@ -948,6 +948,8 @@
 								return $response;
 							}
 
+							// ..
+
 							$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
 							$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 							$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
@@ -1031,6 +1033,7 @@
 				}
 			}
 
+			// todo: refactor for node_process_forwarding_destinations table
 			foreach ($nodeIpVersions as $nodeIpVersion) {
 				$response['status_valid'] = (
 					(
