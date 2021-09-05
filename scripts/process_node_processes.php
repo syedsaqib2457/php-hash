@@ -637,6 +637,8 @@
 				}
 			}
 
+			// todo: reconfigure all node recursive dns processes before reconfiguring proxy processes to prevent downtime from proxy process DNS updates
+
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
