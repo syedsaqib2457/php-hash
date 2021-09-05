@@ -243,7 +243,7 @@
 								'null' => true,
 								'type' => 'VARCHAR(15)'
 							),
-							'listening_ip_version_4_node_id' => array(
+							'listening_ip_version_4_node_node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -253,7 +253,7 @@
 								'null' => true,
 								'type' => 'VARCHAR(39)'
 							),
-							'listening_ip_version_6_node_id' => array(
+							'listening_ip_version_6_node_node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -273,6 +273,11 @@
 								'type' => 'DATETIME'
 							),
 							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
