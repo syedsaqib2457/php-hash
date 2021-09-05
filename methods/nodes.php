@@ -789,8 +789,8 @@
 						'where' => array(
 							'listening_ip_version_' . $nodeIpVersion . '_node_id' => $nodeNodeId,
 							'OR' => array(
-								'listening_ip_version_' . $nodeIpVersion . ' => $existingNodeIp,
-								'source_ip_version_' . $nodeIpVersion . ' => $existingNodeIp,
+								'listening_ip_version_' . $nodeIpVersion => $existingNodeIp,
+								'source_ip_version_' . $nodeIpVersion => $existingNodeIp,
 							)
 						)
 					));
