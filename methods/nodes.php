@@ -2123,6 +2123,7 @@
                                 return $response;
 			}
 
+			// todo: allow multiple system node recursive DNS destinations per node IP version
 			foreach ($nodeRecursiveDnsDestinations as $nodeRecursiveDnsDestination) {
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					if (empty($nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion]) === false) {

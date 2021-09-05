@@ -524,7 +524,6 @@
 			if (empty($this->nodeData['node_processes']['recursive_dns']) === false) {
 				$recursiveDnsNodeIndex = 0;
 				$recursiveDnsNodeUserAuthentication = array();
-				// todo: allow different DNS source IPs to be set for node_system and node_processes
 
 				if (empty($this->nodeData['node_recursive_dns_destinations']) === false) {
 					foreach ($this->nodeData['node_recursive_dns_destinations'] as $nodeIpVersion => $nodeRecursiveDnsDestination) {
@@ -809,8 +808,10 @@
 			$this->_processFirewall();
 			$nodeRecursiveDnsDestinations = array();
 
-			foreach ($this->nodeData['node_recursive_dns_destinations'] as $nodeRecursiveDnsDestination) {
-				$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['ip'] . ']:' . $nodeRecursiveDnsDestination['port_number'];
+			foreach ($this->nodeData['node_recursive_dns_destinations']['system'] as $nodeRecursiveDnsDestinations) {
+				foreach ($nodeRecursiveDnsDestinations as $nodeRecursiveDnsDestination) {
+					$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip'] . ']:' . $nodeRecursiveDnsDestination['port_number'];
+				}
 			}
 
 			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
