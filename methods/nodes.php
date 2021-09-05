@@ -2072,12 +2072,13 @@
 
 			$nodeRecursiveDnsDestinations = $this->fetch(array(
 				'fields' => array(
-					'ip_version_4',
-					'ip_version_6',
+					'listening_ip_version_4',
+					'listening_ip_version_6',
+					'listening_port_number_version_4',
+					'listening_port_number_version_4',
 					'node_id',
-					'node_process_type',
-					'port_number_version_4',
-					'port_number_version_6'
+					'source_ip_version_4',
+					'source_ip_version_6'
 				),
 				'from' => 'node_recursive_dns_destinations',
 				'where' => array(
