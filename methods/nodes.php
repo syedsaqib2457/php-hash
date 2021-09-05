@@ -743,6 +743,80 @@
 				}
 			}
 
+			$existingNode = $this->fetch(array(
+				'fields' => array(
+					'external_ip_version_4',
+					'external_ip_version_6',
+					'id',
+					'internal_ip_version_4',
+					'internal_ip_version_6',
+					'node_id'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'node_id' => $nodeId
+				)
+			));
+			$response['status_valid'] = ($existingNode !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$existingNodeIps = array_intersect_key($existingNode, array(
+				'external_ip_version_4' => true,
+				'external_ip_version_6' => true,
+				'internal_ip_version_4' => true,
+				'internal_ip_version_6' => true
+			));
+			$existingNodeRecursiveDnsDestinationNodeNodeId = $existingNode['id'];
+
+			if (empty($existingNode['node_id']) === false) {
+				$existingNodeRecursiveDnsDestinationNodeNodeId = $existingNode['node_id'];
+			}
+
+			$nodeIps = array_merge($nodeExternalIps, $nodeInternalIps);
+
+			foreach ($existingNodeIps as $existingNodeIpKey => $existingNodeIp) {
+				if ($existingNodeIp !== $nodeIps[$existingNodeIpKey]) {
+					$nodeIpVersion = substr($existingNodeIpKey, -1);
+					$existingNodeRecursiveDnsDestination = $this->fetch(array(
+						'fields' => array(
+							'node_process_type'
+						),
+						'from' => 'node_recursive_dns_destinations',
+						'limit' => 1,
+						'where' => array(
+							'listening_ip_version_' . $nodeIpVersion . '_node_id' => $nodeNodeId,
+							'OR' => array(
+								'listening_ip_version_' . $nodeIpVersion . ' => $existingNodeIp,
+								'source_ip_version_' . $nodeIpVersion . ' => $existingNodeIp,
+							)
+						)
+					));
+					$response['status_valid'] = ($existingNodeRecursiveDnsDestination !== false);
+
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+
+					if (empty($existingNodeRecursiveDnsDestination) === false) {
+						$existingNodeRecursiveDnsDestination['node_process_type'] = explode('_', $existingNodeRecursiveDnsDestination['node_process_type']);
+
+						if (
+							(empty($existingNodeRecursiveDnsDestination['node_process_type'][1]) === false) &&
+							($existingNodeRecursiveDnsDestination['node_process_type'][1] === 'proxy')
+						) {
+							$existingNodeRecursiveDnsDestination['node_process_type'][0] = strtoupper($existingNodeRecursiveDnsDestination['node_process_type'][0]);
+						}
+
+						$existingNodeRecursiveDnsDestination['node_process_type'] = implode(' ', $existingNodeRecursiveDnsDestination['node_process_type']);
+						$response['message'] = 'Existing ' . $existingNodeRecursiveDnsDestination['node_process_type'] . ' node recursive DNS destination must be changed for node IP ' . $existingNodeIp . ' before disabling node recursive DNS processes on this node, please try again.';
+						return $response;
+					}
+				}
+			}
+
 			$existingNodeProcessPorts = $this->fetch(array(
 				'fields' => array(
 					'number'
@@ -764,7 +838,6 @@
 				$existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['number'];
 			}
 
-			$nodeIps = array_merge($nodeExternalIps, $nodeInternalIps);
 			$nodeRecursiveDnsDestinationData = array();
 
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
@@ -774,8 +847,6 @@
 					$response['message'] = 'Processes must be either enabled or disabled, please try again.';
 					return $response;
 				}
-
-				// todo: verify existingNodeRecursiveDnsDestinationListeningIps in addition to ports to prevent changing IP that's in use
 
 				if ($parameters['data']['enable_' . $nodeProcessType . '_processes'] === false) {
 					if ($nodeProcessType === 'recursive_dns') {
