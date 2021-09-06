@@ -493,6 +493,7 @@
 			}
 
 			$recursiveDnsNodeConfiguration = array(
+				// todo: add new ACL with internal node IPs instaed of private network blocks if privateNetworkIpBlocks doesn't work internally
 				'acl privateNetworkIpBlocks {',
 				$this->nodeData['private_network']['ip_blocks'][4],
 				$this->nodeData['private_network']['ip_blocks'][6],
@@ -521,39 +522,45 @@
 				'};'
 			);
 
-			if (empty($this->nodeData['node_processes']['recursive_dns']) === false) {
-				$recursiveDnsNodeIndex = 0;
+			if (empty($this->nodeData['node_processes']['node_recursive_dns_destinations']) === false) {
 				$recursiveDnsNodeUserAuthentication = array();
+				$recursiveDnsNodeIndex = 0;
 
-				if (empty($this->nodeData['node_recursive_dns_destinations']) === false) {
-					foreach ($this->nodeData['node_recursive_dns_destinations'] as $nodeIpVersion => $nodeRecursiveDnsDestination) {
-						if (in_array($nodeRecursiveDnsDestination['ip'], $this->nodeData['node_ips'][$nodeIpVersion]) === true) {
-							$recursiveDnsNodeUserAuthentication[] = 'view _' . $nodeIpVersion . ' {';
-							$recursiveDnsNodeUserAuthentication[] = 'match-clients {';
-							$recursiveDnsNodeUserAuthentication[] = 'privateNetworkIpBlocks;';
+				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+					$recursiveDnsNodeUserAuthentication['listening_address_version_' . $nodeIpVersion . '_' . $$recursiveDnsNodeIndex] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+				}
+
+				$recursiveDnsNodeIndex++;
+
+				foreach ($this->nodeData['node_recursive_dns_destinations'] as $nodeProcessType => $nodeRecursiveDnsDestination) {
+					if (
+						(empty($nodeRecursiveDnsDestination['source_ip_version_4']) === false) ||
+						(empty($nodeRecursiveDnsDestination['source_ip_version_6']) === false)
+					) {
+						$recursiveDnsNodeUserAuthentication[] = 'view _' . $nodeRecursiveDnsDestination['id'] . ' {';
+						$recursiveDnsNodeUserAuthentication[] = 'match-clients {';
+						$recursiveDnsNodeUserAuthentication[] = 'privateNetworkIpBlocks;';
+						$recursiveDnsNodeUserAuthentication[] = '};';
+
+						if (empty($nodeRecursiveDnsDestination['listening_ip_version_4']) === false) {
+							$recursiveDnsNodeUserAuthentication[] = 'listen-on {';
+							$recursiveDnsNodeUserAuthentication['listening_address_version_4_' . $recursiveDnsNodeIndex] = $nodeRecursiveDnsDestination['listening_ip_version_4'];
 							$recursiveDnsNodeUserAuthentication[] = '};';
-							$recursiveDnsNodeListeningIpOption = 'listen-on';
-							$recursiveDnsNodeSourceIpOption = 'query-source';
-
-							if ($nodeIpVersion === 6) {
-								$recursiveDnsNodeListeningIpOption .= '-v6';
-								$recursiveDnsNodeSourceIpOption .= '-v6';
-							}
-
-							// todo: use external or internal ip with recursive DNS destination node_id
-							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeSourceIpOption . ' address ' . $nodeRecursiveDnsDestination['ip'] . ';';
-							// todo: use local IP from node_recursive_dns_destinations for listening ip
-							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
-							// todo: add index with correct internal DNS IP for each node
-							$recursiveDnsNodeUserAuthentication['node_process_listening_address_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestination['ip'];
-							$recursiveDnsNodeUserAuthentication[] = '};';
+							$recursiveDnsNodeUserAuthentication[] = 'query-source address ' . $nodeRecursiveDnsDestination['source_ip_version_4'] . ';';
 						}
+
+						if (empty($nodeRecursiveDnsDestination['listening_ip_version_6']) === false) {
+							$recursiveDnsNodeUserAuthentication[] = 'listen-on-v6 {';
+							$recursiveDnsNodeUserAuthentication['listening_address_version_6_' . $recursiveDnsNodeIndex] = $nodeRecursiveDnsDestination['listening_ip_version_6'];
+							$recursiveDnsNodeUserAuthentication[] = '};';
+							$recursiveDnsNodeUserAuthentication[] = 'query-source-v6 address ' . $nodeRecursiveDnsDestination['source_ip_version_6'] . ';';
+						}
+
+						$recursiveDnsNodeIndex++;
 					}
 				}
 
 				foreach ($this->nodeData['node_users']['recursive_dns'] as $recursiveDnsNodeId => $recursiveDnsNodeUserIds) {
-					// todo: add $this->nodeData['node_users']['recursive_dns'] with $recursiveDnsNodeId 0 and whitelist containing privateNetworkIpBlocks ACL string
-
 					foreach ($recursiveDnsNodeUserIds as $recursiveDnsNodeUserId) {
 						$recursiveDnsNodeUserAuthentication[] = 'view ' . $recursiveDnsNodeId . '_' . $recursiveDnsNodeUserId . ' {';
 						$recursiveDnsNodeUserAuthentication[] = 'match-clients {';
@@ -566,8 +573,6 @@
 							foreach ($recursiveDnsNodeUserAuthenticationWhitelists as $recursiveDnsNodeUserAuthenticationWhitelist) {
 								$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeUserAuthenticationWhitelist . ';';
 							}
-						} else {
-							$recursiveDnsNodeUserAuthentication[] = 'none;';
 						}
 
 						$recursiveDnsNodeUserAuthentication[] = '};';
@@ -592,7 +597,6 @@
 
 							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeSourceIpOption . ' address ' . $recursiveDnsNodeIp . ';';
 							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
-							$recursiveDnsNodeUserAuthentication['internal_reserved_listening_address_version_' . $nodeIpVersion] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
 							$recursiveDnsNodeUserAuthentication['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] = $recursiveDnsNodeIp;
 							$recursiveDnsNodeUserAuthentication[] = '};';
 						}
@@ -810,9 +814,9 @@
 			$this->_processFirewall();
 			$nodeRecursiveDnsDestinations = array();
 
-			foreach ($this->nodeData['node_recursive_dns_destinations']['system'] as $nodeRecursiveDnsDestinations) {
-				foreach ($nodeRecursiveDnsDestinations as $nodeRecursiveDnsDestination) {
-					$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip'] . ']:' . $nodeRecursiveDnsDestination['port_number'];
+			foreach ($this->nodeData['node_recursive_dns_destinations']['system'] as $nodeRecursiveDnsDestination) {
+				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
+					$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $nodeIpVersion];
 				}
 			}
 
