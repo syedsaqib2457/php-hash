@@ -838,7 +838,6 @@
 
 			$this->nodeData['node_processes'] = $nodeProcesses;
 
-			// todo: make reusable verifyNodeProcesses function
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessId => $nodeProcessPortNumber) {
