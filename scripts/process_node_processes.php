@@ -49,7 +49,7 @@
 			);
 
 			if (empty($nodeProcessPartKey) === false) {
-				$nodeProcessPartKeys = array_intersect($nodeProcessPartKeys, array($nodeProcessPartKey));
+				$nodeProcessPartKeys = array($nodeProcessPartKey);
 			}
 
 			foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
@@ -74,31 +74,35 @@
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
 
-				foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
-					foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
-						// todo: add separate $this->nodeData['node_process_ports'] for --dports
-						krsort($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey]);
-						$nodeProcessParts = array_chunk($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey], 10);
+				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
+					if (empty($this->nodeData['node_process_ports'][$nodeProcessType]) === false) {
+						foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
+							krsort($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey]);
+							$nodeProcessParts = array_chunk($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey], 10);
 
-						foreach ($nodeProcessParts as $nodeProcessPart) {
-							foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessKey => $nodeProcess) {
-								$nodeProcessLoadBalancer = '';
+							foreach ($nodeProcessParts as $nodeProcessPart) {
+								foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessPortNumber) {
+									$nodeProcessIndex = 0;
+									$nodeProcessLoadBalancer = '';
 
-								if ($nodeProcessKey > 0) {
-									$nodeProcessLoadBalancer = '-m statistic --mode nth --every ' . ($nodeProcessKey + 1) . ' --packet 0 ';
-								}
+									if ($nodeProcessIndex > 0) {
+										$nodeProcessLoadBalancer = '-m statistic --mode nth --every ' . $nodeProcessIndex . ' --packet 0 ';
+									}
 
-								$nodeProcessTransportProtocols = array(
-									'tcp',
-									'udp'
-								);
+									$nodeProcessTransportProtocols = array(
+										'tcp',
+										'udp'
+									);
 
-								if ($nodeProcessType === 'http_proxy') {
-									unset($nodeProcessTransportProtocols[1]);
-								}
+									if ($nodeProcessType === 'http_proxy') {
+										unset($nodeProcessTransportProtocols[1]);
+									}
 
-								foreach ($nodeProcessTransportProtocols as $nodeProcessTransportProtocol) {
-									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessTransportProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcess['port_number'] . ' --persistent';
+									foreach ($nodeProcessTransportProtocols as $nodeProcessTransportProtocol) {
+										$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessTransportProtocol . ' -m multiport ! -d ' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' --dports ' . implode(',', $nodeProcessPart) . ' ' . $nodeProcessLoadBalancer . ' -j DNAT --to-destination :' . $nodeProcessPortNumber . ' --persistent';
+									}
+
+									$nodeProcessIndex++;
 								}
 							}
 						}
@@ -649,7 +653,7 @@
 				}
 
 				$this->_processFirewall($nodeProcessPartKey);
-				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
+				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
 				foreach ($this->nodeData['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessKey => $recursiveDnsNodeProcess) {
@@ -742,11 +746,19 @@
 				}
 			}
 
+			$this->nodeData['node_processes'] = $nodeProcesses;
+
 			foreach (array(0, 1) as $nodeProcessPartKey) {
-				// ..
+				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
+					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessId => $nodeProcessPortNumber) {
+						if ($this->verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
+							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessId]);
+						}
+					}
+				}
 
 				$this->_processFirewall($nodeProcessPartKey);
-				$nodeProcessPartKey = intval((empty($nodeProcessPartKey) === true));
+				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {

@@ -2001,6 +2001,7 @@
 
 				foreach ($nodeProcessParts as $nodeProcessPartKey => $nodeProcessPart) {
 					foreach ($nodeProcessPart as $nodeProcess) {
+						$response['data']['node_process_ports'][$nodeProcessType][$nodeProcess['id']] = $nodeProcess['port_number'];
 						$response['data']['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcess['id']] = $nodeProcess['port_number'];
 					}
 				}
