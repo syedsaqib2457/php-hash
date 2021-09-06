@@ -48,7 +48,10 @@
 				1
 			);
 
-			if (empty($nodeProcessPartKey) === false) {
+			if (
+				($nodeProcessPartKey !== false) &&
+				(in_array($nodeProcessPartKey, $nodeProcessPartKeys) === true)
+			) {
 				$nodeProcessPartKeys = array($nodeProcessPartKey);
 			}
 
