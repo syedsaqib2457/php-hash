@@ -1997,7 +1997,13 @@
 				}
 
 				end($nodeProcesses);
-				$response['data']['node_processes'][$nodeProcessType] = array_chunk($nodeProcesses, ((key($nodeProcesses) + 1) / 2));
+				$nodeProcessParts = array_chunk($nodeProcesses, ((key($nodeProcesses) + 1) / 2));
+
+				foreach ($nodeProcessParts as $nodeProcessPartKey => $nodeProcessPart) {
+					foreach ($nodeProcessPart as $nodeProcess) {
+						$response['data']['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcess['id']] = $nodeProcess['port_number'];
+					}
+				}
 
 				if (empty($nodeUsers) === false) {
 					$userIds = array();
