@@ -194,7 +194,7 @@
 				if (empty(nodeProcesses) === false) {
 					foreach ($nodeProcesses as $nodeProcessType => $nodeProcessPortNumbers) {
 						foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-							if ($this->verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
+							if ($this->_verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
 								exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 								exit;
 							}
@@ -649,7 +649,7 @@
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessId => $nodeProcessPortNumber) {
-						if ($this->verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
+						if ($this->_verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
 							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessId]);
 						}
 					}
@@ -754,7 +754,7 @@
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessId => $nodeProcessPortNumber) {
-						if ($this->verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
+						if ($this->_verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
 							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessId]);
 						}
 					}
@@ -833,7 +833,7 @@
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessId => $nodeProcessPortNumber) {
-						if ($this->verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
+						if ($this->_verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
 							unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessId]);
 						}
 					}
