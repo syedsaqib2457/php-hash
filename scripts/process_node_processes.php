@@ -659,8 +659,8 @@
 				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
-				foreach ($this->nodeData['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessKey => $recursiveDnsNodeProcess) {
-					$recursiveDnsNodeProcessName = $recursiveDnsNodeProcessType . '_' . $recursiveDnsNodeProcess['id'];
+				foreach ($this->nodeData['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
+					$recursiveDnsNodeProcessName = 'recursive_dns_' . $recursiveDnsNodeProcessId;
 
 					if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
 						$recursiveDnsNodeProcessProcessIds = $this->fetchProcessIds($recursiveDnsNodeProcessName . ' ', '_' . $recursiveDnsNodeProcessName . '/');
@@ -670,20 +670,21 @@
 						}
 					}
 
-					$recursiveDnsNodeProcessConfigurationOptions = $this->nodeData['recursive_dns_node_configuration'][$recursiveDnsNodeProcess['type']];
-					$recursiveDnsNodeProcessConfigurationOptions['directory'] = '"/var/cache/bind_' . $recursiveDnsNodeProcess['id'] . '";';
-					$recursiveDnsNodeProcessConfigurationOptions['process_id'] = 'pid-file "/var/run/named/named_' . $recursiveDnsNodeProcess['id'] . '.pid";';
+					$recursiveDnsNodeProcessConfigurationOptions = $this->nodeData['recursive_dns_node_configuration'];
+					$recursiveDnsNodeProcessConfigurationOptions['directory'] = '"/var/cache/bind_' . $recursiveDnsNodeProcessId . '";';
+					$recursiveDnsNodeProcessConfigurationOptions['process_id'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
+					// todo: delete named_ + bind_ prefixes when possible since processes are prefixed with recursive_dns_
 
 					foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 						$recursiveDnsNodeIndex = 0;
-						$recursiveDnsNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcess['port_number'];
+						$recursiveDnsNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcessPortNumber;
 
 						if (empty($recursiveDnsNodeProcessConfigurationOptions['node_process_listening_address_version_' . $nodeIpVersion]) === false) {
-							$recursiveDnsNodeProcessConfigurationOptions['node_process_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcess['port_number'];
+							$recursiveDnsNodeProcessConfigurationOptions['node_process_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcessPortNumber;
 						}
 
 						while (isset($recursiveDnsNodeProcessConfigurationOptions['listening_address_version_4_' . $recursiveDnsNodeIndex]) === true) {
-							$recursiveDnsNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] .= ':' . $recursiveDnsNodeProcess['port_number'];
+							$recursiveDnsNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] .= ':' . $recursiveDnsNodeProcessPortNumber;
 							$recursiveDnsNodeIndex++;
 						}
 					}
@@ -718,12 +719,12 @@
 					}
 
 					shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
-					unlink('/var/run/named/named_' . $recursiveDnsNodeProcessName . '.pid');
+					unlink('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
 					$recursiveDnsNodeProcessEnded = false;
 					$recursiveDnsNodeProcessEndedTime = time();
 
 					while ($recursiveDnsNodeProcessEnded === false) {
-						$recursiveDnsNodeProcessEnded = ($this->_verifyNodeProcess($recursiveDnsNodeProcess) === false);
+						$recursiveDnsNodeProcessEnded = ($this->_verifyNodeProcess($recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
 						sleep(1);
 					}
 
@@ -732,12 +733,12 @@
 
 					while ($recursiveDnsNodeProcessStarted === false) {
 						shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessServiceName . ' start');
-						$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($recursiveDnsNodeProcess) === true);
+						$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
 						sleep(2);
 					}
 
-					if (file_exists('/var/run/named/named_' . $recursiveDnsNodeProcess['id'] . '.pid') === true) {
-						$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/named_' . $recursiveDnsNodeProcess['id'] . '.pid');
+					if (file_exists('/var/run/named/' . $recursiveDnsNodeProcess['id'] . '.pid') === true) {
+						$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
 
 						if (is_numeric($recursiveDnsNodeProcessProcessId) === true) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n1000000000');
@@ -765,8 +766,8 @@
 				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessKey => $proxyNodeProcess) {
-						$proxyNodeProcessName = $proxyNodeProcessType . '_proxy_' . $proxyNodeProcess['id'];
+					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
+						$proxyNodeProcessName = $proxyNodeProcessType . '_' . $proxyNodeProcessId;
 
 						if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
 							$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName . ' ', '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
@@ -777,11 +778,11 @@
 						}
 
 						$proxyNodeIndex = 0;
-						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcess['type']];
-						$proxyNodeProcessConfiguration['internal_reserved_listening_address'] .= ':' . $proxyNodeProcess['port_number'];
+						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcessType];
+						$proxyNodeProcessConfiguration['internal_reserved_listening_address'] .= ':' . $proxyNodeProcessPortNumber;
 
 						while (isset($proxyNodeProcessConfigurationOptions['listening_address_' . $proxyNodeIndex]) === true) {
-							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcess['port_number'];
+							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcessPortNumber;
 							$proxyNodeIndex++;
 						}
 
@@ -800,7 +801,7 @@
 						$proxyNodeProcessEndedTime = time();
 
 						while ($proxyNodeProcessEnded === false) {
-							$proxyNodeProcessEnded = ($this->_verifyNodeProcess($proxyNodeProcess) === false);
+							$proxyNodeProcessEnded = ($this->_verifyNodeProcess($proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
 							sleep(1);
 						}
 
@@ -809,7 +810,7 @@
 
 						while ($proxyNodeProcessStarted === false) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
-							$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcess) === true);
+							$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
 							sleep(2);
 						}
 
@@ -877,7 +878,7 @@
 						unlink('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessName);
 						unlink('/lib/systemd/system/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessName . '.service');
 						unlink('/usr/sbin/named_' . $nodeProcessName);
-						unlink('/var/run/named/named_' . $nodeProcessName . '.pid');
+						unlink('/var/run/named/' . $nodeProcessName . '.pid');
 						break;
 				}
 
