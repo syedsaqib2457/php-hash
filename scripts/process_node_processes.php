@@ -677,11 +677,6 @@
 
 					foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 						$recursiveDnsNodeIndex = 0;
-						$recursiveDnsNodeProcessConfigurationOptions['internal_reserved_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcessPortNumber;
-
-						if (empty($recursiveDnsNodeProcessConfigurationOptions['node_process_listening_address_version_' . $nodeIpVersion]) === false) {
-							$recursiveDnsNodeProcessConfigurationOptions['node_process_listening_address_version_' . $nodeIpVersion] .= ':' . $recursiveDnsNodeProcessPortNumber;
-						}
 
 						while (isset($recursiveDnsNodeProcessConfigurationOptions['listening_address_version_4_' . $recursiveDnsNodeIndex]) === true) {
 							$recursiveDnsNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] .= ':' . $recursiveDnsNodeProcessPortNumber;
@@ -780,6 +775,7 @@
 						$proxyNodeIndex = 0;
 						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcessType];
 						$proxyNodeProcessConfiguration['internal_reserved_listening_address'] .= ':' . $proxyNodeProcessPortNumber;
+						// todo: set internal reserved address to 0 index to match recursive_dns
 
 						while (isset($proxyNodeProcessConfigurationOptions['listening_address_' . $proxyNodeIndex]) === true) {
 							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcessPortNumber;
