@@ -23,19 +23,20 @@
 		height: 48px;
 	}
 	input[type="text"],
-	textarea {
+	textarea,
+	.checkbox-container span[checked] {
 		background: #ffffff;
 		border: none;
 		border-radius: 3px;
 		color: #000000;
 		margin-bottom: 11px;
 		outline: none;
-		padding: 15px;
 	}
 	input[type="text"],
 	textarea {
 		box-sizing: border-box;
 		display: block;
+		padding: 15px;
 		width: 100%;
 	}
 	label {
@@ -73,8 +74,9 @@
 		margin-top: 20px;
 	}
 	.checkbox-container {
+		cursor: pointer;
 		float: left;
-		margin: 8px 0;
+		margin-top: 9px;
 		width: 100%;
 	}
 		.checkbox-container label {
@@ -86,15 +88,22 @@
 		}
 		.checkbox-container span[checked] {
 			background: #fff;
-			border-radius: 3px;
 			display: inline-block;
 			height: 18px;
 			float: left;
 			margin-right: 10px;
+			position: relative;
 			width: 18px;
 		}
-			.checkbox-container span[checked=1] {
-				background: #cccccc; // ..
+			.checkbox-container span[checked="1"] span {
+				background: #000000;
+				border-radius: 2px;
+				display: block;
+				height: 10px;
+				left: 4px;
+				position: absolute;
+				top: 4px;
+				width: 10px;
 			}
 	.clear {
 		clear: both;
@@ -103,6 +112,7 @@
 		margin-bottom: 25px;
 	}
 	.process-container {
+		box-sizing: border-box;
 		display: block;
 		margin: 50px auto 100px;
 		width: 350px;
@@ -2041,29 +2051,28 @@
 				});
 			});
 		});
-		selectAllElements('.checkbox, label.custom-checkbox-label', function(selectedElementKey, selectedElement) {
+		selectAllElements('.checkbox-container', function(selectedElementKey, selectedElement) {
 			render(function() {
 				elements.addEventListener(selectedElement, {
 					method: function() {
-						let hiddenFieldSelector = 'div[field="' + selectedElement.getAttribute('name') + '"]';
-						let itemSelector = '.checkbox[name="' + selectedElement.getAttribute('name') + '"]';
+						let toggleElementSelector = 'div[name="' + selectedElement.getAttribute('toggle') + '"]';
 
-						if (elements.get(hiddenFieldSelector)) {
-							if (elements.hasClass(hiddenFieldSelector, 'hidden')) {
-								elements.removeClass(hiddenFieldSelector, 'hidden');
+						if (elements.get(toggleElementSelector)) {
+							if (elements.hasClass(toggleElementSelector, 'hidden')) {
+								elements.removeClass(toggleElementSelector, 'hidden');
 							} else {
-								elements.addClass(hiddenFieldSelector, 'hidden');
+								elements.addClass(toggleElementSelector, 'hidden');
 							}
 						}
 
-						elements.setAttribute(itemSelector, 'checked', +!+elements.getAttribute(itemSelector, 'checked'));
+						elements.setAttribute('[toggle="' + selectedElement.getAttribute('toggle') + '"] span[checked]', 'checked', +!+elements.getAttribute('[toggle="' + selectedElement.getAttribute('toggle') + '"] span[checked]', 'checked'));
 						processWindowEvents('resize');
 					},
 					type: 'click'
 				});
 			});
 		});
-		selectAllElements('.submit[process]', function(selectedElementKey, selectedElement) {
+		selectAllElements('.save[process]', function(selectedElementKey, selectedElement) {
 			render(function() {
 				elements.addEventListener(selectedElement, {
 					method: function() {
