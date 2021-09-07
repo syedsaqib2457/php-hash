@@ -3,8 +3,59 @@
 <head>
 <meta charset="utf-8">
 <meta content="initial-scale=1, width=device-width" name="viewport">
-<title>Overlord</title>
+<title>GhostCompute</title>
 <style type="text/css">
+	html,
+	body {
+		background: #000000;
+		color: #474747;
+		margin: 0;
+	}
+	html
+	body,
+	input,
+	textarea {
+		font-family: helvetica, arial;
+		font-size: 15px;
+		line-height: 20px;
+	}
+	input[type="text"] {
+		height: 48px;
+	}
+	input[type="text"],
+	textarea {
+		background: #101010;
+		border: 1px solid #232323;
+		border-radius: 3px;
+		color: #919191;
+		margin-bottom: 11px;
+		outline: none;
+		padding: 0 10px;
+	}
+	input[type="text"],
+	label,
+	textarea {
+		box-sizing: border-box;
+		display: block;
+		width: 100%;
+	}
+	label {
+		font-weight: 600;
+		margin-bottom: 4px;
+	}
+	textarea {
+		height: 150px;
+		padding: 15px;
+	}
+	.message {
+		color: #eee;
+	}
+	.process-container {
+		display: block;
+		margin: 50px auto;
+		width: 417px;
+	}
+
 	/*.align-left { float: left !important; }
 	.align-right { float: right !important; }
 	.clear { clear: both !important; float: none !important; }
