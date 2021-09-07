@@ -8,7 +8,7 @@
 	html,
 	body {
 		background: #000000;
-		color: #aaaaaa;
+		color: #ffffff;
 		margin: 0;
 	}
 	html
@@ -16,8 +16,8 @@
 	input,
 	textarea {
 		font-family: helvetica, arial;
-		font-size: 14px;
-		line-height: 20px;
+		font-size: 13px;
+		line-height: 18px;
 	}
 	input[type="text"] {
 		height: 48px;
@@ -33,27 +33,78 @@
 		padding: 15px;
 	}
 	input[type="text"],
-	label,
 	textarea {
 		box-sizing: border-box;
 		display: block;
 		width: 100%;
 	}
 	label {
-		color: #ffffff;
+		display: inline-block;
 		font-size: 11px;
 		font-weight: 600;
+		float: left;
+		line-height: 11px;
+		margin-bottom: 5px;
+		margin-top: 8px;
 		text-transform: uppercase;
 	}
 	textarea {
 		height: 150px;
 	}
+	.button {
+		background: #444444;
+		border-radius: 3px;
+		color: #ffffff;
+		cursor: pointer;
+		display: inline-block;
+		font-size: 11px;
+		font-weight: 600;
+		padding: 18px 34px;
+		text-transform: uppercase;
+	}
+		.button:hover {
+			background: #555555;
+		}
+		.button.close {
+			margin-left: 13px;
+		}
+	.buttons {
+		float: left;
+		margin-top: 20px;
+	}
+	.checkbox-container {
+		float: left;
+		margin: 8px 0;
+		width: 100%;
+	}
+		.checkbox-container label {
+			margin-top: 4px;
+		}
+		.checkbox-container label,
+		.checkbox-container span {
+			cursor: pointer;
+		}
+		.checkbox-container span[checked] {
+			background: #fff;
+			border-radius: 3px;
+			display: inline-block;
+			height: 18px;
+			float: left;
+			margin-right: 10px;
+			width: 18px;
+		}
+			.checkbox-container span[checked=1] {
+				background: #cccccc; // ..
+			}
+	.clear {
+		clear: both;
+	}
 	.message {
-		margin-bottom: 45px;
+		margin-bottom: 25px;
 	}
 	.process-container {
 		display: block;
-		margin: 50px auto;
+		margin: 50px auto 100px;
 		width: 350px;
 	}
 
@@ -1054,9 +1105,11 @@
 			<label>Existing Node External IP Address or Node ID</label>
 			<input name="node_id" type="text">
 		</div>
+		<div class="buttons">
+			<span class="button close">Close</span>
+			<span class="button submit" process="node_add">Save Changes</span>
+		</div>
 		<div class="clear"></div>
-		<span class="button close">Close</span>
-		<span class="button submit" process="node_add">Save Changes</span>
 	</div>
 	<div class="process-overlay"></div>
 </div>
