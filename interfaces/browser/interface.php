@@ -8,7 +8,7 @@
 	html,
 	body {
 		background: #000000;
-		color: #414141;
+		color: #aaaaaa;
 		margin: 0;
 	}
 	html
@@ -24,34 +24,14 @@
 	}
 	input[type="text"],
 	textarea {
-		background: #0e0e0e;
-		border: 1px solid #202020;
-		border-radius: 2px;
-		color: #8d8d8d;
+		background: #ffffff;
+		border: none;
+		border-radius: 3px;
+		color: #000000;
 		margin-bottom: 11px;
 		outline: none;
 		padding: 15px;
 	}
-		input[type="text"]:hover,
-		textarea:hover {
-			background: #101010;
-			border: 1px solid #232323;
-			border-radius: 2px;
-			color: #919191;
-			margin-bottom: 11px;
-			outline: none;
-			padding: 15px;
-		}
-		input[type="text"]:focus,
-		textarea:focus {
-			background: #131313;
-			border: 1px solid #282828;
-			border-radius: 2px;
-			color: #c3c3c3;
-			margin-bottom: 11px;
-			outline: none;
-			padding: 15px;
-		}
 	input[type="text"],
 	label,
 	textarea {
@@ -60,7 +40,8 @@
 		width: 100%;
 	}
 	label {
-		font-size: 12px;
+		color: #ffffff;
+		font-size: 11px;
 		font-weight: 600;
 		text-transform: uppercase;
 	}
@@ -68,13 +49,12 @@
 		height: 150px;
 	}
 	.message {
-		color: #c3c3c3;
 		margin-bottom: 45px;
 	}
 	.process-container {
 		display: block;
 		margin: 50px auto;
-		width: 417px;
+		width: 350px;
 	}
 
 	/*.align-left { float: left !important; }
