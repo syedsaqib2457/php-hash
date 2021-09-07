@@ -8,7 +8,7 @@
 	html,
 	body {
 		background: #000000;
-		color: #474747;
+		color: #414141;
 		margin: 0;
 	}
 	html
@@ -16,7 +16,7 @@
 	input,
 	textarea {
 		font-family: helvetica, arial;
-		font-size: 15px;
+		font-size: 14px;
 		line-height: 20px;
 	}
 	input[type="text"] {
@@ -24,14 +24,34 @@
 	}
 	input[type="text"],
 	textarea {
-		background: #101010;
-		border: 1px solid #232323;
-		border-radius: 3px;
-		color: #919191;
+		background: #0e0e0e;
+		border: 1px solid #202020;
+		border-radius: 2px;
+		color: #8d8d8d;
 		margin-bottom: 11px;
 		outline: none;
-		padding: 0 10px;
+		padding: 15px;
 	}
+		input[type="text"]:hover,
+		textarea:hover {
+			background: #101010;
+			border: 1px solid #232323;
+			border-radius: 2px;
+			color: #919191;
+			margin-bottom: 11px;
+			outline: none;
+			padding: 15px;
+		}
+		input[type="text"]:focus,
+		textarea:focus {
+			background: #131313;
+			border: 1px solid #282828;
+			border-radius: 2px;
+			color: #c3c3c3;
+			margin-bottom: 11px;
+			outline: none;
+			padding: 15px;
+		}
 	input[type="text"],
 	label,
 	textarea {
@@ -40,15 +60,16 @@
 		width: 100%;
 	}
 	label {
+		font-size: 12px;
 		font-weight: 600;
-		margin-bottom: 4px;
+		text-transform: uppercase;
 	}
 	textarea {
 		height: 150px;
-		padding: 15px;
 	}
 	.message {
-		color: #eee;
+		color: #c3c3c3;
+		margin-bottom: 45px;
 	}
 	.process-container {
 		display: block;
