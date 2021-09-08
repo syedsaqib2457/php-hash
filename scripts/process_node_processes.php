@@ -164,8 +164,19 @@
 			return $response;
 		}
 
+		protected function _verifyNodeProcessConnections($nodeProcessPortNumber) {
+			exec('sudo ' . $this->nodeData['binary_files']['ss'] . ' -p -t -u state connected "( sport = :' . $nodeProcessPortNumber . ' )" | head -1 2>&1', $response);
+
+			if (is_array($response) === false) {
+				$response = $this->_verifyNodeProcessConnections($nodeProcessPortNumber);
+			}
+
+			$response = boolval($response);
+			return $response;
+		}
+
 		public function fetchProcessIds($processName, $processFile = false) {
-			$processIds = array();
+			$response = array();
 			exec('ps -h -o pid -o cmd $(pgrep -f "' . $processName . '") | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
 
 			if (empty($processes) === false) {
@@ -179,12 +190,12 @@
 							(strpos($process, $processFile) !== false)
 						)
 					) {
-						$processIds[] = $processColumns[key($processColumns)];
+						$response[] = $processColumns[key($processColumns)];
 					}
 				}
 			}
 
-			return $processIds;
+			return $response;
 		}
 
 		public function process() {
@@ -671,9 +682,12 @@
 
 				$this->_processFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
-				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
 				foreach ($this->nodeData['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
+					while ($this->_verifyNodeProcessConnections($recursiveDnsNodeProcessPortNumber) === true) {
+						sleep(1);
+					}
+
 					$recursiveDnsNodeProcessName = 'recursive_dns_' . $recursiveDnsNodeProcessId;
 
 					if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
@@ -772,10 +786,13 @@
 
 				$this->_processFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
-				// todo: verify no active sockets for processes using $nodeProcessPartKey after applying firewall
 
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
+						while ($this->_verifyNodeProcessConnections($proxyNodeProcessPortNumber) === true) {
+							sleep(1);
+						}
+
 						$proxyNodeProcessName = $proxyNodeProcessType . '_' . $proxyNodeProcessId;
 
 						if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
@@ -958,6 +975,12 @@
 							'name' => 'service',
 							'output' => 'unrecognized service',
 							'package' => 'systemd'
+						),
+						array(
+							'command' => ($uniqueId = '_' . uniqid() . time()),
+							'name' => 'ss',
+							'output' => 'inet prefix',
+							'package' => 'iproute2'
 						),
 						array(
 							'command' => $uniqueId,
