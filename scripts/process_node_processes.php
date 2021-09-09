@@ -947,6 +947,12 @@
 							'package' => 'iptables'
 						),
 						array(
+							'command' => '-' . $uniqueId,
+							'name' => 'ipset',
+							'output' => 'argument',
+							'package' => 'ipset'
+						),
+						array(
 							'command' => '-h',
 							'name' => 'iptables-restore',
 							'output' => 'tables-restore ',
