@@ -39,6 +39,7 @@
 		}
 
 		protected function _processFirewall($nodeProcessPartKey = false) {
+			// todo: use ipset rules
 			$firewallBinaryFiles = array(
 				4 => $this->nodeData['binary_files']['iptables-restore'],
 				6 => $this->nodeData['binary_files']['ip6tables-restore']
@@ -77,6 +78,7 @@
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
 
+				//todo: make sure prerouting load balancing works with DNS from system requests and proxy process requests, use output if not
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					if (empty($this->nodeData['node_process_ports'][$nodeProcessType]) === false) {
 						foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
@@ -143,6 +145,7 @@
 		}
 
 		protected function _verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) {
+			// todo: pass reserved internal ip for each process port
 			$response = false;
 
 			switch ($nodeProcessType) {
@@ -411,6 +414,7 @@
 				'socks' => 'socks_proxy'
 			);
 
+			// todo: only add node-specific ACLs to avoid bloated config file and log each process by node_id
 			foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 				$proxyNodeConfiguration['log'] = 'log /var/log/' . $proxyNodeProcessType;
 
@@ -563,6 +567,7 @@
 				'tcp-clients 1000000000;',
 				'};'
 			);
+			// todo: remove bind9 views and log each process by node_id
 
 			if (empty($this->nodeData['node_processes']['node_recursive_dns_destinations']) === false) {
 				$recursiveDnsNodeUserAuthentication = array();

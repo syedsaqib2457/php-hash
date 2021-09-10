@@ -8,6 +8,7 @@
 		}
 
 		public function process() {
+			// todo: create directories for each process type, scandir, read file contents
 			$nodeProcessTypeNodeUserRequestLogFiles = array(
 				'http_proxy' => '/var/log/http_proxy',
 				'recursive_dns' => '/var/log/recursive_dns',

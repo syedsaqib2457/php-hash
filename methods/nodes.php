@@ -616,6 +616,7 @@
 		}
 
 		public function edit($parameters) {
+			// todo: add reserved internal IP assignments for new ipset rules to allow unique process ports for each node
 			$response = array(
 				'message' => 'Error editing node, please try again.',
 				'status_valid' => (empty($parameters['data']['id']) === false)
@@ -1674,6 +1675,7 @@
 		}
 
 		public function process() {
+			// todo: add reserved internal IP assignments for new ipset rules to allow unique process ports for each node
 			$response = array(
 				'data' => array(
 					'node_ip_versions' => ($nodeIpVersions = array(
