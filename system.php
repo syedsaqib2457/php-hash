@@ -243,7 +243,7 @@
 								'null' => true,
 								'type' => 'VARCHAR(15)'
 							),
-							'listening_ip_version_4_node_node_id' => array(
+							'listening_ip_version_4_node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -253,7 +253,7 @@
 								'null' => true,
 								'type' => 'VARCHAR(39)'
 							),
-							'listening_ip_version_6_node_node_id' => array(
+							'listening_ip_version_6_node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -601,6 +601,16 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'reserved_internal_ip_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(15)'
+							),
+							'reserved_internal_ip_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(39)'
+							),
 							'status_active' => array(
 								'default' => 0,
 								'null' => true,
@@ -620,21 +630,6 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
-							)
-						),
-						'ports' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'id' => array(
-								'auto_increment' => true,
-								'primary_key' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
 							)
 						),
 						'request_destinations' => array(
