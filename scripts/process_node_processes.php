@@ -874,8 +874,7 @@
 				}
 			}
 
-			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
-			file_put_contents('/etc/node_recursive_dns_destinations.conf', implode("\n", $nodeRecursiveDnsDestinations));
+			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
 
 			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessId) {
 				$nodeProcessName = $nodeProcessType . '_' . $nodeProcessId;
@@ -914,6 +913,7 @@
 				}
 			}
 
+			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
 			return $response;
