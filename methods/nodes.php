@@ -252,16 +252,22 @@
 				}
 			}
 
-			$existingNodeCountParameters = array(
-				'in' => 'nodes',
+			$existingNodeParameters = array(
+				'fields' => array(
+					'external_ip_version_4',
+					'external_ip_version_6',
+					'internal_ip_version_4',
+					'internal_ip_version_6'
+				),
+				'from' => 'nodes',
 				'where' => array(
 					'OR' => $nodeExternalIps
 				)
 			);
 
 			if (empty($nodeNodeId) === false) {
-				$existingNodeCountParameters['where']['OR'] = array(
-					$existingNodeCountParameters['where'],
+				$existingNodeParameters['where']['OR'] = array(
+					$existingNodeParameters['where'],
 					array(
 						'node_id' => $nodeNodeId,
 						'OR' => ($nodeExternalIps + $nodeInternalIps)
@@ -269,17 +275,26 @@
 				);
 			}
 
-			$existingNodeCount = $this->count($existingNodeCountParameters);
-			$response['status_valid'] = (is_int($existingNodeCount) === true);
+			$existingNode = $this->fetch($existingNodeParameters);
+			$response['status_valid'] = ($existingNode !== false);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['status_valid'] = ($existingNodeCount === 0);
+			$response['status_valid'] = (empty($existingNode) === true);
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Node IPs already in use, please try again.'; // todo: add existing IP that's already in use in error message
+				foreach ($existingNode as $existingNodeIp) {
+					if (
+						(in_array($existingNodeIp, $nodeExternalIps) === true) ||
+						(in_array($existingNodeIp, $nodeInternalIps) === true)
+					) {
+						$response['message'] = 'Node IP ' . $existingNodeIp . ' already in use, please try again.';
+						break;
+					}
+				}
+
 				return $response;
 			}
 
@@ -734,8 +749,6 @@
 				}
 			}
 
-			// todo: assign reserved internal ipv4 or ipv6 address if not assigned yet
-			// todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts
 			$existingNode = $this->fetch(array(
 				'fields' => array(
 					'external_ip_version_4',
@@ -807,6 +820,46 @@
 						return $response;
 					}
 				}
+			}
+
+			// todo: assign reserved internal ipv4 or ipv6 address if not assigned yet
+                        // todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts
+
+			$existingNodeCountParameters = array(
+				'in' => 'nodes',
+				'where' => array(
+					'id' != $nodeId,
+					'OR' => array(
+						array(
+							'OR' => $nodeExternalIps
+						),
+						array(
+							'node_id' => $nodeId,
+							'OR' => $nodeIps
+						)
+					)
+				)
+			);
+
+			if (empty($node['node_id']) === false) {
+				$existingNodeCountParameters['where']['OR'][] = array(
+					'id' => $node['node_id'],
+					'OR' => $nodeIps
+				);
+			}
+
+			$existingNodeCount = $this->count($existingNodeCountParameters);
+			$response['status_valid'] = (is_int($existingNodeCount) === true);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = ($existingNodeCount === 0);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Node IPs already in use, please try again.';
+				return $response;
 			}
 
 			$existingNodeProcessPorts = $this->fetch(array(
@@ -1295,47 +1348,6 @@
 					unset($parameters['data']['destination_address_version_' . $nodeIpVersion]);
 					unset($parameters['data']['destination_port_number_version_' . $nodeIpVersion]);
 				}
-			}
-
-			$existingNodeCountParameters = array(
-				'in' => 'nodes',
-				'where' => array(
-					'id' != $nodeId,
-					'OR' => array(
-						array(
-							'OR' => $nodeExternalIps
-						),
-						array(
-							'node_id' => $nodeId,
-							'OR' => $nodeIps
-						)
-					)
-				)
-			);
-
-			if (empty($node['node_id']) === false) {
-				$existingNodeCountParameters['where']['OR'][] = array(
-					'id' => $node['node_id'],
-					'OR' => $nodeIps
-				);
-				$existingNodeProcessCountParameters['where']['OR'][] = array(
-					'node_id' => $node['node_id'],
-					'OR' => $nodeIps
-				);
-			}
-
-			$existingNodeCount = $this->count($existingNodeCountParameters);
-			$response['status_valid'] = (is_int($existingNodeCount) === true);
-
-			if ($response['status_valid'] === false) {
-				return $response;
-			}
-
-			$response['status_valid'] = ($existingNodeCount === 0);
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Node IPs already in use, please try again.';
-				return $response;
 			}
 
 			// todo: fetch existing node recursive dns record
