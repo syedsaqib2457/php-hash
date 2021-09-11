@@ -258,33 +258,8 @@
 					'OR' => $nodeExternalIps
 				)
 			);
-			$existingNodeParameters = array(
-				'fields' => array(
-					'external_ip_version_4',
-					'external_ip_version_6',
-					'internal_ip_version_4',
-					'internal_ip_version_6',
-					'reserved_internal_ip_version_4',
-					'reserved_internal_ip_version_6'
-				),
-				'from' => 'nodes',
-				'where' => array(
-					'id' => array(
-						$nodeId
-					)
-				)
-			);
 
 			if (empty($nodeNodeId) === false) {
-				$existingNodeParameters['where'] = array(
-					'OR' => array(
-						'id' => array(
-							$nodeId,
-							$nodeNodeId
-						),
-						'node_id' => $nodeNodeId
-					)
-				);
 				$existingNodeCountParameters['where']['OR'] = array(
 					$existingNodeCountParameters['where'],
 					array(
@@ -308,7 +283,19 @@
 				return $response;
 			}
 
-			$existingNodes = $this->fetch($existingNodeParameters);
+			$existingNodes = $this->fetch(array(
+				'fields' => array(
+					'external_ip_version_4',
+					'external_ip_version_6',
+					'id',
+					'internal_ip_version_4',
+					'internal_ip_version_6',
+					'node_id',
+					'reserved_internal_ip_version_4',
+					'reserved_internal_ip_version_6'
+				),
+				'from' => 'nodes'
+			));
 			$response['status_valid'] = ($existingNodes !== false);
 
 			if ($response['status_valid'] === false) {
@@ -318,6 +305,22 @@
 			$existingNodeIps = array();
 
 			foreach ($existingNodes as $existingNode) {
+				if (
+					(empty($nodeNodeId) === true) ||
+					(in_array($nodeNodeId, array(
+						$existingNode['id'],
+						$existingNode['node_id']
+					)) === false)
+				) {
+					unset($existingNode['internal_ip_version_4']);
+					unset($existingNode['internal_ip_version_6']);
+					unset($existingNode['reserved_internal_ip_version_4']);
+					unset($existingNode['reserved_internal_ip_version_6']);
+				}
+
+				unset($existingNode['id']);
+				unset($existingNode['node_id']);
+
 				foreach ($existingNode as $existingNodeIp) {
 					$existingNodeIps[] = $existingNodeIp;
 				}
@@ -327,6 +330,10 @@
 				if (empty($nodeExternalIps['external_ip_version_' . $nodeIpVersion]) === false) {
 					$existingNodeIps[] = $parameters['data']['reserved_internal_ip_version_' . $nodeIpVersion] = $this->_assignNodeInternalIp($existingNodeIps, $nodeIpVersion);
 				}
+			}
+
+			if (empty($nodeNodeId) === false) {
+				// todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts
 			}
 
 			$nodesSaved = $this->save(array(
@@ -607,7 +614,6 @@
 		}
 
 		public function edit($parameters) {
-			// todo: add reserved internal IP assignments for new ipset rules to allow unique process ports for each node
 			$response = array(
 				'message' => 'Error editing node, please try again.',
 				'status_valid' => (empty($parameters['data']['id']) === false)
@@ -728,6 +734,8 @@
 				}
 			}
 
+			// todo: assign reserved internal ipv4 or ipv6 address if not assigned yet
+			// todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts
 			$existingNode = $this->fetch(array(
 				'fields' => array(
 					'external_ip_version_4',
@@ -735,7 +743,9 @@
 					'id',
 					'internal_ip_version_4',
 					'internal_ip_version_6',
-					'node_id'
+					'node_id',
+					'reserved_internal_ip_version_4',
+					'reserved_internal_ip_version_6'
 				),
 				'from' => 'nodes',
 				'where' => array(
@@ -757,7 +767,10 @@
 			$nodeIps = array_merge($nodeExternalIps, $nodeInternalIps);
 
 			foreach ($existingNodeIps as $existingNodeIpKey => $existingNodeIp) {
-				if ($existingNodeIp !== $nodeIps[$existingNodeIpKey]) {
+				if (
+					(empty($nodeIps) === true) ||
+					($existingNodeIp !== $nodeIps[$existingNodeIpKey])
+				) {
 					$nodeIpVersion = substr($existingNodeIpKey, -1);
 					$existingNodeRecursiveDnsDestination = $this->fetch(array(
 						'fields' => array(
@@ -766,7 +779,7 @@
 						'from' => 'node_recursive_dns_destinations',
 						'limit' => 1,
 						'where' => array(
-							'listening_ip_version_' . $nodeIpVersion . '_node_node_id' => $nodeNodeId,
+							'listening_ip_version_' . $nodeIpVersion . '_node_id' => $nodeId,
 							'OR' => array(
 								'listening_ip_version_' . $nodeIpVersion => $existingNodeIp,
 								'source_ip_version_' . $nodeIpVersion => $existingNodeIp,
@@ -802,7 +815,7 @@
 				),
 				'from' => 'node_process_ports',
 				'where' => array(
-					'node_id' => $nodeNodeId
+					'node_id' => $nodeId
 				)
 			));
 			$response['status_valid'] = ($existingNodeProcessPorts !== false);
@@ -827,7 +840,10 @@
 					return $response;
 				}
 
-				if ($parameters['data']['enable_' . $nodeProcessType . '_processes'] === false) {
+				if (
+					(isset($parameters['data']['enable_' . $nodeProcessType . '_processes']) === false) ||
+					($parameters['data']['enable_' . $nodeProcessType . '_processes'] === false)
+				) {
 					if ($nodeProcessType === 'recursive_dns') {
 						foreach ($nodeIpVersions as $nodeIpVersion) {
 							$existingNodeRecursiveDnsDestination = $this->fetch(array(
@@ -839,7 +855,7 @@
 								'from' => 'node_recursive_dns_destinations',
 								'limit' => 1,
 								'where' => array(
-									'listening_ip_version_' . $nodeIpVersion . '_node_node_id' => $nodeNodeId
+									'listening_ip_version_' . $nodeIpVersion . '_node_id' => $nodeId
 								)
 							));
 							$response['status_valid'] = ($existingNodeRecursiveDnsDestination !== false);
@@ -874,14 +890,14 @@
 					$nodePortsDeleted = $this->delete(array(
 						'from' => 'node_process_ports',
 						'where' => array(
-							'node_id' => $nodeNodeId,
+							'node_id' => $nodeId,
 							'node_process_type' => $nodeProcessType
 						)
 					));
 					$nodeProcessesDeleted = $this->delete(array(
 						'from' => 'node_processes',
 						'where' => array(
-							'node_id' => $nodeNodeId,
+							'node_id' => $nodeId,
 							'type' => $nodeProcessType
 						)
 					));
@@ -914,7 +930,7 @@
 						),
 						'from' => 'node_process_ports',
 						'where' => array(
-							'node_id' => $nodeNodeId,
+							'node_id' => $nodeId,
 							'node_process_type' => $nodeProcessType
 						)
 					));
@@ -928,7 +944,7 @@
 
 					foreach ($nodeProcessPorts as $nodeProcessPort) {
 						$nodeProcessData[] = array(
-							'node_id' => $nodeNodeId,
+							'node_id' => $nodeId,
 							'port_number' => $nodeProcessPort['number'],
 							'type' => $nodeProcessType
 						);
@@ -964,7 +980,7 @@
 									'from' => 'node_recursive_dns_destinations',
 									'limit' => 1,
 									'where' => array(
-										'listening_ip_version_' . $nodeIpVersion . '_node_id' => $nodeNodeId,
+										'listening_ip_version_' . $nodeIpVersion . '_node_id' => $nodeId,
 										'listening_port_version_' . $nodeIpVersion => $existingNodeRecursiveDnsDestinationPortNumberPart
 									)
 								));
@@ -1002,14 +1018,14 @@
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
 							'where' => array(
-								'node_id' => $nodeNodeId,
+								'node_id' => $nodeId,
 								'type' => $nodeProcessType
 							)
 						));
 						$nodeProcessPortsDeleted = $this->delete(array(
 							'in' => 'node_process_ports',
 							'where' => array(
-								'node_id' => $nodeNodeId,
+								'node_id' => $nodeId,
 								'type' => $nodeProcessType
 							)
 						));
@@ -1038,7 +1054,7 @@
 						$nodeProcessesDeleted = $this->delete(array(
 							'from' => 'node_processes',
 							'where' => array(
-								'node_id' => $nodeNodeId,
+								'node_id' => $nodeId,
 								'port_number' => $nodeProcessPortNumbers,
 								'type' => $nodeProcessType
 							)
@@ -1046,7 +1062,7 @@
 						$nodeProcessPortsDeleted = $this->delete(array(
 							'from' => 'node_process_ports',
 							'where' => array(
-								'node_id' => $nodeNodeId,
+								'node_id' => $nodeId,
 								'number' => $nodeProcessPortNumbers,
 								'node_process_type' => $nodeProcessType
 							)
@@ -1296,20 +1312,6 @@
 					)
 				)
 			);
-			$existingNodeProcessCountParameters = array(
-				'in' => 'node_processes',
-				'where' => array(
-					'OR' => array(
-						array(
-							'OR' => $nodeExternalIps
-						),
-						array(
-							'node_id' => $nodeId,
-							'OR' => $nodeIps
-						)
-					)
-				)
-			);
 
 			if (empty($node['node_id']) === false) {
 				$existingNodeCountParameters['where']['OR'][] = array(
@@ -1407,6 +1409,8 @@
 					'internal_ip_version_4' => true,
 					'internal_ip_version_6' => true,
 					'node_id' => true,
+					'reserved_internal_ip_version_4' => true,
+					'reserved_internal_ip_version_6' => true,
 					'status_active' => true
 				)),
 				'in' => 'nodes',

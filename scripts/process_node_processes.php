@@ -235,6 +235,7 @@
 				}
 			}
 
+			// todo: cache reserved internal ips for current processes before assigning $nodeProcesses to new node processes
 			$nodeProcesses = $this->nodeData['node_processes'];
 			$kernelOptions = array(
 				'fs.aio-max-nr = 1000000000',
