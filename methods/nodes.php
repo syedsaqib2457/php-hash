@@ -29,20 +29,11 @@
 
 					break;
 				case 6:
-					// todo: increment larger block to prevent infinite loop if 9999 internal IPs are already allocated to a node
-					$nodeInternalIpBlock = substr($this->settings['reserved_internal_ip'][6], 0, -4);
+					$nodeInternalIpBlock = substr($this->settings['reserved_internal_ip'][6], 0, -19);
 
 					while ($response === false) {
-						$nodeInternalIp = $nodeInternalIpBlock . str_pad($nodeInternalIpIncrement, 4, '0', STR_PAD_LEFT);
-
-						if (
-							($nodeInternalIpIncrement === 1) &&
-							($this->_detectIpType($nodeInternalIp, 6) === 'public')
-						) {
-							$nodeInternalIpIncrement = -1;
-						}
-
-						$nodeInternalIpBlock += $nodeInternalIpIncrement;
+						$nodeInternalIp = $nodeInternalIpBlock . implode(':', str_split(str_pad($nodeInternalIpIncrement, 16, '0', STR_PAD_LEFT), 4));
+						$nodeInternalIpIncrement += 1;
 
 						if (in_array($nodeInternalIp, $existingNodeIps) === false) {
 							$response = $nodeInternalIp;
