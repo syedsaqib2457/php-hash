@@ -298,6 +298,7 @@
 				return $response;
 			}
 
+			// todo: refactor existing node validation + internal IP assignment with count queries to accommodate for systems with 10,000+ IPs
 			$existingNodes = $this->fetch(array(
 				'fields' => array(
 					'external_ip_version_4',
