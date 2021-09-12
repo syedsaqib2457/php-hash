@@ -404,7 +404,7 @@
 				'log' => false
 			);
 
-			foreach ($this->nodeData['node_recursive_dns_destinations']['system'] as $nodeRecursiveDnsDestination) {
+			foreach ($this->nodeData['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
 				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 					$proxyNodeConfiguration[] = 'nserver ' . $nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion] . '[:' . $nodeRecursiveDnsDestination['port_number_version_' . $nodeIpVersion] . ']';
 				}
@@ -874,7 +874,7 @@
 			$this->_processFirewall();
 			$nodeRecursiveDnsDestinations = array();
 
-			foreach ($this->nodeData['node_recursive_dns_destinations']['system'] as $nodeRecursiveDnsDestination) {
+			foreach ($this->nodeData['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
 				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 					$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $nodeIpVersion];
 				}
