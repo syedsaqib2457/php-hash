@@ -298,6 +298,46 @@
 								'type' => 'VARCHAR(39)'
 							)
 						),
+						'node_reserved_internal_ip_addresses' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'ip_address' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(39)'
+							),
+							'ip_address_version' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'status_assigned' => array(
+								'default' => 0,
+								'null' => true,
+								'type' => 'TINYINT(1)'
+							)
+						),
 						'node_resource_usage_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
@@ -600,16 +640,6 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
-							),
-							'reserved_internal_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(15)'
-							),
-							'reserved_internal_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(39)'
 							),
 							'status_active' => array(
 								'default' => 0,
@@ -1025,11 +1055,11 @@
 							'fdx:x:x:x:x:x:x:x',
 							'ffx:x:x:x:x:x:x:x'
 						)
-					),
-					'reserved_internal_ip' => array(
+					)
+					/*'reserved_internal_ip' => array(
 						4 => '10.10.10.10',
 						6 => 'fc10:1010:1010:1010:1010:1010:1010:1010'
-					)
+					)*/
 				),
 				'version' => 1
 			);
