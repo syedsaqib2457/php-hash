@@ -10,10 +10,10 @@
 				'status_valid' => false
 			);
 
-			// $node contains node_id and node_node_id
-			// fetch existing node reserved internal ip
-			// create reserved internal ip if none exists
-			// verify another node isn't already using it with $node['node_id']
+			// todo: verify another node isn't already using reserved internal IP with $node['node_id']
+			// todo: always save next ip in index as status_assigned false for performance
+			// todo: accommodate for external ips that may conflict with private ips
+			// todo: add database field external_ip_version_4_type + external_ip_version_6_type for tracking nodes with private IPs as external IPs
 
 			$existingNodeReservedInternalIpAddress = $this->fetch(array(
 				'fields' => array(
@@ -44,30 +44,62 @@
 					'node_id' => $node['id'],
 					'node_node_id' => $node['node_id']
 				);
+
+				switch ($nodeIpVersion) {
+					case 4:
+						// todo: assign default reserved internal node ipv4 with no existing ip conflicts on other nodes
+						break;
+					case 6:
+						// todo: assign default reserved internal node ipv6 with no existing ip conflicts on other nodes
+						break;
+				}
 			} else {
 				$existingNodeReservedInternalIpAddress['status_assigned'] = true;
 			}
 
-			$existingNodeReservedInternalIpAddressData = $existingNodeReservedInternalIpAddress;
+			$existingNodeReservedInternalIpAddressData = array(
+				$existingNodeReservedInternalIpAddress,
+				$existingNodeReservedInternalIpAddress
+			);
 
+			// todo: validate non-conflicting incremented reserved internal ip with while loop
 			switch ($nodeIpVersion) {
 				case 4:
+					while ($existingNodeReservedInternalIpAddressData[0]['ip_address'] === $existingNodeReservedInternalIpAddressData[1]['ip_address']) {
+						// ..
+					}
+
 					break;
 				case 6:
+					while ($existingNodeReservedInternalIpAddressData[0]['ip_address'] === $existingNodeReservedInternalIpAddressData[1]['ip_address']) {
+						// ..
+					}
+
 					break;
 			}
 
+			unset($existingNodeReservedInternalIpAddressData[1]['id']);
+			$existingNodeReservedInternalIpAddressData[1]['status_assigned'] = false;
+			$nodeReservedInternalIpAddressesSaved = $this->save(array(
+				'data' => $existingNodeReservedInternalIpAddressData,
+				'to' => 'node_reserved_internal_ip_addresses'
+			));
+			$response['status_valid'] = ($nodeReservedInternalIpAddressesSaved !== false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
 			/*
-			IPv4 increment
+				IPv4 increment
+					ip2long($this->settings['reserved_internal_ip'][4]) + 1; // from 10.0.0.1
 
-			ip2long($this->settings['reserved_internal_ip'][4]) + 1; // from 10.0.0.1
-
-			IPv6 increment
-
-			$nodeInternalIpBlock = substr($this->settings['reserved_internal_ip'][6], -[length]); // from fc10 + :0000:0000:0000:0000:0000:0000:0001 + 1
-			$nodeInternalIp = $nodeInternalIpBlock . implode(':', str_split(str_pad($nodeInternalIpIncrement, 16, '0', STR_PAD_LEFT), 4));
+				IPv6 increment
+					$nodeInternalIpBlock = substr($this->settings['reserved_internal_ip'][6], -[length]); // from fc10 + :0000:0000:0000:0000:0000:0000:0001 + 1
+					$nodeInternalIp = $nodeInternalIpBlock . implode(':', str_split(str_pad($nodeInternalIpIncrement, 16, '0', STR_PAD_LEFT), 4));
 			*/
 
+			$response['data']['node_reserved_internal_ip_address'] = $existingNodeReservedInternalIpAddress['ip_address'];
 			return $response;
 		}
 
