@@ -778,13 +778,6 @@
 					break;
 			}
 
-			if (
-				(empty($this->settings['private_network']['reserved_internal_ip'][$ipVersion]) === false) &&
-				(in_array($response, $this->settings['private_network']['reserved_internal_ip'][$ipVersion]) === true)
-			) {
-				$response = false;
-			}
-
 			return $response;
 		}
 
