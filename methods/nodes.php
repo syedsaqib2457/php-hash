@@ -13,7 +13,6 @@
 			// todo: verify another node isn't already using reserved internal IP with $node['node_id']
 			// todo: always save next ip in index as status_assigned false for performance
 			// todo: accommodate for external ips that may conflict with private ips
-			// todo: add database field external_ip_version_4_type + external_ip_version_6_type for tracking nodes with private IPs as external IPs
 
 			$existingNodeReservedInternalIpAddress = $this->fetch(array(
 				'fields' => array(

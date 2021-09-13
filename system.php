@@ -607,10 +607,20 @@
 								'null' => true,
 								'type' => 'VARCHAR(15)'
 							),
+							'external_ip_version_4_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(7)'
+							),
 							'external_ip_version_6' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'VARCHAR(39)'
+							),
+							'external_ip_version_6_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(7)'
 							),
 							'id' => array(
 								'auto_increment' => true,
