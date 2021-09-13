@@ -260,7 +260,8 @@
 			$nodeExternalIpTypes = array();
 
 			foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeIpVersionExternalIp) {
-				$nodeExternalIpTypes[$this->_detectIpType(current($nodeIpVersionExternalIp), $nodeIpVersion)] = true;
+				$parameters['data']['external_ip_version_' . $nodeIpVersion . '_type'] = $this->_detectIpType(current($nodeIpVersionExternalIp), $nodeIpVersion);
+				$nodeExternalIpTypes[$parameters['data']['external_ip_version_' . $nodeIpVersion . '_type']] = true;
 
 				if (empty($nodeExternalIpTypes['private']) === false) {
 					unset($parameters['data']['internal_ip_version_' . $nodeIpVersion]);
@@ -359,7 +360,9 @@
 			$nodesSaved = $this->save(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'external_ip_version_4' => true,
+					'external_ip_version_4_type' => true,
 					'external_ip_version_6' => true,
+					'external_ip_version_6_type' => true,
 					'internal_ip_version_4' => true,
 					'internal_ip_version_6' => true,
 					'node_id' => true,
