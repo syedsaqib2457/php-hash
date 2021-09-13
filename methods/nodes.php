@@ -37,6 +37,11 @@
 				return $response;
 			}
 
+			$nodeIds = array_filter(array(
+				$node['id'],
+				$node['node_id']
+			));
+
 			if (empty($existingNodeReservedInternalIpAddress) === true) {
 				$existingNodeReservedInternalIpAddress = array(
 					'ip_version' => $nodeIpVersion,
@@ -46,7 +51,7 @@
 
 				switch ($nodeIpVersion) {
 					case 4:
-						// todo: assign default reserved internal node ipv4 with no existing ip conflicts on other nodes
+						// todo: assign default reserved internal node ipv4 starting at 10.0.0.1 + incrementing with no existing ip conflicts on other nodes
 						break;
 					case 6:
 						// todo: assign default reserved internal node ipv6 with no existing ip conflicts on other nodes
@@ -60,21 +65,68 @@
 				$existingNodeReservedInternalIpAddress,
 				$existingNodeReservedInternalIpAddress
 			);
+			$nodeReservedInternalIpAddress = $existingNodeReservedInternalIpAddress['ip_address'];
 
 			// todo: validate non-conflicting incremented reserved internal ip with while loop
-			switch ($nodeIpVersion) {
-				case 4:
-					while ($existingNodeReservedInternalIpAddressData[0]['ip_address'] === $existingNodeReservedInternalIpAddressData[1]['ip_address']) {
-						// ..
-					}
+				// $existingNodeReservedInternalIpAddressData[0]['ip_address'] should be validated as non-conflicting before assignNodeReservedInternalIpAddress() is called
+				// only increment with while loop if there are no other unassigned ip records in node_reserved_internal_ip_addresses
 
-					break;
-				case 6:
-					while ($existingNodeReservedInternalIpAddressData[0]['ip_address'] === $existingNodeReservedInternalIpAddressData[1]['ip_address']) {
-						// ..
-					}
+			while ($existingNodeReservedInternalIpAddressData[0]['ip_address'] === $existingNodeReservedInternalIpAddressData[1]['ip_address']) {
+				switch ($nodeIpVersion) {
+					case 4:
+						$nodeReservedInternalIpAddress = long2ip(ip2long($nodeReservedInternalIpAddress) + 1);
+						break;
+					case 6:
+						$nodeReservedInternalIpAddressBlock = substr($nodeReservedInternalIpAddress, -29);
+						$nodeReservedInternalIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalIpAddressBlock));
+						$nodeReservedInternalIpAddressBlockIntegerIncrement = ($nodeReservedInternalIpAddressBlockInteger + 1);
+						$nodeReservedInternalIpAddress = 'fc10:0000:' . implode(':', str_split(str_pad($nodeReservedInternalIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT), 4));
+						break;
+				}
 
-					break;
+				$existingNodeCount = $this->count(array(
+					'in' => 'nodes',
+					'where' => array(
+						'OR' => array(
+							array(
+								'internal_ip_version_' . $nodeIpVersion => $nodeReservedInternalIpAddress,
+								'OR' => array(
+									'id' => $nodeIds,
+									'node_id' => $nodeIds
+								)
+							),
+							array(
+								'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalIpAddress,
+								'external_ip_version_' . $nodeIpVersion . '_type' => 'private'
+							)
+						)
+					)
+				));
+				$response['status_valid'] = (is_int($existingNodeCount) === true);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				if ($existingNodeCount === 0) {
+					$existingNodeReservedInternalIpAddressData[1]['ip_address'] = $nodeReservedInternalIpAddress;
+				} else {
+					$nodeReservedInternalIpAddressDeleted = $this->delete(array(
+						'from' => 'node_reserved_internal_ip_addresses',
+						'where' => array(
+							'ip_address' => $nodeReservedInternalIpAddress,
+							'OR' => array(
+								'node_id' => $nodeIds,
+								'node_node_id' => $nodeIds
+							)
+						)
+					));
+					$response['status_valid'] = ($nodeReservedInternalIpAddressDeleted !== false);
+
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+				}
 			}
 
 			unset($existingNodeReservedInternalIpAddressData[1]['id']);
@@ -88,15 +140,6 @@
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
-
-			/*
-				IPv4 increment
-					ip2long($this->settings['reserved_internal_ip'][4]) + 1; // from 10.0.0.1
-
-				IPv6 increment
-					$nodeInternalIpBlock = substr($this->settings['reserved_internal_ip'][6], -[length]); // from fc10 + :0000:0000:0000:0000:0000:0000:0001 + 1
-					$nodeInternalIp = $nodeInternalIpBlock . implode(':', str_split(str_pad($nodeInternalIpIncrement, 16, '0', STR_PAD_LEFT), 4));
-			*/
 
 			$response['data']['node_reserved_internal_ip_address'] = $existingNodeReservedInternalIpAddress['ip_address'];
 			return $response;
