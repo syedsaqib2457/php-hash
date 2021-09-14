@@ -4,21 +4,21 @@
 
 	class NodeMethods extends SystemMethods {
 
-		protected function _assignNodeReservedInternalIpAddress($node, $nodeIpVersion) {
+		protected function _assignNodeReservedInternalDestination($node, $nodeIpVersion) {
 			$response = array(
-				'message' => 'Error activating node, please try again.',
+				'message' => 'Error assigning node reserved internal destination, please try again.',
 				'status_valid' => false
 			);
 			$nodeIds = array_filter(array(
 				$node['id'],
 				$node['node_id']
 			));
-			$existingNodeReservedInternalIpAddress = $this->fetch(array(
+			$existingNodeReservedInternalDestination = $this->fetch(array(
 				'fields' => array(
 					'id',
 					'ip_address'
 				),
-				'from' => 'node_reserved_internal_ip_addresses',
+				'from' => 'node_reserved_internal_destination',
 				'limit' => 1,
 				'where' => array(
 					'ip_version' => $nodeIpVersion,
@@ -33,14 +33,14 @@
 					'order' => 'ASC'
 				)
 			));
-			$response['status_valid'] = ($existingNodeReservedInternalIpAddress !== false);
+			$response['status_valid'] = ($existingNodeReservedInternalDestination !== false);
 
 			if ($response === false) {
 				return $response;
 			}
 
-			if (empty($existingNodeReservedInternalIpAddress) === true) {
-				$existingNodeReservedInternalIpAddress = array(
+			if (empty($existingNodeReservedInternalDestination) === true) {
+				$existingNodeReservedInternalDestination = array(
 					'ip_version' => $nodeIpVersion,
 					'node_id' => $node['id'],
 					'node_node_id' => $node['node_id'],
@@ -49,25 +49,25 @@
 
 				switch ($nodeIpVersion) {
 					case 4:
-						$existingNodeReservedInternalIpAddress['ip_address'] = '10.0.0.0';
+						$existingNodeReservedInternalDestination['ip_address'] = '10.0.0.0';
 						break;
 					case 6:
-						$existingNodeReservedInternalIpAddress['ip_address'] = 'fc10:0000:0000:0000:0000:0000:0000:0000';
+						$existingNodeReservedInternalDestination['ip_address'] = 'fc10:0000:0000:0000:0000:0000:0000:0000';
 						break;
 				}
 
-				$nodeReservedInternalIpAddress = $existingNodeReservedInternalIpAddress['ip_address'];
+				$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
-				while ($existingNodeReservedInternalIpAddress['status_assigned'] === false) {
+				while ($existingNodeReservedInternalDestination['status_assigned'] === false) {
 					switch ($nodeIpVersion) {
 						case 4:
-							$nodeReservedInternalIpAddress = long2ip(ip2long($nodeReservedInternalIpAddress) + 1);
+							$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
 							break;
 						case 6:
-							$nodeReservedInternalIpAddressBlock = substr($nodeReservedInternalIpAddress, -29);
-							$nodeReservedInternalIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalIpAddressBlock));
-							$nodeReservedInternalIpAddressBlockIntegerIncrement = ($nodeReservedInternalIpAddressBlockInteger + 1);
-							$nodeReservedInternalIpAddress = 'fc10:0000:' . implode(':', str_split(str_pad($nodeReservedInternalIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT), 4));
+							$nodeReservedInternalDestinationIpAddressBlock = substr($nodeReservedInternalDestinationIpAddress, -29);
+							$nodeReservedInternalDestinationIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalDestinationIpAddressBlock));
+							$nodeReservedInternalDestinationIpAddressBlockIntegerIncrement = ($nodeReservedInternalDestinationIpAddressBlockInteger + 1);
+							$nodeReservedInternalDestinationIpAddress = 'fc10:0000:' . implode(':', str_split(str_pad($nodeReservedInternalDestinationIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT), 4));
 							break;
 					}
 
@@ -76,14 +76,14 @@
 						'where' => array(
 							'OR' => array(
 								array(
-									'internal_ip_version_' . $nodeIpVersion => $nodeReservedInternalIpAddress,
+									'internal_ip_version_' . $nodeIpVersion => $nodeReservedInternalDestinationIpAddress,
 									'OR' => array(
 										'id' => $nodeIds,
 										'node_id' => $nodeIds
 									)
 								),
 								array(
-									'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalIpAddress,
+									'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalDestinationIpAddress,
 									'external_ip_version_' . $nodeIpVersion . '_type' => 'private'
 								)
 							)
@@ -96,30 +96,30 @@
 					}
 
 					if ($existingNodeCount === 0) {
-						$existingNodeReservedInternalIpAddress['ip_address'] = $nodeReservedInternalIpAddress;
-						$existingNodeReservedInternalIpAddress['status_assigned'] = true;
+						$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
+						$existingNodeReservedInternalDestination['status_assigned'] = true;
 					}
 				}
 			} else {
-				$existingNodeReservedInternalIpAddress['status_assigned'] = true;
+				$existingNodeReservedInternalDestination['status_assigned'] = true;
 			}
 
-			$existingNodeReservedInternalIpAddressData = array(
-				$existingNodeReservedInternalIpAddress,
-				$existingNodeReservedInternalIpAddress
+			$existingNodeReservedInternalDestinationData = array(
+				$existingNodeReservedInternalDestination,
+				$existingNodeReservedInternalDestination
 			);
-			$nodeReservedInternalIpAddress = $existingNodeReservedInternalIpAddress['ip_address'];
+			$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
-			while ($existingNodeReservedInternalIpAddressData[0]['ip_address'] === $existingNodeReservedInternalIpAddressData[1]['ip_address']) {
+			while ($existingNodeReservedInternalDestinationData[0]['ip_address'] === $existingNodeReservedInternalDestinationData[1]['ip_address']) {
 				switch ($nodeIpVersion) {
 					case 4:
-						$nodeReservedInternalIpAddress = long2ip(ip2long($nodeReservedInternalIpAddress) + 1);
+						$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
 						break;
 					case 6:
-						$nodeReservedInternalIpAddressBlock = substr($nodeReservedInternalIpAddress, -29);
-						$nodeReservedInternalIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalIpAddressBlock));
-						$nodeReservedInternalIpAddressBlockIntegerIncrement = ($nodeReservedInternalIpAddressBlockInteger + 1);
-						$nodeReservedInternalIpAddress = 'fc10:0000:' . implode(':', str_split(str_pad($nodeReservedInternalIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT), 4));
+						$nodeReservedInternalDestinationIpAddressBlock = substr($nodeReservedInternalDestinationIpAddress, -29);
+						$nodeReservedInternalDestinationIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalDestinationIpAddressBlock));
+						$nodeReservedInternalDestinationIpAddressBlockIntegerIncrement = ($nodeReservedInternalDestinationIpAddressBlockInteger + 1);
+						$nodeReservedInternalDestinationIpAddress = 'fc10:0000:' . implode(':', str_split(str_pad($nodeReservedInternalDestinationIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT), 4));
 						break;
 				}
 
@@ -128,14 +128,14 @@
 					'where' => array(
 						'OR' => array(
 							array(
-								'internal_ip_version_' . $nodeIpVersion => $nodeReservedInternalIpAddress,
+								'internal_ip_version_' . $nodeIpVersion => $nodeReservedInternalDestinationIpAddress,
 								'OR' => array(
 									'id' => $nodeIds,
 									'node_id' => $nodeIds
 								)
 							),
 							array(
-								'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalIpAddress,
+								'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalDestinationIpAddress,
 								'external_ip_version_' . $nodeIpVersion . '_type' => 'private'
 							)
 						)
@@ -148,23 +148,23 @@
 				}
 
 				if ($existingNodeCount === 0) {
-					$existingNodeReservedInternalIpAddressData[1]['ip_address'] = $nodeReservedInternalIpAddress;
+					$existingNodeReservedInternalDestinationData[1]['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 				}
 			}
 
-			unset($existingNodeReservedInternalIpAddressData[1]['id']);
-			$existingNodeReservedInternalIpAddressData[1]['status_assigned'] = false;
-			$nodeReservedInternalIpAddressesSaved = $this->save(array(
-				'data' => $existingNodeReservedInternalIpAddressData,
-				'to' => 'node_reserved_internal_ip_addresses'
+			unset($existingNodeReservedInternalDestinationData[1]['id']);
+			$existingNodeReservedInternalDestinationData[1]['status_assigned'] = false;
+			$nodeReservedInternalDestinationsSaved = $this->save(array(
+				'data' => $existingNodeReservedInternalDestinationData,
+				'to' => 'node_reserved_internal_destinations'
 			));
-			$response['status_valid'] = ($nodeReservedInternalIpAddressesSaved !== false);
+			$response['status_valid'] = ($nodeReservedInternalDestinationsSaved !== false);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['data']['node_reserved_internal_ip_address'] = $existingNodeReservedInternalIpAddress['ip_address'];
+			$response['data']['node_reserved_internal_destination_ip_address'] = $existingNodeReservedInternalDestination['ip_address'];
 			return $response;
 		}
 
@@ -389,13 +389,14 @@
 					'OR' => $nodeExternalIps
 				)
 			);
+			$nodeIps = array_merge($nodeExternalIps, $nodeInternalIps);
 
 			if (empty($nodeNodeId) === false) {
 				$existingNodeParameters['where']['OR'] = array(
 					$existingNodeParameters['where'],
 					array(
 						'node_id' => $nodeNodeId,
-						'OR' => ($nodeExternalIps + $nodeInternalIps)
+						'OR' => $nodeIps
 					)
 				);
 			}
@@ -411,10 +412,7 @@
 
 			if ($response['status_valid'] === false) {
 				foreach ($existingNode as $existingNodeIp) {
-					if (
-						(in_array($existingNodeIp, $nodeExternalIps) === true) ||
-						(in_array($existingNodeIp, $nodeInternalIps) === true)
-					) {
+					if (in_array($existingNodeIp, $nodeIps) === true) {
 						$response['message'] = 'Node IP ' . $existingNodeIp . ' already in use, please try again.';
 						break;
 					}
@@ -449,7 +447,7 @@
 					'node_id'
 				),
 				'from' => 'nodes',
-				'where' => ($nodeExternalIps + $nodeInternalIps)
+				'where' => $nodeIps
 			));
 			$response['status_valid'] = (
 				($node !== false) &&
@@ -459,7 +457,7 @@
 			if ($response['status_valid'] === false) {
 				$this->delete(array(
 					'from' => 'nodes',
-					'where' => ($nodeExternalIps + $nodeInternalIps)
+					'where' => $nodeIps
 				));
 				return $response;
 			}
@@ -487,14 +485,14 @@
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion . '_node_id'] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $this->settings['node_process_type_default_port_numbers']['recursive_dns'];
 						$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
-						$response = $this->_assignNodeInternalIpAddress($node, $nodeIpVersion);
+						$assignNodeReservedInternalDestinationResponse = $this->_assignNodeReservedInternalDestination($node, $nodeIpVersion);
 
-						if ($response['status_valid'] === false) {
+						if ($assignNodeReservedInternalDestinationResponse['status_valid'] === false) {
 							// todo: remove node data with $nodeId + $this->remove() if reserved internal ip assignment fails
-							return $response;
+							return $assignNodeReservedInternalDestinationResponse;
 						}
 
-						$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $response['data']['node_reserved_internal_ip_address'];
+						$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $assignNodeReservedInternalDestinationResponse['data']['node_reserved_internal_destination_ip_address'];
 					}
 				}
 
@@ -502,9 +500,62 @@
 				$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
 			}
 
-			foreach ($nodeIpVersions as $nodeIpVersion) {
-				if (empty($nodeExternalIps['external_ip_version_' . $nodeIpVersion]) === false) {
-					$response = $this->_assignNodeInternalIpAddress($node, $nodeIpVersion);
+			if (empty($nodeNodeId) === false) {
+				$nodeIds = array(
+					$nodeId,
+					$nodeNodeId
+				);
+				$existingNodeReservedInternalDestination = $this->fetch(array(
+					'fields' => array(
+						'id',
+						'ip_address',
+						'ip_address_version',
+						'node_id',
+						'node_node_id'
+					),
+					'from' => 'node_reserved_internal_destinations',
+					'where' => array(
+						'ip_address' => $nodeIps,
+						'OR' => array(
+							array(
+								'OR' => array(
+									'node_id' => $nodeIds,
+									'node_node_id' => $nodeIds
+								)
+							),
+							array(
+								'node_node_external_ip_address_type' => 'private'
+							)
+						)
+					)
+				));
+				$response['status_valid'] = ($existingNodeReservedInternalDestination !== false);
+				// todo: nodeIps could conflict with more than 1
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				if (empty($existingNodeReservedInternalDestination) === false) {
+					$node = array(
+						'id' => $existingNodeReservedInternalDestination['node_id'],
+						'node_id' => $existingNodeReservedInternalDestination['node_node_id']
+					);
+					$assignNodeReservedInternalDestinationResponse = $this->_assignNodeReservedInternalDestination($node, $existingNodeReservedInternalDestination['ip_address_version']);
+
+					if ($assignNodeReservedInternalDestinationResponse['status_valid'] === false) {
+						// todo: remove node data with $nodeId + $this->remove() if reserved internal ip assignment fails
+						return $assignNodeReservedInternalDestinationResponse;
+					}
+
+					$nodeReservedInternalDestinationsSaved = $this->save(array(
+						'data' => array(
+							'id' => $existingNodeReservedInternalDestination['id'],
+							'ip_address' => $assignNodeReservedInternalDestinationResponse['data']['node_reserved_internal_destination_ip_address']
+						),
+						'to' => 'node_reserved_internal_destinations'
+					));
+					$response['status_valid'] = ($nodeReservedInternalDestinationsSaved !== false);
 
 					if ($response['status_valid'] === false) {
 						// todo: remove node data with $nodeId + $this->remove() if reserved internal ip assignment fails
@@ -513,10 +564,7 @@
 				}
 			}
 
-			if (empty($nodeNodeId) === false) {
-				// todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts with a reserved IP from another existing node internal ip with the same node_node_id or private external ip
-			}
-
+			// todo: save node with status_processed as false to prevent reconfig while node has conflicting internal destination
 			$nodeProcessesSaved = $this->save(array(
 				'data' => $nodeProcessData,
 				'to' => 'node_processes'
@@ -911,8 +959,8 @@
 				}
 			}
 
-			// todo: assign reserved internal ipv4 or ipv6 address if not assigned yet
-                        // todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts
+			// todo: assign reserved internal ipv4 or ipv6 address if not assigned yet with _assignNodeReservedInternalDestination()
+                        // todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts with _assignNodeReservedInternalDestination()
 
 			$existingNodeCountParameters = array(
 				'in' => 'nodes',
@@ -1311,6 +1359,7 @@
 								}
 
 								$existingNodeIps[] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $this->_assignNodeInternalIp($existingNodeIps, $nodeIpVersion);
+								// _assignNodeReservedInternalDestination()
 								$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeRecursiveDnsDestinationIp[$nodeIpVersion];
 							}
 
@@ -1772,6 +1821,7 @@
 
 		public function process() {
 			// todo: add reserved internal IP assignments for new ipset rules to allow unique process ports for each node
+			// todo: verify no reserved internal ip duplicates before each process reconfig
 			$response = array(
 				'data' => array(
 					'node_ip_versions' => ($nodeIpVersions = array(

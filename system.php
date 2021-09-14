@@ -298,7 +298,7 @@
 								'type' => 'VARCHAR(39)'
 							)
 						),
-						'node_reserved_internal_ip_addresses' => array(
+						'node_reserved_internal_destinations' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
