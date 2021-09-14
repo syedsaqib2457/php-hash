@@ -505,7 +505,7 @@
 					$nodeId,
 					$nodeNodeId
 				);
-				$existingNodeReservedInternalDestination = $this->fetch(array(
+				$existingNodeReservedInternalDestinations = $this->fetch(array(
 					'fields' => array(
 						'id',
 						'ip_address',
@@ -529,42 +529,41 @@
 						)
 					)
 				));
-				$response['status_valid'] = ($existingNodeReservedInternalDestination !== false);
-				// todo: nodeIps could conflict with more than 1
+				$response['status_valid'] = ($existingNodeReservedInternalDestinations !== false);
 
 				if ($response['status_valid'] === false) {
 					return $response;
 				}
 
-				if (empty($existingNodeReservedInternalDestination) === false) {
-					$node = array(
-						'id' => $existingNodeReservedInternalDestination['node_id'],
-						'node_id' => $existingNodeReservedInternalDestination['node_node_id']
-					);
-					$assignNodeReservedInternalDestinationResponse = $this->_assignNodeReservedInternalDestination($node, $existingNodeReservedInternalDestination['ip_address_version']);
+				if (empty($existingNodeReservedInternalDestinations) === false) {
+					foreach ($existingNodeReservedInternalDestinations as $existingNodeReservedInternalDestination) {
+						$node = array(
+							'id' => $existingNodeReservedInternalDestination['node_id'],
+							'node_id' => $existingNodeReservedInternalDestination['node_node_id']
+						);
+						$assignNodeReservedInternalDestinationResponse = $this->_assignNodeReservedInternalDestination($node, $existingNodeReservedInternalDestination['ip_address_version']);
 
-					if ($assignNodeReservedInternalDestinationResponse['status_valid'] === false) {
-						// todo: remove node data with $nodeId + $this->remove() if reserved internal ip assignment fails
-						return $assignNodeReservedInternalDestinationResponse;
-					}
+						if ($assignNodeReservedInternalDestinationResponse['status_valid'] === false) {
+							// todo: remove node data with $nodeId + $this->remove() if reserved internal ip assignment fails
+							return $assignNodeReservedInternalDestinationResponse;
+						}
 
-					$nodeReservedInternalDestinationsSaved = $this->save(array(
-						'data' => array(
-							'id' => $existingNodeReservedInternalDestination['id'],
-							'ip_address' => $assignNodeReservedInternalDestinationResponse['data']['node_reserved_internal_destination_ip_address']
-						),
-						'to' => 'node_reserved_internal_destinations'
-					));
-					$response['status_valid'] = ($nodeReservedInternalDestinationsSaved !== false);
+						$nodeReservedInternalDestinationsDeleted = $this->delete(array(
+							'from' => 'node_reserved_internal_destinations',
+							'where' => array(
+								'id' => $existingNodeReservedInternalDestination['id']
+							)
+						));
+						$response['status_valid'] = ($nodeReservedInternalDestinationsDeleted !== false);
 
-					if ($response['status_valid'] === false) {
-						// todo: remove node data with $nodeId + $this->remove() if reserved internal ip assignment fails
-						return $response;
+						if ($response['status_valid'] === false) {
+							// todo: remove node data with $nodeId + $this->remove() if reserved internal ip assignment fails
+							return $response;
+						}
 					}
 				}
 			}
 
-			// todo: save node with status_processed as false to prevent reconfig while node has conflicting internal destination
 			$nodeProcessesSaved = $this->save(array(
 				'data' => $nodeProcessData,
 				'to' => 'node_processes'
@@ -577,14 +576,24 @@
 				'data' => $nodeRecursiveDnsDestinationData,
 				'to' => 'node_recursive_dns_destinations'
 			));
+			$nodesUpdated = $this->update(array(
+				'data' => array(
+					'status_processed' => false
+				),
+				'in' => 'nodes',
+				'where' => array(
+					'id' => $nodeId
+				)
+			));
 			$response['status_valid'] = (
 				($nodeProcessesSaved !== false) &&
 				($nodeProcessPortsSaved !== false) &&
-				($nodeRecursiveDnsDestinationsSaved !== false)
+				($nodeRecursiveDnsDestinationsSaved !== false) &&
+				($nodesUpdated !== false)
 			);
 
 			if ($response['status_valid'] === false) {
-				// todo: use $nodeId + $this->remove() instead of repeading $this->delete()
+				// todo: use $nodeId + $this->remove() instead of repeating $this->delete()
 				$this->delete(array(
 					'from' => 'node_process_ports',
 					'where' => array(
