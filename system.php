@@ -332,6 +332,11 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'node_node_external_ip_address_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(7)'
+							),
 							'status_assigned' => array(
 								'default' => 0,
 								'null' => true,
