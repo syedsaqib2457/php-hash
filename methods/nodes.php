@@ -9,11 +9,6 @@
 				'message' => 'Error activating node, please try again.',
 				'status_valid' => false
 			);
-
-			// todo: verify another node isn't already using reserved internal IP with $node['node_id']
-			// todo: always save next ip in index as status_assigned false for performance
-			// todo: accommodate for external ips that may conflict with private ips
-
 			$existingNodeReservedInternalIpAddress = $this->fetch(array(
 				'fields' => array(
 					'id',
@@ -46,16 +41,62 @@
 				$existingNodeReservedInternalIpAddress = array(
 					'ip_version' => $nodeIpVersion,
 					'node_id' => $node['id'],
-					'node_node_id' => $node['node_id']
+					'node_node_id' => $node['node_id'],
+					'status_assigned' => false
 				);
 
 				switch ($nodeIpVersion) {
 					case 4:
-						// todo: assign default reserved internal node ipv4 starting at 10.0.0.1 + incrementing with no existing ip conflicts on other nodes
+						$existingNodeReservedInternalIpAddress['ip_address'] = '10.0.0.0';
 						break;
 					case 6:
-						// todo: assign default reserved internal node ipv6 with no existing ip conflicts on other nodes
+						$existingNodeReservedInternalIpAddress['ip_address'] = 'fc10:0000:0000:0000:0000:0000:0000:0000';
 						break;
+				}
+
+				$nodeReservedInternalIpAddress = $existingNodeReservedInternalIpAddress['ip_address'];
+
+				while ($existingNodeReservedInternalIpAddress['status_assigned'] === false) {
+					switch ($nodeIpVersion) {
+						case 4:
+							$nodeReservedInternalIpAddress = long2ip(ip2long($nodeReservedInternalIpAddress) + 1);
+							break;
+						case 6:
+							$nodeReservedInternalIpAddressBlock = substr($nodeReservedInternalIpAddress, -29);
+							$nodeReservedInternalIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalIpAddressBlock));
+							$nodeReservedInternalIpAddressBlockIntegerIncrement = ($nodeReservedInternalIpAddressBlockInteger + 1);
+							$nodeReservedInternalIpAddress = 'fc10:0000:' . implode(':', str_split(str_pad($nodeReservedInternalIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT), 4));
+							break;
+					}
+
+					$existingNodeCount = $this->count(array(
+						'in' => 'nodes',
+						'where' => array(
+							'OR' => array(
+								array(
+									'internal_ip_version_' . $nodeIpVersion => $nodeReservedInternalIpAddress,
+									'OR' => array(
+										'id' => $nodeIds,
+										'node_id' => $nodeIds
+									)
+								),
+								array(
+									'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalIpAddress,
+									'external_ip_version_' . $nodeIpVersion . '_type' => 'private'
+								)
+							)
+						)
+					));
+					$response['status_valid'] = (is_int($existingNodeCount) === true);
+
+					if ($response['status_valid'] === false) {
+						return $response;
+					}
+
+					if ($existingNodeCount === 0) {
+						$existingNodeReservedInternalIpAddress['ip_address'] = $nodeReservedInternalIpAddress;
+						$existingNodeReservedInternalIpAddress['status_assigned'] = true;
+					}
 				}
 			} else {
 				$existingNodeReservedInternalIpAddress['status_assigned'] = true;
@@ -66,10 +107,6 @@
 				$existingNodeReservedInternalIpAddress
 			);
 			$nodeReservedInternalIpAddress = $existingNodeReservedInternalIpAddress['ip_address'];
-
-			// todo: validate non-conflicting incremented reserved internal ip with while loop
-				// $existingNodeReservedInternalIpAddressData[0]['ip_address'] should be validated as non-conflicting before assignNodeReservedInternalIpAddress() is called
-				// only increment with while loop if there are no other unassigned ip records in node_reserved_internal_ip_addresses
 
 			while ($existingNodeReservedInternalIpAddressData[0]['ip_address'] === $existingNodeReservedInternalIpAddressData[1]['ip_address']) {
 				switch ($nodeIpVersion) {
@@ -491,7 +528,7 @@
 			}
 
 			if (empty($nodeNodeId) === false) {
-				// todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts with a reserved IP from another existing node with the same node_node_id
+				// todo: re-assign reserved internal ipv4 or ipv6 if internal ip conflicts with a reserved IP from another existing node internal ip with the same node_node_id or private external ip
 			}
 
 			$nodeProcessesSaved = $this->save(array(
