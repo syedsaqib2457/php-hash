@@ -9,6 +9,10 @@
 				'message' => 'Error activating node, please try again.',
 				'status_valid' => false
 			);
+			$nodeIds = array_filter(array(
+				$node['id'],
+				$node['node_id']
+			));
 			$existingNodeReservedInternalIpAddress = $this->fetch(array(
 				'fields' => array(
 					'id',
@@ -18,8 +22,11 @@
 				'limit' => 1,
 				'where' => array(
 					'ip_version' => $nodeIpVersion,
-					'node_node_id' => $node['node_id'],
-					'status_assigned' => false
+					'status_assigned' => false,
+					'OR' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
 				),
 				'sort' => array(
 					'field' => 'ip_address',
@@ -31,11 +38,6 @@
 			if ($response === false) {
 				return $response;
 			}
-
-			$nodeIds = array_filter(array(
-				$node['id'],
-				$node['node_id']
-			));
 
 			if (empty($existingNodeReservedInternalIpAddress) === true) {
 				$existingNodeReservedInternalIpAddress = array(
@@ -147,22 +149,6 @@
 
 				if ($existingNodeCount === 0) {
 					$existingNodeReservedInternalIpAddressData[1]['ip_address'] = $nodeReservedInternalIpAddress;
-				} else {
-					$nodeReservedInternalIpAddressDeleted = $this->delete(array(
-						'from' => 'node_reserved_internal_ip_addresses',
-						'where' => array(
-							'ip_address' => $nodeReservedInternalIpAddress,
-							'OR' => array(
-								'node_id' => $nodeIds,
-								'node_node_id' => $nodeIds
-							)
-						)
-					));
-					$response['status_valid'] = ($nodeReservedInternalIpAddressDeleted !== false);
-
-					if ($response['status_valid'] === false) {
-						return $response;
-					}
 				}
 			}
 
