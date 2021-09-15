@@ -1829,7 +1829,6 @@
 		}
 
 		public function process() {
-			// todo: add reserved internal IP assignments for new ipset rules to allow unique process ports for each node
 			// todo: verify no reserved internal ip duplicates before each process reconfig
 			$response = array(
 				'data' => array(
@@ -1907,17 +1906,15 @@
 				return $response;
 			}
 
-			$existingNodeProcessPortNumbers = $existingNodeProcessTypes = array();
+			$existingNodeProcessPortNumbers = array();
 
 			foreach ($existingNodeProcessPorts as $existingNodeProcessPort) {
-				$existingNodeProcessTypes[$existingNodeProcessPort['node_process_type']] = $existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['status_allowing'];
+				$existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['status_allowing'];
 			}
 
+			/*
+			// todo: move node process validation to edit() method since open ports are static for automatic process load balancing
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
-				if (empty($existingNodeProcessTypes[$nodeProcessType]) === true) {
-					continue;
-				}
-
 				$nodeProcessCount = $this->count(array(
 					'in' => 'node_processes',
 					'where' => array(
@@ -1959,7 +1956,6 @@
 					}
 
 					if (empty($nodeProcessData) === false) {
-						// todo: update node data with status_processed = true
 						// todo: assign a node reserved internal ip to each new process
 						$nodeProcessesSaved = $this->save(array(
 							'data' => $nodeProcessData,
@@ -1980,8 +1976,22 @@
 					}
 				}
 			}
+			*/
 
-			$response['status_valid'] = ($nodeCount > 0);
+			$nodeCount = $this->count(array(
+				'in' => 'nodes',
+				'where' => array(
+					'status_processed' => false,
+					'OR' => array(
+						'id' => $nodeId,
+						'node_id' => $nodeId
+					)
+				)
+			));
+			$response['status_valid'] = (
+				(is_int($nodeCount) === true) &&
+				($nodeCount > 0)
+			);
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -1989,10 +1999,6 @@
 
 			$nodes = $this->fetch(array(
 				'fields' => array(
-					'destination_address_version_4',
-					'destination_address_version_6',
-					'destination_port_number_version_4',
-					'destination_port_number_version_6',
 					'external_ip_version_4',
 					'external_ip_version_6',
 					'id',
@@ -2004,8 +2010,10 @@
 				),
 				'from' => 'nodes',
 				'where' => array(
-					'id' => $nodeId,
-					'node_id' => $nodeId
+					'OR' => array(
+						'id' => $nodeId,
+						'node_id' => $nodeId
+					)
 				)
 			));
 			$response['status_valid'] = ($nodes !== false);
@@ -2052,7 +2060,7 @@
 					),
 					'from' => 'node_processes',
 					'where' => array(
-						'node_id' => $nodeId,
+						'node_node_id' => $nodeId,
 						'type' => $nodeProcessType
 					)
 				));
@@ -2063,8 +2071,7 @@
 					),
 					'from' => 'node_users',
 					'where' => array(
-						'node_id' => $nodeId,
-						'status_removed' => false,
+						'node_node_id' => $nodeId,
 						'type' => $nodeProcessType
 					)
 				));
@@ -2079,6 +2086,8 @@
 
 				end($nodeProcesses);
 				$nodeProcessParts = array_chunk($nodeProcesses, ((key($nodeProcesses) + 1) / 2));
+
+				// ..
 
 				foreach ($nodeProcessParts as $nodeProcessPartKey => $nodeProcessPart) {
 					foreach ($nodeProcessPart as $nodeProcess) {
