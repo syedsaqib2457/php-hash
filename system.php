@@ -72,6 +72,11 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'node_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
 							'node_process_type' => array(
 								'default' => null,
 								'null' => true,
@@ -88,11 +93,6 @@
 								'type' => 'TINYINT(1)'
 							),
 							'status_denying' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'status_processed' => array(
 								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
@@ -213,6 +213,11 @@
 								'type' => 'DATETIME'
 							),
 							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -581,11 +586,6 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'status_processed' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
 							'status_removed' => array(
 								'default' => 0,
 								'null' => true,
@@ -880,11 +880,6 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
-							'status_processed' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
 							'status_removed' => array(
 								'default' => 0,
 								'null' => true,
@@ -921,11 +916,6 @@
 								'type' => 'TINYINT(1)'
 							),
 							'status_limit_exceeded_destination_only' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'status_processed' => array(
 								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
@@ -1071,10 +1061,6 @@
 							'ffx:x:x:x:x:x:x:x'
 						)
 					)
-					/*'reserved_internal_ip' => array(
-						4 => '10.10.10.10',
-						6 => 'fc10:1010:1010:1010:1010:1010:1010:1010'
-					)*/
 				),
 				'version' => 1
 			);
