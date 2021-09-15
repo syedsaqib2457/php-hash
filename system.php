@@ -64,6 +64,76 @@
 								'type' => 'INT(5)'
 							)
 						),
+						'node_process_recursive_dns_destinations' => array(
+							'created' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'id' => array(
+								'auto_increment' => true,
+								'primary_key' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'listening_ip_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(15)'
+							),
+							'listening_ip_version_4_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'listening_ip_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(39)'
+							),
+							'listening_ip_version_6_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'listening_port_number_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'listening_port_number_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'INT(5)'
+							),
+							'modified' => array(
+								'default' => 'CURRENT_TIMESTAMP',
+								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							),
+							'source_ip_version_4' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(15)'
+							),
+							'source_ip_version_6' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(39)'
+							)
+						),
 						'node_process_resource_usage_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
@@ -332,11 +402,6 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
-							'type' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(10)'
-							),
 							'user_id' => array(
 								'default' => null,
 								'null' => true,
@@ -381,76 +446,6 @@
 								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
-							)
-						),
-						'node_process_recursive_dns_destinations' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'id' => array(
-								'auto_increment' => true,
-								'primary_key' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'listening_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(15)'
-							),
-							'listening_ip_version_4_node_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'listening_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(39)'
-							),
-							'listening_ip_version_6_node_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'listening_port_number_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
-							),
-							'listening_port_number_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'INT(5)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'node_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'node_node_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'node_process_type' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(10)'
-							),
-							'source_ip_version_4' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(15)'
-							),
-							'source_ip_version_6' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'VARCHAR(39)'
 							)
 						),
 						'node_reserved_internal_destinations' => array(

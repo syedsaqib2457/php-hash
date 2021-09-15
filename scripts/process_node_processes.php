@@ -80,7 +80,7 @@
 
 				//todo: make sure prerouting load balancing works with DNS from system requests and proxy process requests, use output if not
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
-					if (empty($this->nodeData['node_process_ports'][$nodeProcessType]) === false) {
+					if (empty($this->nodeData['node_processes'][$nodeProcessType]) === false) {
 						foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
 							krsort($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey]);
 							$nodeProcessParts = array_chunk($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey], 10);
@@ -375,7 +375,6 @@
 					'add' => array_diff($this->nodeData['node_ips'][$nodeIpVersion], $existingInterfaceNodeIps),
 					'delete' => array_diff($existingInterfaceNodeIps, $this->nodeData['node_ips'][$nodeIpVersion])
 				);
-				$interfaceNodeIpsToProcess['add'][] = $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
 
 				foreach ($interfaceNodeIpsToProcess as $interfaceNodeIpAction => $interfaceNodeIps) {
 					$interfaceNodeIpAction = substr($interfaceNodeIpAction, 3);

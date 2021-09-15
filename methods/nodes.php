@@ -472,12 +472,6 @@
 						'port_number' => ($nodeProcessTypeDefaultPortNumber + $nodeProcessPortNumberIndex),
 						'type' => $nodeProcessType
 					);
-					$nodeProcessPortData[] = array(
-						'node_id' => $nodeId,
-						'node_process_type' => $nodeProcessType,
-						'number' => ($nodeProcessTypeDefaultPortNumber + $nodeProcessPortNumberIndex),
-						'status_processed' => true
-					);
 				}
 
 				foreach ($nodeIpVersions as $nodeIpVersion) {
@@ -568,10 +562,6 @@
 				'data' => $nodeProcessData,
 				'to' => 'node_processes'
 			));
-			$nodeProcessPortsSaved = $this->save(array(
-				'data' => $nodeProcessPortData,
-				'to' => 'node_process_ports'
-			));
 			$nodeRecursiveDnsDestinationsSaved = $this->save(array(
 				'data' => $nodeRecursiveDnsDestinationData,
 				'to' => 'node_recursive_dns_destinations'
@@ -587,19 +577,12 @@
 			));
 			$response['status_valid'] = (
 				($nodeProcessesSaved !== false) &&
-				($nodeProcessPortsSaved !== false) &&
 				($nodeRecursiveDnsDestinationsSaved !== false) &&
 				($nodesUpdated !== false)
 			);
 
 			if ($response['status_valid'] === false) {
 				// todo: use $nodeId + $this->remove() instead of repeating $this->delete()
-				$this->delete(array(
-					'from' => 'node_process_ports',
-					'where' => array(
-						'node_id' => $nodeId
-					)
-				));
 				$this->delete(array(
 					'from' => 'node_processes',
 					'where' => array(
@@ -1832,10 +1815,10 @@
 			// todo: verify no reserved internal ip duplicates before each process reconfig
 			$response = array(
 				'data' => array(
-					'node_ip_versions' => ($nodeIpVersions = array(
+					'node_ip_versions' => array(
 						32 => 4,
 						128 => 6
-					)),
+					),
 					'private_network' => $this->settings['private_network'],
 					'version' => $this->settings['version']
 				),
@@ -1876,6 +1859,7 @@
 				return $response;
 			}
 
+			/*
 			$existingNodeProcessPorts = $this->fetch(array(
 				'fields' => array(
 					'node_process_type',
@@ -1912,7 +1896,6 @@
 				$existingNodeProcessPortNumbers[$existingNodeProcessPort['number']] = $existingNodeProcessPort['status_allowing'];
 			}
 
-			/*
 			// todo: move node process validation to edit() method since open ports are static for automatic process load balancing
 			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
 				$nodeProcessCount = $this->count(array(
@@ -2010,6 +1993,7 @@
 				),
 				'from' => 'nodes',
 				'where' => array(
+					'status_deployed' => true,
 					'OR' => array(
 						'id' => $nodeId,
 						'node_id' => $nodeId
@@ -2044,7 +2028,7 @@
 				}
 			}
 
-			$nodeIpVersions = array_values($nodeIpVersions);
+			$nodeIpVersions = array_values($response['data']['node_ip_versions']);
 
 			foreach ($nodeIpVersions as $nodeIpVersionKey => $nodeIpVersion) {
 				if (empty($response['data']['node_ips'][$nodeIpVersion]) === true) {
@@ -2052,49 +2036,135 @@
 				}
 			}
 
-			foreach ($this->settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
-				$nodeProcesses = $this->fetch(array(
-					'fields' => array(
-						'node_id',
-						'port_number'
-					),
-					'from' => 'node_processes',
-					'where' => array(
-						'node_node_id' => $nodeId,
-						'type' => $nodeProcessType
+			$nodeProcesses = $this->fetch(array(
+				'fields' => array(
+					'node_id',
+					'port_number',
+					'type'
+				),
+				'from' => 'node_processes',
+				'where' => array(
+					'node_node_id' => $nodeId,
+					'type' => $nodeProcessType
+				)
+			));
+			$nodeProcessForwardingDestinations = $this->fetch(array(
+				'fields' => array(
+					'address_version_4',
+					'address_version_6',
+					'id',
+					'node_id',
+					'node_node_id',
+					'node_process_type',
+					'port_number_version_4',
+					'port_number_version_6'
+				),
+				'from' => 'node_process_forwarding_destinations',
+				'where' => array(
+					'node_node_id' => $nodeId
+				)
+			));
+			$nodeProcessRecursiveDnsDestinations = $this->fetch(array(
+				'fields' => array(
+					'id',
+					'listening_ip_version_4',
+					'listening_ip_version_6',
+					'listening_port_number_version_4',
+					'listening_port_number_version_4',
+					'node_id',
+					'source_ip_version_4',
+					'source_ip_version_6'
+				),
+				'from' => 'node_process_recursive_dns_destinations',
+				'where' => array(
+					'node_node_id' => $nodeId
+				)
+			));
+			$nodeProcessUsers = $this->fetch(array(
+				'fields' => array(
+					'node_id',
+					'node_node_id',
+					'node_process_type',
+					'user_id'
+				),
+				'from' => 'node_process_users',
+				'where' => array(
+					'node_node_id' => $nodeId
+				)
+			));
+			$nodeReservedInternalDestinations = $this->fetch(array(
+				'fields' => array(
+					'id',
+					'ip_address',
+					'ip_address_version',
+					'node_id',
+					'node_node_id'
+				),
+				'from' => 'node_reserved_internal_destinations',
+				'where' => array(
+					'node_node_id' => $nodeId,
+					'status_assigned' => true
+				)
+			));
+			$nodes = $this->fetch(array(
+				'fields' => array(
+					'external_ip_version_4',
+					'external_ip_version_6',
+					'id',
+					'internal_ip_version_4',
+					'internal_ip_version_6',
+					'node_id',
+					'status_active',
+					'status_deployed'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'OR' => array(
+						'id' => $nodeId,
+						'node_id' => $nodeId
 					)
-				));
-				$nodeUsers = $this->fetch(array(
-					'fields' => array(
-						'node_id',
-						'user_id'
-					),
-					'from' => 'node_users',
-					'where' => array(
-						'node_node_id' => $nodeId,
-						'type' => $nodeProcessType
-					)
-				));
-				$response['status_valid'] = (
-					($nodeProcesses !== false) &&
-					($nodeUsers !== false)
-				);
+				)
+			));
+			$response['status_valid'] = (
+				($nodeProcesses !== false) &&
+				($nodeProcessForwardingDestinations !== false) &&
+				($nodeProcessRecursiveDnsDestinations !== false) &&
+				($nodeProcessUsers !== false) &&
+				($nodeReservedInternalDestinations !== false) &&
+				($nodes !== false)
+			);
 
-				if ($response['status_valid'] === false) {
-					return $response;
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['status_valid'] = (empty($nodes) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node ID, please try again.';
+				return $response;
+			}
+
+			
+
+			$nodeIpVersions = array_values($response['data']['node_ip_versions']);
+
+			foreach ($nodeIpVersions as $nodeIpVersionKey => $nodeIpVersion) {
+				if (empty($response['data']['node_ips'][$nodeIpVersion]) === true) {
+					unset($response['data']['node_ip_versions'][(128 / 4) + (96 * $nodeIpVersionKey)]);
+				}
+			}
+
+			$nodeProcessPartKeys = array();
+
+			foreach ($nodeProcesses as $nodeProcess) {
+				if (isset($nodeProcessPartKeys[$nodeProcess['node_id']]) === false) {
+					$nodeProcessPartKeys[$nodeProcess['node_id']] = 0;
 				}
 
-				end($nodeProcesses);
-				$nodeProcessParts = array_chunk($nodeProcesses, ((key($nodeProcesses) + 1) / 2));
-
-				// ..
-
-				foreach ($nodeProcessParts as $nodeProcessPartKey => $nodeProcessPart) {
-					foreach ($nodeProcessPart as $nodeProcess) {
-						$response['data']['node_process_ports'][$nodeProcessType][$nodeProcess['id']] = $nodeProcess['port_number'];
-						$response['data']['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcess['id']] = $nodeProcess['port_number'];
-					}
-				}
+				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][] = $nodeProcess['port_number'];
+				$nodeProcessPartKey = abs($nodeProcessPartKey + -1);
+			}
 
 				if (empty($nodeUsers) === false) {
 					$userIds = array();
@@ -2199,6 +2269,8 @@
 				}
 			}
 
+			// $nodeReservedInternalDestinations
+
 			$nodeRecursiveDnsDestinations = $this->fetch(array(
 				'fields' => array(
 					'id',
@@ -2244,6 +2316,7 @@
 
 		public function remove($parameters) {
 			// todo: un-assign reserved internal ips as part of removal
+			// todo: delete processes attached to a node
 			$response = array(
 				'message' => 'Error removing nodes, please try again.',
 				'status_valid' => (empty($parameters['where']['id']) === false)
