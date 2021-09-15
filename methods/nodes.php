@@ -1980,62 +1980,6 @@
 				return $response;
 			}
 
-			$nodes = $this->fetch(array(
-				'fields' => array(
-					'external_ip_version_4',
-					'external_ip_version_6',
-					'id',
-					'internal_ip_version_4',
-					'internal_ip_version_6',
-					'node_id',
-					'status_active',
-					'status_deployed'
-				),
-				'from' => 'nodes',
-				'where' => array(
-					'status_deployed' => true,
-					'OR' => array(
-						'id' => $nodeId,
-						'node_id' => $nodeId
-					)
-				)
-			));
-			$response['status_valid'] = ($nodes !== false);
-
-			if ($response['status_valid'] === false) {
-				return $response;
-			}
-
-			$response['status_valid'] = (empty($nodes) === false);
-
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid node ID, please try again.';
-				return $response;
-			}
-
-			foreach ($nodes as $node) {
-				$response['data']['nodes'][$node['id']] = $node;
-
-				foreach ($nodeIpVersions as $nodeIpVersion) {
-					$nodeIps = array(
-						$node['external_ip_version_' . $nodeIpVersion],
-						$node['internal_ip_version_' . $nodeIpVersion]
-					);
-
-					foreach (array_filter($nodeIps) as $nodeIp) {
-						$response['data']['node_ips'][$nodeIpVersion][$nodeIp] = $nodeIp;
-					}
-				}
-			}
-
-			$nodeIpVersions = array_values($response['data']['node_ip_versions']);
-
-			foreach ($nodeIpVersions as $nodeIpVersionKey => $nodeIpVersion) {
-				if (empty($response['data']['node_ips'][$nodeIpVersion]) === true) {
-					unset($response['data']['node_ip_versions'][(128 / 4) + (96 * $nodeIpVersionKey)]);
-				}
-			}
-
 			$nodeProcesses = $this->fetch(array(
 				'fields' => array(
 					'node_id',
@@ -2145,7 +2089,27 @@
 				return $response;
 			}
 
-			
+			$response['status_valid'] = (empty($nodes) === false);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node ID, please try again.';
+				return $response;
+			}
+
+			foreach ($nodes as $node) {
+				$response['data']['nodes'][$node['id']] = $node;
+
+				foreach ($nodeIpVersions as $nodeIpVersion) {
+					$nodeIps = array(
+						$node['external_ip_version_' . $nodeIpVersion],
+						$node['internal_ip_version_' . $nodeIpVersion]
+					);
+
+					foreach (array_filter($nodeIps) as $nodeIp) {
+						$response['data']['node_ips'][$nodeIpVersion][$nodeIp] = $nodeIp;
+					}
+				}
+			}
 
 			$nodeIpVersions = array_values($response['data']['node_ip_versions']);
 
@@ -2166,6 +2130,9 @@
 				$nodeProcessPartKey = abs($nodeProcessPartKey + -1);
 			}
 
+			// ..
+
+			/*
 				if (empty($nodeUsers) === false) {
 					$userIds = array();
 
@@ -2267,9 +2234,6 @@
 						}
 					}
 				}
-			}
-
-			// $nodeReservedInternalDestinations
 
 			$nodeRecursiveDnsDestinations = $this->fetch(array(
 				'fields' => array(
@@ -2309,6 +2273,7 @@
 					}
 				}
 			}
+			*/
 
 			$response['message'] = 'Nodes processed successfully.';
 			return $response;
