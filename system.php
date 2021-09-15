@@ -13,6 +13,7 @@
 					'name' => 'ghostcompute',
 					'password' => 'password',
 					'structure' => array(
+						// todo: configure node_process_forwarding_destinations for each user
 						'node_process_forwarding_destinations' => array(
 							'address_version_4' => array(
 								'default' => null,
@@ -36,6 +37,16 @@
 							'modified' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
+							),
+							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
 							),
 							'node_process_type' => array(
 								'default' => null,
@@ -92,6 +103,11 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'node_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
 							'node_process_type' => array(
 								'default' => null,
 								'null' => true,
@@ -128,6 +144,11 @@
 								'type' => 'DATETIME'
 							),
 							'node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
@@ -188,7 +209,7 @@
 								'type' => 'TINYINT(1)'
 							)
 						),
-						'node_recursive_dns_destinations' => array(
+						'node_process_recursive_dns_destinations' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -373,7 +394,7 @@
 								'type' => 'TINYINT(1)'
 							)
 						),
-						'node_user_request_destination_logs' => array(
+						'node_process_user_request_destination_logs' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -392,6 +413,16 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'node_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							),
 							'request_destination_id' => array(
 								'default' => null,
 								'null' => true,
@@ -408,7 +439,7 @@
 								'type' => 'BIGINT(11)'
 							)
 						),
-						'node_user_request_logs' => array(
+						'node_process_user_request_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
 								'null' => true,
@@ -447,10 +478,20 @@
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
 							),
-							'node_user_id' => array(
+							'node_id' => array(
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'node_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
 							),
 							'response_code' => array(
 								'default' => null,
@@ -472,17 +513,17 @@
 								'null' => true,
 								'type' => 'TINYINT(1)'
 							),
+							'user_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
 							'username' => array(
 								'default' => "'-'",
 								'type' => 'VARCHAR(15)'
-							),
-							'type' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(10)'
 							)
 						),
-						'node_user_resource_usage_logs' => array(
+						'node_process_user_resource_usage_logs' => array(
 							'bytes_received' => array(
 								'default' => null,
 								'null' => true,
@@ -511,6 +552,16 @@
 								'null' => true,
 								'type' => 'BIGINT(11)'
 							),
+							'node_node_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
+							),
 							'requests' => array(
 								'default' => null,
 								'null' => true,
@@ -522,7 +573,7 @@
 								'type' => 'BIGINT(11)'
 							)
 						),
-						'node_users' => array(
+						'node_process_users' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
@@ -545,6 +596,11 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'node_process_type' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'CHAR(10)'
 							),
 							'status_removed' => array(
 								'default' => 0,
