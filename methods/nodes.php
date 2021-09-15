@@ -1849,6 +1849,7 @@
 			}
 
 			$nodeId = $parameters['where']['id'];
+			// todo: fetch nodeId based on source IP
 
 			if (isset($parameters['data']['processed']) === true) {
 				$nodeDataUpdated = $this->update(array(
@@ -1884,8 +1885,7 @@
 				),
 				'from' => 'node_process_ports',
 				'where' => array(
-					'node_id' => $nodeId
-					// ..
+					'node_node_id' => $nodeId
 				)
 			));
 			$nodeCount = $this->count(array(
@@ -1900,9 +1900,12 @@
 			));
 			$response['status_valid'] = (
 				($existingNodeProcessPorts !== false) &&
-				(is_int($nodeCount) === true) &&
-				($nodeCount > 0)
+				(is_int($nodeCount) === true)
 			);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
 
 			$existingNodeProcessPortNumbers = $existingNodeProcessTypes = array();
 
@@ -1922,132 +1925,63 @@
 						'type' => $nodeProcessType
 					)
 				));
-				$nodeProcessResourceUsageLogs = $this->fetch(array(
-					'fields' => array(
-						'cpu_capacity_cores',
-						'cpu_capacity_megahertz',
-						'cpu_percentage'
-					),
-					'from' => 'node_process_resource_usage_logs',
-					'where' => array(
-						'created >' => date('Y-m-d H:i:s', strtotime('-1 hour')),
-						'node_id' => $nodeId,
-						'node_process_type' => $nodeProcessType
-					)
-				));
 
-				if (
-					(is_int($nodeProcessCount) === false) ||
-					($nodeProcessResourceUsageLogs === false)
-				) {
+				if ((is_int($nodeProcessCount) === false)) {
 					break;
 				}
 
-				if ($nodeProcessCount === 0) {
-					continue;
-				}
-
-				// todo: simplify automatic load balancing with new ipset load balancing method
-				$nodeProcessCountMaximum = min(100, max(ceil(($nodeProcessResourceUsageLogs[0]['cpu_capacity_cores'] * $nodeProcessResourceUsageLogs[0]['cpu_capacity_megahertz']) / 100)), ($nodeProcessCount + 5));
-
-				if ($nodeProcessCount < $nodeProcessCountMaximum) {
+				if ($nodeProcessCount < 10) {
 					$nodeProcessData = $nodeProcessPortData = array();
-					$nodeProcessResourceUsageLogCpuPercentage = $nodeProcessResourceUsageLogs[0]['cpu_percentage'] / $nodeProcessCount;
+					$nodeProcessPortNumber = $nodeProcessTypeDefaultPortNumber;
 
-					if ($nodeProcessResourceUsageLogCpuPercentage > 0.5) {
-						$nodeProcessPortNumber = $nodeProcessTypeDefaultPortNumber;
-
-						foreach (range(1, min(5, $nodeProcessCountMaximum - $nodeProcessCount)) as $nodeProcessIndex) {
-							while (
-								($nodeProcessPortNumber <= 65535) &&
-								(isset($existingNodeProcessPortNumbers[$nodeProcessPortNumber]) === true)
-							) {
-								$nodeProcessPortNumber++;
-							}
-
-							if (isset($existingNodeProcessPortNumbers[$nodeProcessPortNumber]) === true) {
-								break;
-							}
-
-							$existingNodeProcessPortNumbers[$nodeProcessPortNumber] = false;
-							$nodeProcessCount++;
-							$nodeProcessData[] = array(
-								'port_number' => $nodeProcessPortNumber,
-								'type' => $nodeProcessType
-							);
-							$nodeProcessPortData[] = array(
-								'number' => $nodeProcessPortNumber,
-								'node_process_type' => $nodeProcessType
-							);
+					foreach (range(1, (10 - $nodeProcessCount)) as $nodeProcessIndex) {
+						while (
+							($nodeProcessPortNumber <= 65535) &&
+							(isset($existingNodeProcessPortNumbers[$nodeProcessPortNumber]) === true)
+						) {
+							$nodeProcessPortNumber++;
 						}
 
-						if (empty($nodeProcessData) === false) {
-							$nodeProcessesSaved = $this->save(array(
-								'data' => $nodeProcessData,
-								'to' => 'node_processes'
-							));
-							$nodeProcessPortsSaved = $this->save(array(
-								'data' => $nodeProcessPortData,
-								'to' => 'node_process_ports'
-							));
-							$response['status_valid'] = (
-								($nodeProcessesSaved !== false) &&
-								($nodeProcessPortsSaved !== false)
-							);
-
-							if ($response['status_valid'] === false) {
-								return $response;
-							}
-						}
-					}
-				} elseif ($nodeProcessCount !== 10) {
-					foreach ($nodeProcessResourceUsageLogs as $nodeProcessResourceUsageLog) {
-						if (($nodeProcessResourceUsageLog['cpu_percentage'] / $nodeProcessCount) < 0.25) {
-							$nodeProcessPortNumberIndex = 0;
-							$nodeProcessPortNumbersToDelete = array();
-
-							while (
-								(count($nodeProcessPortNumbersToDelete) < 5) &&
-								($nodeProcessCount > 10)
-							) {
-								if ($nodeProcesses[$nodeProcessPortNumberIndex]['number'] !== $nodeProcessTypeDefaultPortNumber) {
-									$nodeProcessCount--;
-									$nodeProcessPortNumbersToDelete[] = $nodeProcesses[$nodeProcessPortNumberIndex]['number'];
-								}
-
-								$nodeProcessPortNumberIndex++;
-							}
-
-							$nodeProcessesDeleted = $this->delete(array(
-								'in' => 'node_processes',
-								'where' => array(
-									'node_id' => $nodeId,
-									'number' => $nodeProcessPortNumbersToDelete,
-									// ..
-								)
-							));
-							$nodeProcessPortsDeleted = $this->delete(array(
-								'in' => 'node_process_ports',
-								'where' => array(
-									'node_id' => $nodeId,
-									'number' => $nodeProcessPortNumbersToDelete,
-									// ..
-								)
-							));
-							$response['status_valid'] = (
-								($nodeProcessesDeleted !== false) &&
-								($nodeProcessPortsDeleted !== false)
-							);
-
-							if ($response['status_valid'] === false) {
-								return $response;
-							}
-
+						if (isset($existingNodeProcessPortNumbers[$nodeProcessPortNumber]) === true) {
 							break;
+						}
+
+						$existingNodeProcessPortNumbers[$nodeProcessPortNumber] = false;
+						$nodeProcessCount++;
+						$nodeProcessData[] = array(
+							'port_number' => $nodeProcessPortNumber,
+							'type' => $nodeProcessType
+						);
+						$nodeProcessPortData[] = array(
+							'number' => $nodeProcessPortNumber,
+							'node_process_type' => $nodeProcessType
+						);
+					}
+
+					if (empty($nodeProcessData) === false) {
+						// todo: update node data with status_processed = true
+						// todo: assign a node reserved internal ip to each new process
+						$nodeProcessesSaved = $this->save(array(
+							'data' => $nodeProcessData,
+							'to' => 'node_processes'
+						));
+						$nodeProcessPortsSaved = $this->save(array(
+							'data' => $nodeProcessPortData,
+							'to' => 'node_process_ports'
+						));
+						$response['status_valid'] = (
+							($nodeProcessesSaved !== false) &&
+							($nodeProcessPortsSaved !== false)
+						);
+
+						if ($response['status_valid'] === false) {
+							return $response;
 						}
 					}
 				}
 			}
+
+			$response['status_valid'] = ($nodeCount > 0);
 
 			if ($response['status_valid'] === false) {
 				return $response;
