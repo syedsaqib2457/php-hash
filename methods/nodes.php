@@ -2039,8 +2039,7 @@
 				'fields' => array(
 					'ip_address',
 					'ip_address_version',
-					'node_id',
-					'node_node_id'
+					'node_id'
 				),
 				'from' => 'node_reserved_internal_destinations',
 				'where' => array(
@@ -2055,9 +2054,7 @@
 					'id',
 					'internal_ip_version_4',
 					'internal_ip_version_6',
-					'node_id',
-					'status_active',
-					'status_deployed'
+					'status_active'
 				),
 				'from' => 'nodes',
 				'where' => array(
@@ -2096,6 +2093,7 @@
 
 			foreach ($nodes as $node) {
 				$response['data']['nodes'][$node['id']] = $node;
+				unset($response['data']['nodes'][$node['id']]['id']);
 
 				foreach ($nodeIpVersions as $nodeIpVersion) {
 					$nodeIps = array(
@@ -2153,7 +2151,14 @@
 				unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['node_id']);
 			}
 
-			// ..
+			// todo: node process users with request destinations + limit rules
+
+			foreach ($nodeReservedInternalDestinations as $nodeReservedInternalDestination) {
+				$response['data']['node_ips'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $nodeReservedInternalDestination['ip_address'];
+				$response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['node_id']] = $nodeReservedInternalDestination;
+				unset($response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['node_id']]['ip_address_version']);
+				unset($response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['node_id']]['node_id']);
+			}
 
 			/*
 				if (empty($nodeUsers) === false) {
