@@ -2242,7 +2242,7 @@
 
 					if (empty($userRequestLimitRules) === false) {
 						foreach ($userRequestLimitRules as $userRequestLimitRule) {
-							if (empty($userRequestLimitRule['request_destination_id']) === false)) {
+							if (empty($userRequestLimitRule['request_destination_id']) === false) {
 								if (empty($response['data']['users'][$userRequestLimitRule['user_id']]['status_allowing_request_destinations_only']) === false) {
 									if (empty($response['data']['users'][$userRequestLimitRule['user_id']]['request_destination_ids']) === false) {
 										unset($response['data']['users'][$userRequestLimitRule['user_id']]['request_destination_ids'][$userRequestLimitRule['request_destination_id']]);
