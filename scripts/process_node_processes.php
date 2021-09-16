@@ -441,6 +441,7 @@
 
 						foreach ($proxyNodeUserIds as $proxyNodeUserId) {
 							$proxyNodeUser = $this->nodeData['users'][$proxyNodeProcessType][$proxyNodeUserId];
+							// todo: add deny ACLs for user request_destination_ids exceeded if user status_allowing_request_destinations_only is false
 
 							if (
 								(

@@ -563,51 +563,6 @@
 								'type' => 'TINYINT(1)'
 							)
 						),
-						'node_process_user_request_destination_logs' => array(
-							'created' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'id' => array(
-								'auto_increment' => true,
-								'primary_key' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'modified' => array(
-								'default' => 'CURRENT_TIMESTAMP',
-								'type' => 'DATETIME'
-							),
-							'node_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'node_node_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'node_process_type' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'CHAR(10)'
-							),
-							'request_destination_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'requests' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							),
-							'user_id' => array(
-								'default' => null,
-								'null' => true,
-								'type' => 'BIGINT(11)'
-							)
-						),
 						'nodes' => array(
 							'created' => array(
 								'default' => 'CURRENT_TIMESTAMP',
@@ -916,15 +871,15 @@
 								'default' => 'CURRENT_TIMESTAMP',
 								'type' => 'DATETIME'
 							),
+							'request_destination_id' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'BIGINT(11)'
+							),
 							'request_limit_rule_id' => array(
 								'default' => null,
 								'null' => true,
-								'type' => 'TINYINT(1)'
-							),
-							'status_limit_exceeded_destination_only' => array(
-								'default' => 0,
-								'null' => true,
-								'type' => 'TINYINT(1)'
+								'type' => 'BIGINT(11)'
 							),
 							'status_removed' => array(
 								'default' => 0,

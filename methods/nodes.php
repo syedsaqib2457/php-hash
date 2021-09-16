@@ -2026,7 +2026,6 @@
 			$nodeProcessUsers = $this->fetch(array(
 				'fields' => array(
 					'node_id',
-					'node_node_id',
 					'node_process_type',
 					'user_id'
 				),
@@ -2151,7 +2150,115 @@
 				unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['node_id']);
 			}
 
-			// todo: node process users with request destinations + limit rules
+			if (empty($nodeProcessUsers) === false) {
+				$nodeProcessUserIds = array();
+
+				foreach ($nodeProcessUsers as $nodeProcessUser) {
+					$response['data']['node_process_users'][$nodeProcessUser['node_process_type']][$nodeUser['node_id']][$nodeUser['user_id']] = $nodeUser['user_id'];
+					$nodeProcessUserIds[$nodeProcessUser['user_id']] = $nodeProcessUser['user_id'];
+				}
+
+				$userRequestDestinations = $this->fetch(array(
+					'fields' => array(
+						'request_destination_id',
+						'user_id'
+					),
+					'from' => 'user_request_destinations',
+					'where' => array(
+						'user_id' => $nodeProcessUserIds
+					)
+				));
+				$userRequestLimitRules = $this->fetch(array(
+					'fields' => array(
+						'request_destination_id',
+						'request_limit_rule_id'
+					),
+					'from' => 'user_request_limit_rules',
+					'where' => array(
+						'limit_until !=' => null,
+						'user_id' => $nodeProcessUserIds
+					)
+				));
+				$users = $this->fetch(array(
+					'fields' => array(
+						'authentication_password',
+						'authentication_username',
+						'authentication_whitelist',
+						'id',
+						'status_allowing_request_destinations_only',
+						'status_allowing_request_logs',
+						'status_requiring_strict_authentication'
+					),
+					'from' => 'users',
+					'where' => array(
+						'id' => $nodeProcessUserIds
+					)
+				));
+				$response['status_valid'] = (
+					($userRequestDestinations !== false) &&
+					($userRequestLimitRules !== false) &&
+					($users !== false)
+				);
+
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
+
+				if (empty($users) === false) {
+					foreach ($users as $user) {
+						$response['data']['users'][$user['id']] = $user;
+						unset($response['data']['users'][$user['id']]['id']);
+					}
+
+					if (empty($userRequestDestinations) === false) {
+						$requestDestinationIds = array();
+
+						foreach ($userRequestDestinations as $userRequestDestination) {
+							if (empty($response['data']['users'][$user['id']]['status_allowing_request_destinations_only']) === false) {
+								$requestDestinationIds[$userRequestDestination['request_destination_id']] = $response['data']['users'][$user['id']]['request_destination_ids'][$userRequestDestination['request_destination_id']] = $userRequestDestination['request_destination_id'];
+							}
+						}
+
+						$requestDestinations = $this->fetch(array(
+							'fields' => array(
+								'address',
+								'id'
+							),
+							'from' => 'request_destinations',
+							'where' => array(
+								'id' => $requestDestinationIds
+							)
+						));
+						$response['status_valid'] = ($requestDestinations !== false);
+
+						if ($response['status_valid'] === false) {
+							return $response;
+						}
+
+						foreach ($requestDestinations as $requestDestination) {
+							$response['data']['request_destinations'][$requestDestination['id']] = $requestDestination['address'];
+						}
+					}
+
+					if (empty($userRequestLimitRules) === false) {
+						foreach ($userRequestLimitRules as $userRequestLimitRule) {
+							if (empty($userRequestLimitRule['request_destination_id']) === false)) {
+								if (empty($response['data']['users'][$userRequestLimitRule['user_id']]['status_allowing_request_destinations_only']) === false) {
+									if (empty($response['data']['users'][$userRequestLimitRule['user_id']]['request_destination_ids']) === false) {
+										unset($response['data']['users'][$userRequestLimitRule['user_id']]['request_destination_ids'][$userRequestLimitRule['request_destination_id']]);
+									} else {
+										unset($response['data']['users'][$userRequestLimitRule['user_id']]);
+									}
+								} else {
+									$response['data']['users'][$userRequestLimitRule['user_id']]['request_destination_ids'][$userRequestLimitRule['request_destination_id']] = $userRequestLimitRule['request_destination_id'];
+								}
+							} else {
+								unset($response['data']['users'][$userRequestLimitRule['user_id']]);
+							}
+						}
+					}
+				}
+			}
 
 			foreach ($nodeReservedInternalDestinations as $nodeReservedInternalDestination) {
 				$response['data']['node_ips'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $nodeReservedInternalDestination['ip_address'];
@@ -2159,110 +2266,6 @@
 				unset($response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['node_id']]['ip_address_version']);
 				unset($response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['node_id']]['node_id']);
 			}
-
-			/*
-				if (empty($nodeUsers) === false) {
-					$userIds = array();
-
-					foreach ($nodeUsers as $nodeUser) {
-						$response['data']['node_users'][$nodeProcessType][$nodeUser['node_id']][$nodeUser['user_id']] = $nodeUser['user_id'];
-						$userIds[$nodeUser['user_id']] = $nodeUser['user_id'];
-					}
-
-					$userRequestDestinations = $this->fetch(array(
-						'fields' => array(
-							'request_destination_id',
-							'user_id'
-						),
-						'from' => 'user_request_destinations',
-						'where' => array(
-							'status_removed' => false,
-							'user_id' => $userIds
-						)
-					));
-					$userRequestLimitRules = $this->fetch(array(
-						'fields' => array(
-							'request_limit_rule_id',
-							'status_limit_exceeded_destination_only'
-						),
-						'from' => 'user_request_limit_rules',
-						'where' => array(
-							'limit_until !=' => null,
-							'status_removed' => false,
-							'user_id' => $userIds
-						)
-					));
-					// todo: add limiting for status_limit_exceeded_destination_only based on node_user_request_destination_logs
-					$users = $this->fetch(array(
-						'fields' => array(
-							'authentication_password',
-							'authentication_username',
-							'authentication_whitelist',
-							'id',
-							'status_allowing_request_destinations_only',
-							'status_allowing_request_logs',
-							'status_requiring_strict_authentication'
-						),
-						'from' => 'users',
-						'where' => array(
-							'id' => $userIds
-						)
-					));
-					$response['status_valid'] = (
-						($userRequestDestinations !== false) &&
-						($userRequestLimitRules !== false) &&
-						($users !== false)
-					);
-
-					if ($response['status_valid'] === false) {
-						return $response;
-					}
-
-					if (empty($users) === false) {
-						foreach ($users as $user) {
-							$response['data']['users'][$nodeProcessType][$user['id']] = $user;
-						}
-
-						if (empty($userRequestDestinations) === false) {
-							$requestDestinationIds = array();
-
-							foreach ($userRequestDestinations as $userRequestDestination) {
-								$requestDestinationIds[$userRequestDestination['request_destination_id']] = $response['data']['users'][$nodeProcessType][$user['id']]['request_destination_id'][] = $userRequestDestination['request_destination_id'];
-							}
-
-							$requestDestinations = $this->fetch(array(
-								'fields' => array(
-									'address',
-									'id'
-								),
-								'from' => 'request_destinations',
-								'where' => array(
-									'id' => $requestDestinationIds
-								)
-							));
-							$response['status_valid'] = ($requestDestinations !== false);
-
-							if ($response['status_valid'] === false) {
-								return $response;
-							}
-
-							foreach ($requestDestinations as $requestDestination) {
-								$response['data']['request_destinations'][$nodeProcessType][$requestDestination['id']] = $requestDestination['address'];
-							}
-						}
-
-						if (empty($userRequestLimitRules) === false) {
-							$requestLimitUserIds = array();
-
-							foreach ($userRequestLimitRules as $userRequestLimitRule) {
-								if (empty($response['data']['node_users'][$nodeProcessType][$userRequestLimitRule['user_id']]['request_destination_id']) === true) {
-									unset($response['data']['node_users'][$nodeProcessType][$userRequestLimitRule['user_id']]);
-								}
-							}
-						}
-					}
-				}
-			*/
 
 			$response['message'] = 'Nodes processed successfully.';
 			return $response;
