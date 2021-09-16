@@ -202,6 +202,7 @@
 		}
 
 		public function process() {
+			// todo: refactor process reconfig for ipset rules + matrix of node processes with reserved internal ips
 			$nodeProcesses = json_decode($nodeProcesses, file_get_contents('/tmp/node_processes'));
 
 			if (empty($this->nodeData['nodes']) === true) {
