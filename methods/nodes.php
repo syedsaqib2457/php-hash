@@ -1996,9 +1996,7 @@
 				'fields' => array(
 					'address_version_4',
 					'address_version_6',
-					'id',
 					'node_id',
-					'node_node_id',
 					'node_process_type',
 					'port_number_version_4',
 					'port_number_version_6'
@@ -2010,9 +2008,10 @@
 			));
 			$nodeProcessRecursiveDnsDestinations = $this->fetch(array(
 				'fields' => array(
-					'id',
 					'listening_ip_version_4',
+					'listening_ip_version_4_node_id',
 					'listening_ip_version_6',
+					'listening_ip_version_6_node_id',
 					'listening_port_number_version_4',
 					'listening_port_number_version_4',
 					'node_id',
@@ -2038,7 +2037,6 @@
 			));
 			$nodeReservedInternalDestinations = $this->fetch(array(
 				'fields' => array(
-					'id',
 					'ip_address',
 					'ip_address_version',
 					'node_id',
@@ -2122,12 +2120,37 @@
 			$nodeProcessPartKeys = array();
 
 			foreach ($nodeProcesses as $nodeProcess) {
+				// todo: add system IP details as node to allow deployment of node processes on same system server
+
 				if (isset($nodeProcessPartKeys[$nodeProcess['node_id']]) === false) {
 					$nodeProcessPartKeys[$nodeProcess['node_id']] = 0;
 				}
 
 				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][] = $nodeProcess['port_number'];
 				$nodeProcessPartKey = abs($nodeProcessPartKey + -1);
+			}
+
+			foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestination) {
+				$response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']] = $nodeProcessForwardingDestination;
+				unset($response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']]);
+			}
+
+			foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestination) {
+				$response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']] = $nodeRecursiveDnsDestination;
+
+				foreach ($nodeIpVersions as $nodeIpVersion) {
+					if (empty($nodeRecursiveDnsDestination['source_ip_version_' . $nodeIpVersion]) === false) {
+						$response['data']['node_ips'][$nodeIpVersion][$nodeProcessRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion]] = $nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion];
+
+						if (empty($response['data']['nodes'][$nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion . '_node_id']]['internal_ip_version_' . $nodeIpVersion]) === false) {
+							$response['data']['node_process_recursive_dns_destinations'][$nodeRecursiveDnsDestination['node_process_type']][$nodeRecursiveDnsDestination['node_id']]['source_ip_version_' . $nodeIpVersion] = $response['data']['nodes'][$nodeRecursiveDnsDestination['node_id']]['internal_ip_version_' . $nodeIpVersion];
+						}
+					}
+
+					unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['listening_ip_version_' . $nodeIpVersion . '_node_id']);
+				}
+
+				unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['node_id']);
 			}
 
 			// ..
@@ -2234,45 +2257,6 @@
 						}
 					}
 				}
-
-			$nodeRecursiveDnsDestinations = $this->fetch(array(
-				'fields' => array(
-					'id',
-					'listening_ip_version_4',
-					'listening_ip_version_6',
-					'listening_port_number_version_4',
-					'listening_port_number_version_4',
-					'node_id',
-					'source_ip_version_4',
-					'source_ip_version_6'
-				),
-				'from' => 'node_recursive_dns_destinations',
-				'where' => array(
-					'node_node_id' => $nodeId
-				)
-			));
-			$response['status_valid'] = ($nodeRecursiveDnsDestinations !== false);
-
-			if ($response['status_valid'] === false) {
-                                return $response;
-			}
-
-			foreach ($nodeRecursiveDnsDestinations as $nodeRecursiveDnsDestination) {
-				$response['data']['node_recursive_dns_destinations'][$nodeRecursiveDnsDestination['node_process_type']][$nodeRecursiveDnsDestination['node_id']] = $nodeRecursiveDnsDestination;
-
-				foreach ($nodeIpVersions as $nodeIpVersion) {
-					if (empty($nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion]) === false) {
-						$response['data']['node_ips'][$nodeIpVersion][$nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion]] = $nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion];
-					}
-
-					if (
-						(empty($nodeRecursiveDnsDestination['source_ip_version_' . $nodeIpVersion]) === false) &&
-						(empty($response['data']['nodes'][$nodeRecursiveDnsDestination['node_id']]['internal_ip_version_' . $nodeIpVersion]) === false)
-					) {
-						$response['data']['node_recursive_dns_destinations'][$nodeRecursiveDnsDestination['node_process_type']][$nodeRecursiveDnsDestination['node_id']]['source_ip_version_' . $nodeIpVersion] = $response['data']['nodes'][$nodeRecursiveDnsDestination['node_id']]['internal_ip_version_' . $nodeIpVersion];
-					}
-				}
-			}
 			*/
 
 			$response['message'] = 'Nodes processed successfully.';
