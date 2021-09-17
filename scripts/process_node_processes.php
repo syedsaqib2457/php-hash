@@ -403,51 +403,11 @@
 
 			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
 			// todo: only add node-specific ACLs to avoid bloated config file and log each process by node_id
-			// todo: move this to reconfig section
-			// $response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
-
-			/* foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-				$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ';
-
-				foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-					$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['external_ip_version_' . $nodeIpVersion];
-
-					if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-						$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['internal_ip_version_' . $nodeIpVersion];
-					}
-
-					$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
-					// todo: test per-ACL nserver options
-					$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
-				}
-
-				$proxyNodeUserAuthentication[] = 'deny *';
-				$proxyNodeUserAuthentication[] = 'flush';
-				$proxyNodeIndex++;
-
-				$proxyNodeUserAuthentication[] = 'deny *';
-				$proxyNodeUserAuthentication[] = 'flush';
-
-				foreach ($this->nodeData['users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUser) {
-					$proxyNodeUsers[$proxyNodeUser['authentication_username']] = $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
-				}
-
-				foreach (array_chunk($proxyNodeUsers, 10) as $proxyNodeUserPartKey => $proxyNodeUserParts) {
-					$proxyNodeUsers[$proxyNodeUserPartKey] = 'users ' . implode(' ', $proxyNodeUserParts);
-				}
-
-				$this->nodeData['proxy_node_configuration'][$proxyNodeType] = array_merge($proxyNodeConfiguration, $proxyNodeUsers, $proxyNodeUserAuthentication, array(
-					'deny *'
-				));
-			} */
-
 			$recursiveDnsNodeConfiguration = array(
 				// todo: add new ACL with internal node IPs instaed of private network blocks if privateNetworkIpBlocks doesn't work internally
 				'acl privateNetworkIpBlocks {',
 				$this->nodeData['private_network']['ip_blocks'][4],
 				$this->nodeData['private_network']['ip_blocks'][6],
-				$this->nodeData['private_network']['reserved_internal_ip'][4],
-				$this->nodeData['private_network']['reserved_internal_ip'][6],
 				'};',
 				'options {',
 				'cleaning-interval 1;',
@@ -713,25 +673,39 @@
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
 					if (empty($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]) === false) {
 						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessNodeId => $proxyNodeProcessPortNumbers) {
-							$proxyNodeConfiguration = array(
-								'maxconn 20000',
-								'nobandlimin',	
-								'nobandlimout',
-								'process_id' => false,
-								'stacksize 0',
-								'flush',
-								'allow * * * * HTTP',
-								'allow * * * * HTTPS',
-								'log' => 'log /var/log/' . $proxyNodeProcessType
+							$proxyNodeProcessConfiguration = array(
+								't0' => 'maxconn 20000',
+								't1' => 'nobandlimin',	
+								't2' => 'nobandlimout',
+								't3' => 'stacksize 0',
+								't4' => 'flush',
+								't5' => 'allow * * * * HTTP',
+								't6' => 'allow * * * * HTTPS',
+								't7' => 'log /var/log/' . $proxyNodeProcessType
+							);
+							// todo: use indexes instead of array_chunk, explode, array_merge, etc inside of loop to avoid performance penalty
+							$proxyNodeProcessConfigurationIndexes = array(
+								'u' => 0, // todo: index for users list in $proxyNodeProcessConfiguration
+								'v' => 0, // todo: index for whitelist ACLs in $proxyNodeProcessConfiguration
+								'w' => 0, // todo: index for username ACLs in $proxyNodeProcessConfiguration
+								'x' => 0, // todo: index for proxy recursive DNS + service name ACLs with IP + port interfaces in $proxyNodeProcessConfiguration
+								'y' => 0, // todo: index for request destination parts
+								'z' => 0 // todo: index for whitelist ACL parts
 							);
 
 							foreach ($this->nodeData['node_process_users'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessUserIds) {
-								$proxyNodeUserAuthentication[] = 'auth iponly strong';
-								$proxyNodeUserAuthenticationUsernames = $proxyNodeUserAuthenticationWhitelists = array();
+								$proxyNodeProcessConfiguration['v' . $proxyNodeProcessConfigurationIndexes['v']] = 'auth iponly strong';
+								$proxyNodeProcessConfigurationIndexes['v']++;
 
 								foreach ($proxyNodeProcessUserIds as $proxyNodeProcessUserId) {
 									$proxyNodeUser = $this->nodeData['users'][$proxyNodeProcessUserId];
-									// todo: add deny ACLs for user request_destination_ids exceeded if user status_allowing_request_destinations_only is false
+
+									if (($proxyNodeProcessConfigurationIndexes['u'] % 10) === 0) {
+										$proxyNodeProcessConfiguration['u' . $proxyNodeProcessConfigurationIndexes['u']] = 'users';
+										$proxyNodeProcessConfigurationIndexes['u']++;
+									}
+
+									$proxyNodeProcessConfiguration['u' . substr($proxyNodeProcessConfigurationIndexes['u'], 0, -1) . 0] .= ' ' . $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
 
 									if (
 										(
@@ -743,6 +717,7 @@
 											(empty($proxyNodeUser['authentication_whitelist']) === false)
 										)
 									) {
+										// todo: add deny ACLs for user request_destination_ids exceeded if user status_allowing_request_destinations_only is false
 										$proxyNodeLogFormat = 'nolog';
 
 										if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
@@ -756,6 +731,7 @@
 										);
 
 										if (empty($proxyNodeUser['status_allowing_request_destinations_only']) === false) {
+											// todo: chunk request destinations with $proxyNodeProcessConfigurationIndexes['y'] index instead of using array_chunk()
 											$proxyNodeUserRequestDestinations = array();
 
 											foreach ($proxyNodeUser['request_destination_ids'] as $proxyNodeUserDestinationId) {
@@ -770,6 +746,7 @@
 										if (empty($proxyNodeUser['status_requiring_strict_authentication']) === true) {
 											if (empty($proxyNodeUser['authentication_username']) === false) {
 												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
+													// todo: set username ACLS with $proxyNodeProcessConfigurationIndexes['w'] index instead of using $proxyNodeUserAuthenticationUsernames with array_merge()
 													$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' * ' . $proxyNodeUserRequestDestinationPart;
 													$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
 												}
@@ -780,10 +757,12 @@
 
 										if (empty($proxyNodeUser['authentication_whitelist']) === false) {
 											// todo: save records in database with invisible delimiter to avoid exploding each line
+											// todo: chunk whitelist parts with $proxyNodeProcessConfigurationIndexes['z'] index instead of using array_chunk()
 											$proxyNodeUserAuthenticationWhitelistParts = array_chunk(explode("\n", $proxyNodeUser['authentication_whitelist']), 10);
 
 											foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
 												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
+													// todo: set username ACLS with $proxyNodeProcessConfigurationIndexes['w'] index instead of using $proxyNodeUserAuthenticationWhitelists with array_merge()
 													$proxyNodeUserAuthenticationWhitelists[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
 													$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
 												}
@@ -792,26 +771,33 @@
 									}
 								}
 
-								/* $proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ';
+								/*
+									$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ';
 
-								foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-									$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['external_ip_version_' . $nodeIpVersion];
+									foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+										$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['external_ip_version_' . $nodeIpVersion];
 
-									if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-										$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['internal_ip_version_' . $nodeIpVersion];
+										if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+											$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['internal_ip_version_' . $nodeIpVersion];
+										}
+
+										$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
+										// todo: test per-ACL nserver options
+										// todo: set proxy recursive DNS ACLs with $proxyNodeProcessConfigurationIndexes['x'] index
+										$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
 									}
 
-									$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
-									// todo: test per-ACL nserver options
-									$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
-								}
-
-								$proxyNodeUserAuthentication[] = 'deny *';
-								$proxyNodeUserAuthentication[] = 'flush';
-								$proxyNodeIndex++; */
+									$proxyNodeUserAuthentication[] = 'deny *';
+									$proxyNodeUserAuthentication[] = 'flush';
+								*/
 							}
 
-							/* foreach ($proxyNodeProcessPortNumbers as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
+							$proxyNodeProcessConfiguration['w' . $proxyNodeProcessConfigurationIndexes['w']] = 'deny *';
+							ksort($proxyNodeProcessConfiguration);
+							// todo: add $proxyNodeProcessInterfaceIp + node reserved internal ip service ACLs to $proxyNodeProcessConfiguration here
+								// omit port so it can be appended in the loop below with the -p parameter
+
+							foreach ($proxyNodeProcessPortNumbers as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
 								// todo: add {dst|src} to _verifyNodeProcessConnections
 
 								while ($this->_verifyNodeProcessConnections($proxyNodeProcessPortNumber) === true) {
@@ -826,63 +812,56 @@
 									if (empty($proxyNodeProcessProcessIds) === false) {
 										$this->_killProcessIds($proxyNodeProcessProcessIds);
 									}
-
-									
 								}
-							} */
+
+								/*
+								todo: verify that process still works with process_id option at end of file
+									if it doesn't work
+										use 't' index if it's required with krsort before service name ACLs
+										add new unique index for service name ACLs apart from recursive DNS indexes
+								*/
+								$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
+								shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
+								$systemdServiceContents = array(
+									'[Service]',
+									'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
+								);
+								file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $systemdServiceContents));
+								file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
+								chmod($proxyNodeProcessConfigurationPath, 0755);
+								shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
+								unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
+								$proxyNodeProcessEnded = false;
+								$proxyNodeProcessEndedTime = time();
+
+								while ($proxyNodeProcessEnded === false) {
+									$proxyNodeProcessEnded = ($this->_verifyNodeProcess($proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
+									sleep(1);
+								}
+
+								$proxyNodeProcessStarted = false;
+								$proxyNodeProcessStartedTime = time();
+
+								while ($proxyNodeProcessStarted === false) {
+									shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
+									$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
+									sleep(2);
+								}
+
+								if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
+									$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
+
+									if (is_numeric($proxyNodeProcessProcessId) === true) {
+										shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n1000000000');
+										shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n=1000000000');
+										shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s"unlimited"');
+										shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
+									}
+								}
+							}
 						}
 					}
 				}
-
-
-				/*
-						$proxyNodeIndex = 0;
-						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcessType];
-
-						while (isset($proxyNodeProcessConfigurationOptions['listening_address_' . $proxyNodeIndex]) === true) {
-							$proxyNodeProcessConfiguration['listening_address_' . $proxyNodeIndex] .= ' -p' . $proxyNodeProcessPortNumber;
-							$proxyNodeIndex++;
-						}
-
-						$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
-						shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
-						$systemdServiceContents = array(
-							'[Service]',
-							'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
-						);
-						file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $systemdServiceContents));
-						file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
-						chmod($proxyNodeProcessConfigurationPath, 0755);
-						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
-						unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
-						$proxyNodeProcessEnded = false;
-						$proxyNodeProcessEndedTime = time();
-
-						while ($proxyNodeProcessEnded === false) {
-							$proxyNodeProcessEnded = ($this->_verifyNodeProcess($proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
-							sleep(1);
-						}
-
-						$proxyNodeProcessStarted = false;
-						$proxyNodeProcessStartedTime = time();
-
-						while ($proxyNodeProcessStarted === false) {
-							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
-							$proxyNodeProcessStarted = ($this->_verifyNodeProcess($proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
-							sleep(2);
-						}
-
-						if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
-							$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
-
-							if (is_numeric($proxyNodeProcessProcessId) === true) {
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n1000000000');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n=1000000000');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s"unlimited"');
-								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
-							}
-						}
-				*/
 			}
 
 			$this->nodeData['node_processes'] = $nodeProcesses;
