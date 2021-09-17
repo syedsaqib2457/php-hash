@@ -402,153 +402,44 @@
 			}
 
 			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
-			$proxyNodeConfiguration = array(
-				'maxconn 20000',
-				'nobandlimin',
-				'nobandlimout',
-				'process_id' => false,
-				'stacksize 0',
-				'flush',
-				'allow * * * * HTTP',
-				'allow * * * * HTTPS',
-				'log' => false
-			);
-
-			foreach ($this->nodeData['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
-				foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-					$proxyNodeConfiguration[] = 'nserver ' . $nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion] . '[:' . $nodeRecursiveDnsDestination['port_number_version_' . $nodeIpVersion] . ']';
-				}
-			}
-
-			$this->nodeData['proxy_node_process_types'] = array(
-				'proxy' => 'http_proxy',
-				'socks' => 'socks_proxy'
-			);
-
 			// todo: only add node-specific ACLs to avoid bloated config file and log each process by node_id
-			foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-				$proxyNodeConfiguration['log'] = 'log /var/log/' . $proxyNodeProcessType;
+			// todo: move this to reconfig section
+			// $response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
 
-				if (empty($this->nodeData['node_processes'][$proxyNodeProcessType]) === false) {
-					$proxyNodeIndex = 0;
-					$proxyNodeUserAuthentication = array(
-						$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] => $proxyNodeProcessTypeServiceName . ' -a '
-					);
+			/* foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
+				$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ';
 
-					foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-						$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' -i' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
+				foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+					$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['external_ip_version_' . $nodeIpVersion];
+
+					if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+						$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['internal_ip_version_' . $nodeIpVersion];
 					}
 
-					$proxyNodeIndex++;
-					$proxyNodeUsers = array();
-
-					foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-						$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion] . ' -i' . $this->nodeData['private_networking']['reserved_node_ip'][$nodeIpVersion];
-					}
-
-					foreach ($this->nodeData['node_users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUserIds) {
-						$proxyNodeUserAuthentication[] = 'auth iponly strong';
-						$proxyNodeUserAuthenticationUsernames = $proxyNodeUserAuthenticationWhitelists = array();
-
-						foreach ($proxyNodeUserIds as $proxyNodeUserId) {
-							$proxyNodeUser = $this->nodeData['users'][$proxyNodeProcessType][$proxyNodeUserId];
-							// todo: add deny ACLs for user request_destination_ids exceeded if user status_allowing_request_destinations_only is false
-
-							if (
-								(
-									(empty($proxyNodeUser['request_destination_id']) === false) ||
-									(empty($proxyNodeUser['status_allowing_request_destinations_only']) === true)
-								) &&
-								(
-									(empty($proxyNodeUser['authentication_username']) === false) ||
-									(empty($proxyNodeUser['authentication_whitelist']) === false)
-								)
-							) {
-								$proxyNodeLogFormat = 'nolog';
-
-								if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
-									$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
-								}
-
-								$proxyNodeUserDestinationParts = array(
-									array(
-										'*'
-									)
-								);
-
-								if (empty($proxyNodeUser['status_allowing_request_destinations_only']) === false) {
-									$proxyNodeUserDestinations = $proxyNodeUser['request_destination_id'];
-
-									foreach ($proxyNodeUserDestinations as $proxyNodeUserDestinationKey => $proxyNodeUserDestinationId) {
-										$proxyNodeUserDestinations[$proxyNodeUserDestinationKey] = $this->nodeData['request_destinations'][$proxyNodeProcessType][$proxyNodeUserDestinationId];
-									}
-
-									$proxyNodeUserDestinationParts = array_map(function($proxyNodeUserDestinationPart) {
-										return implode(',', $proxyNodeUserDestinationPart);
-									}, array_chunk($proxyNodeUserDestinations, 10));
-								}
-
-								$proxyNodeUsername = $proxyNodeUser['authentication_username'];
-
-								if (empty($proxyNodeUser['status_requiring_strict_authentication']) === true) {
-									if (empty($proxyNodeUsername) === false) {
-										foreach ($proxyNodeUserDestinationParts as $proxyNodeUserDestinationPart) {
-											$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUsername . ' * ' . $proxyNodeUserDestinationPart;
-											$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
-										}
-									}
-
-									$proxyNodeUsername = '*';
-								}
-
-								if (empty($proxyNodeUser['authentication_whitelist']) === false) {
-									$proxyNodeUserAuthenticationWhitelistParts = array_chunk(explode("\n", $proxyNodeUser['authentication_whitelist']), 10);
-
-									foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
-										foreach ($proxyNodeUserDestinationParts as $proxyNodeUserDestinationPart) {
-											$proxyNodeUserAuthenticationWhitelists[] = 'allow ' . $proxyNodeUserName . ' ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
-											$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
-										}
-									}
-								}
-							}
-						}
-
-						$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ';
-
-						foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
-							$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['external_ip_version_' . $nodeIpVersion];
-
-							if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
-								$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['internal_ip_version_' . $nodeIpVersion];
-							}
-
-							$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
-							// todo: test per-ACL nserver options
-							$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
-						}
-
-						$proxyNodeUserAuthentication[] = 'deny *';
-						$proxyNodeUserAuthentication[] = 'flush';
-						$proxyNodeIndex++;
-					}
-
-					$proxyNodeUserAuthentication[] = 'deny *';
-					$proxyNodeUserAuthentication[] = 'flush';
-
-					foreach ($this->nodeData['users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUser) {
-						$proxyNodeUsers[$proxyNodeUser['authentication_username']] = $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
-					}
-
-					foreach (array_chunk($proxyNodeUsers, 10) as $proxyNodeUserPartKey => $proxyNodeUserParts) {
-						$proxyNodeUsers[$proxyNodeUserPartKey] = 'users ' . implode(' ', $proxyNodeUserParts);
-					}
-
-					$this->nodeData['proxy_node_configuration'][$proxyNodeType] = array_merge($proxyNodeConfiguration, $proxyNodeUsers, $proxyNodeUserAuthentication, array(
-						'deny *'
-					));
+					$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
+					// todo: test per-ACL nserver options
+					$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
 				}
-			}
+
+				$proxyNodeUserAuthentication[] = 'deny *';
+				$proxyNodeUserAuthentication[] = 'flush';
+				$proxyNodeIndex++;
+
+				$proxyNodeUserAuthentication[] = 'deny *';
+				$proxyNodeUserAuthentication[] = 'flush';
+
+				foreach ($this->nodeData['users'][$proxyNodeProcessType] as $proxyNodeId => $proxyNodeUser) {
+					$proxyNodeUsers[$proxyNodeUser['authentication_username']] = $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
+				}
+
+				foreach (array_chunk($proxyNodeUsers, 10) as $proxyNodeUserPartKey => $proxyNodeUserParts) {
+					$proxyNodeUsers[$proxyNodeUserPartKey] = 'users ' . implode(' ', $proxyNodeUserParts);
+				}
+
+				$this->nodeData['proxy_node_configuration'][$proxyNodeType] = array_merge($proxyNodeConfiguration, $proxyNodeUsers, $proxyNodeUserAuthentication, array(
+					'deny *'
+				));
+			} */
 
 			$recursiveDnsNodeConfiguration = array(
 				// todo: add new ACL with internal node IPs instaed of private network blocks if privateNetworkIpBlocks doesn't work internally
@@ -791,8 +682,22 @@
 			}
 
 			$this->nodeData['node_processes'] = $nodeProcesses;
+			$proxyNodeProcessConfiguration = array(
+				'maxconn 20000',
+				'nobandlimin',
+				'nobandlimout',
+				'process_id' => false,
+				'stacksize 0',
+				'flush',
+				'allow * * * * HTTP',
+				'allow * * * * HTTPS',
+				'log' => false
+			);
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
+				// todo: use cached data set for verification if $nodeProcessPartKey === 0
+				// todo: refactor _verifyNodeProcess loop for new nodeData format
+
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessId => $nodeProcessPortNumber) {
 						if ($this->_verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
@@ -801,25 +706,136 @@
 					}
 				}
 
+				// todo: refactor _processFirewall for new nodeData format
 				$this->_processFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
 				foreach ($this->nodeData['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-					foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
-						while ($this->_verifyNodeProcessConnections($proxyNodeProcessPortNumber) === true) {
-							sleep(1);
-						}
+					if (empty($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]) === false) {
+						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessNodeId => $proxyNodeProcessPortNumbers) {
+							$proxyNodeConfiguration = array(
+								'maxconn 20000',
+								'nobandlimin',	
+								'nobandlimout',
+								'process_id' => false,
+								'stacksize 0',
+								'flush',
+								'allow * * * * HTTP',
+								'allow * * * * HTTPS',
+								'log' => 'log /var/log/' . $proxyNodeProcessType
+							);
 
-						$proxyNodeProcessName = $proxyNodeProcessType . '_' . $proxyNodeProcessId;
+							foreach ($this->nodeData['node_process_users'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessUserIds) {
+								$proxyNodeUserAuthentication[] = 'auth iponly strong';
+								$proxyNodeUserAuthenticationUsernames = $proxyNodeUserAuthenticationWhitelists = array();
 
-						if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
-							$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName . ' ', '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
+								foreach ($proxyNodeProcessUserIds as $proxyNodeProcessUserId) {
+									$proxyNodeUser = $this->nodeData['users'][$proxyNodeProcessUserId];
+									// todo: add deny ACLs for user request_destination_ids exceeded if user status_allowing_request_destinations_only is false
 
-							if (empty($proxyNodeProcessProcessIds) === false) {
-								$this->_killProcessIds($proxyNodeProcessProcessIds);
+									if (
+										(
+											(empty($proxyNodeUser['request_destination_ids']) === false) ||
+											(empty($proxyNodeUser['status_allowing_request_destinations_only']) === true)
+										) &&
+										(
+											(empty($proxyNodeUser['authentication_username']) === false) ||
+											(empty($proxyNodeUser['authentication_whitelist']) === false)
+										)
+									) {
+										$proxyNodeLogFormat = 'nolog';
+
+										if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
+											$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
+										}
+
+										$proxyNodeUserRequestDestinationParts = array(
+											array(
+												'*'
+											)
+										);
+
+										if (empty($proxyNodeUser['status_allowing_request_destinations_only']) === false) {
+											$proxyNodeUserRequestDestinations = array();
+
+											foreach ($proxyNodeUser['request_destination_ids'] as $proxyNodeUserDestinationId) {
+												$proxyNodeUserRequestDestinations[$proxyNodeUserRequestDestinationId] = $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+											}
+
+											$proxyNodeUserRequestDestinationParts = array_map(function($proxyNodeUserRequestDestinationPart) {
+												return implode(',', $proxyNodeUserRequestDestinationPart);
+											}, array_chunk($proxyNodeUserRequestDestinations, 10));
+										}
+
+										if (empty($proxyNodeUser['status_requiring_strict_authentication']) === true) {
+											if (empty($proxyNodeUser['authentication_username']) === false) {
+												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
+													$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' * ' . $proxyNodeUserRequestDestinationPart;
+													$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
+												}
+											}
+
+											$proxyNodeUser['authentication_username'] = '*';
+										}
+
+										if (empty($proxyNodeUser['authentication_whitelist']) === false) {
+											// todo: save records in database with invisible delimiter to avoid exploding each line
+											$proxyNodeUserAuthenticationWhitelistParts = array_chunk(explode("\n", $proxyNodeUser['authentication_whitelist']), 10);
+
+											foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
+												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
+													$proxyNodeUserAuthenticationWhitelists[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
+													$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
+												}
+											}
+										}
+									}
+								}
+
+								/* $proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] = $proxyNodeProcessTypeServiceName . ' -a ';
+
+								foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+									$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['external_ip_version_' . $nodeIpVersion];
+
+									if (empty($proxyNode['internal_ip_version_' . $nodeIpVersion]) === false) {
+										$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeId]['internal_ip_version_' . $nodeIpVersion];
+									}
+
+									$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
+									// todo: test per-ACL nserver options
+									$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
+								}
+
+								$proxyNodeUserAuthentication[] = 'deny *';
+								$proxyNodeUserAuthentication[] = 'flush';
+								$proxyNodeIndex++; */
 							}
-						}
 
+							/* foreach ($proxyNodeProcessPortNumbers as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
+								// todo: add {dst|src} to _verifyNodeProcessConnections
+
+								while ($this->_verifyNodeProcessConnections($proxyNodeProcessPortNumber) === true) {
+									sleep(1);
+								}
+
+								$proxyNodeProcessName = $proxyNodeProcessType . '_' . $proxyNodeProcessId;
+
+								if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
+									$proxyNodeProcessProcessIds = $this->fetchProcessIds($proxyNodeProcessName . ' ', '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
+
+									if (empty($proxyNodeProcessProcessIds) === false) {
+										$this->_killProcessIds($proxyNodeProcessProcessIds);
+									}
+
+									
+								}
+							} */
+						}
+					}
+				}
+
+
+				/*
 						$proxyNodeIndex = 0;
 						$proxyNodeProcessConfiguration = $this->nodeData['proxy_node_configuration'][$proxyNodeProcessType];
 
@@ -866,11 +882,11 @@
 								shell_exec('sudo ' . $this->nodeData['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
 							}
 						}
-					}
-				}
+				*/
 			}
 
 			$this->nodeData['node_processes'] = $nodeProcesses;
+			// todo: refactor _verifyNodeProcess loop for new nodeData format
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
@@ -931,6 +947,7 @@
 				}
 			}
 
+			// todo: cache data with new nodeData format
 			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);

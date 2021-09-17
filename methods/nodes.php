@@ -1820,6 +1820,10 @@
 						128 => 6
 					),
 					'private_network' => $this->settings['private_network'],
+					'proxy_node_process_types' => array(
+						'proxy' => 'http_proxy',
+						'socks' => 'socks_proxy'
+					),
 					'version' => $this->settings['version']
 				),
 				'message' => 'Error processing nodes, please try again.',
