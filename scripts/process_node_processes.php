@@ -144,8 +144,8 @@
 			return;
 		}
 
-		protected function _verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) {
-			// todo: pass reserved internal ip for each process port
+		protected function _verifyNodeProcess($nodeProcessNodeIp, $nodeProcessIpVersion, $nodeProcessPortNumber, $nodeProcessType) {
+			// todo: add options for ipv4 + ipv6 if not auto-detected based on $nodeProcessIpVersion
 			$response = false;
 
 			switch ($nodeProcessType) {
@@ -155,11 +155,11 @@
 						'http_proxy' => '-x',
 						'socks_proxy' => '--socks5-hostname'
 					);
-					exec('curl ' . $parameters[$nodeProcessType] . ' ' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ':' . $nodeProcessPortNumber . ' http://ghostcompute' . uniqid() . time() . ' -v --connect-timeout 1 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+					exec('curl ' . $parameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 1 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 					$response = (empty($proxyNodeProcessResponse) === true);
 					break;
 				case 'recursive_dns':
-					exec('dig +time=1 +tries=1 ghostcompute @' . $this->nodeData['private_network']['reserved_internal_ip'][4] . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+					exec('dig +time=1 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 					$response = (empty($recursiveDnsNodeProcessResponse) === false);
 					break;
 			}
@@ -202,35 +202,45 @@
 		}
 
 		public function process() {
-			// todo: refactor process reconfig for ipset rules + matrix of node processes with reserved internal ips
-			$nodeProcesses = json_decode($nodeProcesses, file_get_contents('/tmp/node_processes'));
+			$nodeData = json_decode(file_get_contents('/tmp/node_data'));
+			// todo: if more than 10 ports fail from timing out during reconfig, send status data to system to increase process count if bottleneck is from congested ports and isn't from low system resources
+				// if user enables automatic process scaling, user should be able to disable this to prevent ports from being opened
+				// increase timeout for verifynodeprocess requests until latency is measured from a successful response, add latency to resource usage data
 
 			if (empty($this->nodeData['nodes']) === true) {
-				if (empty(nodeProcesses) === false) {
-					foreach ($nodeProcesses as $nodeProcessType => $nodeProcessPortNumbers) {
-						foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-							if ($this->_verifyNodeProcess($nodeProcessPortNumber, $nodeProcessType) === false) {
-								exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
-								exit;
+				if (empty($nodeData) === false) {
+					foreach ($nodeData['node_processes'] as $nodeProcessType => $nodeProcessNodeParts) {
+						foreach ($nodeProcessNodeParts as $nodeProcessNodePart) {
+							foreach ($nodeProcessNodePart as $nodeProcessNodeId => $nodeProcessPortNumbers) {
+								$nodeReservedInternalDestinationIpVersion = key($nodeData['node_reserved_internal_destinations'][$nodeProcessNodeId]);
+
+								foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
+									if ($this->_verifyNodeProcess($nodeData['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === false) {
+										exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+										return $response;
+									}
+								}
 							}
 						}
 					}
 				}
 
-				// todo: log node processing errors if processes won't start after X seconds, processing time per request, timeouts, number of logs processed for each request, etc
+				// todo: add default $response with "no new node data to process, etc"
 				return;
 			}
 
 			$nodeProcessesToRemove = array();
 
-			foreach ($nodeProcesses as $nodeProcessType => $nodeProcessParts) {
-				foreach ($nodeProcessParts as $nodeProcessPartKey => $nodeProcessPart) {
-					foreach ($nodeProcessPart as $nodeProcessId => $nodeProcessPortNumber) {
-						if (
-							(empty($this->nodeData['node_processes'][$nodeProcessType][0][$nodeProcessId]) === true) &&
-							(empty($this->nodeData['node_processes'][$nodeProcessType][1][$nodeProcessId]) === true)
-						) {
-							$nodeProcessesToRemove[$nodeProcessType][$nodeProcessId] = $nodeProcessId;
+			foreach ($nodeData['node_processes'] as $nodeProcessType => $nodeProcessNodeParts) {
+				foreach ($nodeProcessNodeParts as $nodeProcessNodePart) {
+					foreach ($nodeProcessNodePart as $nodeProcessNodeId => $nodeProcessPortNumbers) {
+						foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
+							if (
+								(empty($this->nodeData['node_processes'][$nodeProcessType][0][$nodeProcessNodeId][$nodeProcessId]) === true) &&
+								(empty($this->nodeData['node_processes'][$nodeProcessType][1][$nodeProcessNodeId][$nodeProcessId]) === true)
+							) {
+								$nodeProcessesToRemove[$nodeProcessType][$nodeProcessId] = $nodeProcessId;
+							}
 						}
 					}
 				}
@@ -883,40 +893,41 @@
 
 			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
 
-			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessId) {
-				$nodeProcessName = $nodeProcessType . '_' . $nodeProcessId;
+			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessIds) {
+				$nodeProcessProcessIds = array();
 
-				switch ($nodeProcessType) {
-					case 'http_proxy':
-					case 'socks_proxy':
-						if (file_exists('/var/run/3proxy/' . $nodeProcessName . '.pid') === true) {
-							$nodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $nodeProcessName . '.pid');
-						}
+				foreach ($nodeProcessIds as $nodeProcessId) {
+					$nodeProcessName = $nodeProcessType . '_' . $nodeProcessId;
 
-						unlink('/bin/' . $nodeProcessName);
-						unlink('/etc/3proxy/' . $nodeProcessName . '.cfg');
-						unlink('/etc/systemd/system/' . $nodeProcessName . '.service');
-						unlink('/var/run/3proxy/' . $nodeProcessName . '.pid');
-						break;
-					case 'recursive_dns':
-						if (file_exists('/var/run/named/named_' . $nodeProcess['id'] . '.pid') === true) {
-							$nodeProcessProcessId = file_get_contents('/var/run/named/named_' . $nodeProcess['id'] . '.pid');
-						}
+					switch ($nodeProcessType) {
+						case 'http_proxy':
+						case 'socks_proxy':
+							if (file_exists('/var/run/3proxy/' . $nodeProcessName . '.pid') === true) {
+								$nodeProcessProcessIds[] = file_get_contents('/var/run/3proxy/' . $nodeProcessName . '.pid');
+							}
 
-						rmdir('/etc/bind_' . $nodeProcessName);
-						rmdir('/var/cache/bind_' . $nodeProcessName);
-						unlink('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessName);
-						unlink('/lib/systemd/system/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessName . '.service');
-						unlink('/usr/sbin/named_' . $nodeProcessName);
-						unlink('/var/run/named/' . $nodeProcessName . '.pid');
-						break;
+							unlink('/bin/' . $nodeProcessName);
+							unlink('/etc/3proxy/' . $nodeProcessName . '.cfg');
+							unlink('/etc/systemd/system/' . $nodeProcessName . '.service');
+							unlink('/var/run/3proxy/' . $nodeProcessName . '.pid');
+							break;
+						case 'recursive_dns':
+							if (file_exists('/var/run/named/named_' . $nodeProcess['id'] . '.pid') === true) {
+								$nodeProcessProcessIds[] = file_get_contents('/var/run/named/named_' . $nodeProcess['id'] . '.pid');
+							}
+
+							rmdir('/etc/bind_' . $nodeProcessName);
+							rmdir('/var/cache/bind_' . $nodeProcessName);
+							unlink('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessName);
+							unlink('/lib/systemd/system/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessName . '.service');
+							unlink('/usr/sbin/named_' . $nodeProcessName);
+							unlink('/var/run/named/' . $nodeProcessName . '.pid');
+							break;
+					}
 				}
 
-				if (
-					(empty($nodeProcessProcessId) === false) &&
-					(is_numeric($nodeProcessProcessId) === true)
-				) {
-					$this->_killProcessIds(array($nodeProcessProcessId));
+				if (empty($nodeProcessProcessIds) === false) {
+					$this->_killProcessIds($nodeProcessProcessIds);
 				}
 			}
 

@@ -1982,6 +1982,7 @@
 
 			$nodeProcesses = $this->fetch(array(
 				'fields' => array(
+					'id',
 					'node_id',
 					'port_number',
 					'type'
@@ -2123,7 +2124,7 @@
 					$nodeProcessPartKeys[$nodeProcess['node_id']] = 0;
 				}
 
-				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][] = $nodeProcess['port_number'];
+				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
 				$nodeProcessPartKey = abs($nodeProcessPartKey + -1);
 			}
 
@@ -2261,10 +2262,7 @@
 			}
 
 			foreach ($nodeReservedInternalDestinations as $nodeReservedInternalDestination) {
-				$response['data']['node_ips'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $nodeReservedInternalDestination['ip_address'];
-				$response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['node_id']] = $nodeReservedInternalDestination;
-				unset($response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['node_id']]['ip_address_version']);
-				unset($response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['node_id']]['node_id']);
+				$response['data']['node_ips'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['node_id']][$nodeReservedInternalDestination['ip_address_version']] = $nodeReservedInternalDestination['ip_address'];
 			}
 
 			$response['message'] = 'Nodes processed successfully.';
