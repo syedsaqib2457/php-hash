@@ -684,12 +684,13 @@
 								'a7' => 'log /var/log/' . $proxyNodeProcessType,
 								'a8' => false
 							);
-							// todo: use indexes instead of array_chunk, explode, array_merge, etc inside of loop to avoid performance penalty
 							$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
 								'b' => 0,
-								'c' => 0, // todo: index for whitelist ACLs in $proxyNodeProcessConfiguration
+								'c' => 0,
 								'd' => 0,
-								'e' => 0 // todo: index for proxy recursive DNS + service name ACLs with IP + port interfaces in $proxyNodeProcessConfiguration
+								'e' => 0,
+								'f' => 0,
+								'g' => 0
 							);
 
 							foreach ($this->nodeData['node_process_users'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessUserIds) {
@@ -729,14 +730,14 @@
 											$proxyNodeUserRequestDestinationParts = array();
 
 											foreach ($proxyNodeUser['request_destination_ids'] as $proxyNodeUserDestinationId) {
-												if (($proxyNodeProcessConfigurationIndexes['f'] % 10) === 0) {
-													$proxyNodeUserRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['f']] = $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
-													$proxyNodeProcessConfigurationPartIndexes['f'] = $proxyNodeProcessConfigurationIndexes['f'];
+												if (($proxyNodeProcessConfigurationIndexes['h'] % 10) === 0) {
+													$proxyNodeUserRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['h']] = $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+													$proxyNodeProcessConfigurationPartIndexes['h'] = $proxyNodeProcessConfigurationIndexes['h'];
 												} else {
-													$proxyNodeUserRequestDestinationParts[$proxyNodeUserRequestDestinationPartIndexes['f']] .= ',' . $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+													$proxyNodeUserRequestDestinationParts[$proxyNodeUserRequestDestinationPartIndexes['h']] .= ',' . $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
 												}
 
-												$proxyNodeProcessConfigurationIndexes['f']++;
+												$proxyNodeProcessConfigurationIndexes['h']++;
 											}
 										}
 
@@ -764,14 +765,14 @@
 											$proxyNodeUserAuthenticationWhitelistParts = array();
 
 											foreach ($proxyNodeUser['authentication_whitelist'] as $proxyNodeUserAuthenticationWhitelist) {
-												if (($proxyNodeProcessConfigurationIndexes['g'] % 10) === 0) {
-													$proxyNodeUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationIndexes['g']] = $proxyNodeUserAuthenticationWhitelist;
-													$proxyNodeProcessConfigurationPartIndexes['g'] = $proxyNodeProcessConfigurationIndexes['g'];
+												if (($proxyNodeProcessConfigurationIndexes['i'] % 10) === 0) {
+													$proxyNodeUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationIndexes['i']] = $proxyNodeUserAuthenticationWhitelist;
+													$proxyNodeProcessConfigurationPartIndexes['i'] = $proxyNodeProcessConfigurationIndexes['i'];
 												} else {
-													$proxyNodeUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationPartIndexes['g']] .= ',' . $proxyNodeUserAuthenticationWhitelist;
+													$proxyNodeUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationPartIndexes['i']] .= ',' . $proxyNodeUserAuthenticationWhitelist;
 												}
 
-												$proxyNodeProcessConfigurationIndexes['g']++;
+												$proxyNodeProcessConfigurationIndexes['i']++;
 											}
 
 											foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
@@ -802,8 +803,6 @@
 										}
 
 										$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
-										// todo: test per-ACL nserver options
-										// todo: set proxy recursive DNS ACLs with $proxyNodeProcessConfigurationIndexes['e'] index
 										$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
 									}
 
@@ -812,9 +811,25 @@
 								*/
 							}
 
+							foreach ($this->nodeData['data']['node_ip_versions'] as $nodeIpVersion) {
+								$proxyNodeProcessConfiguration['e' . $proxyNodeProcessConfigurationIndexes['e']] = 'nserver ' . $this->nodeData['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_port_number_version_' . $nodeIpVersion] . ']';
+								$proxyNodeProcessConfigurationIndexes['e']++;
+								$proxyNodeProcessConfiguration['f'] = $proxyNodeProcessConfiguration['g'] = $proxyNodeProcessTypeServiceName . ' -a ';
+								$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeProcessNodeId]['external_ip_version_' . $nodeIpVersion];
+
+								if (empty($this->nodeData['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion]) === false) {
+									$proxyNodeProcessInterfaceIp = $this->nodeData['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion];
+								}
+
+								$proxyNodeProcessConfiguration['f'] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
+								$proxyNodeProcessConfiguration['g'] .= ' -e' . $this->nodeData['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$nodeIpVersion] . ' -i' . $this->nodeData['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$nodeIpVersion];
+							}
+
 							ksort($proxyNodeProcessConfiguration);
-							// todo: add $proxyNodeProcessInterfaceIp + node reserved internal ip service ACLs to $proxyNodeProcessConfiguration here
-								// omit port so it can be appended in the loop below with the -p parameter
+							$proxyNodeProcessInterfaceConfigurations = array(
+								'f' => $proxyNodeProcessConfiguration['f'],
+								'g' => $proxyNodeProcessConfiguration['g']
+							);
 
 							foreach ($proxyNodeProcessPortNumbers as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
 								// todo: add {dst|src} to _verifyNodeProcessConnections
@@ -833,13 +848,15 @@
 									}
 								}
 
-								$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
 								shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
-								$systemdServiceContents = array(
+								$proxyNodeProcessSystemdServiceFileContents = array(
 									'[Service]',
 									'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
 								);
-								file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $systemdServiceContents));
+								file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $proxyNodeProcessSystemdServiceFileContents));
+								$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
+								$proxyNodeProcessConfiguration['f'] = $proxyNodeProcessInterfaceConfigurations['f'] . ' -p' . $proxyNodeProcessPortNumber;
+								$proxyNodeProcessConfiguration['g'] = $proxyNodeProcessInterfaceConfigurations['g'] . ' -p' . $proxyNodeProcessPortNumber;
 								file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
 								chmod($proxyNodeProcessConfigurationPath, 0755);
 								shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
@@ -847,6 +864,7 @@
 								$proxyNodeProcessEnded = false;
 								$proxyNodeProcessEndedTime = time();
 
+								// todo: add reserved internal ip to _verifyNodeProcess()
 								while ($proxyNodeProcessEnded === false) {
 									$proxyNodeProcessEnded = ($this->_verifyNodeProcess($proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
 									sleep(1);
