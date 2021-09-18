@@ -776,12 +776,18 @@
 
 											foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
 												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
-													// todo: set whitelist ACLS with $proxyNodeProcessConfigurationIndexes['d'] index instead of using $proxyNodeUserAuthenticationWhitelists with array_merge()
-													$proxyNodeUserAuthenticationWhitelists[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
-													$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
+													$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'allow ' . $proxyNodeUser['authentication_username'] . ' ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
+													$proxyNodeProcessConfigurationIndexes['c']++;
+													$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = $proxyNodeLogFormat;
+													$proxyNodeProcessConfigurationIndexes['c']++;
 												}
 											}
 										}
+
+										$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'deny *';
+										$proxyNodeProcessConfigurationIndexes['d']++;
+										$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'flush';
+										$proxyNodeProcessConfigurationIndexes['d']++;
 									}
 								}
 
@@ -806,7 +812,6 @@
 								*/
 							}
 
-							$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'deny *';
 							ksort($proxyNodeProcessConfiguration);
 							// todo: add $proxyNodeProcessInterfaceIp + node reserved internal ip service ACLs to $proxyNodeProcessConfiguration here
 								// omit port so it can be appended in the loop below with the -p parameter
