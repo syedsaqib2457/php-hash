@@ -688,7 +688,7 @@
 							$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
 								'b' => 0,
 								'c' => 0, // todo: index for whitelist ACLs in $proxyNodeProcessConfiguration
-								'd' => 0, // todo: index for username ACLs in $proxyNodeProcessConfiguration
+								'd' => 0,
 								'e' => 0 // todo: index for proxy recursive DNS + service name ACLs with IP + port interfaces in $proxyNodeProcessConfiguration
 							);
 
@@ -719,12 +719,6 @@
 										)
 									) {
 										// todo: add deny ACLs for user request_destination_ids exceeded if user status_allowing_request_destinations_only is false
-										$proxyNodeLogFormat = 'nolog';
-
-										if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
-											$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
-										}
-
 										$proxyNodeUserRequestDestinationParts = array(
 											array(
 												'*'
@@ -746,12 +740,19 @@
 											}
 										}
 
+										$proxyNodeLogFormat = 'nolog';
+
+										if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
+											$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
+										}
+
 										if (empty($proxyNodeUser['status_requiring_strict_authentication']) === true) {
 											if (empty($proxyNodeUser['authentication_username']) === false) {
 												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
-													// todo: set username ACLS with $proxyNodeProcessConfigurationIndexes['d'] index instead of using $proxyNodeUserAuthenticationUsernames with array_merge()
-													$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' * ' . $proxyNodeUserRequestDestinationPart;
-													$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
+													$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'allow ' . $proxyNodeUser['authentication_username'] . ' * ' . $proxyNodeUserRequestDestinationPart;
+													$proxyNodeProcessConfigurationIndexes['d']++;
+													$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = $proxyNodeLogFormat;
+													$proxyNodeProcessConfigurationIndexes['d']++;
 												}
 											}
 
