@@ -685,7 +685,7 @@
 								't8' => false
 							);
 							// todo: use indexes instead of array_chunk, explode, array_merge, etc inside of loop to avoid performance penalty
-							$proxyNodeProcessConfigurationIndexes = array(
+							$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
 								'u' => 0, // todo: index for users list in $proxyNodeProcessConfiguration
 								'v' => 0, // todo: index for whitelist ACLs in $proxyNodeProcessConfiguration
 								'w' => 0, // todo: index for username ACLs in $proxyNodeProcessConfiguration
@@ -703,10 +703,11 @@
 
 									if (($proxyNodeProcessConfigurationIndexes['u'] % 10) === 0) {
 										$proxyNodeProcessConfiguration['u' . $proxyNodeProcessConfigurationIndexes['u']] = 'users';
-										$proxyNodeProcessConfigurationIndexes['u']++;
+										$proxyNodeProcessConfigurationPartIndexes['u'] = $proxyNodeProcessConfigurationIndexes['u'];
 									}
 
-									$proxyNodeProcessConfiguration['u' . substr($proxyNodeProcessConfigurationIndexes['u'], 0, -1) . 0] .= ' ' . $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
+									$proxyNodeProcessConfiguration['u' . $proxyNodeProcessConfigurationPartIndexes['u']] .= ' ' . $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
+									$proxyNodeProcessConfigurationIndexes['u']++;
 
 									if (
 										(
@@ -732,16 +733,19 @@
 										);
 
 										if (empty($proxyNodeUser['status_allowing_request_destinations_only']) === false) {
-											// todo: chunk request destinations with $proxyNodeProcessConfigurationIndexes['y'] index instead of using array_chunk()
-											$proxyNodeUserRequestDestinations = array();
+											$proxyNodeProcessConfigurationIndexes['y'] = $proxyNodeProcessConfigurationPartIndexes['y'] = 0;
+											$proxyNodeUserRequestDestinationParts = array();
 
 											foreach ($proxyNodeUser['request_destination_ids'] as $proxyNodeUserDestinationId) {
-												$proxyNodeUserRequestDestinations[$proxyNodeUserRequestDestinationId] = $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
-											}
+												if (($proxyNodeProcessConfigurationIndexes['y'] % 10) === 0) {
+													$proxyNodeUserRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['y']] = $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+													$proxyNodeProcessConfigurationPartIndexes['y'] = $proxyNodeProcessConfigurationIndexes['y'];
+												} else {
+													$proxyNodeUserRequestDestinationParts[$proxyNodeUserRequestDestinationPartIndex] .= ',' . $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+												}
 
-											$proxyNodeUserRequestDestinationParts = array_map(function($proxyNodeUserRequestDestinationPart) {
-												return implode(',', $proxyNodeUserRequestDestinationPart);
-											}, array_chunk($proxyNodeUserRequestDestinations, 10));
+												$proxyNodeProcessConfigurationIndexes['y']++;
+											}
 										}
 
 										if (empty($proxyNodeUser['status_requiring_strict_authentication']) === true) {
