@@ -681,7 +681,8 @@
 								't4' => 'flush',
 								't5' => 'allow * * * * HTTP',
 								't6' => 'allow * * * * HTTPS',
-								't7' => 'log /var/log/' . $proxyNodeProcessType
+								't7' => 'log /var/log/' . $proxyNodeProcessType,
+								't8' => false
 							);
 							// todo: use indexes instead of array_chunk, explode, array_merge, etc inside of loop to avoid performance penalty
 							$proxyNodeProcessConfigurationIndexes = array(
@@ -756,7 +757,6 @@
 										}
 
 										if (empty($proxyNodeUser['authentication_whitelist']) === false) {
-											// todo: save records in database with invisible delimiter to avoid exploding each line
 											// todo: chunk whitelist parts with $proxyNodeProcessConfigurationIndexes['z'] index instead of using array_chunk()
 											$proxyNodeUserAuthenticationWhitelistParts = array_chunk(explode("\n", $proxyNodeUser['authentication_whitelist']), 10);
 
@@ -814,13 +814,7 @@
 									}
 								}
 
-								/*
-								todo: verify that process still works with process_id option at end of file
-									if it doesn't work
-										use 't' index if it's required with krsort before service name ACLs
-										add new unique index for service name ACLs apart from recursive DNS indexes
-								*/
-								$proxyNodeProcessConfiguration['process_id'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
+								$proxyNodeProcessConfiguration['t8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
 								shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
 								$systemdServiceContents = array(
 									'[Service]',
