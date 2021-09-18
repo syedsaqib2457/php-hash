@@ -674,40 +674,39 @@
 					if (empty($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]) === false) {
 						foreach ($this->nodeData['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessNodeId => $proxyNodeProcessPortNumbers) {
 							$proxyNodeProcessConfiguration = array(
-								't0' => 'maxconn 20000',
-								't1' => 'nobandlimin',	
-								't2' => 'nobandlimout',
-								't3' => 'stacksize 0',
-								't4' => 'flush',
-								't5' => 'allow * * * * HTTP',
-								't6' => 'allow * * * * HTTPS',
-								't7' => 'log /var/log/' . $proxyNodeProcessType,
-								't8' => false
+								'a0' => 'maxconn 20000',
+								'a1' => 'nobandlimin',	
+								'a2' => 'nobandlimout',
+								'a3' => 'stacksize 0',
+								'a4' => 'flush',
+								'a5' => 'allow * * * * HTTP',
+								'a6' => 'allow * * * * HTTPS',
+								'a7' => 'log /var/log/' . $proxyNodeProcessType,
+								'a8' => false
 							);
 							// todo: use indexes instead of array_chunk, explode, array_merge, etc inside of loop to avoid performance penalty
 							$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
-								'u' => 0, // todo: index for users list in $proxyNodeProcessConfiguration
-								'v' => 0, // todo: index for whitelist ACLs in $proxyNodeProcessConfiguration
-								'w' => 0, // todo: index for username ACLs in $proxyNodeProcessConfiguration
-								'x' => 0, // todo: index for proxy recursive DNS + service name ACLs with IP + port interfaces in $proxyNodeProcessConfiguration
-								'y' => 0, // todo: index for request destination parts
-								'z' => 0 // todo: index for whitelist ACL parts
+								'b' => 0,
+								'c' => 0, // todo: index for whitelist ACLs in $proxyNodeProcessConfiguration
+								'd' => 0, // todo: index for username ACLs in $proxyNodeProcessConfiguration
+								'e' => 0 // todo: index for proxy recursive DNS + service name ACLs with IP + port interfaces in $proxyNodeProcessConfiguration
 							);
 
 							foreach ($this->nodeData['node_process_users'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessUserIds) {
-								$proxyNodeProcessConfiguration['v' . $proxyNodeProcessConfigurationIndexes['v']] = 'auth iponly strong';
-								$proxyNodeProcessConfigurationIndexes['v']++;
+								$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'auth iponly strong';
+								$proxyNodeProcessConfigurationIndexes['c']++;
 
 								foreach ($proxyNodeProcessUserIds as $proxyNodeProcessUserId) {
+									$proxyNodeProcessConfigurationIndexes['f'] = $proxyNodeProcessConfigurationPartIndexes['f'] = $proxyNodeProcessConfigurationIndexes['g'] = $proxyNodeProcessConfigurationPartIndexes['g'] = 0;
 									$proxyNodeUser = $this->nodeData['users'][$proxyNodeProcessUserId];
 
-									if (($proxyNodeProcessConfigurationIndexes['u'] % 10) === 0) {
-										$proxyNodeProcessConfiguration['u' . $proxyNodeProcessConfigurationIndexes['u']] = 'users';
-										$proxyNodeProcessConfigurationPartIndexes['u'] = $proxyNodeProcessConfigurationIndexes['u'];
+									if (($proxyNodeProcessConfigurationIndexes['b'] % 10) === 0) {
+										$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationIndexes['b']] = 'users';
+										$proxyNodeProcessConfigurationPartIndexes['b'] = $proxyNodeProcessConfigurationIndexes['b'];
 									}
 
-									$proxyNodeProcessConfiguration['u' . $proxyNodeProcessConfigurationPartIndexes['u']] .= ' ' . $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
-									$proxyNodeProcessConfigurationIndexes['u']++;
+									$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationPartIndexes['b']] .= ' ' . $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
+									$proxyNodeProcessConfigurationIndexes['b']++;
 
 									if (
 										(
@@ -733,25 +732,24 @@
 										);
 
 										if (empty($proxyNodeUser['status_allowing_request_destinations_only']) === false) {
-											$proxyNodeProcessConfigurationIndexes['y'] = $proxyNodeProcessConfigurationPartIndexes['y'] = 0;
 											$proxyNodeUserRequestDestinationParts = array();
 
 											foreach ($proxyNodeUser['request_destination_ids'] as $proxyNodeUserDestinationId) {
-												if (($proxyNodeProcessConfigurationIndexes['y'] % 10) === 0) {
-													$proxyNodeUserRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['y']] = $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
-													$proxyNodeProcessConfigurationPartIndexes['y'] = $proxyNodeProcessConfigurationIndexes['y'];
+												if (($proxyNodeProcessConfigurationIndexes['f'] % 10) === 0) {
+													$proxyNodeUserRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['f']] = $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+													$proxyNodeProcessConfigurationPartIndexes['f'] = $proxyNodeProcessConfigurationIndexes['f'];
 												} else {
-													$proxyNodeUserRequestDestinationParts[$proxyNodeUserRequestDestinationPartIndex] .= ',' . $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+													$proxyNodeUserRequestDestinationParts[$proxyNodeUserRequestDestinationPartIndexes['f']] .= ',' . $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
 												}
 
-												$proxyNodeProcessConfigurationIndexes['y']++;
+												$proxyNodeProcessConfigurationIndexes['f']++;
 											}
 										}
 
 										if (empty($proxyNodeUser['status_requiring_strict_authentication']) === true) {
 											if (empty($proxyNodeUser['authentication_username']) === false) {
 												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
-													// todo: set username ACLS with $proxyNodeProcessConfigurationIndexes['w'] index instead of using $proxyNodeUserAuthenticationUsernames with array_merge()
+													// todo: set username ACLS with $proxyNodeProcessConfigurationIndexes['d'] index instead of using $proxyNodeUserAuthenticationUsernames with array_merge()
 													$proxyNodeUserAuthenticationUsernames[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' * ' . $proxyNodeUserRequestDestinationPart;
 													$proxyNodeUserAuthenticationUsernames[] = $proxyNodeLogFormat;
 												}
@@ -761,12 +759,23 @@
 										}
 
 										if (empty($proxyNodeUser['authentication_whitelist']) === false) {
-											// todo: chunk whitelist parts with $proxyNodeProcessConfigurationIndexes['z'] index instead of using array_chunk()
-											$proxyNodeUserAuthenticationWhitelistParts = array_chunk(explode("\n", $proxyNodeUser['authentication_whitelist']), 10);
+											$proxyNodeUser['authentication_whitelist'] = explode("\n", $proxyNodeUser['authentication_whitelist']);
+											$proxyNodeUserAuthenticationWhitelistParts = array();
+
+											foreach ($proxyNodeUser['authentication_whitelist'] as $proxyNodeUserAuthenticationWhitelist) {
+												if (($proxyNodeProcessConfigurationIndexes['g'] % 10) === 0) {
+													$proxyNodeUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationIndexes['g']] = $proxyNodeUserAuthenticationWhitelist;
+													$proxyNodeProcessConfigurationPartIndexes['g'] = $proxyNodeProcessConfigurationIndexes['g'];
+												} else {
+													$proxyNodeUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationPartIndexes['g']] .= ',' . $proxyNodeUserAuthenticationWhitelist;
+												}
+
+												$proxyNodeProcessConfigurationIndexes['g']++;
+											}
 
 											foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
 												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
-													// todo: set username ACLS with $proxyNodeProcessConfigurationIndexes['w'] index instead of using $proxyNodeUserAuthenticationWhitelists with array_merge()
+													// todo: set whitelist ACLS with $proxyNodeProcessConfigurationIndexes['d'] index instead of using $proxyNodeUserAuthenticationWhitelists with array_merge()
 													$proxyNodeUserAuthenticationWhitelists[] = 'allow ' . $proxyNodeUser['authentication_username'] . ' ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
 													$proxyNodeUserAuthenticationWhitelists[] = $proxyNodeLogFormat;
 												}
@@ -787,7 +796,7 @@
 
 										$proxyNodeUserAuthentication['listening_address_' . $proxyNodeIndex] .= ' -e' . $proxyNodeProcessInterfaceIp . ' -i' . $proxyNodeProcessInterfaceIp;
 										// todo: test per-ACL nserver options
-										// todo: set proxy recursive DNS ACLs with $proxyNodeProcessConfigurationIndexes['x'] index
+										// todo: set proxy recursive DNS ACLs with $proxyNodeProcessConfigurationIndexes['e'] index
 										$proxyNodeUserAuthentication[] = 'nserver ' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['ip_version_' . $nodeIpVersion] . '[:' . $this->nodeData['node_recursive_dns_destinations'][$proxyNodeId]['port_number_version_' . $nodeIpVersion] . ']';
 									}
 
@@ -796,7 +805,7 @@
 								*/
 							}
 
-							$proxyNodeProcessConfiguration['w' . $proxyNodeProcessConfigurationIndexes['w']] = 'deny *';
+							$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'deny *';
 							ksort($proxyNodeProcessConfiguration);
 							// todo: add $proxyNodeProcessInterfaceIp + node reserved internal ip service ACLs to $proxyNodeProcessConfiguration here
 								// omit port so it can be appended in the loop below with the -p parameter
@@ -818,7 +827,7 @@
 									}
 								}
 
-								$proxyNodeProcessConfiguration['t8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
+								$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
 								shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
 								$systemdServiceContents = array(
 									'[Service]',
