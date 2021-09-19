@@ -670,7 +670,7 @@
 								'a4' => 'flush',
 								'a5' => 'allow * * * * HTTP',
 								'a6' => 'allow * * * * HTTPS',
-								'a7' => 'log /var/log/' . $proxyNodeProcessType,
+								'a7' => 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId,
 								'a8' => false
 							);
 							$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
@@ -688,86 +688,82 @@
 
 								foreach ($proxyNodeProcessUserIds as $proxyNodeProcessUserId) {
 									$proxyNodeProcessConfigurationIndexes['f'] = $proxyNodeProcessConfigurationPartIndexes['f'] = $proxyNodeProcessConfigurationIndexes['g'] = $proxyNodeProcessConfigurationPartIndexes['g'] = 0;
-									$proxyNodeUser = $this->nodeData['users'][$proxyNodeProcessUserId];
+									$proxyNodeProcessUser = $this->nodeData['users'][$proxyNodeProcessUserId];
 
 									if (($proxyNodeProcessConfigurationIndexes['b'] % 10) === 0) {
 										$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationIndexes['b']] = 'users';
 										$proxyNodeProcessConfigurationPartIndexes['b'] = $proxyNodeProcessConfigurationIndexes['b'];
 									}
 
-									$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationPartIndexes['b']] .= ' ' . $proxyNodeUser['authentication_username'] . ':CL:' . $proxyNodeUser['authentication_password'];
+									$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationPartIndexes['b']] .= ' ' . $proxyNodeProcessUser['authentication_username'] . ':CL:' . $proxyNodeProcessUser['authentication_password'];
 									$proxyNodeProcessConfigurationIndexes['b']++;
 
 									if (
 										(
-											(empty($proxyNodeUser['request_destination_ids']) === false) ||
-											(empty($proxyNodeUser['status_allowing_request_destinations_only']) === true)
+											(empty($proxyNodeProcessUser['request_destination_ids']) === false) ||
+											(empty($proxyNodeProcessUser['status_allowing_request_destinations_only']) === true)
 										) &&
 										(
-											(empty($proxyNodeUser['authentication_username']) === false) ||
-											(empty($proxyNodeUser['authentication_whitelist']) === false)
+											(empty($proxyNodeProcessUser['authentication_username']) === false) ||
+											(empty($proxyNodeProcessUser['authentication_whitelist']) === false)
 										)
 									) {
-										$proxyNodeUserRequestDestinationParts = array(
+										$proxyNodeProcessUserRequestDestinationParts = array(
 											array(
 												'*'
 											)
 										);
 
-										if (empty($proxyNodeUser['status_allowing_request_destinations_only']) === false) {
-											$proxyNodeUserRequestDestinationParts = array();
+										if (empty($proxyNodeProcessUser['status_allowing_request_destinations_only']) === false) {
+											$proxyNodeProcessUserRequestDestinationParts = array();
 
-											foreach ($proxyNodeUser['request_destination_ids'] as $proxyNodeUserDestinationId) {
+											foreach ($proxyNodeProcessUser['request_destination_ids'] as $proxyNodeProcessUserDestinationId) {
 												if (($proxyNodeProcessConfigurationIndexes['h'] % 10) === 0) {
-													$proxyNodeUserRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['h']] = $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+													$proxyNodeProcessUserRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['h']] = $this->nodeData['request_destinations'][$proxyNodeProcessUserDestinationId];
 													$proxyNodeProcessConfigurationPartIndexes['h'] = $proxyNodeProcessConfigurationIndexes['h'];
 												} else {
-													$proxyNodeUserRequestDestinationParts[$proxyNodeUserRequestDestinationPartIndexes['h']] .= ',' . $this->nodeData['request_destinations'][$proxyNodeUserDestinationId];
+													$proxyNodeProcessUserRequestDestinationParts[$proxyNodeProcessUserRequestDestinationPartIndexes['h']] .= ',' . $this->nodeData['request_destinations'][$proxyNodeProcessUserDestinationId];
 												}
 
 												$proxyNodeProcessConfigurationIndexes['h']++;
 											}
 										}
 
-										$proxyNodeLogFormat = 'nolog';
+										$proxyNodeProcessUserLogFormat = 'nolog';
 
-										if (empty($proxyNodeUser['status_allowing_request_logs']) === false) {
-											$proxyNodeLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeId . ' _ ' . $proxyNodeUserId . ' _ %E _ %C _ %U"';
+										if (empty($proxyNodeProcessUser['status_allowing_request_logs']) === false) {
+											$proxyNodeProcessUserLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeProcessUserId . ' _ %E _ %C _ %U"';
 										}
 
-										if (empty($proxyNodeUser['status_requiring_strict_authentication']) === true) {
-											if (empty($proxyNodeUser['authentication_username']) === false) {
-												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
-													$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'allow ' . $proxyNodeUser['authentication_username'] . ' * ' . $proxyNodeUserRequestDestinationPart;
-													$proxyNodeProcessConfigurationIndexes['d']++;
-													$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = $proxyNodeLogFormat;
+										if (empty($proxyNodeProcessUser['status_requiring_strict_authentication']) === true) {
+											if (empty($proxyNodeProcessUser['authentication_username']) === false) {
+												foreach ($proxyNodeProcessUserRequestDestinationParts as $proxyNodeProcessUserRequestDestinationPart) {
+													$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'allow ' . $proxyNodeProcessUser['authentication_username'] . ' * ' . $proxyNodeProcessUserRequestDestinationPart;
 													$proxyNodeProcessConfigurationIndexes['d']++;
 												}
 											}
 
-											$proxyNodeUser['authentication_username'] = '*';
+											$proxyNodeProcessUser['authentication_username'] = '*';
 										}
 
-										if (empty($proxyNodeUser['authentication_whitelist']) === false) {
-											$proxyNodeUser['authentication_whitelist'] = explode("\n", $proxyNodeUser['authentication_whitelist']);
-											$proxyNodeUserAuthenticationWhitelistParts = array();
+										if (empty($proxyNodeProcessUser['authentication_whitelist']) === false) {
+											$proxyNodeProcessUser['authentication_whitelist'] = explode("\n", $proxyNodeProcessUser['authentication_whitelist']);
+											$proxyNodeProcessUserAuthenticationWhitelistParts = array();
 
-											foreach ($proxyNodeUser['authentication_whitelist'] as $proxyNodeUserAuthenticationWhitelist) {
+											foreach ($proxyNodeProcessUser['authentication_whitelist'] as $proxyNodeProcessUserAuthenticationWhitelist) {
 												if (($proxyNodeProcessConfigurationIndexes['i'] % 10) === 0) {
-													$proxyNodeUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationIndexes['i']] = $proxyNodeUserAuthenticationWhitelist;
+													$proxyNodeProcessUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationIndexes['i']] = $proxyNodeProcessUserAuthenticationWhitelist;
 													$proxyNodeProcessConfigurationPartIndexes['i'] = $proxyNodeProcessConfigurationIndexes['i'];
 												} else {
-													$proxyNodeUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationPartIndexes['i']] .= ',' . $proxyNodeUserAuthenticationWhitelist;
+													$proxyNodeProcessUserAuthenticationWhitelistParts[$proxyNodeProcessConfigurationPartIndexes['i']] .= ',' . $proxyNodeProcessUserAuthenticationWhitelist;
 												}
 
 												$proxyNodeProcessConfigurationIndexes['i']++;
 											}
 
-											foreach ($proxyNodeUserAuthenticationWhitelistParts as $proxyNodeUserAuthenticationWhitelistPart) {
-												foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
-													$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'allow ' . $proxyNodeUser['authentication_username'] . ' ' . implode(',', $proxyNodeUserAuthenticationWhitelistPart) . ' ' . $proxyNodeUserDestinationPart;
-													$proxyNodeProcessConfigurationIndexes['c']++;
-													$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = $proxyNodeLogFormat;
+											foreach ($proxyNodeProcessUserAuthenticationWhitelistParts as $proxyNodeProcessUserAuthenticationWhitelistPart) {
+												foreach ($proxyNodeProcessUserRequestDestinationParts as $proxyNodeProcessUserRequestDestinationPart) {
+													$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'allow ' . $proxyNodeProcessUser['authentication_username'] . ' ' . implode(',', $proxyNodeProcessUserAuthenticationWhitelistPart) . ' ' . $proxyNodeProcessUserDestinationPart;
 													$proxyNodeProcessConfigurationIndexes['c']++;
 												}
 											}
@@ -784,6 +780,8 @@
 										}
 
 										$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'deny *';
+										$proxyNodeProcessConfigurationIndexes['d']++;
+										$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = $proxyNodeProcessUserLogFormat;
 										$proxyNodeProcessConfigurationIndexes['d']++;
 										$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'flush';
 										$proxyNodeProcessConfigurationIndexes['d']++;
