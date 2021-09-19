@@ -708,7 +708,6 @@
 											(empty($proxyNodeUser['authentication_whitelist']) === false)
 										)
 									) {
-										// todo: add deny ACLs for user request_destination_ids exceeded if user status_allowing_request_destinations_only is false
 										$proxyNodeUserRequestDestinationParts = array(
 											array(
 												'*'
@@ -771,6 +770,16 @@
 													$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = $proxyNodeLogFormat;
 													$proxyNodeProcessConfigurationIndexes['c']++;
 												}
+											}
+										}
+
+										if (
+											(empty($proxyNodeUser['status_allowing_request_destinations_only']) === true) &&
+											(empty($proxyNodeUserRequestDestinationParts) === false)
+										) {
+											foreach ($proxyNodeUserRequestDestinationParts as $proxyNodeUserRequestDestinationPart) {
+												$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'deny * * ' . $proxyNodeUserRequestDestinationPart;
+												$proxyNodeProcessConfigurationIndexes['d']++;
 											}
 										}
 
