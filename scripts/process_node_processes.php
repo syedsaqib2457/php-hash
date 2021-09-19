@@ -831,14 +831,14 @@
 								// todo: start all node process ports with same service file
 								$proxyNodeProcessSystemdServiceFileContents = array(
 									'[Service]',
-									'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationPath = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
+									'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationFile = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
 								);
 								file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $proxyNodeProcessSystemdServiceFileContents));
 								$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
 								$proxyNodeProcessConfiguration['f'] = $proxyNodeProcessInterfaceConfigurations['f'] . ' -p' . $proxyNodeProcessPortNumber;
 								$proxyNodeProcessConfiguration['g'] = $proxyNodeProcessInterfaceConfigurations['g'] . ' -p' . $proxyNodeProcessPortNumber;
-								file_put_contents($proxyNodeProcessConfigurationPath, implode("\n", $proxyNodeProcessConfiguration));
-								chmod($proxyNodeProcessConfigurationPath, 0755);
+								file_put_contents($proxyNodeProcessConfigurationFile, implode("\n", $proxyNodeProcessConfiguration));
+								chmod($proxyNodeProcessConfigurationFile, 0755);
 								shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
 								unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
 								$proxyNodeProcessEnded = false;

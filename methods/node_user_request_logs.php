@@ -18,6 +18,17 @@
 			}
 
 			$response['status_valid'] = (
+				(empty($parameters['data']['node_id']) === false) &&
+				(is_numeric($parameters['data']['node_id']) === true)
+			);
+
+			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid request log node ID, please try again.';
+			}
+
+			// todo: verify $parameters['data']['node_id'] belongs to node with remote_addr to prevent poisoning from compromised node
+
+			$response['status_valid'] = (
 				(empty($parameters['data']['type']) === false) &&
 				(in_array(array(
 					'http_proxy',
@@ -38,22 +49,21 @@
 				'created',
 				'destination_hostname',
 				'destination_ip',
-				'node_id',
 				'node_user_id',
 				'response_code',
 				'source_ip',
-				'username',
-				'type'
+				'username'
 			);
 			$nodeUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
 			array_pop($nodeUserRequestLogs);
 
-			foreach ($nodeUserRequestLogs as $nodeUserRequestLog) {
-				$nodeUserRequestLogParts = explode(' _ ', $nodeUserRequestLog);
+			foreach ($nodeUserRequestLogs as $nodeUserRequestLogKey => $nodeUserRequestLog) {
+				$nodeUserRequestLog = explode(' _ ', $nodeUserRequestLog);
+				$nodeUserRequestLogData[$nodeUserRequestLogKey] = array_combine($nodeUserRequestLogKeys, $nodeUserRequestLog);
 
-				if (empty($nodeUserRequestLogParts[0]) === false) {
-					$nodeUserRequestLogParts[] = $parameters['data']['type'];
-					$nodeUserRequestLogData[] = array_combine($nodeUserRequestLogKeys, $nodeUserRequestLogParts);
+				if (empty($nodeUserRequestLogData[$nodeUserRequestLogKey]) === false) {
+					$nodeUserRequestLogData[$nodeUserRequestLogKey]['node_id'] = $parameters['data']['node_id'];
+					$nodeUserRequestLogData[$nodeUserRequestLogKey]['type'] = $parameters['data']['type'];
 				}
 			}
 
