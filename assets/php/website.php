@@ -454,7 +454,7 @@
 		'sudo apt-get update',
 		'sleep 1',
 		'sudo rm -rf ' . $websitePath . '/*',
-		'cd ' . $websitePath . ' && sudo wget -O ghostcompute.tar.gz ' . $wgetParameters . ' https://github.com/ghostcompute/ghostcompute/archive/refs/heads/master.tar.gz'
+		'cd ' . $websitePath . ' && sudo wget -O ghostcompute.tar.gz ' . $wgetParameters . ' https://github.com/ghostcompute/system/archive/refs/heads/master.tar.gz'
 	);
 	applyCommands($commands);
 
@@ -464,8 +464,8 @@
 	}
 
 	$commands = array(
-		'cd ' . $websitePath . ' && sudo tar -xvzf ghostcompute.tar.gz && cd ghostcompute-master && mv .* * ../',
-		'cd ' . $websitePath . ' && sudo rm -rf ghostcompute.tar.gz ghostcompute-master'
+		'cd ' . $websitePath . ' && sudo tar -xvzf ghostcompute.tar.gz && cd system-master && mv .* * ../',
+		'cd ' . $websitePath . ' && sudo rm -rf ghostcompute.tar.gz system-master'
 	);
 	applyCommands($commands);
 
