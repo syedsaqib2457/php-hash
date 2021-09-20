@@ -1819,6 +1819,7 @@
 						32 => 4,
 						128 => 6
 					),
+					'node_process_types' => array_keys($this->settings['node_process_type_default_port_numbers']),
 					'private_network' => $this->settings['private_network'],
 					'proxy_node_process_types' => array(
 						'proxy' => 'http_proxy',
