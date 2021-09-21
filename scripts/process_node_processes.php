@@ -455,19 +455,20 @@
 						'b23' => '};',
 						'b24' => 'resolver-query-timeout 10;',
 						'b25' => 'tcp-clients 1000000000;',
+						'd' => false,
 						'e' => false,
-						'f' => false,
-						'g' => '};'
+						'f' => '};'
 					);
-					$recursiveDnsNodeProcessConfigurationIndexes = $recursiveDnsNodeProcessConfigurationPartIndexes = array(
+					$recursiveDnsNodeProcessConfigurationIndexes = array(
 						'a' => 5,
 						'b' => 26,
-						'c' => 0
+						'c' => 0,
+						'g' => 0
 					);
 
 					if (empty($this->nodeData['node_process_users']['recursive_dns']) === false) {
-						$recursiveDnsNodeProcessConfiguration['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = 'logging {';
-						$recursiveDnsNodeProcessConfigurationIndexes['c']++;
+						$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'logging {';
+						$recursiveDnsNodeProcessConfigurationIndexes['g']++;
 
 						foreach ($this->nodeData['node_process_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessUserIds) {
 							foreach ($recursiveDnsNodeProcessUserIds as $recursiveDnsNodeProcessUserId) {
@@ -487,24 +488,24 @@
 								}
 
 								$recursiveDnsNodeProcessName = $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessUserId;
-								$recursiveDnsNodeProcessConfiguration['d' . $recursiveDnsNodeProcessConfigurationIndexes['d']] = 'channel ' . $recursiveDnsNodeProcessName . ' {';
-								$recursiveDnsNodeProcessConfigurationIndexes['d']++;
-								$recursiveDnsNodeProcessConfiguration['d' . $recursiveDnsNodeProcessConfigurationIndexes['d']] = 'file "/var/log/named/' . $recursiveDnsNodeProcessName . '"';
-								$recursiveDnsNodeProcessConfigurationIndexes['d']++;
-								$recursiveDnsNodeProcessConfiguration['d' . $recursiveDnsNodeProcessConfigurationIndexes['d']] = 'print-time yes';
-								$recursiveDnsNodeProcessConfigurationIndexes['d']++;
-								$recursiveDnsNodeProcessConfiguration['d' . $recursiveDnsNodeProcessConfigurationIndexes['d']] = '};';
-								$recursiveDnsNodeProcessConfigurationIndexes['d']++;
-								$recursiveDnsNodeProcessConfiguration['d' . $recursiveDnsNodeProcessConfigurationIndexes['d']] = 'category ' . $recursiveDnsNodeProcessName . ' {';
-								$recursiveDnsNodeProcessConfigurationIndexes['d']++;
-								$recursiveDnsNodeProcessConfiguration['d' . $recursiveDnsNodeProcessConfigurationIndexes['d']] = 'queries_log;';
-								$recursiveDnsNodeProcessConfigurationIndexes['d']++;
-								$recursiveDnsNodeProcessConfiguration['d' . $recursiveDnsNodeProcessConfigurationIndexes['d']] = '};';
-								$recursiveDnsNodeProcessConfigurationIndexes['d']++;
+								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'channel ' . $recursiveDnsNodeProcessName . ' {';
+								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'file "/var/log/named/' . $recursiveDnsNodeProcessName . '"';
+								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'print-time yes';
+								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
+								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'category ' . $recursiveDnsNodeProcessName . ' {';
+								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'queries_log;';
+								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
+								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
 							}
 						}
 
-						$recursiveDnsNodeProcessConfiguration['d' . $recursiveDnsNodeProcessConfigurationIndexes['d']] = '};';
+						$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
 					}
 
 					foreach ($this->nodeData['data']['node_ip_versions'] as $recursiveDnsNodeIpVersion) {
@@ -556,8 +557,8 @@
 							}
 						}
 
-						$recursiveDnsNodeProcessConfiguration['e'] = '"/var/cache/' . $recursiveDnsNodeProcessName . '";';
-						$recursiveDnsNodeProcessConfiguration['f'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
+						$recursiveDnsNodeProcessConfiguration['d'] = '"/var/cache/' . $recursiveDnsNodeProcessName . '";';
+						$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
 
 						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 							$recursiveDnsNodeIndex = 0;
