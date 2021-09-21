@@ -508,6 +508,8 @@
 						$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
 					}
 
+					$recursiveDnsNodeProcessInterfaceDestinationIps = array();
+
 					foreach ($this->nodeData['data']['node_ip_versions'] as $recursiveDnsNodeIpVersion) {
 						$recursiveDnsNodeProcessConfigurationOptionSuffix = '';
 
@@ -523,9 +525,11 @@
 
 						$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = 'listen-on' . $recursiveDnsNodeProcessConfigurationOptionSuffix . ' {';
 						$recursiveDnsNodeProcessConfigurationIndexes['b']++;
-						$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_version_' . $recursiveDnsNodeIpVersion] . ';';
+						$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = false;
+						$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_version_' . $recursiveDnsNodeIpVersion] . ';';
 						$recursiveDnsNodeProcessConfigurationIndexes['b']++;
-						$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion] . ';';
+						$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = false;
+						$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion] . ';';
 						$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
 						if (empty($this->nodeData['node_process_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
@@ -539,7 +543,6 @@
 						$recursiveDnsNodeProcessConfigurationIndexes['c']++;
 					}
 
-					$recursiveDnsNodeProcessConfiguration['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = '};';
 					ksort($recursiveDnsNodeProcessConfiguration);
 
 					foreach ($recursiveDnsNodeProcessPortNumbers as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
@@ -560,14 +563,8 @@
 						$recursiveDnsNodeProcessConfiguration['d'] = '"/var/cache/' . $recursiveDnsNodeProcessName . '";';
 						$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
 
-						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-							$recursiveDnsNodeIndex = 0;
-
-							// todo: add listening port to each indexed listening ip
-							while (isset($recursiveDnsNodeProcessConfigurationOptions['listening_address_version_4_' . $recursiveDnsNodeIndex]) === true) {
-								$recursiveDnsNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] .= ':' . $recursiveDnsNodeProcessPortNumber;
-								$recursiveDnsNodeIndex++;
-							}
+						foreach ($recursiveDnsNodeProcessInterfaceDestinationIps as $recursiveDnsNodeProcessInterfaceDestinationIpIndex => $recursiveDnsNodeProcessInterfaceDestinationIp) {
+							$recursiveDnsNodeProcessConfiguration[$recursiveDnsNodeProcessInterfaceDestinationIpIndex] = $recursiveDnsNodeProcessInterfaceDestinationIp . ':' . $recursiveDnsNodeProcessPortNumber;
 						}
 
 						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named ' . $recursiveDnsNodeProcessName);
@@ -785,13 +782,13 @@
 								$proxyNodeProcessConfiguration['e' . $proxyNodeProcessConfigurationIndexes['e']] = 'nserver ' . $this->nodeData['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_version_' . $proxyNodeIpVersion] . '[:' . $this->nodeData['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_port_number_version_' . $proxyNodeIpVersion] . ']';
 								$proxyNodeProcessConfigurationIndexes['e']++;
 								$proxyNodeProcessConfiguration['f'] = $proxyNodeProcessConfiguration['g'] = $proxyNodeProcessTypeServiceName . ' -a ';
-								$proxyNodeProcessInterfaceListeningIp = $this->nodeData['nodes'][$proxyNodeProcessNodeId]['external_ip_version_' . $proxyNodeIpVersion];
+								$proxyNodeProcessInterfaceDestinationIp = $this->nodeData['nodes'][$proxyNodeProcessNodeId]['external_ip_version_' . $proxyNodeIpVersion];
 
 								if (empty($this->nodeData['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion]) === false) {
-									$proxyNodeProcessInterfaceListeningIp = $this->nodeData['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion];
+									$proxyNodeProcessInterfaceDestinationIp = $this->nodeData['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion];
 								}
 
-								$proxyNodeProcessConfiguration['f'] .= ' -e' . $proxyNodeProcessInterfaceListeningIp . ' -i' . $proxyNodeProcessInterfaceListeningIp;
+								$proxyNodeProcessConfiguration['f'] .= ' -e' . $proxyNodeProcessInterfaceDestinationIp . ' -i' . $proxyNodeProcessInterfaceDestinationIp;
 								$proxyNodeProcessConfiguration['g'] .= ' -e' . $this->nodeData['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion] . ' -i' . $this->nodeData['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion];
 							}
 
