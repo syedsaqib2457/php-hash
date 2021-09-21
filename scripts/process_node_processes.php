@@ -604,7 +604,7 @@
 						$recursiveDnsNodeProcessEndedTime = time();
 
 						while ($recursiveDnsNodeProcessEnded === false) {
-							$recursiveDnsNodeProcessEnded = ($this->_verifyNodeProcess($recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
+							$recursiveDnsNodeProcessEnded = ($this->_verifyNodeProcess($this->nodeData['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
 							sleep(1);
 						}
 
@@ -613,7 +613,7 @@
 
 						while ($recursiveDnsNodeProcessStarted === false) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
-							$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
+							$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
 							sleep(1);
 						}
 
