@@ -511,7 +511,7 @@
 						'g' => '};'
 					);
 					$recursiveDnsNodeProcessConfigurationIndexes = $recursiveDnsNodeProcessConfigurationPartIndexes = array(
-						'a' => 0,
+						'a' => 5,
 						'b' => 26,
 						'c' => 0
 					);
