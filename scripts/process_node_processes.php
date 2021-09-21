@@ -403,57 +403,6 @@
 
 			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
 
-			/*
-			todo: delete option reference for new config after listen-on + ACLs are created with fast indexes
-
-			if (empty($this->nodeData['node_processes']['node_recursive_dns_destinations']) === false) {
-				foreach ($this->nodeData['node_recursive_dns_destinations'] as $nodeProcessType => $nodeRecursiveDnsDestination) {
-					if (
-						(empty($nodeRecursiveDnsDestination['source_ip_version_4']) === false) ||
-						(empty($nodeRecursiveDnsDestination['source_ip_version_6']) === false)
-					) {
-						if (empty($nodeRecursiveDnsDestination['listening_ip_version_4']) === false) {
-							$recursiveDnsNodeUserAuthentication[] = 'listen-on {';
-							$recursiveDnsNodeUserAuthentication['listening_address_version_4_' . $recursiveDnsNodeIndex] = $nodeRecursiveDnsDestination['listening_ip_version_4'];
-							$recursiveDnsNodeUserAuthentication[] = '};';
-							$recursiveDnsNodeUserAuthentication[] = 'query-source address ' . $nodeRecursiveDnsDestination['source_ip_version_4'] . ';';
-						}
-
-						if (empty($nodeRecursiveDnsDestination['listening_ip_version_6']) === false) {
-							$recursiveDnsNodeUserAuthentication[] = 'listen-on-v6 {';
-							$recursiveDnsNodeUserAuthentication['listening_address_version_6_' . $recursiveDnsNodeIndex] = $nodeRecursiveDnsDestination['listening_ip_version_6'];
-							$recursiveDnsNodeUserAuthentication[] = '};';
-							$recursiveDnsNodeUserAuthentication[] = 'query-source-v6 address ' . $nodeRecursiveDnsDestination['source_ip_version_6'] . ';';
-						}
-					}
-				}
-
-				foreach ($this->nodeData['node_users']['recursive_dns'] as $recursiveDnsNodeId => $recursiveDnsNodeUserIds) {
-					foreach ($recursiveDnsNodeUserIds as $recursiveDnsNodeUserId) {
-						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
-							$recursiveDnsNodeIps = array_filter(array(
-								$this->nodeData['nodes'][$recursiveDnsNodeId]['internal_ip_version_' . $nodeIpVersion],
-								$this->nodeData['nodes'][$recursiveDnsNodeId]['external_ip_version_' . $nodeIpVersion]
-							));
-							$recursiveDnsNodeIp = current($recursiveDnsNodeIps);
-							$recursiveDnsNodeListeningIpOption = 'listen-on';
-							$recursiveDnsNodeSourceIpOption = 'query-source';
-
-							if ($nodeIpVersion === 6) {
-								$recursiveDnsNodeListeningIpOption .= '-v6';
-								$recursiveDnsNodeSourceIpOption .= '-v6';
-							}
-
-							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeSourceIpOption . ' address ' . $recursiveDnsNodeIp . ';';
-							$recursiveDnsNodeUserAuthentication[] = $recursiveDnsNodeListeningIpOption . ' {';
-							$recursiveDnsNodeUserAuthentication['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] = $recursiveDnsNodeIp;
-							$recursiveDnsNodeUserAuthentication[] = '};';
-						}
-					}
-				}
-			}
-			*/
-
 			if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
 				$recursiveDnsNodeProcessDefaultServiceName = 'named';
 
