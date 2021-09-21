@@ -548,7 +548,7 @@
 
 						$recursiveDnsNodeProcessName = 'recursive_dns_' . $recursiveDnsNodeProcessId;
 
-						if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
+						if (file_exists('/etc/' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
 							$recursiveDnsNodeProcessProcessIds = $this->fetchProcessIds($recursiveDnsNodeProcessName . ' ', '_' . $recursiveDnsNodeProcessName . '/');
 
 							if (empty($recursiveDnsNodeProcessProcessIds) === false) {
@@ -562,39 +562,40 @@
 						foreach ($this->nodeData['node_ip_versions'] as $nodeIpVersion) {
 							$recursiveDnsNodeIndex = 0;
 
+							// todo: add listening port to each indexed listening ip
 							while (isset($recursiveDnsNodeProcessConfigurationOptions['listening_address_version_4_' . $recursiveDnsNodeIndex]) === true) {
 								$recursiveDnsNodeProcessConfigurationOptions['listening_address_version_' . $nodeIpVersion . '_' . $recursiveDnsNodeIndex] .= ':' . $recursiveDnsNodeProcessPortNumber;
 								$recursiveDnsNodeIndex++;
 							}
 						}
 
-						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named named_' . $recursiveDnsNodeProcessName);
+						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named ' . $recursiveDnsNodeProcessName);
+						// todo: start all node process ports with same service file instead of daemon-reload for each process port
 						$recursiveDnsNodeProcessService = array(
 							'[Service]',
-							'ExecStart=/usr/sbin/named_' . $recursiveDnsNodeProcessName . ' -f -c /etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf -S 40000 -u root'
+							'ExecStart=/usr/sbin/named_' . $recursiveDnsNodeProcessName . ' -f -c /etc/' . $recursiveDnsNodeProcessName . '/named.conf -S 40000 -u root'
 						);
-						$recursiveDnsNodeProcessServiceName = $recursiveDnsNodeProcessDefaultServiceName . '_' . $recursiveDnsNodeProcessName;
-						file_put_contents('/lib/systemd/system/' . $recursiveDnsNodeProcessServiceName . '.service', implode("\n", $recursiveDnsNodeProcessService));
+						file_put_contents('/lib/systemd/system/' . $recursiveDnsNodeProcessName . '.service', implode("\n", $recursiveDnsNodeProcessService));
 
-						if (file_exists('/etc/default/' . $recursiveDnsNodeProcessServiceName) === false) {
-							copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/' . $recursiveDnsNodeProcessServiceName);
+						if (file_exists('/etc/default/' . $recursiveDnsNodeProcessName) === false) {
+							copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/' . $recursiveDnsNodeProcessName);
 						}
 
 						if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName) === false) {
-							shell_exec('sudo cp -r /etc/bind /etc/bind_' . $recursiveDnsNodeProcessName);
+							shell_exec('sudo cp -r /etc/bind /etc/' . $recursiveDnsNodeProcessName);
 							$recursiveDnsNodeProcessConfiguration = array(
-								'include "/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf.options";',
-								'include "/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf.local";',
-								'include "/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf.default-zones";'
+								'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options";',
+								'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.local";',
+								'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.default-zones";'
 							);
-							file_put_contents('/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf', implode("\n", $recursiveDnsNodeProcessConfiguration));
+							file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf', implode("\n", $recursiveDnsNodeProcessConfiguration));
 						}
 
 						$recursiveDnsNodeProcessConfigurationOptions = array_filter($recursiveDnsNodeProcessConfigurationOptions);
-						file_put_contents('/etc/bind_' . $recursiveDnsNodeProcessName . '/named.conf.options', implode("\n", $recursiveDnsNodeProcessConfigurationOptions));
+						file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options', implode("\n", $recursiveDnsNodeProcessConfigurationOptions));
 
-						if (is_dir('/var/cache/bind_' . $recursiveDnsNodeProcessName) === false) {
-							mkdir('/var/cache/bind_' . $recursiveDnsNodeProcessName);
+						if (is_dir('/var/cache/' . $recursiveDnsNodeProcessName) === false) {
+							mkdir('/var/cache/' . $recursiveDnsNodeProcessName);
 						}
 
 						shell_exec('sudo ' . $this->nodeData['binary_files']['systemctl'] . ' daemon-reload');
@@ -611,12 +612,12 @@
 						$recursiveDnsNodeProcessStartedTime = time();
 
 						while ($recursiveDnsNodeProcessStarted === false) {
-							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessServiceName . ' start');
+							shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
 							$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
-							sleep(2);
+							sleep(1);
 						}
 
-						if (file_exists('/var/run/named/' . $recursiveDnsNodeProcess['id'] . '.pid') === true) {
+						if (file_exists('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid') === true) {
 							$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
 
 							if (is_numeric($recursiveDnsNodeProcessProcessId) === true) {
@@ -817,7 +818,7 @@
 								}
 
 								shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
-								// todo: start all node process ports with same service file
+								// todo: start all node process ports with same service file instead of daemon-reload for each process port
 								$proxyNodeProcessSystemdServiceFileContents = array(
 									'[Service]',
 									'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationFile = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
