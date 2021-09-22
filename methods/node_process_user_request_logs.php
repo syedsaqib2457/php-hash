@@ -89,7 +89,7 @@
 
 					break;
 				case 'recursive_dns':
-					// todo: format recursive_dns request logs to match $nodeUserRequestLogKeys
+					// todo: format recursive_dns request logs for node_process_user_request_logs
 					break;
 			}
 
