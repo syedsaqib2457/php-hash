@@ -73,17 +73,17 @@
 					foreach ($nodeProcessUserRequestLogs as $nodeProcessUserRequestLog) {
 						$nodeProcessUserRequestLog = explode(' _ ', $nodeProcessUserRequestLog);
 						$nodeProcessUserRequestLogData[] = array(
-							'bytes_received' => $nodeProcessUserRequestLog[1],
-							'bytes_sent' => $nodeProcessUserRequestLog[2],
-							'created' => $nodeProcessUserRequestLog[3],
-							'destination_hostname' => '$nodeProcessUserRequestLog[4]',
-							'destination_ip' => $nodeProcessUserRequestLog[5],
+							'bytes_received' => $nodeProcessUserRequestLog[0],
+							'bytes_sent' => $nodeProcessUserRequestLog[1],
+							'created' => $nodeProcessUserRequestLog[2],
+							'destination_hostname' => '$nodeProcessUserRequestLog[3]',
+							'destination_ip' => $nodeProcessUserRequestLog[4],
 							'node_id' => $parameters['data']['node_id'],
 							'node_process_type' => $parameters['data']['node_process_type'],
 							'node_user_id' => $parameters['data']['node_user_id'],
-							'response_code' => $nodeProcessUserRequestLog[6],
-							'source_ip' => $nodeProcessUserRequestLog[7],
-							'username' => $nodeProcessUserRequestLog[8]
+							'response_code' => $nodeProcessUserRequestLog[5],
+							'source_ip' => $nodeProcessUserRequestLog[6],
+							'username' => $nodeProcessUserRequestLog[7]
 						);
 					}
 
