@@ -49,7 +49,6 @@
 				'created',
 				'destination_hostname',
 				'destination_ip',
-				'node_user_id',
 				'response_code',
 				'source_ip',
 				'username'

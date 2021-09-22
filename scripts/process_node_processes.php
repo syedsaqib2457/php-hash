@@ -671,7 +671,7 @@
 								'a4' => 'flush',
 								'a5' => 'allow * * * * HTTP',
 								'a6' => 'allow * * * * HTTPS',
-								'a7' => 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId,
+								'a7' => 'nolog',
 								'a8' => false
 							);
 							$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
@@ -727,14 +727,12 @@
 											$proxyNodeProcessConfigurationIndexes['h']++;
 										}
 
-										$proxyNodeProcessUserLogFormat = 'nolog';
-
 										if (empty($proxyNodeProcessUser['status_allowing_request_logs']) === false) {
-											$proxyNodeProcessUserLogFormat = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ ' . $proxyNodeProcessUserId . ' _ %E _ %C _ %U"';
+											$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessUserId;
+											$proxyNodeProcessConfigurationIndexes['c']++;
+											$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C _ %U"';
+											$proxyNodeProcessConfigurationIndexes['c']++;
 										}
-
-										$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = $proxyNodeProcessUserLogFormat;
-										$proxyNodeProcessConfigurationIndexes['c']++;
 
 										if (
 											(empty($proxyNodeUser['status_allowing_request_destinations_only']) === true) &&
