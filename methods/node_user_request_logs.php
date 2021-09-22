@@ -2,34 +2,36 @@
 	$extend = true;
 	require_once($system->settings['base_path'] . '/methods/system.php');
 
-	class NodeUserRequestLogMethods extends SystemMethods {
+	class NodeProcessUserRequestLogMethods extends SystemMethods {
 
 		public function add($parameters) {
 			$response = array(
-				'message' => 'Error adding node user request logs, please try again.',
+				'message' => 'Error adding node process user request logs, please try again.',
 				'status_valid' => (
-					(empty($_FILES['data']['tmp_name']) === false) &&
-					(empty($parameters['user']['endpoint']) === false)
+					(empty($parameters['data']['node_id']) === false) &&
+					(is_numeric($parameters['data']['node_id']) === true)
 				)
 			);
 
 			if ($response['status_valid'] === false) {
+				$response['message'] = 'Invalid node process user request log node ID, please try again.';
 				return $response;
 			}
 
 			$response['status_valid'] = (
-				(empty($parameters['data']['node_id']) === false) &&
-				(is_numeric($parameters['data']['node_id']) === true)
+				(empty($parameters['data']['node_user_id']) === false) &&
+				(is_numeric($parameters['data']['node_user_id']) === true)
 			);
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid request log node ID, please try again.';
+				$response['message'] = 'Invalid node process user request log node user ID, please try again.';
+				return $response;
 			}
 
 			// todo: verify $parameters['data']['node_id'] belongs to node with remote_addr to prevent poisoning from compromised node
 
 			$response['status_valid'] = (
-				(empty($parameters['data']['type']) === false) &&
+				(empty($parameters['data']['node_process_type']) === false) &&
 				(in_array(array(
 					'http_proxy',
 					'recursive_dns',
@@ -38,46 +40,68 @@
 			);
 
 			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid request log type, please try again.';
+				$response['message'] = 'Invalid node process user request log node process type, please try again.';
 				return $response;
 			}
 
-			$nodeUserRequestLogData = array();
-			$nodeUserRequestLogKeys = array(
-				'bytes_received',
-				'bytes_sent',
-				'created',
-				'destination_hostname',
-				'destination_ip',
-				'response_code',
-				'source_ip',
-				'username'
+			$response['status_valid'] = (
+				(empty($_FILES['data']['tmp_name']) === false) &&
+				(empty($parameters['user']['endpoint']) === false)
 			);
-			$nodeUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
-			array_pop($nodeUserRequestLogs);
-
-			foreach ($nodeUserRequestLogs as $nodeUserRequestLogKey => $nodeUserRequestLog) {
-				$nodeUserRequestLog = explode(' _ ', $nodeUserRequestLog);
-				$nodeUserRequestLogData[$nodeUserRequestLogKey] = array_combine($nodeUserRequestLogKeys, $nodeUserRequestLog);
-
-				if (empty($nodeUserRequestLogData[$nodeUserRequestLogKey]) === false) {
-					$nodeUserRequestLogData[$nodeUserRequestLogKey]['node_id'] = $parameters['data']['node_id'];
-					$nodeUserRequestLogData[$nodeUserRequestLogKey]['type'] = $parameters['data']['type'];
-				}
-			}
-
-			$nodeUserRequestLogsSaved = $this->save(array(
-				'data' => $nodeUserRequestLogData,
-				'to' => 'node_user_request_logs'
-			));
-			$response['status_valid'] = ($nodeUserRequestLogsSaved === true);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$response['data']['most_recent_node_user_request_log'] = $requestLog;
-			$response['message'] = 'Node user request logs added successfully.';
+			$nodeProcessUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
+			$response['status_valid'] = (empty($nodeProcessUserRequestLogs) === false);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$nodeProcessUserRequestLogData = array();
+
+			switch ($parameters['data']['node_process_type']) {
+				case 'http_proxy':
+				case 'socks_proxy':
+					array_pop($nodeProcessUserRequestLogs);
+
+					foreach ($nodeProcessUserRequestLogs as $nodeProcessUserRequestLog) {
+						$nodeProcessUserRequestLog = explode(' _ ', $nodeProcessUserRequestLog);
+						$nodeProcessUserRequestLogData[] = array(
+							'bytes_received' => $nodeProcessUserRequestLog[0],
+							'bytes_sent' => $nodeProcessUserRequestLog[1],
+							'created' => $nodeProcessUserRequestLog[2],
+							'destination_hostname' => '$nodeProcessUserRequestLog[3]',
+							'destination_ip' => $nodeProcessUserRequestLog[4],
+							'node_id' => $parameters['data']['node_id'],
+							'node_process_type' => $parameters['data']['node_process_type'],
+							'node_user_id' => $parameters['data']['node_user_id'],
+							'response_code' => $nodeProcessUserRequestLog[5],
+							'source_ip' => $nodeProcessUserRequestLog[6],
+							'username' => $nodeProcessUserRequestLog[7]
+						);
+					}
+
+					break;
+				case 'recursive_dns':
+					// todo: format recursive_dns request logs to match $nodeUserRequestLogKeys
+					break;
+			}
+
+			$nodeProcessUserRequestLogsSaved = $this->save(array(
+				'data' => $nodeProcessUserRequestLogData,
+				'to' => 'node_process_user_request_logs'
+			));
+			$response['status_valid'] = ($nodeProcessUserRequestLogsSaved === true);
+
+			if ($response['status_valid'] === false) {
+				return $response;
+			}
+
+			$response['data']['most_recent_node_process_user_request_log'] = $nodeProcessUserRequestLog;
+			$response['message'] = 'Node process user request logs added successfully.';
 			return $response;
 		}
 
@@ -190,7 +214,7 @@
 	}
 
 	if (empty($system->parameters) === false) {
-		$nodeUserRequestLogMethods = new NodeUserRequestLogMethods();
-		$data = $nodeUserRequestLogMethods->route($system->parameters);
+		$nodeProcessUserRequestLogMethods = new NodeProcessUserRequestLogMethods();
+		$data = $nodeProcessUserRequestLogMethods->route($system->parameters);
 	}
 ?>
