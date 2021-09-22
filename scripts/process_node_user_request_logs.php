@@ -8,24 +8,32 @@
 		}
 
 		public function process() {
-			$nodeProcessTypeNodeUserRequestLogPaths = array(
-				'http_proxy' => '/var/log/http_proxy',
-				'recursive_dns' => '/var/log/recursive_dns',
-				'socks_proxy' => '/var/log/socks_proxy'
+			$nodeProcessTypes = array(
+				'http_proxy',
+				'recursive_dns',
+				'socks_proxy'
 			);
 
-			foreach ($nodeProcessTypeNodeUserRequestLogPaths as $nodeProcessType => $nodeProcessTypeNodeUserRequestLogPath) {
-				if (is_dir($nodeProcessTypeNodeUserRequestLogPath) === true) {
-					$nodeProcessTypeNodeUserRequestLogFiles = scandir($nodeProcessTypeNodeUserRequestLogPath);
+			foreach ($nodeProcessTypes as $nodeProcessType) {
+				$nodeProcessTypeRequestLogFiles = scandir('/var/log/' . $nodeProcessType);
 
-					if (empty($nodeProcessTypeNodeUserRequestLogFiles) === false) {
-						unset($nodeProcessTypeNodeUserRequestLogFiles[0]);
-						unset($nodeProcessTypeNodeUserRequestLogFiles[1]);
+				if (empty($nodeProcessTypeRequestLogFiles) === false) {
+					unset($nodeProcessTypeRequestLogFiles[0]);
+					unset($nodeProcessTypeRequestLogFiles[1]);
 
-						foreach ($nodeProcessTypeNodeUserRequestLogFiles as $nodeProcessTypeNodeUserRequestLogFile) {
-							$nodeId = $nodeProcessTypeNodeUserRequestLogFile;
-							$nodeProcessTypeNodeUserRequestLogFile = $nodeProcessTypeNodeUserRequestLogPath . '/' . $nodeId;
-							exec('sudo curl -s --form "data=@' . $nodeProcessTypeNodeUserRequestLogFile . '" --form-string "json={\"action\":\"add\",\"data\":{\"node_id\":\"' . $nodeId . '\", \"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/node-user-request-logs 2>&1', $response);
+					foreach ($nodeProcessTypeRequestLogFiles as $nodeProcessTypeRequestLogFile) {
+						$nodeProcessTypeRequestLogFileParts = explode('_', $nodeProcessTypeRequestLogFile);
+
+						if (
+							(empty($nodeProcessTypeRequestLogFileParts[1]) === false) &&
+							(empty($nodeProcessTypeRequestLogFileParts[2]) === true) &&
+							(is_numeric($nodeProcessTypeRequestLogFileParts[0]) === true) &&
+							(is_numeric($nodeProcessTypeRequestLogFileParts[1]) === true)
+						) {
+							$nodeProcessNodeId = $nodeProcessTypeRequestLogFileParts[0];
+							$nodeProcessNodeUserId = $nodeProcessTypeRequestLogFileParts[1];
+							$nodeProcessTypeNodeUserRequestLogFile = '/var/log/' . $nodeProcessType . '/' . $nodeProcessTypeRequestLogFile;
+							exec('sudo curl -s --form "data=@' . $nodeProcessTypeNodeUserRequestLogFile . '" --form-string "json={\"action\":\"add\",\"data\":{\"node_id\":\"' . $nodeProcessNodeId . '\", \"node_user_id\":\"' . $nodeProcessNodeUserId . '\", \"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/node-user-request-logs 2>&1', $response);
 							$response = json_decode(current($response), true);
 
 							if (empty($response['data']['most_recent_node_user_request_log']) === false) {
