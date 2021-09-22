@@ -1,5 +1,5 @@
 <?php
-	class ProcessNodeUserRequestLogs {
+	class ProcessNodeProcessUserRequestLogs {
 
 		public $parameters;
 
@@ -15,32 +15,32 @@
 			);
 
 			foreach ($nodeProcessTypes as $nodeProcessType) {
-				$nodeProcessTypeRequestLogFiles = scandir('/var/log/' . $nodeProcessType);
+				$nodeProcessUserRequestLogFiles = scandir('/var/log/' . $nodeProcessType);
 
-				if (empty($nodeProcessTypeRequestLogFiles) === false) {
-					unset($nodeProcessTypeRequestLogFiles[0]);
-					unset($nodeProcessTypeRequestLogFiles[1]);
+				if (empty($nodeProcessUserRequestLogFiles) === false) {
+					unset($nodeProcessUserRequestLogFiles[0]);
+					unset($nodeProcessUserRequestLogFiles[1]);
 
-					foreach ($nodeProcessTypeRequestLogFiles as $nodeProcessTypeRequestLogFile) {
-						$nodeProcessTypeRequestLogFileParts = explode('_', $nodeProcessTypeRequestLogFile);
+					foreach ($nodeProcessUserRequestLogFiles as $nodeProcessUserRequestLogFile) {
+						$nodeProcessUserRequestLogFileParts = explode('_', $nodeProcessUserRequestLogFile);
 
 						if (
-							(empty($nodeProcessTypeRequestLogFileParts[1]) === false) &&
-							(empty($nodeProcessTypeRequestLogFileParts[2]) === true) &&
-							(is_numeric($nodeProcessTypeRequestLogFileParts[0]) === true) &&
-							(is_numeric($nodeProcessTypeRequestLogFileParts[1]) === true)
+							(empty($nodeProcessUserRequestLogFileParts[1]) === false) &&
+							(empty($nodeProcessUserRequestLogFileParts[2]) === true) &&
+							(is_numeric($nodeProcessUserRequestLogFileParts[0]) === true) &&
+							(is_numeric($nodeProcessUserRequestLogFileParts[1]) === true)
 						) {
-							$nodeProcessNodeId = $nodeProcessTypeRequestLogFileParts[0];
-							$nodeProcessNodeUserId = $nodeProcessTypeRequestLogFileParts[1];
-							$nodeProcessTypeNodeUserRequestLogFile = '/var/log/' . $nodeProcessType . '/' . $nodeProcessTypeRequestLogFile;
-							exec('sudo curl -s --form "data=@' . $nodeProcessTypeNodeUserRequestLogFile . '" --form-string "json={\"action\":\"add\",\"data\":{\"node_id\":\"' . $nodeProcessNodeId . '\", \"node_user_id\":\"' . $nodeProcessNodeUserId . '\", \"type\":\"' . $nodeProcessType . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/node-user-request-logs 2>&1', $response);
+							$nodeProcessNodeId = $nodeProcessUserRequestLogFileParts[0];
+							$nodeProcessNodeUserId = $nodeProcessUserRequestLogFileParts[1];
+							$nodeProcessUserRequestLogFile = '/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile;
+							exec('sudo curl -s --form "data=@' . $nodeProcessUserRequestLogFile . '" --form-string "json={\"action\":\"add\",\"data\":{\"node_id\":\"' . $nodeProcessNodeId . '\", \"node_process_type\":\"' . $nodeProcessType . '\", \"node_user_id\":\"' . $nodeProcessNodeUserId . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/node-process-user-request-logs 2>&1', $response);
 							$response = json_decode(current($response), true);
 
-							if (empty($response['data']['most_recent_node_user_request_log']) === false) {
-								$mostRecentNodeUserRequestLog = $response['data']['most_recent_node_user_request_log'];
-								$nodeUserRequestLogFileContents = file_get_contents($nodeProcessTypeNodeUserRequestLogFile);
-								$updatedNodeUserRequestLogs = substr($nodeUserRequestLogFileContents, strpos($nodeUserRequestLogFileContents, $mostRecentNodeUserRequestLog) + strlen($mostRecentNodeUserRequestLog));
-								file_put_contents($nodeProcessTypeNodeUserRequestLogFile, trim($updatedNodeUserRequestLogs));
+							if (empty($response['data']['most_recent_node_process_user_request_log']) === false) {
+								$mostRecentNodeProcessUserRequestLog = $response['data']['most_recent_node_process_user_request_log'];
+								$nodeProcessUserRequestLogFileContents = file_get_contents($nodeProcessUserRequestLogFile);
+								$updatedNodeProcessUserRequestLogs = substr($nodeProcessUserRequestLogFileContents, strpos($nodeProcessUserRequestLogFileContents, $mostRecentNodeProcessUserRequestLog) + strlen($mostRecentNodeProcessUserRequestLog));
+								file_put_contents($nodeProcessUserRequestLogFile, trim($updatedNodeProcessUserRequestLogs));
 							}
 						}
 					}
