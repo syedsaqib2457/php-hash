@@ -652,11 +652,11 @@
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
+						$nodeReservedInternalDestinationIpVersion = key($this->nodeData['node_reserved_internal_destinations'][$nodeProcessNodeId]);
+
 						foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
-							foreach ($this->nodeData['node_reserved_internal_destinations'][$nodeProcessNodeId] as $nodeIpVersion => $nodeReservedInternalDestinationIpAddress) {
-								if ($this->_verifyNodeProcess($nodeReservedInternalDestinationIpAddress, $nodeIpVersion, $nodeProcessPortNumber, $nodeProcessType) === false) {
-									unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessNodeId][$nodeProcessId]);
-								}
+							if ($this->_verifyNodeProcess($this->nodeData['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === false) {
+								unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessNodeId][$nodeProcessId]);
 							}
 						}
 					}
@@ -888,13 +888,15 @@
 			// todo: refactor _verifyNodeProcess loop for new nodeData format
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
+				// todo: add this to _verifyNodeProcesses($nodeProcessPartKey) since it's repeated 3 times
+
 				foreach ($this->nodeData['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
+						$nodeReservedInternalDestinationIpVersion = key($this->nodeData['node_reserved_internal_destinations'][$nodeProcessNodeId]);
+
 						foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
-							foreach ($this->nodeData['node_reserved_internal_destinations'][$nodeProcessNodeId] as $nodeIpVersion => $nodeReservedInternalDestinationIpAddress) {
-								if ($this->_verifyNodeProcess($nodeReservedInternalDestinationIpAddress, $nodeIpVersion, $nodeProcessPortNumber, $nodeProcessType) === false) {
-									unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessNodeId][$nodeProcessId]);
-								}
+							if ($this->_verifyNodeProcess($this->nodeData['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === false) {
+								unset($this->nodeData['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessNodeId][$nodeProcessId]);
 							}
 						}
 					}
