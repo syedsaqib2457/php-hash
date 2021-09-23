@@ -952,8 +952,11 @@
 				}
 			}
 
-			// todo: cache data with new nodeData format
-			file_put_contents('/tmp/node_processes', json_encode($nodeProcesses));
+			$nodeData = array_intersect_key($this->nodeData, array(
+				'node_processes' => true,
+				'node_recursive_dns_destinations' => true
+			));
+			file_put_contents('/tmp/node_data', json_encode($nodeData));
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
 			return $response;
