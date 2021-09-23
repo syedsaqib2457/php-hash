@@ -79,7 +79,7 @@
 				$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
 
 				// todo: make sure prerouting load balancing works with DNS from system requests and proxy process requests, use output if not
-				// todo: set nodeDataKey to 'current' or 'next' to prevent connection interruptions on current processes
+				// todo: set nodeDataKey to 'current' or 'next' for each _processFirewall() instance to prevent connection interruptions on current processes
 
 				foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
 					if (empty($this->nodeData['next']['node_processes'][$nodeProcessType]) === false) {
@@ -374,6 +374,7 @@
 				shell_exec('sudo ' . $this->nodeData['next']['binary_files']['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
 			}
 
+			$nodeInterfacesFileContents = $nodeIpsToDelete = array();
 			$nodeIpVersions = array(
 				32 => 4,
 				128 => 6
@@ -386,32 +387,17 @@
 					$nodeIpVersionInterfaceType .= 6;
 				}
 
-				exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' addr show dev ' . $this->nodeData['next']['interface_name'] . ' | grep "' . $nodeIpVersionInterfaceType . ' " | grep "' . $nodeIpVersionNetworkMask . ' " | awk \'{print substr($2, 0, length($2) - ' . ($nodeIpVersion / 2) . ')}\'', $existingInterfaceNodeIps);
-				$existingInterfaceNodeIps = current($existingInterfaceNodeIps);
-				$interfaceNodeIpFileContents = array(
-					'<?php'
-				);
-				$interfaceNodeIpsToProcess = array(
-					'add' => array_diff($this->nodeData['next']['node_ips'][$nodeIpVersion], $existingInterfaceNodeIps),
-					'delete' => array_diff($existingInterfaceNodeIps, $this->nodeData['next']['node_ips'][$nodeIpVersion])
-				);
+				exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' addr show dev ' . $this->nodeData['next']['interface_name'] . ' | grep "' . $nodeIpVersionInterfaceType . ' " | grep "' . $nodeIpVersionNetworkMask . ' " | awk \'{print substr($2, 0, length($2) - ' . ($nodeIpVersion / 2) . ')}\'', $existingNodeIps);
+				$nodeIpsToDelete[$nodeIpVersion] = array_diff(current($existingNodeIps), $this->nodeData['next']['node_ips'][$nodeIpVersion]);
 
-				// todo: delete interfaces after processing
-				foreach ($interfaceNodeIpsToProcess as $interfaceNodeIpAction => $interfaceNodeIps) {
-					$interfaceNodeIpAction = substr($interfaceNodeIpAction, 3);
-
-					foreach ($interfaceNodeIps as $interfaceNodeIp) {
-						$command = 'sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $nodeIpVersion . ' addr ' . $interfaceNodeIpAction . ' ' . $interfaceNodeIp . '/' . $nodeIpVersionNetworkMask . ' dev ' . $this->nodeData['next']['interface_name'];
-						shell_exec($command);
-
-						if ($interfaceNodeIpAction === 'add') {
-							$interfaceNodeIpFileContents[] = 'shell_exec(\'' . $command . '\');';
-						}
-					}
+				foreach ($this->nodeData['next']['node_ips'][$nodeIpVersion] as $nodeIp) {
+					$nodeInterfacesFileContents[] = 'shell_exec(\'' . ($command = 'sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $nodeIpVersion . ' addr add ' . $nodeIp . '/' . $nodeIpVersionNetworkMask . ' dev ' . $this->nodeData['next']['interface_name']) . '\');';
+					shell_exec($command);
 				}
 			}
 
-			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $interfaceNodeIps));
+			array_unshift($nodeInterfacesFileContents, '<?php');
+			file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $nodeInterfacesFileContents));
 
 			if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
 				$recursiveDnsNodeProcessDefaultServiceName = 'named';
@@ -436,7 +422,6 @@
 					}
 				}
 
-				// todo: use cached node_reserved_internal_destinations for processFirewall() when key = 0
 				$this->_processFirewall($nodeProcessPartKey);
 				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
@@ -913,6 +898,12 @@
 
 			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
 
+			foreach ($nodeIpVersions as $nodeIpVersionNetworkMask => $nodeIpVersion) {
+				foreach ($nodeIpsToDelete[$nodeIpVersion] as $nodeIp) {
+					shell_exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $nodeIpVersion . ' addr delete ' . $nodeIp . '/' . $nodeIpVersionNetworkMask . ' dev ' . $this->nodeData['next']['interface_name']) . '\');';
+				}
+			}
+
 			foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessIds) {
 				$nodeProcessProcessIds = array();
 
@@ -951,7 +942,6 @@
 				}
 			}
 
-			// todo: delete old interfaces here
 			$this->nodeData['current'] = array_intersect_key($this->nodeData['next'], array(
 				'node_processes' => true,
 				'node_recursive_dns_destinations' => true
@@ -970,6 +960,8 @@
 					$this->nodeData['current'] = $nodeDataFileContents;
 				}
 			}
+
+			// todo: monitor ssh_ports and reconfigure firewall if new SSH ports are opened, add ssh_ports to cached node data
 
 			if (empty($this->nodeData['next']) === true) {
 				unlink($nodeProcessResponseFile);
@@ -1087,7 +1079,6 @@
 					}
 
 					exec('sudo ' . $this->nodeData['next']['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
-					// todo: add interface_name to cached data
 					$this->nodeData['next']['interface_name'] = current($interfaceName);
 
 					if (file_exists('/etc/ssh/sshd_config') === true) {
@@ -1103,7 +1094,6 @@
 						}
 
 						if (empty($sshPortNumbers) === false) {
-							// todo: add ssh_port_numbers to cached data
 							$this->nodeData['next']['ssh_port_numbers'] = $sshPortNumbers;
 						}
 					}
