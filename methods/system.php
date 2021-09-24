@@ -613,13 +613,15 @@
 						$ipVersion = 6;
 					}
 
-					$validatedIp = $this->_validateIp($ip, $ipVersion, $allowRanges);
+					if (empty($validatedIps[$ipVersion][$ip]) === true) {
+						$validatedIp = $this->_validateIp($ip, $ipVersion, $allowRanges);
 
-					if ($validatedIp === false) {
-						continue;
+						if ($validatedIp === false) {
+							continue;
+						}
+
+						$validatedIps[$ipVersion][$validatedIp] = $validatedIp;
 					}
-
-					$validatedIps[$ipVersion][$validatedIp] = $validatedIp;
 				}
 			}
 
