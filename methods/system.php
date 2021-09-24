@@ -697,6 +697,10 @@
 					$validIpPartLetters = 'ABCDEF';
 
 					if (strpos($ip, '::') !== false) {
+						if (substr($ip, -2) === '::') {
+							$ip .= '0000';
+						}
+
 						$ip = str_replace('::', str_repeat(':0000', 7 - (substr_count($ip, ':') - 1)) . ':', $ip);
 
 						if ($ip[0] === ':') {
