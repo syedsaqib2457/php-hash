@@ -697,11 +697,17 @@
 					$validIpPartLetters = 'ABCDEF';
 
 					if (strpos($ip, '::') !== false) {
-						if (substr($ip, -2) === '::') {
-							$ip .= '0000';
+						$ipDelimiterCount = substr_count($ip, ':');
+
+						if ($ipDelimiterCount === 2) {
+							$ipDelimiterCount = 0;
 						}
 
-						$ip = str_replace('::', str_repeat(':0000', 7 - (substr_count($ip, ':') - 1)) . ':', $ip);
+						$ip = rtrim(str_replace('::', str_repeat(':0000', 7 - $ipDelimiterCount) . ':', $ip), ':');
+
+						if (strpos($ip, ':/') !== false) {
+							$ip = str_replace(':/', '/', $ip);
+						}
 
 						if ($ip[0] === ':') {
 							$ip = '0000' . $ip;
@@ -734,17 +740,16 @@
 
 								if (
 									($allowRanges === false) ||
-									(empty($ipBlockParts[1]) === true) ||
-									(empty($ipBlockParts[2]) === false) ||
+									(isset($ipBlockParts[1]) === false) ||
+									(isset($ipBlockParts[2]) === true) ||
 									(is_numeric($ipBlockParts[1]) === false) ||
 									($ipBlockParts[1] > 128) ||
-									($ipBlockParts[1] < 8)
+									($ipBlockParts[1] < 0)
 								) {
 									return false;
 								}
 
 								$ipPart = current($ipBlockParts);
-								$ip .= ':' . str_pad($ipPart, 4, '0', STR_PAD_LEFT);
 							}
 
 							if (
@@ -771,7 +776,7 @@
 
 							$ip .= str_pad($ipPart, 4, '0', STR_PAD_LEFT);
 
-							if (empty($ipBlockParts[1]) === false) {
+							if (isset($ipBlockParts[1]) === true) {
 								$ip .= '/' . $ipBlockParts[1];
 							}
 						}
