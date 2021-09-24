@@ -701,6 +701,10 @@
 					if (strpos($ip, '::') !== false) {
 						$ipDelimiterCount = substr_count($ip, ':') - 2;
 
+						if (strpos($ip, '.') !== false) {
+							$ipDelimiterCount = 1;
+						}
+
 						if (
 							(empty($ip[2]) === true) ||
 							($ip[2] === '/')
