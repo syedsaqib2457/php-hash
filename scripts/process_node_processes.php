@@ -40,6 +40,16 @@
 
 		protected function _processFirewall($nodeDataKey, $nodeProcessPartKey = false) {
 			// todo: use ipset rules with node reserved internal destinations
+				/*
+					set unique ipset rule names to current and next data keys, destroy current ipset rules and set next as current after processing
+						['ipset']
+							['node_processes']
+								group ip:port combinations with node_ids that use the same ports to allow specific ports for each node
+								[node_process_type]
+									$nodeProcessPartKey => $nodeProcessPartKey . '_' . set_name_timestamp
+							['reserved_internal_ip_addresses'] => set_name_timestamp
+				*/
+
 			$firewallBinaryFiles = array(
 				4 => $this->nodeData['next']['binary_files']['iptables-restore'],
 				6 => $this->nodeData['next']['binary_files']['ip6tables-restore']
@@ -407,6 +417,7 @@
 				}
 			}
 
+			$nodeDataKey = 'current';
 			$nodeProcesses = $this->nodeData['next']['node_processes'];
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
@@ -422,7 +433,11 @@
 					}
 				}
 
-				$this->_processFirewall($nodeProcessPartKey);
+				if ($nodeProcessPartKey === 1) {
+					$nodeDataKey = 'next';
+				}
+
+				$this->_processFirewall($nodeDataKey, $nodeProcessPartKey);
 				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
 				foreach ($this->nodeData['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
@@ -635,6 +650,8 @@
 				$this->nodeData['next']['node_processes'] = $nodeProcesses;
 			}
 
+			$nodeDataKey = 'current';
+
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['next']['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
@@ -648,7 +665,11 @@
 					}
 				}
 
-				$this->_processFirewall($nodeProcessPartKey);
+				if ($nodeProcessPartKey === 1) {
+					$nodeDataKey = 'next';
+				}
+
+				$this->_processFirewall($nodeDataKey, $nodeProcessPartKey);
 				$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
 				foreach ($this->nodeData['next']['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
@@ -887,7 +908,7 @@
 				}
 			}
 
-			$this->_processFirewall();
+			$this->_processFirewall('next');
 			$nodeRecursiveDnsDestinations = array();
 
 			foreach ($this->nodeData['next']['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
