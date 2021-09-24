@@ -697,20 +697,19 @@
 					$validIpPartLetters = 'ABCDEF';
 
 					if (strpos($ip, '::') !== false) {
-						$ipDelimiterCount = substr_count($ip, ':');
+						$ipDelimiterCount = substr_count($ip, ':') - 2;
 
-						if ($ipDelimiterCount === 2) {
-							$ipDelimiterCount = 0;
+						if (
+							(empty($ip[2]) === true) ||
+							($ip[2] === '/')
+						) {
+							$ipDelimiterCount = -1;
 						}
 
-						$ip = rtrim(str_replace('::', str_repeat(':0000', 7 - $ipDelimiterCount) . ':', $ip), ':');
+						$ip = trim(str_replace('::', str_repeat(':0000', 7 - $ipDelimiterCount) . ':', $ip), ':');
 
 						if (strpos($ip, ':/') !== false) {
 							$ip = str_replace(':/', '/', $ip);
-						}
-
-						if ($ip[0] === ':') {
-							$ip = '0000' . $ip;
 						}
 					}
 
@@ -730,7 +729,7 @@
 						foreach ($ipParts as $ipPartKey => $ipPart) {
 							if (
 								($mappedIpVersion4 === false) &&
-								(strlen($ipPart) > 4)
+								(ctype_alnum($ipPart) === false)
 							) {
 								if (empty($ipParts[($ipPartKey + 1)]) === false) {
 									return false;
