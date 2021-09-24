@@ -75,9 +75,9 @@
 					'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP'
 				);
 
-				if (empty($this->nodeData['next']['ssh_port_numbers']) === false) {
-					foreach ($this->nodeData['next']['ssh_port_numbers'] as $sshPortNumber) {
-						$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
+				if (empty($this->nodeData['next']['node_ssh_port_numbers']) === false) {
+					foreach ($this->nodeData['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
+						$firewallRules[] = '-A INPUT -p tcp --dport ' . $nodeSshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
 					}
 				}
 
@@ -257,8 +257,8 @@
 					foreach ($nodeProcessNodePart as $nodeProcessNodeId => $nodeProcessPortNumbers) {
 						foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
 							if (
-								(empty($this->nodeData['node_processes'][$nodeProcessType][0][$nodeProcessNodeId][$nodeProcessId]) === true) &&
-								(empty($this->nodeData['node_processes'][$nodeProcessType][1][$nodeProcessNodeId][$nodeProcessId]) === true)
+								(empty($this->nodeData['next']['node_processes'][$nodeProcessType][0][$nodeProcessNodeId][$nodeProcessId]) === true) &&
+								(empty($this->nodeData['next']['node_processes'][$nodeProcessType][1][$nodeProcessNodeId][$nodeProcessId]) === true)
 							) {
 								$nodeProcessesToRemove[$nodeProcessType][$nodeProcessId] = $nodeProcessId;
 							}
@@ -525,6 +525,7 @@
 						$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
 					}
 
+					$recursiveDnsNodeProcessesStart = true;
 					$recursiveDnsNodeProcessInterfaceDestinationIps = $recursiveDnsNodeProcessNodeIps = array();
 
 					foreach ($this->nodeData['next']['node_ip_versions'] as $recursiveDnsNodeIpVersion) {
@@ -544,15 +545,25 @@
 							$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = 'listen-on' . $recursiveDnsNodeProcessConfigurationOptionSuffix . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 							$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = false;
-							$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_version_' . $recursiveDnsNodeIpVersion] . ';';
+							$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_version_' . $recursiveDnsNodeIpVersion];
 							$recursiveDnsNodeProcessConfigurationIndexes['b']++;
+
+							if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$this->nodeData['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_version_' . $recursiveDnsNodeIpVersion]]) === false) {
+								$recursiveDnsNodeProcessesStart = false;
+							}
+
 							$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = false;
-							$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion] . ';';
+							$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion];
 							$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
 							if (empty($this->nodeData['node_process_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
-								$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessInterfaceSourceIp . ';';
+								$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = false;
+								$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessInterfaceSourceIp;
 								$recursiveDnsNodeProcessConfigurationIndexes['b']++;
+
+								if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeProcessInterfaceSourceIp]) === false) {
+									$recursiveDnsNodeProcessesStart = false;
+								}
 							}
 
 							$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = '};';
@@ -579,13 +590,13 @@
 							}
 						}
 
-						$recursiveDnsNodeProcessConfiguration['d'] = '"/var/cache/' . $recursiveDnsNodeProcessName . '";';
-						$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
-
 						foreach ($recursiveDnsNodeProcessInterfaceDestinationIps as $recursiveDnsNodeProcessInterfaceDestinationIpIndex => $recursiveDnsNodeProcessInterfaceDestinationIp) {
-							$recursiveDnsNodeProcessConfiguration[$recursiveDnsNodeProcessInterfaceDestinationIpIndex] = $recursiveDnsNodeProcessInterfaceDestinationIp . ':' . $recursiveDnsNodeProcessPortNumber;
+							$recursiveDnsNodeProcessConfiguration[$recursiveDnsNodeProcessInterfaceDestinationIpIndex] = $recursiveDnsNodeProcessInterfaceDestinationIp . ':' . $recursiveDnsNodeProcessPortNumber . ';';
 						}
 
+						$recursiveDnsNodeProcessConfiguration['d'] = '"/var/cache/' . $recursiveDnsNodeProcessName . '";';
+						$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
+						file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options', implode("\n", $recursiveDnsNodeProcessConfiguration));
 						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named ' . $recursiveDnsNodeProcessName);
 						// todo: start all node process ports with same service file instead of daemon-reload for each process port
 						$recursiveDnsNodeProcessService = array(
@@ -600,16 +611,8 @@
 
 						if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName) === false) {
 							shell_exec('sudo cp -r /etc/bind /etc/' . $recursiveDnsNodeProcessName);
-							$recursiveDnsNodeProcessConfiguration = array(
-								'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options";',
-								'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.local";',
-								'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.default-zones";'
-							);
-							file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf', implode("\n", $recursiveDnsNodeProcessConfiguration));
+							file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf', 'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options"; include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.local"; include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.default-zones";');
 						}
-
-						$recursiveDnsNodeProcessConfigurationOptions = array_filter($recursiveDnsNodeProcessConfigurationOptions);
-						file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options', implode("\n", $recursiveDnsNodeProcessConfigurationOptions));
 
 						if (is_dir('/var/cache/' . $recursiveDnsNodeProcessName) === false) {
 							mkdir('/var/cache/' . $recursiveDnsNodeProcessName);
@@ -628,10 +631,14 @@
 						$recursiveDnsNodeProcessStarted = false;
 						$recursiveDnsNodeProcessStartedTime = time();
 
-						while ($recursiveDnsNodeProcessStarted === false) {
-							shell_exec('sudo ' . $this->nodeData['next']['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
-							$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
-							sleep(1);
+						if ($recursiveDnsNodeProcessesStart === true) {
+							while ($recursiveDnsNodeProcessStarted === false) {
+								shell_exec('sudo ' . $this->nodeData['next']['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
+								$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
+								sleep(1);
+							}
+						} else {
+							$this->reprocess = true;
 						}
 
 						if (file_exists('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid') === true) {
@@ -801,6 +808,7 @@
 								}
 							}
 
+							$proxyNodeProcessesStart = true;
 							$proxyNodeProcessNodeIps = array();
 
 							foreach ($this->nodeData['next']['node_ip_versions'] as $proxyNodeIpVersion) {
@@ -815,6 +823,10 @@
 
 									if (empty($this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion]) === false) {
 										$proxyNodeProcessInterfaceDestinationIp = $proxyNodeProcessNodeIps[$proxyNodeIpVersion] = $this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion];
+
+										if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$proxyNodeProcessInterfaceDestinationIp]) === false) {
+											$proxyNodeProcessesStart = false;
+										}
 									}
 
 									$proxyNodeProcessConfiguration['f'] .= ' -e' . $proxyNodeProcessInterfaceDestinationIp . ' -i' . $proxyNodeProcessInterfaceDestinationIp;
@@ -868,10 +880,14 @@
 								$proxyNodeProcessStarted = false;
 								$proxyNodeProcessStartedTime = time();
 
-								while ($proxyNodeProcessStarted === false) {
-									shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
-									$proxyNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
-									sleep(1);
+								if ($proxyNodeProcessesStart === true) {
+									while ($proxyNodeProcessStarted === false) {
+										shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
+										$proxyNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
+										sleep(1);
+									}
+								} else {
+									$this->reprocess = true;
 								}
 
 								if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
@@ -965,10 +981,13 @@
 
 			$this->nodeData['current'] = array_intersect_key($this->nodeData['next'], array(
 				'node_processes' => true,
-				'node_recursive_dns_destinations' => true
+				'node_recursive_dns_destination_ip_addresses' => true,
+				'node_recursive_dns_destinations' => true,
+				'node_ssh_port_numbers' => true
 			));
+			// todo: sent node_ssh_port_numbers to API to prevent process port conflictions on main node ip
 			file_put_contents('/tmp/node_data', json_encode($this->nodeData['current']));
-			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":true}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":' . (empty($this->reprocess) === true) . '}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
 			return $response;
 		}
@@ -981,8 +1000,6 @@
 					$this->nodeData['current'] = $nodeDataFileContents;
 				}
 			}
-
-			// todo: monitor ssh_ports and reconfigure firewall if new SSH ports are opened, add ssh_ports to cached node data
 
 			if (empty($this->nodeData['next']) === true) {
 				unlink($nodeProcessResponseFile);
@@ -1102,6 +1119,8 @@
 					exec('sudo ' . $this->nodeData['next']['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 					$this->nodeData['next']['interface_name'] = current($interfaceName);
 
+					// todo: monitor ssh_ports and reconfigure firewall if new SSH ports are opened, add ssh_ports to cached node data
+
 					if (file_exists('/etc/ssh/sshd_config') === true) {
 						exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
 
@@ -1115,7 +1134,7 @@
 						}
 
 						if (empty($sshPortNumbers) === false) {
-							$this->nodeData['next']['ssh_port_numbers'] = $sshPortNumbers;
+							$this->nodeData['next']['node_ssh_port_numbers'] = $sshPortNumbers;
 						}
 					}
 				}
