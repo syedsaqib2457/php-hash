@@ -722,7 +722,10 @@
 						$ip = '';
 
 						foreach ($ipParts as $ipPartKey => $ipPart) {
-							if (strlen($ipPart) > 4) {
+							if (
+								($mappedIpVersion4 === false) &&
+								(strlen($ipPart) > 4)
+							) {
 								if (empty($ipParts[($ipPartKey + 1)]) === false) {
 									return false;
 								}
@@ -730,15 +733,12 @@
 								$ipBlockParts = explode('/', $ipPart);
 
 								if (
-									($mappedIpVersion4 === false) &&
-									(
-										($allowRanges === false) ||
-										(empty($ipBlockParts[1]) === true) ||
-										(empty($ipBlockParts[2]) === false) ||
-										(is_numeric($ipBlockParts[1]) === false) ||
-										($ipBlockParts[1] > 128) ||
-										($ipBlockParts[1] < 8)
-									)
+									($allowRanges === false) ||
+									(empty($ipBlockParts[1]) === true) ||
+									(empty($ipBlockParts[2]) === false) ||
+									(is_numeric($ipBlockParts[1]) === false) ||
+									($ipBlockParts[1] > 128) ||
+									($ipBlockParts[1] < 8)
 								) {
 									return false;
 								}
