@@ -1138,6 +1138,10 @@
 						}
 					}
 				}
+
+				if (empty($this->nodeData['current']) === true) {
+					$this->nodeData['current'] = $this->nodeData['next'];
+				}
 			}
 
 			return;
