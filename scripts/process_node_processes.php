@@ -52,12 +52,12 @@
 			// todo: use ipset rules with node reserved internal destinations
 				/*
 					set unique ipset rule names to current and next data keys, destroy current ipset rules and set next as current after processing
-						['ipset']
+					[current|next]
+						['node_firewall_ip_sets']
 							['node_processes']
-								group ip:port combinations with node_ids that use the same ports to allow specific ports for each node
 								[node_process_type]
-									$nodeProcessPartKey => $nodeProcessPartKey . '_' . set_name_timestamp
-							['reserved_internal_ip_addresses'] => set_name_timestamp
+									$nodeProcessPartKey => [current|next_{$nodeProcessPartKey}{node_process_type}]
+							['reserved_internal_ip_addresses'] => [current|next_reserved_internal_ip_addresses]
 				*/
 
 			$firewallBinaryFiles = array(
@@ -425,7 +425,16 @@
 			$nodeProcesses = $this->nodeData['next']['node_processes'];
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
+				if ($nodeProcessPartKey === 1) {
+					$nodeDataKey = 'next';
+				}
+
 				foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
+					foreach ($this->nodeData[$nodeDataKey]['node_ip_versions'] as $nodeIpVersion) {
+						shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' destroy ' . ($nodeFirewallSetName = $nodeDataKey . '_' . $nodeIpVersion . '_' . $nodeProcessPartKey . '_' . $nodeProcessType));
+						shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' create ' . $nodeFirewallSetName . ' hash:ip,port family ' . $this->ipVersions[$nodeIpVersion]['interface_type'] . ' timeout 0');
+					}
+
 					foreach ($this->nodeData['next']['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
 						$nodeReservedInternalDestinationIpVersion = key($this->nodeData['next']['node_reserved_internal_destinations'][$nodeProcessNodeId]);
 
@@ -433,12 +442,11 @@
 							if ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === false) {
 								unset($this->nodeData['next']['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessNodeId][$nodeProcessId]);
 							}
+
+							// shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeFirewallSetName . ' ' . $this->);
+							// todo: add all ip:port combinations for node to ipset rule for load balancing
 						}
 					}
-				}
-
-				if ($nodeProcessPartKey === 1) {
-					$nodeDataKey = 'next';
 				}
 
 				$this->_processFirewall($nodeDataKey, $nodeProcessPartKey);
