@@ -4,6 +4,16 @@
 		public $parameters;
 
 		public function __construct($parameters) {
+			$this->ipVersions = array(
+				4 => array(
+					'interface_type' => 'inet',
+					'network_mask' => 32
+				),
+				6 => array(
+					'interface_type' => 'inet6',
+					'network_mask' => 128
+				)
+			);
 			exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
 			$this->memoryCapacityBytes = current($memoryCapacityBytes);
 			$this->parameters = $parameters;
@@ -385,25 +395,19 @@
 			}
 
 			$nodeInterfacesFileContents = $nodeIpsToDelete = array();
-			$nodeIpVersions = array(
-				32 => 4,
-				128 => 6
-			);
 
-			foreach ($nodeIpVersions as $nodeIpVersionNetworkMask => $nodeIpVersion) {
-				$nodeIpVersionInterfaceType = 'inet';
+			foreach ($this->ipVersions as $ipVersionNumber => $ipVersion) {
+				$existingNodeIps = array();
+				exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' addr show dev ' . $this->nodeData['next']['interface_name'] . ' | grep "' . $ipVersion['interface_type'] . ' " | grep "' . $ipVersion['network_mask'] . ' " | awk \'{print substr($2, 0, length($2) - ' . ($ipVersionNumber / 2) . ')}\'', $existingNodeIps);
 
-				if ($nodeIpVersion === 6) {
-					$nodeIpVersionInterfaceType .= 6;
+				if (empty($this->nodeData['next']['node_ips'][$ipVersionNumber]) === false) {
+					foreach ($this->nodeData['next']['node_ips'][$ipVersionNumber] as $nodeIp) {
+						$nodeInterfacesFileContents[] = 'shell_exec(\'' . ($command = 'sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $ipVersion . ' addr add ' . $nodeIp . '/' . $ipVersion['network_mask'] . ' dev ' . $this->nodeData['next']['interface_name']) . '\');';
+						shell_exec($command);
+					}
 				}
 
-				exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' addr show dev ' . $this->nodeData['next']['interface_name'] . ' | grep "' . $nodeIpVersionInterfaceType . ' " | grep "' . $nodeIpVersionNetworkMask . ' " | awk \'{print substr($2, 0, length($2) - ' . ($nodeIpVersion / 2) . ')}\'', $existingNodeIps);
-				$nodeIpsToDelete[$nodeIpVersion] = array_diff(current($existingNodeIps), $this->nodeData['next']['node_ips'][$nodeIpVersion]);
-
-				foreach ($this->nodeData['next']['node_ips'][$nodeIpVersion] as $nodeIp) {
-					$nodeInterfacesFileContents[] = 'shell_exec(\'' . ($command = 'sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $nodeIpVersion . ' addr add ' . $nodeIp . '/' . $nodeIpVersionNetworkMask . ' dev ' . $this->nodeData['next']['interface_name']) . '\');';
-					shell_exec($command);
-				}
+				$nodeIpsToDelete[$ipVersion] = array_diff(current($existingNodeIps), $this->nodeData['next']['node_ips'][$ipVersionNumber]);
 			}
 
 			array_unshift($nodeInterfacesFileContents, '<?php');
@@ -935,9 +939,11 @@
 
 			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
 
-			foreach ($nodeIpVersions as $nodeIpVersionNetworkMask => $nodeIpVersion) {
-				foreach ($nodeIpsToDelete[$nodeIpVersion] as $nodeIp) {
-					shell_exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $nodeIpVersion . ' addr delete ' . $nodeIp . '/' . $nodeIpVersionNetworkMask . ' dev ' . $this->nodeData['next']['interface_name']) . '\');';
+			foreach ($this->ipVersions as $ipVersionNumber => $ipVersion) {
+				if (empty($nodeIpsToDelete[$ipVersionNumber]) === false) {
+					foreach ($nodeIpsToDelete[$ipVersionNumber] as $nodeIpToDelete) {
+						shell_exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $ipVersionNumber . ' addr delete ' . $nodeIpToDelete . '/' . $ipVersion['network_mask'] . ' dev ' . $this->nodeData['next']['interface_name']) . '\');';
+					}
 				}
 			}
 
