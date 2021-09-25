@@ -1,4 +1,76 @@
 <?php
+	/*
+		todo: use the following ipset firewall sequence optimized for current|next data sets with unique node process port selections among additional nodes (node_node_id !== null)
+
+		Set reserved internal destination ipset
+			Rare occurrences of conflicting reserved internal destination ips won’t get in the way of firewall processing since they’re skipped with forced reprocessing afterwards
+			0: current + next
+
+		0 + 1 node process part key alternate
+
+			Verify node process types
+				http_proxy
+					0: current
+					1: next
+				recursive_dns
+					0: current
+					1: next
+				socks_proxy
+					0: current
+					1: next
+
+			Set process destination ip:port ipset as all ports (not from verification process)
+				front-end validates and prevents conflicts between current + next process ports
+				0: current + next
+
+			Process firewall
+			Set alternate key (key + -1)
+			Reconfigure recursive_dns processes
+
+			Firewall ipset rules have to accommodate current proxy processes with nserver ip addresses + ports that were deleted
+
+		0 + 1 alternate
+
+			Verify node process types
+				http_proxy
+					0: current
+					1: next
+				recursive_dns
+					0: next
+					1: next
+				socks_proxy
+					0: current
+					1: next
+
+			Process firewall
+			Set alternate key
+			Reconfigure http_proxy processes
+			Reconfigure socks_proxy processes
+
+		0 + 1 simultaneous
+
+			Set process destination ip:port ipset as all ports (not from verification process)
+				front-end validates and prevents conflicts between current + next process ports
+				0 + 1: next
+
+			Set reserved internal destination ipset
+				Rare occurrences of conflicting reserved internal destination ips won’t get in the way of firewall processing since they’re skipped with forced reprocessing afterwards
+				0 + 1: next
+
+			Verify node process types
+				http_proxy
+					0: next
+					1: next
+				recursive_dns
+					0: next
+					1: next
+				socks_proxy
+					0: next
+					1: next
+
+			Process firewall
+	*/
+
 	class ProcessNodeProcesses {
 
 		public $parameters;
@@ -941,8 +1013,6 @@
 			$this->nodeData['next']['node_processes'] = $nodeProcesses;
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
-				// todo: add this to _verifyNodeProcesses($nodeProcessPartKey) since it's repeated 3 times
-
 				foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
 					foreach ($this->nodeData['next']['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
 						$nodeReservedInternalDestinationIpVersion = key($this->nodeData['next']['node_reserved_internal_destinations'][$nodeProcessNodeId]);
@@ -1015,11 +1085,11 @@
 
 			$this->nodeData['current'] = array_intersect_key($this->nodeData['next'], array(
 				'node_processes' => true,
-				'node_recursive_dns_destination_ip_addresses' => true,
+				'node_reserved_internal_destination_ip_addresses' => true,
 				'node_recursive_dns_destinations' => true,
 				'node_ssh_port_numbers' => true
 			));
-			// todo: sent node_ssh_port_numbers to API to prevent process port conflictions on main node ip
+			// todo: send node_ssh_port_numbers to API to prevent process port conflictions on main node ip
 			file_put_contents('/tmp/node_data', json_encode($this->nodeData['current']));
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":' . (empty($this->reprocess) === true) . '}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
