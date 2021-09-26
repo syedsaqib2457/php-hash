@@ -650,7 +650,7 @@
 							$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_version_' . $recursiveDnsNodeIpVersion];
 							$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
-							if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$this->nodeData['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_version_' . $recursiveDnsNodeIpVersion]]) === false) {
+							if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpVersion][$this->nodeData['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_version_' . $recursiveDnsNodeIpVersion]]) === false) {
 								$recursiveDnsNodeProcessesStart = false;
 							}
 
@@ -663,7 +663,7 @@
 								$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessInterfaceSourceIp;
 								$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
-								if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeProcessInterfaceSourceIp]) === false) {
+								if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpVersion][$recursiveDnsNodeProcessInterfaceSourceIp]) === false) {
 									$recursiveDnsNodeProcessesStart = false;
 								}
 							}
@@ -928,7 +928,7 @@
 									if (empty($this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion]) === false) {
 										$proxyNodeProcessInterfaceDestinationIp = $proxyNodeProcessNodeIps[$proxyNodeIpVersion] = $this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion];
 
-										if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$proxyNodeProcessInterfaceDestinationIp]) === false) {
+										if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$proxyNodeIpVersion][$proxyNodeProcessInterfaceDestinationIp]) === false) {
 											$proxyNodeProcessesStart = false;
 										}
 									}
