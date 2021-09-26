@@ -481,6 +481,11 @@
 				}
 
 				$nodeIpsToDelete[$ipVersion] = array_diff(current($existingNodeIps), $this->nodeData['next']['node_ips'][$ipVersionNumber]);
+				shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' create _ hash:ip family ' . $this->ipVersions[$ipVersionNumber]['interface_type'] . ' timeout 0');
+
+				foreach ($this->nodeData['next']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
+					shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add _ ' . $nodeReservedInternalDestinationIpAddress);
+				}
 			}
 
 			array_unshift($nodeInterfacesFileContents, '<?php');
@@ -497,13 +502,11 @@
 			$nodeProcesses = $this->nodeData['next']['node_processes'];
 
 			foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
-				$this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
+				$nodeDataKeys = $this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
 					'current',
 					'next'
 				);
 			};
-
-			// todo: add node_reserved_internal_destinations to ipset
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				foreach ($this->nodeData['node_process_type_process_part_data_keys'] as $nodeProcessType => $nodeProcessTypeProcessPartDataKeys) {
