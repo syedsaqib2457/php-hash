@@ -2,9 +2,9 @@
 	/*
 		todo: use the following ipset firewall sequence optimized for current|next data sets with unique node process port selections among additional nodes (node_node_id !== null)
 
-		Set reserved internal destination ipset
-			Rare occurrences of conflicting reserved internal destination ips won’t get in the way of firewall processing since they’re skipped with forced reprocessing afterwards
-			0: current + next
+	+	Set reserved internal destination ipset
+	+		Rare occurrences of conflicting reserved internal destination ips won’t get in the way of firewall processing since they’re skipped with forced reprocessing afterwards
+	+		0: current + next
 
 		0 + 1 node process part key alternate
 
@@ -69,6 +69,7 @@
 					1: next
 
 			Process firewall
+	+		Delete current node reserved internal ips that aren't in next node reserved internal ips from ipset
 	*/
 
 	class ProcessNodeProcesses {
@@ -1044,6 +1045,12 @@
 				if (empty($nodeIpsToDelete[$ipVersionNumber]) === false) {
 					foreach ($nodeIpsToDelete[$ipVersionNumber] as $nodeIpToDelete) {
 						shell_exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $ipVersionNumber . ' addr delete ' . $nodeIpToDelete . '/' . $ipVersion['network_mask'] . ' dev ' . $this->nodeData['next']['interface_name']) . '\');';
+					}
+				}
+
+				foreach ($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
+					if (empty($this->nodeData['next']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber][$nodeReservedInternalDestinationIpAddress]) === true) {
+						shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' del _ ' . $nodeReservedInternalDestinationIpAddress);
 					}
 				}
 			}
