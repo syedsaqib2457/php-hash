@@ -758,6 +758,13 @@
 							}
 
 							if (
+								($ipPart !== $mappedIpVersion4) &&
+								(isset($ipPart[4]) === true)
+							) {
+								return false;
+							}
+
+							if (
 								($mappedIpVersion4 === false) &&
 								(is_numeric($ipPart) === false)
 							) {
