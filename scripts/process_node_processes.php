@@ -147,9 +147,9 @@
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 				// todo: allow dropping external packets from additional public IP blocks with per-node settings
 
-				if (empty($this->nodeData['next']['private_network']['ip_blocks'][$nodeIpVersion]) === false) {
-					foreach ($this->nodeData['next']['private_network']['ip_blocks'][$nodeIpVersion] as $privateNetworkIpBlock) {
-						$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $privateNetworkIpBlock . ' -j DROP';
+				if (empty($this->nodeData['next']['reserved_network']['ip_blocks'][$nodeIpVersion]) === false) {
+					foreach ($this->nodeData['next']['reserved_network']['ip_blocks'][$nodeIpVersion] as $reservedNetworkIpBlock) {
+						$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $reservedNetworkIpBlock . ' -j DROP';
 					}
 				}
 
@@ -518,8 +518,8 @@
 				foreach ($this->nodeData['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
 					$recursiveDnsNodeProcessConfiguration = array(
 						'a0' => 'acl privateNetworkIpBlocks {',
-						'a1' => $this->nodeData['next']['private_network']['ip_blocks'][4],
-						'a2' => $this->nodeData['next']['private_network']['ip_blocks'][6],
+						'a1' => $this->nodeData['next']['reserved_network']['ip_blocks'][4],
+						'a2' => $this->nodeData['next']['reserved_network']['ip_blocks'][6],
 						'a3' => '};',
 						'a4' => 'acl whitelistedSources {',
 						'b0' => '};',
