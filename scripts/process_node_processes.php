@@ -171,10 +171,6 @@
 		}
 
 		protected function _processFirewallRuleSets($nodeProcessPartKey) {
-			if (empty($this->nodeProcessTypeFirewallRuleSetIndex) === true) {
-				$this->nodeProcessTypeFirewallRuleSetIndex = 0;
-			}
-
 			foreach ($this->nodeData['node_process_type_process_part_data_keys'] as $nodeProcessType => $nodeProcessTypeProcessPartDataKeys) {
 				$nodeDataKey = $nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey];
 				$nodeProcessPortNumberIdentifier = '';
@@ -205,6 +201,10 @@
 						foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
 							shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',tcp:' . $nodeProcessPortNumber);
 							shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',udp:' . $nodeProcessPortNumber);
+						}
+
+						if ($this->nodeProcessTypeFirewallRuleSetIndex !== 4) {
+							$this->nodeProcessTypeFirewallRuleSetsToDelete[$nodeProcessTypeFirewallRuleSet] = $nodeProcessTypeFirewallRuleSet;
 						}
 					}
 				}
@@ -457,6 +457,7 @@
 					}
 				}
 
+				// todo: test ~4000 records with array_diff vs foreach
 				$nodeIpsToDelete[$ipVersion] = array_diff(current($existingNodeIps), $this->nodeData['next']['node_ips'][$ipVersionNumber]);
 				shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' create _ hash:ip family ' . $this->ipVersions[$ipVersionNumber]['interface_type'] . ' timeout 0');
 
@@ -482,6 +483,9 @@
 					'next'
 				);
 			}
+
+			$this->nodeProcessTypeFirewallRuleSetIndex = 0;
+			$this->nodeProcessTypeFirewallRuleSetsToDelete = array();
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				$this->_processFirewall($nodeProcessPartKey);
@@ -957,7 +961,10 @@
 			}
 
 			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
-			// todo: delete node process port ipset rules with indexes 0-3
+
+			foreach ($this->nodeProcessTypeFirewallRuleSetsToDelete as $nodeProcessTypeFirewallRuleSet) {
+				shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSet);
+			}
 
 			foreach ($this->ipVersions as $ipVersionNumber => $ipVersion) {
 				if (empty($nodeIpsToDelete[$ipVersionNumber]) === false) {
@@ -966,6 +973,7 @@
 					}
 				}
 
+				// todo: create 0 + 1 internal reserved rule sets to delete 0 after processing
 				foreach ($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
 					if (empty($this->nodeData['next']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber][$nodeReservedInternalDestinationIpAddress]) === true) {
 						shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' del _ ' . $nodeReservedInternalDestinationIpAddress);
