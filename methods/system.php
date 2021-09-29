@@ -97,12 +97,12 @@
 				case 4:
 					$ipInteger = ip2long($ip);
 
-					foreach ($this->settings['private_network']['ip_ranges'][4] as $privateNetworkIpRangeIntegerStart => $privateNetworkIpRangeIntegerEnd) {
+					foreach ($this->settings['reserved_network']['ip_ranges'][4] as $reservedNetworkIpRangeIntegerStart => $reservedNetworkIpRangeIntegerEnd) {
 						if (
-							($ipInteger >= $privateNetworkRangeIntegerStart) &&
-							($ipInteger <= $privateNetworkRangeIntegerEnd)
+							($ipInteger >= $reservedNetworkIpRangeIntegerStart) &&
+							($ipInteger <= $reservedNetworkIpRangeIntegerEnd)
 						) {
-							$response = 'private';
+							$response = 'reserved';
 						}
 					}
 
@@ -137,8 +137,8 @@
 							substr($ipParts[0], 0, 2) . 'x' . $ipRangeVariables
 						));
 
-						if (array_intersect($ipRanges, $this->settings['private_network']['ip_ranges'][6]) !== array()) {
-							$response = 'private';
+						if (array_intersect($ipRanges, $this->settings['reserved_network']['ip_ranges'][6]) !== array()) {
+							$response = 'reserved';
 						}
 					}
 

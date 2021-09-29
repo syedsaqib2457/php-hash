@@ -84,7 +84,7 @@
 								),
 								array(
 									'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalDestinationIpAddress,
-									'external_ip_version_' . $nodeIpVersion . '_type' => 'private'
+									'external_ip_version_' . $nodeIpVersion . '_type' => 'reserved'
 								)
 							)
 						)
@@ -136,7 +136,7 @@
 							),
 							array(
 								'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalDestinationIpAddress,
-								'external_ip_version_' . $nodeIpVersion . '_type' => 'private'
+								'external_ip_version_' . $nodeIpVersion . '_type' => 'reserved'
 							)
 						)
 					)
@@ -329,7 +329,7 @@
 				$parameters['data']['external_ip_version_' . $nodeIpVersion . '_type'] = $this->_detectIpType(current($nodeIpVersionExternalIp), $nodeIpVersion);
 				$nodeExternalIpTypes[$parameters['data']['external_ip_version_' . $nodeIpVersion . '_type']] = true;
 
-				if (empty($nodeExternalIpTypes['private']) === false) {
+				if (empty($nodeExternalIpTypes['reserved']) === false) {
 					unset($parameters['data']['internal_ip_version_' . $nodeIpVersion]);
 				}
 			}
@@ -362,7 +362,7 @@
 			}
 
 			foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
-				$response['status_valid'] = ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'private');
+				$response['status_valid'] = ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'reserved');
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node internal IPs must be private, please try again.';
@@ -518,7 +518,7 @@
 								)
 							),
 							array(
-								'node_node_external_ip_address_type' => 'private'
+								'node_node_external_ip_address_type' => 'reserved'
 							)
 						)
 					)
@@ -837,7 +837,7 @@
 			foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeIpVersionExternalIp) {
 				$nodeExternalIpTypes[$this->_detectIpType(current($nodeIpVersionExternalIp), $nodeIpVersion)] = true;
 
-				if (empty($nodeExternalIpTypes['private']) === false) {
+				if (empty($nodeExternalIpTypes['reserved']) === false) {
 					unset($parameters['data']['internal_ip_version_' . $nodeIpVersion]);
 				}
 			}
@@ -870,7 +870,7 @@
 			}
 
 			foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
-				$response['status_valid'] = ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'private');
+				$response['status_valid'] = ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'reserved');
 
 				if ($response['status_valid'] === false) {
 					$response['message'] = 'Node internal IPs must be private, please try again.';
@@ -1820,11 +1820,11 @@
 						128 => 6
 					),
 					'node_process_types' => array_keys($this->settings['node_process_type_default_port_numbers']),
-					'private_network' => $this->settings['private_network'],
 					'proxy_node_process_types' => array(
 						'proxy' => 'http_proxy',
 						'socks' => 'socks_proxy'
 					),
+					'reserved_network' => $this->settings['reserved_network'],
 					'version' => $this->settings['version']
 				),
 				'message' => 'Error processing nodes, please try again.',

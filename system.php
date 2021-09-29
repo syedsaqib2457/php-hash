@@ -951,7 +951,7 @@
 					'recursive_dns' => 53,
 					'socks_proxy' => 1080
 				),
-				'private_network' => array(
+				'reserved_network' => array(
 					'ip_blocks' => array(
 						4 => array(
 							'0.0.0.0/8',
