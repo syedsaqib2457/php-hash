@@ -719,12 +719,21 @@
 				}
 			}
 
+			$nodeRecursiveDnsDestinations = array();
+
+			foreach ($this->nodeData['next']['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
+				foreach ($this->ipVersions as $ipVersionNumber => $ipVersion) {
+					if (empty($nodeRecursiveDnsDestination['listening_ip_version_' . $ipVersionNumber]) === false) {
+						$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip_version_' . $ipVersionNumber] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $ipVersionNumber];
+					}
+				}
+			}
+
+			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
 			$this->nodeData['node_process_type_process_part_data_keys']['recursive_dns'] = array(
 				'next',
 				'next'
 			);
-
-			// todo: add next system dns here
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				$this->_processFirewall($nodeProcessPartKey);
@@ -965,17 +974,7 @@
 			}
 
 			$this->_processFirewall();
-			// todo: update resolv.conf before proxy process reconfig
 			// todo: add DROP rules to all ports that don't exist in public listening port ipset rule "__"
-			$nodeRecursiveDnsDestinations = array();
-
-			foreach ($this->nodeData['next']['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
-				foreach ($this->nodeData['next']['node_ip_versions'] as $nodeIpVersion) {
-					$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip_version_' . $nodeIpVersion] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $nodeIpVersion];
-				}
-			}
-
-			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
 
 			foreach ($this->nodeProcessTypeFirewallRuleSetsToDelete as $nodeProcessTypeFirewallRuleSet) {
 				shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSet);
