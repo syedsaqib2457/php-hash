@@ -1038,17 +1038,46 @@
 				}
 			}
 
-			foreach (array(0, 1) as $nodeProcessPartKey) {
-				// todo: add current ipset rules to variable for easy deletion at end of script
-				// todo: create new ipset rules with no $nodeProcessPartKey so deleting split ipset rules is faster
+			foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
+				$this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
+					'next',
+					'next'
+				);
+			};
 
-				foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
-					foreach ($this->nodeData['next']['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
-						$nodeReservedInternalDestinationIpVersion = key($this->nodeData['next']['node_reserved_internal_destinations'][$nodeProcessNodeId]);
+			foreach (array(0, 1) as $nodeProcessPartKey) {
+				// todo: create reusable method that adds firewall rule set name incrementing index
+
+				foreach ($this->nodeData['node_process_type_process_part_data_keys'] as $nodeProcessType => $nodeProcessTypeProcessPartDataKeys) {
+					$nodeDataKey = $nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey];
+					$nodeProcessPortNumberIdentifier = '';
+
+					foreach ($this->nodeData[$nodeDataKey]['node_processes'][$nodeProcessType][$nodeProcessPartKey] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
+						$nodeReservedInternalDestinationIpVersion = key($this->nodeData[$nodeDataKey]['node_reserved_internal_destinations'][$nodeProcessNodeId]);
+						$nodeProcessPortNumbersVerified = array();
 
 						foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
-							if ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === false) {
-								unset($this->nodeData['next']['node_processes'][$nodeProcessType][$nodeProcessPartKey][$nodeProcessNodeId][$nodeProcessId]);
+							if ($this->_verifyNodeProcess($this->nodeData[$nodeDataKey]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === true) {
+								$nodeProcessPortNumberIdentifier .= '_' . $nodeProcessPortNumber;
+								$nodeProcessPortNumbersVerified[] = $nodeProcessPortNumber;
+							}
+						}
+
+						$nodeProcessPortNumberIdentifier = sha1($nodeProcessPortNumberIdentifier);
+
+						foreach ($this->nodeData[$nodeDataKey]['node_ip_versions'] as $nodeIpVersion) {
+							$nodeProcessNodeIp = $this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['external_ip_version_' . $nodeIpVersion];
+
+							if (empty($this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion]) === false) {
+								$nodeProcessNodeIp = $this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion];
+							}
+
+							$this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$nodeDataKey][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion][($nodeProcessTypeFirewallRuleSet = $nodeDataKey . '_' . $nodeIpVersion . '_' . $nodeProcessPartKey . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberIdentifier)] = $nodeProcessPortNumbersVerified;
+							shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' create ' . $nodeProcessTypeFirewallRuleSet . ' hash:ip,port family ' . $this->ipVersions[$nodeIpVersion]['interface_type'] . ' timeout 0');
+
+							foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
+								shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',tcp:' . $nodeProcessPortNumber);
+								shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',udp:' . $nodeProcessPortNumber);
 							}
 						}
 					}
