@@ -290,6 +290,7 @@
 			if (empty($this->nodeData['next']['nodes']) === true) {
 				if (empty($this->nodeData['current']) === false) {
 					// todo: save node process firewall rule set ports as [current]
+						// $this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers']
 
 					foreach ($this->nodeData['current']['node_processes'] as $nodeProcessType => $nodeProcessNodeParts) {
 						foreach ($nodeProcessNodeParts as $nodeProcessNodePart) {
@@ -311,6 +312,7 @@
 				return;
 			}
 
+			unset($this->nodeData['node_process_type_firewall_rule_set_port_numbers']);
 			$nodeProcessesToRemove = array();
 
 			foreach ($this->nodeData['current']['node_processes'] as $nodeProcessType => $nodeProcessNodeParts) {
@@ -1039,6 +1041,7 @@
 				'node_recursive_dns_destinations' => true,
 				'node_ssh_port_numbers' => true
 			));
+			$this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers'] = $this->nodeData['node_process_type_firewall_rule_set_port_numbers'][4];
 			file_put_contents('/tmp/node_data', json_encode($this->nodeData['current']));
 			// todo: send node_ssh_port_numbers to API to prevent process port conflictions on main node ip
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":' . (empty($this->reprocess) === true) . '}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
