@@ -16,6 +16,7 @@
 			);
 			exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
 			$this->memoryCapacityBytes = current($memoryCapacityBytes);
+			$this->nodeProcessTypeFirewallRuleSetIndex = 0;
 			$this->parameters = $parameters;
 			exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
 			$this->kernelPageSize = current($kernelPageSize);
@@ -484,7 +485,19 @@
 				);
 			}
 
-			$this->nodeProcessTypeFirewallRuleSetIndex = 0;
+			$nodeRecursiveDnsDestinations = array();
+
+			foreach ($this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType] as $nodeDataKey) {
+				foreach ($this->nodeData[$nodeDataKey]['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
+					foreach ($this->ipVersions as $ipVersionNumber => $ipVersion) {
+						if (empty($nodeRecursiveDnsDestination['listening_ip_version_' . $ipVersionNumber]) === false) {
+							$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip_version_' . $ipVersionNumber] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $ipVersionNumber];
+						}
+					}
+				}
+			}
+
+			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
 			$this->nodeProcessTypeFirewallRuleSetsToDelete = array();
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
@@ -710,6 +723,8 @@
 				'next',
 				'next'
 			);
+
+			// todo: add next system dns here
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				$this->_processFirewall($nodeProcessPartKey);
