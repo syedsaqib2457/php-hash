@@ -181,7 +181,7 @@
 					$nodeProcessPortNumbersVerified = array();
 
 					foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
-						if ($this->_verifyNodeProcess($this->nodeData[$nodeDataKey]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === true) {
+						if ($this->_verifyNodeProcess($this->nodeData[$nodeDataKey]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion]['ip_address'], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === true) {
 							$nodeProcessPortNumberIdentifier .= '_' . $nodeProcessPortNumber;
 							$nodeProcessPortNumbersVerified[] = $nodeProcessPortNumber;
 						}
@@ -190,23 +190,31 @@
 					$nodeProcessPortNumberIdentifier = sha1($nodeProcessPortNumberIdentifier);
 
 					foreach ($this->nodeData[$nodeDataKey]['node_ip_versions'] as $nodeIpVersion) {
-						$nodeProcessNodeIp = $this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['external_ip_version_' . $nodeIpVersion];
+						if (empty($this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['external_ip_version_' . $nodeIpVersion]) === false) {
+							$nodeProcessNodeIp = $this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['external_ip_version_' . $nodeIpVersion];
 
-						if (empty($this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion]) === false) {
-							$nodeProcessNodeIp = $this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion];
+							if (empty($this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion]) === false) {
+								$nodeProcessNodeIp = $this->nodeData[$nodeDataKey]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion];
+							}
+
+							$this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$nodeDataKey][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion][($nodeProcessTypeFirewallRuleSet = $nodeDataKey . '_' . $nodeIpVersion . '_' . $nodeProcessPartKey . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberIdentifier . '_' . $this->nodeProcessTypeFirewallRuleSetIndex)] = $nodeProcessPortNumbersVerified;
+							shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' create ' . $nodeProcessTypeFirewallRuleSet . ' hash:ip,port family ' . $this->ipVersions[$nodeIpVersion]['interface_type'] . ' timeout 0');
+
+							foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
+								shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',tcp:' . $nodeProcessPortNumber);
+								shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',udp:' . $nodeProcessPortNumber);
+							}
+
+							if ($this->nodeProcessTypeFirewallRuleSetIndex !== 4) {
+								$this->nodeProcessTypeFirewallRuleSetsToDelete[$nodeProcessTypeFirewallRuleSet] = $nodeProcessTypeFirewallRuleSet;
+							}
+
+							$nodeReservedInternalDestinationIpVersion = $nodeIpVersion;
 						}
+					}
 
-						$this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$nodeDataKey][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion][($nodeProcessTypeFirewallRuleSet = $nodeDataKey . '_' . $nodeIpVersion . '_' . $nodeProcessPartKey . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberIdentifier . '_' . $this->nodeProcessTypeFirewallRuleSetIndex)] = $nodeProcessPortNumbersVerified;
-						shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' create ' . $nodeProcessTypeFirewallRuleSet . ' hash:ip,port family ' . $this->ipVersions[$nodeIpVersion]['interface_type'] . ' timeout 0');
-
-						foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-							shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',tcp:' . $nodeProcessPortNumber);
-							shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',udp:' . $nodeProcessPortNumber);
-						}
-
-						if ($this->nodeProcessTypeFirewallRuleSetIndex !== 4) {
-							$this->nodeProcessTypeFirewallRuleSetsToDelete[$nodeProcessTypeFirewallRuleSet] = $nodeProcessTypeFirewallRuleSet;
-						}
+					if ($nodeProcessTypeFirewallRuleSetIndex === 4) {
+						$this->nodeData['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet][$nodeProcessNodeId] = $this->nodeData[$nodeDataKey]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion];
 					}
 				}
 			}
@@ -289,18 +297,19 @@
 
 			if (empty($this->nodeData['next']['nodes']) === true) {
 				if (empty($this->nodeData['current']) === false) {
-					// todo: save node process firewall rule set ports as [current]
-						// $this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers']
+					// todo: ping api periodically during current process port verification to speed up reconfiguration time
 
-					foreach ($this->nodeData['current']['node_processes'] as $nodeProcessType => $nodeProcessNodeParts) {
-						foreach ($nodeProcessNodeParts as $nodeProcessNodePart) {
-							foreach ($nodeProcessNodePart as $nodeProcessNodeId => $nodeProcessPortNumbers) {
-								$nodeReservedInternalDestinationIpVersion = key($this->nodeData['current']['node_reserved_internal_destinations'][$nodeProcessNodeId]);
+					foreach ($this->nodeData['current']['node_process_types'] as $nodeProcessType) {
+						foreach (array(0, 1) as $nodeProcessPartKey) {
+							$nodeIpVersion = key($this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
 
-								foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-									if ($this->_verifyNodeProcess($this->nodeData['current']['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === false) {
-										exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
-										return $response;
+							foreach ($this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
+								foreach ($this->nodeData['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
+									foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
+										if ($this->_verifyNodeProcess($nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
+											exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+											return $response;
+										}
 									}
 								}
 							}
@@ -312,23 +321,8 @@
 				return;
 			}
 
-			unset($this->nodeData['node_process_type_firewall_rule_set_port_numbers']);
-			$nodeProcessesToRemove = array();
-
-			foreach ($this->nodeData['current']['node_processes'] as $nodeProcessType => $nodeProcessNodeParts) {
-				foreach ($nodeProcessNodeParts as $nodeProcessNodePart) {
-					foreach ($nodeProcessNodePart as $nodeProcessNodeId => $nodeProcessPortNumbers) {
-						foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
-							if (
-								(empty($this->nodeData['next']['node_processes'][$nodeProcessType][0][$nodeProcessNodeId][$nodeProcessId]) === true) &&
-								(empty($this->nodeData['next']['node_processes'][$nodeProcessType][1][$nodeProcessNodeId][$nodeProcessId]) === true)
-							) {
-								$nodeProcessesToRemove[$nodeProcessType][$nodeProcessId] = $nodeProcessId;
-							}
-						}
-					}
-				}
-			}
+			unset($this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers']);
+			unset($this->nodeData['current']['node_process_type_firewall_rule_set_reserved_internal_destinations']);
 
 			$kernelOptions = array(
 				'fs.aio-max-nr = 1000000000',
@@ -480,14 +474,29 @@
 				}
 			}
 
+			$nodeProcessesToRemove = $nodeRecursiveDnsDestinations = array();
+
 			foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
 				$this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
 					'current',
 					'next'
 				);
-			}
 
-			$nodeRecursiveDnsDestinations = array();
+				foreach ($this->nodeData['current']['node_processes'][$nodeProcessType] as $nodeProcessNodeParts) {
+					foreach ($nodeProcessNodeParts as $nodeProcessNodePart) {
+						foreach ($nodeProcessNodePart as $nodeProcessNodeId => $nodeProcessPortNumbers) {
+							foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
+								if (
+									(empty($this->nodeData['next']['node_processes'][$nodeProcessType][0][$nodeProcessNodeId][$nodeProcessId]) === true) &&
+									(empty($this->nodeData['next']['node_processes'][$nodeProcessType][1][$nodeProcessNodeId][$nodeProcessId]) === true)
+								) {
+									$nodeProcessesToRemove[$nodeProcessType][$nodeProcessId] = $nodeProcessId;
+								}
+							}
+						}
+					}
+				}
+			}
 
 			foreach ($this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType] as $nodeDataKey) {
 				foreach ($this->nodeData[$nodeDataKey]['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
@@ -619,7 +628,7 @@
 							}
 
 							$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = false;
-							$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion];
+							$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion]['ip_address'];
 							$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
 							if (empty($this->nodeData['node_process_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
@@ -690,7 +699,7 @@
 						$recursiveDnsNodeProcessEndedTime = time();
 
 						while ($recursiveDnsNodeProcessEnded === false) {
-							$recursiveDnsNodeProcessEnded = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
+							$recursiveDnsNodeProcessEnded = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion]['ip_address'], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
 							sleep(1);
 						}
 
@@ -700,7 +709,7 @@
 						if ($recursiveDnsNodeProcessesStart === true) {
 							while ($recursiveDnsNodeProcessStarted === false) {
 								shell_exec('sudo ' . $this->nodeData['next']['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
-								$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
+								$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion]['ip_address'], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
 								sleep(1);
 							}
 						} else {
@@ -892,7 +901,7 @@
 									}
 
 									$proxyNodeProcessConfiguration['f'] .= ' -e' . $proxyNodeProcessInterfaceDestinationIp . ' -i' . $proxyNodeProcessInterfaceDestinationIp;
-									$proxyNodeProcessConfiguration['g'] .= ' -e' . $this->nodeData['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion] . ' -i' . $this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion];
+									$proxyNodeProcessConfiguration['g'] .= ' -e' . $this->nodeData['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'] . ' -i' . $this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'];
 								}
 							}
 
@@ -935,7 +944,7 @@
 								$proxyNodeProcessEndedTime = time();
 
 								while ($proxyNodeProcessEnded === false) {
-									$proxyNodeProcessEnded = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
+									$proxyNodeProcessEnded = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
 									sleep(1);
 								}
 
@@ -945,7 +954,7 @@
 								if ($proxyNodeProcessesStart === true) {
 									while ($proxyNodeProcessStarted === false) {
 										shell_exec('sudo ' . $this->nodeData['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
-										$proxyNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
+										$proxyNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
 										sleep(1);
 									}
 								} else {
@@ -1037,11 +1046,13 @@
 
 			$this->nodeData['current'] = array_intersect_key($this->nodeData['next'], array(
 				'node_processes' => true,
-				'node_reserved_internal_destination_ip_addresses' => true,
+				'node_process_types' => true,
 				'node_recursive_dns_destinations' => true,
+				'node_reserved_internal_destinations' => true,
 				'node_ssh_port_numbers' => true
 			));
-			$this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers'] = $this->nodeData['node_process_type_firewall_rule_set_port_numbers'][4];
+			$this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers'] = $this->nodeData['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
+			$this->nodeData['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'] = $this->nodeData['node_process_type_firewall_rule_set_reserved_internal_destinations'];
 			file_put_contents('/tmp/node_data', json_encode($this->nodeData['current']));
 			// todo: send node_ssh_port_numbers to API to prevent process port conflictions on main node ip
 			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":' . (empty($this->reprocess) === true) . '}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);

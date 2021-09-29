@@ -2268,7 +2268,11 @@
 			}
 
 			foreach ($nodeReservedInternalDestinations as $nodeReservedInternalDestination) {
-				$response['data']['node_ips'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $response['data']['node_reserved_internal_destination_ip_addresses'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['node_id']][$nodeReservedInternalDestination['ip_address_version']] = $nodeReservedInternalDestination['ip_address'];
+				$response['data']['node_ips'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $response['data']['node_reserved_internal_destination_ip_addresses'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $nodeReservedInternalDestination['ip_address'];
+				$response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['node_id']][$nodeReservedInternalDestination['ip_address_version']] = array(
+					'ip_address' => $nodeReservedInternalDestination['ip_address'],
+					'ip_address_version' => $nodeReservedInternalDestination['ip_address_version']
+				);
 			}
 
 			$response['message'] = 'Nodes processed successfully.';
