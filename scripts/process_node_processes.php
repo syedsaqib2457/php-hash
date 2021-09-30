@@ -229,7 +229,6 @@
 		}
 
 		protected function _verifyNodeProcess($nodeProcessNodeIp, $nodeProcessNodeIpVersion, $nodeProcessPortNumber, $nodeProcessType) {
-			// todo: add options for ipv4 + ipv6 if not auto-detected based on $nodeProcessIpVersion
 			$response = false;
 
 			switch ($nodeProcessType) {
@@ -239,11 +238,11 @@
 						'http_proxy' => '-x',
 						'socks_proxy' => '--socks5-hostname'
 					);
-					exec('curl ' . $parameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 1 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+					exec('curl -' . $nodeProcessNodeIpVersion . ' ' . $parameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 1 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 					$response = (empty($proxyNodeProcessResponse) === true);
 					break;
 				case 'recursive_dns':
-					exec('dig +time=1 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+					exec('dig -' . $nodeProcessNodeIpVersion . ' +time=1 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 					$response = (empty($recursiveDnsNodeProcessResponse) === false);
 					break;
 			}
@@ -302,7 +301,7 @@
 
 			if (empty($this->nodeData['next']['nodes']) === true) {
 				if (empty($this->nodeData['current']) === false) {
-					// todo: ping api periodically during current process port verification to speed up reconfiguration time
+					// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
 
 					foreach ($this->nodeData['current']['node_process_types'] as $nodeProcessType) {
 						foreach (array(0, 1) as $nodeProcessPartKey) {
@@ -932,7 +931,6 @@
 								}
 
 								shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
-								// todo: start all node process ports with same service file instead of daemon-reload for each process port
 								$proxyNodeProcessSystemdServiceFileContents = array(
 									'[Service]',
 									'ExecStart=/bin/' . $proxyNodeProcessName . ' ' . ($proxyNodeProcessConfigurationFile = '/etc/3proxy/' . $proxyNodeProcessName . '.cfg')
@@ -1060,8 +1058,7 @@
 			$this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers'] = $this->nodeData['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
 			$this->nodeData['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'] = $this->nodeData['node_process_type_firewall_rule_set_reserved_internal_destinations'];
 			file_put_contents('/tmp/node_data', json_encode($this->nodeData['current']));
-			// todo: send node_ssh_port_numbers to API to prevent process port conflictions on main node ip
-			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":' . (empty($this->reprocess) === true) . '}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"node_ssh_port_numbers\":' . json_encode($this->nodeData['current']['node_ssh_port_numbers']) . ',\"processed\":' . (empty($this->reprocess) === true) . '}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
 			return $response;
 		}
@@ -1192,8 +1189,6 @@
 
 					exec('sudo ' . $this->nodeData['next']['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 					$this->nodeData['next']['interface_name'] = current($interfaceName);
-
-					// todo: monitor ssh_ports and reconfigure firewall if new SSH ports are opened, add ssh_ports to cached node data
 
 					if (file_exists('/etc/ssh/sshd_config') === true) {
 						exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
