@@ -311,7 +311,7 @@
 								foreach ($this->nodeData['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
 									foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
 										if ($this->_verifyNodeProcess($nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
-											exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+											exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"processed\":false},\"where\":{\"token\":\"' . $this->parameters['token'] . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 											return $response;
 										}
 									}
@@ -677,7 +677,6 @@
 						$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
 						file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options', implode("\n", $recursiveDnsNodeProcessConfiguration));
 						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named ' . $recursiveDnsNodeProcessName);
-						// todo: start all node process ports with same service file instead of daemon-reload for each process port
 						$recursiveDnsNodeProcessService = array(
 							'[Service]',
 							'ExecStart=/usr/sbin/named_' . $recursiveDnsNodeProcessName . ' -f -c /etc/' . $recursiveDnsNodeProcessName . '/named.conf -S 40000 -u root'
@@ -1058,7 +1057,7 @@
 			$this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers'] = $this->nodeData['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
 			$this->nodeData['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'] = $this->nodeData['node_process_type_firewall_rule_set_reserved_internal_destinations'];
 			file_put_contents('/tmp/node_data', json_encode($this->nodeData['current']));
-			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"node_ssh_port_numbers\":' . json_encode($this->nodeData['current']['node_ssh_port_numbers']) . ',\"processed\":' . (empty($this->reprocess) === true) . '}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+			exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"node_ssh_port_numbers\":' . json_encode($this->nodeData['current']['node_ssh_port_numbers']) . ',\"processed\":' . (empty($this->reprocess) === true) . '},\"where\":{\"token\":\"' . $this->parameters['token'] . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
 			$response = json_decode(current($response), true);
 			return $response;
 		}
@@ -1074,7 +1073,7 @@
 
 			if (empty($this->nodeData['next']) === true) {
 				unlink($nodeProcessResponseFile);
-				shell_exec('sudo wget -O ' . ($nodeProcessResponseFile = '/tmp/node_process_response') . ' --no-dns-cache --post-data "json={\"action\":\"process\",\"where\":{\"id\":\"' . $this->parameters['id'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/nodes');
+				shell_exec('sudo wget -O ' . ($nodeProcessResponseFile = '/tmp/node_process_response') . ' --no-dns-cache --post-data "json={\"action\":\"process\",\"where\":{\"token\":\"' . $this->parameters['token'] . '\"}}" --retry-connrefused --timeout=60 --tries=2 ' . $this->parameters['url'] . '/endpoint/nodes');
 
 				if (file_exists($nodeProcessResponseFile) === false) {
 					echo 'Error processing node, please try again.' . "\n";

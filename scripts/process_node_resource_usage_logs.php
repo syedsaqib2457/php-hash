@@ -183,7 +183,7 @@
 				) &&
 				(file_put_contents($nodeResourceUsageLogFile, json_encode(nodeResourceUsageLogData)) === true)
 			) {
-				exec('sudo curl -s --form "data=@' . $nodeResourceUsageLogFile . '" --form-string "json={\"action\":\"add\"}" ' . $this->parameters['system_url'] . '/endpoint/node-resource-usage-logs 2>&1', $response);
+				exec('sudo curl -s --form "data=@' . $nodeResourceUsageLogFile . '" --form-string "json={\"action\":\"add\",\"where\":{\"token\":\"' . $this->parameters['token'] . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/node-resource-usage-logs 2>&1', $response);
 				$response = json_decode(current($response), true);
 				// todo: store interval data if system_url fails and retry
 			}

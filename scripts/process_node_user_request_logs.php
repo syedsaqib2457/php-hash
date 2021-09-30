@@ -33,7 +33,7 @@
 							$nodeProcessNodeId = $nodeProcessUserRequestLogFileParts[0];
 							$nodeProcessNodeUserId = $nodeProcessUserRequestLogFileParts[1];
 							$nodeProcessUserRequestLogFile = '/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile;
-							exec('sudo curl -s --form "data=@' . $nodeProcessUserRequestLogFile . '" --form-string "json={\"action\":\"add\",\"data\":{\"node_id\":\"' . $nodeProcessNodeId . '\", \"node_process_type\":\"' . $nodeProcessType . '\", \"node_user_id\":\"' . $nodeProcessNodeUserId . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/node-process-user-request-logs 2>&1', $response);
+							exec('sudo curl -s --form "data=@' . $nodeProcessUserRequestLogFile . '" --form-string "json={\"action\":\"add\",\"data\":{\"node_id\":\"' . $nodeProcessNodeId . '\", \"node_process_type\":\"' . $nodeProcessType . '\", \"node_user_id\":\"' . $nodeProcessNodeUserId . '\"},\"where\":{\"token\":\"' . $this->parameters['token'] . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/node-process-user-request-logs 2>&1', $response);
 							$response = json_decode(current($response), true);
 
 							if (empty($response['data']['most_recent_node_process_user_request_log']) === false) {
