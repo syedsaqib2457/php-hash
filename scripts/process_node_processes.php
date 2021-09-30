@@ -998,7 +998,6 @@
 					}
 				}
 
-				// todo: create 0 + 1 internal reserved rule sets to delete 0 after processing
 				foreach ($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
 					if (empty($this->nodeData['next']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber][$nodeReservedInternalDestinationIpAddress]) === true) {
 						shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' del _ ' . $nodeReservedInternalDestinationIpAddress);
