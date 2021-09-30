@@ -586,12 +586,11 @@
 						$response = array_merge($response, array(
 							'user' => $parameters['user']
 						));
-						// todo: update request_logs with system/node request_logs
 						$this->delete(array(
-							'from' => 'request_logs',
+							'from' => 'system_request_logs',
 							'where' => array(
-								'node_user_id' => null,
-								'source_ip' => $_SERVER['REMOTE_ADDR']
+								'source_ip' => $_SERVER['REMOTE_ADDR'],
+								'status_authorized' => false
 							)
 						));
 					}

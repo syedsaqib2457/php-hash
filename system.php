@@ -761,10 +761,6 @@
 								'default' => 0,
 								'null' => true,
 								'type' => 'TINYINT(1)'
-							),
-							'username' => array(
-								'default' => "'-'",
-								'type' => 'VARCHAR(15)'
 							)
 						),
 						'system_resource_usage_logs' => array(
