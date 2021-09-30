@@ -1135,7 +1135,7 @@
 							'package' => 'systemd'
 						),
 						array(
-							'command' => ($uniqueId = '_' . uniqid() . time()),
+							'command' => $uniqueId,
 							'name' => 'ss',
 							'output' => 'inet prefix',
 							'package' => 'iproute2'
