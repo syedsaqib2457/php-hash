@@ -636,6 +636,11 @@
 								'default' => null,
 								'null' => true,
 								'type' => 'BIGINT(11)'
+							),
+							'token' => array(
+								'default' => null,
+								'null' => true,
+								'type' => 'VARCHAR(100)'
 							)
 						),
 						'request_destinations' => array(

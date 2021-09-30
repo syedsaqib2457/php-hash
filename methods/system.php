@@ -14,7 +14,6 @@
 				$userCount = $this->count(array(
 					'in' => 'users',
 					'where' => array(
-						'authentication_expires >' => date('Y-m-d H:i:s', time()),
 						'authentication_username' => sha1($this->settings['keys']['start'] . '_' . $parameters['settings']['session_id']),
 						'id' => 1
 					)
@@ -37,13 +36,19 @@
 			));
 
 			if ($response['status_valid'] === false) {
-				$response = $this->_authenticateEndpoint($response);
+				$authenticationToken = false;
+
+				if (empty($parameters['where']['token']) !== false) {
+					$authenticationToken = $parameters['where']['token'];
+				}
+
+				$response = $this->_authenticateEndpoint($response, $authenticationToken);
 			}
 
 			return $response;
 		}
 
-		protected function _authenticateEndpoint($parameters) {
+		protected function _authenticateEndpoint($parameters, $authenticationToken) {
 			$response = array(
 				'message' => 'Error authenticating endpoint request, please try again.',
 				'status_valid' => (
@@ -56,37 +61,43 @@
 				return $response;
 			}
 
-			$node = $this->fetch(array(
-				'fields' => array(
-					'id'
-				),
-				'from' => 'nodes',
-				'where' => array(
-					'node_id' => null,
-					'OR' => array(
-						'external_ip_version_4' => $_SERVER['REMOTE_ADDR'],
-						'external_ip_version_6' => $_SERVER['REMOTE_ADDR']
+			if (empty($authenticationToken) === false) {
+				$node = $this->fetch(array(
+					'fields' => array(
+						'id'
+					),
+					'from' => 'nodes',
+					'where' => array(
+						'token' => $authenticationToken
 					)
-				)
-			));
-			$response['status_valid'] = (
-				(
-					($node !== false) &&
-					(empty($node) === false)
-				) ||
-				(in_array($_SERVER['REMOTE_ADDR'], explode("\n", $parameters['user']['authentication_whitelist'])) === true)
-			);
-			$response['user']['endpoint'] = $response['status_valid'];
+				));
+				$response['status_valid'] = ($node !== false);
 
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Invalid source IP, please try again.';
-				return $response;
-			}
+				if ($response['status_valid'] === false) {
+					return $response;
+				}
 
-			if (empty($node) === false) {
+				$response['status_valid'] = (empty($node) === false);
+
+				if ($response['status_valid'] === false) {
+					$this->_logUnauthorizedRequest();
+					return $response;
+				}
+
 				$response['user']['node_id'] = $node['id'];
 			}
 
+			if ($response['status_valid'] === false) {
+				// todo: add each whitelisted username + IP to database for performance
+				$response['status_valid'] = (in_array($_SERVER['REMOTE_ADDR'], explode("\n", $parameters['user']['authentication_whitelist'])) === true);
+
+				if ($response['status_valid'] === false) {
+					$this->_logUnauthorizedRequest();
+					return $response;
+				}
+			}
+
+			$response['user']['endpoint'] = true;
 			return $response;
 		}
 

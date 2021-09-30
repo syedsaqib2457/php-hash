@@ -173,6 +173,7 @@
 				'message' => 'Error activating node, please try again.',
 				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
+			// todo: add token instead of id
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -421,6 +422,10 @@
 				return $response;
 			}
 
+			if (empty($parameters['data']['node_id']) === true) {
+				$parameters['data']['token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
+			}
+
 			$nodesSaved = $this->save(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'external_ip_version_4' => true,
@@ -431,7 +436,8 @@
 					'internal_ip_version_6' => true,
 					'node_id' => true,
 					'status_active' => true,
-					'status_deployed' => true
+					'status_deployed' => true,
+					'token' => true
 				)),
 				'to' => 'nodes'
 			));
@@ -685,6 +691,7 @@
 				'message' => 'Error deploying node, please try again.',
 				'status_valid' => (empty($parameters['where']['id']) === false)
 			);
+			// todo: add token instead of id
 
 			if ($response['status_valid'] === false) {
 				return $response;
@@ -1828,15 +1835,40 @@
 					'version' => $this->settings['version']
 				),
 				'message' => 'Error processing nodes, please try again.',
-				'status_valid' => (empty($parameters['where']['id']) === false)
+				'status_valid' => (
+					(empty($parameters['where']['token']) === false) &&
+					(ctype_alnum($$parameters['where']['token']) === true)
+				)
 			);
+
+			if ($response['status_valid'] === false) {
+				$this->_logUnauthorizedRequest();
+				return $response;
+			}
+
+			$node = $this->fetch(array(
+				'fields' => array(
+					'id'
+				),
+				'from' => 'nodes',
+				'where' => array(
+					'token' => $parameters['where']['token']
+				)
+			));
+			$response['status_valid'] = ($node !== false);
 
 			if ($response['status_valid'] === false) {
 				return $response;
 			}
 
-			$nodeId = $parameters['where']['id'];
-			// todo: fetch nodeId based on source IP
+			$response['status_valid'] = (empty($node) === false);
+
+			if ($response['status_valid'] === false) {
+				$this->_logUnauthorizedRequest();
+				return $response;
+			}
+
+			$nodeId = $node['id'];
 
 			if (isset($parameters['data']['processed']) === true) {
 				$nodeDataUpdated = $this->update(array(
