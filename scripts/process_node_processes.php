@@ -79,10 +79,8 @@
 					'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP'
 				);
 
-				if (empty($this->nodeData['next']['node_ssh_port_numbers']) === false) {
-					foreach ($this->nodeData['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
-						$firewallRules[] = '-A INPUT -p tcp --dport ' . $nodeSshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
-					}
+				foreach ($this->nodeData['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
+					$firewallRules[] = '-A INPUT -p tcp --dport ' . $nodeSshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
 				}
 
 				$firewallRules[] = 'COMMIT';
@@ -146,6 +144,7 @@
 				$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
 				$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 				// todo: allow dropping external packets from additional public IP blocks with per-node settings
+				// todo: differentiate reserved IP types + only select private networking ips after premium script for detecting public/reserved ipv4 + ipv6 addresses is built
 
 				if (empty($this->nodeData['next']['reserved_network']['ip_blocks'][$nodeIpVersion]) === false) {
 					foreach ($this->nodeData['next']['reserved_network']['ip_blocks'][$nodeIpVersion] as $reservedNetworkIpBlock) {
@@ -153,6 +152,15 @@
 					}
 				}
 
+				foreach ($this->nodeData['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
+					$firewallRules[] = '-A PREROUTING -p tcp --dport ' . $nodeSshPortNumber . ' -j ACCEPT';
+				}
+
+				foreach ($this->nodeProcessTypeFirewallRuleSets as $nodeProcessTypeFirewallRuleSet) {
+					$firewallRules[] = '-A PREROUTING -m set --match-set ' . $nodeProcessTypeFirewallRuleSet . ' dst,src -j ACCEPT';
+				}
+
+				$firewallRules[] = '-A PREROUTING -i ' . $this->nodeData['next']['interface_name'] . ' -m set ! --match-set _ dst,src -j DROP';
 				$firewallRules[] = 'COMMIT';
 				$firewallRulesFile = '/tmp/firewall_' . $nodeIpVersion;
 				unlink($firewallRulesFile);
@@ -205,10 +213,7 @@
 								shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',udp:' . $nodeProcessPortNumber);
 							}
 
-							if ($this->nodeProcessTypeFirewallRuleSetIndex !== 4) {
-								$this->nodeProcessTypeFirewallRuleSetsToDelete[$nodeProcessTypeFirewallRuleSet] = $nodeProcessTypeFirewallRuleSet;
-							}
-
+							$this->nodeProcessTypeFirewallRuleSets[$nodeProcessTypeFirewallRuleSet] = $nodeProcessTypeFirewallRuleSet;
 							$nodeReservedInternalDestinationIpVersion = $nodeIpVersion;
 						}
 					}
@@ -509,7 +514,7 @@
 			}
 
 			file_put_contents('/usr/local/ghostcompute/resolv.conf', implode("\n", $nodeRecursiveDnsDestinations));
-			$this->nodeProcessTypeFirewallRuleSetsToDelete = array();
+			$this->nodeProcessTypeFirewallRuleSets = array();
 
 			foreach (array(0, 1) as $nodeProcessPartKey) {
 				$this->_processFirewall($nodeProcessPartKey);
@@ -977,6 +982,9 @@
 				}
 			}
 
+			$nodeProcessTypeFirewallRuleSetsToDestroy = $this->nodeProcessTypeFirewallRuleSets;
+			$this->nodeProcessTypeFirewallRuleSets = array();
+
 			foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
 				$this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
 					'next',
@@ -985,9 +993,8 @@
 			}
 
 			$this->_processFirewall();
-			// todo: add DROP rules to all ports that don't exist in public listening port ipset rule "__"
 
-			foreach ($this->nodeProcessTypeFirewallRuleSetsToDelete as $nodeProcessTypeFirewallRuleSet) {
+			foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSet) {
 				shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSet);
 			}
 
@@ -1190,18 +1197,15 @@
 
 					if (file_exists('/etc/ssh/sshd_config') === true) {
 						exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
+						$this->nodeData['next']['node_ssh_port_numbers'] = $sshPortNumbers;
 
-						foreach ($sshPortNumbers as $sshPortNumberKey => $sshPortNumber) {
+						foreach ($this->nodeData['next']['node_ssh_port_numbers'] as $sshPortNumberKey => $sshPortNumber) {
 							if (
 								(strlen($sshPortNumber) > 5) ||
 								(is_numeric($sshPortNumber) === false)
 							) {
-								unset($sshPorts[$sshPortNumberKey]);
+								unset($this->nodeData['next']['node_ssh_port_numbers'][$sshPortNumberKey]);
 							}
-						}
-
-						if (empty($sshPortNumbers) === false) {
-							$this->nodeData['next']['node_ssh_port_numbers'] = $sshPortNumbers;
 						}
 					}
 				}
