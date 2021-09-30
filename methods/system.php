@@ -168,12 +168,12 @@
 				),
 				'from' => 'system_request_logs',
 				'where' => array(
-					'source_ip' => $_SERVER['REQUEST_URI'],
+					'source_ip' => $_SERVER['REMOTE_ADDR'],
 					'status_authorized' => false
 				)
 			));
 			$systemRequestLogData = array(
-				'source_ip' => $_SERVER['REQUEST_URI'],
+				'source_ip' => $_SERVER['REMOTE_ADDR'],
 				'request_attempts' => 1
 			);
 
@@ -586,11 +586,12 @@
 						$response = array_merge($response, array(
 							'user' => $parameters['user']
 						));
+						// todo: update request_logs with system/node request_logs
 						$this->delete(array(
 							'from' => 'request_logs',
 							'where' => array(
 								'node_user_id' => null,
-								'source_ip' => $_SERVER['REQUEST_URI']
+								'source_ip' => $_SERVER['REMOTE_ADDR']
 							)
 						));
 					}
