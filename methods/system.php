@@ -120,7 +120,8 @@
 
 					if (count($ipParts) === 7) {
 						array_pop($ipParts);
-						$ipRanges[] = $ipParts . ':y';
+						$ipRanges[] = implode(':', $ipParts) . ':y';
+						// todo: add correct IP type detection for IPv4-mapped addresses
 					} else {
 						$ipRangeVariables = str_repeat(':x', 4);
 						$ipParts = array_slice($ipParts, 0, count($ipParts) - 4);
