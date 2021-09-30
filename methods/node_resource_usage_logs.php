@@ -7,10 +7,17 @@
 		public function add($parameters) {
 			$response = array(
 				'message' => 'Error adding node resource usage logs, please try again.',
-				'status_valid' => (
-					(empty($_FILES['data']['tmp_name']) === false) &&
-					(empty($parameters['user']['endpoint']) === false)
-				)
+				'status_valid' => (empty($parameters['user']['node_id']) === false)
+			);
+
+			if ($response['status_valid'] === false) {
+				$this->_logUnauthorizedRequest();
+				return $response;
+			}
+
+			$response['status_valid'] = (
+				(empty($_FILES['data']['tmp_name']) === false) &&
+				(empty($parameters['user']['endpoint']) === false)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -52,7 +59,7 @@
 					'node_id' => ($nodeId = $parameters['user']['node_id'])
 				)
 			));
-			$existingNodeResourceUsageLogs = $this->fetch(array(
+			$existingNodeResourceUsageLog = $this->fetch(array(
 				'fields' => array(
 					'id'
 				),
@@ -70,25 +77,21 @@
 				return $response;
 			}
 
-			foreach ($nodeResourceUsageLogs['node_process_resource_usage_logs'] as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLog) {
-				unset($nodeResourceUsageLogs['node_process_resource_usage_logs'][$nodeProcessResourceUsageLogKey]['node_id']);
-			}
-
 			if (empty($existingNodeProcessResourceUsageLogs) === false) {
 				foreach ($existingNodeProcessResourceUsageLogs as $existingNodeProcessResourceUsageLog) { 
-					$nodeResourceUsageLogs['node_process_resource_usage_logs'][$existingNodeProcessResourceUsageLog['node_process_type']]['node_id'] = $nodeId;
+					$nodeResourceUsageLogs['node_process_resource_usage_logs'][$existingNodeProcessResourceUsageLog['node_process_type']]['id'] = $existingNodeProcessResourceUsageLog['id'];
 				}
 			}
 
-			unset($nodeResourceUsageLogs['node_resource_usage_logs']['node_id']);
-
-			if (empty($existingNodeResourceUsageLogs) === false) {
-				$nodeResourceUsageLogs['node_resource_usage_logs']['node_id'] = $nodeId;
+			if (empty($existingNodeResourceUsageLog) === false) {
+				$nodeResourceUsageLogs['node_resource_usage_log']['id'] = $existingNodeResourceUsageLog['id'];
 			}
 
 			$nodeProcessResourceUsageLogData = array();
 
 			foreach ($nodeResourceUsageLogs['node_process_resource_usage_logs'] as $nodeProcessResourceUsageLog) {
+				$nodeProcessResourceUsageLog['node_id'] = $nodeId;
+
 				if (
 					(strtotime($nodeProcessResourceUsageLog['created']) === false) ||
 					(substr($nodeProcessResourceUsageLog['created'], -4) !== '0:00')
@@ -118,13 +121,16 @@
 				$nodeProcessResourceUsageLogData[] = array_intersect_key($nodeProcessResourceUsageLog, array(
 					'cpu_percentage' => true,
 					'created' => true,
+					'id' => true,
 					'memory_percentage' => true,
 					'node_id' => true,
 					'node_process_type' => true
 				));
 			}
 
-			foreach ($nodeResourceUsageLogs['node_resource_usage_logs'] as $nodeResourceUsageLogKey => $nodeResourceUsageLogValue) {
+			$nodeProcessResourceUsageLogs['node_resource_usage_log']['node_id'] = $nodeId;
+
+			foreach ($nodeResourceUsageLogs['node_resource_usage_log'] as $nodeResourceUsageLogKey => $nodeResourceUsageLogValue) {
 				if (
 					($nodeResourceUsageLogKey === 'created') &&
 					(
@@ -153,11 +159,12 @@
 				'to' => 'node_process_resource_usage_logs'
 			));
 			$nodeResourceUsageLogsSaved = $this->save(array(
-				'data' => array_intersect_key($nodeProcessResourceUsageLogs['node_resource_usage_logs'], array(
+				'data' => array_intersect_key($nodeProcessResourceUsageLogs['node_resource_usage_log'], array(
 					'cpu_capacity_cores' => true,
 					'cpu_capacity_megahertz' => true,
 					'cpu_percentage' => true,
 					'created' => true,
+					'id' => true,
 					'memory_capacity_megabytes' => true,
 					'memory_percentage' => true,
 					'node_id' => true,

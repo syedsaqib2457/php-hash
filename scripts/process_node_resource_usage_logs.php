@@ -5,6 +5,7 @@
 
 		public function __construct($parameters) {
 			exec('sudo bash -c "sudo cat /proc/cpuinfo" | grep "cpu MHz" | awk \'{print $4\'} | head -1 2>&1', $nodeResourceUsageLogCpuCapacityMegahertz);
+			// todo: add node resource usage logs to each interval instead of at the start of processing
 			exec('free -m | grep "Mem:" | grep -v free | awk \'{print $2"_"$3}\'', $nodeResourceUsageLogMemoryUsage);
 			$nodeResourceUsageLogMemoryUsage = explode('_', current($nodeResourceUsageLogMemoryUsage));
 			$this->nodeResourceUsageLogData = array(
@@ -147,7 +148,7 @@
 			$nodeResourceUsageLogCreated = substr(date('Y-m-d H:i', $nodeResourceUsageLogProcessStart), 0, 15) . '0:00';
 			$nodeResourceUsageLogData = array(
 				'node_process_resource_usage_logs' => array(),
-				'node_resource_usage_logs' => array(
+				'node_resource_usage_log' => array(
 					'cpu_percentage' => max($this->nodeResourceUsageLogData['cpu_percentage']),
 					'created' => $nodeResourceUsageLogCreated
 				)
@@ -181,7 +182,7 @@
 					(file_exists($nodeResourceUsageLogFile) === false) ||
 					(unlink($nodeResourceUsageLogFile) === true)
 				) &&
-				(file_put_contents($nodeResourceUsageLogFile, json_encode(nodeResourceUsageLogData)) === true)
+				(file_put_contents($nodeResourceUsageLogFile, json_encode($nodeResourceUsageLogData)) === true)
 			) {
 				exec('sudo curl -s --form "data=@' . $nodeResourceUsageLogFile . '" --form-string "json={\"action\":\"add\",\"where\":{\"token\":\"' . $this->parameters['token'] . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/node-resource-usage-logs 2>&1', $response);
 				$response = json_decode(current($response), true);

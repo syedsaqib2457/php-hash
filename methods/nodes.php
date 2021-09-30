@@ -1835,10 +1835,7 @@
 					'version' => $this->settings['version']
 				),
 				'message' => 'Error processing nodes, please try again.',
-				'status_valid' => (
-					(empty($parameters['where']['token']) === false) &&
-					(ctype_alnum($$parameters['where']['token']) === true)
-				)
+				'status_valid' => (empty($parameters['user']['node_id']) === false)
 			);
 
 			if ($response['status_valid'] === false) {
@@ -1846,29 +1843,7 @@
 				return $response;
 			}
 
-			$node = $this->fetch(array(
-				'fields' => array(
-					'id'
-				),
-				'from' => 'nodes',
-				'where' => array(
-					'token' => $parameters['where']['token']
-				)
-			));
-			$response['status_valid'] = ($node !== false);
-
-			if ($response['status_valid'] === false) {
-				return $response;
-			}
-
-			$response['status_valid'] = (empty($node) === false);
-
-			if ($response['status_valid'] === false) {
-				$this->_logUnauthorizedRequest();
-				return $response;
-			}
-
-			$nodeId = $node['id'];
+			$nodeId = $parameters['user']['node_id'];
 
 			if (isset($parameters['data']['processed']) === true) {
 				$nodeDataUpdated = $this->update(array(
