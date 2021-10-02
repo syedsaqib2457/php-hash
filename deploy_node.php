@@ -1,25 +1,19 @@
 <?php
-	if (
-		empty($_SERVER['argv'][1]) ||
-		($id = $_SERVER['argv'][1]) === false
-	) {
-		echo 'Error: ID parameter is required for installation.' . "\n";
-		exit;
-	}
+	// todo: refactor for version 1 release
 
 	if (
-		empty($_SERVER['argv'][2]) ||
-		($url = $_SERVER['argv'][2]) === false
+		(empty($_SERVER['argv'][1]) === true) ||
+		(empty($_SERVER['argv'][2]) === true)
 	) {
-		echo 'Error: URL parameter is required for installation.' . "\n";
+		echo 'Error deploying node, please try again.' . "\n";
 		exit;
 	}
 
 	function applyCommands($commands) {
 		foreach ($commands as $command) {
 			if (
-				!empty($command) &&
-				is_string($command)
+				(empty($command) === false) &&
+				(is_string($command) === true)
 			) {
 				echo shell_exec($command);
 			}
@@ -35,18 +29,18 @@
 		);
 		$commandsFile = '/tmp/commands.sh';
 
-		if (file_exists($commandsFile)) {
+		if (file_exists($commandsFile) === true) {
 			unlink($commandsFile);
 		}
 
 		file_put_contents($commandsFile, implode("\n", $commands));
-		shell_exec('sudo chmod +x ' . $commandsFile);
+		chmod($commandsFile, 0755);
 		exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
 		$binaryFile = current($binaryFile);
 		unlink($commandsFile);
 
-		if (empty($binaryFile)) {
-			echo 'Error: Binary file for ' . $binary['name'] . ' not found, please run the install script again.' . "\n";
+		if (empty($binaryFile) === true) {
+			echo 'Error fetching required binary file, please try again.' . "\n";
 			shell_exec('sudo apt-get update');
 			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
 			exit;
@@ -130,25 +124,25 @@
 	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
 		$operatingSystemDetail = explode('=', $operatingSystemDetail);
 
-		if (!empty($operatingSystemDetail[1])) {
+		if (empty($operatingSystemDetail[1]) === false) {
 			$operatingSystemDetails[strtolower($operatingSystemDetail[0])] = trim($operatingSystemDetail[1], '"');
 		}
 
 		unset($operatingSystemDetails[$operatingSystemDetailKey]);
 	}
 
-	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']])) {
-		echo 'Error: Unsupported operating system ' . $operatingSystemDetails['pretty_name'] . "\n";
+	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
+		echo 'Error detecting a supported operating system, please try again.' . "\n";
 		exit;
 	}
 
 	$operatingSystemConfiguration = $supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']];
 
 	if (
-		!file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) ||
-		!file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents']))
+		(file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) === false) ||
+		(file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents'])) === false)
 	) {
-		echo 'Error: Unable to update package sources at ' . $operatingSystemConfiguration['sources']['aptitude']['path'] . '.' . "\n";
+		echo 'Error updating package sources, please try again.' . "\n";
 		exit;
 	}
 
@@ -157,10 +151,9 @@
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps systemd'
 	);
 	applyCommands($commands);
-	$uniqueId = '_' . uniqid() . time();
 	$binaries = array(
 		array(
-			'command' => $uniqueId,
+			'command' => ($uniqueId = '_' . uniqid() . time()),
 			'name' => 'service',
 			'output' => 'unrecognized service',
 			'package' => 'systemd'
@@ -186,43 +179,47 @@
 
 	$commands = array(
 		'sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0',
-		'sudo wget -O ' . ($serverResponseFile = '/tmp/serverResponse.json') . ' ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' --post-data "json={\"action\":\"activate\",\"where\":{\"id\":\"' . $id . '\"}}" ' . $url . '/endpoint/servers'
+		'sudo wget -O ' . ($nodeActivateResponseFile = '/tmp/node_activate_response.json') . ' ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' --post-data "json={\"action\":\"activate\",\"where\":{\"id\":\"' . ($id = $_SERVER['argv'][1]) . '\"}}" ' . ($url = $_SERVER['argv'][2]) . '/endpoint/nodes'
 	);
 	applyCommands($commands);
 
-	if (!file_exists($serverResponseFile)) {
-		echo 'Error: Unable to fetch server API response at ' . $url . '/endpoint/servers.' . "\n";
+	if (file_exists($nodeActivateResponseFile) === false) {
+		echo 'Error activating node, please try again.' . "\n";
 		exit;
 	}
 
-	$serverResponse = json_decode(file_get_contents($serverResponseFile), true);
-	shell_exec('sudo rm ' . $serverResponseFile);
-	echo $serverResponse['message']['text'] . "\n";
+	$nodeActivateResponse = json_decode(file_get_contents($nodeActivateResponseFile), true);
+	unlink($nodeActivateResponseFile);
 
-	if (
-		empty($serverResponse['message']['status']) ||
-		$serverResponse['message']['status'] === 'error'
-	) {
+	if (empty($nodeActivateResponse['message']) === true) {
+		echo 'Error activating node, please try again.' . "\n";
 		exit;
 	}
 
-	shell_exec('sudo wget -O ' . $serverResponseFile . ' ' . $wgetParameters . ' --post-data "json={\"action\":\"view\",\"where\":{\"id\":\"' . $id . '\"}}" ' . $url . '/endpoint/servers');
+	echo $nodeActivateResponse['message'] . "\n";
 
-	if (!file_exists($serverResponseFile)) {
-		echo 'Error: Unable to fetch server API response at ' . $url . '/endpoint/servers.' . "\n";
+	if ($nodeActivateResponse['status_valid'] === false) {
 		exit;
 	}
 
-	$serverResponse = json_decode(file_get_contents($serverResponseFile), true);
-	shell_exec('sudo rm ' . $serverResponseFile);
+	shell_exec('sudo wget -O ' . ($nodeProcessResponseFile = '/tmp/node_process_response.json') . ' ' . $wgetParameters . ' --post-data "json={\"action\":\"process\",\"where\":{\"id\":\"' . $id . '\"}}" ' . $url . '/endpoint/nodes');
 
-	if (empty($serverResponse['data'])) {
-		echo 'Error: Unable to decode server API data in ' . $serverResponseFile . '.' . "\n";
+	if (file_exists($nodeProcessResponseFile) === false) {
+		echo 'Error processing node, please try again.' . "\n";
 		exit;
 	}
 
-	if (empty($serverResponse['data']['nodes'])) {
-		echo 'Error: There aren\'t any IP addresses to configure on the server.' . "\n";
+	$nodeProcessResponse = json_decode(file_get_contents($nodeProcessResponseFile), true);
+	unlink($nodeProcessResponseFile);
+
+	if (empty($nodeProcessResponse['message']) === true) {
+		echo 'Error processing node, please try again.' . "\n";
+		exit;
+	}
+
+	echo $nodeProcessResponse['message'] . "\n";
+
+	if ($nodeProcessResponse['status_valid'] === false) {
 		exit;
 	}
 
@@ -255,19 +252,19 @@
 
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	killProcessIds($lockedProcessIds, $binaryFiles['telinit']);
-
 	$commands = array(
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux',
 		'sudo /etc/init.d/apache2 stop',
 	);
-	$rootPath = '/ghostcompute/';
+	applyCommands($commands);
+	$rootPath = '/usr/local/ghostcompute/';
 
-	if (is_dir($rootPath)) {
-		$commands[] = 'sudo rm -rf ' . $rootPath;
+	if (is_dir($rootPath) === true) {
+		rmdir($rootPath);
 	}
 
-	$commands[] = 'sudo mkdir -m 755 -p ' . $rootPath;
-	applyCommands($commands);
+	mkdir($rootPath);
+	chmod($rootPath, 0755);
 	$binaries = array(
 		array(
 			'command' => $uniqueId,
@@ -320,12 +317,14 @@
 	exec('sudo ' . $binaryFiles['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 	$interfaceName = current($interfaceName);
 
-	if (empty($interfaceName)) {
-		echo 'Error: Network interface not found.' . "\n";
+	if (empty($interfaceName) === true) {
+		echo 'Error detecting network interface, please try again.' . "\n";
 		exit;
 	}
 
 	$commands = array();
+	// ..
+
 	$nameserverListeningIps = array_keys($serverResponse['data']['nameserver_process_external_ips']);
 	$serverNodes = $serverResponse['data']['nodes'];
 	$interfaceIps = array_unique(array_merge($nameserverListeningIps, $serverNodes));
@@ -432,11 +431,11 @@
 		}
 
 		$commands = array(
-			'sudo rm /etc/resolv.conf && sudo touch /etc/nameservers.conf',
-			'sudo ln -s /etc/nameservers.conf /etc/resolv.conf'
+			'sudo rm /etc/resolv.conf && sudo touch /etc/node_recursive_dns_destinations.conf',
+			'sudo ln -s /etc/node_recursive_dns_destinations.conf /etc/resolv.conf'
 		);
 		applyCommands($commands);
-		file_put_contents('/etc/nameservers.conf', 'nameserver ' . key($nameserverIps));
+		file_put_contents('/etc/recursive_dns.conf', 'nameserver ' . key($nameserverIps));
 		echo 'Nameserver processes created successfully.' . "\n";
 	}
 
