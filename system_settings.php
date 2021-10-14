@@ -7,40 +7,6 @@
 
 	$settings = array(
 		'databases' => array(
-			'node_cryptocurrencies' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'name' => array(
-						'default' => null,
-						'type' => 'VARCHAR(100)'
-					),
-					'symbol' => array(
-						'default' => null,
-						'type' => 'VARCHAR(10)'
-					),
-					'usd_price_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					)
-				)
-			),
 			'node_process_forwarding_destinations' => array(
 				'authentication' => array(
 					array(
@@ -88,10 +54,6 @@
 					'port_number_version_6' => array(
 						'default' => null,
 						'type' => 'INT(5)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -136,10 +98,6 @@
 						'type' => 'BIGINT(11)'
 					),
 					'request_count' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'system_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
 					)
@@ -216,10 +174,6 @@
 					'status_processing' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -270,10 +224,6 @@
 					'request_count' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -316,10 +266,6 @@
 					'status_removed' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -386,10 +332,6 @@
 					'source_ip_address_version_6' => array(
 						'default' => null,
 						'type' => 'VARCHAR(45)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -444,10 +386,6 @@
 					'request_count' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -490,10 +428,6 @@
 					'status_removed' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -520,10 +454,6 @@
 					'modified_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -558,10 +488,6 @@
 					'request_count_interval_minutes' => array(
 						'default' => 1,
 						'type' => 'SMALLINT(3)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -613,10 +539,6 @@
 						'default' => 0,
 						'null' => true,
 						'type' => 'TINYINT(1)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -683,178 +605,6 @@
 					'storage_percentage' => array(
 						'default' => null,
 						'type' => 'TINYINT(1)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					)
-				)
-			),
-			'node_user_node_cryptocurrencies' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'node_cryptocurrency_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					),
-					'node_cryptocurrency_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'node_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					)
-				)
-			),
-			'node_user_node_cryptocurrency_conversion_metrics' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'usd_profit_count_day' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					),
-					'usd_profit_count_month' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					),
-					'usd_profit_count_week' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					),
-					'usd_profit_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					)
-				)
-			),
-			'node_user_node_cryptocurrency_conversion_transactions' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'credit_fee_count' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'from_node_cryptocurrency_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					),
-					'from_node_cryptocurrency_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'node_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'node_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'to_node_cryptocurrency_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					),
-					'to_node_cryptocurrency_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'usd_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					)
-				)
-			),
-			'node_user_node_cryptocurrency_conversions' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'node_cryptocurrency_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					),
-					'node_cryptocurrency_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'node_cryptocurrency_price_usd_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
 					)
 				)
 			),
@@ -889,10 +639,6 @@
 					'status_removed' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -935,10 +681,6 @@
 					'status_removed' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					)
 				)
 			),
@@ -985,10 +727,6 @@
 					'status_requiring_strict_authentication' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
 					),
 					'tag' => array(
 						'default' => null,
@@ -1065,40 +803,6 @@
 						'type' => 'TINYINT(1)'
 					),
 					'storage_capacity_megabytes' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					)
-				)
-			),
-			'system_functions' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'name' => array(
-						'default' => null,
-						'type' => 'VARCHAR(100)'
-					),
-					'request_credit_price_count' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
 					)
@@ -1194,6 +898,10 @@
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
 					),
+					'system_user_authentication_token_id' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
 					'system_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
@@ -1224,93 +932,9 @@
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
 					),
-					'password' => array(
+					'string' => array(
 						'default' => null,
 						'type' => 'VARCHAR(100)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'username' => array(
-						'default' => null,
-						'type' => 'VARCHAR(100)'
-					)
-				)
-			),
-			'system_user_cryptocurrency_wallet_transactions' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'credit_count' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'cryptocurrency_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'system_user_cryptocurrency_wallet_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'system_user_cryptocurrency_wallet_type' => array(
-						'default' => null,
-						'type' => 'VARCHAR(10)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'usd_count' => array(
-						'default' => null,
-						'type' => 'FLOAT(10,10)'
-					)
-				)
-			),
-			'system_user_cryptocurrency_wallets' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'address' => array(
-						'default' => null,
-						'type' => 'VARCHAR(100)'
-					),
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'VARCHAR(100)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'type' => array(
-						'default' => null,
-						'type' => 'VARCHAR(10)'
 					),
 					'system_user_id' => array(
 						'default' => null,
@@ -1359,14 +983,6 @@
 						'type' => 'VARCHAR(45)'
 					),
 					'status_authorized' => array(
-						'default' => 0,
-						'type' => 'TINYINT(1)'
-					),
-					'status_processed' => array(
-						'default' => 0,
-						'type' => 'TINYINT(1)'
-					),
-					'status_processing' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
@@ -1422,25 +1038,9 @@
 					)
 				),
 				'structure' => array(
-					'authentication_password' => array(
-						'default' => null,
-						'type' => 'VARCHAR(100)'
-					),
-					'authentication_username' => array(
-						'default' => null,
-						'type' => 'VARCHAR(100)'
-					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
-					),
-					'credit_count' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'email_address' => array(
-						'default' => null,
-						'type' => 'VARCHAR(100)'
 					),
 					'id' => array(
 						'primary_key' => true,
@@ -1453,10 +1053,6 @@
 					'system_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
-					),
-					'type' => array(
-						'default' => null,
-						'type' => 'VARCHAR(10)'
 					)
 				)
 			)
