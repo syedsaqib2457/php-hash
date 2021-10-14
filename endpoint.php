@@ -12,19 +12,19 @@
 			exit;
 		}
 
-		require_once('/var/www/ghostcompute/system/settings.php');
-		require_once('/var/www/ghostcompute/system/database.php');
+		require_once('/var/www/ghostcompute/system_settings.php');
+		require_once('/var/www/ghostcompute/system_database.php');
 
 		if (
 			(ctype_alnum(str_replace('_', '', $parameters['function'])) === false) ||
-			(file_exists('/var/www/ghostcompute/system/' . $parameters['function'] . '.php') === false)
+			(file_exists('/var/www/ghostcompute/function_' . $parameters['function'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid endpoint request method, please try again.';
 			echo json_encode($response);
 			exit;
 		}
 
-		require_once('/var/www/ghostcompute/system/' . $parameters['function'] . '.php');
+		require_once('/var/www/ghostcompute/function_' . $parameters['function'] . '.php');
 	}
 
 	echo json_encode($response);
