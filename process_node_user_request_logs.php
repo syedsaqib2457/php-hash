@@ -1,4 +1,6 @@
 <?php
+	// todo: refactor for simplified procedural API design
+
 	class ProcessNodeProcessUserRequestLogs {
 
 		public $parameters;

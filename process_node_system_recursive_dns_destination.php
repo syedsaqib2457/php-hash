@@ -1,4 +1,6 @@
 <?php
+	// todo: refactor for simplified procedural API design
+
 	class ProcessNodeSystemRecursiveDnsDestination {
 
 		protected function _killProcessIds($processIds) {
