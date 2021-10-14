@@ -381,7 +381,7 @@
 	shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
-	shell_exec('cd ' . $systemPath . ' && . ' sudo git clone https://github.com/ghostcompute/system .');
+	shell_exec('cd ' . $systemPath . ' && sudo git clone https://github.com/ghostcompute/system .');
 
 	if (file_exists($systemPath . '/LICENSE') === false) {
 		echo 'Error extracting system files, please try again.' . "\n";
