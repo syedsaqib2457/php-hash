@@ -402,8 +402,8 @@
 
 	$crontabCommands = array(
 		'# [Start]',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php node_request_logs process',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system_request_logs process',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . 'system_action_process_node_request_logs.php',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . 'system_action_process_node_request_logs.php',
 		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
 		'# [Stop]'
 	);
