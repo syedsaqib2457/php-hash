@@ -1,5 +1,321 @@
 <?php
+	$supportedOperatingSystems = array(
+		'debian' => array(
+			'9' => array(
+				'sources' => array(
+					'aptitude' => array(
+						'contents' => array(
+							'deb http://deb.debian.org/debian stretch main',
+							'deb-src http://deb.debian.org/debian stretch main',
+							'deb http://deb.debian.org/debian stretch-updates main',
+							'deb-src http://deb.debian.org/debian stretch-updates main',
+							'deb http://security.debian.org/debian-security/ stretch/updates main',
+							'deb-src http://security.debian.org/debian-security/ stretch/updates main'
+						),
+						'path' => '/etc/apt/sources.list'
+					)
+				)
+			),
+			'10' => array(
+				'sources' => array(
+					'aptitude' => array(
+						'contents' => array(
+							'deb http://deb.debian.org/debian buster main',
+							'deb-src http://deb.debian.org/debian buster main',
+							'deb http://deb.debian.org/debian buster-updates main',
+							'deb-src http://deb.debian.org/debian buster-updates main',
+							'deb http://security.debian.org/debian-security/ buster/updates main',
+							'deb-src http://security.debian.org/debian-security/ buster/updates main'
+						),
+						'path' => '/etc/apt/sources.list'
+					)
+				)
+			)
+		),
+		'ubuntu' => array(
+			'18.04' => array(
+				'sources' => array(
+					'aptitude' => array(
+						'contents' => array(
+							'deb http://archive.ubuntu.com/ubuntu bionic main',
+							'deb http://archive.ubuntu.com/ubuntu bionic-updates main',
+							'deb http://archive.ubuntu.com/ubuntu bionic-backports main',
+							'deb http://security.ubuntu.com/ubuntu bionic-security main',
+							'deb-src http://archive.ubuntu.com/ubuntu bionic main',
+							'deb-src http://archive.ubuntu.com/ubuntu bionic-backports main',
+							'deb-src http://archive.ubuntu.com/ubuntu bionic-updates main',
+							'deb-src http://security.ubuntu.com/ubuntu bionic-security main'
+						),
+						'path' => '/etc/apt/sources.list'
+					)
+				)
+			),
+			'20.04' => array(
+				'sources' => array(
+					'aptitude' => array(
+						'contents' => array(
+							'deb http://archive.ubuntu.com/ubuntu focal main',
+							'deb http://archive.ubuntu.com/ubuntu focal-updates main',
+							'deb http://archive.ubuntu.com/ubuntu focal-backports main',
+							'deb http://security.ubuntu.com/ubuntu focal-security main',
+							'deb-src http://archive.ubuntu.com/ubuntu focal main',
+							'deb-src http://archive.ubuntu.com/ubuntu focal-backports main',
+							'deb-src http://archive.ubuntu.com/ubuntu focal-updates main',
+							'deb-src http://security.ubuntu.com/ubuntu focal-security main'
+						),
+						'path' => '/etc/apt/sources.list'
+					)
+				)
+			)
+		)
+	);
+	exec('sudo cat /etc/*-release 2>&1', $operatingSystemDetails);
+
+	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
+		$operatingSystemDetail = explode('=', $operatingSystemDetail);
+
+		if (empty($operatingSystemDetail[1]) === false) {
+			$operatingSystemDetails[strtolower($operatingSystemDetail[0])] = trim($operatingSystemDetail[1], '"');
+		}
+
+		unset($operatingSystemDetails[$operatingSystemDetailKey]);
+	}
+
+	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
+		echo 'Error detecting a supported operating system, please try again.' . "\n";
+		exit;
+	}
+
+	$operatingSystemConfiguration = $supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']];
+
+	if (
+		(file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) === false) ||
+		(file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents'])) === false)
+	) {
+		echo 'Error updating package sources, please try again.' . "\n";
+		exit;
+	}
+
+	shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 	shell_exec('sudo apt-get update');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils cron curl iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
+	$binaries = array(
+		array(
+			'command' => ($uniqueId = '_' . uniqid() . time()),
+			'name' => 'a2enmod',
+			'output' => 'Module ' . $uniqueId,
+			'package' => 'apache2'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'a2ensite',
+			'output' => 'Site ' . $uniqueId,
+			'package' => 'apache2'
+		),
+		array(
+			'command' => '-h',
+			'name' => 'apachectl',
+			'output' => 'Options:',
+			'package' => 'apache2'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'crontab',
+			'output' => 'invalid option',
+			'package' => 'cron'
+		),
+		array(
+			'command' => '-h',
+			'name' => 'ip6tables-restore',
+			'output' => 'tables-restore ',
+			'package' => 'iptables'
+		),
+		array(
+			'command' => '-h',
+			'name' => 'iptables-restore',
+			'output' => 'tables-restore ',
+			'package' => 'iptables'
+		),
+		array(
+			'command' => '-v',
+			'name' => 'php',
+			'output' => 'PHP ',
+			'package' => 'php'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'service',
+			'output' => 'unrecognized service',
+			'package' => 'systemd'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'sysctl',
+			'output' => 'cannot',
+			'package' => 'procps'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'systemctl',
+			'output' => 'invalid option',
+			'package' => 'systemd'
+		)
+	);
+	$binaryFiles = array();
+
+	foreach ($binaries as $binary) {
+		$commands = array(
+			'#!/bin/bash',
+			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
+		);
+		$commandsFile = '/tmp/commands.sh';
+
+		if (file_exists($commandsFile) === true) {
+			unlink($commandsFile);
+		}
+
+		file_put_contents($commandsFile, implode("\n", $commands));
+		chmod($commandsFile, 0755);
+		exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
+		$binaryFile = current($binaryFile);
+		unlink($commandsFile);
+
+		if (empty($binaryFile) === true) {
+			shell_exec('sudo apt-get update');
+			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
+			echo 'Error fetching required binary file, please try again.' . "\n";
+			exit;
+		}
+
+		$binaryFiles[$binary['name']] = $binaryFile;
+	}
+
+	$kernelOptions = array(
+		'fs.aio-max-nr = 1000000000',
+		'fs.file-max = 1000000000',
+		'fs.nr_open = 1000000000',
+		'fs.pipe-max-size = 10000000',
+		'fs.suid_dumpable = 0',
+		'kernel.core_uses_pid = 1',
+		'kernel.hung_task_timeout_secs = 2',
+		'kernel.io_delay_type = 3',
+		'kernel.kptr_restrict = 2',
+		'kernel.msgmax = 65535',
+		'kernel.msgmnb = 65535',
+		'kernel.printk = 7 7 7 7',
+		'kernel.sem = 404 256000 64 2048',
+		'kernel.shmmni = 32767',
+		'kernel.sysrq = 0',
+		'kernel.threads-max = 1000000000',
+		'net.core.default_qdisc = fq',
+		'net.core.dev_weight = 100000',
+		'net.core.netdev_max_backlog = 1000000',
+		'net.core.somaxconn = 1000000000',
+		'net.ipv4.conf.all.accept_redirects = 0',
+		'net.ipv4.conf.all.accept_source_route = 0',
+		'net.ipv4.conf.all.arp_ignore = 1',
+		'net.ipv4.conf.all.bootp_relay = 0',
+		'net.ipv4.conf.all.forwarding = 0',
+		'net.ipv4.conf.all.rp_filter = 1',
+		'net.ipv4.conf.all.secure_redirects = 0',
+		'net.ipv4.conf.all.send_redirects = 0',
+		'net.ipv4.conf.all.log_martians = 0',
+		'net.ipv4.icmp_echo_ignore_all = 0',
+		'net.ipv4.icmp_echo_ignore_broadcasts = 0',
+		'net.ipv4.icmp_ignore_bogus_error_responses = 1',
+		'net.ipv4.ip_forward = 0',
+		'net.ipv4.ip_local_port_range = 1024 65000',
+		'net.ipv4.ipfrag_high_thresh = 64000000',
+		'net.ipv4.ipfrag_low_thresh = 32000000',
+		'net.ipv4.ipfrag_time = 10',
+		'net.ipv4.neigh.default.gc_interval = 50',
+		'net.ipv4.neigh.default.gc_stale_time = 10',
+		'net.ipv4.neigh.default.gc_thresh1 = 32',
+		'net.ipv4.neigh.default.gc_thresh2 = 1024',
+		'net.ipv4.neigh.default.gc_thresh3 = 2048',
+		'net.ipv4.route.gc_timeout = 2',
+		'net.ipv4.tcp_adv_win_scale = 2',
+		'net.ipv4.tcp_congestion_control = htcp',
+		'net.ipv4.tcp_fastopen = 2',
+		'net.ipv4.tcp_fin_timeout = 2',
+		'net.ipv4.tcp_keepalive_intvl = 2',
+		'net.ipv4.tcp_keepalive_probes = 2',
+		'net.ipv4.tcp_keepalive_time = 2',
+		'net.ipv4.tcp_low_latency = 1',
+		'net.ipv4.tcp_max_orphans = 100000',
+		'net.ipv4.tcp_max_syn_backlog = 1000000',
+		'net.ipv4.tcp_max_tw_buckets = 100000000',
+		'net.ipv4.tcp_moderate_rcvbuf = 1',
+		'net.ipv4.tcp_no_metrics_save = 1',
+		'net.ipv4.tcp_orphan_retries = 0',
+		'net.ipv4.tcp_retries2 = 1',
+		'net.ipv4.tcp_rfc1337 = 0',
+		'net.ipv4.tcp_sack = 0',
+		'net.ipv4.tcp_slow_start_after_idle = 0',
+		'net.ipv4.tcp_syn_retries = 2',
+		'net.ipv4.tcp_synack_retries = 2',
+		'net.ipv4.tcp_syncookies = 0',
+		'net.ipv4.tcp_thin_linear_timeouts = 1',
+		'net.ipv4.tcp_timestamps = 1',
+		'net.ipv4.tcp_tw_reuse = 0',
+		'net.ipv4.tcp_window_scaling = 1',
+		'net.ipv4.udp_rmem_min = 1',
+		'net.ipv4.udp_wmem_min = 1',
+		'net.ipv6.bindv6only = 0',
+		'net.ipv6.conf.all.accept_redirects = 0',
+		'net.ipv6.conf.all.accept_source_route = 0',
+		'net.ipv6.conf.all.disable_ipv6 = 0',
+		'net.ipv6.conf.all.forwarding = 0',
+		'net.ipv6.ip6frag_high_thresh = 64000000',
+		'net.ipv6.ip6frag_low_thresh = 32000000',
+		'net.ipv6.neigh.default.gc_interval = 50',
+		'net.ipv6.neigh.default.gc_stale_time = 10',
+		'net.ipv6.neigh.default.gc_thresh1 = 32',
+		'net.ipv6.neigh.default.gc_thresh2 = 1024',
+		'net.ipv6.neigh.default.gc_thresh3 = 2048',
+		'net.ipv6.route.gc_timeout = 2',
+		'vm.dirty_background_ratio = 10',
+		'vm.dirty_expire_centisecs = 10',
+		'vm.dirty_ratio = 10',
+		'vm.dirty_writeback_centisecs = 100',
+		'vm.max_map_count = 1000000',
+		'vm.mmap_min_addr = 4096',
+		'vm.overcommit_memory = 0',
+		'vm.swappiness = 0'
+	);
+	file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
+	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -p');
+	exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
+	$kernelPageSize = current($kernelPageSize);
+	exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
+	$memoryCapacityBytes = current($memoryCapacityBytes);
+	$dynamicKernelOptions = array(
+		'kernel.shmall' => floor($memoryCapacityBytes / $kernelPageSize),
+		'kernel.shmmax' => $memoryCapacityBytes,
+		'net.core.optmem_max' => ceil($memoryCapacityBytes * 0.02),
+		'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034)),
+		'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
+		'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
+		'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
+	);
+	$systemIpAddressVersions = array(
+		32 => 4,
+		128 => 6
+	);
+
+	foreach ($systemIpAddressVersions as $systemIpAddressVersion) {
+		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_mem'] = ($memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize)) . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
+		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
+		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_rmem'];
+		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_mem'];
+	}
+
+	foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
+		shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
+	}
+
 	shell_exec('sudo /usr/bin/systemctl stop mysql');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*');
 	shell_exec('sudo rm -rf /etc/mysql /var/lib/mysql /var/log/mysql');
@@ -38,7 +354,8 @@
 	shell_exec('sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"');
 	shell_exec('sudo /usr/sbin/service mysql restart');
 	shell_exec('sudo apt-get update');
-	// todo: add apache config for /var/www/ghostcompute + add files from git clone
+	// todo: add apache config for /var/www/ghostcompute + add website files from git clone
+	// todo: add firewall
 	require_once('/var/www/ghostcompute/settings.php');
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password');
 
