@@ -5,7 +5,7 @@
 
 	function _addNodeReservedInternalDestination($node, $nodeIpVersion) {
 		$response = array(
-			'message' => 'Error assigning node reserved internal destination, please try again.',
+			'message' => 'Error adding node reserved internal destination, please try again.',
 			'status_valid' => false
 		);
 		$nodeIds = array_filter(array(
@@ -57,7 +57,7 @@
 
 			$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
-			while ($existingNodeReservedInternalDestination['status_assigned'] === false) {
+			while ($existingNodeReservedInternalDestination['status_added'] === false) {
 				switch ($nodeIpVersion) {
 					case 4:
 						$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
@@ -96,11 +96,11 @@
 
 				if ($existingNodeCount === 0) {
 					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
-					$existingNodeReservedInternalDestination['status_assigned'] = true;
+					$existingNodeReservedInternalDestination['status_added'] = true;
 				}
 			}
 		} else {
-			$existingNodeReservedInternalDestination['status_assigned'] = true;
+			$existingNodeReservedInternalDestination['status_added'] = true;
 		}
 
 		$existingNodeReservedInternalDestinationData = array(
@@ -152,7 +152,7 @@
 		}
 
 		unset($existingNodeReservedInternalDestinationData[1]['id']);
-		$existingNodeReservedInternalDestinationData[1]['status_assigned'] = false;
+		$existingNodeReservedInternalDestinationData[1]['status_added'] = false;
 		$nodeReservedInternalDestinationsSaved = _save(array(
 			'data' => $existingNodeReservedInternalDestinationData,
 			'to' => 'node_reserved_internal_destinations'

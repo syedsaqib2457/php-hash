@@ -535,7 +535,7 @@
 						'null' => true,
 						'type' => 'VARCHAR(7)'
 					),
-					'status_assigned' => array(
+					'status_added' => array(
 						'default' => 0,
 						'null' => true,
 						'type' => 'TINYINT(1)'
