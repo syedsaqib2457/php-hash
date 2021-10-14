@@ -1,4 +1,9 @@
 <?php
+	if (empty($_SERVER['argv'][1]) === true) {
+		echo 'Invalid URL parameter, please try again.' . "\n";
+		exit;
+	}
+
 	$supportedOperatingSystems = array(
 		'debian' => array(
 			'9' => array(
@@ -354,8 +359,133 @@
 	shell_exec('sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"');
 	shell_exec('sudo /usr/sbin/service mysql restart');
 	shell_exec('sudo apt-get update');
-	// todo: add apache config for /var/www/ghostcompute + add website files from git clone
-	// todo: add firewall
+	$systemPath = '/var/www/ghostcompute';
+	rmdir($systemPath);
+	mkdir($systemPath);
+	chmod($systemPath, 0755);
+	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
+	$virtualHostContents = array(
+		'<VirtualHost *:80>',
+		'ServerAlias ' . ($systemUrl = $_SERVER['argv'][1]),
+		'ServerName ' . $systemUrl,
+		'DocumentRoot ' . $systemPath,
+		'<Directory ' . $systemPath . '>',
+		'Allow from all',
+		'Options FollowSymLinks',
+		'AllowOverride All',
+		'</Directory>',
+		'</VirtualHost>'
+	);
+	file_put_contents('/etc/apache2/sites-available/' . $systemUrl . '.conf', implode("\n", $virtualHostContents));
+	shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $url);
+	shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
+	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
+	shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
+	shell_exec('cd ' . $systemPath . ' && . ' sudo git clone https://github.com/ghostcompute/system .');
+
+	if (file_exists($systemPath . '/LICENSE') === false) {
+		echo 'Error extracting system files, please try again.' . "\n";
+		exit;
+	}
+
+	$crontabFile = '/etc/crontab';
+
+	if (file_exists($crontabFile) === true) {
+		$crontabFileContents = file_get_contents($crontabFile);
+	}
+
+	$crontabCommands = array(
+		'# [Start]',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php node_request_logs process',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . '/interfaces/command/interface.php system_request_logs process',
+		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
+		'# [Stop]'
+	);
+
+	if (
+		(file_exists($crontabFile) === false) ||
+		(boolval($crontabFileContents) === false)
+	) {
+		echo 'Error fetching crontab contents, please try again.' . "\n";
+		exit;
+	}
+
+	$crontabFileContents = explode("\n", $crontabFileContents);
+
+	while (array_search('# [Start]', $crontabFileContents) !== false) {
+		$startCrontabFileContents = array_search('# [Start]', $crontabFileContents);
+		$stopCrontabFileContents = array_search('# [Stop]', $crontabFileContents);
+
+		if (
+			($stopCrontabFileContents !== false) &&
+			($stopCrontabFileContents > $startCrontabFileContents)
+		) {
+			foreach (range($startCrontabFileContents, $stopCrontabFileContents) as $crontabContentLineIndex) {
+				unset($crontabFileContents[$crontabContentLineIndex]);
+			}
+		}
+	}
+
+	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
+	file_put_contents($crontabFile, implode("\n", $crontabFileContents));
+	shell_exec('sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile);
+	$sshPortNumbers = array();
+
+	if (file_exists('/etc/ssh/sshd_config') === true) {
+		exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
+
+		foreach ($sshPortNumbers as $sshPortNumberKey => $sshPortNumber) {
+			if (
+				(strlen($sshPortNumber) > 5) ||
+				(is_numeric($sshPortNumber) === false)
+			) {
+				unset($sshPortNumbers[$sshPortNumberKey]);
+			}
+		}
+	}
+
+	$firewallBinaryFiles = array(
+		4 => $binaryFiles['iptables-restore'],
+		6 => $binaryFiles['ip6tables-restore']
+	);
+
+	foreach ($systemIpAddressVersions as $systemIpAddressVersionNetworkMask => $systemIpAddressVersion) {
+		$firewallRules = array(
+			'*filter',
+			':INPUT ACCEPT [0:0]',
+			':FORWARD ACCEPT [0:0]',
+			':OUTPUT ACCEPT [0:0]',
+			'-A INPUT -p icmp -m hashlimit --hashlimit-above 2/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $systemIpAddressVersionNetworkMask . ' -j DROP'
+		);
+
+		if (
+			(empty($sshPortNumbers) === false) &&
+			(is_array($sshPortNumbers) === true)
+		) {
+			foreach ($sshPortNumbers as $sshPortNumber) {
+				$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPortNumber . ' -m hashlimit --hashlimit-above 10/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $systemIpAddressVersionNetworkMask . ' -j DROP';
+			}
+		}
+
+		$firewallRules[] = 'COMMIT';
+		$firewallRulesFile = '/tmp/firewall';
+
+		if (file_exists($firewallRulesFile) === true) {
+			unlink($firewallRulesFile);
+		}
+
+		touch($firewallRulesFile);
+		$firewallRuleParts = array_chunk($firewallRules, 1000);
+
+		foreach ($firewallRuleParts as $firewallRulePart) {
+			$saveFirewallRules = implode("\n", $firewallRulePart);
+			shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
+		}
+
+		shell_exec('sudo ' . $firewallBinaryFiles[$systemIpAddressVersion] . ' < ' . $firewallRulesFile);
+		unlink($firewallRulesFile);
+	}
+
 	require_once('/var/www/ghostcompute/settings.php');
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password');
 
@@ -368,7 +498,7 @@
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
 
 	if ($connection === false) {
-		echo 'Error: ' . mysqli_connect_error() . '.';
+		echo 'Error: ' . mysqli_connect_error() . ', please try again.';
 		exit;
 	}
 
