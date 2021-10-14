@@ -21,7 +21,7 @@
 			'limit' => 1,
 			'where' => array(
 				'ip_version' => $nodeIpVersion,
-				'status_assigned' => false,
+				'status_added' => false,
 				'OR' => array(
 					'node_id' => $nodeIds,
 					'node_node_id' => $nodeIds
@@ -43,7 +43,7 @@
 				'ip_version' => $nodeIpVersion,
 				'node_id' => $node['id'],
 				'node_node_id' => $node['node_id'],
-				'status_assigned' => false
+				'status_added' => false
 			);
 
 			switch ($nodeIpVersion) {
