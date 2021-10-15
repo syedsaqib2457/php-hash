@@ -3,6 +3,19 @@
 		exit;
 	}
 
+	$parameters['databases'] = _connect(array(
+		'node_processes' => $settings['databases']['node_processes'],
+		'node_recursive_dns_destinations' => $settings['databases']['node_recursive_dns_destinations'],
+		'node_reserved_internal_destinations' => $settings['databases']['node_reserved_internal_destinations'],
+		'nodes' => $settings['databases']['nodes']
+	));
+
+	if ($parameters['databases'] === false) {
+		$response['message'] = 'Error connecting to database, please try again.';
+		echo json_encode($response);
+		exit;
+	}
+
 	// todo: include _detectIpType
 	// todo: include _sanitizeIps
 	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
@@ -22,7 +35,7 @@
 					'status_active',
 					'status_deployed'
 				),
-				'from' => 'nodes',
+				'from' => $parameters['databases']['nodes'],
 				'where' => array(
 					'OR' => array(
 						'external_ip_version_4' => ($nodeNodeId = $parameters['data']['node_id']),
@@ -151,7 +164,7 @@
 				'internal_ip_version_4',
 				'internal_ip_version_6'
 			),
-			'from' => 'nodes',
+			'from' => $parameters['databases']['nodes'],
 			'where' => array(
 				'OR' => $nodeExternalIps
 			)
@@ -203,9 +216,10 @@
 				'node_id' => true,
 				'status_active' => true,
 				'status_deployed' => true,
+				'status_processed' => true,
 				'token' => true
 			)),
-			'to' => 'nodes'
+			'to' => $parameters['databases']['nodes']
 		));
 		$response['status_valid'] = ($nodesSaved === true);
 
@@ -213,28 +227,28 @@
 			return $response;
 		}
 
-		$node = _fetch(array(
+		$parameters['node'] = _fetch(array(
 			'fields' => array(
 				'id',
 				'node_id'
 			),
-			'from' => 'nodes',
+			'from' => $parameters['databases']['nodes'],
 			'where' => $nodeIps
 		));
 		$response['status_valid'] = (
-			($node !== false) &&
-			(empty($node['id']) === false)
+			($parameters['node'] !== false) &&
+			(empty($parameters['node']['id']) === false)
 		);
 
 		if ($response['status_valid'] === false) {
 			$this->delete(array(
-				'from' => 'nodes',
+				'from' => $parameters['databases']['nodes'],
 				'where' => $nodeIps
 			));
 			return $response;
 		}
 
-		$nodeId = $node['id'];
+		$nodeId = $parameters['node']['id'];
 		$nodeProcessData = $nodeProcessPortData = $nodeRecursiveDnsDestinationData = array();
 
 		foreach ($settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
@@ -251,7 +265,8 @@
 					$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion . '_node_id'] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
 					$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $settings['node_process_type_default_port_numbers']['recursive_dns'];
 					$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
-					$addNodeReservedInternalDestinationResponse = _addNodeReservedInternalDestination($node, $nodeIpVersion);
+					$parameters['node']['ip_address_version'] = $nodeIpVersion;
+					$addNodeReservedInternalDestinationResponse = _addNodeReservedInternalDestination($parameters);
 
 					if ($addNodeReservedInternalDestinationResponse['status_valid'] === false) {
 						// todo: remove node data with $nodeId + _removeNode() if reserved internal ip assignment fails
@@ -271,7 +286,7 @@
 				$nodeId,
 				$nodeNodeId
 			);
-			$existingNodeReservedInternalDestinations = $this->fetch(array(
+			$existingNodeReservedInternalDestinations = _fetch(array(
 				'fields' => array(
 					'id',
 					'ip_address',
@@ -279,7 +294,7 @@
 					'node_id',
 					'node_node_id'
 				),
-				'from' => 'node_reserved_internal_destinations',
+				'from' => $parameters['databases']['node_reserved_internal_destinations'],
 				'where' => array(
 					'ip_address' => $nodeIps,
 					'OR' => array(
@@ -303,19 +318,20 @@
 
 			if (empty($existingNodeReservedInternalDestinations) === false) {
 				foreach ($existingNodeReservedInternalDestinations as $existingNodeReservedInternalDestination) {
-					$node = array(
+					$parameters['node'] = array(
 						'id' => $existingNodeReservedInternalDestination['node_id'],
+						'ip_address_version' => $existingNodeReservedInternalDestination['ip_address_version'],
 						'node_id' => $existingNodeReservedInternalDestination['node_node_id']
 					);
-					$addNodeeservedInternalDestinationResponse = _addNodeReservedInternalDestination($node, $existingNodeReservedInternalDestination['ip_address_version']);
+					$addNodeeservedInternalDestinationResponse = _addNodeReservedInternalDestination($parameters);
 
 					if ($addNodeReservedInternalDestinationResponse['status_valid'] === false) {
-						// todo: remove node data with $nodeId + $this->remove() if reserved internal ip assignment fails
+						// todo: remove node data with $nodeId + _removeNode() if reserved internal ip assignment fails
 						return $addNodeReservedInternalDestinationResponse;
 					}
 
 					$nodeReservedInternalDestinationsDeleted = _delete(array(
-						'from' => 'node_reserved_internal_destinations',
+						'from' => $parameters['databases']['node_reserved_internal_destinations'],
 						'where' => array(
 							'id' => $existingNodeReservedInternalDestination['id']
 						)
@@ -332,17 +348,17 @@
 
 		$nodeProcessesSaved = _save(array(
 			'data' => $nodeProcessData,
-			'to' => 'node_processes'
+			'to' => $parameters['databases']['node_processes']
 		));
 		$nodeRecursiveDnsDestinationsSaved = _save(array(
 			'data' => $nodeRecursiveDnsDestinationData,
-			'to' => 'node_recursive_dns_destinations'
+			'to' => $parameters['databases']['node_recursive_dns_destinations']
 		));
 		$nodesUpdated = _update(array(
 			'data' => array(
 				'status_processed' => false
 			),
-			'in' => 'nodes',
+			'in' => $parameters['databases']['nodes'],
 			'where' => array(
 				'id' => $nodeId
 			)
@@ -356,25 +372,25 @@
 		if ($response['status_valid'] === false) {
 			// todo: use $nodeId + $this->remove() instead of repeating $this->delete()
 			_delete(array(
-				'from' => 'node_processes',
+				'from' => $parameters['databases']['node_processes'],
 				'where' => array(
 					'node_id' => $nodeId
 				)
 			));
 			_delete(array(
-				'from' => 'node_recursive_dns_destinations',
+				'from' => $parameters['databases']['node_recursive_dns_destinations'],
 				'where' => array(
 					'node_id' => $nodeId
 				)
 			));
 			_delete(array(
-				'from' => 'node_reserved_internal_ip_addresses',
+				'from' => $parameters['databases']['node_reserved_internal_destinations'],
 				'where' => array(
 					'node_id' => $nodeId
 				)
 			));
 			_delete(array(
-				'from' => 'nodes',
+				'from' => $parameters['databases']['nodes'],
 				'where' => array(
 					'id' => $nodeId
 				)
@@ -387,6 +403,8 @@
 	}
 
 	if ($parameters['action'] === 'add_node') {
-		$response = addNode($parameters);
+		$response = _addNode($parameters);
+		echo json_encode($response);
+		exit;
 	}
 ?>

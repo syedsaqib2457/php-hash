@@ -3,24 +3,24 @@
 		exit;
 	}
 
-	function _addNodeReservedInternalDestination($node, $nodeIpVersion) {
+	function _addNodeReservedInternalDestination($parameters) {
 		$response = array(
 			'message' => 'Error adding node reserved internal destination, please try again.',
 			'status_valid' => false
 		);
 		$nodeIds = array_filter(array(
-			$node['id'],
-			$node['node_id']
+			$parameters['node']['id'],
+			$parameters['node']['node_id']
 		));
 		$existingNodeReservedInternalDestination = _fetch(array(
 			'fields' => array(
 				'id',
 				'ip_address'
 			),
-			'from' => 'node_reserved_internal_destination',
+			'from' => $parameters['databases']['node_reserved_internal_destination'],
 			'limit' => 1,
 			'where' => array(
-				'ip_version' => $nodeIpVersion,
+				'ip_version' => $parameters['node']['ip_address_version'],
 				'status_added' => false,
 				'OR' => array(
 					'node_id' => $nodeIds,
@@ -40,9 +40,9 @@
 
 		if (empty($existingNodeReservedInternalDestination) === true) {
 			$existingNodeReservedInternalDestination = array(
-				'ip_version' => $nodeIpVersion,
-				'node_id' => $node['id'],
-				'node_node_id' => $node['node_id'],
+				'ip_version' => $parameters['node']['ip_address_version'],
+				'node_id' => $parameters['node']['id'],
+				'node_node_id' => $parameters['node']['node_id'],
 				'status_added' => false
 			);
 
@@ -71,7 +71,7 @@
 				}
 
 				$existingNodeCount = _count(array(
-					'in' => 'nodes',
+					'in' => $parameters['databases']['nodes'],
 					'where' => array(
 						'OR' => array(
 							array(
@@ -123,19 +123,19 @@
 			}
 
 			$existingNodeCount = _count(array(
-				'in' => 'nodes',
+				'in' => $parameters['databases']['nodes'],
 				'where' => array(
 					'OR' => array(
 						array(
-							'internal_ip_version_' . $nodeIpVersion => $nodeReservedInternalDestinationIpAddress,
+							'internal_ip_version_' . $parameters['node']['ip_address_version'] => $nodeReservedInternalDestinationIpAddress,
 							'OR' => array(
 								'id' => $nodeIds,
 								'node_id' => $nodeIds
 							)
 						),
 						array(
-							'external_ip_version_' . $nodeIpVersion => $nodeReservedInternalDestinationIpAddress,
-							'external_ip_version_' . $nodeIpVersion . '_type' => 'reserved'
+							'external_ip_version_' . $parameters['node']['ip_address_version'] => $nodeReservedInternalDestinationIpAddress,
+							'external_ip_version_' . $parameters['node']['ip_address_version'] . '_type' => 'reserved'
 						)
 					)
 				)
@@ -155,7 +155,7 @@
 		$existingNodeReservedInternalDestinationData[1]['status_added'] = false;
 		$nodeReservedInternalDestinationsSaved = _save(array(
 			'data' => $existingNodeReservedInternalDestinationData,
-			'to' => 'node_reserved_internal_destinations'
+			'to' => $parameters['databases']['node_reserved_internal_destinations']
 		));
 		$response['status_valid'] = ($nodeReservedInternalDestinationsSaved !== false);
 
