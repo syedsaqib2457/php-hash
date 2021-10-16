@@ -33,6 +33,8 @@
 			_output($response);
 		}
 
+		$response['message'] = 'Error processing request to ' . str_replace('_', ' ', $parameters['action']) . ', please try again.';
+
 		if (
 			(empty($parameters['authentication_token']) === true) ||
 			(ctype_alnum($parameters['authentication_token']) === false)
@@ -41,16 +43,15 @@
 			_output($response);
 		}
 
-		$response['message'] = 'Error processing request to ' . str_replace('_', ' ', $parameters['action']) . ', please try again.';
 		$systemUserAuthenticationToken = _fetch(array(
 			'from' => $parameters['databases']['system_user_authentication_token'],
 			'where' => array(
 				'string' => $parameters['authentication_token']
 			)
 		));
+		$response['status_authenticated'] = true;
 
 		if ($systemUserAuthenticationToken === false) {
-			$response['status_authenticated'] = true;
 			_output($response);
 		}
 
@@ -62,7 +63,31 @@
 		}
 
 		$response['status_authenticated'] = true;
+
 		// todo: authorize system user authentication token scope before processing function
+
+		$systemUserAuthenticationTokenSource = _fetch(array(
+			'from' => $parameters['databases']['system_user_authentication_token_sources'],
+			'where' => array(
+				'address' => ($sourceIp = $_SERVER['REMOTE_ADDR']),
+				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
+			)
+		));
+
+		if ($systemUserAuthenticationTokenSource === false) {
+			_output($response);
+		}
+
+		$response['status_authenticated'] = false;
+
+		if (empty($systemUserAuthenticationTokenSource) === true) {
+			// todo: validate cidr if source IP isn't found before returning false
+
+			$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $sourceIp . ', please try again.';
+			_output($response);
+		}
+
+		$response['status_authenticated'] = true;
 		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
 	}
 
