@@ -280,6 +280,7 @@
 
 	$parameters['databases'] = array(
 		'system_user_authentication_token_scopes' => $settings['databases']['system_user_authentication_token_scopes'],
+		'system_user_authentication_token_sources' => $settings['databases']['system_user_authentication_token_sources'],
 		'system_user_authentication_tokens' => $settings['databases']['system_user_authentication_tokens'],
 		'system_users' => $settings['databases']['system_users']
 	);
