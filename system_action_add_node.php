@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	$parameters['databases'] = _connect(array(
+	$parameters['databases'] += _connect(array(
 		'node_processes' => $settings['databases']['node_processes'],
 		'node_recursive_dns_destinations' => $settings['databases']['node_recursive_dns_destinations'],
 		'node_reserved_internal_destinations' => $settings['databases']['node_reserved_internal_destinations'],

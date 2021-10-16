@@ -1,4 +1,6 @@
 <?php
+	// todo: database tables with more than 1 external database should only support _fetch() with no sorting + _save()
+
 	if (empty($parameters) === true) {
 		exit;
 	}
@@ -275,4 +277,10 @@
 
 		return $response;
 	}
+
+	$parameters['databases'] = array(
+		'system_user_authentication_token_scopes' => $settings['databases']['system_user_authentication_token_scopes'],
+		'system_user_authentication_tokens' => $settings['databases']['system_user_authentication_tokens'],
+		'system_users' => $settings['databases']['system_users']
+	);
 ?>

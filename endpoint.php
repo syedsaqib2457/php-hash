@@ -25,7 +25,15 @@
 			exit;
 		}
 
-		// todo: authorize system user token and system user function scope before processing function
+		if (
+			(empty($parameters['authentication_token']) === true) ||
+			(ctype_alnum($parameters['authentication_token']) === false)
+		) {
+			$response['message'] = 'Invalid endpoint system user authentication token, please try again.';
+		}
+
+		// $systemUserAuthenticationToken = _fetch(array());
+		// todo: authorize system user authentication token scope before processing function
 		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
 	}
 
