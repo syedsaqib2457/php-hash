@@ -870,6 +870,36 @@
 					)
 				)
 			),
+			'system_user_authentication_token_scopes' => array(
+				'authentication' => array(
+					array(
+						'hostname' => 'localhost',
+						'password' => 'password'
+					)
+				),
+				'structure' => array(
+					'created_date' => array(
+						'default' => 'CURRENT_TIMESTAMP',
+						'type' => 'DATETIME'
+					),
+					'id' => array(
+						'primary_key' => true,
+						'type' => 'BIGINT(11)'
+					),
+					'modified_date' => array(
+						'default' => 'CURRENT_TIMESTAMP',
+						'type' => 'DATETIME'
+					),
+					'name' => array(
+						'default' => null,
+						'type' => 'VARCHAR(25)'
+					),
+					'system_user_id' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					)
+				)
+			),
 			'system_user_authentication_token_sources' => array(
 				'authentication' => array(
 					array(
@@ -993,36 +1023,6 @@
 					'system_function_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
-					),
-					'system_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					)
-				)
-			),
-			'system_user_scopes' => array(
-				'authentication' => array(
-					array(
-						'hostname' => 'localhost',
-						'password' => 'password'
-					)
-				),
-				'structure' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
-					),
-					'name' => array(
-						'default' => null,
-						'type' => 'VARCHAR(25)'
 					),
 					'system_user_id' => array(
 						'default' => null,
