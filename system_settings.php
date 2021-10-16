@@ -954,10 +954,6 @@
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
 					),
-					'expiration_date' => array(
-						'default' => null,
-						'type' => 'DATETIME'
-					),
 					'id' => array(
 						'primary_key' => true,
 						'type' => 'BIGINT(11)'
