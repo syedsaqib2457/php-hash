@@ -1,6 +1,16 @@
 <?php
+	function _output($response) {
+		if (empty($response['status_authorized']) === true) {
+			// todo: log invalid action for DDoS protection
+		}
+
+		echo json_encode($response);
+		exit;
+	}
+
 	$response = array(
 		'message' => 'Invalid endpoint request, please try again.',
+		'status_authorized' => false,
 		'status_valid' => false
 	);
 
@@ -8,8 +18,7 @@
 		$parameters = json_decode($_POST, true);
 
 		if (empty($parameters) === true) {
-			echo json_encode($response);
-			exit;
+			_output($response);
 		}
 
 		require_once('/var/www/ghostcompute/system_settings.php');
@@ -20,9 +29,7 @@
 			(file_exists('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid endpoint request action, please try again.';
-			// todo: log invalid action for DDoS protection
-			echo json_encode($response);
-			exit;
+			_output($response);
 		}
 
 		if (
@@ -30,9 +37,7 @@
 			(ctype_alnum($parameters['authentication_token']) === false)
 		) {
 			$response['message'] = 'Invalid endpoint system user authentication token, please try again.';
-			// todo: log invalid action for DDoS protection
-			echo json_encode($response);
-			exit;
+			_output($response);
 		}
 
 		$response['message'] = 'Error processing request to ' . str_replace('_', ' ', $parameters['action']) . ', please try again.';
@@ -44,14 +49,12 @@
 		));
 
 		if ($systemUserAuthenticationToken === false) {
-			echo json_encode($response);
-			exit;
+			_output($response);
 		}
 
 		// todo: authorize system user authentication token scope before processing function
 		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
 	}
 
-	echo json_encode($response);
-	exit;
+	_output($response);
 ?>

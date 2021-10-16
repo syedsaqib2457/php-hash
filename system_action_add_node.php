@@ -12,8 +12,7 @@
 
 	if ($parameters['databases'] === false) {
 		$response['message'] = 'Error connecting to database, please try again.';
-		echo json_encode($response);
-		exit;
+		_output($response);
 	}
 
 	// todo: include _detectIpType
@@ -404,7 +403,6 @@
 
 	if ($parameters['action'] === 'add_node') {
 		$response = _addNode($parameters);
-		echo json_encode($response);
-		exit;
+		_output($response);
 	}
 ?>
