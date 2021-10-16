@@ -25,7 +25,7 @@
 			exit;
 		}
 
-		todo: authorize system user token and system user function scope before processing function
+		// todo: authorize system user token and system user function scope before processing function
 		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
 	}
 
