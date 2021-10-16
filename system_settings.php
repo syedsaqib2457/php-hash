@@ -894,6 +894,10 @@
 						'default' => null,
 						'type' => 'VARCHAR(25)'
 					),
+					'system_user_authentication_token_id' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
 					'system_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
