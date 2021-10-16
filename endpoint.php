@@ -1,6 +1,6 @@
 <?php
 	function _output($response) {
-		if (empty($response['status_authorized']) === true) {
+		if (empty($response['status_authenticated']) === true) {
 			// todo: log invalid action for DDoS protection
 		}
 
@@ -9,8 +9,9 @@
 	}
 
 	$response = array(
+		'data' => array(),
 		'message' => 'Invalid endpoint request, please try again.',
-		'status_authorized' => false,
+		'status_authenticated' => false,
 		'status_valid' => false
 	);
 
@@ -49,8 +50,11 @@
 		));
 
 		if ($systemUserAuthenticationToken === false) {
+			$response['status_authenticated'] = true;
 			_output($response);
 		}
+
+		$response['status_authenticated'] = false;
 
 		// todo: authorize system user authentication token scope before processing function
 		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
