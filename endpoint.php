@@ -56,6 +56,12 @@
 
 		$response['status_authenticated'] = false;
 
+		if (empty($systemUserAuthenticationToken) === true) {
+			$response['message'] = 'Invalid endpoint system user authentication token, please try again.';
+			_output($response);
+		}
+
+		$response['status_authenticated'] = true;
 		// todo: authorize system user authentication token scope before processing function
 		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
 	}
