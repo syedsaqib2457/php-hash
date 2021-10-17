@@ -44,7 +44,7 @@
 		}
 
 		$systemUserAuthenticationToken = _fetch(array(
-			'from' => $parameters['databases']['system_user_authentication_token'],
+			'from' => $parameters['databases']['system_user_authentication_tokens'],
 			'where' => array(
 				'string' => $parameters['authentication_token']
 			)
@@ -52,6 +52,7 @@
 		$response['status_authenticated'] = true;
 
 		if ($systemUserAuthenticationToken === false) {
+			$response['message'] = 'Error connecting to system user authentication tokens database, please try again.';
 			_output($response);
 		}
 
@@ -75,12 +76,14 @@
 		));
 
 		if ($systemUserAuthenticationTokenSource === false) {
+			$response['message'] = 'Error connecting to system user authentication token sources database, please try again.';
 			_output($response);
 		}
 
 		$response['status_authenticated'] = false;
 
 		if (empty($systemUserAuthenticationTokenSource) === true) {
+			// todo: validate non-empty token source count before returning false
 			// todo: validate cidr if source IP isn't found before returning false
 
 			$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $sourceIp . ', please try again.';
