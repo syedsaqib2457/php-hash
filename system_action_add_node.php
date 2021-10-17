@@ -24,10 +24,7 @@
 	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
 
 	function _addNode($parameters) {
-		$response = array(
-			'message' => 'Error adding node, please try again.',
-			'status_valid' => false
-		);
+		$response = array();
 		$parameters['data']['status_processed'] = true;
 
 		if (empty($parameters['data']['node_id']) === false) {

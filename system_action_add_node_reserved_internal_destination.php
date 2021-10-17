@@ -4,21 +4,18 @@
 	}
 
 	function _addNodeReservedInternalDestination($parameters) {
-		$response = array(
-			'message' => 'Error adding node reserved internal destination, please try again.',
-			'status_valid' => false
-		);
+		$response = array();
 		$nodeIds = array_filter(array(
 			$parameters['node']['id'],
 			$parameters['node']['node_id']
 		));
 		$existingNodeReservedInternalDestination = _fetch(array(
-			'fields' => array(
-				'id',
-				'ip_address'
-			),
-			'from' => $parameters['databases']['node_reserved_internal_destination'],
+			'from' => $parameters['databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
+			'sort' => array(
+				'field' => 'ip_address',
+				'order' => 'ASC'
+			),
 			'where' => array(
 				'ip_version' => $parameters['node']['ip_address_version'],
 				'status_added' => false,
@@ -26,15 +23,12 @@
 					'node_id' => $nodeIds,
 					'node_node_id' => $nodeIds
 				)
-			),
-			'sort' => array(
-				'field' => 'ip_address',
-				'order' => 'ASC'
 			)
 		));
 		$response['status_valid'] = ($existingNodeReservedInternalDestination !== false);
 
 		if ($response === false) {
+			$response['message'] = 'Error fetching data from node reserved internal destinations database, please try again.';
 			return $response;
 		}
 
@@ -91,6 +85,7 @@
 				$response['status_valid'] = (is_int($existingNodeCount) === true);
 
 				if ($response['status_valid'] === false) {
+					$response['message'] = 'Error counting data in nodes database, please try again.';
 					return $response;
 				}
 
@@ -143,6 +138,7 @@
 			$response['status_valid'] = (is_int($existingNodeCount) === true);
 
 			if ($response['status_valid'] === false) {
+				$response['message'] = 'Error counting data in nodes database, please try again.';
 				return $response;
 			}
 
@@ -160,6 +156,7 @@
 		$response['status_valid'] = ($nodeReservedInternalDestinationsSaved !== false);
 
 		if ($response['status_valid'] === false) {
+			$response['message'] = 'Error saving data to node reserved internal destinations database, please try again.';
 			return $response;
 		}
 
