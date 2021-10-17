@@ -3,15 +3,19 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['databases'] += array(
 		'node_processes' => $settings['databases']['node_processes'],
 		'node_recursive_dns_destinations' => $settings['databases']['node_recursive_dns_destinations'],
 		'node_reserved_internal_destinations' => $settings['databases']['node_reserved_internal_destinations'],
 		'nodes' => $settings['databases']['nodes']
-	));
+	);
+	$parameters['databases'] = _connect($parameters['databases']);
 
-	if ($parameters['databases'] === false) {
-		$response['message'] = 'Error connecting to database, please try again.';
+	if (
+		(empty($parameters['databases']['message']) === false) &&
+		(is_string($parameters['databases']['message']) === true)
+	) {
+		$response['message'] = $parameters['database']['message'];
 		_output($response);
 	}
 

@@ -20,7 +20,10 @@
 				$response[$databaseKey]['connections'][$databaseAuthenticationIndex] = mysqli_connect($databaseAuthentication['hostname'], 'root', $databaseAuthentication['password'], 'ghostcompute');
 
 				if ($response[$databaseKey]['connections'][$databaseAuthenticationIndex] === false) {
-					return false;
+					$response = array(
+						'message' => 'Error connecting to ' . str_replace('_', ' ', $databaseKey) . ' database, please try again.'
+					);
+					return $response;
 				}
 			}
 		}
