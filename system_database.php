@@ -1,5 +1,5 @@
 <?php
-	// todo: database tables with more than 1 external database should only support _fetch() with no sorting + _save()
+	// todo: database tables with more than 1 external database should only support _fetch() + _save() with no sorting
 
 	if (empty($parameters) === true) {
 		exit;
@@ -21,7 +21,7 @@
 
 				if ($response[$databaseKey]['connections'][$databaseAuthenticationIndex] === false) {
 					$response = array(
-						'message' => 'Error connecting to ' . str_replace('_', ' ', $databaseKey) . ' database, please try again.'
+						'message' => 'Error connecting to ' . $databaseKey . ' database, please try again.'
 					);
 					return $response;
 				}

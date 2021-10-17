@@ -28,7 +28,7 @@
 		$response['status_valid'] = ($existingNodeReservedInternalDestination !== false);
 
 		if ($response === false) {
-			$response['message'] = 'Error fetching data from node reserved internal destinations database, please try again.';
+			$response['message'] = 'Error fetching data from node_reserved_internal_destinations database, please try again.';
 			return $response;
 		}
 
@@ -156,7 +156,7 @@
 		$response['status_valid'] = ($nodeReservedInternalDestinationsSaved !== false);
 
 		if ($response['status_valid'] === false) {
-			$response['message'] = 'Error saving data to node reserved internal destinations database, please try again.';
+			$response['message'] = 'Error saving data to node_reserved_internal_destinations database, please try again.';
 			return $response;
 		}
 

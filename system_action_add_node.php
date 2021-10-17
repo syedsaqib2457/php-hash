@@ -334,22 +334,35 @@
 
 					if ($response['status_valid'] === false) {
 						// todo: remove node data with $nodeId + _removeNode() if reserved internal ip assignment fails
-						$response['message'] = 'Error deleting data from node reserved internal destinations database, please try again.';
+						$response['message'] = 'Error deleting data from node_reserved_internal_destinations database, please try again.';
 						return $response;
 					}
 				}
 			}
 		}
 
-		// todo: verify each status valid in sequence to identify database errors in system
 		$nodeProcessesSaved = _save(array(
 			'data' => $nodeProcessData,
 			'to' => $parameters['databases']['node_processes']
 		));
+
+		if ($nodeProcessesSaved === false) {
+			//todo: use $nodeId + _remove()
+			$response['message'] = 'Error saving data to node_processes database, please try again.';
+			return $response;
+		}
+
 		$nodeRecursiveDnsDestinationsSaved = _save(array(
 			'data' => $nodeRecursiveDnsDestinationData,
 			'to' => $parameters['databases']['node_recursive_dns_destinations']
 		));
+
+		if ($nodeRecursiveDnsDestinationsSaved === false) {
+			//todo: use $nodeId + _remove()
+			$response['message'] = 'Error saving data to node_recursive_dns_destinations database, please try again.';
+			return $response;
+		}
+
 		$nodesUpdated = _update(array(
 			'data' => array(
 				'status_processed' => false
@@ -359,38 +372,10 @@
 				'id' => $nodeId
 			)
 		));
-		$response['status_valid'] = (
-			($nodeProcessesSaved !== false) &&
-			($nodeRecursiveDnsDestinationsSaved !== false) &&
-			($nodesUpdated !== false)
-		);
 
-		if ($response['status_valid'] === false) {
-			// todo: use $nodeId + $this->remove() instead of repeating $this->delete()
-			_delete(array(
-				'from' => $parameters['databases']['node_processes'],
-				'where' => array(
-					'node_id' => $nodeId
-				)
-			));
-			_delete(array(
-				'from' => $parameters['databases']['node_recursive_dns_destinations'],
-				'where' => array(
-					'node_id' => $nodeId
-				)
-			));
-			_delete(array(
-				'from' => $parameters['databases']['node_reserved_internal_destinations'],
-				'where' => array(
-					'node_id' => $nodeId
-				)
-			));
-			_delete(array(
-				'from' => $parameters['databases']['nodes'],
-				'where' => array(
-					'id' => $nodeId
-				)
-			));
+		if ($nodesUpdated === false) {
+			//todo: use $nodeId + _remove()
+			$response['message'] = 'Error updating data in nodes database, please try again.';
 			return $response;
 		}
 
