@@ -32,12 +32,6 @@
 
 		if (empty($parameters['data']['node_id']) === false) {
 			$nodeNode = _fetch(array(
-				'fields' => array(
-					'id',
-					'node_id',
-					'status_active',
-					'status_deployed'
-				),
 				'from' => $parameters['databases']['nodes'],
 				'where' => array(
 					'OR' => array(
@@ -52,6 +46,7 @@
 			$response['status_valid'] = ($node !== false);
 
 			if ($response['status_valid'] === false) {
+				$response['message'] = 'Error fetching data from nodes database, please try again.';
 				return $response;
 			}
 
@@ -76,6 +71,10 @@
 				return $response;
 			}
 
+			$nodeIds = array(
+				$nodeId,
+				$nodeNodeId
+			);
 			$nodeNodeId = $parameters['data']['node_id'] = $nodeNode['id'];
 		}
 
@@ -96,13 +95,14 @@
 		$response['status_valid'] = (empty($nodeExternalIps) === false);
 
 		if ($response['status_valid'] === false) {
+			$response['message'] = 'Node must have an external IP address, please try again.';
 			return $response;
 		}
 
 		$response['status_valid'] = ($nodeIpVersionExternalIps === _sanitizeIps($nodeExternalIps));
 
 		if ($response['status_valid'] === false) {
-			$response['message'] = 'Invalid node external IPs, please try again.';
+			$response['message'] = 'Invalid node external IP addresses, please try again.';
 			return $response;
 		}
 
@@ -161,12 +161,6 @@
 		}
 
 		$existingNodeParameters = array(
-			'fields' => array(
-				'external_ip_version_4',
-				'external_ip_version_6',
-				'internal_ip_version_4',
-				'internal_ip_version_6'
-			),
 			'from' => $parameters['databases']['nodes'],
 			'where' => array(
 				'OR' => $nodeExternalIps
@@ -188,13 +182,21 @@
 		$response['status_valid'] = ($existingNode !== false);
 
 		if ($response['status_valid'] === false) {
+			$response['message'] = 'Error fetching data from nodes database, please try again.';
 			return $response;
 		}
 
 		$response['status_valid'] = (empty($existingNode) === true);
 
 		if ($response['status_valid'] === false) {
-			foreach ($existingNode as $existingNodeIp) {
+			$existingNodeIps = array_intersect_key($existingNode, array(
+				'external_ip_version_4' => true,
+				'external_ip_version_6' => true,
+				'internal_ip_version_4' => true,
+				'internal_ip_version_6' => true
+			));
+
+			foreach ($existingNodeIps as $existingNodeIp) {
 				if (in_array($existingNodeIp, $nodeIps) === true) {
 					$response['message'] = 'Node IP ' . $existingNodeIp . ' already in use, please try again.';
 					break;
@@ -210,6 +212,7 @@
 
 		$nodesSaved = _save(array(
 			'data' => array_intersect_key($parameters['data'], array(
+				'authentication_token' => true,
 				'external_ip_version_4' => true,
 				'external_ip_version_4_type' => true,
 				'external_ip_version_6' => true,
@@ -219,14 +222,14 @@
 				'node_id' => true,
 				'status_active' => true,
 				'status_deployed' => true,
-				'status_processed' => true,
-				'token' => true
+				'status_processed' => true
 			)),
 			'to' => $parameters['databases']['nodes']
 		));
 		$response['status_valid'] = ($nodesSaved === true);
 
 		if ($response['status_valid'] === false) {
+			$response['message'] = 'Error saving data to nodes database, please try again.';
 			return $response;
 		}
 
@@ -238,20 +241,21 @@
 			'from' => $parameters['databases']['nodes'],
 			'where' => $nodeIps
 		));
-		$response['status_valid'] = (
-			($parameters['node'] !== false) &&
-			(empty($parameters['node']['id']) === false)
-		);
+		$response['status_valid'] = ($parameters['node'] !== false);
 
 		if ($response['status_valid'] === false) {
-			$this->delete(array(
+			_delete(array(
 				'from' => $parameters['databases']['nodes'],
 				'where' => $nodeIps
 			));
+			$response['message'] = 'Error fetching data from nodes database, please try again.';
 			return $response;
 		}
 
-		$nodeId = $parameters['node']['id'];
+		$parameters['node'] = array(
+			'id' => ($nodeId = $parameters['node']['id']),
+			'node_id' => $parameters['node']['node_id']
+		);
 		$nodeProcessData = $nodeProcessPortData = $nodeRecursiveDnsDestinationData = array();
 
 		foreach ($settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
@@ -284,19 +288,8 @@
 			$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
 		}
 
-		if (empty($nodeNodeId) === false) {
-			$nodeIds = array(
-				$nodeId,
-				$nodeNodeId
-			);
+		if (empty($nodeIds) === false) {
 			$existingNodeReservedInternalDestinations = _fetch(array(
-				'fields' => array(
-					'id',
-					'ip_address',
-					'ip_address_version',
-					'node_id',
-					'node_node_id'
-				),
 				'from' => $parameters['databases']['node_reserved_internal_destinations'],
 				'where' => array(
 					'ip_address' => $nodeIps,
@@ -316,6 +309,7 @@
 			$response['status_valid'] = ($existingNodeReservedInternalDestinations !== false);
 
 			if ($response['status_valid'] === false) {
+				$response['message'] = 'Error fetching data from node reserved internal destinations database, please try again.';
 				return $response;
 			}
 
@@ -343,12 +337,14 @@
 
 					if ($response['status_valid'] === false) {
 						// todo: remove node data with $nodeId + _removeNode() if reserved internal ip assignment fails
+						$response['message'] = 'Error deleting data from node reserved internal destinations database, please try again.';
 						return $response;
 					}
 				}
 			}
 		}
 
+		// todo: verify each status valid in sequence to identify database errors in system
 		$nodeProcessesSaved = _save(array(
 			'data' => $nodeProcessData,
 			'to' => $parameters['databases']['node_processes']
