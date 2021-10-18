@@ -215,24 +215,24 @@
 			return $response;
 		}
 
-		$parameters['node'] = _list(array(
+		$node = _list(array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => $nodeIps
 		));
 
-		if ($parameters['node'] === false) {
+		if ($node === false) {
 			_delete(array(
 				'from' => $parameters['databases']['nodes'],
 				'where' => $nodeIps
 			));
-			$response['message'] = 'Error listing data in nodes database, please try again.';
+			$response['message'] = 'Error deleting data in nodes database, please try again.';
 			return $response;
 		}
 
-		$parameters['node'] = array(
-			'id' => ($nodeId = $parameters['node']['id']),
-			'node_id' => $parameters['node']['node_id']
-		);
+		$node = array_filter(array(
+			'id' => ($nodeId = $node['id']),
+			'node_id' => $node['node_id']
+		));
 		$nodeProcessData = $nodeProcessPortData = $nodeRecursiveDnsDestinationData = array();
 
 		foreach ($settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
@@ -246,10 +246,12 @@
 
 			foreach ($nodeIpVersions as $nodeIpVersion) {
 				if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
+					$parameters['node'] = array(
+						$nodeIpVersion => $node
+					);
 					$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion . '_node_id'] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
 					$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $settings['node_process_type_default_port_numbers']['recursive_dns'];
 					$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
-					$parameters['node']['ip_address_version'] = $nodeIpVersion;
 					$addNodeReservedInternalDestinationResponse = _addNodeReservedInternalDestination($parameters);
 
 					if ($addNodeReservedInternalDestinationResponse['status_valid'] === false) {
@@ -285,16 +287,17 @@
 			));
 
 			if ($existingNodeReservedInternalDestinations === false) {
-				$response['message'] = 'Error fetching data from node reserved internal destinations database, please try again.';
+				$response['message'] = 'Error listing data in node reserved internal destinations database, please try again.';
 				return $response;
 			}
 
 			if (empty($existingNodeReservedInternalDestinations) === false) {
 				foreach ($existingNodeReservedInternalDestinations as $existingNodeReservedInternalDestination) {
 					$parameters['node'] = array(
-						'id' => $existingNodeReservedInternalDestination['node_id'],
-						'ip_address_version' => $existingNodeReservedInternalDestination['ip_address_version'],
-						'node_id' => $existingNodeReservedInternalDestination['node_node_id']
+						$existingNodeReservedInternalDestination['ip_address_version'] => array_filter(array(
+							'id' => $existingNodeReservedInternalDestination['node_id'],
+							'node_id' => $existingNodeReservedInternalDestination['node_node_id']
+						))
 					);
 					$addNodeeservedInternalDestinationResponse = _addNodeReservedInternalDestination($parameters);
 
