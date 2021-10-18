@@ -93,7 +93,7 @@
 			return $response;
 		}
 
-		if ($nodeIpVersionExternalIps !== _sanitizeIps($nodeExternalIps)) {
+		if (($nodeIpVersionExternalIps === _sanitizeIps($nodeExternalIps)) === false) {
 			$response['message'] = 'Invalid node external IP addresses, please try again.';
 			return $response;
 		}
@@ -109,7 +109,7 @@
 			}
 		}
 
-		if (count($nodeExternalIpTypes) !== 1) {
+		if ((count($nodeExternalIpTypes) === 2) === true) {
 			$response['message'] = 'Node external IPs must be either private or public, please try again.';
 			return $response;
 		}
@@ -126,14 +126,14 @@
 
 		if (
 			(empty($nodeInternalIps) === false) &&
-			($nodeIpVersionInternalIps !== $this->_sanitizeIps($nodeInternalIps))
+			(($nodeIpVersionInternalIps === $this->_sanitizeIps($nodeInternalIps)) === false)
 		) {
 			$response['message'] = 'Invalid node internal IPs, please try again.';
 			return $response;
 		}
 
 		foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
-			if (_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'public') {
+			if ((_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'public') === true) {
 				$response['message'] = 'Node internal IPs must be private, please try again.';
 				return $response;
 			}

@@ -15,10 +15,10 @@
 				'order' => 'ASC'
 			),
 			'where' => array(
-				'ip_address_version' => $parameters['node']['ip_address_version'],
+				'ip_address_version' => ($nodeIpAddressVersion = key($parameters['node'])),
 				'status_added' => false,
 				'OR' => array(
-					'node_id' => ($nodeIds = current($parameters['node'])),
+					'node_id' => ($nodeIds = $parameters['node'][$nodeIpAddressVersion]),
 					'node_node_id' => $nodeIds
 				)
 			)
@@ -34,7 +34,7 @@
 		if (empty($existingNodeReservedInternalDestination) === true) {
 			$existingNodeReservedInternalDestination = array(
 				'id' => $existingNodeReservedInternalDestination['id'],
-				'ip_address_version' => ($nodeIpAddressVersion = key($parameters['node'])),
+				'ip_address_version' => $nodeIpAddressVersion,
 				'node_id' => $parameters['node'][$nodeIpAddressVersion]['id'],
 				'node_node_id' => $parameters['node'][$nodeIpAddressVersion]['node_id'],
 				'status_added' => false
@@ -52,7 +52,7 @@
 			$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
 			while ($existingNodeReservedInternalDestination['status_added'] === false) {
-				switch ($$parameters['node']['ip_address_version']) {
+				switch ($nodeIpAddressVersion) {
 					case 4:
 						$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
 						break;
@@ -69,15 +69,15 @@
 					'where' => array(
 						'OR' => array(
 							array(
-								'internal_ip_version_' . $$parameters['node']['ip_address_version'] => $nodeReservedInternalDestinationIpAddress,
+								'internal_ip_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
 								'OR' => array(
 									'id' => $nodeIds,
 									'node_id' => $nodeIds
 								)
 							),
 							array(
-								'external_ip_version_' . $$parameters['node']['ip_address_version'] => $nodeReservedInternalDestinationIpAddress,
-								'external_ip_version_' . $$parameters['node']['ip_address_version'] . '_type' => 'reserved'
+								'external_ip_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
+								'external_ip_version_' . $nodeIpAddressVersion . '_type' => 'reserved'
 							)
 						)
 					)
@@ -123,15 +123,15 @@
 				'where' => array(
 					'OR' => array(
 						array(
-							'internal_ip_version_' . $parameters['node']['ip_address_version'] => $nodeReservedInternalDestinationIpAddress,
+							'internal_ip_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
 							'OR' => array(
 								'id' => $nodeIds,
 								'node_id' => $nodeIds
 							)
 						),
 						array(
-							'external_ip_version_' . $parameters['node']['ip_address_version'] => $nodeReservedInternalDestinationIpAddress,
-							'external_ip_version_' . $parameters['node']['ip_address_version'] . '_type' => 'reserved'
+							'external_ip_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
+							'external_ip_version_' . $nodeIpAddressVersion . '_type' => 'reserved'
 						)
 					)
 				)
