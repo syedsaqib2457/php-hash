@@ -4,43 +4,43 @@
 	}
 
 	function _addNodeReservedInternalDestination($parameters) {
-		$response = array();
-		$nodeIds = array_filter(array(
-			$parameters['node']['id'],
-			$parameters['node']['node_id']
-		));
-		$existingNodeReservedInternalDestination = _fetch(array(
-			'from' => $parameters['databases']['node_reserved_internal_destinations'],
+		$response = array(
+			'status_valid' => false
+		);
+		$existingNodeReservedInternalDestination = _list(array(
+			'in' => $parameters['databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
 			'sort' => array(
 				'field' => 'ip_address',
 				'order' => 'ASC'
 			),
 			'where' => array(
-				'ip_version' => $parameters['node']['ip_address_version'],
+				'ip_address_version' => $parameters['node']['ip_address_version'],
 				'status_added' => false,
 				'OR' => array(
-					'node_id' => $nodeIds,
+					'node_id' => ($nodeIds = current($parameters['node'])),
 					'node_node_id' => $nodeIds
 				)
 			)
 		));
-		$response['status_valid'] = ($existingNodeReservedInternalDestination !== false);
 
-		if ($response === false) {
-			$response['message'] = 'Error fetching data from node_reserved_internal_destinations database, please try again.';
+		if ($existingNodeReservedInternalDestination === false) {
+			$response['message'] = 'Error listing data in node_reserved_internal_destinations database, please try again.';
 			return $response;
 		}
 
+		$existingNodeReservedInternalDestination = current($existingNodeReservedInternalDestination);
+
 		if (empty($existingNodeReservedInternalDestination) === true) {
 			$existingNodeReservedInternalDestination = array(
-				'ip_version' => $parameters['node']['ip_address_version'],
-				'node_id' => $parameters['node']['id'],
-				'node_node_id' => $parameters['node']['node_id'],
+				'id' => $existingNodeReservedInternalDestination['id'],
+				'ip_address_version' => ($nodeIpAddressVersion = key($parameters['node'])),
+				'node_id' => $parameters['node'][$nodeIpAddressVersion]['id'],
+				'node_node_id' => $parameters['node'][$nodeIpAddressVersion]['node_id'],
 				'status_added' => false
 			);
 
-			switch ($parameters['node']['ip_address_version']) {
+			switch ($nodeIpAddressVersion) {
 				case 4:
 					$existingNodeReservedInternalDestination['ip_address'] = '10.0.0.0';
 					break;
@@ -82,9 +82,8 @@
 						)
 					)
 				));
-				$response['status_valid'] = (is_int($existingNodeCount) === true);
 
-				if ($response['status_valid'] === false) {
+				if (is_int($existingNodeCount) === false) {
 					$response['message'] = 'Error counting data in nodes database, please try again.';
 					return $response;
 				}
@@ -102,10 +101,12 @@
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
+		$existingNodeReservedInternalDestinationData[1]['status_added'] = false;
+		unset($existingNodeReservedInternalDestinationData[1]['id']);
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
 		while ($existingNodeReservedInternalDestinationData[0]['ip_address'] === $existingNodeReservedInternalDestinationData[1]['ip_address']) {
-			switch ($nodeIpVersion) {
+			switch ($nodeIpAddressVersion) {
 				case 4:
 					$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
 					break;
@@ -135,9 +136,8 @@
 					)
 				)
 			));
-			$response['status_valid'] = (is_int($existingNodeCount) === true);
 
-			if ($response['status_valid'] === false) {
+			if (is_int($existingNodeCount) === false) {
 				$response['message'] = 'Error counting data in nodes database, please try again.';
 				return $response;
 			}
@@ -147,20 +147,22 @@
 			}
 		}
 
-		unset($existingNodeReservedInternalDestinationData[1]['id']);
-		$existingNodeReservedInternalDestinationData[1]['status_added'] = false;
 		$nodeReservedInternalDestinationsSaved = _save(array(
 			'data' => $existingNodeReservedInternalDestinationData,
 			'to' => $parameters['databases']['node_reserved_internal_destinations']
 		));
-		$response['status_valid'] = ($nodeReservedInternalDestinationsSaved !== false);
 
-		if ($response['status_valid'] === false) {
+		if ($nodeReservedInternalDestinationsSaved === false) {
 			$response['message'] = 'Error saving data to node_reserved_internal_destinations database, please try again.';
 			return $response;
 		}
 
-		$response['data']['node_reserved_internal_destination_ip_address'] = $existingNodeReservedInternalDestination['ip_address'];
+		$response = array(
+			'data' => array(
+				'node_reserved_internal_destination_ip_address' => $nodeReservedInternalDestinationIpAddress
+			),
+			'status_valid' => true
+		);
 		return $response;
 	}
 ?>
