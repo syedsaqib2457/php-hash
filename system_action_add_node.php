@@ -133,7 +133,7 @@
 		}
 
 		foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
-			if ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'public') {
+			if (_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'public') {
 				$response['message'] = 'Node internal IPs must be private, please try again.';
 				return $response;
 			}
@@ -207,7 +207,7 @@
 				'status_deployed' => true,
 				'status_processed' => true
 			)),
-			'to' => $parameters['databases']['nodes']
+			'in' => $parameters['databases']['nodes']
 		));
 
 		if ($nodesSaved === false) {
@@ -222,7 +222,7 @@
 
 		if ($node === false) {
 			_delete(array(
-				'from' => $parameters['databases']['nodes'],
+				'in' => $parameters['databases']['nodes'],
 				'where' => $nodeIps
 			));
 			$response['message'] = 'Error deleting data in nodes database, please try again.';
@@ -307,7 +307,7 @@
 					}
 
 					$nodeReservedInternalDestinationsDeleted = _delete(array(
-						'from' => $parameters['databases']['node_reserved_internal_destinations'],
+						'in' => $parameters['databases']['node_reserved_internal_destinations'],
 						'where' => array(
 							'id' => $existingNodeReservedInternalDestination['id']
 						)
@@ -324,7 +324,7 @@
 
 		$nodeProcessesSaved = _save(array(
 			'data' => $nodeProcessData,
-			'to' => $parameters['databases']['node_processes']
+			'in' => $parameters['databases']['node_processes']
 		));
 
 		if ($nodeProcessesSaved === false) {
@@ -335,7 +335,7 @@
 
 		$nodeRecursiveDnsDestinationsSaved = _save(array(
 			'data' => $nodeRecursiveDnsDestinationData,
-			'to' => $parameters['databases']['node_recursive_dns_destinations']
+			'in' => $parameters['databases']['node_recursive_dns_destinations']
 		));
 
 		if ($nodeRecursiveDnsDestinationsSaved === false) {

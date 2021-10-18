@@ -60,13 +60,13 @@
 
 	function _delete($parameters) {
 		$response = true;
-		$command = 'DELETE FROM ' . $parameters['from']['settings']['name'];
+		$command = 'DELETE FROM ' . $parameters['in']['settings']['name'];
 
 		if (empty($parameters['where']) === false) {
 			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
 		}
 
-		foreach ($parameters['from']['connections'] as $connection) {
+		foreach ($parameters['in']['connections'] as $connection) {
 			$commandResponse = mysqli_query($connection, $command);
 
 			if ($commandResponse === false) {
@@ -234,16 +234,16 @@
 					$dataUpdateValues = ' ON DUPLICATE KEY UPDATE ' . substr($dataUpdateValues, 1);
 				}
 
-				$commandResponse = mysqli_query($parameters['to']['connections'][$connectionIndex], 'INSERT INTO ' . $parameters['to']['settings']['name'] . '(' . substr($dataKeys, 1) . ") VALUES (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
+				$commandResponse = mysqli_query($parameters['in']['connections'][$connectionIndex], 'INSERT INTO ' . $parameters['in']['settings']['name'] . '(' . substr($dataKeys, 1) . ") VALUES (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
 
 				if ($commandResponse === false) {
 					$response = false;
 				}
 
-				if (empty($parameters['to']['connections'][1]) === false) {
+				if (empty($parameters['in']['connections'][1]) === false) {
 					$connectionIndex++;
 
-					if (empty($parameters['to']['connections'][$connectionIndex]) === true) {
+					if (empty($parameters['in']['connections'][$connectionIndex]) === true) {
 						$connectionIndex = 0;
 					}
 				}
