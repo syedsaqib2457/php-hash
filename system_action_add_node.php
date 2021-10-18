@@ -28,8 +28,8 @@
 		$parameters['data']['status_processed'] = true;
 
 		if (empty($parameters['data']['node_id']) === false) {
-			$nodeNode = _fetch(array(
-				'from' => $parameters['databases']['nodes'],
+			$nodeNode = _list(array(
+				'in' => $parameters['databases']['nodes'],
 				'where' => array(
 					'OR' => array(
 						'external_ip_version_4' => ($nodeNodeId = $parameters['data']['node_id']),
@@ -40,16 +40,15 @@
 					)
 				)
 			));
-			$response['status_valid'] = ($node !== false);
 
-			if ($response['status_valid'] === false) {
-				$response['message'] = 'Error fetching data from nodes database, please try again.';
+			if ($nodeNode === false) {
+				$response['message'] = 'Error listing data in nodes database, please try again.';
 				return $response;
 			}
 
-			$response['status_valid'] = (empty($nodeNode) === false);
+			$nodeNode = current($nodeNode);
 
-			if ($response['status_valid'] === false) {
+			if (empty($nodeNode) === true) {
 				$response['message'] = 'Invalid node ID, please try again.';
 				return $response;
 			}
@@ -89,16 +88,12 @@
 			}
 		}
 
-		$response['status_valid'] = (empty($nodeExternalIps) === false);
-
-		if ($response['status_valid'] === false) {
+		if (empty($nodeExternalIps) === true) {
 			$response['message'] = 'Node must have an external IP address, please try again.';
 			return $response;
 		}
 
-		$response['status_valid'] = ($nodeIpVersionExternalIps === _sanitizeIps($nodeExternalIps));
-
-		if ($response['status_valid'] === false) {
+		if ($nodeIpVersionExternalIps !== _sanitizeIps($nodeExternalIps)) {
 			$response['message'] = 'Invalid node external IP addresses, please try again.';
 			return $response;
 		}
@@ -114,9 +109,7 @@
 			}
 		}
 
-		$response['status_valid'] = (count($nodeExternalIpTypes) === 1);
-
-		if ($response['status_valid'] === false) {
+		if (count($nodeExternalIpTypes) !== 1) {
 			$response['message'] = 'Node external IPs must be either private or public, please try again.';
 			return $response;
 		}
@@ -131,34 +124,28 @@
 			}
 		}
 
-		$response['status_valid'] = (
-			(empty($nodeInternalIps) === true) ||
-			($nodeIpVersionInternalIps === $this->_sanitizeIps($nodeInternalIps))
-		);
-
-		if ($response['status_valid'] === false) {
+		if (
+			(empty($nodeInternalIps) === false) &&
+			($nodeIpVersionInternalIps !== $this->_sanitizeIps($nodeInternalIps))
+		) {
 			$response['message'] = 'Invalid node internal IPs, please try again.';
 			return $response;
 		}
 
 		foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
-			$response['status_valid'] = ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'reserved');
-
-			if ($response['status_valid'] === false) {
+			if ($this->_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'public') {
 				$response['message'] = 'Node internal IPs must be private, please try again.';
 				return $response;
 			}
 
-			$response['status_valid'] = (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === true);
-
-			if ($response['status_valid'] === false) {
+			if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === true) {
 				$response['message'] = 'Node internal IPs must have a matching external IP, please try again.';
 				return $response;
 			}
 		}
 
 		$existingNodeParameters = array(
-			'from' => $parameters['databases']['nodes'],
+			'in' => $parameters['databases']['nodes'],
 			'where' => array(
 				'OR' => $nodeExternalIps
 			)
@@ -175,17 +162,16 @@
 			);
 		}
 
-		$existingNode = _fetch($existingNodeParameters);
-		$response['status_valid'] = ($existingNode !== false);
+		$existingNode = _list($existingNodeParameters);
 
-		if ($response['status_valid'] === false) {
-			$response['message'] = 'Error fetching data from nodes database, please try again.';
+		if ($existingNode === false) {
+			$response['message'] = 'Error listing data in nodes database, please try again.';
 			return $response;
 		}
 
-		$response['status_valid'] = (empty($existingNode) === true);
+		$existingNode = current($existingNode);
 
-		if ($response['status_valid'] === false) {
+		if (empty($existingNode) === false) {
 			$existingNodeIps = array_intersect_key($existingNode, array(
 				'external_ip_version_4' => true,
 				'external_ip_version_6' => true,
@@ -223,29 +209,23 @@
 			)),
 			'to' => $parameters['databases']['nodes']
 		));
-		$response['status_valid'] = ($nodesSaved === true);
 
-		if ($response['status_valid'] === false) {
+		if ($nodesSaved === false) {
 			$response['message'] = 'Error saving data to nodes database, please try again.';
 			return $response;
 		}
 
-		$parameters['node'] = _fetch(array(
-			'fields' => array(
-				'id',
-				'node_id'
-			),
-			'from' => $parameters['databases']['nodes'],
+		$parameters['node'] = _list(array(
+			'in' => $parameters['databases']['nodes'],
 			'where' => $nodeIps
 		));
-		$response['status_valid'] = ($parameters['node'] !== false);
 
-		if ($response['status_valid'] === false) {
+		if ($parameters['node'] === false) {
 			_delete(array(
 				'from' => $parameters['databases']['nodes'],
 				'where' => $nodeIps
 			));
-			$response['message'] = 'Error fetching data from nodes database, please try again.';
+			$response['message'] = 'Error listing data in nodes database, please try again.';
 			return $response;
 		}
 
@@ -286,8 +266,8 @@
 		}
 
 		if (empty($nodeIds) === false) {
-			$existingNodeReservedInternalDestinations = _fetch(array(
-				'from' => $parameters['databases']['node_reserved_internal_destinations'],
+			$existingNodeReservedInternalDestinations = _list(array(
+				'in' => $parameters['databases']['node_reserved_internal_destinations'],
 				'where' => array(
 					'ip_address' => $nodeIps,
 					'OR' => array(
@@ -303,9 +283,8 @@
 					)
 				)
 			));
-			$response['status_valid'] = ($existingNodeReservedInternalDestinations !== false);
 
-			if ($response['status_valid'] === false) {
+			if ($existingNodeReservedInternalDestinations === false) {
 				$response['message'] = 'Error fetching data from node reserved internal destinations database, please try again.';
 				return $response;
 			}
@@ -330,9 +309,8 @@
 							'id' => $existingNodeReservedInternalDestination['id']
 						)
 					));
-					$response['status_valid'] = ($nodeReservedInternalDestinationsDeleted !== false);
 
-					if ($response['status_valid'] === false) {
+					if ($nodeReservedInternalDestinationsDeleted === false) {
 						// todo: remove node data with $nodeId + _removeNode() if reserved internal ip assignment fails
 						$response['message'] = 'Error deleting data from node_reserved_internal_destinations database, please try again.';
 						return $response;
@@ -379,7 +357,9 @@
 			return $response;
 		}
 
+		// todo: list node data in response with process data
 		$response['message'] = 'Node added successfully.';
+		$response['status_valid'] = true;
 		return $response;
 	}
 

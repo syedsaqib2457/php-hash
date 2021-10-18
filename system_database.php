@@ -77,9 +77,9 @@
 		return $response;
 	}
 
-	function _fetch($parameters) {
+	function _list($parameters) {
 		$response = array();
-		$command = 'SELECT * FROM ' . $parameters['from']['settings']['name'];
+		$command = 'SELECT * FROM ' . $parameters['in']['settings']['name'];
 
 		if (empty($parameters['where']) === false) {
 			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
@@ -110,7 +110,7 @@
 			$command .= ' OFFSET ' . $parameters['offset'];
 		}
 
-		foreach ($parameters['from']['connections'] as $connectionIndex => $connection) {
+		foreach ($parameters['in']['connections'] as $connectionIndex => $connection) {
 			$commandResponse = mysqli_query($connection, $command);
 
 			if ($commandResponse === false) {
@@ -122,10 +122,6 @@
 			if ($response[$connectionIndex] === false) {
 				return false;
 			}
-		}
-
-		if (isset($response[1]) === false) {
-			$response = current($response);
 		}
 
 		return $response;

@@ -43,8 +43,8 @@
 			_output($response);
 		}
 
-		$systemUserAuthenticationToken = _fetch(array(
-			'from' => $parameters['databases']['system_user_authentication_tokens'],
+		$systemUserAuthenticationToken = _list(array(
+			'in' => $parameters['databases']['system_user_authentication_tokens'],
 			'where' => array(
 				'string' => $parameters['authentication_token']
 			)
@@ -56,6 +56,7 @@
 			_output($response);
 		}
 
+		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 		$response['status_authenticated'] = false;
 
 		if (empty($systemUserAuthenticationToken) === true) {
@@ -67,8 +68,8 @@
 
 		// todo: authorize system user authentication token scope before processing function
 
-		$systemUserAuthenticationTokenSource = _fetch(array(
-			'from' => $parameters['databases']['system_user_authentication_token_sources'],
+		$systemUserAuthenticationTokenSource = _list(array(
+			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
 				'address' => ($sourceIp = $_SERVER['REMOTE_ADDR']),
 				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
@@ -80,6 +81,7 @@
 			_output($response);
 		}
 
+		$systemUserAuthenticationTokenSource = current($systemUserAuthenticationTokenSource);
 		$response['status_authenticated'] = false;
 
 		if (empty($systemUserAuthenticationTokenSource) === true) {
