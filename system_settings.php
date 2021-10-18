@@ -746,6 +746,14 @@
 						'default' => null,
 						'type' => 'VARCHAR(100)'
 					),
+					'cpu_capacity_cores' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
+					'cpu_capacity_megahertz' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
