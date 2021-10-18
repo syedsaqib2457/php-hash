@@ -161,7 +161,7 @@
 					if ($conjunction === $whereConditionKey) {
 						$whereConditionValueValueCondition = 'IN';
 
-						if (strpos($whereConditionValueKey, ' !=') !== false) {
+						if (is_int(strpos($whereConditionValueKey, ' !=')) === true) {
 							$whereConditionValueKey = substr($whereConditionValueKey, 0, strpos($whereConditionValueKey, ' '));
 							$whereConditionValueValueCondition = 'NOT ' . $whereConditionValueValueCondition;
 						}
@@ -180,7 +180,7 @@
 						$whereConditionValueCondition = 'IN';
 						$whereConditionValueKey = $whereConditionKey;
 
-						if (strpos($whereConditionValueKey, ' !=') !== false) {
+						if (is_int(strpos($whereConditionValueKey, ' !=')) === true) {
 							$whereConditionValueKey = substr($whereConditionValueKey, 0, strpos($whereConditionValueKey, ' '));
 							$whereConditionValueCondition = 'NOT ' . $whereConditionValueCondition;
 						}
