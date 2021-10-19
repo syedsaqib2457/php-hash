@@ -262,10 +262,6 @@
 					'node_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
-					),
-					'status_removed' => array(
-						'default' => 0,
-						'type' => 'TINYINT(1)'
 					)
 				)
 			),
@@ -424,10 +420,6 @@
 					'type' => array(
 						'default' => null,
 						'type' => 'CHAR(10)'
-					),
-					'status_removed' => array(
-						'default' => 0,
-						'type' => 'TINYINT(1)'
 					)
 				)
 			),
@@ -635,10 +627,6 @@
 					'node_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
-					),
-					'status_removed' => array(
-						'default' => 0,
-						'type' => 'TINYINT(1)'
 					)
 				)
 			),
@@ -677,10 +665,6 @@
 					'node_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
-					),
-					'status_removed' => array(
-						'default' => 0,
-						'type' => 'TINYINT(1)'
 					)
 				)
 			),
