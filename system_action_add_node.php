@@ -195,7 +195,7 @@
 			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
 		}
 
-		$nodesSaved = _save(array(
+		$nodeDataSaved = _save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'authentication_token' => true,
 				'external_ip_version_4' => true,
@@ -212,7 +212,7 @@
 			'in' => $parameters['databases']['nodes']
 		));
 
-		if ($nodesSaved === false) {
+		if ($nodeDataSaved === false) {
 			$response['message'] = 'Error saving data in nodes database, please try again.';
 			return $response;
 		}
@@ -324,29 +324,29 @@
 			}
 		}
 
-		$nodeProcessesSaved = _save(array(
+		$nodeProcessDataSaved = _save(array(
 			'data' => $nodeProcessData,
 			'in' => $parameters['databases']['node_processes']
 		));
 
-		if ($nodeProcessesSaved === false) {
+		if ($nodeProcessDataSaved === false) {
 			//todo: use $nodeId + _remove()
 			$response['message'] = 'Error saving data in node_processes database, please try again.';
 			return $response;
 		}
 
-		$nodeRecursiveDnsDestinationsSaved = _save(array(
+		$nodeRecursiveDnsDestinationDataSaved = _save(array(
 			'data' => $nodeRecursiveDnsDestinationData,
 			'in' => $parameters['databases']['node_recursive_dns_destinations']
 		));
 
-		if ($nodeRecursiveDnsDestinationsSaved === false) {
+		if ($nodeRecursiveDnsDestinationDataSaved === false) {
 			//todo: use $nodeId + _remove()
 			$response['message'] = 'Error saving data in node_recursive_dns_destinations database, please try again.';
 			return $response;
 		}
 
-		$nodesUpdated = _update(array(
+		$nodeDataUpdated = _update(array(
 			'data' => array(
 				'status_processed' => false
 			),
@@ -356,7 +356,7 @@
 			)
 		));
 
-		if ($nodesUpdated === false) {
+		if ($nodeDataUpdated === false) {
 			//todo: use $nodeId + _remove()
 			$response['message'] = 'Error updating data in nodes database, please try again.';
 			return $response;
