@@ -73,15 +73,14 @@
 			)
 		));
 
-		if ($systemUserAuthenticationTokenScopeCount === false) {
+		if (is_int($systemUserAuthenticationTokenScopeCount) === false) {
 			$response['message'] = 'Error connecting to system_user_authentication_token_scopes database, please try again.';
 			_output($response);
 		}
 
 		$response['status_authenticated'] = false;
-		$systemUserAuthenticationTokenScopeCount = current($systemUserAuthenticationTokenScopeCount);
 
-		if (empty($systemUserAuthenticationTokenScopeCount) === true) {
+		if (($systemUserAuthenticationTokenScopeCount <= 0) === true) {
 			$response['message'] = 'Invalid endpoint system user authentication token scope, please try again.';
 			_output($response);
 		}
@@ -94,15 +93,14 @@
 			)
 		));
 
-		if ($systemUserAuthenticationTokenSourceCount === false) {
+		if (is_int($systemUserAuthenticationTokenSourceCount) === false) {
 			$response['message'] = 'Error connecting to system_user_authentication_token_sources database, please try again.';
 			_output($response);
 		}
 
 		$response['status_authenticated'] = false;
-		$systemUserAuthenticationTokenSourceCount = current($systemUserAuthenticationTokenSourceCount);
 
-		if (empty($systemUserAuthenticationTokenSourceCount) === true) {
+		if (($systemUserAuthenticationTokenSourceCount <= 0) === true) {
 			// todo: validate non-empty token source count before returning false
 			// todo: validate cidr if source IP isn't found before returning false
 
