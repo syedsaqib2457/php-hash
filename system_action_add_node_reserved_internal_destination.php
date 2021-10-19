@@ -149,12 +149,12 @@
 			}
 		}
 
-		$nodeReservedInternalDestinationsSaved = _save(array(
+		$nodeReservedInternalDestinationDataSaved = _save(array(
 			'data' => $existingNodeReservedInternalDestinationData,
 			'to' => $parameters['databases']['node_reserved_internal_destinations']
 		));
 
-		if ($nodeReservedInternalDestinationsSaved === false) {
+		if ($nodeReservedInternalDestinationDataSaved === false) {
 			$response['message'] = 'Error saving data in node_reserved_internal_destinations database, please try again.';
 			return $response;
 		}
