@@ -15,7 +15,7 @@
 		(empty($parameters['databases']['message']) === false) &&
 		(is_string($parameters['databases']['message']) === true)
 	) {
-		$response['message'] = $parameters['database']['message'];
+		$response['message'] = $parameters['databases']['message'];
 		_output($response);
 	}
 
