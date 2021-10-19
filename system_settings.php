@@ -1053,11 +1053,6 @@
 				)
 			)
 		),
-		'node_process_type_default_port_numbers' => array(
-			'http_proxy' => 80,
-			'recursive_dns' => 53,
-			'socks_proxy' => 1080
-		),
 		'reserved_network' => array(
 			'ip_blocks' => array(
 				4 => array(

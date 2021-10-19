@@ -23,12 +23,7 @@
 	// todo: include _sanitizeIps
 	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
 
-	function _addNode($parameters) {
-		$response = array(
-			'message' => 'Node added successfully.'
-		);
-		$parameters['data']['status_processed'] = true;
-
+	function _addNode($parameters, $response) {
 		if (empty($parameters['data']['node_id']) === false) {
 			$nodeNode = _list(array(
 				'in' => $parameters['databases']['nodes'],
@@ -206,8 +201,7 @@
 				'internal_ip_version_6' => true,
 				'node_id' => true,
 				'status_active' => true,
-				'status_deployed' => true,
-				'status_processed' => true
+				'status_deployed' => true
 			)),
 			'in' => $parameters['databases']['nodes']
 		));
@@ -217,158 +211,28 @@
 			return $response;
 		}
 
+		$response['message'] = 'Node added successfully.';
 		$node = _list(array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => $nodeIps
 		));
 
-		if ($node === false) {
+		if (empty($node) === true) {
 			_delete(array(
 				'in' => $parameters['databases']['nodes'],
 				'where' => $nodeIps
 			));
-			$response['message'] = 'Error deleting data in nodes database, please try again.';
+			$response['message'] = 'Error listing data in nodes database, please try again.';
 			return $response;
 		}
 
-		$node = array_filter(array(
-			'id' => ($nodeId = $node['id']),
-			'node_id' => $node['node_id']
-		));
-		$nodeProcessData = $nodeProcessPortData = $nodeRecursiveDnsDestinationData = array();
-
-		foreach ($settings['node_process_type_default_port_numbers'] as $nodeProcessType => $nodeProcessTypeDefaultPortNumber) {
-			foreach (range(0, 9) as $nodeProcessPortNumberIndex) {
-				$nodeProcessData[] = array(
-					'node_id' => $nodeId,
-					'port_number' => ($nodeProcessTypeDefaultPortNumber + $nodeProcessPortNumberIndex),
-					'type' => $nodeProcessType
-				);
-			}
-
-			foreach ($nodeIpVersions as $nodeIpVersion) {
-				if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === false) {
-					$parameters['node'] = array(
-						$nodeIpVersion => $node
-					);
-					$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion . '_node_id'] = $nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
-					$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_port_number_version_' . $nodeIpVersion] = $settings['node_process_type_default_port_numbers']['recursive_dns'];
-					$nodeRecursiveDnsDestinationData[$nodeProcessType]['source_ip_version_' . $nodeIpVersion] = $nodeIpVersionExternalIps[$nodeIpVersion];
-					$addNodeReservedInternalDestinationResponse = _addNodeReservedInternalDestination($parameters);
-
-					if ($addNodeReservedInternalDestinationResponse['status_valid'] === false) {
-						// todo: remove node data with $nodeId + _removeNode() if reserved internal ip assignment fails
-						return $addNodeReservedInternalDestinationResponse;
-					}
-
-					$nodeRecursiveDnsDestinationData[$nodeProcessType]['listening_ip_version_' . $nodeIpVersion] = $addNodeReservedInternalDestinationResponse['data']['node_reserved_internal_destination_ip_address'];
-				}
-			}
-
-			$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_id'] = $nodeId;
-			$nodeRecursiveDnsDestinationData[$nodeProcessType]['node_process_type'] = $nodeProcessType;
-		}
-
-		if (empty($nodeIds) === false) {
-			$existingNodeReservedInternalDestinations = _list(array(
-				'in' => $parameters['databases']['node_reserved_internal_destinations'],
-				'where' => array(
-					'ip_address' => $nodeIps,
-					'OR' => array(
-						array(
-							'OR' => array(
-								'node_id' => $nodeIds,
-								'node_node_id' => $nodeIds
-							)
-						),
-						array(
-							'node_node_external_ip_address_type' => 'reserved'
-						)
-					)
-				)
-			));
-
-			if ($existingNodeReservedInternalDestinations === false) {
-				$response['message'] = 'Error listing data in node reserved internal destinations database, please try again.';
-				return $response;
-			}
-
-			if (empty($existingNodeReservedInternalDestinations) === false) {
-				foreach ($existingNodeReservedInternalDestinations as $existingNodeReservedInternalDestination) {
-					$parameters['node'] = array(
-						$existingNodeReservedInternalDestination['ip_address_version'] => array_filter(array(
-							'id' => $existingNodeReservedInternalDestination['node_id'],
-							'node_id' => $existingNodeReservedInternalDestination['node_node_id']
-						))
-					);
-					$addNodeeservedInternalDestinationResponse = _addNodeReservedInternalDestination($parameters);
-
-					if ($addNodeReservedInternalDestinationResponse['status_valid'] === false) {
-						// todo: remove node data with $nodeId + _removeNode() if reserved internal ip assignment fails
-						return $addNodeReservedInternalDestinationResponse;
-					}
-
-					$nodeReservedInternalDestinationsDeleted = _delete(array(
-						'in' => $parameters['databases']['node_reserved_internal_destinations'],
-						'where' => array(
-							'id' => $existingNodeReservedInternalDestination['id']
-						)
-					));
-
-					if ($nodeReservedInternalDestinationsDeleted === false) {
-						// todo: remove node data with $nodeId + _removeNode() if reserved internal ip assignment fails
-						$response['message'] = 'Error deleting data from node_reserved_internal_destinations database, please try again.';
-						return $response;
-					}
-				}
-			}
-		}
-
-		$nodeProcessDataSaved = _save(array(
-			'data' => $nodeProcessData,
-			'in' => $parameters['databases']['node_processes']
-		));
-
-		if ($nodeProcessDataSaved === false) {
-			//todo: use $nodeId + _remove()
-			$response['message'] = 'Error saving data in node_processes database, please try again.';
-			return $response;
-		}
-
-		$nodeRecursiveDnsDestinationDataSaved = _save(array(
-			'data' => $nodeRecursiveDnsDestinationData,
-			'in' => $parameters['databases']['node_recursive_dns_destinations']
-		));
-
-		if ($nodeRecursiveDnsDestinationDataSaved === false) {
-			//todo: use $nodeId + _remove()
-			$response['message'] = 'Error saving data in node_recursive_dns_destinations database, please try again.';
-			return $response;
-		}
-
-		$nodeDataUpdated = _update(array(
-			'data' => array(
-				'status_processed' => false
-			),
-			'in' => $parameters['databases']['nodes'],
-			'where' => array(
-				'id' => $nodeId
-			)
-		));
-
-		if ($nodeDataUpdated === false) {
-			//todo: use $nodeId + _remove()
-			$response['message'] = 'Error updating data in nodes database, please try again.';
-			return $response;
-		}
-
-		// todo: list node data in response with process data
+		$response['data'] = $node;
 		$response['status_valid'] = true;
 		return $response;
 	}
 
 	if ($parameters['action'] === 'add_node') {
-		$response = _addNode($parameters);
+		$response = _addNode($parameters, $response);
 		_output($response);
 	}
 ?>
