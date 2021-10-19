@@ -514,22 +514,22 @@
 					),
 					'node_id' => array(
 						'default' => null,
-						'null' => true,
 						'type' => 'BIGINT(11)'
 					),
 					'node_node_id' => array(
 						'default' => null,
-						'null' => true,
 						'type' => 'BIGINT(11)'
 					),
 					'node_node_external_ip_address_type' => array(
 						'default' => null,
-						'null' => true,
 						'type' => 'VARCHAR(7)'
 					),
 					'status_added' => array(
 						'default' => 0,
-						'null' => true,
+						'type' => 'TINYINT(1)'
+					),
+					'status_processed' => array(
+						'default' => 0,
 						'type' => 'TINYINT(1)'
 					)
 				)
