@@ -886,10 +886,6 @@
 					)
 				),
 				'structure' => array(
-					'action' => array(
-						'default' => null,
-						'type' => 'VARCHAR(100)'
-					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
@@ -901,6 +897,10 @@
 					'modified_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
+					),
+					'system_action' => array(
+						'default' => null,
+						'type' => 'VARCHAR(100)'
 					),
 					'system_user_authentication_token_id' => array(
 						'default' => null,
@@ -1028,7 +1028,11 @@
 						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
-					'system_function_id' => array(
+					'system_action' => array(
+						'default' => null,
+						'type' => 'VARCHAR(100)'
+					),
+					'system_user_authentication_token_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
 					),
