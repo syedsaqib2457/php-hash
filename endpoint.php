@@ -52,7 +52,7 @@
 		));
 
 		if ($systemUserAuthenticationToken === false) {
-			$response['message'] = 'Error connecting to system_user_authentication_tokens database, please try again.';
+			$response['message'] = 'Error listing data in system_user_authentication_tokens database, please try again.';
 			_output($response);
 		}
 
@@ -74,7 +74,7 @@
 		));
 
 		if (is_int($systemUserAuthenticationTokenScopeCount) === false) {
-			$response['message'] = 'Error connecting to system_user_authentication_token_scopes database, please try again.';
+			$response['message'] = 'Error counting data in system_user_authentication_token_scopes database, please try again.';
 			_output($response);
 		}
 
@@ -94,7 +94,7 @@
 		));
 
 		if (is_int($systemUserAuthenticationTokenSourceCount) === false) {
-			$response['message'] = 'Error connecting to system_user_authentication_token_sources database, please try again.';
+			$response['message'] = 'Error counting data in system_user_authentication_token_sources database, please try again.';
 			_output($response);
 		}
 

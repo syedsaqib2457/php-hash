@@ -213,7 +213,7 @@
 		));
 
 		if ($nodesSaved === false) {
-			$response['message'] = 'Error saving data to nodes database, please try again.';
+			$response['message'] = 'Error saving data in nodes database, please try again.';
 			return $response;
 		}
 
@@ -331,7 +331,7 @@
 
 		if ($nodeProcessesSaved === false) {
 			//todo: use $nodeId + _remove()
-			$response['message'] = 'Error saving data to node_processes database, please try again.';
+			$response['message'] = 'Error saving data in node_processes database, please try again.';
 			return $response;
 		}
 
@@ -342,7 +342,7 @@
 
 		if ($nodeRecursiveDnsDestinationsSaved === false) {
 			//todo: use $nodeId + _remove()
-			$response['message'] = 'Error saving data to node_recursive_dns_destinations database, please try again.';
+			$response['message'] = 'Error saving data in node_recursive_dns_destinations database, please try again.';
 			return $response;
 		}
 

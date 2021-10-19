@@ -155,7 +155,7 @@
 		));
 
 		if ($nodeReservedInternalDestinationsSaved === false) {
-			$response['message'] = 'Error saving data to node_reserved_internal_destinations database, please try again.';
+			$response['message'] = 'Error saving data in node_reserved_internal_destinations database, please try again.';
 			return $response;
 		}
 
