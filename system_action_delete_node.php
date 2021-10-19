@@ -27,10 +27,7 @@
 		_output($response);
 	}
 
-	function _deleteNode($parameters) {
-		$response = array(
-			'message' => 'Nodes removed successfully.'
-		);
+	function _deleteNode($parameters, $response) {
 		$nodeDataDeleted = _delete(array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
@@ -73,12 +70,15 @@
 			}
 		}
 
-		$response['status_valid'] = true;
+		$response = array(
+			'message' => 'Nodes removed successfully.',
+			'status_valid' => true
+		);
 		return $response;
 	}
 
 	if ($parameters['action'] === 'delete_node') {
-		$response = _removeNode($parameters);
+		$response = _removeNode($parameters, $response);
 		_output($response);
 	}
 ?>
