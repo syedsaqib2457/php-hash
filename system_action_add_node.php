@@ -24,7 +24,9 @@
 	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
 
 	function _addNode($parameters) {
-		$response = array();
+		$response = array(
+			'message' => 'Node added successfully.'
+		);
 		$parameters['data']['status_processed'] = true;
 
 		if (empty($parameters['data']['node_id']) === false) {
@@ -361,7 +363,6 @@
 		}
 
 		// todo: list node data in response with process data
-		$response['message'] = 'Node added successfully.';
 		$response['status_valid'] = true;
 		return $response;
 	}

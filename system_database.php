@@ -127,8 +127,8 @@
 		return $response;
 	}
 
-	function _parseCommandWhereConditions($whereConditions, $conjunction = 'AND') {
-		foreach ($whereConditions as $whereConditionKey => $whereConditionValue) {
+	function _parseCommandWhereConditions($parameters, $conjunction = 'AND') {
+		foreach ($parameters['where'] as $whereConditionKey => $whereConditionValue) {
 			if ($whereConditionKey === 'OR') {
 				$conjunction = $whereConditionKey;
 			}
@@ -137,8 +137,19 @@
 				(is_array($whereConditionValue) === true) &&
 				(count($whereConditionValue) !== count($whereConditionValue, COUNT_RECURSIVE))
 			) {
-				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseCommandWhereConditions($whereConditionValue, $conjunction)) . ')';
+				$recursiveParameters = array(
+					'where' => $whereConditionValue
+				);
+				$parameters['where'][$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseCommandWhereConditions($recursiveParameters, $conjunction)) . ')';
 			} else {
+				if (
+					(($conjunction === $whereConditionKey) === false) &&
+					(isset($parameters['in']['settings']['structure'][substr($whereConditionKey, 0, strpos($whereConditionKey, ' '))]) === false)
+				) {
+					unset($parameters['where'][$whereConditionKey]);
+					continue;
+				}
+
 				if (is_array($whereConditionValue) === false) {
 					$whereConditionValue = array(
 						$whereConditionValue
@@ -189,11 +200,11 @@
 					}
 				}
 
-				$whereConditions[$whereConditionKey] = '(' . implode(' ' . $conjunction . ' ', $whereConditionValueConditions) . ')';
+				$parameters['where'][$whereConditionKey] = '(' . implode(' ' . $conjunction . ' ', $whereConditionValueConditions) . ')';
 			}
 		}
 
-		$response = $whereConditions;
+		$response = $parameters['where'];
 		return $response;
 	}
 
