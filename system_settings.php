@@ -886,6 +886,10 @@
 					)
 				),
 				'structure' => array(
+					'action' => array(
+						'default' => null,
+						'type' => 'VARCHAR(100)'
+					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
@@ -897,10 +901,6 @@
 					'modified_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
-					),
-					'name' => array(
-						'default' => null,
-						'type' => 'VARCHAR(25)'
 					),
 					'system_user_authentication_token_id' => array(
 						'default' => null,

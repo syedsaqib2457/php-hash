@@ -43,21 +43,21 @@
 			_output($response);
 		}
 
+		$response['status_authenticated'] = true;
 		$systemUserAuthenticationToken = _list(array(
 			'in' => $parameters['databases']['system_user_authentication_tokens'],
 			'where' => array(
 				'string' => $parameters['authentication_token']
 			)
 		));
-		$response['status_authenticated'] = true;
 
 		if ($systemUserAuthenticationToken === false) {
 			$response['message'] = 'Error connecting to system_user_authentication_tokens database, please try again.';
 			_output($response);
 		}
 
-		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 		$response['status_authenticated'] = false;
+		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 
 		if (empty($systemUserAuthenticationToken) === true) {
 			$response['message'] = 'Invalid endpoint system user authentication token, please try again.';
@@ -65,10 +65,28 @@
 		}
 
 		$response['status_authenticated'] = true;
+		$systemUserAuthenticationTokenScopeCount = _count(array(
+			'in' => $parameters['databases']['system_user_authentication_token_scopes'],
+			'where' => array(
+				'action' => $parameters['action'],
+				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
+			)
+		));
 
-		// todo: authorize system user authentication token scope before processing function
+		if ($systemUserAuthenticationTokenScopeCount === false) {
+			$response['message'] = 'Error connecting to system_user_authentication_token_scopes database, please try again.';
+			_output($response);
+		}
 
-		$systemUserAuthenticationTokenSource = _list(array(
+		$response['status_authenticated'] = false;
+		$systemUserAuthenticationTokenScopeCount = current($systemUserAuthenticationTokenScopeCount);
+
+		if (empty($systemUserAuthenticationTokenScopeCount) === true) {
+			$response['message'] = 'Invalid endpoint system user authentication token scope, please try again.';
+			_output($response);
+		}
+
+		$systemUserAuthenticationTokenSourceCount = _count(array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
 				'address' => ($sourceIp = $_SERVER['REMOTE_ADDR']),
@@ -76,15 +94,15 @@
 			)
 		));
 
-		if ($systemUserAuthenticationTokenSource === false) {
+		if ($systemUserAuthenticationTokenSourceCount === false) {
 			$response['message'] = 'Error connecting to system_user_authentication_token_sources database, please try again.';
 			_output($response);
 		}
 
-		$systemUserAuthenticationTokenSource = current($systemUserAuthenticationTokenSource);
 		$response['status_authenticated'] = false;
+		$systemUserAuthenticationTokenSourceCount = current($systemUserAuthenticationTokenSourceCount);
 
-		if (empty($systemUserAuthenticationTokenSource) === true) {
+		if (empty($systemUserAuthenticationTokenSourceCount) === true) {
 			// todo: validate non-empty token source count before returning false
 			// todo: validate cidr if source IP isn't found before returning false
 
