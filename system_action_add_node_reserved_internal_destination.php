@@ -17,6 +17,7 @@
 			'where' => array(
 				'ip_address_version' => ($nodeIpAddressVersion = key($parameters['node'])),
 				'status_added' => false,
+				'status_processed' => true,
 				'OR' => array(
 					'node_id' => ($nodeIds = $parameters['node'][$nodeIpAddressVersion]),
 					'node_node_id' => $nodeIds
@@ -37,7 +38,8 @@
 				'ip_address_version' => $nodeIpAddressVersion,
 				'node_id' => $parameters['node'][$nodeIpAddressVersion]['id'],
 				'node_node_id' => $parameters['node'][$nodeIpAddressVersion]['node_id'],
-				'status_added' => false
+				'status_added' => false,
+				'status_processed' => true
 			);
 
 			switch ($nodeIpAddressVersion) {
