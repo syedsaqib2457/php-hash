@@ -684,10 +684,6 @@
 						'default' => null,
 						'type' => 'VARCHAR(255)'
 					),
-					'authentication_whitelist' => array(
-						'default' => null,
-						'type' => 'TEXT'
-					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
@@ -748,7 +744,11 @@
 					),
 					'external_ip_address_version_4_type' => array(
 						'default' => null,
-						'type' => 'VARCHAR(7)'
+						'type' => 'VARCHAR(8)'
+					),
+					'external_ip_address_version_4_usage' => array(
+						'default' => null,
+						'type' => 'VARCHAR(25)'
 					),
 					'external_ip_address_version_6' => array(
 						'default' => null,
@@ -756,7 +756,11 @@
 					),
 					'external_ip_address_version_6_type' => array(
 						'default' => null,
-						'type' => 'VARCHAR(7)'
+						'type' => 'VARCHAR(8)'
+					),
+					'external_ip_address_version_6_usage' => array(
+						'default' => null,
+						'type' => 'VARCHAR(25)'
 					),
 					'id' => array(
 						'primary_key' => true,
@@ -766,9 +770,17 @@
 						'default' => null,
 						'type' => 'VARCHAR(15)'
 					),
+					'internal_ip_address_version_4_usage' => array(
+						'default' => null,
+						'type' => 'VARCHAR(25)'
+					),
 					'internal_ip_address_version_6' => array(
 						'default' => null,
 						'type' => 'VARCHAR(45)'
+					),
+					'internal_ip_address_version_6_usage' => array(
+						'default' => null,
+						'type' => 'VARCHAR(25)'
 					),
 					'memory_capacity_megabytes' => array(
 						'default' => null,
@@ -787,10 +799,6 @@
 						'type' => 'TINYINT(1)'
 					),
 					'status_deployed' => array(
-						'default' => 0,
-						'type' => 'TINYINT(1)'
-					),
-					'status_processed' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
@@ -1053,6 +1061,7 @@
 				)
 			)
 		),
+		// todo: remove reserved_network after separate validation function is completed
 		'reserved_network' => array(
 			'ip_blocks' => array(
 				4 => array(
