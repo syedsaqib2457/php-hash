@@ -16,7 +16,7 @@
 				'where' => array(
 					'id' => $parameters['data']['node_id']
 				)
-			));
+			), $response);
 			$nodeNode = current($nodeNode);
 
 			if (empty($nodeNode) === true) {
@@ -111,7 +111,7 @@
 			);
 		}
 
-		$existingNode = _list($existingNodeParameters);
+		$existingNode = _list($existingNodeParameters, $response);
 		$existingNode = current($existingNode);
 
 		if (empty($existingNode) === false) {
@@ -154,11 +154,11 @@
 				'status_deployed' => true
 			)),
 			'in' => $parameters['databases']['nodes']
-		));
+		), $response);
 		$node = _list(array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => $nodeIpAddresses
-		));
+		), $response);
 		$response['data'] = $node;
 		$response['message'] = 'Node added successfully.';
 		$response['status_valid'] = true;
