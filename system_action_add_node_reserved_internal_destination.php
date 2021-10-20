@@ -3,10 +3,7 @@
 		exit;
 	}
 
-	function _addNodeReservedInternalDestination($parameters) {
-		$response = array(
-			'status_valid' => false
-		);
+	function _addNodeReservedInternalDestination($parameters, $response) {
 		$existingNodeReservedInternalDestination = _list(array(
 			'in' => $parameters['databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
@@ -19,17 +16,11 @@
 				'status_added' => false,
 				'status_processed' => true,
 				'OR' => array(
-					'node_id' => ($nodeIds = $parameters['node'][$nodeIpAddressVersion]),
-					'node_node_id' => $nodeIds
+					'node_id' => $parameters['node'][$nodeIpAddressVersion],
+					'node_node_id' => $parameters['node'][$nodeIpAddressVersion]
 				)
 			)
-		));
-
-		if ($existingNodeReservedInternalDestination === false) {
-			$response['message'] = 'Error listing data in node_reserved_internal_destinations database, please try again.';
-			return $response;
-		}
-
+		), $response);
 		$existingNodeReservedInternalDestination = current($existingNodeReservedInternalDestination);
 
 		if (empty($existingNodeReservedInternalDestination) === true) {
@@ -73,8 +64,8 @@
 							array(
 								'internal_ip_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
 								'OR' => array(
-									'id' => $nodeIds,
-									'node_id' => $nodeIds
+									'id' => $parameters['node'][$nodeIpAddressVersion],
+									'node_id' => $parameters['node'][$nodeIpAddressVersion]
 								)
 							),
 							array(
@@ -83,12 +74,7 @@
 							)
 						)
 					)
-				));
-
-				if (is_int($existingNodeCount) === false) {
-					$response['message'] = 'Error counting data in nodes database, please try again.';
-					return $response;
-				}
+				), $response);
 
 				if ($existingNodeCount === 0) {
 					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
@@ -127,8 +113,8 @@
 						array(
 							'internal_ip_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
 							'OR' => array(
-								'id' => $nodeIds,
-								'node_id' => $nodeIds
+								'id' => $parameters['node'][$nodeIpAddressVersion],
+								'node_id' => $parameters['node'][$nodeIpAddressVersion]
 							)
 						),
 						array(
@@ -137,34 +123,18 @@
 						)
 					)
 				)
-			));
-
-			if (is_int($existingNodeCount) === false) {
-				$response['message'] = 'Error counting data in nodes database, please try again.';
-				return $response;
-			}
+			), $response);
 
 			if ($existingNodeCount === 0) {
 				$existingNodeReservedInternalDestinationData[1]['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 			}
 		}
 
-		$nodeReservedInternalDestinationDataSaved = _save(array(
+		_save(array(
 			'data' => $existingNodeReservedInternalDestinationData,
 			'to' => $parameters['databases']['node_reserved_internal_destinations']
 		));
-
-		if ($nodeReservedInternalDestinationDataSaved === false) {
-			$response['message'] = 'Error saving data in node_reserved_internal_destinations database, please try again.';
-			return $response;
-		}
-
-		$response = array(
-			'data' => array(
-				'node_reserved_internal_destination_ip_address' => $nodeReservedInternalDestinationIpAddress
-			),
-			'status_valid' => true
-		);
+		$response = $nodeReservedInternalDestinationIpAddress;
 		return $response;
 	}
 ?>
