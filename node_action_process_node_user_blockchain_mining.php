@@ -7,29 +7,30 @@
 			// mine indexed section for pseudo-threading
 			// write static repeating hash functions within loop for better CPU efficiency
 
-		$_SERVER['argv'][3] = intval($_SERVER['argv'][3]);
-		$_SERVER['argv'][4] = intval($_SERVER['argv'][4]);
+		foreach ($_SERVER['argv'] as $key => $value) {
+			$variable = '_' . $key;
+			$$variable = $value;
+		}
+
+		$_3 = intval($_3);
+		$_4 = intval($_4);
+		$microtime = microtime(true);
 
 		switch ($_SERVER['argv'][1]) {
 			case 'bitcoin':
-				while (true) {
-					$blockHash = hash('sha256', hash_hmac('sha256', $_SERVER['argv'][2], $_SERVER['argv'][3]));
+				for ($_3; $_3 < $_4; $_3++) {
+					$blockHash = hash('sha256', hash_hmac('sha256', $_2, $_3));
 
 					if (
-						($blockHash[$_SERVER['argv'][5]] === '0') &&
-						(strpos($blockHash, $_SERVER['argv']['6']) === 0)
+						($blockHash[$_5] === '0') &&
+						(strpos($blockHash, $_6) === 0)
 					) {
 						break;
 					}
-
-					if ($_SERVER['argv'][3] === $_SERVER['argv'][4]) {
-						exit;
-					}
-
-					$_SERVER['argv'][3]++;
 				}
 
-				echo 'Hash attempts: ' . $_SERVER['argv'][3] . "\n";
+				echo microtime(true) - $microtime;
+				echo 'Hash attempts: ' . $_3 . "\n";
 				echo 'Block mined successfully: ' . $blockHash . "\n";
 				// todo: save to /tmp file for processing from pseudo-threading coordination
 					// terminate mining processes with block_header in command name
