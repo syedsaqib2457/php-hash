@@ -1,41 +1,57 @@
 <?php
-	if (empty($_SERVER['argv'][4]) === true) {
+	if (empty($_SERVER['argv'][1]) === true) {
+		exit;
+	}
+
+	foreach ($_SERVER['argv'] as $key => $value) {
+		$variable = '_' . $key;
+		$$variable = $value;
+	}
+
+	if (empty($_4) === true) {
 		// php node_action_process_node_user_blockchain_mining.php [type] [wallet_address or public_key from node_user authentication_username] 10
 			// build block header, manage indexed sections based on blockchain resource usage rules, etc
+
+		for ($_3; $_3 > 0; $_3--) {
+			// start indexed mining processes
+		}
 	} else {
 		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_index] [leading_zero_string] [process_index]
 			// mine indexed section for pseudo-threading
 			// write static repeating hash functions within loop for better CPU efficiency
 
-		foreach ($_SERVER['argv'] as $key => $value) {
-			$variable = '_' . $key;
-			$$variable = $value;
-		}
-
 		$_3 = intval($_3);
 		$_4 = intval($_4);
-		$microtime = microtime(true);
 
-		switch ($_SERVER['argv'][1]) {
+		switch ($_1) {
 			case 'bitcoin':
 				for ($_3; $_3 < $_4; $_3++) {
-					$blockHash = hash('sha256', hash_hmac('sha256', $_2, $_3));
+					$_0 = hash('sha256', hash_hmac('sha256', $_2, $_3));
 
 					if (
-						($blockHash[$_5] === '0') &&
-						(strpos($blockHash, $_6) === 0)
+						$_0[$_5] === '0' &&
+						$_0[0] === '0'
 					) {
-						break;
+						$_0[($_5 + 1)] = '.';
+
+						if (intval(floor(1 . $_0)) === intval('1' . $_6)) {
+							$_7 = substr($_0, 0, ($_5 + 1));
+
+							if ($_7 === $_6) {
+								$_0 = hash('sha256', hash_hmac('sha256', $_2, $_3));
+								break;
+							}
+						}
 					}
 				}
 
-				echo microtime(true) - $microtime;
 				echo 'Hash attempts: ' . $_3 . "\n";
-				echo 'Block mined successfully: ' . $blockHash . "\n";
+				echo 'Block mined successfully: ' . $_0 . "\n";
 				// todo: save to /tmp file for processing from pseudo-threading coordination
 					// terminate mining processes with block_header in command name
 
 				/*
+					todo: monitor with cpu interval node process script for accuracy
 					Results from 1 pseudo thread using this command: sudo php node_action_process_node_user_blockchain_mining.php bitcoin 1234 0 10000000 5 000000
 					Hash attempts: 1429728
 					Block mined successfully: 000000979312ee8736eddfad0a9b73313d2554b34ec699c83bd3b505a9e2eef3
