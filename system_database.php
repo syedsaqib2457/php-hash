@@ -1,6 +1,4 @@
 <?php
-	// todo: database tables with more than 1 external database should only support _fetch() + _save() with no sorting
-
 	if (empty($parameters) === true) {
 		exit;
 	}
