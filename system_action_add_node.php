@@ -51,63 +51,63 @@
 			}
 		}
 
-		$nodeExternalIps = $nodeIpVersionExternalIps = array();
-		$nodeIpVersions = array(
+		$nodeExternalIpAddresses = $nodeIpAddressVersionExternalIpAddresses = array();
+		$nodeIpAddressVersions = array(
 			4,
 			6
 		);
 
-		foreach ($nodeIpVersions as $nodeIpVersion) {
-			$nodeExternalIpKey = 'external_ip_version_' . $nodeIpVersion;
+		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
+			$nodeExternalIpAddressKey = 'external_ip_address_version_' . $nodeIpAddressVersion;
 
-			if (empty($parameters['data'][$nodeExternalIpKey]) === false) {
-				$nodeExternalIps[$nodeExternalIpKey] = $nodeIpVersionExternalIps[$nodeIpVersion][$parameters['data'][$nodeExternalIpKey]] = $parameters['data'][$nodeExternalIpKey];
+			if (empty($parameters['data'][$nodeExternalIpAddressKey]) === false) {
+				$nodeExternalIpAddresses[$nodeExternalIpAddressKey] = $nodeIpAddressVersionExternalIpAddresses[$nodeIpAddressVersion][$parameters['data'][$nodeExternalIpAddressKey]] = $parameters['data'][$nodeExternalIpAddressKey];
 			}
 		}
 
-		if (empty($nodeExternalIps) === true) {
+		if (empty($nodeExternalIpAddresses) === true) {
 			$response['message'] = 'Node must have an external IP address, please try again.';
 			return $response;
 		}
 
-		if (($nodeIpVersionExternalIps === _validateIpAddresses($nodeExternalIps)) === false) {
+		if (($nodeIpAddressVersionExternalIpAddresses === _validateIpAddressVersions($nodeExternalIpAddresses)) === false) {
 			$response['message'] = 'Invalid node external IP addresses, please try again.';
 			return $response;
 		}
 
-		foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeIpVersionExternalIp) {
-			$externalIpAddressType = _validateIpAddressTypes(current($nodeIpVersionExternalIp), $nodeIpVersion);
+		foreach ($nodeIpAddressVersionExternalIpAddresss as $nodeIpAddressVersion => $nodeIpAddressVersionExternalIpAddress) {
+			$externalIpAddressType = _validateIpAddressTypes(current($nodeIpAddressVersionExternalIpAddress), $nodeIpAddressVersion);
 			$externalIpAddressType = current($externalIpAddressType);
-			$parameters['data']['external_ip_address_version_' . $nodeIpVersion . '_type'] = 'public|reserved';
-			$parameters['data']['external_ip_address_version_' . $nodeIpVersion . '_usage'] = 'public_network|private_network|etc';
+			$parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion . '_type'] = 'public|reserved';
+			$parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion . '_usage'] = 'public_network|private_network|etc';
 		}
 
-		$nodeInternalIps = $nodeIpVersionInternalIps = array();
+		$nodeInternalIpAddresses = $nodeIpAddressVersionInternalIpAddresses = array();
 
-		foreach ($nodeIpVersions as $nodeIpVersion) {
-			$nodeInternalIpKey = 'internal_ip_version_' . $nodeIpVersion;
+		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
+			$nodeInternalIpAddressKey = 'internal_ip_address_version_' . $nodeIpAddressVersion;
 
-			if (empty($parameters['data'][$nodeInternalIpKey]) === false) {
-				$nodeInternalIps[$nodeInternalIpKey] = $nodeIpVersionInternalIps[$nodeIpVersion][$parameters['data'][$serverNodeInternalIpKey]] = $parameters['data'][$serverNodeInternalIpKey];
+			if (empty($parameters['data'][$nodeInternalIpAddressKey]) === false) {
+				$nodeInternalIpAddresses[$nodeInternalIpAddressKey] = $nodeIpAddressVersionInternalIpAddresses[$nodeIpVersion][$parameters['data'][$nodeInternalIpAddressKey]] = $parameters['data'][$nodeInternalIpAddressKey];
 			}
 		}
 
 		if (
-			(empty($nodeInternalIps) === false) &&
-			(($nodeIpVersionInternalIps === $this->_sanitizeIps($nodeInternalIps)) === false)
+			(empty($nodeInternalIpAddresses) === false) &&
+			(($nodeIpAddressVersionInternalIpAddresses === _validateIpAddressVersions($nodeInternalIpAddresses)) === false)
 		) {
-			$response['message'] = 'Invalid node internal IPs, please try again.';
+			$response['message'] = 'Invalid node internal IP addresses, please try again.';
 			return $response;
 		}
 
-		foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
-			if ((_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'public') === true) {
+		foreach ($nodeIpAddressVersionInternalIpAddresses as $nodeIpAddressVersion => $nodeIpAddressVersionInternalIpAddress) {
+			if ((_validateIpAddressTypes(current($nodeIpAddressVersionInternalIpAddress), $nodeIpAddressVersion) === 'public') === true) {
 				$response['message'] = 'Node internal IPs must have a reserved IP address type, please try again.';
 				return $response;
 			}
 
-			if (empty($nodeIpVersionExternalIps[$nodeIpVersion]) === true) {
-				$response['message'] = 'Node internal IPs must have a matching external IP, please try again.';
+			if (empty($nodeIpAddressVersionExternalIpAddresses[$nodeIpAddressVersion]) === true) {
+				$response['message'] = 'Node internal IP addresses must have a matching external IP address, please try again.';
 				return $response;
 			}
 		}
@@ -115,17 +115,17 @@
 		$existingNodeParameters = array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
-				'OR' => $nodeExternalIps
+				'OR' => $nodeExternalIpAddresses
 			)
 		);
-		$nodeIps = array_merge($nodeExternalIps, $nodeInternalIps);
+		$nodeIpAddresses = array_merge($nodeExternalIpAddresses, $nodeInternalIpAddresses);
 
 		if (empty($parameters['data']['node_id']) === false) {
 			$existingNodeParameters['where']['OR'] = array(
 				$existingNodeParameters['where'],
 				array(
 					'node_id' => $parameters['data']['node_id'],
-					'OR' => $nodeIps
+					'OR' => $nodeIpAddresses
 				)
 			);
 		}
@@ -140,16 +140,16 @@
 		$existingNode = current($existingNode);
 
 		if (empty($existingNode) === false) {
-			$existingNodeIps = array_intersect_key($existingNode, array(
-				'external_ip_version_4' => true,
-				'external_ip_version_6' => true,
-				'internal_ip_version_4' => true,
-				'internal_ip_version_6' => true
+			$existingNodeIpAddresses = array_intersect_key($existingNode, array(
+				'external_ip_address_version_4' => true,
+				'external_ip_address_version_6' => true,
+				'internal_ip_address_version_4' => true,
+				'internal_ip_address_version_6' => true
 			));
 
-			foreach ($existingNodeIps as $existingNodeIp) {
-				if (in_array($existingNodeIp, $nodeIps) === true) {
-					$response['message'] = 'Node IP ' . $existingNodeIp . ' already in use, please try again.';
+			foreach ($existingNodeIpAddresses as $existingNodeIpAddress) {
+				if (in_array($existingNodeIpAddress, $nodeIpAddresses) === true) {
+					$response['message'] = 'Node IP address ' . $existingNodeIpAddress . ' already in use, please try again.';
 					break;
 				}
 			}
@@ -164,12 +164,16 @@
 		$nodeDataSaved = _save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'authentication_token' => true,
-				'external_ip_version_4' => true,
-				'external_ip_version_4_type' => true,
-				'external_ip_version_6' => true,
-				'external_ip_version_6_type' => true,
-				'internal_ip_version_4' => true,
-				'internal_ip_version_6' => true,
+				'external_ip_address_version_4' => true,
+				'external_ip_address_version_4_type' => true,
+				'external_ip_address_version_4_usage' => true,
+				'external_ip_address_version_6' => true,
+				'external_ip_address_version_6_type' => true,
+				'external_ip_address_version_6_usage' => true,
+				'internal_ip_address_version_4' => true,
+				'internal_ip_address_version_4_usage' => true,
+				'internal_ip_address_version_6' => true,
+				'internal_ip_address_version_6_usage' => true,
 				'node_id' => true,
 				'status_active' => true,
 				'status_deployed' => true
@@ -191,7 +195,7 @@
 		if (empty($node) === true) {
 			_delete(array(
 				'in' => $parameters['databases']['nodes'],
-				'where' => $nodeIps
+				'where' => $nodeIpAddresses
 			));
 			$response['message'] = 'Error listing data in nodes database, please try again.';
 			return $response;
