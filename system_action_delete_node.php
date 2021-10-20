@@ -36,12 +36,22 @@
 			set status_processed to true after process_node action completes
 		*/
 
-		unset($parameters['databases']['node_reserved_internal_destinations']);
-		unset($parameters['databases']['nodes']);
+		$databases = array(
+			'node_process_forwarding_destinations',
+			'node_process_node_user_request_destination_logs',
+			'node_process_node_user_request_logs',
+			'node_process_node_user_resource_usage_logs',
+			'node_process_node_users',
+			'node_process_recursive_dns_destinations',
+			'node_process_resource_usage_logs',
+			'node_processes',
+			'node_recursive_dns_destinations',
+			'node_resource_usage_logs'
+		);
 
-		foreach ($parameters['databases'] as $databaseKey => $database) {
+		foreach ($databases as $database) {
 			_delete(array(
-				'in' => $parameters['databases'][$databaseKey],
+				'in' => $parameters['databases'][$database],
 				'where' => array(
 					'OR' => array(
 						'node_id' => $nodeIds,
