@@ -19,9 +19,8 @@
 		_output($response);
 	}
 
-	// todo: include _detectIpType
-	// todo: include _sanitizeIps
-	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
+	require_once('/var/www/ghostcompute/system_action_validate_ip_address_types.php');
+	require_once('/var/www/ghostcompute/system_action_validate_ip_address_versions.php');
 
 	function _addNode($parameters, $response) {
 		if (empty($parameters['data']['node_id']) === false) {
@@ -71,25 +70,16 @@
 			return $response;
 		}
 
-		if (($nodeIpVersionExternalIps === _sanitizeIps($nodeExternalIps)) === false) {
+		if (($nodeIpVersionExternalIps === _validateIpAddresses($nodeExternalIps)) === false) {
 			$response['message'] = 'Invalid node external IP addresses, please try again.';
 			return $response;
 		}
 
-		$nodeExternalIpTypes = array();
-
 		foreach ($nodeIpVersionExternalIps as $nodeIpVersion => $nodeIpVersionExternalIp) {
-			$parameters['data']['external_ip_version_' . $nodeIpVersion . '_type'] = _detectIpType(current($nodeIpVersionExternalIp), $nodeIpVersion);
-			$nodeExternalIpTypes[$parameters['data']['external_ip_version_' . $nodeIpVersion . '_type']] = true;
-
-			if (empty($nodeExternalIpTypes['reserved']) === false) {
-				unset($parameters['data']['internal_ip_version_' . $nodeIpVersion]);
-			}
-		}
-
-		if ((count($nodeExternalIpTypes) === 2) === true) {
-			$response['message'] = 'Node external IPs must be either private or public, please try again.';
-			return $response;
+			$externalIpAddressType = _validateIpAddressTypes(current($nodeIpVersionExternalIp), $nodeIpVersion);
+			$externalIpAddressType = current($externalIpAddressType);
+			$parameters['data']['external_ip_address_version_' . $nodeIpVersion . '_type'] = 'public|reserved';
+			$parameters['data']['external_ip_address_version_' . $nodeIpVersion . '_usage'] = 'public_network|private_network|etc';
 		}
 
 		$nodeInternalIps = $nodeIpVersionInternalIps = array();
@@ -112,7 +102,7 @@
 
 		foreach ($nodeIpVersionInternalIps as $nodeIpVersion => $nodeIpVersionInternalIp) {
 			if ((_detectIpType(current($nodeIpVersionInternalIp), $nodeIpVersion) === 'public') === true) {
-				$response['message'] = 'Node internal IPs must be private, please try again.';
+				$response['message'] = 'Node internal IPs must have a reserved IP address type, please try again.';
 				return $response;
 			}
 
