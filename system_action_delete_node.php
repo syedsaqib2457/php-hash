@@ -3,29 +3,20 @@
 		exit;
 	}
 
-	$parameters['databases'] += array(
-		'node_process_forwarding_destinations' => $settings['databases']['node_process_forwarding_destinations'],
-		'node_process_node_user_request_destination_logs' => $settings['databases']['node_process_node_user_request_destination_logs'],
-		'node_process_node_user_request_logs' => $settings['databases']['node_process_node_user_request_logs'],
-		'node_process_node_user_resource_usage_logs' => $settings['databases']['node_process_node_user_resource_usage_logs'],
-		'node_process_node_users' => $settings['databases']['node_process_node_users'],
-		'node_process_recursive_dns_destinations' => $settings['databases']['node_process_recursive_dns_destinations'],
-		'node_process_resource_usage_logs' => $settings['databases']['node_process_resource_usage_logs'],
-		'node_processes' => $settings['databases']['node_processes'],
-		'node_recursive_dns_destinations' => $settings['databases']['node_recursive_dns_destinations'],
-		'node_reserved_internal_destinations' => $settings['databases']['node_reserved_internal_destinations'],
-		'node_resource_usage_logs' => $settings['databases']['node_resource_usage_logs'],
-		'nodes' => $settings['databases']['nodes']
-	);
-	$parameters['databases'] = _connect($parameters['databases']);
-
-	if (
-		(empty($parameters['databases']['message']) === false) &&
-		(is_string($parameters['databases']['message']) === true)
-	) {
-		$response['message'] = $parameters['databases']['message'];
-		_output($response);
-	}
+	$parameters['databases'] += _connect(array(
+		$databases['node_process_forwarding_destinations'],
+		$databases['node_process_node_user_request_destination_logs'],
+		$databases['node_process_node_user_request_logs'],
+		$databases['node_process_node_user_resource_usage_logs'],
+		$databases['node_process_node_users'],
+		$databases['node_process_recursive_dns_destinations'],
+		$databases['node_process_resource_usage_logs'],
+		$databases['node_processes'],
+		$databases['node_recursive_dns_destinations'],
+		$databases['node_reserved_internal_destinations'],
+		$databases['node_resource_usage_logs'],
+		$databases['nodes']
+	), $response);
 
 	function _deleteNode($parameters, $response) {
 		$nodeDataDeleted = _delete(array(
