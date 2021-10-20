@@ -1,9 +1,19 @@
 <?php
-	// arg 1 blockchain_type
-	// arg 2 block header hash
-	// arg 3 min nonce integer
-	// arg 4 max nonce integer
-		// $_SERVER['argv'][$index]
+	if (empty($_SERVER['argv'][3]) === true) {
+		// php node_action_process_node_user_blockchain_mining.php [type] [wallet_address or public_key from node_user authentication_username] 10
+			// build block header, manage indexed sections, etc
+	} else {
+		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_count] [process_index]
+			// mine indexed section for pseudo-threading
+
+		switch ($_SERVER['argv'][0]) {
+			case: 'bitcoin':
+				// process hashing for indexed nonce range, then exit
+				break;
+		}
+
+		exit;
+	}
 
 	// when a valid hash is found, send block hash value by starting node_process_blockchain_building with successful hash as a parameter, log response + hash details to /usr/src/ghostcompute
 
