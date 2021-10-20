@@ -85,13 +85,13 @@
 			_output($response);
 		}
 
-		$systemUserAuthenticationTokenSourceCount = _count(array(
+		$systemUserAuthenticationTokenSourceCountParameters = array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
-				'address' => ($sourceIp = $_SERVER['REMOTE_ADDR']),
 				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
 			)
-		));
+		);
+		$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
 
 		if (is_int($systemUserAuthenticationTokenSourceCount) === false) {
 			$response['message'] = 'Error counting data in system_user_authentication_token_sources database, please try again.';
@@ -100,12 +100,21 @@
 
 		$response['status_authenticated'] = false;
 
-		if (($systemUserAuthenticationTokenSourceCount <= 0) === true) {
-			// todo: validate non-empty token source count before returning false
-			// todo: validate cidr if source IP isn't found before returning false
+		if (($systemUserAuthenticationTokenSourceCount > 0) === true) {
+			$systemUserAuthenticationTokenSourceCountParameters['where']['address'] = $_SERVER['REMOTE_ADDR'];
+			$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
 
-			$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $sourceIp . ', please try again.';
-			_output($response);
+			if (is_int($systemUserAuthenticationTokenSourceCount) === false) {
+				$response['message'] = 'Error counting data in system_user_authentication_token_sources database, please try again.'
+				_output($response);
+			}
+
+			if (($systemUserAuthenticationTokenSourceCount > 0) === false) {
+				// todo: validate cidr if source IP isn't found before returning false
+
+				$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $_SERVER['REMOTE_ADDR'] . ', please try again.';
+				_output($response);
+			}
 		}
 
 		$response['status_authenticated'] = true;
