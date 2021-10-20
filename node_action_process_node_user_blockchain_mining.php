@@ -1,37 +1,29 @@
 <?php
-	if (empty($_SERVER['argv'][3]) === true) {
+	if (empty($_SERVER['argv'][4]) === true) {
 		// php node_action_process_node_user_blockchain_mining.php [type] [wallet_address or public_key from node_user authentication_username] 10
 			// build block header, manage indexed sections based on blockchain resource usage rules, etc
 	} else {
-		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_count] [process_index]
+		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_index] [leading_zero_count] [leading_zero_string] [process_index]
 			// mine indexed section for pseudo-threading
 			// write static repeating hash functions within loop for better CPU efficiency
 
-		switch ($_SERVER['argv'][0]) {
+		switch ($_SERVER['argv'][1]) {
 			case 'bitcoin':
 				while (true) {
-					$blockHash = hash('sha256', hash_hmac('sha256', $_SERVER['argv'][1], $_SERVER['argv'][2]));
+					$blockHash = hash('sha256', hash_hmac('sha256', $_SERVER['argv'][2], $_SERVER['argv'][3]));
 
-					if ($blockHash[$_SERVER['argv'][4]] === '0') {
-						break;
+					if ($blockHash[$_SERVER['argv'][5]] === '0') {
+						if (substr($blockHash, 0, $_SERVER['argv'][6]) === $_SERVER['argv'][7]) {
+							break;
+						}
 					}
 
-					if ($_SERVER['argv'][2] === $_SERVER['argv'][3]) {
+					if ($_SERVER['argv'][3] === $_SERVER['argv'][4]) {
 						exit;
 					}
 
-					$_SERVER['argv'][2]++;
-					$blockHash = hash('sha256', hash_hmac('sha256', $_SERVER['argv'][1], $_SERVER['argv'][2]));
-
-					if ($blockHash[$_SERVER['argv'][4]] === '0') {
-						break;
-					}
-
-					if ($_SERVER['argv'][2] === $_SERVER['argv'][3]) {
-						exit;
-					}
-
-					$_SERVER['argv'][2]++;
+					$_SERVER['argv'][3]++;
+					// todo: repeat static hash function a few times in loop
 				}
 
 				echo 'Block mined successfully: ' . $blockHash . "\n";
