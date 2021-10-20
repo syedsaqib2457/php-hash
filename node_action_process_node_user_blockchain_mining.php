@@ -1,4 +1,12 @@
 <?php
+	// arg 1 blockchain_type
+	// arg 2 block header hash
+	// arg 3 min nonce integer
+	// arg 4 max nonce integer
+		// $_SERVER['argv'][$index]
+
+	// when a valid hash is found, send block hash value by starting node_process_blockchain_building with successful hash as a parameter, log response + hash details to /usr/src/ghostcompute
+
 	// todo: start this file in background for each blockchain_type from node_process_processes.php
 	// todo: install/remove CLI files for blockchain types in node_process_processes.php with binary paths if non-existing
 	// todo: retrieve block header values for mining based on 1-minute crontab interval for process_node_processes, restart process_blockchain_building.php when prev block changes from value stored in cache

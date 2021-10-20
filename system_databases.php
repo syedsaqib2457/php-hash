@@ -4,6 +4,7 @@
 	}
 
 	$databases = array(
+		'node_process_blockchain_mining_resource_usage_rules' => array(),
 		'node_process_forwarding_destinations' => array(
 			'authentication' => array(
 				array(
