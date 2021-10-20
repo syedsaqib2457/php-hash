@@ -17,12 +17,6 @@
 					'id' => $parameters['data']['node_id']
 				)
 			));
-
-			if ($nodeNode === false) {
-				$response['message'] = 'Error listing data in nodes database, please try again.';
-				return $response;
-			}
-
 			$nodeNode = current($nodeNode);
 
 			if (empty($nodeNode) === true) {
@@ -118,12 +112,6 @@
 		}
 
 		$existingNode = _list($existingNodeParameters);
-
-		if ($existingNode === false) {
-			$response['message'] = 'Error listing data in nodes database, please try again.';
-			return $response;
-		}
-
 		$existingNode = current($existingNode);
 
 		if (empty($existingNode) === false) {
@@ -148,7 +136,7 @@
 			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
 		}
 
-		$nodeDataSaved = _save(array(
+		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'authentication_token' => true,
 				'external_ip_address_version_4' => true,
@@ -167,28 +155,12 @@
 			)),
 			'in' => $parameters['databases']['nodes']
 		));
-
-		if ($nodeDataSaved === false) {
-			$response['message'] = 'Error saving data in nodes database, please try again.';
-			return $response;
-		}
-
-		$response['message'] = 'Node added successfully.';
 		$node = _list(array(
 			'in' => $parameters['databases']['nodes'],
-			'where' => $nodeIps
+			'where' => $nodeIpAddresses
 		));
-
-		if (empty($node) === true) {
-			_delete(array(
-				'in' => $parameters['databases']['nodes'],
-				'where' => $nodeIpAddresses
-			));
-			$response['message'] = 'Error listing data in nodes database, please try again.';
-			return $response;
-		}
-
 		$response['data'] = $node;
+		$response['message'] = 'Node added successfully.';
 		$response['status_valid'] = true;
 		return $response;
 	}
