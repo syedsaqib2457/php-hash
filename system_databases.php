@@ -846,6 +846,10 @@
 						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
+					'status_processed' => array(
+						'default' => 0,
+						'type' => 'TINYINT(1)'
+					),
 					'storage_capacity_megabytes' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
