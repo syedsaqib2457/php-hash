@@ -3,19 +3,23 @@
 		// php node_action_process_node_user_blockchain_mining.php [type] [wallet_address or public_key from node_user authentication_username] 10
 			// build block header, manage indexed sections based on blockchain resource usage rules, etc
 	} else {
-		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_index] [leading_zero_count] [leading_zero_string] [process_index]
+		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_index] [leading_zero_string] [process_index]
 			// mine indexed section for pseudo-threading
 			// write static repeating hash functions within loop for better CPU efficiency
+
+		$_SERVER['argv'][3] = intval($_SERVER['argv'][3]);
+		$_SERVER['argv'][4] = intval($_SERVER['argv'][4]);
 
 		switch ($_SERVER['argv'][1]) {
 			case 'bitcoin':
 				while (true) {
 					$blockHash = hash('sha256', hash_hmac('sha256', $_SERVER['argv'][2], $_SERVER['argv'][3]));
 
-					if ($blockHash[$_SERVER['argv'][5]] === '0') {
-						if (substr($blockHash, 0, $_SERVER['argv'][6]) === $_SERVER['argv'][7]) {
-							break;
-						}
+					if (
+						($blockHash[$_SERVER['argv'][5]] === '0') &&
+						(strpos($blockHash, $_SERVER['argv']['6']) === 0)
+					) {
+						break;
 					}
 
 					if ($_SERVER['argv'][3] === $_SERVER['argv'][4]) {
@@ -23,11 +27,19 @@
 					}
 
 					$_SERVER['argv'][3]++;
-					// todo: repeat static hash function a few times in loop
 				}
 
+				echo 'Hash attempts: ' . $_SERVER['argv'][3] . "\n";
 				echo 'Block mined successfully: ' . $blockHash . "\n";
 				// todo: save to /tmp file for processing from pseudo-threading coordination
+					// terminate mining processes with block_header in command name
+
+				/*
+					Results from 1 pseudo thread using this command: sudo php node_action_process_node_user_blockchain_mining.php bitcoin 1234 0 10000000 5 000000
+					Hash attempts: 1429728
+					Block mined successfully: 000000979312ee8736eddfad0a9b73313d2554b34ec699c83bd3b505a9e2eef3
+				*/
+
 				break;
 		}
 
