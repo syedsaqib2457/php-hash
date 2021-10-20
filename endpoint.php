@@ -22,8 +22,7 @@
 			_output($response);
 		}
 
-		require_once('/var/www/ghostcompute/system_settings.php');
-		require_once('/var/www/ghostcompute/system_database.php');
+		require_once('/var/www/ghostcompute/system_databases.php');
 
 		if (
 			(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||

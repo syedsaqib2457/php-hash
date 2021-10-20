@@ -3,22 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += array(
-		'node_processes' => $settings['databases']['node_processes'],
-		'node_recursive_dns_destinations' => $settings['databases']['node_recursive_dns_destinations'],
-		'node_reserved_internal_destinations' => $settings['databases']['node_reserved_internal_destinations'],
-		'nodes' => $settings['databases']['nodes']
-	);
-	$parameters['databases'] = _connect($parameters['databases']);
-
-	if (
-		(empty($parameters['databases']['message']) === false) &&
-		(is_string($parameters['databases']['message']) === true)
-	) {
-		$response['message'] = $parameters['databases']['message'];
-		_output($response);
-	}
-
+	$parameters['databases'] += _connect(array(
+		$databases['nodes']
+	), $response);
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_types.php');
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_versions.php');
 
