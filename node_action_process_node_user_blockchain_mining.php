@@ -7,7 +7,7 @@
 			// mine indexed section for pseudo-threading
 
 		switch ($_SERVER['argv'][0]) {
-			case: 'bitcoin':
+			case 'bitcoin':
 				// process hashing for indexed nonce range, then exit
 				break;
 		}
