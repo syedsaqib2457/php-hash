@@ -19,7 +19,7 @@
 	), $response);
 
 	function _deleteNode($parameters, $response) {
-		$nodeDataDeleted = _delete(array(
+		_delete(array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
 				'OR' => array(
@@ -27,12 +27,7 @@
 					'node_id' => $nodeIds
 				)
 			)
-		));
-
-		if ($nodeDataDeleted === false) {
-			$response['message'] = 'Error deleting data in nodes database, please try again.';
-			return $response;
-		}
+		), $response);
 
 		/*
 		node_reserved_internal_destinations
@@ -45,7 +40,7 @@
 		unset($parameters['databases']['nodes']);
 
 		foreach ($parameters['databases'] as $databaseKey => $database) {
-			$dataDeleted = _delete(array(
+			_delete(array(
 				'in' => $parameters['databases'][$databaseKey],
 				'where' => array(
 					'OR' => array(
@@ -53,18 +48,11 @@
 						'node_node_id' => $nodeIds
 					)
 				)
-			));
-
-			if ($dataDeleted === false) {
-				$response['message'] = 'Error deleting data in ' . $databaseKey . ' database, please try again.';
-				return $response;
-			}
+			), $response);
 		}
 
-		$response = array(
-			'message' => 'Nodes removed successfully.',
-			'status_valid' => true
-		);
+		$response['message'] = 'Nodes removed successfully.';
+		$response['status_valid'] = true;
 		return $response;
 	}
 
