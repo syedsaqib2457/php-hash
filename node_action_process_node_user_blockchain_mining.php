@@ -1,14 +1,41 @@
 <?php
 	if (empty($_SERVER['argv'][3]) === true) {
 		// php node_action_process_node_user_blockchain_mining.php [type] [wallet_address or public_key from node_user authentication_username] 10
-			// build block header, manage indexed sections, etc
+			// build block header, manage indexed sections based on blockchain resource usage rules, etc
 	} else {
 		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_count] [process_index]
 			// mine indexed section for pseudo-threading
+			// write static repeating hash functions within loop for better CPU efficiency
 
 		switch ($_SERVER['argv'][0]) {
 			case 'bitcoin':
-				// process hashing for indexed nonce range, then exit
+				while (true) {
+					$blockHash = hash('sha256', hash_hmac('sha256', $_SERVER['argv'][1], $_SERVER['argv'][2]));
+
+					if ($blockHash[$_SERVER['argv'][4]] === '0') {
+						break;
+					}
+
+					if ($_SERVER['argv'][2] === $_SERVER['argv'][3]) {
+						exit;
+					}
+
+					$_SERVER['argv'][2]++;
+					$blockHash = hash('sha256', hash_hmac('sha256', $_SERVER['argv'][1], $_SERVER['argv'][2]));
+
+					if ($blockHash[$_SERVER['argv'][4]] === '0') {
+						break;
+					}
+
+					if ($_SERVER['argv'][2] === $_SERVER['argv'][3]) {
+						exit;
+					}
+
+					$_SERVER['argv'][2]++;
+				}
+
+				echo 'Block mined successfully: ' . $blockHash . "\n";
+				// todo: save to /tmp file for processing from pseudo-threading coordination
 				break;
 		}
 
