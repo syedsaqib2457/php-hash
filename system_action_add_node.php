@@ -28,13 +28,7 @@
 			$nodeNode = _list(array(
 				'in' => $parameters['databases']['nodes'],
 				'where' => array(
-					'OR' => array(
-						'external_ip_version_4' => ($nodeNodeId = $parameters['data']['node_id']),
-						'external_ip_version_6' => $nodeNodeId,
-						'id' => $nodeNodeId,
-						'internal_ip_version_4' => $nodeNodeId,
-						'internal_ip_version_6' => $nodeNodeId
-					)
+					'id' => $parameters['data']['node_id']
 				)
 			));
 
@@ -54,21 +48,8 @@
 			$parameters['data']['status_deployed'] = $nodeNode['status_deployed'];
 
 			if (empty($nodeNode['node_id']) === false) {
-				$nodeIdType = 'ID';
-
-				if (is_numeric($parameters['data']['node_id']) === false) {
-					$nodeIdType = 'IP';
-				}
-
-				$response['message'] = 'Node ' . $nodeIdType . ' ' . $parameters['data']['node_id'] . ' already belongs to node ID ' . $nodeNode['node_id'] . ', please try again.';
-				return $response;
+				$$parameters['data']['node_id'] = $nodeNode['node_id'];
 			}
-
-			$nodeIds = array(
-				$nodeId,
-				$nodeNodeId
-			);
-			$nodeNodeId = $parameters['data']['node_id'] = $nodeNode['id'];
 		}
 
 		$nodeExternalIps = $nodeIpVersionExternalIps = array();
@@ -149,11 +130,11 @@
 		);
 		$nodeIps = array_merge($nodeExternalIps, $nodeInternalIps);
 
-		if (empty($nodeNodeId) === false) {
+		if (empty($parameters['data']['node_id']) === false) {
 			$existingNodeParameters['where']['OR'] = array(
 				$existingNodeParameters['where'],
 				array(
-					'node_id' => $nodeNodeId,
+					'node_id' => $parameters['data']['node_id'],
 					'OR' => $nodeIps
 				)
 			);
