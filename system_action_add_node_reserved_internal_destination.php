@@ -3,6 +3,12 @@
 		exit;
 	}
 
+	if (empty($parameters['databases']['node_reserved_internal_destinations']) === true) {
+		$parameters['databases'] += _connect(array(
+			$databases['node_reserved_internal_destinations']
+		), $response);
+	}
+
 	function _addNodeReservedInternalDestination($parameters, $response) {
 		$existingNodeReservedInternalDestination = _list(array(
 			'in' => $parameters['databases']['node_reserved_internal_destinations'],

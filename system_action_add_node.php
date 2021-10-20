@@ -3,9 +3,12 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
-		$databases['nodes']
-	), $response);
+	if (empty($parameters['databases']['nodes']) === true) {
+		$parameters['databases'] += _connect(array(
+			$databases['nodes']
+		), $response);
+	}
+
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_types.php');
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_versions.php');
 
