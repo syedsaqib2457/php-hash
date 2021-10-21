@@ -1134,8 +1134,15 @@
 		)
 	);
 
-	function _connect($databases, $response) {
-		foreach ($databases as $databaseKey => $database) {
+	function _connect($databases, $existingDatabases, $response) {
+		foreach ($databases as $database) {
+			if (
+				(empty($existingDatabases) === false) &&
+				(empty($existingDatabases[$database['structure']['table']]) === false)
+			) {
+				continue;
+			}
+
 			$response['_connect'][$database['structure']['table']] = $database['structure'];
 
 			foreach ($database['authentication'] as $databaseAuthenticationIndex => $databaseAuthentication) {
@@ -1430,5 +1437,5 @@
 		$databases['system_user_authentication_token_sources'],
 		$databases['system_user_authentication_tokens'],
 		$databases['system_users']
-	), $response);
+	), false, $response);
 ?>
