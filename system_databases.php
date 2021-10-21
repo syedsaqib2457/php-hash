@@ -1149,7 +1149,7 @@
 			}
 		}
 
-		$response = $response['connect'];
+		$response = $response['_connect'];
 		return $response;
 	}
 
