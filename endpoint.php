@@ -72,16 +72,22 @@
 		$systemUserAuthenticationTokenSourceCountParameters = array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
-				'address_range_start <=' => $sourceIpAddress,
-				'address_range_stop >=' => $sourceIpAddress,
 				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
 			)
 		);
 		$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
 
 		if (($systemUserAuthenticationTokenSourceCount > 0) === true) {
-			$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
-			_output($response);
+			$systemUserAuthenticationTokenSourceCountParameters['where'] += array(
+				'address_range_start <=' => $sourceIpAddress,
+				'address_range_stop >=' => $sourceIpAddress,
+			);
+			$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
+
+			if (($systemUserAuthenticationTokenSourceCount <= 0) === true) {
+				$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
+				_output($response);
+			}
 		}
 
 		$response['status_authenticated'] = true;
