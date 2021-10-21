@@ -1142,7 +1142,7 @@
 				$response['_connect'][$database['structure']['table']]['connections'][$databaseAuthenticationIndex] = mysqli_connect($databaseAuthentication['hostname'], 'root', $databaseAuthentication['password'], 'ghostcompute');
 
 				if ($response['_connect'][$database['structure']['table']]['connections'][$databaseAuthenticationIndex] === false) {
-					$response['message' = 'Error connecting to ' . $database['structure']['table'] . ' database, please try again.';
+					$response['message'] = 'Error connecting to ' . $database['structure']['table'] . ' database, please try again.';
 					unset($response['_connect']);
 					_output($response);
 				}
