@@ -66,24 +66,20 @@
 			_output($response);
 		}
 
+		// todo: convert $_SERVER['REMOTE_ADDR'] to full ipv6 notation with validation function
 		$systemUserAuthenticationTokenSourceCountParameters = array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
+				'address_range_start <=' => $_SERVER['REMOTE_ADDR'],
+				'address_range_stop >=' => $_SERVER['REMOTE_ADDR'],
 				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
 			)
 		);
 		$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
 
 		if (($systemUserAuthenticationTokenSourceCount > 0) === true) {
-			$systemUserAuthenticationTokenSourceCountParameters['where']['address'] = $_SERVER['REMOTE_ADDR'];
-			$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
-
-			if (($systemUserAuthenticationTokenSourceCount > 0) === false) {
-				// todo: validate cidr if source IP isn't found before returning false
-
-				$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $_SERVER['REMOTE_ADDR'] . ', please try again.';
-				_output($response);
-			}
+			$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $_SERVER['REMOTE_ADDR'] . ', please try again.';
+			_output($response);
 		}
 
 		$response['status_authenticated'] = true;

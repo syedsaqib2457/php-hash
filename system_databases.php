@@ -969,7 +969,11 @@
 			),
 			'structure' => array(
 				'columns' => array(
-					'address' => array(
+					'address_range_start' => array(
+						'default' => null,
+						'type' => 'VARCHAR(45)'
+					),
+					'address_range_stop' => array(
 						'default' => null,
 						'type' => 'VARCHAR(45)'
 					),
