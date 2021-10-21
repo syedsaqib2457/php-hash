@@ -7,7 +7,6 @@
 		$databases['nodes']
 	), $parameters['databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_types.php');
-	require_once('/var/www/ghostcompute/system_action_validate_ip_address_versions.php');
 
 	function _addNode($parameters, $response) {
 		if (empty($parameters['data']['node_id']) === false) {

@@ -66,19 +66,21 @@
 			_output($response);
 		}
 
-		// todo: convert $_SERVER['REMOTE_ADDR'] to full ipv6 notation with validation function
+		require_once('/var/www/ghostcompute/system_action_validate_ip_address_versions.php');
+		$sourceIpAddress = _validateIpAddressVersions($_SERVER['REMOTE_ADDR']);
+		$sourceIpAddress = current($sourceIpAddress);
 		$systemUserAuthenticationTokenSourceCountParameters = array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
-				'address_range_start <=' => $_SERVER['REMOTE_ADDR'],
-				'address_range_stop >=' => $_SERVER['REMOTE_ADDR'],
+				'address_range_start <=' => $sourceIpAddress,
+				'address_range_stop >=' => $sourceIpAddress,
 				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
 			)
 		);
 		$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
 
 		if (($systemUserAuthenticationTokenSourceCount > 0) === true) {
-			$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $_SERVER['REMOTE_ADDR'] . ', please try again.';
+			$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
 			_output($response);
 		}
 
