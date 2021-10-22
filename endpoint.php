@@ -66,7 +66,7 @@
 			_output($response);
 		}
 
-		require_once('/var/www/ghostcompute/system_action_validate_ip_address_versions.php');
+		require_once('/var/www/ghostcompute/system_action_validate_ip_address_version.php');
 		$sourceIpAddress = _validateIpAddressVersions($_SERVER['REMOTE_ADDR']);
 		$sourceIpAddress = current($sourceIpAddress);
 		$systemUserAuthenticationTokenSourceCountParameters = array(
