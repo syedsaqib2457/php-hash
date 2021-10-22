@@ -57,7 +57,118 @@
 					}
 
 					break;
+
+
 				case 6:
+					$validIpAddressPartLetters = 'ABCDEF';
+
+					if (is_int(strpos($ipAddress, '::')) === true) {
+						$ipAddressDelimiterCount = substr_count($ipAddress, ':') - 2;
+
+						if (is_int(strpos($ipAddress, '.')) === true) {
+							$ipAddressDelimiterCount = 1;
+						}
+
+						if (
+							(empty($ipAddress[2]) === true) ||
+							($ipAddress[2] === '/')
+						) {
+							$ipAddressDelimiterCount = -1;
+						}
+
+						$ipAddress = trim(str_replace('::', str_repeat(':0000', 7 - $ipAddressDelimiterCount) . ':', $ipAddress), ':');
+
+						if (is_int(strpos($ipAddress, ':/')) === true) {
+							$ipAddress = str_replace(':/', '/', $ipAddress);
+						}
+					}
+
+					$ipAddressParts = explode(':', strtoupper($ipAddress));
+					$mappedIpAddress = false;
+
+					if (
+						(isset($ipAddressParts[7]) === false)
+						(isset($ipAddressParts[6]) === true)
+					) {
+						$mappedIpAddress = _validateIpAddress(end($ipAddressParts), 4);
+					}
+
+					if (
+						(is_string($mappedIpAddress) === true) ||
+						(
+							(isset($ipAddressParts[7]) === true) &&
+							(isset($ipAddressParts[8]) === false)
+						)
+					) {
+						$ipAddress = '';
+
+						foreach ($ipAddressParts as $ipAddressPartKey => $ipAddressPart) {
+							if (
+								($mappedIpAddress === false) &&
+								(ctype_alnum($ipAddressPart) === false)
+							) {
+								if (empty($ipAddressParts[($ipAddressPartKey + 1)]) === false) {
+									return false;
+								}
+
+								$ipAddressBlockParts = explode('/', $ipAddressPart);
+
+								if (
+									($allowIpAddressRanges === false) ||
+									(isset($ipAddressBlockParts[1]) === false) ||
+									(isset($ipAddressBlockParts[2]) === true) ||
+									(is_numeric($ipAddressBlockParts[2]) === false) ||
+									(($ipAddressBlockParts[1] > 128) === true) ||
+									(($ipAddressBlockParts[1] < 0) === true)
+								) {
+									return false;
+								}
+
+								$ipAddressPart = current($ipAddressBlockParts);
+							}
+
+							if (
+								(($ipAddressPart === $mappedIpAddress) === false) &&
+								(isset($ipAddressPart[4]) === true)
+							) {
+								return false;
+							}
+
+							if (
+								($mappedIpAddress === false) &&
+								(is_numeric($ipAddressPart) === false)
+							) {
+								if (ctype_alnum($ipAddressPart) === false) {
+									return false;
+								}
+
+								$ipAddressPartCharacterIndexes = range(0, (strlen($ipAddressPart) - 1));
+
+								foreach ($ipAddressPartCharacterIndexes as $ipAddressPartCharacterIndes) {
+									if (is_numeric($ipAddressPart[$ipAddressPartCharacterIndex]) === true) {
+										continue;
+									}
+
+									if (is_int(strpos($validIpAddressPartLetters,  $ipAddressPart[$ipAddressPartCharacterIndex])) === false) {
+										return false;
+									}
+								}
+							}
+
+							if (($ipAddressPartKey === 0) === false) {
+								$ipAddress .= ':';
+							}
+
+							$ipAddress .= str_pad($ipAddressPart, 4, '0', STR_PAD_LEFT);
+
+							if (isset($ipAddressBlockParts[1]) === true) {
+								$ipAddress .= '/' . $ipAddressBlockParts[1];
+							}
+						}
+
+						$response = $ipAddress;
+					}
+
 					break;
 			}
 
@@ -72,7 +183,7 @@
 			);
 		}
 
-		$ipAddresses = array_filter($ipAddresses); 
+		$ipAddresses = array_filter($ipAddresses);
 
 		foreach ($ipAddresses as $ipAddress) {
 			$ipAddressVersion = 4;
@@ -80,7 +191,7 @@
 
 			if (empty($ipAddress) === false) {
 				if (
-					(strpos($ipAddress, ':') !== false) && 
+					(is_int(strpos($ipAddress, ':')) === true) &&
 					(strpos($ipAddress, ':::') === false)
 				) {
 					$ipAddressVersion = 6;
