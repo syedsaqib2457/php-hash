@@ -1,6 +1,10 @@
 <?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
 	function _validateIpAddressVersion($ipAddresses = array(), $allowIpAddressRanges = false) {
-		$validatedIpAddresses = array();
+		$response = array();
 
 		if (is_array($ipAddresses) === false) {
 			$ipAddresses = array(
@@ -22,19 +26,18 @@
 					$ipAddressVersion = 6;
 				}
 
-				if (empty($validatedIpAddresses[$ipAddressVersion][$ipAddress]) === true) {
+				if (empty($response[$ipAddressVersion][$ipAddress]) === true) {
 					$validatedIpAddress = _validateIpAddress($ipAddress, $ipAddressVersion, $allowIpAddressRanges);
 
 					if ($validatedIpAddress === false) {
 						continue;
 					}
 
-					$validatedIpAddresses[$ipAddressVersion][$validatedIpAddress] = $validatedIpAddress;
+					$response[$ipAddressVersion][$validatedIpAddress] = $validatedIpAddress;
 				}
 			}
 		}
 
-		$response = $validatedIpAddresses;
 		return $response;
 	}
 ?>
