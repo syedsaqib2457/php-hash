@@ -4,6 +4,9 @@
 	}
 
 	function _validateIpAddressVersion($ipAddresses = array(), $allowIpAddressRanges = false) {
+		function _validateIpAddress() {
+		}
+
 		$response = array();
 
 		if (is_array($ipAddresses) === false) {
