@@ -5,7 +5,7 @@
 
 	function _validateIpAddressVersion($ipAddresses = array(), $allowIpAddressRanges = false) {
 		function _validateIpAddress($ipAddress, $ipAddressVersion, $allowIpAddressRanges = false) {
-			$response = false:
+			$response = false;
 
 			switch ($ipAddress) {
 				case 4:
