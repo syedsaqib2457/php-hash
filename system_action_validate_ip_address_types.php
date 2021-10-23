@@ -140,7 +140,7 @@
 					'usage' => 'public_network'
 				);
 
-				foreach ($reservedIpAddresses as $reservedIpAddress) {
+				foreach ($reservedIpAddresses[$ipAddressVersion] as $reservedIpAddress) {
 					if (
 						(($ipAddress < $reservedIpAddress['range_stop']) === true) &&
 						(($ipAddress > $reservedIpAddress['range_start']) === true)
