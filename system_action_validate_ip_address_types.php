@@ -134,6 +134,16 @@
 
 	foreach ($ipAddressVersions as $ipAddressVersion) {
 		if (empty($ipAddressVersionIpAddresses) === false) {
+			foreach ($ipAddressVersionIpAddresses[$ipAddressVersion] as $ipAddress) {
+				$response[$ipAddressVersion][$ipAddress] = array(
+					'type' => 'public',
+					'usage' => 'public_network'
+				);
+
+				foreach ($reservedIpAddresses as $reservedIpAddress) {
+					
+				}
+			}
 		}
 	}
 
