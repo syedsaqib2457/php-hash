@@ -77,7 +77,7 @@
 	);
 
 	foreach ($ipAddressVersions as $ipAddressVersion) {
-		if (empty($ipAddressVersionIpAddresses) === false) {
+		if (empty($ipAddressVersionIpAddresses[$ipAddressVersion]) === false) {
 			foreach ($ipAddressVersionIpAddresses[$ipAddressVersion] as $ipAddress) {
 				$response[$ipAddressVersion][$ipAddress] = array(
 					'type' => 'public',
@@ -86,13 +86,15 @@
 
 				foreach ($reservedIpAddresses[$ipAddressVersion] as $reservedIpAddress) {
 					if (
-						(($ipAddress < $reservedIpAddress['range_stop']) === true) &&
-						(($ipAddress > $reservedIpAddress['range_start']) === true)
+						(($ipAddress <= $reservedIpAddress['range_stop']) === true) &&
+						(($ipAddress >= $reservedIpAddress['range_start']) === true)
 					) {
 						$response[$ipAddressVersion][$ipAddress] = array(
 							'type' => 'reserved',
 							'usage' => $reservedIpAddress['usage']
 						);
+
+						break;
 					}
 				}
 			}
