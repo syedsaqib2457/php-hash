@@ -141,7 +141,15 @@
 				);
 
 				foreach ($reservedIpAddresses as $reservedIpAddress) {
-					
+					if (
+						(($ipAddress < $reservedIpAddress['range_stop']) === true) &&
+						(($ipAddress > $reservedIpAddress['range_start']) === true)
+					) {
+						$response[$ipAddressVersion][$ipAddress] = array(
+							'type' => 'reserved',
+							'usage' => $reservedIpAddress['usage']
+						);
+					}
 				}
 			}
 		}
