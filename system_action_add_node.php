@@ -55,8 +55,10 @@
 			return $response;
 		}
 
+		// todo: make system IP validation functions singular to simplify validation processes and to accomodate IPv6 notation conversions
+
 		foreach ($nodeIpAddressVersionExternalIpAddresss as $nodeIpAddressVersion => $nodeIpAddressVersionExternalIpAddress) {
-			$externalIpAddressType = _validateIpAddressTypes(current($nodeIpAddressVersionExternalIpAddress), $nodeIpAddressVersion);
+			$externalIpAddressTypes = _validateIpAddressTypes(current($nodeIpAddressVersionExternalIpAddresses);
 			$externalIpAddressType = current($externalIpAddressType);
 			$parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion . '_type'] = 'public|reserved';
 			$parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion . '_usage'] = 'public_network|private_network|etc';
