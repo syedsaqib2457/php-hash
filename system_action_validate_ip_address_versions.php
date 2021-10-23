@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	function _validateIpAddressVersion($ipAddresses = array(), $allowIpAddressRanges = false) {
+	function _validateIpAddressVersions($ipAddresses = array(), $allowIpAddressRanges = false) {
 		function _validateIpAddress($ipAddress, $ipAddressVersion, $allowIpAddressRanges = false) {
 			$response = false;
 
