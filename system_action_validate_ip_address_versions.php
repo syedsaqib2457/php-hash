@@ -1,4 +1,6 @@
 <?php
+	// todo: validate string instead of array for both IP validation functions since API now expects IP version from user input
+
 	if (empty($parameters) === true) {
 		exit;
 	}
