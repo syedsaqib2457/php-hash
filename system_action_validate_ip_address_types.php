@@ -8,94 +8,38 @@
 		$reservedIpAddresses = array(
 			4 => array(
 				array(
-					'block' => '0.0.0.0/8',
-					'count' => 16777216,
-					'range_start' => array(
-						'integer' => 0,
-						'string' => '0.0.0.0'
-					),
-					'range_stop' => array(
-						'integer' => 16777215,
-						'string' => '0.255.255.255'
-					),
+					'range_start' => '0.0.0.0',
+					'range_stop' => '0.255.255.255',
 					'usage' => 'current_network'
 				),
 				array(
-					'block' => '10.0.0.0/8',
-					'count' => 16777216,
-					'range_start' => array(
-						'integer' => 167772160,
-						'string' => '10.0.0.0'
-					),
-					'range_stop' => array(
-						'integer' => 184549375,
-						'string' => '10.255.255.255'
-					),
+					'range_start' => '10.0.0.0',
+					'range_stop' => '10.255.255.255',
 					'usage' => 'private_network'
 				),
 				array(
-					'block' => '100.64.0.0/10',
-					'count' => 4194304,
-					'range_start' => array(
-						'integer' => 1681915904,
-						'string' => '100.64.0.0'
-					),
-					'range_stop' => array(
-						'integer' => 1686110207,
-						'string' => '100.127.255.255'
-					),
+					'range_start' => '100.64.0.0',
+					'range_stop' => '100.127.255.255',
 					'usage' => 'private_network'
 				),
 				array(
-					'block' => '127.0.0.0/8',
-					'count' => 16777216,
-					'range_start' => array(
-						'integer' => 2130706432,
-						'string' => '127.0.0.0'
-					),
-					'range_stop' => array(
-						'integer' => 2147483647,
-						'string' => '127.255.255.255'
-					),
+					'range_start' => '127.0.0.0',
+					'range_stop' => '127.255.255.255',
 					'usage' => 'loopback'
 				),
 				array(
-					'block' => '172.16.0.0/12',
-					'count' => 1048576,
-					'range_start' => array(
-						'integer' => 2886729728,
-						'string' => '172.16.0.0'
-					),
-					'range_stop' => array(
-						'integer' => 2887778303,
-						'string' => '172.31.255.255'
-					),
+					'range_start' => '172.16.0.0',
+					'range_stop' => '172.31.255.255',
 					'usage' => 'private_network'
 				),
 				array(
-					'block' => '192.0.0.0/24',
-					'count' => 256,
-					'range_start' => array(
-						'integer' => 3221225472,
-						'string' => '192.0.0.0'
-					),
-					'range_stop' => array(
-						'integer' => 3221225727,
-						'string' => '192.0.0.255'
-					),
+					'range_start' => '192.0.0.0',
+					'range_stop' => '192.0.0.255',
 					'usage' => 'ietf_protocol_assignments'
 				),
 				array(
-					'block' => '192.0.2.0/24',
-					'count' => 256,
-					'range_start' => array(
-						'integer' => 3221225984,
-						'string' => '192.0.2.0'
-					),
-					'range_stop' => array(
-						'integer' => 3221226239,
-						'string' => '192.0.2.255'
-					),
+					'range_start' => '192.0.2.0',
+					'range_stop' => '192.0.2.255',
 					'usage' => 'documentation'
 				),
 				// todo: add remaining range details for IPv6
