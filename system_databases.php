@@ -788,10 +788,6 @@
 					),
 					'external_ip_address_version_4_type' => array(
 						'default' => null,
-						'type' => 'VARCHAR(8)'
-					),
-					'external_ip_address_version_4_usage' => array(
-						'default' => null,
 						'type' => 'VARCHAR(25)'
 					),
 					'external_ip_address_version_6' => array(
@@ -799,10 +795,6 @@
 						'type' => 'VARCHAR(45)'
 					),
 					'external_ip_address_version_6_type' => array(
-						'default' => null,
-						'type' => 'VARCHAR(8)'
-					),
-					'external_ip_address_version_6_usage' => array(
 						'default' => null,
 						'type' => 'VARCHAR(25)'
 					),
@@ -814,7 +806,7 @@
 						'default' => null,
 						'type' => 'VARCHAR(15)'
 					),
-					'internal_ip_address_version_4_usage' => array(
+					'internal_ip_address_version_4_type' => array(
 						'default' => null,
 						'type' => 'VARCHAR(25)'
 					),
@@ -822,7 +814,7 @@
 						'default' => null,
 						'type' => 'VARCHAR(45)'
 					),
-					'internal_ip_address_version_6_usage' => array(
+					'internal_ip_address_version_6_type' => array(
 						'default' => null,
 						'type' => 'VARCHAR(25)'
 					),
