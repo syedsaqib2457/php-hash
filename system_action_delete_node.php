@@ -67,7 +67,7 @@
 	}
 
 	if ($parameters['action'] === 'delete_node') {
-		$response = _removeNode($parameters, $response);
+		$response = _deleteNode($parameters, $response);
 		_output($response);
 	}
 ?>
