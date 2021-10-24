@@ -969,18 +969,6 @@
 			),
 			'structure' => array(
 				'columns' => array(
-					'address_range_start' => array(
-						'default' => null,
-						'type' => 'VARCHAR(45)'
-					),
-					'address_range_stop' => array(
-						'default' => null,
-						'type' => 'VARCHAR(45)'
-					),
-					'address_version' => array(
-						'default' => null,
-						'type' => 'TINYINT(1)'
-					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
@@ -988,6 +976,18 @@
 					'id' => array(
 						'primary_key' => true,
 						'type' => 'BIGINT(11)'
+					),
+					'ip_address_range_start' => array(
+						'default' => null,
+						'type' => 'VARCHAR(45)'
+					),
+					'ip_address_range_stop' => array(
+						'default' => null,
+						'type' => 'VARCHAR(45)'
+					),
+					'ip_address_version' => array(
+						'default' => null,
+						'type' => 'TINYINT(1)'
 					),
 					'modified_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
