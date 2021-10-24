@@ -148,6 +148,7 @@
 			'in' => $parameters['databases']['nodes'],
 			'where' => $nodeIpAddresses
 		), $response);
+		unset($node['authentication_token']);
 		$response['data'] = $node;
 		$response['message'] = 'Node added successfully.';
 		$response['status_valid'] = true;
