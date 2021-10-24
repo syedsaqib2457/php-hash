@@ -1,6 +1,4 @@
 <?php
-	// todo: validate string instead of array for both IP validation functions since API now expects IP version from user input
-
 	if (empty($parameters) === true) {
 		exit;
 	}
@@ -87,7 +85,7 @@
 				$mappedIpAddress = false;
 
 				if (
-					(isset($ipAddressParts[7]) === false)
+					(isset($ipAddressParts[7]) === false) &&
 					(isset($ipAddressParts[6]) === true)
 				) {
 					$mappedIpAddress = _validateIpAddress(end($ipAddressParts), 4);
