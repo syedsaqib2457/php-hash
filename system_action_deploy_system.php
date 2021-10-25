@@ -492,7 +492,7 @@
 		unlink($firewallRulesFile);
 	}
 
-	require_once('/var/www/ghostcompute/settings.php');
+	require_once('/var/www/ghostcompute/system_databases.php');
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password');
 
 	if ($databaseConnection === false) {
@@ -510,11 +510,11 @@
 
 	$databaseCommands = array();
 
-	foreach ($settings['databases'] as $databaseTableName => $databaseTable) {
+	foreach ($settings['databases'] as $databaseTableName => $database) {
 		$databaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $databaseTableName . '` (`created_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP);';
-		unset($databaseTable['structure']['created_date']);
+		unset($database['structure']['columns']['created_date']);
 
-		foreach ($databaseTable['structure'] as $databaseColumnName => $databaseColumn) {
+		foreach ($database['structure']['columns'] as $databaseColumnName => $databaseColumn) {
 			$databaseColumnDefault = '';
 			$databaseNull = 'NULL';
 
