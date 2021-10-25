@@ -20,9 +20,8 @@
 			$nodeParameters['where']['id'] = $parameters['where']['id'];
 		}
 
-		$response['message'] = 'Invalid node authentication token or ID, please try again.';
-
 		if (empty($parameters['where']) === true) {
+			$response['message'] = 'Node authentication token or ID is required, please try again.'
 			return $response;
 		}
 
@@ -30,6 +29,7 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
+			$response['message'] = 'Invalid node authentication token or ID, please try again.';
 			return $response;
 		}
 
