@@ -146,6 +146,7 @@
 			'in' => $parameters['databases']['nodes'],
 			'where' => $nodeIpAddresses
 		), $response);
+		$node = current($node);
 		unset($node['authentication_token']);
 		$response['data'] = $node;
 		$response['message'] = 'Node added successfully.';

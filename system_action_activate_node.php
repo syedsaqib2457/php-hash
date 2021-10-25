@@ -27,6 +27,7 @@
 		}
 
 		$node = _list($nodeParameters, $response);
+		$node = current($node);
 
 		if (empty($node) === true) {
 			return $response;

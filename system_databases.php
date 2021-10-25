@@ -1255,10 +1255,6 @@
 			}
 		}
 
-		if (isset($response['_list'][1]) === false) {
-			$response['_list'] = current($response['_list']);
-		}
-
 		$response = $response['_list'];
 		return $response;
 	}
