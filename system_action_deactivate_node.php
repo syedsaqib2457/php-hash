@@ -8,23 +8,17 @@
 	), $parameters['databases'], $response);
 
 	function _deactivateNode($parameters, $response) {
-		$nodeParameters = array(
-			'in' => $parameters['databases']['nodes']
-		);
-
-		if (empty($parameters['where']['authentication_token']) === false) {
-			$nodeParameters['where']['authentication_token'] = $parameters['where']['authentication_token'];
-		}
-
-		if (empty($parameters['where']['id']) === false) {
-			$nodeParameters['where']['id'] = $parameters['where']['id'];
-		}
-
-		if (empty($parameters['where']) === true) {
-			$response['message'] = 'Node authentication token or ID is required, please try again.';
+		if (empty($parameters['where']['id']) === true) {
+			$response['message'] = 'Node ID is required, please try again.';
 			return $response;
 		}
 
+		$nodeParameters = array(
+			'in' => $parameters['databases']['nodes'],
+			'where' => array(
+				'id' => $parameters['where']['id']
+			)
+		);
 		$node = _list($nodeParameters, $response);
 		$node = current($node);
 
