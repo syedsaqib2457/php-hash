@@ -7,7 +7,7 @@
 		$databases['nodes']
 	), $parameters['databases'], $response);
 
-	function _activateNode($parameters, $response) {
+	function _deactivateNode($parameters, $response) {
 		$nodeParameters = array(
 			'in' => $parameters['databases']['nodes']
 		);
@@ -33,31 +33,22 @@
 			return $response;
 		}
 
-		if (
-			(empty($parameters['where']['authentication_token']) === true) &&
-			$node['status_deployed'] === false
-		) {
-			$response['data']['command'] = ''; // todo: updated node activation and deployment command
-			$response['message'] = 'Node is ready for activation.';
-			return $response;
-		}
-
-		if ($node['status_activated'] === true) {
-			$response['message'] = 'Node is already activated, please try again.';
+		if ($node['status_activated'] === false) {
+			$response['message'] = 'Node is already deactivated, please try again.';
 			return $response;
 		}
 
 		$nodeParameters['data'] = array(
-			'status_activated' => true
+			'status_activated' => false
 		);
 		_update($nodeParameters);
-		$response['message'] = 'Node activated successfully.';
+		$response['message'] = 'Node deactivated successfully.';
 		$response['status_valid'] = true;
 		return $response;
 	}
 
-	if ($parameters['action'] === 'activate_node') {
-		$response = _activateNode($parameters, $response);
+	if ($parameters['action'] === 'deactivate_node') {
+		$response = _deactivateNode($parameters, $response);
 		_output($response);
 	}
 ?>
