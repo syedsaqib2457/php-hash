@@ -33,7 +33,10 @@
 			return $response;
 		}
 
-		if ($node['status_deployed'] === false) {
+		if (
+			(empty($parameters['where']['authentication_token']) === true) &&
+			$node['status_deployed'] === false
+		) {
 			$response['data']['command'] = ''; // todo: updated node activation and deployment command
 			$response['message'] = 'Node is ready for activation.';
 			return $response;
