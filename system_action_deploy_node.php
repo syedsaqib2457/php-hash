@@ -8,16 +8,17 @@
 	), $parameters['databases'], $response);
 
 	function _deployNode($parameters, $response) {
-		$nodeParameters = array(
-			'in' => $parameters['databases']['nodes']
-		);
-
 		if (empty($parameters['where']['authentication_token']) === true) {
 			$response['message'] = 'Node authentication token is required, please try again.';
 			return $response;
 		}
 
-		$nodeParameters['where']['authentication_token'] = $parameters['where']['authentication_token'];
+		$nodeParameters = array(
+			'in' => $parameters['databases']['nodes'],
+			'where' => array(
+				'authentication_token' => $parameters['where']['authentication_token']
+			)
+		);
 		$node = _list($nodeParameters, $response);
 		$node = current($node);
 
