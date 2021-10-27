@@ -85,17 +85,17 @@
 		$existingNodeParameters = array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
-				'OR' => $nodeExternalIpAddresses
+				'either' => $nodeExternalIpAddresses
 			)
 		);
 		$nodeIpAddresses = array_merge($nodeExternalIpAddresses, $nodeInternalIpAddresses);
 
 		if (empty($parameters['data']['node_id']) === false) {
-			$existingNodeParameters['where']['OR'] = array(
+			$existingNodeParameters['where']['either'] = array(
 				$existingNodeParameters['where'],
 				array(
-					'node_id' => $parameters['data']['node_id'],
-					'OR' => $nodeIpAddresses
+					'either' => $nodeIpAddresses,
+					'node_id' => $parameters['data']['node_id']
 				)
 			);
 		}
