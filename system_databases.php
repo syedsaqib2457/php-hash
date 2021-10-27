@@ -1154,10 +1154,10 @@
 
 	function _count($parameters, $response) {
 		$response['_count'] = 0;
-		$command = 'SELECT COUNT(id) FROM ' . $parameters['in']['table'];
+		$command = 'select count(id) from ' . $parameters['in']['table'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
 		}
 
 		foreach ($parameters['in']['connections'] as $connection) {
@@ -1171,13 +1171,21 @@
 
 			$commandResponse = mysqli_fetch_assoc($commandResponse);
 
-			if (is_int($commandResponse['COUNT(id)']) === false) {
+			if ($commandResponse === false) {
 				$response['message'] = 'Error counting data in ' . $parameters['in']['table'] . ' database, please try again.';
 				unset($response['_count']);
 				_output($response);
 			}
 
-			$response['_count'] += $commandResponse['COUNT(id)'];
+			$commandResponse = current($commandResponse);
+
+			if (is_int($commandResponse) === false) {
+				$response['message'] = 'Error counting data in ' . $parameters['in']['table'] . ' database, please try again.';
+				unset($response['_count']);
+				_output($response);
+			}
+
+			$response['_count'] += $commandResponse;
 		}
 
 		$response = $response['_count'];
@@ -1185,10 +1193,10 @@
 	}
 
 	function _delete($parameters, $response) {
-		$command = 'DELETE FROM ' . $parameters['in']['table'];
+		$command = 'delete from ' . $parameters['in']['table'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
 		}
 
 		foreach ($parameters['in']['connections'] as $connection) {
@@ -1206,35 +1214,38 @@
 
 	function _list($parameters, $response) {
 		$response['_list'] = array();
-		$command = 'SELECT * FROM ' . $parameters['in']['table'];
+		$command = 'select * from ' . $parameters['in']['table'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
 		}
 
 		if (empty($parameters['sort']) === false) {
-			$command .= ' ORDER BY ';
+			$command .= ' order by ';
 
 			if ($parameters['sort'] === 'random') {
-				$command .= 'RAND()';
-			} elseif (
-				(empty($parameters['sort']['key']) === false) &&
-				($sortKey = $parameters['sort']['key'])
-			) {
+				$command .= 'rand()';
+			} elseif (empty($parameters['sort']['key']) === false) {
 				if (empty($parameters['sort']['order']) === true) {
-					$parameters['sort']['order'] = 'DESC';
+					$parameters['sort']['order'] = 'desc';
+				} else {
+					$sortOrders = array(
+						'ascending' => 'asc',
+						'descending' => 'desc'
+					);
+					$parameters['sort']['order'] = $sortOrders[$parameters['sort']['order']];
 				}
 
-				$command .= $sortKey . ' ' . $parameters['sort']['order'] . ', id DESC';
+				$command .= $parameters['sort']['key'] . ' ' . $parameters['sort']['order'] . ', id DESC';
 			}
 		}
 
 		if (empty($parameters['limit']) === false) {
-			$command .= ' LIMIT ' . $parameters['limit'];
+			$command .= ' limit ' . $parameters['limit'];
 		}
 
 		if (empty($parameters['offset']) === false) {
-			$command .= ' OFFSET ' . $parameters['offset'];
+			$command .= ' offset ' . $parameters['offset'];
 		}
 
 		foreach ($parameters['in']['connections'] as $connectionIndex => $connection) {
@@ -1248,7 +1259,7 @@
 
 			$response['_list'][$connectionIndex] = mysqli_fetch_assoc($commandResponse);
 
-			if ($response[$connectionIndex] === false) {
+			if ($response['_list'][$connectionIndex] === false) {
 				$response['message'] = 'Error listing data in ' . $parameters['in']['table'] . ' database, please try again.';
 				unset($response['_list']);
 				_output($response);
@@ -1259,15 +1270,15 @@
 		return $response;
 	}
 
-	function _parseCommandWhereConditions($parameters, $conjunction = 'AND') {
+	function _parseCommandWhereConditions($parameters, $whereConditionConjunction = 'and') {
 		foreach ($parameters['where'] as $whereConditionKey => $whereConditionValue) {
-			if ($whereConditionKey === 'OR') {
-				$conjunction = $whereConditionKey;
+			if ($whereConditionKey === 'either') {
+				$whereConditionConjunction = 'or';
 			}
 
 			if (
 				(is_array($whereConditionValue) === true) &&
-				(count($whereConditionValue) !== count($whereConditionValue, COUNT_RECURSIVE))
+				((count($whereConditionValue) === count($whereConditionValue, true)) === false)
 			) {
 				$recursiveParameters = array(
 					'where' => $whereConditionValue
@@ -1275,7 +1286,7 @@
 				$parameters['where'][$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseCommandWhereConditions($recursiveParameters, $conjunction)) . ')';
 			} else {
 				if (
-					(($conjunction === $whereConditionKey) === false) &&
+					(($whereConditionConjunction === 'either') === false) &&
 					(isset($parameters['in']['settings']['structure'][substr($whereConditionKey, 0, strpos($whereConditionKey, ' '))]) === false)
 				) {
 					unset($parameters['where'][$whereConditionKey]);
@@ -1296,17 +1307,17 @@
 					}
 
 					if (is_null($whereConditionValueValue) === true) {
-						$whereConditionValueValue = 'IS NULL';
+						$whereConditionValueValue = 'is null';
 					}
 
 					$whereConditionValue[$whereConditionValueKey] = $whereConditionValueValue;
 
-					if ($conjunction === $whereConditionKey) {
-						$whereConditionValueValueCondition = 'IN';
+					if (($whereConditionKey === 'either') === true) {
+						$whereConditionValueValueCondition = 'in';
 
 						if (is_int(strpos($whereConditionValueKey, ' !=')) === true) {
 							$whereConditionValueKey = substr($whereConditionValueKey, 0, strpos($whereConditionValueKey, ' '));
-							$whereConditionValueValueCondition = 'NOT ' . $whereConditionValueValueCondition;
+							$whereConditionValueValueCondition = 'not ' . $whereConditionValueValueCondition;
 						}
 
 						$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueValueCondition . " ('" . str_replace("'", "\'", $whereConditionValueValue) . "')";
@@ -1315,24 +1326,24 @@
 
 				if (empty($whereConditionValueConditions) === true) {
 					if (
-						(strpos($whereConditionKey, ' >') !== false) ||
-						(strpos($whereConditionKey, ' <') !== false)
+						(is_int(strpos($whereConditionKey, ' >')) === true) ||
+						(is_int(strpos($whereConditionKey, ' <')) === true)
 					) {
 						$whereConditionValueConditions[] = $whereConditionKey . ' ' . str_replace("'", "\'", current($whereConditionValue));
 					} else {
-						$whereConditionValueCondition = 'IN';
+						$whereConditionValueCondition = 'in';
 						$whereConditionValueKey = $whereConditionKey;
 
 						if (is_int(strpos($whereConditionValueKey, ' !=')) === true) {
 							$whereConditionValueKey = substr($whereConditionValueKey, 0, strpos($whereConditionValueKey, ' '));
-							$whereConditionValueCondition = 'NOT ' . $whereConditionValueCondition;
+							$whereConditionValueCondition = 'not ' . $whereConditionValueCondition;
 						}
 
 						$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueCondition . " ('" . implode("','", str_replace("'", "\'", $whereConditionValue)) . "')";
 					}
 				}
 
-				$parameters['where'][$whereConditionKey] = '(' . implode(' ' . $conjunction . ' ', $whereConditionValueConditions) . ')';
+				$parameters['where'][$whereConditionKey] = '(' . implode(' ' . $whereConditionConjunction . ' ', $whereConditionValueConditions) . ')';
 			}
 		}
 
@@ -1372,10 +1383,10 @@
 					$dataKeys .= ',created_date';
 					$dataUpdateValues = '';
 				} else {
-					$dataUpdateValues = ' ON DUPLICATE KEY UPDATE ' . substr($dataUpdateValues, 1);
+					$dataUpdateValues = ' on duplicate key update ' . substr($dataUpdateValues, 1);
 				}
 
-				$commandResponse = mysqli_query($parameters['in']['connections'][$connectionIndex], 'INSERT INTO ' . $parameters['in']['table'] . '(' . substr($dataKeys, 1) . ") VALUES (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
+				$commandResponse = mysqli_query($parameters['in']['connections'][$connectionIndex], 'insert into ' . $parameters['in']['table'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
 
 				if ($commandResponse === false) {
 					$response['message'] = 'Error saving data in ' . $parameters['in']['table'] . ' database, please try again.';
@@ -1398,13 +1409,13 @@
 
 	function _update($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			$command = 'UPDATE ' . $parameters['in']['table'] . ' SET ';
+			$command = 'update ' . $parameters['in']['table'] . ' set ';
 
 			foreach ($parameters['data'] as $updateValueKey => $updateValue) {
 				$command .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
 			}
 
-			$command = rtrim($command, ',') . ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$command = rtrim($command, ',') . ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
 
 			foreach ($parameters['in']['connections'] as $connection) {
 				$commandResponse = mysqli_query($connection, $command);

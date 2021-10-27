@@ -7,54 +7,60 @@
 		$databases['nodes']
 	), $parameters['databases'], $response);
 
-		function processNode() {
-			// todo: verify no 
-			// reserved internal 
-			// ip duplicates 
-			// before each process 
-			// reconfig
-			$response = array( 
-				'data' => 
-				array(
-					'node_ip_versions' 
-					=> 
-					array(
-						32 
-						=> 
-						4, 
-						128 
-						=> 
-						6
-					), 
-					'node_process_types' 
-					=> 
-					array_keys($this->settings['node_process_type_default_port_numbers']), 
-					'proxy_node_process_types' 
-					=> 
-					array(
-						'proxy' 
-						=> 
-						'http_proxy', 
-						'socks' 
-						=> 
-						'socks_proxy'
-					), 
-					'reserved_network' 
-					=> 
-					$this->settings['reserved_network'], 
-					'version' 
-					=> 
-					$this->settings['version']
-				), 'message' 
-				=> 'Error 
-				processing 
-				nodes, please 
-				try again.', 
-				'status_valid' 
-				=> 
-				(empty($parameters['user']['node_id']) 
-				=== false)
-			); if 
+	function processNode($parameters, $response) {
+		// todo: verify no reserved internal ip duplicates before each process reconfig
+
+
+$response['data'] = array(
+	'node_ip_versions' => array(
+		32 => 4,
+		128 => 6
+	), 
+	'node_process_types' => array(
+		'http_proxy',
+		'load_balancer',
+		'recursive_dns',
+		'socks_proxy'
+	),
+	'proxy_node_process_types' => array(
+		'proxy' => 'http_proxy',
+		'socks' => 'socks_proxy'
+	),
+	'reserved_network' => array(), // todo: add reserved network IP data from validation file
+	'version' => 1 // todo: add system version nber from file
+);
+
+$nodeParameters = array(
+	'in' => $parameters['databases']['nodes']
+);
+
+if (empty($parameters['where']['authentication_token']) === false) {
+	$nodeParameters['where']['authentication_token'] = $parameters['where']['authentication_token'];
+}
+
+if (empty($parameters['where']['id']) === false) {
+	$nodeParameters['where']['either'] = array(
+		'id' => $parameters['where']['id'],
+		'node_id' => $parameters['where']['id']
+	);
+}
+
+if (empty($nodeParameters['where']) === true) {
+	$response['message'] = 'Node authentication token or ID is required, please try again.';
+	return $response;
+}
+
+$node = _list($nodeParameters, $response);
+$node = current($node);
+
+if (empty($node) === true) {
+	$response['message'] = 'Invalid node authentication token or ID, please try again';
+	return $response;
+}
+
+
+
+
 			($response['status_valid'] 
 			=== false) {
 				$this->_logUnauthorizedRequest(); 
