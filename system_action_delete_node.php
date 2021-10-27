@@ -22,7 +22,7 @@
 		_delete(array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
-				'OR' => array(
+				'either' => array(
 					'id' => ($nodeIds = array_filter($parameters['where']['id'])),
 					'node_id' => $nodeIds
 				)
@@ -53,7 +53,7 @@
 			_delete(array(
 				'in' => $parameters['databases'][$database],
 				'where' => array(
-					'OR' => array(
+					'either' => array(
 						'node_id' => $nodeIds,
 						'node_node_id' => $nodeIds
 					)
