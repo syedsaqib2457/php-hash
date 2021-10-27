@@ -27,27 +27,18 @@
 			'reserved_network' => array(), // todo: add reserved network IP data from validation file
 			'version' => 1 // todo: add system version nber from file
 		);
-		$nodeParameters = array(
-			'in' => $parameters['databases']['nodes']
-		);
 
-		if (empty($parameters['where']['authentication_token']) === false) {
-			$nodeParameters['where']['authentication_token'] = $parameters['where']['authentication_token'];
-		}
-
-		if (empty($parameters['where']['id']) === false) {
-			$nodeParameters['where']['either'] = array(
-				'id' => $parameters['where']['id'],
-				'node_id' => $parameters['where']['id']
-			);
-		}
-
-		if (empty($nodeParameters['where']) === true) {
-			$response['message'] = 'Node authentication token or ID is required, please try again.';
+		if (empty($parameters['where']['authentication_token']) === true) {
+			$response['message'] = 'Node authentication token is required, please try again.';
 			return $response;
 		}
 
-		$node = _list($nodeParameters, $response);
+		$node = _list(array(
+			'in' => $parameters['databases']['nodes'],
+			'where' => array(
+				'authentication_token' => $parameters['where']['authentication_token']
+			)
+		), $response);
 		$node = current($node);
 
 		if (empty($node) === true) {
