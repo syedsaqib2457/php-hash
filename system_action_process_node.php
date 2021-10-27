@@ -1,3 +1,12 @@
+<?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
+	$parameters['databases'] += _connect(array(
+		$databases['nodes']
+	), $parameters['databases'], $response);
+
 		function processNode() {
 			// todo: verify no 
 			// reserved internal 
@@ -903,3 +912,8 @@
 			successfully.'; return 
 			$response;
 		}
+
+	if ($parameters['action'] === 'process_node') {
+		$response = _processNode($parameters, $response);
+		_output($response);
+	}
