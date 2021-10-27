@@ -35,6 +35,15 @@
 		$nodeParameters['data'] = array(
 			'status_deployed' => true
 		);
+		$nodeParameters['where'] = array(
+			'either' => array(
+				'id' => ($nodeIds = array_filter(array_intersect_key($node, array(
+					'id' => true,
+					'node_id' => true
+				)))),
+				'node_id' => $nodeIds
+			)
+		);
 		_update($nodeParameters, $response);
 		$response['message'] = 'Node deployed successfully.';
 		$response['status_valid'] = true;
