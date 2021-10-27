@@ -7,7 +7,7 @@
 		$databases['nodes']
 	), $parameters['databases'], $response);
 
-	function processNode($parameters, $response) {
+	function _processNode($parameters, $response) {
 		// todo: verify no reserved internal ip duplicates before each process reconfig
 		$response['data'] = array(
 			'node_ip_versions' => array(

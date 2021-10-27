@@ -35,7 +35,7 @@
 		$nodeParameters['data'] = array(
 			'status_deployed' => true
 		);
-		_update($nodeParameters);
+		_update($nodeParameters, $response);
 		$response['message'] = 'Node deployed successfully.';
 		$response['status_valid'] = true;
 		return $response;
