@@ -13,7 +13,7 @@
 			'node_ip_versions' => array(
 				32 => 4,
 				128 => 6
-			), 
+			),
 			'node_process_types' => array(
 				'http_proxy',
 				'load_balancer',
