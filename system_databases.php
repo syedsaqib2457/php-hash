@@ -838,7 +838,7 @@
 						'default' => null,
 						'type' => 'TINYINT(1)'
 					),
-					'status_active' => array(
+					'status_activated' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
