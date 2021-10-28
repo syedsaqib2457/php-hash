@@ -57,152 +57,95 @@
 			$node['node_id']
 		));
 
-if (
-	(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
-	(isset($parameters['data']['processing_progress_percentage']) === true) &&
-	(isset($parameters['data']['status_processed']) === true) &&
-	(isset($parameters['data']['status_processing']) === true)
-) {
-	_update(array(
-		'data' => array(
-			'processing_progress_checkpoint' => $parameters['data']['processing_progress_checkpoint'],
-			'processing_progress_percentage' => $parameters['data']['processing_progress_percentage'],
-			'status_processed' => boolval($parameters['data']['status_processed']),
-			'status_processing' => boolval($parameters['data']['status_processing'])
-		),
-		'in' => $parameters['databases']['nodes'],
-		'where' => array(
-			'id' => $nodeIds,
-			'node_id' => $nodeIds
-		)
-	), $response);
-} else {
-}
-	/*
-	$nodeCount = _count(array(
-		'in' => $parameters['databases']['nodes'],
-		'where' => array(
-			'either' => array(
-				'id' => $nodeIds,
-				'node_id' => $nodeIds
-			),
-			'status_processed' => false
-		)
-	), $response);
+		if (
+			(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
+			(isset($parameters['data']['processing_progress_percentage']) === true) &&
+			(isset($parameters['data']['status_processed']) === true) &&
+			(isset($parameters['data']['status_processing']) === true)
+		) {
+			_update(array(
+				'data' => array(
+					'processing_progress_checkpoint' => $parameters['data']['processing_progress_checkpoint'],
+					'processing_progress_percentage' => $parameters['data']['processing_progress_percentage'],
+					'status_processed' => boolval($parameters['data']['status_processed']),
+					'status_processing' => boolval($parameters['data']['status_processing'])
+				),
+				'in' => $parameters['databases']['nodes'],
+				'where' => array(
+					'id' => $nodeIds,
+					'node_id' => $nodeIds
+				)
+			), $response);
+		} else {
+			$nodeCount = _count(array(
+				'in' => $parameters['databases']['nodes'],
+				'where' => array(
+					'either' => array(
+						'id' => $nodeIds,
+						'node_id' => $nodeIds
+					),
+					'status_processed' => false
+				)
+			), $response);
 
-	if (($nodeCount > 0) === false) {
-		$response['message'] = 'Node is already processed, please try again.';
-		return $response;
-	}
+			if (($nodeCount > 0) === false) {
+				$response['message'] = 'Node is already processed, please try again.';
+				return $response;
+			}
 
-	$nodeProcesses = _list(array(
-		'in' => $parameters['databases']['node_processes'],
-		'where' => array(
-			'node_node_id' => $nodeIds
-		)
-	));
-	$nodeProcessForwardingDestinations = _list(array(
-		'in' => $parameters['databases']['node_process_forwarding_destinations'],
-		'where' => array(
-			'node_node_id' => $nodeIds
-		)
-	));
-	$nodeProcessRecursiveDnsDestinations = _list(array(
-		'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
-		'where' => array(
-			'node_node_id' => $nodeIds
-		)
-	));
-	$nodeProcessUsers = _list(array(
-		'in' => $parameters['databases']['node_process_users'],
-		'where' => array(
-			'node_node_id' => $nodeIds
-		)
-	));
-	$nodeReservedInternalDestinations = _list(array(
-		'in' => $parameters['databases']['node_reserved_internal_destinations'],
-		'where' => array(
-			'node_node_id' => $nodeIds,
-			'status_assigned' => true
-		)
-	));
-	$nodes = 
-			$this->fetch(array(
-				'fields' => 
-				array(
-					'external_ip_version_4', 
-					'external_ip_version_6', 
-					'id', 
-					'internal_ip_version_4', 
-					'internal_ip_version_6', 
-					'status_active'
-				), 'from' => 
-				'nodes', 
-				'where' => 
-				array(
-					'OR' 
-					=> 
-					array(
-						'id' 
-						=> 
-						$nodeId, 
-						'node_id' 
-						=> 
-						$nodeId
-					) ) 
-			)); 
-			$response['status_valid'] 
-			= (
-				($nodeProcesses 
-				!== false) && 
-				($nodeProcessForwardingDestinations 
-				!== false) && 
-				($nodeProcessRecursiveDnsDestinations 
-				!== false) && 
-				($nodeProcessUsers 
-				!== false) && 
-				($nodeReservedInternalDestinations 
-				!== false) && 
-				($nodes !== 
-				false)
-			); if 
-			($response['status_valid'] 
-			=== false) {
-				return 
-				$response;
-			}
-			$response['status_valid'] 
-			= (empty($nodes) === 
-			false); if 
-			($response['status_valid'] 
-			=== false) {
-				$response['message'] 
-				= 'Invalid 
-				node ID, 
-				please try 
-				again.'; 
-				return 
-				$response;
-			}
-			$response['status_valid'] 
-			= (empty($nodes) === 
-			false); if 
-			($response['status_valid'] 
-			=== false) {
-				$response['message'] 
-				= 'Invalid 
-				node ID, 
-				please try 
-				again.'; 
-				return 
-				$response;
-			}
-			foreach ($nodes as 
-			$node) {
-				$response['data']['nodes'][$node['id']] 
-				= $node; 
-				unset($response['data']['nodes'][$node['id']]['id']); 
-				foreach 
+			$nodeProcesses = _list(array(
+				'in' => $parameters['databases']['node_processes'],
+				'where' => array(
+					'node_node_id' => $nodeIds
+				)
+			));
+			$nodeProcessForwardingDestinations = _list(array(
+				'in' => $parameters['databases']['node_process_forwarding_destinations'],
+				'where' => array(
+					'node_node_id' => $nodeIds
+				)
+			));
+			$nodeProcessRecursiveDnsDestinations = _list(array(
+				'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
+				'where' => array(
+					'node_node_id' => $nodeIds
+				)
+			));
+			$nodeProcessUsers = _list(array(
+				'in' => $parameters['databases']['node_process_users'],
+				'where' => array(
+					'node_node_id' => $nodeIds
+				)
+			));
+			$nodeReservedInternalDestinations = _list(array(
+				'in' => $parameters['databases']['node_reserved_internal_destinations'],
+				'where' => array(
+					'node_node_id' => $nodeIds,
+					'status_assigned' => true
+				)
+			));
+			$nodes = _list(array(
+				'in' => $parameters['databases']['nodes'],
+				'where' => array(
+					'either' => array(
+						'id' => $nodeIds,
+						'node_id' => $nodeIds
+					)
+				)
+			));
+		}
+
+/*
+foreach ($nodes as $node) {
+	$response['data']['nodes'][$node['id']] = array(
+		'external_ip_version_4' => $node['external_ip_version_4'],
+		'external_ip_version_6' => $node['external_ip_version_6'],
+		'internal_ip_version_4' => $node['internal_ip_version_4'],
+		'internal_ip_version_6' => $node['internal_ip_version_6'],
+		'status_activated' => $node['status_activated']
+	);
+
+	foreach 
 				($nodeIpVersions 
 				as 
 				$nodeIpVersion) 
