@@ -835,7 +835,7 @@
 						'type' => 'VARCHAR(100)'
 					),
 					'processing_progress_percentage' => array(
-						'default' => null,
+						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
 					'status_activated' => array(
