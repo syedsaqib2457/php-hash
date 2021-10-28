@@ -43,71 +43,35 @@
 
 		if (empty($node) === true) {
 			$response['message'] = 'Invalid node authentication token or ID, please try again';
+			// todo: log as unauthorized request request
 			return $response;
 		}
 
-		/*
-			todo: format previous code from Pixel 5 paste formatting
-			($response['status_valid'] 
-			=== false) {
-				$this->_logUnauthorizedRequest(); 
-				return 
-				$response;
-			}
-			$nodeId = 
-			$parameters['user']['node_id']; 
-			if 
-			(isset($parameters['data']['processed']) 
-			=== true) {
-				$nodeDataUpdated 
-				= 
-				$this->update(array(
-					'data' 
-					=> 
-					array(
-						'status_processed' 
-						=> 
-						boolval($parameters['data']['processed'])
-					), 
-					'in' 
-					=> 
-					'nodes', 
-					'where' 
-					=> 
-					array(
-						'id' 
-						=> 
-						$nodeId, 
-						'node_id' 
-						=> 
-						$nodeId
-					) )); 
-				$response['status_valid'] 
-				= 
-				$nodeDataUpdated; 
-				if 
-				($response['status_valid'] 
-				=== false) {
-					return 
-					$response;
-				}
-				$response['message'] 
-				= 'Nodes 
-				updated for 
-				processing 
-				successfully.'; 
-				if 
-				(empty($parameters['data']['processed']) 
-				=== false) {
-					$response['message'] 
-					= 
-					'Nodes 
-					processed 
-					successfully.';
-				}
-				return 
-				$response;
-			}
+if (
+	(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
+	(isset($parameters['data']['processing_progress_percentage']) === true) &&
+	(isset($parameters['data']['status_processed']) === true) &&
+	(isset($parameters['data']['status_processing']) === true)
+) {
+	_update(array(
+		'data' => array(
+			'processing_progress_checkpoint' => $parameters['data']['processing_progress_checkpoint'],
+			'processing_progress_percentage' => $parameters['data']['processing_progress_percentage'],
+			'status_processed' => boolval($parameters['data']['status_processed']),
+			'status_processing' => boolval($parameters['data']['status_processing'])
+		),
+		'in' => $parameters['databases']['nodes'],
+		'where' => array(
+			'id' => ($nodeIds = array_filter(array_intersect_key($node, array(
+				'id' => true,
+				'node_id' => true
+			)))),
+			'node_id' => $nodeIds
+		)
+	), $response);
+} else {
+}
+	/*
 			$nodeCount = 
 			$this->count(array(
 				'in' => 
