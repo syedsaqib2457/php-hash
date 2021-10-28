@@ -15,7 +15,7 @@
 	function _processNode($parameters, $response) {
 		// todo: verify no reserved internal ip duplicates before each process reconfig
 		$response['data'] = array(
-			'node_ip_versions' => array(
+			'node_ip_address_versions' => array(
 				32 => 4,
 				128 => 6
 			),
@@ -135,42 +135,28 @@
 			));
 		}
 
-/*
-foreach ($nodes as $node) {
-	$response['data']['nodes'][$node['id']] = array(
-		'external_ip_version_4' => $node['external_ip_version_4'],
-		'external_ip_version_6' => $node['external_ip_version_6'],
-		'internal_ip_version_4' => $node['internal_ip_version_4'],
-		'internal_ip_version_6' => $node['internal_ip_version_6'],
-		'status_activated' => $node['status_activated']
-	);
+		foreach ($nodes as $node) {
+			$response['data']['nodes'][$node['id']] = array(
+				'external_ip_address_version_4' => $node['external_ip_address_version_4'],
+				'external_ip_address_version_6' => $node['external_ip_address_version_6'],
+				'internal_ip_address_version_4' => $node['internal_ip_address_version_4'],
+				'internal_ip_address_version_6' => $node['internal_ip_address_version_6'],
+				'status_activated' => $node['status_activated']
+			);
 
-	foreach 
-				($nodeIpVersions 
-				as 
-				$nodeIpVersion) 
-				{
-					$nodeIps 
-					= 
-					array(
-						$node['external_ip_version_' 
-						. 
-						$nodeIpVersion], 
-						$node['internal_ip_version_' 
-						. 
-						$nodeIpVersion]
-					); 
-					foreach 
-					(array_filter($nodeIps) 
-					as 
-					$nodeIp) 
-					{
-						$response['data']['node_ips'][$nodeIpVersion][$nodeIp] 
-						= 
-						$nodeIp;
-					}
+			foreach ($response['data']['node_ip_address_versions'] as $nodeIpAddressVersion) {
+				$nodeIpAddressess = array(
+					$node['external_ip_address_version_' . $nodeIpAddressVersion],
+					$node['internal_ip_address_version_' . $nodeIpAddressVersion]
+				);
+
+				foreach (array_filter($nodeIpAddressess) as $nodeIpAddress) {
+					$response['data']['node_ip_addresses'][$nodeIpAddressVersion][$nodeIpAddress] = $nodeIpAddress;
 				}
 			}
+		}
+
+/*
 			$nodeIpVersions = 
 			array_values($response['data']['node_ip_versions']); 
 			foreach 
