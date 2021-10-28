@@ -156,51 +156,20 @@
 			}
 		}
 
+		foreach (array_values($response['data']['node_ip_address_versions']) as $nodeIpAddressVersion$Key => $nodeIpAddressVersion) {
+			if (empty($response['data']['node_ip_addressess'][$nodeIpAddressVersion]) === true) {
+				unset($response['data']['node_ip_address_versions'][(128 / 4) + (96 * $nodeIpVersionKey)]);
+			}
+		}
+
+		$nodeProcessPartKey = 0;
+
+		foreach ($nodeProcesses as $nodeProcess) {
+			$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
+			$nodeProcessPartKey = abs($nodeProcessPartKey + -1);
+		}
+
 /*
-			$nodeIpVersions = 
-			array_values($response['data']['node_ip_versions']); 
-			foreach 
-			($nodeIpVersions as 
-			$nodeIpVersionKey => 
-			$nodeIpVersion) {
-				if 
-				(empty($response['data']['node_ips'][$nodeIpVersion]) 
-				=== true) {
-					unset($response['data']['node_ip_versions'][(128 
-					/ 4) + 
-					(96 * 
-					$nodeIpVersionKey)]);
-				}
-			}
-			$nodeProcessPartKeys = 
-			array(); foreach 
-			($nodeProcesses as 
-			$nodeProcess) {
-				// todo: add 
-				// system IP 
-				// details as 
-				// node to 
-				// allow 
-				// deployment 
-				// of node 
-				// processes 
-				// on same 
-				// system 
-				// server
-				if 
-				(isset($nodeProcessPartKeys[$nodeProcess['node_id']]) 
-				=== false) {
-					$nodeProcessPartKeys[$nodeProcess['node_id']] 
-					= 0;
-				}
-				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][$nodeProcess['id']] 
-				= 
-				$nodeProcess['port_number']; 
-				$nodeProcessPartKey 
-				= 
-				abs($nodeProcessPartKey 
-				+ -1);
-			}
 			foreach 
 			($nodeProcessForwardingDestinations 
 			as 
