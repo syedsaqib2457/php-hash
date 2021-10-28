@@ -830,6 +830,14 @@
 						'default' => null,
 						'type' => 'BIGINT(11)'
 					),
+					'processing_progress_checkpoint' => array(
+						'default' => null,
+						'type' => 'VARCHAR(100)'
+					),
+					'processing_progress_percentage' => array(
+						'default' => null,
+						'type' => 'TINYINT(1)'
+					),
 					'status_active' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
