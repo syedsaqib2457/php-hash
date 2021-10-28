@@ -138,7 +138,7 @@
 				'internal_ip_address_version_6' => true,
 				'internal_ip_address_version_6_type' => true,
 				'node_id' => true,
-				'status_active' => true,
+				'status_activated' => true,
 				'status_deployed' => true
 			)),
 			'in' => $parameters['databases']['nodes']

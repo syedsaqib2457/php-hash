@@ -32,15 +32,16 @@
 			return $response;
 		}
 
+		$nodeIds = array_filter(array(
+			$node['id'],
+			$node['node_id']
+		));
 		$nodeParameters['data'] = array(
 			'status_deployed' => true
 		);
 		$nodeParameters['where'] = array(
 			'either' => array(
-				'id' => ($nodeIds = array_filter(array_intersect_key($node, array(
-					'id' => true,
-					'node_id' => true
-				)))),
+				'id' => $nodeIds,
 				'node_id' => $nodeIds
 			)
 		);

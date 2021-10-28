@@ -4,6 +4,11 @@
 	}
 
 	$parameters['databases'] += _connect(array(
+		$databases['node_process_forwarding_destinations'],
+		$databases['node_process_recursive_dns_destinations'],
+		$databases['node_process_users'],
+		$databases['node_processes'],
+		$databases['node_reserved_internal_destinations'],
 		$databases['nodes']
 	), $parameters['databases'], $response);
 
@@ -47,6 +52,11 @@
 			return $response;
 		}
 
+		$nodeIds = array_filter(array(
+			$node['id'],
+			$node['node_id']
+		));
+
 if (
 	(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
 	(isset($parameters['data']['processing_progress_percentage']) === true) &&
@@ -62,140 +72,61 @@ if (
 		),
 		'in' => $parameters['databases']['nodes'],
 		'where' => array(
-			'id' => ($nodeIds = array_filter(array_intersect_key($node, array(
-				'id' => true,
-				'node_id' => true
-			)))),
+			'id' => $nodeIds,
 			'node_id' => $nodeIds
 		)
 	), $response);
 } else {
 }
 	/*
-			$nodeCount = 
-			$this->count(array(
-				'in' => 
-				'nodes', 
-				'where' => 
-				array(
-					'status_processed' 
-					=> 
-					false, 
-					'OR' 
-					=> 
-					array(
-						'id' 
-						=> 
-						$nodeId, 
-						'node_id' 
-						=> 
-						$nodeId
-					) ) 
-			)); 
-			$response['status_valid'] 
-			= (
-				(is_int($nodeCount) 
-				=== true) && 
-				($nodeCount > 
-				0)
-			); if 
-			($response['status_valid'] 
-			=== false) {
-				return 
-				$response;
-			}
-			$nodeProcesses = 
-			$this->fetch(array(
-				'fields' => 
-				array(
-					'id', 
-					'node_id', 
-					'port_number', 
-					'type'
-				), 'from' => 
-				'node_processes', 
-				'where' => 
-				array(
-					'node_node_id' 
-					=> 
-					$nodeId, 
-					'type' 
-					=> 
-					$nodeProcessType
-				) )); 
-			$nodeProcessForwardingDestinations 
-			= $this->fetch(array(
-				'fields' => 
-				array(
-					'address_version_4', 
-					'address_version_6', 
-					'node_id', 
-					'node_process_type', 
-					'port_number_version_4', 
-					'port_number_version_6'
-				), 'from' => 
-				'node_process_forwarding_destinations', 
-				'where' => 
-				array(
-					'node_node_id' 
-					=> 
-					$nodeId
-				) )); 
-			$nodeProcessRecursiveDnsDestinations 
-			= $this->fetch(array(
-				'fields' => 
-				array(
-					'listening_ip_version_4', 
-					'listening_ip_version_4_node_id', 
-					'listening_ip_version_6', 
-					'listening_ip_version_6_node_id', 
-					'listening_port_number_version_4', 
-					'listening_port_number_version_4', 
-					'node_id', 
-					'node_process_type', 
-					'source_ip_version_4', 
-					'source_ip_version_6'
-				), 'from' => 
-				'node_process_recursive_dns_destinations', 
-				'where' => 
-				array(
-					'node_node_id' 
-					=> 
-					$nodeId
-				) )); 
-			$nodeProcessUsers = 
-			$this->fetch(array(
-				'fields' => 
-				array(
-					'node_id', 
-					'node_process_type', 
-					'user_id'
-				), 'from' => 
-				'node_process_users', 
-				'where' => 
-				array(
-					'node_node_id' 
-					=> 
-					$nodeId
-				) )); 
-			$nodeReservedInternalDestinations 
-			= $this->fetch(array(
-				'fields' => 
-				array(
-					'ip_address', 
-					'ip_address_version', 
-					'node_id'
-				), 'from' => 
-				'node_reserved_internal_destinations', 
-				'where' => 
-				array(
-					'node_node_id' 
-					=> 
-					$nodeId, 
-					'status_assigned' 
-					=> 
-					true
-				) )); $nodes = 
+	$nodeCount = _count(array(
+		'in' => $parameters['databases']['nodes'],
+		'where' => array(
+			'either' => array(
+				'id' => $nodeIds,
+				'node_id' => $nodeIds
+			),
+			'status_processed' => false
+		)
+	), $response);
+
+	if (($nodeCount > 0) === false) {
+		$response['message'] = 'Node is already processed, please try again.';
+		return $response;
+	}
+
+	$nodeProcesses = _list(array(
+		'in' => $parameters['databases']['node_processes'],
+		'where' => array(
+			'node_node_id' => $nodeIds
+		)
+	));
+	$nodeProcessForwardingDestinations = _list(array(
+		'in' => $parameters['databases']['node_process_forwarding_destinations'],
+		'where' => array(
+			'node_node_id' => $nodeIds
+		)
+	));
+	$nodeProcessRecursiveDnsDestinations = _list(array(
+		'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
+		'where' => array(
+			'node_node_id' => $nodeIds
+		)
+	));
+	$nodeProcessUsers = _list(array(
+		'in' => $parameters['databases']['node_process_users'],
+		'where' => array(
+			'node_node_id' => $nodeIds
+		)
+	));
+	$nodeReservedInternalDestinations = _list(array(
+		'in' => $parameters['databases']['node_reserved_internal_destinations'],
+		'where' => array(
+			'node_node_id' => $nodeIds,
+			'status_assigned' => true
+		)
+	));
+	$nodes = 
 			$this->fetch(array(
 				'fields' => 
 				array(
@@ -659,7 +590,6 @@ if (
 		}
 	*/
 	}
-
 	if ($parameters['action'] === 'process_node') {
 		$response = _processNode($parameters, $response);
 		_output($response);
