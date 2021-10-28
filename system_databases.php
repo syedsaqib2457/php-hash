@@ -22,17 +22,17 @@
 						'default' => null,
 						'type' => 'VARCHAR(1000)'
 					),
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
+					'created_timestamp' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
 					),
 					'id' => array(
 						'primary_key' => true,
 						'type' => 'BIGINT(11)'
 					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
+					'modified_timestamp' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
 					),
 					'node_id' => array(
 						'default' => null,
@@ -67,17 +67,17 @@
 			),
 			'structure' => array(
 				'columns' => array(
-					'created_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
+					'created_timestamp' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
 					),
 					'id' => array(
 						'primary_key' => true,
 						'type' => 'BIGINT(11)'
 					),
-					'modified_date' => array(
-						'default' => 'CURRENT_TIMESTAMP',
-						'type' => 'DATETIME'
+					'modified_timestamp' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
 					),
 					'node_id' => array(
 						'default' => null,
@@ -770,11 +770,11 @@
 						'default' => null,
 						'type' => 'VARCHAR(100)'
 					),
-					'cpu_capacity_cores' => array(
+					'cpu_capacity_megahertz' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
 					),
-					'cpu_capacity_megahertz' => array(
+					'cpu_core_count' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
 					),
@@ -1372,10 +1372,10 @@
 			}
 
 			$connectionIndex = 0;
+			$timestamp = time();
 
 			foreach ($parameters['data'] as $data) {
 				$dataInsertValues = $dataKeys = $dataUpdateValues = '';
-				$timestamp = date('Y-m-d H:i:s', time());
 
 				foreach ($data as $dataKey => $dataValue) {
 					$dataInsertValue = str_replace("'", "\'", str_replace('\\', '\\\\', $dataValue));
@@ -1422,6 +1422,10 @@
 	function _update($parameters, $response) {
 		if (empty($parameters['data']) === false) {
 			$command = 'update ' . $parameters['in']['table'] . ' set ';
+
+			if (isset($parameters['data']['modified']) === false) {
+				$parameters['data']['modified'] = time();
+			}
 
 			foreach ($parameters['data'] as $updateValueKey => $updateValue) {
 				$command .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
