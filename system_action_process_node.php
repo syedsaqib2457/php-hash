@@ -5,10 +5,14 @@
 
 	$parameters['databases'] += _connect(array(
 		$databases['node_process_forwarding_destinations'],
+		$databases['node_process_node_users'],
 		$databases['node_process_recursive_dns_destinations'],
-		$databases['node_process_users'],
 		$databases['node_processes'],
 		$databases['node_reserved_internal_destinations'],
+		$databases['node_user_authentication_credentials'],
+		$databases['node_user_node_request_destinations'],
+		$databases['node_user_node_request_limit_rules'],
+		$databases['node_users'],
 		$databases['nodes']
 	), $parameters['databases'], $response);
 
@@ -105,14 +109,14 @@
 					'node_node_id' => $nodeIds
 				)
 			));
-			$nodeProcessRecursiveDnsDestinations = _list(array(
-				'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
+			$nodeProcessNodeUsers = _list(array(
+				'in' => $parameters['databases']['node_process_node_users'], 
 				'where' => array(
 					'node_node_id' => $nodeIds
 				)
 			));
-			$nodeProcessUsers = _list(array(
-				'in' => $parameters['databases']['node_process_users'],
+			$nodeProcessRecursiveDnsDestinations = _list(array(
+				'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
 				'where' => array(
 					'node_node_id' => $nodeIds
 				)
@@ -206,118 +210,39 @@
 		}
 
 /*
-			if 
-			(empty($nodeProcessUsers) 
-			=== false) {
-				$nodeProcessUserIds 
-				= array(); 
-				foreach 
-				($nodeProcessUsers 
-				as 
-				$nodeProcessUser) 
-				{
-					$response['data']['node_process_users'][$nodeProcessUser['node_process_type']][$nodeUser['node_id']][$nodeUser['user_id']] 
-					= 
-					$nodeUser['user_id']; 
-					$nodeProcessUserIds[$nodeProcessUser['user_id']] 
-					= 
-					$nodeProcessUser['user_id'];
-				}
-				$userRequestDestinations 
-				= 
-				$this->fetch(array(
-					'fields' 
-					=> 
-					array(
-						'request_destination_id', 
-						'user_id'
-					), 
-					'from' 
-					=> 
-					'user_request_destinations', 
-					'where' 
-					=> 
-					array(
-						'user_id' 
-						=> 
-						$nodeProcessUserIds
-					) )); 
-				$userRequestLimitRules 
-				= 
-				$this->fetch(array(
-					'fields' 
-					=> 
-					array(
-						'request_destination_id', 
-						'request_limit_rule_id'
-					), 
-					'from' 
-					=> 
-					'user_request_limit_rules', 
-					'where' 
-					=> 
-					array(
-						'limit_until 
-						!=' 
-						=> 
-						null, 
-						'user_id' 
-						=> 
-						$nodeProcessUserIds
-					) )); 
-				$users = 
-				$this->fetch(array(
-					'fields' 
-					=> 
-					array(
-						'authentication_password', 
-						'authentication_username', 
-						'authentication_whitelist', 
-						'id', 
-						'status_allowing_request_destinations_only', 
-						'status_allowing_request_logs', 
-						'status_requiring_strict_authentication'
-					), 
-					'from' 
-					=> 
-					'users', 
-					'where' 
-					=> 
-					array(
-						'id' 
-						=> 
-						$nodeProcessUserIds
-					) )); 
-				$response['status_valid'] 
-				= (
-					($userRequestDestinations 
-					!== 
-					false) 
-					&& 
-					($userRequestLimitRules 
-					!== 
-					false) 
-					&& 
-					($users 
-					!== 
-					false)
-				); if 
-				($response['status_valid'] 
-				=== false) {
-					return 
-					$response;
-				}
-				if 
-				(empty($users) 
-				=== false) {
-					foreach 
-					($users 
-					as 
-					$user) 
-					{
-						$response['data']['users'][$user['id']] 
-						= 
-						$user; 
+if (empty($nodeProcessNodeUsers) === false) {
+	$nodeProcessNodeUserIds = array();
+
+	foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
+		$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
+		$nodeProcessNodeUserIds[$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
+	}
+
+	$nodeUserNodeRequestDestinations = _list(array(
+		'in' => $parameters['databases']['node_user_node_request_destinations'],
+		'where' => array(
+			'node_user_id' => $nodeProcessNodeUserIds
+		)
+	));
+	$nodeUserNodeRequestLimitRules = _list(array(
+		'in' => $parameters['databases']['node_user_node_request_limit_rules'],
+		'where' => array(
+			'node_user_id' => $nodeProcessNodeUserIds
+		)
+	));
+	$nodeUsers = _list(array(
+		'in' => $parameters['databases']['node_users'],
+		'where' => array(
+			'id' => $nodeProcessNodeUserIds
+		)
+	));
+	// todo: list node user source ip addresses
+
+	if (empty($nodeUsers) === false) {
+
+foreach ($nodeUsers as $nodeUser) {
+	$response['data']['node_users'][$nodeUser['id']] = array(
+	);
 						unset($response['data']['users'][$user['id']]['id']);
 					}
 					if 

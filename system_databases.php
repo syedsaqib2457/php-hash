@@ -634,6 +634,43 @@
 				'table' => 'node_resource_usage_logs'
 			)
 		),
+		'node_user_authentication_credentials' => array(
+			'authentication' => array(
+				array(
+					'hostname' => 'localhost',
+					'password' => 'password'
+				)
+			),
+			'structure' => array(
+				'columns' => array(
+					'created_timestamp' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
+					'id' => array(
+						'primary_key' => true,
+						'type' => 'BIGINT(11)'
+					),
+					'modified_timestamp' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
+					'node_user_id' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
+					'password' => array(
+						'default' => null,
+						'type' => 'VARCHAR(255)'
+					),
+					'username' => array(
+						'default' => null,
+						'type' => 'VARCHAR(255)'
+					)
+				)
+			),
+			'table' => 'node_user_authentication_credentials'
+		),
 		'node_user_node_request_destinations' => array(
 			'authentication' => array(
 				array(
@@ -717,14 +754,6 @@
 			),
 			'structure' => array(
 				'columns' => array(
-					'authentication_password' => array(
-						'default' => null,
-						'type' => 'VARCHAR(255)'
-					),
-					'authentication_username' => array(
-						'default' => null,
-						'type' => 'VARCHAR(255)'
-					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
