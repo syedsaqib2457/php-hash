@@ -670,6 +670,47 @@
 			),
 			'table' => 'node_user_authentication_credentials'
 		),
+		'node_user_authentication_sources' => array(
+			'authentication' => array(
+				array(
+					'hostname' => 'localhost',
+					'password' => 'password'
+				)
+			),
+			'structure' => array(
+				'columns' => array(
+					'created_timestamp' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
+					'id' => array(
+						'primary_key' => true,
+						'type' => 'BIGINT(11)'
+					),
+					'ip_address' => array(
+						'default' => null,
+						'type' => 'VARCHAR(45)'
+					),
+					'ip_address_block_length' => array(
+						'default' => null,
+						'type' => 'TINYINT(1)'
+					),
+					'ip_address_version' => array(
+						'default' => null,
+						'type' => 'TINYINT(1)'
+					),
+					'modified_timestamp' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					),
+					'node_user_id' => array(
+						'default' => null,
+						'type' => 'BIGINT(11)'
+					)
+				),
+				'table' => 'node_user_authentication_sources'
+			)
+		),
 		'node_user_node_request_destinations' => array(
 			'authentication' => array(
 				array(
@@ -742,47 +783,6 @@
 					)
 				),
 				'table' => 'node_user_node_request_limit_rules'
-			)
-		),
-		'node_user_sources' => array(
-			'authentication' => array(
-				array(
-					'hostname' => 'localhost',
-					'password' => 'password'
-				)
-			),
-			'structure' => array(
-				'columns' => array(
-					'created_timestamp' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'id' => array(
-						'primary_key' => true,
-						'type' => 'BIGINT(11)'
-					),
-					'ip_address' => array(
-						'default' => null,
-						'type' => 'VARCHAR(45)'
-					),
-					'ip_address_block_length' => array(
-						'default' => null,
-						'type' => 'TINYINT(1)'
-					),
-					'ip_address_version' => array(
-						'default' => null,
-						'type' => 'TINYINT(1)'
-					),
-					'modified_timestamp' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'node_user_id' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					)
-				),
-				'table' => 'node_user_sources'
 			)
 		),
 		'node_users' => array(
