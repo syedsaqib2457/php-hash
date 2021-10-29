@@ -1,4 +1,7 @@
 <?php
+	// todo: add each string value for destinations, limits, etc for faster node processing
+	// todo: change all datetime fields to integer timestamp
+
 	if (empty($parameters) === true) {
 		exit;
 	}
