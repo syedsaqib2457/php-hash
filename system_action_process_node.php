@@ -264,6 +264,10 @@
 				);
 			}
 
+			foreach ($nodeUserAuthenticationSources as $nodeUserAuthenticationSource) {
+				$response['data']['node_users'][$nodeUserAuthenticationSource['node_user_id']]['node_user_authentication_sources'][] = $nodeUserAuthenticationSource['ip_address'] . '/' . $nodeUserAuthenticationSource['ip_address_block_length'];
+			}
+
 			if (empty($nodeUserNodeRequestDestinations) === false) {
 				$nodeRequestDestinationIds = array();
 
