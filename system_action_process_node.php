@@ -12,6 +12,7 @@
 		$databases['node_user_authentication_credentials'],
 		$databases['node_user_node_request_destinations'],
 		$databases['node_user_node_request_limit_rules'],
+		$databases['node_user_sources'],
 		$databases['node_users'],
 		$databases['nodes']
 	), $parameters['databases'], $response);
