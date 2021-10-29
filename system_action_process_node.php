@@ -189,7 +189,7 @@
 				'listening_port_number_version_6' => $nodeProcessRecursiveDnsDestination['listening_port_number_version_6'],
 				'node_process_type' => $nodeProcessRecursiveDnsDestination['node_process_type'],
 				'source_ip_address_version_4' => $nodeProcessRecursiveDnsDestination['source_ip_address_version_4'],
-				'source_ip_address_version_4' => $nodeProcessRecursiveDnsDestination['source_ip_address_version_6']
+				'source_ip_address_version_6' => $nodeProcessRecursiveDnsDestination['source_ip_address_version_6']
 			);
 
 			foreach ($response['data']['node_ip_address_versions'] as $nodeIpAddressVersion) {
@@ -203,8 +203,6 @@
 
 				unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
 			}
-
-			unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['node_id']);
 		}
 
 /*
