@@ -10,9 +10,9 @@
 		$databases['node_processes'],
 		$databases['node_reserved_internal_destinations'],
 		$databases['node_user_authentication_credentials'],
+		$databases['node_user_authentication_sources'],
 		$databases['node_user_node_request_destinations'],
 		$databases['node_user_node_request_limit_rules'],
-		$databases['node_user_sources'],
 		$databases['node_users'],
 		$databases['nodes']
 	), $parameters['databases'], $response);
@@ -254,6 +254,13 @@
 					'status_node_request_destinations_only_allowed' => $nodeUser['status_node_request_destinations_only_allowed'],
 					'status_node_request_logs_allowed' => $nodeUser['status_node_request_logs_allowed'],
 					'status_strict_authentication_required' => $nodeUser['status_strict_authentication_required']
+				);
+			}
+
+			foreach ($nodeUserAuthenticationCredentials as $nodeUserAuthenticationCredential) {
+				$response['data']['node_users'][$nodeUserAuthenticationCredential['node_user_id']]['node_user_authentication_credentials'][] = array(
+					'password' => $nodeUserAuthenticationCredential['password'],
+					'username' => $nodeUserAuthenticationCredential['username']
 				);
 			}
 
