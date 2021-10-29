@@ -210,90 +210,80 @@
 			}
 		}
 
-/*
-if (empty($nodeProcessNodeUsers) === false) {
-	$nodeProcessNodeUserIds = array();
+		if (empty($nodeProcessNodeUsers) === false) {
+			$nodeProcessNodeUserIds = array();
 
-	foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
-		$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
-		$nodeProcessNodeUserIds[$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
-	}
+			foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
+				$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
+				$nodeProcessNodeUserIds[$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
+			}
 
-	$nodeUserNodeRequestDestinations = _list(array(
-		'in' => $parameters['databases']['node_user_node_request_destinations'],
-		'where' => array(
-			'node_user_id' => $nodeProcessNodeUserIds
-		)
-	));
-	$nodeUserNodeRequestLimitRules = _list(array(
-		'in' => $parameters['databases']['node_user_node_request_limit_rules'],
-		'where' => array(
-			'node_user_id' => $nodeProcessNodeUserIds
-		)
-	));
-	$nodeUsers = _list(array(
-		'in' => $parameters['databases']['node_users'],
-		'where' => array(
-			'id' => $nodeProcessNodeUserIds
-		)
-	));
-	// todo: list node user source ip addresses
+			$nodeUserAuthenticationCredentials = _list(array(
+				'in' => $parameters['databases']['node_user_authentication_credentials'],
+				'where' => array(
+					'node_user_id' => $nodeProcessNodeUserIds
+				)
+			));
+			$nodeUserNodeRequestDestinations = _list(array(
+				'in' => $parameters['databases']['node_user_node_request_destinations'],
+				'where' => array(
+					'node_user_id' => $nodeProcessNodeUserIds
+				)
+			));
+			$nodeUserNodeRequestLimitRules = _list(array(
+				'in' => $parameters['databases']['node_user_node_request_limit_rules'],
+				'where' => array(
+					'node_user_id' => $nodeProcessNodeUserIds
+				)
+			));
+			$nodeUserCredentials = _list(array(
+				'in' => $parameters['databases']['node_user_credentials'],
+				'where' => array(
+					'node_user_id' => $nodeProcessNodeUserIds
+				)
+			));
+			$nodeUsers = _list(array(
+				'in' => $parameters['databases']['node_users'],
+				'where' => array(
+					'id' => $nodeProcessNodeUserIds
+				)
+			));
+			$nodeUserSources = _list(array(
+				'in' => $parameters['databases']['node_user_sources'],
+				'where' => array(
+					'node_user_id' => $nodeProcessNodeUserIds
+				)
+			));
 
-	if (empty($nodeUsers) === false) {
+			if (empty($nodeUsers) === false) {
+				foreach ($nodeUsers as $nodeUser) {
+					$response['data']['node_users'][$nodeUser['id']] = array(
+						'status_node_request_destinations_only_allowed' => $nodeUser['status_node_request_destinations_only_allowed'],
+						'status_node_request_logs_allowed' => $nodeUser['status_node_request_logs_allowed'],
+						'status_strict_authentication_required' => $nodeUser['status_strict_authentication_required']
+					);
+				}
 
-foreach ($nodeUsers as $nodeUser) {
-	$response['data']['node_users'][$nodeUser['id']] = array(
-	);
-						unset($response['data']['users'][$user['id']]['id']);
-					}
-					if 
-					(empty($userRequestDestinations) 
-					=== 
-					false) 
-					{
-						$requestDestinationIds 
-						= 
-						array(); 
-						foreach 
-						($userRequestDestinations 
-						as 
-						$userRequestDestination) 
-						{
-							if 
-							(empty($response['data']['users'][$user['id']]['status_allowing_request_destinations_only']) 
-							=== 
-							false) 
-							{
-								$requestDestinationIds[$userRequestDestination['request_destination_id']] 
-								= 
-								$response['data']['users'][$user['id']]['request_destination_ids'][$userRequestDestination['request_destination_id']] 
-								= 
-								$userRequestDestination['request_destination_id'];
-							}
+				if (empty($nodeUserNodeRequestDestinations) === false) {
+					$nodeRequestDestinationIds = array();
+
+					foreach ($nodeUserRequestDestinations as $nodeUserRequestDestination) {
+						if (empty($response['data']['node_users'][$nodeUserNodeRequestDestination['node_user_id']]['status_allowing_request_destinations_only']) === false) {
+							$nodeRequestDestinationIds[$nodeUserNodeRequestDestination['node_request_destination_id']] = $response['data']['node_users'][$nodeUserNodeRequestDestination['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
 						}
-						$requestDestinations 
-						= 
-						$this->fetch(array(
-							'fields' 
-							=> 
-							array(
-								'address', 
-								'id'
-							), 
-							'from' 
-							=> 
-							'request_destinations', 
-							'where' 
-							=> 
-							array(
-								'id' 
-								=> 
-								$requestDestinationIds
-							) 
-						)); 
-						$response['status_valid'] 
-						= 
-						($requestDestinations 
+					}
+
+					$nodeRequestDestinations = _list(array(
+						'in' => $parameters['databases']['node_request_destinations'],
+						'where' => array(
+							'id' => $nodeRequestDestinationIds
+						)
+					));
+
+/*
+	$response['status_valid'] 
+		= 
+				($requestDestinations 
 						!== 
 						false); 
 						if 

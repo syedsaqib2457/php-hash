@@ -806,15 +806,15 @@
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
 					),
-					'status_allowing_request_destinations_only' => array(
+					'status_node_request_destinations_only_allowed' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
-					'status_allowing_request_logs' => array(
+					'status_node_request_logs_allowed' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
-					'status_requiring_strict_authentication' => array(
+					'status_strict_authentication_required' => array(
 						'default' => 0,
 						'type' => 'TINYINT(1)'
 					),
