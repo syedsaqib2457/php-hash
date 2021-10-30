@@ -167,6 +167,32 @@
 					)
 				)
 			), $response);
+			$nodeProcessNodeUserNodeRequestDestinations = _list(array(
+				'columns' => array(
+					'node_user_id',
+					'node_user_node_request_destination_address',
+					'node_user_node_request_destination_id'
+				), 'in' => $parameters['databases']['node_process_node_user_node_request_destinations'],
+				'where' => array(
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
+				)
+			), $response);
+			$nodeProcessNodeUserNodeRequestLimitRules = _list(array(
+				'columns' => array(
+					'node_user_id',
+					'node_user_node_request_destination_id'
+				),
+				'in' => $parameters['databases']['node_process_node_user_node_request_limit_rules'],
+				'where' => array(
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
+				)
+			), $response);
 			$nodeProcessNodeUsers = _list(array(
 				'columns' => array(
 					'node_id',
