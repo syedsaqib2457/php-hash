@@ -5,6 +5,10 @@
 
 	$parameters['databases'] += _connect(array(
 		$databases['node_process_forwarding_destinations'],
+		$databases['node_process_node_user_authentication_credentials'],
+		$databases['node_process_node_user_authentication_source'],
+		$databases['node_process_node_user_node_request_destinations'],
+		$databases['node_process_node_user_node_request_limit_rules'],
 		$databases['node_process_node_users'],
 		$databases['node_process_recursive_dns_destinations'],
 		$databases['node_processes'],
