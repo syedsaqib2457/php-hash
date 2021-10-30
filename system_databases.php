@@ -1,5 +1,9 @@
 <?php
-	// todo: add all database structures to system_databases during installation + make every column a string varchar for simplicity with dynamically-adjusting maximum length for memory optimization
+	// todo: add all database structures to system_databases during installation
+		// add new node_process_node_user_* databases from system_action_process_node.php + delete old databases
+		// all columns are a string varchar for simplicity with dynamically-adjusting maximum length for memory optimization
+		// all columns have no default value
+		// localhost database is required for storing database authentication credentials + structures
 
 	if (empty($parameters) === true) {
 		exit;
