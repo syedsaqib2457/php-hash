@@ -1302,7 +1302,17 @@
 
 	function _list($parameters, $response) {
 		$response['_list'] = array();
-		$command = 'select * from ' . $parameters['in']['table'];
+		$databaseColumns = '*';
+
+		if (empty($parameters['columns']) === false) {
+			$databaseColumns = '';
+
+			foreach ($parameters['columns'] as $databaseColumn) {
+				$databaseColumns .= $databaseColumn . ',';
+			}
+		}
+
+		$command = 'select ' . rtrim($databaseColumns, ',') . ' from ' . $parameters['in']['table'];
 
 		if (empty($parameters['where']) === false) {
 			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
