@@ -723,6 +723,10 @@
 			),
 			'structure' => array(
 				'columns' => array(
+					'address' => array(
+						'default' => null,
+						'type' => 'VARCHAR(1000)'
+					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
