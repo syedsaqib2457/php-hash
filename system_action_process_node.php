@@ -301,7 +301,7 @@
 				foreach ($nodeProcessNodeUserAuthenticationCredentials as $nodeProcessNodeUserAuthenticationCredential) {
 					$response['data']['node_users'][$nodeProcessNodeUserAuthenticationCredential['node_user_id']]['node_user_authentication_credentials'] = array(
 						'password' => $nodeProcessNodeUserAuthenticationCredential['node_user_authentication_credential_password'],
-						'username' => $nodeProcessNodeUserAuthenticationCredential['node_user_authentication_credential_username'],
+						'username' => $nodeProcessNodeUserAuthenticationCredential['node_user_authentication_credential_username']
 					);
 				}
 
