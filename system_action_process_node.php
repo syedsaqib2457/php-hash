@@ -263,6 +263,7 @@
 
 			if (empty($nodeProcessNodeUsers) === false) {
 				foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
+					$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
 					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']] = array(
 						'status_node_request_destinations_only_allowed' => $nodeProcessNodeUser['node_user_status_node_request_destinations_only_allowed'],
 						'status_node_request_logs_allowed' => $nodeProcessNodeUser['node_user_status_node_request_logs_allowed'],
