@@ -772,10 +772,6 @@
 						'primary_key' => true,
 						'type' => 'BIGINT(11)'
 					),
-					'interval_minutes' => array(
-						'default' => 1,
-						'type' => 'SMALLINT(3)'
-					),
 					'modified_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
@@ -791,14 +787,6 @@
 					'node_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
-					),
-					'request_count' => array(
-						'default' => null,
-						'type' => 'BIGINT(11)'
-					),
-					'request_count_interval_minutes' => array(
-						'default' => 1,
-						'type' => 'SMALLINT(3)'
 					)
 				),
 				'table' => 'node_user_node_request_limit_rules'
