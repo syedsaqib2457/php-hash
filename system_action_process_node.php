@@ -13,10 +13,6 @@
 		$databases['node_process_recursive_dns_destinations'],
 		$databases['node_processes'],
 		$databases['node_reserved_internal_destinations'],
-		$databases['node_user_authentication_credentials'],
-		$databases['node_user_authentication_sources'],
-		$databases['node_user_node_request_destinations'],
-		$databases['node_user_node_request_limit_rules'],
 		$databases['nodes']
 	), $parameters['databases'], $response);
 
@@ -134,11 +130,6 @@
 					)
 				)
 			), $response);
-			// todo: add node process node user tables relational to nodes to prevent excessive database requests
-				// node_process_node_user_authentication_credentials
-				// node_process_node_user_authentication_source
-				// node_process_node_user_node_request_destinationss
-				// node_process_node_user_node_request_limit_rules
 			$nodeProcessNodeUserAuthenticationCredentials = _list(array(
 				'columns' => array(
 					'node_user_authentication_credential_password',
@@ -297,6 +288,52 @@
 				unset($response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']]['node_id']);
 			}
 
+			if (empty($nodeProcessNodeUsers) === false) {
+				foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
+					$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
+					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']] = array(
+						'status_node_request_destinations_only_allowed' => $nodeProcessNodeUser['node_user_status_node_request_destinations_only_allowed'], 
+						'status_node_request_logs_allowed' => $nodeProcessNodeUser['node_user_status_node_request_logs_allowed'], 
+						'status_strict_authentication_required' => $nodeProcessNodeUser['node_user_status_strict_authentication_required']
+					);
+				}
+
+				foreach ($nodeProcessNodeUserAuthenticationCredentials as $nodeProcessNodeUserAuthenticationCredential) {
+					$response['data']['node_users'][$nodeProcessNodeUserAuthenticationCredential['node_user_id']]['node_user_authentication_credentials'] = array(
+						'password' => $nodeProcessNodeUserAuthenticationCredential['node_user_authentication_credential_password'],
+						'username' => $nodeProcessNodeUserAuthenticationCredential['node_user_authentication_credential_username'],
+					);
+				}
+
+				foreach ($nodeProcessNodeUserAuthenticationSources as $nodeProcessNodeUserAuthenticationSource) {
+					$response['data']['node_users'][$nodeProcessNodeUserAuthenticationSource['node_user_id']]['node_user_authentication_sources'] = array(
+						'ip_address' => $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address'],
+						'ip_address_block_length' => $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address_block_length']
+					);
+				}
+
+				if (empty($nodeProcessNodeUserNodeRequestDestinations) === false) {
+					foreach ($nodeProcessNodeUserNodeRequestDestinations as $nodeProcessNodeUserNodeRequestDestination) {
+						$response['data']['node_request_destinations'][$nodeProcessNodeUserNodeRequestDestination['node_user_node_request_destination_id']] = $nodeProcessNodeUserNodeRequestDestination['node_user_node_request_destination_address'];
+						$response['data']['node_users'][$nodeProcessNodeUserNodeRequestDestination['node_user_id']]['node_request_destination_ids'][$nodeProcessNodeUserNodeRequestDestination['node_user_node_request_destination_id']] = $nodeProcessNodeUserNodeRequestDestination['node_user_node_request_destination_id'];
+					}
+				}
+
+				if (empty($nodeProcessNodeUserNodeRequestLimitRules) === false) {
+					foreach ($nodeProcessNodeUserNodeRequestLimitRules as $nodeProcessNodeUserNodeRequestLimitRule) {
+						if (empty($nodeProcessNodeUserNodeRequestLimitRule['node_request_destination_id']) === false) {
+							if (empty($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['status_node_request_destinations_only_allowed']) === false) {
+								if (empty($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids']) === false) {
+									unset($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_node_request_destination_id']]);
+								} else {
+									unset($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]);
+								}
+							}
+						}
+					}
+				}
+			}
+
 			foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestination) {
 				$response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']] = $nodeProcessRecursiveDnsDestination;
 				unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['node_id']);
@@ -311,83 +348,6 @@
 					}
 
 					unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
-				}
-			}
-
-			if (empty($nodeProcessNodeUsers) === false) {
-				foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
-					$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
-					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']] = array(
-						'status_node_request_destinations_only_allowed' => $nodeProcessNodeUser['node_user_status_node_request_destinations_only_allowed'],
-						'status_node_request_logs_allowed' => $nodeProcessNodeUser['node_user_status_node_request_logs_allowed'],
-						'status_strict_authentication_required' => $nodeProcessNodeUser['node_user_status_strict_authentication_required']
-					);
-					$nodeUserAuthenticationCredentials = _list(array(
-						'columns' => array(
-							'password',
-							'username'
-						),
-						'in' => $parameters['databases']['node_user_authentication_credentials'],
-						'where' => array(
-							'node_user_id' => $nodeProcessNodeUser['node_user_id']
-						)
-					), $response);
-					$nodeUserAuthenticationSources = _list(array(
-						'columns' => array(
-							'ip_address',
-							'ip_address_block_length'
-						),
-						'in' => $parameters['databases']['node_user_authentication_sources'],
-						'where' => array(
-							'node_user_id' => $nodeProcessNodeUser['node_user_id']
-						)
-					), $response);
-					$nodeUserNodeRequestDestinations = _list(array(
-						'columns' => array(
-							'node_request_destination_address',
-							'node_request_destination_id'
-						),
-						'in' => $parameters['databases']['node_user_node_request_destinations'],
-						'where' => array(
-							'node_user_id' => $nodeProcessNodeUser['node_user_id']
-						)
-					), $response);
-					$nodeUserNodeRequestLimitRules = _list(array(
-						'columns' => array(
-							'node_request_destination_id'
-						),
-						'in' => $parameters['databases']['node_user_node_request_limit_rules'],
-						'where' => array(
-							'node_user_id' => $nodeProcessNodeUser['node_user_id']
-						)
-					), $response);
-					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_user_authentication_credentials'] = $nodeUserAuthenticationCredentials;
-					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_user_authentication_sources'] = $nodeUserAuthenticationSources;
-
-					if (empty($nodeUserNodeRequestDestinations) === false) {
-						foreach ($nodeUserNodeRequestDestinations as $nodeUserNodeRequestDestination) {
-							$response['data']['node_request_destinations'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_address'];
-							$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
-						}
-					}
-
-					if (empty($nodeUserNodeRequestLimitRules) === false) {
-						foreach ($nodeUserNodeRequestLimitRules as $nodeUserNodeRequestLimitRule) {
-							if (empty($nodeUserNodeRequestLimitRule['node_request_destination_id']) === false) {
-								if (empty($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['status_node_request_destinations_only_allowed']) === false) {
-									if (empty($response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_request_destination_ids']) === false) {
-										unset($response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']]);
-									} else {
-										unset($response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]);
-									}
-								} else {
-									$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']] = $nodeUserNodeRequestLimitRule['node_request_destination_id'];
-								}
-							} else {
-								unset($response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]);
-							}
-						}
-					}
 				}
 			}
 
