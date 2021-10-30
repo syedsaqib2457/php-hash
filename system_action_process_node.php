@@ -167,162 +167,162 @@
 					)
 				)
 			));
-		}
 
-		foreach ($nodes as $node) {
-			$response['data']['nodes'][$node['id']] = $node;
-			unset($response['data']['nodes'][$node['id']]['id']);
+			foreach ($nodes as $node) {
+				$response['data']['nodes'][$node['id']] = $node;
+				unset($response['data']['nodes'][$node['id']]['id']);
 
-			foreach ($response['data']['node_ip_address_versions'] as $nodeIpAddressVersion) {
-				$nodeIpAddresses = array(
-					$node['external_ip_address_version_' . $nodeIpAddressVersion],
-					$node['internal_ip_address_version_' . $nodeIpAddressVersion]
-				);
+				foreach ($response['data']['node_ip_address_versions'] as $nodeIpAddressVersion) {
+					$nodeIpAddresses = array(
+						$node['external_ip_address_version_' . $nodeIpAddressVersion],
+						$node['internal_ip_address_version_' . $nodeIpAddressVersion]
+					);
 
-				foreach (array_filter($nodeIpAddresses) as $nodeIpAddress) {
-					$response['data']['node_ip_addresses'][$nodeIpAddressVersion][$nodeIpAddress] = $nodeIpAddress;
-				}
-			}
-		}
-
-		foreach (array_values($response['data']['node_ip_address_versions']) as $nodeIpAddressVersionKey => $nodeIpAddressVersion) {
-			if (empty($response['data']['node_ip_addresses'][$nodeIpAddressVersion]) === true) {
-				unset($response['data']['node_ip_address_versions'][(128 / 4) + (96 * $nodeIpAddressVersionKey)]);
-			}
-		}
-
-		$nodeProcessPartKey = 0;
-
-		foreach ($nodeProcesses as $nodeProcess) {
-			$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
-			$nodeProcessPartKey = abs($nodeProcessPartKey + -1);
-		}
-
-		foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestination) {
-			$response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']] = $nodeProcessForwardingDestination;
-			unset($response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']]['node_id']);
-		}
-
-		foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestination) {
-			$response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']] = $nodeProcessRecursiveDnsDestination;
-			unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['node_id']);
-
-			foreach ($response['data']['node_ip_address_versions'] as $nodeIpAddressVersion) {
-				if (empty($nodeProcessRecursiveDnsDestination['source_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-					$response['data']['node_ip_addresses'][$nodeIpAddressVersion][$nodeProcessRecursiveDnsDestination['listening_ip_address_version_' . $nodeIpAddressVersion]] = $nodeProcessRecursiveDnsDestination['listening_ip_address_version_' . $nodeIpAddressVersion];
-
-					if (empty($response['data']['nodes'][$nodeProcessRecursiveDnsDestination['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']]['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-						$response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['source_ip_address_version_' . $nodeIpAddressVersion] = $response['data']['nodes'][$nodeProcessRecursiveDnsDestination['node_id']]['internal_ip_address_version_' . $nodeIpAddressVersion];
+					foreach (array_filter($nodeIpAddresses) as $nodeIpAddress) {
+						$response['data']['node_ip_addresses'][$nodeIpAddressVersion][$nodeIpAddress] = $nodeIpAddress;
 					}
 				}
-
-				unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
-			}
-		}
-
-		if (empty($nodeProcessNodeUsers) === false) {
-			$nodeProcessNodeUserIds = array();
-
-			foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
-				$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
-				$nodeProcessNodeUserIds[$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
 			}
 
-			$nodeUsers = _list(array(
-				'in' => $parameters['databases']['node_users'],
-				'where' => array(
-					'id' => $nodeProcessNodeUserIds
-				)
-			));
+			foreach (array_values($response['data']['node_ip_address_versions']) as $nodeIpAddressVersionKey => $nodeIpAddressVersion) {
+				if (empty($response['data']['node_ip_addresses'][$nodeIpAddressVersion]) === true) {
+					unset($response['data']['node_ip_address_versions'][(128 / 4) + (96 * $nodeIpAddressVersionKey)]);
+				}
+			}
 
-			foreach ($nodeUsers as $nodeUser) {
-				$response['data']['node_users'][$nodeUser['id']] = array(
-					'status_node_request_destinations_only_allowed' => $nodeUser['status_node_request_destinations_only_allowed'],
-					'status_node_request_logs_allowed' => $nodeUser['status_node_request_logs_allowed'],
-					'status_strict_authentication_required' => $nodeUser['status_strict_authentication_required']
-				);
-				$nodeUserAuthenticationCredentials = _list(array(
-					'columns' => array(
-						'password',
-						'username'
-					),
-					'in' => $parameters['databases']['node_user_authentication_credentials'],
-					'where' => array(
-						'node_user_id' => $nodeUser['id']
-					)
-				));
-				$nodeUserAuthenticationSources = _list(array(
-					'columns' => array(
-						'ip_address',
-						'ip_address_block_length'
-					),
-					'in' => $parameters['databases']['node_user_authentication_sources'],
-					'where' => array(
-						'node_user_id' => $nodeUser['id']
-					)
-				));
-				$nodeUserNodeRequestDestinations = _list(array(
-					'in' => $parameters['databases']['node_user_node_request_destinations'],
-					'where' => array(
-						'node_user_id' => $nodeUser['id']
-					)
-				));
-				$nodeUserNodeRequestLimitRules = _list(array(
-					'in' => $parameters['databases']['node_user_node_request_limit_rules'],
-					'where' => array(
-						'node_user_id' => $nodeUser['id']
-					)
-				));
-				$response['data']['node_users'][$nodeUser['id']]['node_user_authentication_credentials'] = $nodeUserAuthenticationCredentials;
-				$response['data']['node_users'][$nodeUser['id']]['node_user_authentication_sources'] = $nodeUserAuthenticationSources;
+			$nodeProcessPartKey = 0;
 
-				if (empty($nodeUserNodeRequestDestinations) === false) {
-					$nodeRequestDestinationIds = array();
+			foreach ($nodeProcesses as $nodeProcess) {
+				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
+				$nodeProcessPartKey = abs($nodeProcessPartKey + -1);
+			}
 
-					foreach ($nodeUserRequestDestinations as $nodeUserRequestDestination) {
-						if (empty($response['data']['node_users'][$nodeUserNodeRequestDestination['node_user_id']]['status_allowing_request_destinations_only']) === false) {
-							$nodeRequestDestinationIds[$nodeUserNodeRequestDestination['node_request_destination_id']] = $response['data']['node_users'][$nodeUserNodeRequestDestination['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
+			foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestination) {
+				$response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']] = $nodeProcessForwardingDestination;
+				unset($response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']]['node_id']);
+			}
+
+			foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestination) {
+				$response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']] = $nodeProcessRecursiveDnsDestination;
+				unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['node_id']);
+
+				foreach ($response['data']['node_ip_address_versions'] as $nodeIpAddressVersion) {
+					if (empty($nodeProcessRecursiveDnsDestination['source_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+						$response['data']['node_ip_addresses'][$nodeIpAddressVersion][$nodeProcessRecursiveDnsDestination['listening_ip_address_version_' . $nodeIpAddressVersion]] = $nodeProcessRecursiveDnsDestination['listening_ip_address_version_' . $nodeIpAddressVersion];
+
+						if (empty($response['data']['nodes'][$nodeProcessRecursiveDnsDestination['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']]['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+							$response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['source_ip_address_version_' . $nodeIpAddressVersion] = $response['data']['nodes'][$nodeProcessRecursiveDnsDestination['node_id']]['internal_ip_address_version_' . $nodeIpAddressVersion];
 						}
 					}
 
-					$nodeRequestDestinations = _list(array(
-						'in' => $parameters['databases']['node_request_destinations'],
+					unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
+				}
+			}
+
+			if (empty($nodeProcessNodeUsers) === false) {
+				$nodeProcessNodeUserIds = array();
+
+				foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
+					$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
+					$nodeProcessNodeUserIds[$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
+				}
+
+				$nodeUsers = _list(array(
+					'in' => $parameters['databases']['node_users'],
+					'where' => array(
+						'id' => $nodeProcessNodeUserIds
+					)
+				));
+
+				foreach ($nodeUsers as $nodeUser) {
+					$response['data']['node_users'][$nodeUser['id']] = array(
+						'status_node_request_destinations_only_allowed' => $nodeUser['status_node_request_destinations_only_allowed'],
+						'status_node_request_logs_allowed' => $nodeUser['status_node_request_logs_allowed'],
+						'status_strict_authentication_required' => $nodeUser['status_strict_authentication_required']
+					);
+					$nodeUserAuthenticationCredentials = _list(array(
+						'columns' => array(
+							'password',
+							'username'
+						),
+						'in' => $parameters['databases']['node_user_authentication_credentials'],
 						'where' => array(
-							'id' => $nodeRequestDestinationIds
+							'node_user_id' => $nodeUser['id']
 						)
 					));
+					$nodeUserAuthenticationSources = _list(array(
+						'columns' => array(
+							'ip_address',
+							'ip_address_block_length'
+						),
+						'in' => $parameters['databases']['node_user_authentication_sources'],
+						'where' => array(
+							'node_user_id' => $nodeUser['id']
+						)
+					));
+					$nodeUserNodeRequestDestinations = _list(array(
+						'in' => $parameters['databases']['node_user_node_request_destinations'],
+						'where' => array(
+							'node_user_id' => $nodeUser['id']
+						)
+					));
+					$nodeUserNodeRequestLimitRules = _list(array(
+						'in' => $parameters['databases']['node_user_node_request_limit_rules'],
+						'where' => array(
+							'node_user_id' => $nodeUser['id']
+						)
+					));
+					$response['data']['node_users'][$nodeUser['id']]['node_user_authentication_credentials'] = $nodeUserAuthenticationCredentials;
+					$response['data']['node_users'][$nodeUser['id']]['node_user_authentication_sources'] = $nodeUserAuthenticationSources;
 
-					foreach ($nodeRequestDestinations as $nodeRequestDestination) {
-						$response['data']['node_request_destinations'][$nodeRequestDestination['id']] = $nodeRequestDestination['address'];
+					if (empty($nodeUserNodeRequestDestinations) === false) {
+						$nodeRequestDestinationIds = array();
+
+						foreach ($nodeUserRequestDestinations as $nodeUserRequestDestination) {
+							if (empty($response['data']['node_users'][$nodeUserNodeRequestDestination['node_user_id']]['status_allowing_request_destinations_only']) === false) {
+								$nodeRequestDestinationIds[$nodeUserNodeRequestDestination['node_request_destination_id']] = $response['data']['node_users'][$nodeUserNodeRequestDestination['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
+							}
+						}
+
+						$nodeRequestDestinations = _list(array(
+							'in' => $parameters['databases']['node_request_destinations'],
+							'where' => array(
+								'id' => $nodeRequestDestinationIds
+							)
+						));
+
+						foreach ($nodeRequestDestinations as $nodeRequestDestination) {
+							$response['data']['node_request_destinations'][$nodeRequestDestination['id']] = $nodeRequestDestination['address'];
+						}
 					}
-				}
 
-				if (empty($nodeUserNodeRequestLimitRules) === false) {
-					foreach ($nodeUserNodeRequestLimitRules as $nodeUserNodeRequestLimitRule) {
-						if (empty($nodeUserNodeRequestLimitRule['node_request_destination_id']) === false) {
-							if (empty($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['status_node_request_destinations_only_allowed']) === false) {
-								if (empty($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids']) === false) {
-									unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']]);
+					if (empty($nodeUserNodeRequestLimitRules) === false) {
+						foreach ($nodeUserNodeRequestLimitRules as $nodeUserNodeRequestLimitRule) {
+							if (empty($nodeUserNodeRequestLimitRule['node_request_destination_id']) === false) {
+								if (empty($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['status_node_request_destinations_only_allowed']) === false) {
+									if (empty($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids']) === false) {
+										unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']]);
+									} else {
+										unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]);
+									}
 								} else {
-									unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]);
+									$response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']] = $nodeUserNodeRequestLimitRule['node_request_destination_id'];
 								}
 							} else {
-								$response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']] = $nodeUserNodeRequestLimitRule['node_request_destination_id'];
+								unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]);
 							}
-						} else {
-							unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]);
 						}
 					}
 				}
 			}
-		}
 
-		foreach ($nodeReservedInternalDestinations as $nodeReservedInternalDestination) {
-			$response['data']['node_ip_addresses'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $response['data']['node_reserved_internal_destination_ip_addresses'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $nodeReservedInternalDestination['ip_address'];
-			$response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['node_id']][$nodeReservedInternalDestination['ip_address_version']] = array(
-				'ip_address' => $nodeReservedInternalDestination['ip_address'],
-				'ip_address_version' => $nodeReservedInternalDestination['ip_address_version']
-			);
+			foreach ($nodeReservedInternalDestinations as $nodeReservedInternalDestination) {
+				$response['data']['node_ip_addresses'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $response['data']['node_reserved_internal_destination_ip_addresses'][$nodeReservedInternalDestination['ip_address_version']][$nodeReservedInternalDestination['ip_address']] = $nodeReservedInternalDestination['ip_address'];
+				$response['data']['node_reserved_internal_destinations'][$nodeReservedInternalDestination['node_id']][$nodeReservedInternalDestination['ip_address_version']] = array(
+					'ip_address' => $nodeReservedInternalDestination['ip_address'],
+					'ip_address_version' => $nodeReservedInternalDestination['ip_address_version']
+				);
+			}
 		}
 
 		$response['message'] = 'Nodes processed successfully.';
