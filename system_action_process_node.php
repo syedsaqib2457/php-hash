@@ -105,6 +105,14 @@
 				)
 			));
 			$nodeProcessForwardingDestinations = _list(array(
+				'columns' => array(
+					'address_version_4',
+					'address_version_6',
+					'id',
+					'node_process_type',
+					'port_number_version_4',
+					'port_number_version_6'
+				),
 				'in' => $parameters['databases']['node_process_forwarding_destinations'],
 				'where' => array(
 					'node_node_id' => $nodeIds
@@ -117,6 +125,18 @@
 				)
 			));
 			$nodeProcessRecursiveDnsDestinations = _list(array(
+				'columns' => array(
+					'listening_ip_address_version_4',
+					'listening_ip_address_version_4_node_id',
+					'listening_ip_address_version_6',
+					'listening_ip_address_version_6_node_id',
+					'listening_port_number_version_4',
+					'listening_port_number_version_6',
+					'node_id',
+					'node_process_type',
+					'source_ip_address_version_4',
+					'source_ip_address_version_6'
+				),
 				'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
 				'where' => array(
 					'node_node_id' => $nodeIds
@@ -130,6 +150,14 @@
 				)
 			));
 			$nodes = _list(array(
+				'columns' => array(
+					'external_ip_address_version_4',
+					'external_ip_address_version_6',
+					'id',
+					'internal_ip_address_version_4',
+					'internal_ip_address_version_6',
+					'status_activated'
+				),
 				'in' => $parameters['databases']['nodes'],
 				'where' => array(
 					'either' => array(
@@ -141,21 +169,16 @@
 		}
 
 		foreach ($nodes as $node) {
-			$response['data']['nodes'][$node['id']] = array(
-				'external_ip_address_version_4' => $node['external_ip_address_version_4'],
-				'external_ip_address_version_6' => $node['external_ip_address_version_6'],
-				'internal_ip_address_version_4' => $node['internal_ip_address_version_4'],
-				'internal_ip_address_version_6' => $node['internal_ip_address_version_6'],
-				'status_activated' => $node['status_activated']
-			);
+			$response['data']['nodes'][$node['id']] = $node;
+			unset($response['data']['nodes'][$node['id']]['id']);
 
 			foreach ($response['data']['node_ip_address_versions'] as $nodeIpAddressVersion) {
-				$nodeIpAddressess = array(
+				$nodeIpAddresses = array(
 					$node['external_ip_address_version_' . $nodeIpAddressVersion],
 					$node['internal_ip_address_version_' . $nodeIpAddressVersion]
 				);
 
-				foreach (array_filter($nodeIpAddressess) as $nodeIpAddress) {
+				foreach (array_filter($nodeIpAddresses) as $nodeIpAddress) {
 					$response['data']['node_ip_addresses'][$nodeIpAddressVersion][$nodeIpAddress] = $nodeIpAddress;
 				}
 			}
@@ -175,27 +198,13 @@
 		}
 
 		foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestination) {
-			$response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']] = array(
-				'address_version_4' => $nodeProcessForwardingDestination['address_version_4'],
-				'address_version_6' => $nodeProcessForwardingDestination['address_version_6'],
-				'node_process_type' => $nodeProcessForwardingDestination['node_process_type'],
-				'port_number_version_4' => $nodeProcessForwardingDestination['port_number_version_4'],
-				'port_number_version_6' => $nodeProcessForwardingDestination['port_number_version_6']
-			);
+			$response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']] = $nodeProcessForwardingDestination;
+			unset($response['data']['node_process_forwarding_destinations'][$nodeProcessForwardingDestination['node_process_type']][$nodeProcessForwardingDestination['node_id']]['node_id']);
 		}
 
 		foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestination) {
-			$response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']] = array(
-				'listening_ip_address_version_4' => $nodeProcessRecursiveDnsDestination['listening_ip_address_version_4'],
-				'listening_ip_address_version_4_node_id' => $nodeProcessRecursiveDnsDestination['listening_ip_address_version_4_node_id'],
-				'listening_ip_address_version_6' => $nodeProcessRecursiveDnsDestination['listening_ip_address_version_6'],
-				'listening_ip_address_version_6_node_id' => $nodeProcessRecursiveDnsDestination['listening_ip_address_version_6_node_id'],
-				'listening_port_number_version_4' => $nodeProcessRecursiveDnsDestination['listening_port_number_version_4'],
-				'listening_port_number_version_6' => $nodeProcessRecursiveDnsDestination['listening_port_number_version_6'],
-				'node_process_type' => $nodeProcessRecursiveDnsDestination['node_process_type'],
-				'source_ip_address_version_4' => $nodeProcessRecursiveDnsDestination['source_ip_address_version_4'],
-				'source_ip_address_version_6' => $nodeProcessRecursiveDnsDestination['source_ip_address_version_6']
-			);
+			$response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']] = $nodeProcessRecursiveDnsDestination;
+			unset($response['data']['node_process_recursive_dns_destinations'][$nodeProcessRecursiveDnsDestination['node_process_type']][$nodeProcessRecursiveDnsDestination['node_id']]['node_id']);
 
 			foreach ($response['data']['node_ip_address_versions'] as $nodeIpAddressVersion) {
 				if (empty($nodeProcessRecursiveDnsDestination['source_ip_address_version_' . $nodeIpAddressVersion]) === false) {
@@ -218,30 +227,6 @@
 				$nodeProcessNodeUserIds[$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
 			}
 
-			$nodeUserAuthenticationCredentials = _list(array(
-				'in' => $parameters['databases']['node_user_authentication_credentials'],
-				'where' => array(
-					'node_user_id' => $nodeProcessNodeUserIds
-				)
-			));
-			$nodeUserAuthenticationSources = _list(array(
-				'in' => $parameters['databases']['node_user_authentication_sources'],
-				'where' => array(
-					'node_user_id' => $nodeProcessNodeUserIds
-				)
-			));
-			$nodeUserNodeRequestDestinations = _list(array(
-				'in' => $parameters['databases']['node_user_node_request_destinations'],
-				'where' => array(
-					'node_user_id' => $nodeProcessNodeUserIds
-				)
-			));
-			$nodeUserNodeRequestLimitRules = _list(array(
-				'in' => $parameters['databases']['node_user_node_request_limit_rules'],
-				'where' => array(
-					'node_user_id' => $nodeProcessNodeUserIds
-				)
-			));
 			$nodeUsers = _list(array(
 				'in' => $parameters['databases']['node_users'],
 				'where' => array(
@@ -255,18 +240,42 @@
 					'status_node_request_logs_allowed' => $nodeUser['status_node_request_logs_allowed'],
 					'status_strict_authentication_required' => $nodeUser['status_strict_authentication_required']
 				);
+				$nodeUserAuthenticationCredentials = _list(array(
+					'columns' => array(
+						'password',
+						'username'
+					),
+					'in' => $parameters['databases']['node_user_authentication_credentials'],
+					'where' => array(
+						'node_user_id' => $nodeUser['id']
+					)
+				));
+				$nodeUserAuthenticationSources = _list(array(
+					'columns' => array(
+						'ip_address',
+						'ip_address_block_length'
+					),
+					'in' => $parameters['databases']['node_user_authentication_sources'],
+					'where' => array(
+						'node_user_id' => $nodeUser['id']
+					)
+				));
+				$nodeUserNodeRequestDestinations = _list(array(
+					'in' => $parameters['databases']['node_user_node_request_destinations'],
+					'where' => array(
+						'node_user_id' => $nodeUser['id']
+					)
+				));
+				$nodeUserNodeRequestLimitRules = _list(array(
+					'in' => $parameters['databases']['node_user_node_request_limit_rules'],
+					'where' => array(
+						'node_user_id' => $nodeUser['id']
+					)
+				));
 			}
 
-			foreach ($nodeUserAuthenticationCredentials as $nodeUserAuthenticationCredential) {
-				$response['data']['node_users'][$nodeUserAuthenticationCredential['node_user_id']]['node_user_authentication_credentials'][] = array(
-					'password' => $nodeUserAuthenticationCredential['password'],
-					'username' => $nodeUserAuthenticationCredential['username']
-				);
-			}
-
-			foreach ($nodeUserAuthenticationSources as $nodeUserAuthenticationSource) {
-				$response['data']['node_users'][$nodeUserAuthenticationSource['node_user_id']]['node_user_authentication_sources'][] = $nodeUserAuthenticationSource['ip_address'] . '/' . $nodeUserAuthenticationSource['ip_address_block_length'];
-			}
+			$response['data']['node_users'][$nodeUser['id']]['node_user_authentication_credentials'] = $nodeUserAuthenticationCredentials;
+			$response['data']['node_users'][$nodeUser['id']]['node_user_authentication_sources'] = $nodeUserAuthenticationSources;
 
 			if (empty($nodeUserNodeRequestDestinations) === false) {
 				$nodeRequestDestinationIds = array();
