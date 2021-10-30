@@ -276,23 +276,9 @@
 					$response['data']['node_users'][$nodeUser['id']]['node_user_authentication_sources'] = $nodeUserAuthenticationSources;
 
 					if (empty($nodeUserNodeRequestDestinations) === false) {
-						$nodeRequestDestinationIds = array();
-
-						foreach ($nodeUserRequestDestinations as $nodeUserRequestDestination) {
-							if (empty($response['data']['node_users'][$nodeUserNodeRequestDestination['node_user_id']]['status_allowing_request_destinations_only']) === false) {
-								$nodeRequestDestinationIds[$nodeUserNodeRequestDestination['node_request_destination_id']] = $response['data']['node_users'][$nodeUserNodeRequestDestination['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
-							}
-						}
-
-						$nodeRequestDestinations = _list(array(
-							'in' => $parameters['databases']['node_request_destinations'],
-							'where' => array(
-								'id' => $nodeRequestDestinationIds
-							)
-						));
-
-						foreach ($nodeRequestDestinations as $nodeRequestDestination) {
-							$response['data']['node_request_destinations'][$nodeRequestDestination['id']] = $nodeRequestDestination['address'];
+						foreach ($nodeUserNodeRequestDestinations as $nodeUserNodeRequestDestination) {
+							$response['data']['node_request_destinations'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['address'];
+							$response['data']['node_users'][$nodeUser['id']]['request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
 						}
 					}
 
