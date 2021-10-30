@@ -102,7 +102,10 @@
 			$nodeProcesses = _list(array(
 				'in' => $parameters['databases']['node_processes'],
 				'where' => array(
-					'node_node_id' => $nodeIds
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
 				)
 			));
 			$nodeProcessForwardingDestinations = _list(array(
@@ -116,13 +119,19 @@
 				),
 				'in' => $parameters['databases']['node_process_forwarding_destinations'],
 				'where' => array(
-					'node_node_id' => $nodeIds
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
 				)
 			));
 			$nodeProcessNodeUsers = _list(array(
 				'in' => $parameters['databases']['node_process_node_users'], 
 				'where' => array(
-					'node_node_id' => $nodeIds
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
 				)
 			));
 			$nodeProcessRecursiveDnsDestinations = _list(array(
@@ -140,13 +149,19 @@
 				),
 				'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
 				'where' => array(
-					'node_node_id' => $nodeIds
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
 				)
 			));
 			$nodeReservedInternalDestinations = _list(array(
 				'in' => $parameters['databases']['node_reserved_internal_destinations'],
 				'where' => array(
-					'node_node_id' => $nodeIds,
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					),
 					'status_assigned' => true
 				)
 			));
