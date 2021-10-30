@@ -100,6 +100,12 @@
 			}
 
 			$nodeProcesses = _list(array(
+				'columns' => array(
+					'id',
+					'node_id',
+					'port_number',
+					'type'
+				),
 				'in' => $parameters['databases']['node_processes'],
 				'where' => array(
 					'either' => array(
