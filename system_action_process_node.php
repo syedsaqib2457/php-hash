@@ -13,7 +13,6 @@
 		$databases['node_user_authentication_sources'],
 		$databases['node_user_node_request_destinations'],
 		$databases['node_user_node_request_limit_rules'],
-		$databases['node_users'],
 		$databases['nodes']
 	), $parameters['databases'], $response);
 
@@ -131,6 +130,12 @@
 					)
 				)
 			));
+			// todo: add node process node user tables relational to nodes to prevent excessive database requests
+				// node_process_node_user_authentication_credentials
+				// node_process_node_user_authentication_source
+				// node_process_node_user_node_request_destinationss
+				// node_process_node_user_node_request_limit_rules
+
 			$nodeProcessNodeUsers = _list(array(
 				'columns' => array(
 					'node_id',
