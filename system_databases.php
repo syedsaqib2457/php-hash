@@ -723,10 +723,6 @@
 			),
 			'structure' => array(
 				'columns' => array(
-					'address' => array(
-						'default' => null,
-						'type' => 'VARCHAR(1000)'
-					),
 					'created_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
@@ -738,6 +734,10 @@
 					'modified_date' => array(
 						'default' => 'CURRENT_TIMESTAMP',
 						'type' => 'DATETIME'
+					),
+					'node_request_destination_address' => array(
+						'default' => null,
+						'type' => 'VARCHAR(1000)'
 					),
 					'node_request_destination_id' => array(
 						'default' => null,

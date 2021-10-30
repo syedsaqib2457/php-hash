@@ -261,12 +261,19 @@
 						)
 					));
 					$nodeUserNodeRequestDestinations = _list(array(
+						'columns' => array(
+							'node_request_destination_address',
+							'node_request_destination_id'
+						),
 						'in' => $parameters['databases']['node_user_node_request_destinations'],
 						'where' => array(
 							'node_user_id' => $nodeUser['id']
 						)
 					));
 					$nodeUserNodeRequestLimitRules = _list(array(
+						'columns' => array(
+							'node_request_destination_id'
+						),
 						'in' => $parameters['databases']['node_user_node_request_limit_rules'],
 						'where' => array(
 							'node_user_id' => $nodeUser['id']
@@ -277,7 +284,7 @@
 
 					if (empty($nodeUserNodeRequestDestinations) === false) {
 						foreach ($nodeUserNodeRequestDestinations as $nodeUserNodeRequestDestination) {
-							$response['data']['node_request_destinations'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['address'];
+							$response['data']['node_request_destinations'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_address'];
 							$response['data']['node_users'][$nodeUser['id']]['request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
 						}
 					}
@@ -286,16 +293,16 @@
 						foreach ($nodeUserNodeRequestLimitRules as $nodeUserNodeRequestLimitRule) {
 							if (empty($nodeUserNodeRequestLimitRule['node_request_destination_id']) === false) {
 								if (empty($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['status_node_request_destinations_only_allowed']) === false) {
-									if (empty($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids']) === false) {
-										unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']]);
+									if (empty($response['data']['node_users'][$nodeUser['id']]['node_request_destination_ids']) === false) {
+										unset($response['data']['node_users'][$nodeUser['id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']]);
 									} else {
-										unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]);
+										unset($response['data']['node_users'][$nodeUser['id']]);
 									}
 								} else {
-									$response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']] = $nodeUserNodeRequestLimitRule['node_request_destination_id'];
+									$response['data']['node_users'][$nodeUser['id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']] = $nodeUserNodeRequestLimitRule['node_request_destination_id'];
 								}
 							} else {
-								unset($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]);
+								unset($response['data']['node_users'][$nodeUser['id']]);
 							}
 						}
 					}
