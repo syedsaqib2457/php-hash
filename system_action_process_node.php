@@ -6,7 +6,7 @@
 	$parameters['databases'] += _connect(array(
 		$databases['node_process_forwarding_destinations'],
 		$databases['node_process_node_user_authentication_credentials'],
-		$databases['node_process_node_user_authentication_source'],
+		$databases['node_process_node_user_authentication_sources'],
 		$databases['node_process_node_user_node_request_destinations'],
 		$databases['node_process_node_user_node_request_limit_rules'],
 		$databases['node_process_node_users'],
@@ -116,7 +116,7 @@
 						'node_node_id' => $nodeIds
 					)
 				)
-			));
+			), $response);
 			$nodeProcessForwardingDestinations = _list(array(
 				'columns' => array(
 					'address_version_4',
@@ -133,7 +133,7 @@
 						'node_node_id' => $nodeIds
 					)
 				)
-			));
+			), $response);
 			// todo: add node process node user tables relational to nodes to prevent excessive database requests
 				// node_process_node_user_authentication_credentials
 				// node_process_node_user_authentication_source
@@ -152,7 +152,21 @@
 						'node_node_id' => $nodeIds
 					)
 				)
-			));
+			), $response);
+			$nodeProcessNodeUserAuthenticationSources = _list(array(
+				'columns' => array(
+					'node_user_authentication_source_ip_address',
+					'node_user_authentication_source_ip_address_block_length',
+					'node_user_id'
+				),
+				'in' => $parameters['databases']['node_process_node_user_authentication_sources'],
+				'where' => array(
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
+				)
+			), $response);
 			$nodeProcessNodeUsers = _list(array(
 				'columns' => array(
 					'node_id',
@@ -169,7 +183,7 @@
 						'node_node_id' => $nodeIds
 					)
 				)
-			));
+			), $response);
 			$nodeProcessRecursiveDnsDestinations = _list(array(
 				'columns' => array(
 					'listening_ip_address_version_4',
@@ -190,7 +204,7 @@
 						'node_node_id' => $nodeIds
 					)
 				)
-			));
+			), $response);
 			$nodeReservedInternalDestinations = _list(array(
 				'columns' => array(
 					'ip_address',
@@ -204,7 +218,7 @@
 					),
 					'status_assigned' => true
 				)
-			));
+			), $response);
 			$nodes = _list(array(
 				'columns' => array(
 					'external_ip_address_version_4',
@@ -221,7 +235,7 @@
 						'node_id' => $nodeIds
 					)
 				)
-			));
+			), $response);
 
 			foreach ($nodes as $node) {
 				$response['data']['nodes'][$node['id']] = $node;
@@ -291,7 +305,7 @@
 						'where' => array(
 							'node_user_id' => $nodeProcessNodeUser['node_user_id']
 						)
-					));
+					), $response);
 					$nodeUserAuthenticationSources = _list(array(
 						'columns' => array(
 							'ip_address',
@@ -301,7 +315,7 @@
 						'where' => array(
 							'node_user_id' => $nodeProcessNodeUser['node_user_id']
 						)
-					));
+					), $response);
 					$nodeUserNodeRequestDestinations = _list(array(
 						'columns' => array(
 							'node_request_destination_address',
@@ -311,7 +325,7 @@
 						'where' => array(
 							'node_user_id' => $nodeProcessNodeUser['node_user_id']
 						)
-					));
+					), $response);
 					$nodeUserNodeRequestLimitRules = _list(array(
 						'columns' => array(
 							'node_request_destination_id'
@@ -320,7 +334,7 @@
 						'where' => array(
 							'node_user_id' => $nodeProcessNodeUser['node_user_id']
 						)
-					));
+					), $response);
 					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_user_authentication_credentials'] = $nodeUserAuthenticationCredentials;
 					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_user_authentication_sources'] = $nodeUserAuthenticationSources;
 
