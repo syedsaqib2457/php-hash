@@ -1,6 +1,5 @@
 <?php
-	// todo: add each string value for destinations, limits, etc for faster node processing
-	// todo: change all datetime fields to integer timestamp
+	// todo: add all database structures to system_databases during installation + make every column a string varchar for simplicity with dynamically-adjusting maximum length for memory optimization
 
 	if (empty($parameters) === true) {
 		exit;
