@@ -139,7 +139,20 @@
 				// node_process_node_user_authentication_source
 				// node_process_node_user_node_request_destinationss
 				// node_process_node_user_node_request_limit_rules
-
+			$nodeProcessNodeUserAuthenticationCredentials = _list(array(
+				'columns' => array(
+					'node_user_authentication_credential_password',
+					'node_user_authentication_credential_username',
+					'node_user_id'
+				),
+				'in' => $parameters['databases']['node_process_node_user_authentication_credentials'],
+				'where' => array(
+					'either' => array(
+						'node_id' => $nodeIds,
+						'node_node_id' => $nodeIds
+					)
+				)
+			));
 			$nodeProcessNodeUsers = _list(array(
 				'columns' => array(
 					'node_id',
