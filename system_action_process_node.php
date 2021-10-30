@@ -298,7 +298,7 @@
 					if (empty($nodeUserNodeRequestDestinations) === false) {
 						foreach ($nodeUserNodeRequestDestinations as $nodeUserNodeRequestDestination) {
 							$response['data']['node_request_destinations'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_address'];
-							$response['data']['node_users'][$nodeUser['id']]['request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
+							$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['request_destination_ids'][$nodeUserNodeRequestDestination['node_request_destination_id']] = $nodeUserNodeRequestDestination['node_request_destination_id'];
 						}
 					}
 
@@ -306,7 +306,7 @@
 						foreach ($nodeUserNodeRequestLimitRules as $nodeUserNodeRequestLimitRule) {
 							if (empty($nodeUserNodeRequestLimitRule['node_request_destination_id']) === false) {
 								if (empty($response['data']['node_users'][$nodeUserNodeRequestLimitRule['node_user_id']]['status_node_request_destinations_only_allowed']) === false) {
-									if (empty($response['data']['node_users'][$nodeUser['id']]['node_request_destination_ids']) === false) {
+									if (empty($response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_request_destination_ids']) === false) {
 										unset($response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]['node_request_destination_ids'][$nodeUserNodeRequestLimitRule['node_request_destination_id']]);
 									} else {
 										unset($response['data']['node_users'][$nodeProcessNodeUser['node_user_id']]);

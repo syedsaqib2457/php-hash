@@ -276,6 +276,19 @@
 					'node_user_id' => array(
 						'default' => null,
 						'type' => 'BIGINT(11)'
+					),
+
+					'node_user_status_node_request_destinations_only_allowed' => array(
+						'default' => 0,
+						'type' => 'TINYINT(1)'
+					),
+					'node_user_status_node_request_logs_allowed' => array(
+						'default' => 0,
+						'type' => 'TINYINT(1)'
+					),
+					'node_user_status_strict_authentication_required' => array(
+						'default' => 0,
+						'type' => 'TINYINT(1)'
 					)
 				),
 				'table' => 'node_process_node_users'
