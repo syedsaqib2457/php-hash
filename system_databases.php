@@ -45,9 +45,13 @@
 					'created_timestamp',
 					'id',
 					'modified_timestamp',
-					'node_user_id',
-					'password',
-					'username'
+					'node_id',
+					'node_node_id',
+					'node_process_type',
+					'node_user_authentication_credential_id',
+					'node_user_authentication_credential_password',
+					'node_user_authentication_credential_username',
+					'node_user_id'
 				)
 			),
 			'table' => 'node_process_node_user_authentication_credentials'
@@ -61,10 +65,13 @@
 				'columns' => array(
 					'created_timestamp',
 					'id',
-					'ip_address',
-					'ip_address_block_length',
-					'ip_address_version',
 					'modified_timestamp',
+					'node_id',
+					'node_node_id',
+					'node_process_type',
+					'node_user_authentication_source_ip_address',
+					'node_user_authentication_source_ip_address_block_length',
+					'node_user_authentication_source_ip_address_version',
 					'node_user_id'
 				),
 				'table' => 'node_process_node_user_authentication_sources'
@@ -100,6 +107,9 @@
 					'created_timestamp',
 					'id',
 					'modified_timestamp',
+					'node_id',
+					'node_node_id',
+					'node_process_type',
 					'node_request_destination_address',
 					'node_request_destination_id',
 					'node_user_id'
@@ -118,6 +128,9 @@
 					'expiration_timestamp',
 					'id',
 					'modified_timestamp',
+					'node_id',
+					'node_node_id',
+					'node_process_type',
 					'node_request_destination_id',
 					'node_request_limit_rule_id',
 					'node_user_id'

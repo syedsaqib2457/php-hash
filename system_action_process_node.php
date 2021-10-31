@@ -316,8 +316,8 @@
 
 				if (empty($nodeProcessNodeUserNodeRequestDestinations) === false) {
 					foreach ($nodeProcessNodeUserNodeRequestDestinations as $nodeProcessNodeUserNodeRequestDestination) {
-						$response['data']['node_request_destinations'][$nodeProcessNodeUserNodeRequestDestination['node_user_node_request_destination_id']] = $nodeProcessNodeUserNodeRequestDestination['node_user_node_request_destination_address'];
-						$response['data']['node_users'][$nodeProcessNodeUserNodeRequestDestination['node_user_id']]['node_request_destination_ids'][$nodeProcessNodeUserNodeRequestDestination['node_user_node_request_destination_id']] = $nodeProcessNodeUserNodeRequestDestination['node_user_node_request_destination_id'];
+						$response['data']['node_request_destinations'][$nodeProcessNodeUserNodeRequestDestination['node_request_destination_id']] = $nodeProcessNodeUserNodeRequestDestination['node_request_destination_address'];
+						$response['data']['node_users'][$nodeProcessNodeUserNodeRequestDestination['node_user_id']]['node_request_destination_ids'][$nodeProcessNodeUserNodeRequestDestination['node_request_destination_id']] = $nodeProcessNodeUserNodeRequestDestination['node_request_destination_id'];
 					}
 				}
 
@@ -326,7 +326,7 @@
 						if (empty($nodeProcessNodeUserNodeRequestLimitRule['node_request_destination_id']) === false) {
 							if (empty($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['status_node_request_destinations_only_allowed']) === false) {
 								if (empty($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids']) === false) {
-									unset($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_node_request_destination_id']]);
+									unset($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeProcessNodeUserNodeRequestLimitRule['node_request_destination_id']]);
 								} else {
 									unset($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]);
 								}
