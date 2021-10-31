@@ -14,12 +14,12 @@
 		}
 
 		$node = _list(array(
+			'columns' => array(
+				'id'
+			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
-				'either' => array(
-					'id' => $parameters['where']['id'],
-					'node_id' => $parameters['where']['id']
-				)
+				'id' => $parameters['where']['id']
 			)
 		), $response);
 		$node = current($node);
@@ -29,19 +29,13 @@
 			return $response;
 		}
 
-		$nodeId = $node['id'];
-
-		if (empty($node['node_id']) === false) {
-			$nodeId = $node['node_id'];
-		}
-
 		_update(array(
 			'data' => array(
-				'status_processed' => true
+				'status_processed' => false
 			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
-				'id' => $nodeId
+				'id' => $node['id']
 			)
 		), $response);
 		$response['message'] = 'Node updated successfully.';
