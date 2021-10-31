@@ -472,6 +472,34 @@
 				'table' => 'nodes'
 			)
 		),
+		'system_database_columns' => array(
+			'authentication' => array(
+				'hostname' => 'localhost',
+				'password' => 'password'
+			),
+			'structure' => array(
+				'created_timestamp',
+				'id',
+				'length',
+				'modified_timestamp',
+				'name',
+				'system_database_id'
+			)
+		),
+		'system_databases' => array(
+			'authentication' => array(
+				'hostname' => 'localhost',
+				'password' => 'password'
+			),
+			'structure' => array(
+				'authentication_credential_hostname',
+				'authentication_credential_password',
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'name'
+			)
+		),
 		'system_resource_usage_logs' => array(
 			'authentication' => array(
 				'hostname' => 'localhost',
