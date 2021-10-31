@@ -4,6 +4,9 @@
 		// all columns are a string varchar for simplicity with dynamically-adjusting maximum length for memory optimization
 		// all columns have no default value
 		// localhost database is required for storing database authentication credentials + structures
+		// use 1 set of authentication credentials per database
+		// set request log databases to use current timestamp in database name for easy deployment of additional dedicated storage instances instead of bucket storage
+			// create functionality to allow API access to list specific chronologically-sorted request logs in multiple databases for a custom date range
 
 	if (empty($parameters) === true) {
 		exit;
