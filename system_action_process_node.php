@@ -77,8 +77,10 @@
 				),
 				'in' => $parameters['databases']['nodes'],
 				'where' => array(
-					'id' => $nodeIds,
-					'node_id' => $nodeIds
+					'either' => array(
+						'id' => $nodeIds,
+						'node_id' => $nodeIds
+					)
 				)
 			), $response);
 		} else {
