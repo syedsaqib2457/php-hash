@@ -30,7 +30,7 @@
 					'node_node_id',
 					'node_process_type',
 					'port_number_version_4',
-					'port_number_version_6',
+					'port_number_version_6'
 				),
 				'table' => 'node_process_forwarding_destinations'
 			)
@@ -65,7 +65,7 @@
 					'ip_address_block_length',
 					'ip_address_version',
 					'modified_timestamp',
-					'node_user_id',
+					'node_user_id'
 				),
 				'table' => 'node_process_node_user_authentication_sources'
 			)
