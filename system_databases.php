@@ -1,10 +1,8 @@
 <?php
-	// todo: add all database structures to system_databases during installation
-		// add new node_process_node_user_* databases from system_action_process_node.php + delete old databases
+	// todo: add all database structures to system_databases database during installation
 		// all columns are a string varchar for simplicity with dynamically-adjusting maximum length for memory optimization
 		// all columns have no default value
 		// localhost database is required for storing database authentication credentials + structures
-		// use 1 set of authentication credentials per database
 		// set request log databases to use current timestamp in database name for easy deployment of additional dedicated storage instances instead of bucket storage
 			// create functionality to allow API access to list specific chronologically-sorted request logs in multiple databases for a custom date range
 
@@ -618,6 +616,8 @@
 	);
 
 	function _connect($databases, $existingDatabases, $response) {
+		// todo: list database column data from system_database_columns table
+
 		foreach ($databases as $database) {
 			if (
 				(empty($existingDatabases) === false) &&
@@ -853,6 +853,9 @@
 	}
 
 	function _save($parameters, $response) {
+		// todo: group 10 commands per mysqli command
+		// todo: verify + update column length for each value before saving data
+
 		if (empty($parameters['data']) === false) {
 			if (is_numeric(key($parameters['data'])) === false) {
 				$parameters['data'] = array(
@@ -909,6 +912,8 @@
 	}
 
 	function _update($parameters, $response) {
+		// todo: verify + update column length for each value before updating data
+
 		if (empty($parameters['data']) === false) {
 			$command = 'update ' . $parameters['in']['table'] . ' set ';
 
