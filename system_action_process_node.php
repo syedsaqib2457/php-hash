@@ -55,7 +55,7 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
-			$response['message'] = 'Invalid node authentication token or ID, please try again';
+			$response['message'] = 'Invalid node authentication token or ID, please try again.';
 			// todo: log as unauthorized request request
 			return $response;
 		}
