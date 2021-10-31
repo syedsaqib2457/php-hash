@@ -25,7 +25,7 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
-			$response['message'] = 'Invalid node ID, please try again';
+			$response['message'] = 'Invalid node ID, please try again.';
 			return $response;
 		}
 

@@ -9,6 +9,11 @@
 
 	function _addNodeReservedInternalDestination($parameters, $response) {
 		$existingNodeReservedInternalDestination = _list(array(
+			'columns' => array(
+				'id',
+				'ip_address',
+				'status_added'
+			),
 			'in' => $parameters['databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
 			'sort' => array(
@@ -74,7 +79,7 @@
 							),
 							array(
 								'external_ip_address_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
-								'external_ip_address_version_' . $nodeIpAddressVersion . '_type' => 'reserved'
+								'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
 							)
 						)
 					)
@@ -123,7 +128,7 @@
 						),
 						array(
 							'external_ip_address_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
-							'external_ip_address_version_' . $nodeIpAddressVersion . '_type' => 'reserved'
+							'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
 						)
 					)
 				)

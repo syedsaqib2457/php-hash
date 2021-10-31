@@ -13,6 +13,11 @@
 
 		if (empty($parameters['data']['node_id']) === false) {
 			$nodeNode = _list(array(
+				'columns' => array(
+					'id',
+					'node_id',
+					'status_deployed'
+				),
 				'in' => $parameters['databases']['nodes'],
 				'where' => array(
 					'id' => $parameters['data']['node_id']
@@ -25,10 +30,11 @@
 				return $response;
 			}
 
+			$parameters['data']['id'] = $nodeNode['id'];
 			$parameters['data']['status_deployed'] = $nodeNode['status_deployed'];
 
 			if (empty($nodeNode['node_id']) === false) {
-				$$parameters['data']['node_id'] = $nodeNode['node_id'];
+				$parameters['data']['node_id'] = $nodeNode['node_id'];
 			}
 		}
 
@@ -84,6 +90,12 @@
 		}
 
 		$existingNodeParameters = array(
+			'columns' => array(
+				'external_ip_address_version_4',
+				'external_ip_address_version_6',
+				'internal_ip_address_version_4',
+				'internal_ip_address_version_6'
+			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
 				'either' => $nodeExternalIpAddresses
@@ -105,12 +117,7 @@
 		$existingNode = current($existingNode);
 
 		if (empty($existingNode) === false) {
-			$existingNodeIpAddresses = array_intersect_key($existingNode, array(
-				'external_ip_address_version_4' => true,
-				'external_ip_address_version_6' => true,
-				'internal_ip_address_version_4' => true,
-				'internal_ip_address_version_6' => true
-			));
+			$existingNodeIpAddresses = array_filter($existingNode);
 
 			foreach ($existingNodeIpAddresses as $existingNodeIpAddress) {
 				if (in_array($existingNodeIpAddress, $nodeIpAddresses) === true) {

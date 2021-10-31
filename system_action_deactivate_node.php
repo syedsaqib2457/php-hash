@@ -14,6 +14,9 @@
 		}
 
 		$nodeParameters = array(
+			'columns' => array(
+				'status_activated'
+			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
 				'id' => $parameters['where']['id']

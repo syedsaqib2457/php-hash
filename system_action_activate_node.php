@@ -9,6 +9,10 @@
 
 	function _activateNode($parameters, $response) {
 		$nodeParameters = array(
+			'columns' => array(
+				'status_activated',
+				'status_deployed'
+			),
 			'in' => $parameters['databases']['nodes']
 		);
 

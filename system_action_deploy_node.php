@@ -14,6 +14,11 @@
 		}
 
 		$nodeParameters = array(
+			'columns' => array(
+				'id',
+				'node_id',
+				'status_deployed'
+			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
 				'authentication_token' => $parameters['where']['authentication_token']
