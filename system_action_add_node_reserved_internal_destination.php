@@ -26,8 +26,8 @@
 					'node_node_id' => $parameters['node'][$nodeIpAddressVersion]
 				),
 				'ip_address_version' => ($nodeIpAddressVersion = key($parameters['node'])),
-				'status_added' => false,
-				'status_processed' => true
+				'status_added' => '0',
+				'status_processed' => '1'
 			)
 		), $response);
 		$existingNodeReservedInternalDestination = current($existingNodeReservedInternalDestination);
@@ -38,27 +38,27 @@
 				'ip_address_version' => $nodeIpAddressVersion,
 				'node_id' => $parameters['node'][$nodeIpAddressVersion]['id'],
 				'node_node_id' => $parameters['node'][$nodeIpAddressVersion]['node_id'],
-				'status_added' => false,
-				'status_processed' => true
+				'status_added' => '0',
+				'status_processed' => '1'
 			);
 
 			switch ($nodeIpAddressVersion) {
-				case 4:
+				case '4':
 					$existingNodeReservedInternalDestination['ip_address'] = '10.0.0.0';
 					break;
-				case 6:
+				case '6':
 					$existingNodeReservedInternalDestination['ip_address'] = 'fc10:0000:0000:0000:0000:0000:0000:0000';
 					break;
 			}
 
 			$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
-			while ($existingNodeReservedInternalDestination['status_added'] === false) {
+			while (($existingNodeReservedInternalDestination['status_added'] === '0') === true) {
 				switch ($nodeIpAddressVersion) {
-					case 4:
+					case '4':
 						$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
 						break;
-					case 6:
+					case '6':
 						$nodeReservedInternalDestinationIpAddressBlock = substr($nodeReservedInternalDestinationIpAddress, -29);
 						$nodeReservedInternalDestinationIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalDestinationIpAddressBlock));
 						$nodeReservedInternalDestinationIpAddressBlockIntegerIncrement = ($nodeReservedInternalDestinationIpAddressBlockInteger + 1);
@@ -87,7 +87,7 @@
 
 				if (($existingNodeCount === 0) === true) {
 					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
-					$existingNodeReservedInternalDestination['status_added'] = true;
+					$existingNodeReservedInternalDestination['status_added'] = "1";
 				}
 			}
 		} else {
@@ -98,16 +98,16 @@
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
-		$existingNodeReservedInternalDestinationData[1]['status_added'] = false;
+		$existingNodeReservedInternalDestinationData[1]['status_added'] = "0";
 		unset($existingNodeReservedInternalDestinationData[1]['id']);
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
 		while (($existingNodeReservedInternalDestinationData[0]['ip_address'] === $existingNodeReservedInternalDestinationData[1]['ip_address']) === true) {
 			switch ($nodeIpAddressVersion) {
-				case 4:
+				case '4':
 					$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
 					break;
-				case 6:
+				case '6':
 					$nodeReservedInternalDestinationIpAddressBlock = substr($nodeReservedInternalDestinationIpAddress, -29);
 					$nodeReservedInternalDestinationIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalDestinationIpAddressBlock));
 					$nodeReservedInternalDestinationIpAddressBlockIntegerIncrement = ($nodeReservedInternalDestinationIpAddressBlockInteger + 1);

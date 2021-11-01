@@ -40,8 +40,8 @@
 
 		$nodeExternalIpAddresses = $nodeInternalIpAddresses = array();
 		$nodeIpAddressVersions = array(
-			4,
-			6
+			'4',
+			'6'
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
@@ -157,7 +157,7 @@
 		$node = current($node);
 		$response['data'] = $node;
 		$response['message'] = 'Node added successfully.';
-		$response['status_valid'] = "1";
+		$response['status_valid'] = '1';
 		return $response;
 	}
 

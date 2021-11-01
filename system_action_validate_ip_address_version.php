@@ -7,7 +7,7 @@
 		$response = false;
 
 		switch ($ipAddress) {
-			case 4:
+			case '4':
 				$ipAddressParts = explode('.', $ipAddress);
 
 				if (count($ipAddressParts) === 4) {
@@ -17,8 +17,8 @@
 						if (
 							(is_numeric($ipAddressPart) === false) ||
 							((strlen(intval($ipAddressPart)) > 3) === true) ||
-							($ipAddressPart > 255) ||
-							($ipAddressPart < 0)
+							(($ipAddressPart > 255) === true) ||
+							(($ipAddressPart < 0) === true)
 						) {
 							if (
 								($allowIpAddressRanges === false) ||
@@ -57,7 +57,7 @@
 
 				break;
 
-			case 6:
+			case '6':
 				$validIpAddressPartLetters = 'ABCDEF';
 
 				if (is_int(strpos($ipAddress, '::')) === true) {
@@ -88,14 +88,14 @@
 					(isset($ipAddressParts[7]) === false) &&
 					(isset($ipAddressParts[6]) === true)
 				) {
-					$mappedIpAddress = _validateIpAddress(end($ipAddressParts), 4);
+					$mappedIpAddress = _validateIpAddress(end($ipAddressParts), '4');
 				}
 
 				if (
 					(is_string($mappedIpAddress) === true) ||
 					(
-						(isset($ipAddressParts[7]) === true) &&
-						(isset($ipAddressParts[8]) === false)
+						(isset($ipAddressParts[8]) === false) &&
+						(isset($ipAddressParts[7]) === true)
 					)
 				) {
 					$ipAddress = '';

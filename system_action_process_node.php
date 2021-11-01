@@ -20,8 +20,8 @@
 		// todo: verify no reserved internal ip duplicates before each process reconfig
 		$response['data'] = array(
 			'node_ip_address_versions' => array(
-				32 => 4,
-				128 => 6
+				'32' => '4',
+				'128' => '6'
 			),
 			'node_process_types' => array(
 				'http_proxy',
@@ -34,7 +34,7 @@
 				'socks' => 'socks_proxy'
 			),
 			'reserved_network' => array(), // todo: add reserved network IP data from validation file
-			'version' => 1 // todo: add system version nber from file
+			'version' => '1' // todo: add system version nber from file
 		);
 
 		if (empty($parameters['where']['authentication_token']) === true) {
@@ -91,7 +91,7 @@
 						'id' => $nodeIds,
 						'node_id' => $nodeIds
 					),
-					'status_processed' => false
+					'status_processed' => '0'
 				)
 			), $response);
 
@@ -235,7 +235,7 @@
 						'node_id' => $nodeIds,
 						'node_node_id' => $nodeIds
 					),
-					'status_assigned' => true
+					'status_assigned' => '1'
 				)
 			), $response);
 			$nodes = _list(array(
@@ -366,7 +366,7 @@
 		return $response;
 	}
 
-	if ($parameters['action'] === 'process_node') {
+	if (($parameters['action'] === 'process_node') === true) {
 		$response = _processNode($parameters, $response);
 		_output($response);
 	}

@@ -70,11 +70,11 @@
 		}
 
 		$response['message'] = 'Nodes removed successfully.';
-		$response['status_valid'] = true;
+		$response['status_valid'] = '1';
 		return $response;
 	}
 
-	if ($parameters['action'] === 'delete_node') {
+	if (($parameters['action'] === 'delete_node') === true) {
 		$response = _deleteNode($parameters, $response);
 		_output($response);
 	}

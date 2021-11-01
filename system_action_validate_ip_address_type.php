@@ -6,7 +6,7 @@
 	function _validateIpAddressType($ipAddress, $ipAddressVersion) {
 		$response = 'public_network';
 		$reservedIpAddressVersions = array(
-			4 => array(
+			'4' => array(
 				'current_network' => array(
 					array(
 						'start' => '0.0.0.0',
@@ -54,7 +54,8 @@
 					// 4026531840 => 4294967294,
 					// 4294967295 => 4294967295
 				)
-			), 6 => array(
+			),
+			'6' => array(
 				// todo: add remaining range details for IPv6
 				// '0000:0000:0000:0000:0000:0000:0000:0000',
 				// '0000:0000:0000:0000:0000:0000:0000:0001',

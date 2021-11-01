@@ -30,21 +30,21 @@
 			return $response;
 		}
 
-		if ($node['status_activated'] === false) {
+		if (($node['status_activated'] === '0') === true) {
 			$response['message'] = 'Node is already deactivated, please try again.';
 			return $response;
 		}
 
 		$nodeParameters['data'] = array(
-			'status_activated' => false
+			'status_activated' => '0'
 		);
 		_update($nodeParameters, $response);
 		$response['message'] = 'Node deactivated successfully.';
-		$response['status_valid'] = true;
+		$response['status_valid'] = '1';
 		return $response;
 	}
 
-	if ($parameters['action'] === 'deactivate_node') {
+	if (($parameters['action'] === 'deactivate_node') === true) {
 		$response = _deactivateNode($parameters, $response);
 		_output($response);
 	}

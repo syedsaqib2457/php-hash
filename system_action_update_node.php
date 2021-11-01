@@ -31,7 +31,7 @@
 
 		_update(array(
 			'data' => array(
-				'status_processed' => false
+				'status_processed' => '0'
 			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
@@ -39,11 +39,11 @@
 			)
 		), $response);
 		$response['message'] = 'Node updated successfully.';
-		$response['status_valid'] = true;
+		$response['status_valid'] = '1';
 		return $response;
 	}
 
-	if ($parameters['action'] === 'update_node') {
+	if (($parameters['action'] === 'update_node') === true) {
 		$response = _updateNode($parameters, $response);
 		_output($response);
 	}
