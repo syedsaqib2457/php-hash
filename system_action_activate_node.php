@@ -39,24 +39,24 @@
 
 		if (
 			(empty($parameters['where']['authentication_token']) === true) &&
-			$node['status_deployed'] === false
+			($node['status_deployed'] === "0")
 		) {
 			$response['data']['command'] = ''; // todo: updated node activation and deployment command
 			$response['message'] = 'Node is ready for activation.';
 			return $response;
 		}
 
-		if ($node['status_activated'] === true) {
+		if ($node['status_activated'] === "1") {
 			$response['message'] = 'Node is already activated, please try again.';
 			return $response;
 		}
 
 		$nodeParameters['data'] = array(
-			'status_activated' => true
+			'status_activated' => "1"
 		);
 		_update($nodeParameters, $response);
 		$response['message'] = 'Node activated successfully.';
-		$response['status_valid'] = true;
+		$response['status_valid'] = "1";
 		return $response;
 	}
 
