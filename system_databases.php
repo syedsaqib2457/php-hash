@@ -478,7 +478,7 @@
 			'structure' => array(
 				'created_timestamp',
 				'id',
-				'length',
+				'maximum_length',
 				'modified_timestamp',
 				'name',
 				'system_database_id'
