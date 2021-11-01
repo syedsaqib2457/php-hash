@@ -9,7 +9,7 @@
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_types.php');
 
 	function _addNode($parameters, $response) {
-		$parameters['data']['status_activated'] = $parameters['data']['status_deployed'] = false;
+		$parameters['data']['status_activated'] = $parameters['data']['status_deployed'] = "0";
 
 		if (empty($parameters['data']['node_id']) === false) {
 			$nodeNode = _list(array(
@@ -157,11 +157,11 @@
 		$node = current($node);
 		$response['data'] = $node;
 		$response['message'] = 'Node added successfully.';
-		$response['status_valid'] = true;
+		$response['status_valid'] = "1";
 		return $response;
 	}
 
-	if ($parameters['action'] === 'add_node') {
+	if (($parameters['action'] === 'add_node') === true) {
 		$response = _addNode($parameters, $response);
 		_output($response);
 	}
