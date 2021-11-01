@@ -6,9 +6,7 @@ This API action adds IP address data from an instance to GhostCompute so it can 
 
 IP addresses must already be routed to a node instance by the hosting provider.
 
-## Request
-
-### Example
+## Request Example
 
 This is an example __POST__ request body made to the __/endpoint.php__ path in __JSON__ format.
 
@@ -28,33 +26,33 @@ All values are formatted as __string__ types.
 }
 ```
 
-### Parameters
+## Request Parameters
 
-#### action
+### action
 
 This is required for authenticating user scope and processing data for adding nodes.
 
 The value must be __add_node__.
 
-#### authentication_token
+### authentication_token
 
 This is required for authenticating user access.
 
 The value must be a __string__ in the __system_user_authentication_tokens__ database.
 
-#### data [external_ip_address_version_4]
+### data [external_ip_address_version_4]
 
 This is required if the node has an IPv4 address routed to the instance.
 
 The value must be a __public or reserved IPv4 address__.
 
-#### data [external_ip_address_version_6]
+### data [external_ip_address_version_6]
 
 This is required if the node has an IPv6 address routed to the instance.
 
 The value must be a __public or reserved IPv6 address__.
 
-#### data [internal_ip_address_version_4]
+### data [internal_ip_address_version_4]
 
 This is required if the node has a private IPv4 address for internal routing to external IP addresses on the instance.
 
@@ -62,7 +60,7 @@ The value must be a __reserved IPv4 address__.
 
 An __external_ip_version_4_address__ value must also be set.
 
-#### data [internal_ip_address_version_6]
+### data [internal_ip_address_version_6]
 
 This is required if the node has a private IPv6 address for internal routing to external IP addresses on the instance.
 
@@ -70,21 +68,20 @@ The value must be a __reserved IPv6 address__.
 
 An __external_ip_version_6_address__ value must also be set.
 
-#### data [node_id]
+### data [node_id]
 
 This is required if the node is added as an additional node to an existing node.
 
 The value must be an __alphanumeric ID__.
 
-## Response
-
-### Example
+## Response Example
 
 This is an example response body from the example request in __JSON__ format.
 
 All values are formatted as __string__ types.
 
-```json {
+```json
+{
     "data": {
         "cpu_capacity_megahertz": "",
         "cpu_core_count": "",
@@ -115,33 +112,33 @@ All values are formatted as __string__ types.
 }
 ```
 
-### Parameters
+## Response Parameters
 
-#### data [cpu_capacity_megahertz]
+### data [cpu_capacity_megahertz]
 
 This is the CPU clock speed for a single core detected in the added node instance.
 
 The value is either a __numeric count in MHz__ if the node is added to a deployed node or __empty__ if the node isn't deployed.
 
-#### data [cpu_core_count]
+### data [cpu_core_count]
 
 This is the count of CPU cores detected in the added node instance.
 
 The value is either a __numeric count__ if the added node is added to a deployed node or __empty__ if the added node isn't deployed.
 
-#### data [created_timestamp]
+### data [created_timestamp]
 
 This is the timestamp of when the node was added.
 
 The value is a __Unix timestamp in seconds__.
 
-#### data [external_ip_address_version_4]
+### data [external_ip_address_version_4]
 
 This is the added external IPv4 address in the added node.
 
 The value is either a __public or reserved IPv4 address__ or __empty__.
 
-#### data [external_ip_address_version_4_type]
+### data [external_ip_address_version_4_type]
 
 This is the added external IPv4 address type in the added node.
 
