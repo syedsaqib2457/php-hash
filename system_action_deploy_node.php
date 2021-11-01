@@ -32,7 +32,7 @@
 			return $response;
 		}
 
-		if ($node['status_deployed'] === true) {
+		if (($node['status_deployed'] === '1') === true) {
 			$response['message'] = 'Node is already deployed, please try again.';
 			return $response;
 		}
@@ -42,7 +42,7 @@
 			$node['node_id']
 		));
 		$nodeParameters['data'] = array(
-			'status_deployed' => true
+			'status_deployed' => '1'
 		);
 		$nodeParameters['where'] = array(
 			'either' => array(
@@ -52,11 +52,11 @@
 		);
 		_update($nodeParameters, $response);
 		$response['message'] = 'Node deployed successfully.';
-		$response['status_valid'] = true;
+		$response['status_valid'] = '1';
 		return $response;
 	}
 
-	if ($parameters['action'] === 'deploy_node') {
+	if (($parameters['action'] === 'deploy_node') === true) {
 		$response = _deployNode($parameters, $response);
 		_output($response);
 	}
