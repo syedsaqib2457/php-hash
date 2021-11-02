@@ -26,9 +26,13 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
     "authentication_token": "123456789",
     "data": {
         "external_ip_address_version_4": "0.0.0.0",
-        "internal_ip_address_version_4": "10.10.10.10"
+        "external_ip_address_version_6": "::0",
+        "internal_ip_address_version_4": "10.10.10.10",
+        "internal_ip_address_version_6": "::1",
+        "node_id": "unique_id_1"
     }
 }
+
 ```
 
 #### Response Example
@@ -36,8 +40,28 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
 ```json
 {
     "data": {
-        "id": "unique_id_1",
-        // ...
+        "cpu_capacity_megahertz": "",
+        "cpu_core_count": "",
+        "created_timestamp": "0000000000",
+        "external_ip_address_version_4": "0.0.0.0",
+        "external_ip_address_version_4_type": "current_network",
+        "external_ip_address_version_6": "0000:0000:0000:0000:0000:0000:0000:0000",
+        "external_ip_address_version_6_type": "loopback",
+        "id": "unique_id_2",
+        "internal_ip_address_version_4": "10.10.10.10",
+        "internal_ip_address_version_4_type": "private_network",
+        "internal_ip_address_version_6": "0000:0000:0000:0000:0000:0000:0000:0001",
+        "internal_ip_address_version_6_type": "loopback",
+        "memory_capacity_megabytes": "",
+        "modified_timestamp": "0000000000",
+        "node_id": "unique_id_1",
+        "processing_progress_checkpoint": "",
+        "processing_progress_percentage": "0",
+        "status_active": "0",
+        "status_deployed": "0",
+        "status_processed": "0",
+        "status_processing": "0",
+        "storage_capacity_megabytes": ""
     },
     "message": "Node added successfully.",
     "status_authenticated": "1",
@@ -106,7 +130,8 @@ Public recursive DNS processes can be configured with custom IP addresses and po
 TCP and UDP requests are both supported where applicable.
 
 #### Tor Relays
-#### Virtualization VPNs
+#### Virtualization
+#### VPNs
 
 ### Write Better Backend Code for Cloud Applications
 
