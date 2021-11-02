@@ -6,11 +6,11 @@ This API action adds IP address data from an instance to GhostCompute so it can 
 
 IP addresses must already be routed to a node instance by the hosting provider.
 
-### Request
+### Request Example
 
-This is an example __POST__ request body made to the __/endpoint.php__ path in __JSON__ format.
+This is an example `POST` request body made to the `/endpoint.php` path in `JSON` format.
 
-All values are formatted as __string__ types.
+All values are formatted as `string` types.
 
 ```json
 {
@@ -26,73 +26,61 @@ All values are formatted as __string__ types.
 }
 ```
 
-These are descriptions of each request parameter.
+### Request Parameters
 
-```
-action
-```
+These are descriptions for each request parameter.
+
+#### action
 
 This is required for authenticating user scope and processing data for adding nodes.
 
-The value must be __add_node__.
+The value must be `add_node`.
 
-```
-authentication_token
-```
+#### authentication_token
 
 This is required for authenticating user access.
 
-The value must be a __string__ in the __system_user_authentication_tokens__ database.
+The value must be a `string` in the `system_user_authentication_tokens` database.
 
-```
-data [external_ip_address_version_4]
-```
+#### data[external_ip_address_version_4]
 
 This is required if the node has an IPv4 address routed to the instance.
 
-The value must be a __public or reserved IPv4 address__.
+The value must be a `public or reserved IPv4 address`.
 
-```
-data [external_ip_address_version_6]
-```
+#### data[external_ip_address_version_6]
 
 This is required if the node has an IPv6 address routed to the instance.
 
-The value must be a __public or reserved IPv6 address__.
+The value must be a `public or reserved IPv6 address`.
 
-```
-data [internal_ip_address_version_4]
-```
+#### data[internal_ip_address_version_4]
 
 This is required if the node has a private IPv4 address for internal routing to external IP addresses on the instance.
 
-The value must be a __reserved IPv4 address__.
+The value must be a `reserved IPv4 address`.
 
-An __external_ip_version_4_address__ value must also be set.
+An `external_ip_version_4_address` value must also be set.
 
-```
-data [internal_ip_address_version_6]
-```
+#### data[internal_ip_address_version_6]
 
 This is required if the node has a private IPv6 address for internal routing to external IP addresses on the instance.
 
-The value must be a __reserved IPv6 address__.
+The value must be a `reserved IPv6 address`.
 
-An __external_ip_version_6_address__ value must also be set.
+An `external_ip_version_6_address` value must also be set.
 
-```
-data [node_id]
-```
+#### data[node_id]
 
 This is required if the node is added as an additional node to an existing node.
 
-The value must be an __alphanumeric ID__.
+The value must be an `alphanumeric ID`.
 
-### Response
+### Response Example
 
-This is an example response body from the example request in __JSON__ format.
+This is an example response body from the example request in `JSON` format.
 
-All values are formatted as __string__ types.
+All values are formatted as `string` types.
 
 ```json
 {
@@ -126,47 +114,39 @@ All values are formatted as __string__ types.
 }
 ```
 
-These are descriptions of each response parameter.
+### Response Parameters
 
-```
-data[cpu_capacity_megahertz]
-```
+These are descriptions for each response parameter.
+
+#### data[cpu_capacity_megahertz]
 
 This is the CPU clock speed for a single core detected in the added node instance.
 
-The value is either a __numeric count in MHz__ if the node is added to a deployed node or __empty__ if the node isn't deployed.
+The value is either a `numeric count in MHz` if the node is added to a deployed node or `empty` if the node isn't deployed.
 
-```
-data[cpu_core_count]
-```
+#### data[cpu_core_count]
 
 This is the count of CPU cores detected in the added node instance.
 
-The value is either a __numeric count__ if the added node is added to a deployed node or __empty__ if the added node isn't deployed.
+The value is either a `numeric count` if the added node is added to a deployed node or `empty` if the added node isn't deployed.
 
-```
-data[created_timestamp]
-```
+#### data[created_timestamp]
 
 This is the timestamp of when the node was added.
 
-The value is a __Unix timestamp in seconds__.
+The value is a `Unix timestamp in seconds`.
 
-```
-data[external_ip_address_version_4]
-```
+#### data[external_ip_address_version_4]
 
 This is the added external IPv4 address in the added node.
 
-The value is either a __public or reserved IPv4 address__ or __empty__.
+The value is either a `public or reserved IPv4 address` or `empty`.
 
-```
-data [external_ip_address_version_4_type]
-```
+#### data [external_ip_address_version_4_type]
 
 This is the added external IPv4 address type in the added node.
 
-The value is either an __IP address type__ or __empty__.
+The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
