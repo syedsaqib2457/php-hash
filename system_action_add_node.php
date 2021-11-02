@@ -133,6 +133,7 @@
 			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
 		}
 
+		$parameters['data']['id'] = random_bytes(10) . time();
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'authentication_token' => true,
@@ -140,6 +141,7 @@
 				'external_ip_address_version_4_type' => true,
 				'external_ip_address_version_6' => true,
 				'external_ip_address_version_6_type' => true,
+				'id' => true,
 				'internal_ip_address_version_4' => true,
 				'internal_ip_address_version_4_type' => true,
 				'internal_ip_address_version_6' => true,
