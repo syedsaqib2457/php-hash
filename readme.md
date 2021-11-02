@@ -29,10 +29,11 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
         "internal_ip_address_version_4": "10.10.10.10"
     }
 }
-'''
+```
 
 #### Response Example
 
+```json
 {
     "data": {
         "id": "unique_id_1",
@@ -42,6 +43,7 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
     "status_authenticated": "1",
     "status_valid": "1"
 }
+```
 
 ### Transform Servers Into Automated Nodes Programmatically
 
