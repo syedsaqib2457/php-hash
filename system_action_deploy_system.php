@@ -500,7 +500,7 @@
 		exit;
 	}
 
-	mysqli_query($databaseConnection, 'CREATE DATABASE IF NOT EXISTS `ghostcompute` CHARSET utf8');
+	mysqli_query($databaseConnection, 'create database if not exists `ghostcompute` charset utf8');
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
 
 	if ($connection === false) {
@@ -509,43 +509,25 @@
 	}
 
 	$databaseCommands = array();
+	// todo: add database structure data here
 
 	foreach ($settings['databases'] as $databaseTableName => $database) {
-		$databaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $databaseTableName . '` (`created_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP);';
-		unset($database['structure']['columns']['created_date']);
+		$databaseCommands[] = 'create table if not exists `' . $databaseTableName . '` (`created_timestamp` varchar(10) null default null);';
+		unset($database['structure']['columns']['created_timestamp']);
 
 		foreach ($database['structure']['columns'] as $databaseColumnName => $databaseColumn) {
-			$databaseColumnDefault = '';
-			$databaseNull = 'NULL';
-
-			if (isset($databaseColumn['default']) === true) {
-				$databaseColumnDefault = ' DEFAULT ' . $databaseColumn['default'];
-			}
-
-			if ($databaseColumnName === 'id') {
-				$databaseNull = 'NOT ' . $databaseNull;
-			}
-
 			$databaseCommandActions = array(
-				'add' => 'ADD `' . $databaseColumnName . '`',
-				'change' => 'CHANGE `' . $databaseColumnName . '` `' . $databaseColumnName . '`'
+				'add' => 'add `' . $databaseColumnName . '`',
+				'change' => 'change `' . $databaseColumnName . '` `' . $databaseColumnName . '`'
 			);
-			$databaseCommand = 'ALTER TABLE `' . $databaseTableName . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumn['type'] . ' ' . $databaseNull . $databaseColumnDefault;
+			$databaseCommand = 'alter table `' . $databaseTableName . '` ' . $databaseCommandActions['change'] . '  null default null';
 
 			if (mysqli_query($connection, $databaseCommand) === false) {
 				$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
 			}
 
 			if ($databaseColumnName === 'id') {
-				$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'ALTER TABLE `' . $databaseTableName . '` ADD PRIMARY KEY(`' . $databaseColumnName . '`)';
-
-				if ($databaseColumn['type'] === 'BIGINT(11)') {
-					$databaseCommands[] = $databaseCommand . ' AUTO_INCREMENT';
-				}
-			}
-
-			if (empty($databaseColumn['index']) === false) {
-				$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'ALTER TABLE `' . $databaseTableName . '` ADD INDEX(`' . $databaseColumnName . '`)';
+				$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'alter table `' . $databaseTableName . '` add primary key(`' . $databaseColumnName . '`)';
 			}
 		}
 	}
@@ -553,14 +535,11 @@
 	foreach ($databaseCommands as $databaseCommandKey => $databaseCommand) {
 		if (
 			(is_numeric($databaseCommandKey) === false) &&
-			(
-				(strpos($databaseCommand, 'ADD INDEX') !== false) ||
-				(strpos($databaseCommand, 'ADD PRIMARY KEY') !== false)
-			)
+			(strpos($databaseCommand, 'add primary key') !== false)
 		) {
 			$databaseCommandKey = explode('__', $databaseCommandKey);
 
-			if (empty(mysqli_query($databaseConnection, 'SHOW KEYS FROM `' . $databaseCommandKey[1] . '` WHERE Column_name=\'' . $databaseCommandKey[0] . '\'')->num_rows) === false) {
+			if (empty(mysqli_query($databaseConnection, 'show keys from `' . $databaseCommandKey[1] . '` where Column_name=\'' . $databaseCommandKey[0] . '\'')->num_rows) === false) {
 				continue;
 			}
 		}
@@ -575,7 +554,7 @@
 	}
 
 	/*
-	todo: add default user
+	todo: add database structure to system_databases + add default user
 	$databaseData = array(
 		'table_name' => array(
 			array(
@@ -590,6 +569,6 @@
 		}
 	}
 	*/
-	echo 'GhostCompute system installed successfully.' . "\n";
+	echo 'System deployed successfully.' . "\n";
 	exit;
 ?>
