@@ -1,10 +1,8 @@
+## GhostCompute Framework
+
 Currently in a pre-release development phase.
 
-## Contents
-
-Table of contents is in development
-
-## Features
+API documentation and usage tutorials are in the [documentation repository](https://github.com/ghostcompute/documentation/blob/main/readme.md).
 
 ### An Essential API Framework for Cloud Privacy and Security
 
@@ -74,7 +72,13 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
 Remove complexity from these server-side components while adding valuable functionality with API automation.
 
 #### Blockchain
+
+Blockchain features are in development.
+
 #### Databases
+
+Database features are in development.
+
 #### Forwarding Proxies
 
 Deploy forwarding proxies on any network or cloud host with built-in monitoring, performance, privacy, scaling and security features.
@@ -130,22 +134,20 @@ Public recursive DNS processes can be configured with custom IP addresses and po
 TCP and UDP requests are both supported where applicable.
 
 #### Tor Relays
+
+Tor relay features are in development.
+
 #### Virtualization
+
+Virtualization features are in development.
+
 #### VPNs
 
-### Write Better Backend Code for Cloud Applications
+VPN features are in development.
 
-There shouldn't be a learning curve for developers when designing secure backend cloud systems at scale.
+### Understand the Benefits of an Automated Cloud Infrastructure API
 
-## Overview
-
-GhostCompute is a minimal yet powerful framework designed to enhance performance, privacy and security for cloud applications with these concepts.
-
-### Automated Cloud Infrastructure API
-
-There shouldn't be a learning curve for developers when designing secure backend cloud systems at scale.
-
-Write better backend code for cloud applications by using GhostCompute API automation with these built-in benefits.
+Use GhostCompute API automation with these built-in benefits for deployed nodes.
 
 #### Deployment
 
@@ -217,7 +219,11 @@ Unused ports are closed and multi-layer firewalls protect against brute-forcing,
 
 Extensive validation is processed when nodes send monitoring data to make sure a compromised node can't attack other nodes with poisoned data.
 
-### Isolated Containerless Environments
+### Write Better Backend Code for Cloud Applications
+
+GhostCompute is a minimal yet powerful framework designed to enhance performance, privacy and security for cloud applications with these concepts.
+
+#### Isolated Containerless Environments
 
 Containerization is essential for cloud applications, but not for all aspects.
 
@@ -227,13 +233,13 @@ This simplifies firewall security and system optimization while enabling full co
 
 GhostCompute can be deployed in containers if required for scaling API requests.
 
-### Minimized Dependence on External Services
+#### Minimized Dependence on External Services
 
 Custom actions are built into GhostCompute for managing databases, monitoring performance and validating data.
 
 Decreasing the usage of external services wherever possible for application monitoring, container hosting, load balancers, managed cloud databases, proxies and package management increases privacy and security for cloud applications.
 
-### Redefined Coding Standards for Simplicity 
+#### Redefined Coding Standards for Simplicity
 
 GhostCompute is built using native PHP with a consistent procedural style and clean modular design. Complexity with secure code structure is solved by avoiding fundamentals such as classes, controllers, namespaces, object-oriented design, routing and view templates.
 
@@ -248,42 +254,3 @@ API requests to backend actions are fast and secure by only including database c
 For automating backend database actions and network components using other programming languages, API requests are made to a single endpoint URL using POST data with a specified action and authentication_token in JSON format.
 
 This allows clean, fast integrations and prevents complications caused by using REST APIs with multiple endpoint request URLs, request headers, request methods and versions.
-
-## Usage
-
-Usage instructions are in development.
-
-### Activation and Deployment Instructions
-
-#### Deploy a Cloud or Self-Hosted Server
-
-GhostCompute is an isolated and self-hosted framework, meaning it requires a server instance.
-
-Here are guides for deploying cloud server instances.
-
-- Alibaba Cloud
-- Amazon EC2
-- BitLaunch
-- DigitalOcean
-- DreamCompute
-- Google Cloud
-- IBM Cloud
-- Linode
-- Microsoft Azure
-- Oracle Cloud
-- UpCloud
-- Vultr
-
-Self-hosting instructions are in development.
-
-#### Deploy GhostCompute
-
-#### Deploy and Activate GhostCompute Nodes
-
-### API Documentation
-
-API documentation is in development.
-
-### PHP Framework Documentation
-
-PHP framework documentation is in development.
