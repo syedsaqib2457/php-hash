@@ -37,7 +37,7 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
 {
     "data": {
         "id": "unique_id_1",
-        [ ... ]
+        // ...
     },
     "message": "Node added successfully.",
     "status_authenticated": "1",
@@ -52,12 +52,61 @@ Remove complexity from these server-side components while adding valuable functi
 #### Blockchain
 #### Databases
 #### Forwarding Proxies
+
+Deploy forwarding proxies on any network or cloud host with built-in monitoring, performance, privacy, scaling and security features.
+
+Both IPv4 and IPv6 addresses are supported with public and private networking.
+
+Create user authentication groups with multiple username:password combinations and whitelisted source IPs for security.
+
+Optionally limit access to specific listening ports and external websites to protect proxy IP addresses from blacklisting.
+
+Forwarding proxy components use secure internal recursive DNS processes with optimized load balancing.
+
+TCP and UDP requests are both supported where applicable.
+
 #### Load Balancers
+
+Deploy load balancers on any network or cloud host with built-in monitoring, performance, privacy, scaling and security features.
+
+Both IPv4 and IPv6 addresses are supported with public and private networking.
+
+Create custom load balancers for a list of destination IP addresses.
+
+Configure rotation settings to automatically route each request evenly, randomly or with specific load priorities.
+
+Load balancer performance can slow down when routing requests to a large cluster of nodes.
+
+Split firewalls and internal forwarders allow a single load balancer node to forward TCP and UDP requests to hundreds of destinations.
+
 #### Recursive DNS
+
+Deploy recursive DNS on any network or cloud host with built-in monitoring, performance, privacy, scaling and security features.
+
+Both IPv4 and IPv6 addresses are supported with public and private networking on TCP and UDP.
+
+Create user authentication groups with custom listening IPs, listening ports and whitelisted source IPs for security.
+
+Either configure recursive DNS processes with private access to use with other components or start an open recursive DNS service.
+
 #### Reverse Proxies
+
+Deploy reverse proxies on any network or cloud host with built-in monitoring, performance, privacy, scaling and security features.
+
+Both IPv4 and IPv6 addresses are supported with public and private networking.
+
+Create user authentication groups with multiple username:password combinations and whitelisted source IPs for security.
+
+Optionally limit access to specific listening ports and external websites to protect proxy IP addresses from blacklisting.
+
+Reverse proxy components use secure internal recursive DNS processes with optimized load balancing.
+
+Public recursive DNS processes can be configured with custom IP addresses and ports to accept connections using HTTP, HTTPS and SOCKS simultaneously5.
+
+TCP and UDP requests are both supported where applicable.
+
 #### Tor Relays
-#### Virtualization
-#### VPNs
+#### Virtualization VPNs
 
 ### Write Better Backend Code for Cloud Applications
 
@@ -71,19 +120,77 @@ GhostCompute is a minimal yet powerful framework designed to enhance performance
 
 There shouldn't be a learning curve for developers when designing secure backend cloud systems at scale.
 
-Write better backend code for cloud applications by using GhostCompute API automation with these built-in benefits,
+Write better backend code for cloud applications by using GhostCompute API automation with these built-in benefits.
 
 #### Deployment
 
+Simply transform dedicated servers and virtual machines with IPv4 and IPv6 addresses into powerfully-automated nodes.
+
+Learning how to use GhostCompute is much easier than deploying, monitoring, securing and scaling network components manually.
+
+Securely connect each node with one line of code that automatically downloads standalone open-source scripts for automation to add, edit and delete nodes and node security rules.
+
+Easily deploy widely-used internet components such as forwarding proxies with HTTP and SOCKS support, recursive DNS and reverse proxies.
+
 #### Monitoring
+
+Monitor bandwidth usage, CPU usage, memory usage, storage capacity and performance metrics for each user on each node.
+
+Receive proactive alerts, optimization suggestions and intelligent insights into potential bottlenecks while scaling.
+
+Track bandwidth usage, destination IPs, destination URLs, latency, source IPs and more for each request through deployed node components.
+
+Request logs can be enabled and disabled granularly for each node user to enhance privacy.
 
 #### Performance
 
+Node component processes are configured and reconfigured using native PHP code with fast indexing methods built for scale.
+
+Each deployed node process will never access an external authentication database directly.
+
+This creates faster response times for scaling requests, efficient resource usage for monitoring and enhanced security.
+
+Nodes are fast and stable with a secure automatic load balancing method for internal processes to maximize throughput with low latency.
+
+Sophisticated firewall rule sets automatically forward new connections to redundant internal processes when reconfiguring settings.
+
+Settings aren’t applied to a node process until all existing connections to that process are closed to minimize connection errors.
+
 #### Privacy
+
+Add an extra layer of privacy by disabling or self-hosting logs for forwarding proxies, recursive DNS, and reverse proxies.
+
+Become your own surveillance system by taking control of access logs on each node component.
+
+Only deploy nodes on instances that you trust to avoid intermediary monitoring by third parties.
 
 #### Scaling
 
+Primary and additional IPv4 and IPv6 addresses can be configured for each deployed node in dynamic networking environments.
+
+Create as many nodes as required to handle internet traffic demands at any scale.
+
+Prevent wasting resources from underutilization with built-in performance optimizations and monitoring.
+
+Automated internal IP assignment and validation prevents misconfiguration errors such as duplicate ports and IP addresses.
+
+Each node component can have its own set of open and closed ports.
+
+Opening additional ports improves performance at scale if node monitoring reveals port congestion as a constraint.
+
 #### Security
+
+Each deployed node is automated by interacting with free open-source code to make sure there are no unauthorized backdoor actions.
+
+Prevent IP addresses on each node from getting blacklisted on specific websites and networks with granular egress request limitation rules for forwarding proxies and reverse proxies.
+
+After a request limit is exceeded, requests are automatically blocked for a custom amount of time.
+
+Each node is protected with automated firewall rules to block cyber attacks and exploits without impacting node performance.
+
+Unused ports are closed and multi-layer firewalls protect against brute-forcing, denial-of-service, ping-of-death and spoofing attacks.
+
+Extensive validation is processed when nodes send monitoring data to make sure a compromised node can't attack other nodes with poisoned data.
 
 ### Isolated Containerless Environments
 
@@ -119,7 +226,34 @@ This allows clean, fast integrations and prevents complications caused by using 
 
 ## Usage
 
-Usage instructions are in development
+Usage instructions are in development.
+
+### Activation and Deployment Instructions
+
+#### Deploy a Cloud or Self-Hosted Server
+
+GhostCompute is an isolated and self-hosted framework, meaning it requires a server instance.
+
+Here are guides for deploying cloud server instances.
+
+- Alibaba Cloud
+- Amazon EC2
+- BitLaunch
+- DigitalOcean
+- DreamCompute
+- Google Cloud
+- IBM Cloud
+- Linode
+- Microsoft Azure
+- Oracle Cloud
+- UpCloud
+- Vultr
+
+Self-hosting instructions are in development.
+
+#### Deploy GhostCompute
+
+#### Deploy and Activate GhostCompute Nodes
 
 ### API Documentation
 
