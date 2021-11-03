@@ -109,19 +109,17 @@
 	}
 
 	function _delete($parameters, $response) {
-		$command = 'delete from ' . $parameters['in']['table'];
+		$command = 'delete from ' . $parameters['in']['structure']['table'];
 
 		if (empty($parameters['where']) === false) {
 			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
 		}
 
-		foreach ($parameters['in']['connections'] as $connection) {
-			$commandResponse = mysqli_query($connection, $command);
+		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
 
-			if ($commandResponse === false) {
-				$response['message'] = 'Error deleting data in ' . $parameters['in']['table'] . ' database, please try again.';
-				_output($response);
-			}
+		if ($commandResponse === false) {
+			$response['message'] = 'Error deleting data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			_output($response);
 		}
 
 		$response = true;
