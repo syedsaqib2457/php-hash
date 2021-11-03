@@ -4,22 +4,22 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		$databases['node_process_forwarding_destinations'],
-		$databases['node_process_node_user_authentication_credentials'],
-		$databases['node_process_node_user_authentication_sources'],
-		$databases['node_process_node_user_request_destination_logs'],
-		$databases['node_process_node_user_node_request_destinations'],
-		$databases['node_process_node_user_node_request_limit_rules'],
-		$databases['node_process_node_user_request_logs'],
-		$databases['node_process_node_user_resource_usage_logs'],
-		$databases['node_process_node_users'],
-		$databases['node_process_recursive_dns_destinations'],
-		$databases['node_process_resource_usage_logs'],
-		$databases['node_processes'],
-		$databases['node_recursive_dns_destinations'],
-		$databases['node_reserved_internal_destinations'],
-		$databases['node_resource_usage_logs'],
-		$databases['nodes']
+		'node_process_forwarding_destinations',
+		'node_process_node_user_authentication_credentials',
+		'node_process_node_user_authentication_sources',
+		'node_process_node_user_request_destination_logs',
+		'node_process_node_user_node_request_destinations',
+		'node_process_node_user_node_request_limit_rules',
+		'node_process_node_user_request_logs',
+		'node_process_node_user_resource_usage_logs',
+		'node_process_node_users',
+		'node_process_recursive_dns_destinations',
+		'node_process_resource_usage_logs',
+		'node_processes',
+		'node_recursive_dns_destinations',
+		'node_reserved_internal_destinations',
+		'node_resource_usage_logs',
+		'nodes'
 	), $parameters['databases'], $response);
 
 	function _deleteNode($parameters, $response) {
