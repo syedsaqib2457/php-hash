@@ -338,7 +338,7 @@
 
 	$parameters['databases'] = array(
 		'system_database_columns' => array(
-			'connection' => ($systemDatabaseConnection = mysqli_connect('ghostcompute', 'root', 'password', 'ghostcompute')),
+			'connection' => ($systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute')),
 			'name' => 'system_database_columns'
 		),
 		'system_databases' => array(
