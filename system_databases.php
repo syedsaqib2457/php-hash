@@ -127,7 +127,6 @@
 	}
 
 	function _list($parameters, $response) {
-		$response['_list'] = array();
 		$databaseColumns = '*';
 
 		if (empty($parameters['columns']) === false) {
@@ -138,7 +137,7 @@
 			}
 		}
 
-		$command = 'select ' . rtrim($databaseColumns, ',') . ' from ' . $parameters['in']['table'];
+		$command = 'select ' . rtrim($databaseColumns, ',') . ' from ' . $parameters['in']['structure']['table'];
 
 		if (empty($parameters['where']) === false) {
 			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
@@ -172,25 +171,21 @@
 			$command .= ' offset ' . $parameters['offset'];
 		}
 
-		foreach ($parameters['in']['connections'] as $connectionIndex => $connection) {
-			$commandResponse = mysqli_query($connection, $command);
+		$commandResponse = mysqli_query($connection, $command);
 
-			if ($commandResponse === false) {
-				$response['message'] = 'Error listing data in ' . $parameters['in']['table'] . ' database, please try again.';
-				unset($response['_list']);
-				_output($response);
-			}
-
-			$response['_list'][$connectionIndex] = mysqli_fetch_assoc($commandResponse);
-
-			if ($response['_list'][$connectionIndex] === false) {
-				$response['message'] = 'Error listing data in ' . $parameters['in']['table'] . ' database, please try again.';
-				unset($response['_list']);
-				_output($response);
-			}
+		if ($commandResponse === false) {
+			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			_output($response);
 		}
 
-		$response = $response['_list'];
+		$commandResponse = mysqli_fetch_assoc($commandResponse);
+
+		if ($commandResponse === false) {
+			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			_output($response);
+		}
+
+		$response = $commandResponse;
 		return $response;
 	}
 
