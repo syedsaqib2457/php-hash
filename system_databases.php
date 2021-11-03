@@ -10,27 +10,54 @@
 		exit;
 	}
 
-	function _connect($databases, $existingDatabases, $response) {
+	function _connect($databases, $existingDatabaseConnections, $response) {
 		// todo: list database column data from system_database_columns table
 
 		foreach ($databases as $database) {
 			if (
-				(empty($existingDatabases) === false) &&
-				(empty($existingDatabases[$database['structure']['table']]) === false)
+				(empty($existingDatabaseConnections) === false) &&
+				(empty($existingDatabaseConnections[$database['structure']['table']]) === false)
 			) {
 				continue;
 			}
 
-			$response['_connect'][$database['structure']['table']] = $database['structure'];
+			$systemDatabase = _list(array(
+				'columns' => array(
+					'authentication_credential_hostname',
+					'authentication_credential_password',
+					'id'
+				),
+				'in' => $parameters['databases']['system_databases'],
+				'where' => array(
+					'name' => $database
+				)
+			));
+			$systemDatabase = current($systemDatabase);
 
-			foreach ($database['authentication'] as $databaseAuthenticationIndex => $databaseAuthentication) {
-				$response['_connect'][$database['structure']['table']]['connections'][$databaseAuthenticationIndex] = mysqli_connect($databaseAuthentication['hostname'], 'root', $databaseAuthentication['password'], 'ghostcompute');
+			if (empty($systemDatabase) === true) {
+				$response['message'] = 'Invalid system database name ' . $database . ', please try again.';
+				unset($response['connect']);
+				_output($response);
+			}
 
-				if ($response['_connect'][$database['structure']['table']]['connections'][$databaseAuthenticationIndex] === false) {
-					$response['message'] = 'Error connecting to ' . $database['structure']['table'] . ' database, please try again.';
-					unset($response['_connect']);
-					_output($response);
-				}
+			$systemDatabaseColumns = _list(array(
+				'columns' => array(
+					'name'
+				),
+				'in' => $parameters['databases']['system_database_columns'],
+				'where' => array(
+					'system_database_id' => $systemDatabase['id']
+				)
+			));
+
+			if (empty($systemDatabaseColumns) === true) {
+				$response['message'] = 'Invalid system database columns for system database ' . $database . ', please try again.';
+			}
+
+			$response['_connect'][$database]['table'] = $database;
+
+			foreach ($systemDatabaseColumns as $systemDatabaseColumn) {
+				$response['_connect'][$database]['columns'][$systemDatabaseColumn['name']] = '';
 			}
 		}
 
