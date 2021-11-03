@@ -615,8 +615,16 @@
 				$databaseColumnType = 'varchar(30)';
 			}
 
+			if ((substr($databaseColumn, -11) === '_percentage') === true) {
+				$databaseColumnType = 'varchar(3)';
+			}
+
 			if ((substr($databaseColumn, -10) === '_timestamp') === true) {
 				$databaseColumnType = 'varchar(10)';
+			}
+
+			if ((substr($databaseColumn, 0, 7) === 'status_') === true) {
+				$databaseColumnType = 'varchar(1)';
 			}
 
 			$databaseCommandActions = array(
