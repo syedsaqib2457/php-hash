@@ -719,6 +719,14 @@
 			'modified_timestamp',
 			'node_user_id'
 		),
+		'node_user_node_request_destinations' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_request_destination_address',
+			'node_request_destination_id',
+			'node_user_id'
+		),
 	);
 	$databaseCommands = array();
 
