@@ -10,9 +10,9 @@
 	function _addNodeReservedInternalDestination($parameters, $response) {
 		$existingNodeReservedInternalDestination = _list(array(
 			'columns' => array(
+				'added_status',
 				'id',
-				'ip_address',
-				'status_added'
+				'ip_address'
 			),
 			'in' => $parameters['databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
@@ -21,25 +21,25 @@
 				'order' => 'ascending'
 			),
 			'where' => array(
+				'added_status' => '0'
 				'either' => array(
 					'node_id' => $parameters['node'][$nodeIpAddressVersion],
 					'node_node_id' => $parameters['node'][$nodeIpAddressVersion]
 				),
 				'ip_address_version' => ($nodeIpAddressVersion = key($parameters['node'])),
-				'status_added' => '0',
-				'status_processed' => '1'
+				'processed_status' => '1'
 			)
 		), $response);
 		$existingNodeReservedInternalDestination = current($existingNodeReservedInternalDestination);
 
 		if (empty($existingNodeReservedInternalDestination) === true) {
 			$existingNodeReservedInternalDestination = array(
+				'added_status' => '0',
 				'id' => $existingNodeReservedInternalDestination['id'],
 				'ip_address_version' => $nodeIpAddressVersion,
 				'node_id' => $parameters['node'][$nodeIpAddressVersion]['id'],
 				'node_node_id' => $parameters['node'][$nodeIpAddressVersion]['node_id'],
-				'status_added' => '0',
-				'status_processed' => '1'
+				'processed_status' => '1'
 			);
 
 			switch ($nodeIpAddressVersion) {
@@ -53,7 +53,7 @@
 
 			$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
-			while (($existingNodeReservedInternalDestination['status_added'] === '0') === true) {
+			while (($existingNodeReservedInternalDestination['added_status'] === '0') === true) {
 				switch ($nodeIpAddressVersion) {
 					case '4':
 						$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
@@ -87,7 +87,7 @@
 
 				if (($existingNodeCount === 0) === true) {
 					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
-					$existingNodeReservedInternalDestination['status_added'] = "1";
+					$existingNodeReservedInternalDestination['added_status'] = "1";
 				}
 			}
 		} else {
