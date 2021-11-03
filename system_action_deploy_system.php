@@ -770,159 +770,83 @@
 			'processing_status',
 			'storage_capacity_megabytes'
 		),
-
-
-		/*'system_database_columns' => array(
-			'authentication' => array( 'hostname' => 
-				'localhost', 'password' => 
-				'password'
-			), 'structure' => array( 
-				'created_timestamp', 'id', 
-				'maximum_length', 
-				'modified_timestamp', 'name', 
-				'system_database_id'
-			) ), 'system_databases' => array( 
-			'authentication' => array(
-				'hostname' => 'localhost', 
-				'password' => 'password'
-			), 'structure' => array( 
-				'authentication_credential_hostname', 
-				'authentication_credential_password', 
-				'created_timestamp', 'id', 
-				'modified_timestamp', 'name'
-			) ), 'system_resource_usage_logs' => array( 
-			'authentication' => array(
-				'hostname' => 'localhost', 
-				'password' => 'password'
-			), 'structure' => array( 'columns' => array( 
-					'bytes_received', 
-					'bytes_sent', 
-					'cpu_capacity_megahertz', 
-					'cpu_core_count', 
-					'cpu_percentage', 
-					'created_timestamp', 
-					'destination_ip_address', 
-					'id', 
-					'memory_capacity_megabytes', 
-					'memory_percentage', 
-					'modified_timestamp', 
-					'storage_capacity_megabytes', 
-					'storage_percentage'
-				), 'table' => 
-				'system_resource_usage_logs'
-			) ), 
+		'system_database_columns' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'name',
+			'system_database_id'
+		),
+		'system_databases' => array(
+			'authentication_credential_hostname',
+			'authentication_credential_password',
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'name',
+			'tag'
+		),
+		'system_resource_usage_logs' => array(
+			'bytes_received',
+			'bytes_sent',
+			'cpu_capacity_megahertz',
+			'cpu_core_count',
+			'cpu_percentage',
+			'created_timestamp',
+			'destination_ip_address',
+			'id',
+			'memory_capacity_megabytes',
+			'memory_percentage',
+			'modified_timestamp',
+			'storage_capacity_megabytes',
+			'storage_percentage'
+		),
 		'system_user_authentication_token_scopes' => array(
-			'authentication' => array( 'hostname' => 
-				'localhost', 'password' => 
-				'password'
-			), 'structure' => array( 'columns' => array( 
-					'created_timestamp', 'id', 
-					'modified_timestamp', 
-					'system_action', 
-					'system_user_authentication_token_id', 
-					'system_user_id'
-				), 'table' => 
-				'system_user_authentication_token_scopes'
-			) ), 
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'system_action',
+			'system_user_authentication_token_id',
+			'system_user_id'
+		),
 		'system_user_authentication_token_sources' => array(
-			'authentication' => array( 'hostname' => 
-				'localhost', 'password' => 
-				'password'
-			), 'structure' => array( 'columns' => array( 
-					'created_timestamp', 'id', 
-					'ip_address_range_start', 
-					'ip_address_range_stop', 
-					'ip_address_version', 
-					'modified_timestamp', 
-					'system_user_authentication_token_id', 
-					'system_user_id'
-				), 'table' => 
-				'system_user_authentication_token_sources'
-			) ), 'system_user_authentication_tokens' => 
-		array(
-			'authentication' => array( 'hostname' => 
-				'localhost', 'password' => 
-				'password'
-			), 'structure' => array( 'columns' => array( 
-					'created_timestamp', 'id', 
-					'modified_timestamp', 
-					'string', 'system_user_id'
-				), 'table' => 
-				'system_user_authentication_tokens'
-			) ), 'system_user_request_logs' => array( 
-			'authentication' => array(
-				'hostname' => 'localhost', 
-				'password' => 'password'
-			), 'structure' => array( 'columns' => array( 
-					'bytes_received', 
-					'bytes_sent', 
-					'created_timestamp', 'id', 
-					'modified_timestamp', 
-					'node_id', 'response_code', 
-					'source_ip_address', 
-					'status_authorized', 
-					'status_successful', 
-					'system_action', 
-					'system_user_authentication_token_id', 
-					'system_user_id'
-				), 'table' => 
-				'system_user_request_logs'
-			) ), 'system_users' => array( 
-			'authentication' => array(
-				'hostname' => 'localhost', 
-				'password' => 'password'
-			), 'structure' => array( 'columns' => array( 
-					'created_timestamp', 'id', 
-					'modified_timestamp', 
-					'system_user_id'
-				), 'table' => 'system_users' )
+			'created_timestamp',
+			'id',
+			'ip_address_range_start',
+			'ip_address_range_stop',
+			'ip_address_version',
+			'modified_timestamp',
+			'system_user_authentication_token_id',
+			'system_user_id'
+		),
+		'system_user_authentication_tokens' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'string',
+			'system_user_id'
+		),
+		'system_user_request_logs' => array(
+			'authorized_status',
+			'bytes_received',
+			'bytes_sent',
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'response_code',
+			'source_ip_address',
+			'successful_status',
+			'system_action',
+			'system_user_authentication_token_id',
+			'system_user_id'
+		),
+		'system_users' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'system_user_id'
 		)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/
 	);
 	$databaseCommands = array();
 
