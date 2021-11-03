@@ -11,8 +11,6 @@
 	}
 
 	function _connect($databases, $existingDatabaseConnections, $response) {
-		// todo: list database column data from system_database_columns table
-
 		foreach ($databases as $database) {
 			if (
 				(empty($existingDatabaseConnections) === false) &&
@@ -36,6 +34,19 @@
 
 			if (empty($systemDatabase) === true) {
 				$response['message'] = 'Invalid system database name ' . $database . ', please try again.';
+				unset($response['_connect']);
+				_output($response);
+			}
+
+			$response['_connect'][$database] = array(
+				'connection' => mysqli_connect($systemDatabase['authentication_credential_hostname'], 'root', $systemDatabase['authentication_credential_password'], 'ghostcompute'),
+				'structure'=> array(
+					'table' => $database
+				)
+			);
+
+			if ($response['_connect'][$database]['connection'] === false) {
+				$response['message'] = 'Error connecting to system database ' . $database . ', please try again.';
 				unset($response['connect']);
 				_output($response);
 			}
@@ -52,12 +63,12 @@
 
 			if (empty($systemDatabaseColumns) === true) {
 				$response['message'] = 'Invalid system database columns for system database ' . $database . ', please try again.';
+				unset($response['_connect']);
+				_output($response);
 			}
 
-			$response['_connect'][$database]['table'] = $database;
-
 			foreach ($systemDatabaseColumns as $systemDatabaseColumn) {
-				$response['_connect'][$database]['columns'][$systemDatabaseColumn['name']] = '';
+				$response['_connect'][$database]['structure']['columns'][$systemDatabaseColumn['name']] = '';
 			}
 		}
 
