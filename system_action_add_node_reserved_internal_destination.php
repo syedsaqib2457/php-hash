@@ -91,14 +91,14 @@
 				}
 			}
 		} else {
-			$existingNodeReservedInternalDestination['status_added'] = true;
+			$existingNodeReservedInternalDestination['added_status'] = true;
 		}
 
 		$existingNodeReservedInternalDestinationData = array(
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
-		$existingNodeReservedInternalDestinationData[1]['status_added'] = "0";
+		$existingNodeReservedInternalDestinationData[1]['added_status'] = "0";
 		unset($existingNodeReservedInternalDestinationData[1]['id']);
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
