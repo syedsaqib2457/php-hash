@@ -1,10 +1,5 @@
 <?php
-	// todo: add all database structures to system_databases database during installation
-		// all columns are a string varchar for simplicity with dynamically-adjusting maximum length for memory optimization
-		// all columns have no default value
-		// localhost database is required for storing database authentication credentials + structures
-		// set request log databases to use current timestamp in database name for easy deployment of additional dedicated storage instances instead of bucket storage
-			// create functionality to allow API access to list specific chronologically-sorted request logs in multiple databases for a custom date range
+	// todo: create functionality to allow API access to list specific chronologically-sorted request logs in multiple databases for a custom date range
 
 	if (empty($parameters) === true) {
 		exit;
@@ -318,8 +313,6 @@
 	}
 
 	function _update($parameters, $response) {
-		// todo: verify + update column length for each value before updating data
-
 		if (empty($parameters['data']) === false) {
 			$command = 'update ' . $parameters['in']['table'] . ' set ';
 
@@ -332,14 +325,11 @@
 			}
 
 			$command = rtrim($command, ',') . ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
+			$commandResponse = mysqli_query($parameters['in']['connection'], $command);
 
-			foreach ($parameters['in']['connections'] as $connection) {
-				$commandResponse = mysqli_query($connection, $command);
-
-				if ($commandResponse === false) {
-					$response['message'] = 'Error updating data in ' . $parameters['in']['table'] . ' database, please try again.';
-					_output($response);
-				}
+			if ($commandResponse === false) {
+				$response['message'] = 'Error updating data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+				_output($response);
 			}
 		}
 
