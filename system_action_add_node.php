@@ -4,19 +4,19 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		$databases['nodes']
+		'nodes'
 	), $parameters['databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_types.php');
 
 	function _addNode($parameters, $response) {
-		$parameters['data']['status_activated'] = $parameters['data']['status_deployed'] = "0";
+		$parameters['data']['activated_status'] = $parameters['data']['deployed_status'] = "0";
 
 		if (empty($parameters['data']['node_id']) === false) {
 			$nodeNode = _list(array(
 				'columns' => array(
+					'deployed_status',
 					'id',
-					'node_id',
-					'status_deployed'
+					'node_id'
 				),
 				'in' => $parameters['databases']['nodes'],
 				'where' => array(
@@ -30,8 +30,8 @@
 				return $response;
 			}
 
+			$parameters['data']['deployed_status'] = $nodeNode['deployed_status'];
 			$parameters['data']['id'] = $nodeNode['id'];
-			$parameters['data']['status_deployed'] = $nodeNode['status_deployed'];
 
 			if (empty($nodeNode['node_id']) === false) {
 				$parameters['data']['node_id'] = $nodeNode['node_id'];
@@ -136,7 +136,9 @@
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
+				'activated_status' => true,
 				'authentication_token' => true,
+				'deployed_status' => true,
 				'external_ip_address_version_4' => true,
 				'external_ip_address_version_4_type' => true,
 				'external_ip_address_version_6' => true,
@@ -146,9 +148,7 @@
 				'internal_ip_address_version_4_type' => true,
 				'internal_ip_address_version_6' => true,
 				'internal_ip_address_version_6_type' => true,
-				'node_id' => true,
-				'status_activated' => true,
-				'status_deployed' => true
+				'node_id' => true
 			)),
 			'in' => $parameters['databases']['nodes']
 		), $response);
