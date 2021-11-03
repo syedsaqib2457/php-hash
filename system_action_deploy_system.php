@@ -727,6 +727,24 @@
 			'node_request_destination_id',
 			'node_user_id'
 		),
+		'node_user_node_request_limit_rules' => array(
+			'created_timestamp',
+			'expired_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_request_destination_id',
+			'node_request_limit_rule_id',
+			'node_user_id'
+		),
+		'node_users' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_request_destinations_only_allowed',
+			'node_request_logs_allowed',
+			'strict_authentication_required',
+			'tag'
+		),
 	);
 	$databaseCommands = array();
 
