@@ -271,9 +271,6 @@
 	}
 
 	function _save($parameters, $response) {
-		// todo: group 10 commands per mysqli command
-		// todo: verify + update column length for each value before saving data
-
 		if (empty($parameters['data']) === false) {
 			if (is_numeric(key($parameters['data'])) === false) {
 				$parameters['data'] = array(
@@ -281,7 +278,6 @@
 				);
 			}
 
-			$connectionIndex = 0;
 			$timestamp = time();
 
 			foreach ($parameters['data'] as $data) {
@@ -294,33 +290,25 @@
 					$dataUpdateValues .= "," . $dataKey . "='" . $dataInsertValue . "'";
 				}
 
-				if (empty($data['modified_date']) === true) {
+				if (empty($data['modified_timestamp']) === true) {
 					$dataInsertValues .= "','" . $timestamp;
-					$dataKeys .= ',modified_date';
-					$dataUpdateValues .= ",modified_date='" . $timestamp . "'";
+					$dataKeys .= ',modified_timestamp';
+					$dataUpdateValues .= ",modified_timestamp='" . $timestamp . "'";
 				}
 
 				if (empty($data['id']) === true) {
 					$dataInsertValues .= "','" . $timestamp;
-					$dataKeys .= ',created_date';
+					$dataKeys .= ',created_timestamp';
 					$dataUpdateValues = '';
 				} else {
 					$dataUpdateValues = ' on duplicate key update ' . substr($dataUpdateValues, 1);
 				}
 
-				$commandResponse = mysqli_query($parameters['in']['connections'][$connectionIndex], 'insert into ' . $parameters['in']['table'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
+				$commandResponse = mysqli_query($parameters['in']['connection'], 'insert into ' . $parameters['in']['structure']['table'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
 
 				if ($commandResponse === false) {
-					$response['message'] = 'Error saving data in ' . $parameters['in']['table'] . ' database, please try again.';
+					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
 					_output($response);
-				}
-
-				if (empty($parameters['in']['connections'][1]) === false) {
-					$connectionIndex++;
-
-					if (empty($parameters['in']['connections'][$connectionIndex]) === true) {
-						$connectionIndex = 0;
-					}
 				}
 			}
 		}
