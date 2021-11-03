@@ -133,7 +133,7 @@
 			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
 		}
 
-		$parameters['data']['id'] = random_bytes(10) . time();
+		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'authentication_token' => true,
