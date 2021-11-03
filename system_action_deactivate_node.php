@@ -4,7 +4,7 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		$databases['nodes']
+		'nodes'
 	), $parameters['databases'], $response);
 
 	function _deactivateNode($parameters, $response) {
@@ -15,7 +15,7 @@
 
 		$nodeParameters = array(
 			'columns' => array(
-				'status_activated'
+				'activated_status'
 			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
@@ -30,13 +30,13 @@
 			return $response;
 		}
 
-		if (($node['status_activated'] === '0') === true) {
+		if (($node['activated_status'] === '0') === true) {
 			$response['message'] = 'Node is already deactivated, please try again.';
 			return $response;
 		}
 
 		$nodeParameters['data'] = array(
-			'status_activated' => '0'
+			'activated_status' => '0'
 		);
 		_update($nodeParameters, $response);
 		$response['message'] = 'Node deactivated successfully.';
