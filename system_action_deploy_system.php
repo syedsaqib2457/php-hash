@@ -609,11 +609,21 @@
 				continue;
 			}
 
+			$databaseColumnType = 'text';
+
+			if ((substr($databaseColumn, -3) === '_id') === true) {
+				$databaseColumnType = 'varchar(30)';
+			}
+
+			if ((substr($databaseColumn, -10) === '_timestamp') === true) {
+				$databaseColumnType = 'varchar(10)';
+			}
+
 			$databaseCommandActions = array(
 				'add' => 'add `' . $databaseColumn . '`',
-				'change' => 'change `' . $databaseColumnName . '` `' . $databaseColumn . '`'
+				'change' => 'change `' . $databaseColumn . '` `' . $databaseColumn . '`'
 			);
-			$databaseCommand = 'alter table `' . $databaseTable . '` ' . $databaseCommandActions['change'] . '  null default null';
+			$databaseCommand = 'alter table `' . $databaseTable . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumnType . ' null default null';
 
 			if (mysqli_query($databaseConnection, $databaseCommand) === false) {
 				$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
