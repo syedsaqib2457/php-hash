@@ -593,11 +593,123 @@
 			'node_process_type',
 			'node_request_destination_id',
 			'node_user_id',
+			'processed_status',
+			'processing_status',
 			'response_code',
-			'source_ip_address',
-			'status_processed',
-			'status_processing'
-		)
+			'source_ip_address'
+		),
+		'node_process_node_user_resource_usage_logs' => array(
+			'bytes_received',
+			'bytes_sent',
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'node_user_id',
+			'request_count'
+		),
+		'node_process_node_users' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'node_user_id',
+			'node_user_node_request_destinations_only_allowed_status',
+			'node_user_node_request_logs_allowed_status',
+			'node_user_strict_authentication_required_status'
+		),
+		'node_process_recursive_dns_destinations' => array(
+			'created_timestamp',
+			'id',
+			'listening_ip_address_version_4',
+			'listening_ip_address_version_4_node_id',
+			'listening_ip_address_version_6',
+			'listening_ip_address_version_6_node_id',
+			'listening_port_number_version_4',
+			'listening_port_number_version_6',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'source_ip_address_version_4',
+			'source_ip_address_version_6'
+		),
+		'node_process_resource_usage_logs' => array(
+			'bytes_received',
+			'bytes_sent',
+			'cpu_percentage',
+			'created_timestamp',
+			'id',
+			'memory_percentage',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'request_count'
+		),
+		'node_processes' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'port_number',
+			'type'
+		),
+		'node_request_destinations' => array(
+			'address',
+			'created_timestamp',
+			'id',
+			'modified_timestamp'
+		),
+		'node_request_limit_rules' => array(
+			'created_timestamp',
+			'id',
+			'interval_minutes',
+			'modified_timestamp',
+			'request_count',
+			'request_count_interval_minutes'
+		),
+		'node_reserved_internal_destinations' => array(
+			'added_status',
+			'created_timestamp',
+			'id',
+			'ip_address',
+			'ip_address_version',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_node_external_ip_address_type',
+			'processed_status'
+		),
+		'node_resource_usage_logs' => array(
+			'bytes_received',
+			'bytes_sent',
+			'cpu_capacity_megahertz',
+			'cpu_core_count',
+			'cpu_percentage',
+			'created_timestamp',
+			'id',
+			'memory_capacity_megabytes',
+			'memory_percentage',
+			'modified_timestamp',
+			'node_id',
+			'request_count',
+			'storage_capacity_megabytes',
+			'storage_percentage'
+		),
+		'node_user_authentication_credentials' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_user_id',
+			'password',
+			'username'
+		),
 	);
 	$databaseCommands = array();
 
@@ -619,12 +731,12 @@
 				$databaseColumnType = 'varchar(3)';
 			}
 
-			if ((substr($databaseColumn, -10) === '_timestamp') === true) {
-				$databaseColumnType = 'varchar(10)';
+			if ((substr($databaseColumn, -7) === '_status') === true) {
+				$databaseColumnType = 'varchar(1)';
 			}
 
-			if ((substr($databaseColumn, 0, 7) === 'status_') === true) {
-				$databaseColumnType = 'varchar(1)';
+			if ((substr($databaseColumn, -10) === '_timestamp') === true) {
+				$databaseColumnType = 'varchar(10)';
 			}
 
 			$databaseCommandActions = array(
