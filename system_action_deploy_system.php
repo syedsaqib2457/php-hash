@@ -710,6 +710,15 @@
 			'password',
 			'username'
 		),
+		'node_user_authentication_sources' => array(
+			'created_timestamp',
+			'id',
+			'ip_address',
+			'ip_address_block_length',
+			'ip_address_version',
+			'modified_timestamp',
+			'node_user_id'
+		),
 	);
 	$databaseCommands = array();
 
