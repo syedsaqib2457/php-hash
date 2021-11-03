@@ -511,7 +511,99 @@
 	$databaseCommands = array();
 	// todo: add database structure data here
 
-	foreach ($settings['databases'] as $databaseTableName => $database) {
+	$databases = array( 
+		'node_process_blockchain_mining_resource_usage_rules' => array(),
+		'node_process_forwarding_destinations' => array(
+			'address_version_4',
+			'address_version_6',
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'port_number_version_4',
+			'port_number_version_6'
+		),
+		'node_process_node_user_authentication_credentials' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'node_user_authentication_credential_id',
+			'node_user_authentication_credential_password',
+			'node_user_authentication_credential_username',
+			'node_user_id'
+		),
+		'node_process_node_user_authentication_sources' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'node_user_authentication_source_ip_address',
+			'node_user_authentication_source_ip_address_block_length',
+			'node_user_authentication_source_ip_address_version',
+			'node_user_id'
+		),
+		'node_process_node_user_request_destination_logs' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'node_request_destination_id',
+			'node_user_id',
+			'request_count'
+		),
+		'node_process_node_user_node_request_destinations' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'node_request_destination_address',
+			'node_request_destination_id',
+			'node_user_id'
+		),
+		'node_process_node_user_node_request_limit_rules' => array(
+			'created_timestamp',
+			'expired_timestamp',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'node_request_destination_id',
+			'node_request_limit_rule_id',
+			'node_user_id'
+		),
+		'node_process_node_user_request_logs' => array(
+			'bytes_received',
+			'bytes_sent',
+			'created_timestamp',
+			'destination_ip_address',
+			'destination_url',
+			'id',
+			'modified_timestamp',
+			'node_id',
+			'node_node_id',
+			'node_process_type',
+			'node_request_destination_id',
+			'node_user_id',
+			'response_code',
+			'source_ip_address',
+			'status_processed',
+			'status_processing'
+		)
+	);
+
+	foreach ($databases as $databaseTableName => $database) {
 		$databaseCommands[] = 'create table if not exists `' . $databaseTableName . '` (`created_timestamp` varchar(10) null default null);';
 		unset($database['structure']['columns']['created_timestamp']);
 
