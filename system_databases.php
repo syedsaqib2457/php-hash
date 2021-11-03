@@ -46,7 +46,7 @@
 			);
 
 			if ($response['_connect'][$database]['connection'] === false) {
-				$response['message'] = 'Error connecting to system database ' . $database . ', please try again.';
+				$response['message'] = 'Error connecting to ' . $database . ' system database, please try again.';
 				unset($response['connect']);
 				_output($response);
 			}
@@ -62,7 +62,7 @@
 			));
 
 			if (empty($systemDatabaseColumns) === true) {
-				$response['message'] = 'Invalid system database columns for system database ' . $database . ', please try again.';
+				$response['message'] = 'Invalid system database columns for ' . $database . ' system database, please try again.';
 				unset($response['_connect']);
 				_output($response);
 			}
@@ -77,42 +77,34 @@
 	}
 
 	function _count($parameters, $response) {
-		$response['_count'] = 0;
-		$command = 'select count(id) from ' . $parameters['in']['table'];
+		$command = 'select count(id) from ' . $parameters['in']['structure']['table'];
 
 		if (empty($parameters['where']) === false) {
 			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
 		}
 
-		foreach ($parameters['in']['connections'] as $connection) {
-			$commandResponse = mysqli_query($connection, $command);
+		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
 
-			if ($commandResponse === false) {
-				$response['message'] = 'Error counting data in ' . $parameters['in']['table'] . ' database, please try again.';
-				unset($response['_count']);
-				_output($response);
-			}
-
-			$commandResponse = mysqli_fetch_assoc($commandResponse);
-
-			if ($commandResponse === false) {
-				$response['message'] = 'Error counting data in ' . $parameters['in']['table'] . ' database, please try again.';
-				unset($response['_count']);
-				_output($response);
-			}
-
-			$commandResponse = current($commandResponse);
-
-			if (is_int($commandResponse) === false) {
-				$response['message'] = 'Error counting data in ' . $parameters['in']['table'] . ' database, please try again.';
-				unset($response['_count']);
-				_output($response);
-			}
-
-			$response['_count'] += $commandResponse;
+		if ($commandResponse === false) {
+			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			_output($response);
 		}
 
-		$response = $response['_count'];
+		$commandResponse = mysqli_fetch_assoc($commandResponse);
+
+		if ($commandResponse === false) {
+			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			_output($response);
+		}
+
+		$commandResponse = current($commandResponse);
+
+		if (is_int($commandResponse) === false) {
+			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			_output($response);
+		}
+
+		$response = $commandResponse;
 		return $response;
 	}
 
