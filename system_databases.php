@@ -377,11 +377,31 @@
 	$parameters['databases'] = array(
 		'system_database_columns' => array(
 			'connection' => ($systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute')),
-			'name' => 'system_database_columns'
+			'structure' => array(
+				'columns' => array(
+					'created_timestamp' => '',
+					'id' => '',
+					'modified_timestamp' => '',
+					'name' => '',
+					'system_database_id' => ''
+				),
+				'table' => 'system_database_columns'
+			)
 		),
 		'system_databases' => array(
 			'connection' => $systemDatabaseConnection,
-			'name' => 'system_databases'
+			'structure' => array(
+				'columns' => array(
+					'authentication_credential_hostname' => '',
+					'authentication_credential_password' => '',
+					'created_timestamp' => '',
+					'id' => '',
+					'modified_timestamp' => '',
+					'name' => '',
+					'tag' => ''
+				),
+				'table' => 'system_databases'
+			)
 		)
 	);
 
