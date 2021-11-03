@@ -48,7 +48,7 @@
 			'where' => array(
 				'string' => $parameters['authentication_token']
 			)
-		));
+		), $response);
 		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 
 		if (empty($systemUserAuthenticationToken) === true) {
@@ -62,7 +62,7 @@
 				'system_action' => $parameters['action'],
 				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
 			)
-		));
+		), $response);
 
 		if (($systemUserAuthenticationTokenScopeCount <= 0) === true) {
 			$response['message'] = 'Invalid endpoint system user authentication token scope, please try again.';
@@ -80,13 +80,19 @@
 		}
 
 		$parameters['source']['ip_address'] = _validateIpAddressVersion($parameters['source']['ip_address'], $parameters['source']['ip_address_version']);
+
+		if ($parameters['source']['ip_address'] === false) {
+			$response['message'] = 'Invalid source IP address, please try again.';
+			_output($response);
+		}
+
 		$systemUserAuthenticationTokenSourceCountParameters = array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
 				'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
 			)
 		);
-		$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
+		$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
 		if (($systemUserAuthenticationTokenSourceCount > 0) === true) {
 			$systemUserAuthenticationTokenSourceCountParameters['where'] += array(
@@ -94,7 +100,7 @@
 				'ip_address_range_stop >=' => $parameters['source']['ip_address'],
 				'ip_address_version' => $parameters['source']['ip_address_version']
 			);
-			$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters);
+			$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
 			if (($systemUserAuthenticationTokenSourceCount <= 0) === true) {
 				$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
