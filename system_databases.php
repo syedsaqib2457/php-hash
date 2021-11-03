@@ -336,10 +336,21 @@
 		return $response;
 	}
 
-	$parameters['databases'] = _connect(array(
-		$databases['system_user_authentication_token_scopes'],
-		$databases['system_user_authentication_token_sources'],
-		$databases['system_user_authentication_tokens'],
-		$databases['system_users']
-	), false, $response);
+	$parameters['databases'] = array(
+		'system' => array(
+			'connection' => mysqli_connect('ghostcompute', 'root', 'password', 'ghostcompute');
+		)
+	);
+
+	if ($parameters['databases']['system']['connection'] === false) {
+		$response['message'] = 'Error connecting to system database, please try again.';
+		_output($response);
+	}
+
+	$parameters['databases'] += _connect(array(
+		'system_user_authentication_token_scopes',
+		'system_user_authentication_token_sources',
+		'system_user_authentication_tokens',
+		'system_users'
+	), $parameters['databases'], $response);
 ?>
