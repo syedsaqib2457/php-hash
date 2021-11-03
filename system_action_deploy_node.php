@@ -4,7 +4,7 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		$databases['nodes']
+		'nodes'
 	), $parameters['databases'], $response);
 
 	function _deployNode($parameters, $response) {
@@ -15,9 +15,9 @@
 
 		$nodeParameters = array(
 			'columns' => array(
+				'deployed_status',
 				'id',
-				'node_id',
-				'status_deployed'
+				'node_id'
 			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
@@ -32,7 +32,7 @@
 			return $response;
 		}
 
-		if (($node['status_deployed'] === '1') === true) {
+		if (($node['deployed_status'] === '1') === true) {
 			$response['message'] = 'Node is already deployed, please try again.';
 			return $response;
 		}
@@ -42,7 +42,7 @@
 			$node['node_id']
 		));
 		$nodeParameters['data'] = array(
-			'status_deployed' => '1'
+			'deployed_status' => '1'
 		);
 		$nodeParameters['where'] = array(
 			'either' => array(
