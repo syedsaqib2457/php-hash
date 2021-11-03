@@ -508,10 +508,7 @@
 		exit;
 	}
 
-	$databaseCommands = array();
-	// todo: add database structure data here
-
-	$databases = array( 
+	$databaseColumns = array( 
 		'node_process_blockchain_mining_resource_usage_rules' => array(),
 		'node_process_forwarding_destinations' => array(
 			'address_version_4',
@@ -602,24 +599,28 @@
 			'status_processing'
 		)
 	);
+	$databaseCommands = array();
 
-	foreach ($databases as $databaseTableName => $database) {
-		$databaseCommands[] = 'create table if not exists `' . $databaseTableName . '` (`created_timestamp` varchar(10) null default null);';
-		unset($database['structure']['columns']['created_timestamp']);
+	foreach ($databases as $databaseTable => $databaseColumns) {
+		$databaseCommands[] = 'create table if not exists `' . $databaseTable . '` (`created_timestamp` varchar(10) null default null);';
 
-		foreach ($database['structure']['columns'] as $databaseColumnName => $databaseColumn) {
+		foreach ($databaseColumns as $databaseColumn) {
+			if (($databaseColumn === 'created_timestamp') === true) {
+				continue;
+			}
+
 			$databaseCommandActions = array(
-				'add' => 'add `' . $databaseColumnName . '`',
-				'change' => 'change `' . $databaseColumnName . '` `' . $databaseColumnName . '`'
+				'add' => 'add `' . $databaseColumn . '`',
+				'change' => 'change `' . $databaseColumnName . '` `' . $databaseColumn . '`'
 			);
-			$databaseCommand = 'alter table `' . $databaseTableName . '` ' . $databaseCommandActions['change'] . '  null default null';
+			$databaseCommand = 'alter table `' . $databaseTable . '` ' . $databaseCommandActions['change'] . '  null default null';
 
-			if (mysqli_query($connection, $databaseCommand) === false) {
+			if (mysqli_query($databaseConnection, $databaseCommand) === false) {
 				$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
 			}
 
-			if ($databaseColumnName === 'id') {
-				$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'alter table `' . $databaseTableName . '` add primary key(`' . $databaseColumnName . '`)';
+			if ($databaseColumn === 'id') {
+				$databaseCommands[$databaseColumn . '__' . $databaseTable] = 'alter table `' . $databaseTable . '` add primary key(`' . $databaseColumn . '`)';
 			}
 		}
 	}
