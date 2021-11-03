@@ -206,7 +206,7 @@
 			} else {
 				if (
 					(($whereConditionConjunction === 'either') === false) &&
-					(isset($parameters['in']['settings']['structure'][substr($whereConditionKey, 0, strpos($whereConditionKey, ' '))]) === false)
+					(isset($parameters['in']['structure']['columns'][substr($whereConditionKey, 0, strpos($whereConditionKey, ' '))]) === false)
 				) {
 					unset($parameters['where'][$whereConditionKey]);
 					continue;
