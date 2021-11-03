@@ -337,12 +337,17 @@
 	}
 
 	$parameters['databases'] = array(
-		'system' => array(
-			'connection' => mysqli_connect('ghostcompute', 'root', 'password', 'ghostcompute');
+		'system_database_columns' => array(
+			'connection' => ($systemDatabaseConnection = mysqli_connect('ghostcompute', 'root', 'password', 'ghostcompute')),
+			'name' => 'system_database_columns'
+		),
+		'system_databases' => array(
+			'connection' => $systemDatabaseConnection,
+			'name' => 'system_databases'
 		)
 	);
 
-	if ($parameters['databases']['system']['connection'] === false) {
+	if ($systemDatabaseConnection === false) {
 		$response['message'] = 'Error connecting to system database, please try again.';
 		_output($response);
 	}
