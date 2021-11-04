@@ -9,10 +9,10 @@
 	}
 
 	$response = array(
+		'authenticated_status' => '0',
 		'data' => array(),
 		'message' => 'Invalid endpoint request, please try again.',
-		'status_authenticated' => "0",
-		'status_valid' => "0"
+		'valid_status' => '0'
 	);
 
 	if (empty($_POST) === false) {
@@ -72,11 +72,11 @@
 		require_once('/var/www/ghostcompute/system_action_validate_ip_address_version.php');
 		$parameters['source'] = array(
 			'ip_address' => $_SERVER['REMOTE_ADDR'],
-			'ip_address_version' => "4"
+			'ip_address_version' => '4'
 		);
 
 		if (is_int(strpos($parameters['source']['ip_address'], ':')) === true) {
-			$parameters['source']['ip_address_version'] = "6";
+			$parameters['source']['ip_address_version'] = '6';
 		}
 
 		$parameters['source']['ip_address'] = _validateIpAddressVersion($parameters['source']['ip_address'], $parameters['source']['ip_address_version']);
@@ -108,7 +108,7 @@
 			}
 		}
 
-		$response['status_authenticated'] = "1";
+		$response['authenticated_status'] = '1';
 		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
 	}
 

@@ -159,7 +159,7 @@
 		$node = current($node);
 		$response['data'] = $node;
 		$response['message'] = 'Node added successfully.';
-		$response['status_valid'] = '1';
+		$response['valid_status'] = '1';
 		return $response;
 	}
 

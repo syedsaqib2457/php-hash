@@ -40,7 +40,7 @@
 		);
 		_update($nodeParameters, $response);
 		$response['message'] = 'Node deactivated successfully.';
-		$response['status_valid'] = '1';
+		$response['valid_status'] = '1';
 		return $response;
 	}
 

@@ -364,6 +364,7 @@
 		}
 
 		$response['message'] = 'Nodes processed successfully.';
+		$response['valid_status'] = '1';
 		return $response;
 	}
 

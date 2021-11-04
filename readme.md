@@ -38,8 +38,10 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
 ```json
 {
     "data": {
+        "active_status": "0",
         "cpu_capacity_megahertz": "",
         "cpu_core_count": "",
+        "deployed_status": "0",
         "created_timestamp": "0000000000",
         "external_ip_address_version_4": "0.0.0.0",
         "external_ip_address_version_4_type": "current_network",
@@ -53,12 +55,10 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
         "memory_capacity_megabytes": "",
         "modified_timestamp": "0000000000",
         "node_id": "unique_id_1",
+        "processed_status": "0",
         "processing_progress_checkpoint": "",
         "processing_progress_percentage": "0",
-        "status_active": "0",
-        "status_deployed": "0",
-        "status_processed": "0",
-        "status_processing": "0",
+        "processing_status": "0",
         "storage_capacity_megabytes": ""
     },
     "message": "Node added successfully.",
