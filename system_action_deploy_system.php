@@ -1,4 +1,6 @@
 <?php
+	// todo: switch to uppercase MySQL actions to ensure compatability
+
 	if (empty($_SERVER['argv'][1]) === true) {
 		echo 'Invalid URL parameter, please try again.' . "\n";
 		exit;
@@ -196,7 +198,7 @@
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
 			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
-			echo 'Error fetching required binary file, please try again.' . "\n";
+			echo 'Error listing required binary file, please try again.' . "\n";
 			exit;
 		}
 
@@ -411,7 +413,7 @@
 		(file_exists($crontabFile) === false) ||
 		(boolval($crontabFileContents) === false)
 	) {
-		echo 'Error fetching crontab contents, please try again.' . "\n";
+		echo 'Error listing crontab contents, please try again.' . "\n";
 		exit;
 	}
 
