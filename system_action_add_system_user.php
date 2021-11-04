@@ -35,7 +35,7 @@
 			'in' => $parameters['databases']['system_users']
 		), $response);
 		$systemUser = _list(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['databases']['system_users'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
