@@ -917,9 +917,9 @@
 		'system_user_authentication_tokens' => array(
 			array(
 				'created_timestamp' => ($timestamp = time()),
-				'id' => random_bytes(10) . time() . random_bytes(10),
+				'id' => ($systemUserAuthenticationTokenId = random_bytes(10) . time() . random_bytes(10)),
 				'modified_timestamp' => $timestamp,
-				'string' => ($systemUserAuthenticationToken = $timestamp . random_bytes(mt_rand(10, 25)) . uniqid()),
+				'string' => ($systemUserAuthenticationTokenString = $timestamp . random_bytes(mt_rand(10, 25)) . uniqid()),
 				'system_user_id' => ($systemUserId = random_bytes(10) . time() . random_bytes(10))
 			)
 		),
@@ -954,13 +954,26 @@
 		}
 	}
 
+	foreach (scandir($systemPath) as $systemFile) {
+		if ((substr($systemFile, 0, 13) === 'system_action') === true) {
+			$databaseData['system_user_authentication_token_scopes'][] = array(
+				'created_timestamp' => $timestamp,
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'modified_timestamp' => $timestamp,
+				'system_action' => substr(substr($systemFile, 14), 0, -4),
+				'system_user_authentication_token_id' => $systemUserAuthenticationTokenId,
+				'system_user_id' => $systemUserId
+			);
+		}
+	}
+
 	foreach ($databaseData as $databaseTableName => $databaseRows) {
 		foreach ($databaseRows as $databaseRow) {
 			mysqli_query($databaseConnection, 'insert ignore into `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) values (' . implode(', ', array_values($databaseRow)) . ')');
 		}
 	}
 
-	echo 'System user authentication token is ' . $systemUserAuthenticationToken . "\n";
+	echo 'System user authentication token is ' . $systemUserAuthenticationTokenString . "\n";
 	echo 'System deployed successfully.' . "\n";
 	exit;
 ?>
