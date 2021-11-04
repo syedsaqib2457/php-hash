@@ -4,16 +4,16 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		$databases['node_process_forwarding_destinations'],
-		$databases['node_process_node_user_authentication_credentials'],
-		$databases['node_process_node_user_authentication_sources'],
-		$databases['node_process_node_user_node_request_destinations'],
-		$databases['node_process_node_user_node_request_limit_rules'],
-		$databases['node_process_node_users'],
-		$databases['node_process_recursive_dns_destinations'],
-		$databases['node_processes'],
-		$databases['node_reserved_internal_destinations'],
-		$databases['nodes']
+		'node_process_forwarding_destinations',
+		'node_process_node_user_authentication_credentials',
+		'node_process_node_user_authentication_sources',
+		'node_process_node_user_node_request_destinations',
+		'node_process_node_user_node_request_limit_rules',
+		'node_process_node_users',
+		'node_process_recursive_dns_destinations',
+		'node_processes',
+		'node_reserved_internal_destinations',
+		'nodes'
 	), $parameters['databases'], $response);
 
 	function _processNode($parameters, $response) {
@@ -63,17 +63,17 @@
 		$nodeIds = array_filter($node);
 
 		if (
+			(isset($parameters['data']['processed_status']) === true) &&
+			(isset($parameters['data']['processing_status']) === true) &&
 			(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
-			(isset($parameters['data']['processing_progress_percentage']) === true) &&
-			(isset($parameters['data']['status_processed']) === true) &&
-			(isset($parameters['data']['status_processing']) === true)
+			(isset($parameters['data']['processing_progress_percentage']) === true)
 		) {
 			_update(array(
 				'data' => array(
+					'processed_status' => boolval($parameters['data']['processed_status']),
+					'processing_status' => boolval($parameters['data']['processing_status']),
 					'processing_progress_checkpoint' => $parameters['data']['processing_progress_checkpoint'],
-					'processing_progress_percentage' => $parameters['data']['processing_progress_percentage'],
-					'status_processed' => boolval($parameters['data']['status_processed']),
-					'status_processing' => boolval($parameters['data']['status_processing'])
+					'processing_progress_percentage' => $parameters['data']['processing_progress_percentage']
 				),
 				'in' => $parameters['databases']['nodes'],
 				'where' => array(
@@ -91,7 +91,7 @@
 						'id' => $nodeIds,
 						'node_id' => $nodeIds
 					),
-					'status_processed' => '0'
+					'processed_status' => '0'
 				)
 			), $response);
 
@@ -165,7 +165,8 @@
 					'node_user_id',
 					'node_user_node_request_destination_address',
 					'node_user_node_request_destination_id'
-				), 'in' => $parameters['databases']['node_process_node_user_node_request_destinations'],
+				),
+				'in' => $parameters['databases']['node_process_node_user_node_request_destinations'],
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -191,9 +192,9 @@
 					'node_id',
 					'node_process_type',
 					'node_user_id',
-					'node_user_status_node_request_destinations_only_allowed',
-					'node_user_status_node_request_logs_allowed',
-					'node_user_status_strict_authentication_required'
+					'node_user_node_request_destinations_only_allowed_status',
+					'node_user_node_request_logs_allowed_status',
+					'node_user_strict_authentication_required_status'
 				),
 				'in' => $parameters['databases']['node_process_node_users'], 
 				'where' => array(
@@ -231,21 +232,21 @@
 				),
 				'in' => $parameters['databases']['node_reserved_internal_destinations'],
 				'where' => array(
+					'assigned_status' => '1',
 					'either' => array(
 						'node_id' => $nodeIds,
 						'node_node_id' => $nodeIds
-					),
-					'status_assigned' => '1'
+					)
 				)
 			), $response);
 			$nodes = _list(array(
 				'columns' => array(
+					'activated_status',
 					'external_ip_address_version_4',
 					'external_ip_address_version_6',
 					'id',
 					'internal_ip_address_version_4',
-					'internal_ip_address_version_6',
-					'status_activated'
+					'internal_ip_address_version_6'
 				),
 				'in' => $parameters['databases']['nodes'],
 				'where' => array(
@@ -294,9 +295,9 @@
 				foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
 					$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
 					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']] = array(
-						'status_node_request_destinations_only_allowed' => $nodeProcessNodeUser['node_user_status_node_request_destinations_only_allowed'], 
-						'status_node_request_logs_allowed' => $nodeProcessNodeUser['node_user_status_node_request_logs_allowed'], 
-						'status_strict_authentication_required' => $nodeProcessNodeUser['node_user_status_strict_authentication_required']
+						'node_request_destinations_only_allowed' => $nodeProcessNodeUser['node_user_node_request_destinations_only_allowed_status'],
+						'node_request_logs_allowed' => $nodeProcessNodeUser['node_user_node_request_logs_allowed_status'],
+						'strict_authentication_required_status' => $nodeProcessNodeUser['node_user_strict_authentication_required_status']
 					);
 				}
 
