@@ -930,10 +930,21 @@
 			'authentication_credential_hostname' => 'localhost',
 			'authentication_credential_password' => 'password',
 			'created_timestamp' => $timestamp,
+			'id' => ($systemDatabaseId = random_bytes(10) . time() . random_bytes(10)),
 			'modified_timestamp' => $timestamp,
 			'name' => $databaseTable,
 			'tag' => $databaseTable
 		);
+
+		foreach ($databaseColumns as $databaseColumn) {
+			$databaseData['system_database_columns'][] = array(
+				'created_timestamp' => $timestamp,
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'modified_timestamp' => $timestamp,
+				'name' => $databaseColumn,
+				'system_database_id' => $systemDatabaseId
+			);
+		}
 	}
 
 	foreach ($databaseData as $databaseTableName => $databaseRows) {
