@@ -8,7 +8,24 @@
 	), $parameters['databases'], $response);
 
 	function _addSystemUser($parameters, $response) {
-		// todo: validate system_user_id
+		if (empty($parameters['data']['system_user_id']) === false) {
+			$systemUser = _list(array(
+				'columns' => array(
+					'id'
+				),
+				'in' => $parameters['databases']['system_users'],
+				'where' => array(
+					'id' => $parameters['data']['system_user_id']
+				)
+			), $response);
+			$systemUser = current($systemUser);
+
+			if (empty($systemUser) === true) {
+				$response['message'] = 'Invalid system user ID, please try again.';
+				return $response;
+			}
+		}
+
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
