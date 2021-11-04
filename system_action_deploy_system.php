@@ -508,7 +508,7 @@
 		exit;
 	}
 
-	$databaseColumns = array( 
+	$databases = array(
 		'node_process_blockchain_mining_resource_usage_rules' => array(),
 		'node_process_forwarding_destinations' => array(
 			'address_version_4',
@@ -913,22 +913,36 @@
 		}
 	}
 
-	/*
-	todo: add database structure to system_databases + add default user
 	$databaseData = array(
-		'table_name' => array(
+		'system_user_authentication_tokens' => array(
 			array(
-				'column_key1' => 'column_value1',
-				'column_key2' => 'column_value2'
+				'created_timestamp' => ($timestamp = time()),
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'modified_timestamp' => $timestamp,
+				'string' => ($systemUserAuthenticationToken = $timestamp . random_bytes(mt_rand(10, 25)) . uniqid()),
+				'system_user_id' => ($systemUserId = random_bytes(10) . time() . random_bytes(10))
 			)
 		)
 	);
+
+	foreach ($databases as $databaseTable => $databaseColumns) {
+		$databaseData['system_databases'][] = array(
+			'authentication_credential_hostname' => 'localhost',
+			'authentication_credential_password' => 'password',
+			'created_timestamp' => $timestamp,
+			'modified_timestamp' => $timestamp,
+			'name' => $databaseTable,
+			'tag' => $databaseTable
+		);
+	}
+
 	foreach ($databaseData as $databaseTableName => $databaseRows) {
 		foreach ($databaseRows as $databaseRow) {
-			mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
+			mysqli_query($databaseConnection, 'insert ignore into `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) values (' . implode(', ', array_values($databaseRow)) . ')');
 		}
 	}
-	*/
+
+	echo 'System user authentication token is ' . $systemUserAuthenticationToken . "\n";
 	echo 'System deployed successfully.' . "\n";
 	exit;
 ?>
