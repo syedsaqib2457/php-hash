@@ -403,7 +403,6 @@
 	$crontabCommands = array(
 		'# [Start]',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . 'system_action_process_node_request_logs.php',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . 'system_action_process_node_request_logs.php',
 		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
 		'# [Stop]'
 	);
@@ -418,13 +417,13 @@
 
 	$crontabFileContents = explode("\n", $crontabFileContents);
 
-	while (array_search('# [Start]', $crontabFileContents) !== false) {
+	while ((array_search('# [Start]', $crontabFileContents) === false) === false) {
 		$startCrontabFileContents = array_search('# [Start]', $crontabFileContents);
 		$stopCrontabFileContents = array_search('# [Stop]', $crontabFileContents);
 
 		if (
-			($stopCrontabFileContents !== false) &&
-			($stopCrontabFileContents > $startCrontabFileContents)
+			(($stopCrontabFileContents === false) === false) &&
+			(($stopCrontabFileContents > $startCrontabFileContents) === true)
 		) {
 			foreach (range($startCrontabFileContents, $stopCrontabFileContents) as $crontabContentLineIndex) {
 				unset($crontabFileContents[$crontabContentLineIndex]);
@@ -442,7 +441,7 @@
 
 		foreach ($sshPortNumbers as $sshPortNumberKey => $sshPortNumber) {
 			if (
-				(strlen($sshPortNumber) > 5) ||
+				((strlen($sshPortNumber) > 5) === true) ||
 				(is_numeric($sshPortNumber) === false)
 			) {
 				unset($sshPortNumbers[$sshPortNumberKey]);
