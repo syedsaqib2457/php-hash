@@ -7,18 +7,17 @@
 		'node_users'
 	), $parameters['databases'], $response);
 
-	function _addNodeUser($parameters, $response) { 
-		// 'node_request_logs_allowed_status'
-		// 'strict_authentication_required_status'
-		// 'tag'
-		$parameters['data']['node_request_destinations_only_allowed_status'] = strval(intval(empty($parameters['data']['strict_authentication_required_status']) === false));
+	function _addNodeUser($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+		$parameters['data']['node_request_destinations_only_allowed_status'] = strval(intval(empty($parameters['data']['strict_authentication_required_status']) === false));
+		$parameters['data']['node_request_logs_allowed_status'] = strval(intval(empty($parameters['data']['node_request_logs_allowed_status']) === false));
+		$parameters['data']['node_user_authentication_strict_status'] = strval(intval(empty($parameters['data']['node_user_authentication_strict_status']) === false));
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
 				'node_request_destinations_only_allowed_status' => true,
 				'node_request_logs_allowed_status' => true,
-				'strict_authentication_required_status' => true,
+				'node_user_authentication_strict_status' => true,
 				'tag' => true
 			)),
 			'in' => $parameters['databases']['node_users']

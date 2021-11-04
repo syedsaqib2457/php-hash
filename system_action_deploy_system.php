@@ -742,7 +742,7 @@
 			'modified_timestamp',
 			'node_request_destinations_only_allowed_status',
 			'node_request_logs_allowed_status',
-			'strict_authentication_required_status',
+			'node_user_authentication_strict_status',
 			'tag'
 		),
 		'nodes' => array(
