@@ -63,7 +63,7 @@
 			}
 
 			foreach ($systemDatabaseColumns as $systemDatabaseColumn) {
-				$response['_connect'][$database]['structure']['columns'][$systemDatabaseColumn['name']] = '';
+				$response['_connect'][$database]['structure']['columns'][] = [$systemDatabaseColumn['name']];
 			}
 		}
 
@@ -199,14 +199,6 @@
 				);
 				$parameters['where'][$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseCommandWhereConditions($recursiveParameters, $conjunction)) . ')';
 			} else {
-				if (
-					(($whereConditionConjunction === 'either') === false) &&
-					(isset($parameters['in']['structure']['columns'][substr($whereConditionKey, 0, strpos($whereConditionKey, ' '))]) === false)
-				) {
-					unset($parameters['where'][$whereConditionKey]);
-					continue;
-				}
-
 				if (is_array($whereConditionValue) === false) {
 					$whereConditionValue = array(
 						$whereConditionValue
@@ -342,11 +334,11 @@
 			'connection' => ($systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute')),
 			'structure' => array(
 				'columns' => array(
-					'created_timestamp' => '',
-					'id' => '',
-					'modified_timestamp' => '',
-					'name' => '',
-					'system_database_id' => ''
+					'created_timestamp',
+					'id',
+					'modified_timestamp',
+					'name',
+					'system_database_id'
 				),
 				'table' => 'system_database_columns'
 			)
@@ -355,13 +347,13 @@
 			'connection' => $systemDatabaseConnection,
 			'structure' => array(
 				'columns' => array(
-					'authentication_credential_hostname' => '',
-					'authentication_credential_password' => '',
-					'created_timestamp' => '',
-					'id' => '',
-					'modified_timestamp' => '',
-					'name' => '',
-					'tag' => ''
+					'authentication_credential_hostname',
+					'authentication_credential_password',
+					'created_timestamp',
+					'id',
+					'modified_timestamp',
+					'name',
+					'tag'
 				),
 				'table' => 'system_databases'
 			)
