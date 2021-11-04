@@ -419,12 +419,12 @@
 
 	$crontabFileContents = explode("\n", $crontabFileContents);
 
-	while ((array_search('# [Start]', $crontabFileContents) === false) === false) {
+	while (is_int(array_search('# [Start]', $crontabFileContents)) === true) {
 		$startCrontabFileContents = array_search('# [Start]', $crontabFileContents);
 		$stopCrontabFileContents = array_search('# [Stop]', $crontabFileContents);
 
 		if (
-			(($stopCrontabFileContents === false) === false) &&
+			(is_int($stopCrontabFileContents) === true) &&
 			(($stopCrontabFileContents > $startCrontabFileContents) === true)
 		) {
 			foreach (range($startCrontabFileContents, $stopCrontabFileContents) as $crontabContentLineIndex) {
