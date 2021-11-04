@@ -740,9 +740,9 @@
 			'created_timestamp',
 			'id',
 			'modified_timestamp',
-			'node_request_destinations_only_allowed',
-			'node_request_logs_allowed',
-			'strict_authentication_required',
+			'node_request_destinations_only_allowed_status',
+			'node_request_logs_allowed_status',
+			'strict_authentication_required_status',
 			'tag'
 		),
 		'nodes' => array(
