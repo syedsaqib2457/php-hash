@@ -922,6 +922,13 @@
 				'string' => ($systemUserAuthenticationToken = $timestamp . random_bytes(mt_rand(10, 25)) . uniqid()),
 				'system_user_id' => ($systemUserId = random_bytes(10) . time() . random_bytes(10))
 			)
+		),
+		'system_users' => array(
+			array(
+				'created_timestamp' => $timestamp,
+				'id' => $systemUserId,
+				'modified_timestamp' => $timestamp
+			)
 		)
 	);
 
