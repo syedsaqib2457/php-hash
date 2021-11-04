@@ -38,7 +38,7 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
 ```json
 {
     "data": {
-        "active_status": "0",
+        "activated_status": "0",
         "cpu_capacity_megahertz": "",
         "cpu_core_count": "",
         "deployed_status": "0",
