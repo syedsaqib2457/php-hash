@@ -4,7 +4,7 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		$databases['nodes']
+		'nodes'
 	), $parameters['databases'], $response);
 
 	function _updateNode($parameters, $response) {
@@ -31,7 +31,7 @@
 
 		_update(array(
 			'data' => array(
-				'status_processed' => '0'
+				'processed_status' => '0'
 			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
