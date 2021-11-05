@@ -6,7 +6,7 @@ API documentation and usage tutorials are in the [documentation repository](http
 
 ### An Essential API Framework for Cloud Privacy and Security
 
-Develop secure applications using a free open-source backend API framework built with excessive simplicity.
+Develop secure applications using a backend API framework built with excessive simplicity.
 
 ### Build and Orchestrate Powerful Cloud Applications the Right Way
 
@@ -207,7 +207,7 @@ Opening additional ports improves performance at scale if node monitoring reveal
 
 #### Security
 
-Each deployed node is automated by interacting with free open-source code to make sure there are no unauthorized backdoor actions.
+Each deployed node is automated by interacting with open-source code to make sure there are no unauthorized backdoor actions.
 
 Prevent IP addresses on each node from getting blacklisted on specific websites and networks with granular egress request limitation rules for forwarding proxies and reverse proxies.
 
