@@ -371,10 +371,18 @@
 	rmdir($systemPath);
 	mkdir($systemPath);
 	chmod($systemPath, 0755);
+	$systemUrl = $_SERVER['argv'][1];
+	file_put_contents($systemPath . '/system_ip_address.txt', $systemUrl);
+
+	if (file_exists($systemPath . '/system_ip_address.txt') === false) {
+		echo 'Error adding system IP address, please try again.' . "\n";
+		exit;
+	}
+
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	$virtualHostContents = array(
 		'<VirtualHost *:80>',
-		'ServerAlias ' . ($systemUrl = $_SERVER['argv'][1]),
+		'ServerAlias ' . $systemUrl,
 		'ServerName ' . $systemUrl,
 		'DocumentRoot ' . $systemPath,
 		'<Directory ' . $systemPath . '>',
