@@ -41,7 +41,14 @@
 			(empty($parameters['where']['authentication_token']) === true) &&
 			(($node['deployed_status'] === '0') === true)
 		) {
-			$response['data']['command'] = ''; // todo: updated node activation and deployment command
+			$systemIpAddress = file_get_contents('/var/www/ghostcompute/system_ip_address.txt');
+
+			if (empty($systemIpAddress) === true) {
+				$response['message'] = 'Error listing system IP address, please try again.';
+				return $response;
+			}
+
+			$response['data']['command'] = 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y node_action_deploy_node php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . ($url = $_SERVER['REQUEST_SCHEME'] . '://' . $systemIpAddress) . '/node_action_deploy_node.php?' . random_bytes(10) . '" && sudo php node_action_deploy_node.php ' . $node['id'] . ' ' . $_SERVER['REQUEST_SCHEME'] . '://' . $systemIpAddress;
 			$response['message'] = 'Node is ready for activation.';
 			return $response;
 		}
