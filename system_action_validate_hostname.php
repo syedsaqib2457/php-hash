@@ -20,7 +20,20 @@
 			($allowIpAddress === true)
 		) {
 			require_once('/var/www/ghostcompute/system_action_validate_ip_address_version.php');
-			// todo: include IP address system validation action
+
+			$hostnameIpAddressVersions = array(
+				4,
+				6
+			);
+
+			foreach ($hostnameIpAddressVersions as $hostnameIpAddressVersion) {
+				$hostnameIpAddress = _validateIpAddressVersion($hostname, $hostnameIpAddressVersion);
+
+				if (is_string($hostnameIpAddress) === true) {
+					$response = $hostnameIpAddress;
+					break;
+				}
+			}
 		}
 
 		return $response;
