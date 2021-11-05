@@ -399,7 +399,7 @@
 	shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
 	shell_exec('cd ' . $systemPath . ' && sudo git clone https://github.com/ghostcompute/framework .');
 
-	if (file_exists($systemPath . '/license.txt') === false) {
+	if (file_exists($systemPath . '/readme.md') === false) {
 		echo 'Error extracting system files, please try again.' . "\n";
 		exit;
 	}
