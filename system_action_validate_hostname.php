@@ -5,7 +5,11 @@
 
 	function _validateHostname($hostname, $allowIpAddress = false) {
 		$response = false;
-		// todo: no request schemes for hostname validation
+
+		if (is_int(strpos($hostname, '://')) === true) {
+			return $response;
+		}
+
 		// todo: validate special domain cases return true for valid domains with TLDs such as .be
 
 		if (
