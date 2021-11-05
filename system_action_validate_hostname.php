@@ -19,6 +19,7 @@
 			($response === false) &&
 			($allowIpAddress === true)
 		) {
+			require_once('/var/www/ghostcompute/system_action_validate_ip_address_version.php');
 			// todo: include IP address system validation action
 		}
 
