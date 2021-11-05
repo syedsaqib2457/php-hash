@@ -73,19 +73,19 @@
 				// 'ffx:x:x:x:x:x:x:x'
 			)
 		);
-	}
 
-	foreach ($reservedIpAddressVersions[$ipAddressVersion] as $reservedIpAddressType => $reservedIpAddressRanges) {
-		foreach ($reservedIpAddressRanges as $reservedIpAddressRange) {
-			if (
-				(($ipAddress <= $reservedIpAddressRange['stop']) === true) &&
-				(($ipAddress >= $reservedIpAddressRange['start']) === true)
-			) {
-				$response = $reservedIpAddressType;
-				return $response;
+		foreach ($reservedIpAddressVersions[$ipAddressVersion] as $reservedIpAddressType => $reservedIpAddressRanges) {
+			foreach ($reservedIpAddressRanges as $reservedIpAddressRange) {
+				if (
+					(($ipAddress <= $reservedIpAddressRange['stop']) === true) &&
+					(($ipAddress >= $reservedIpAddressRange['start']) === true)
+				) {
+					$response = $reservedIpAddressType;
+					return $response;
+				}
 			}
 		}
-	}
 
-	return $response;
+		return $response;
+	}
 ?>
