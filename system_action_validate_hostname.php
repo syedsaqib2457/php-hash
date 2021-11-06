@@ -3,6 +3,8 @@
 		exit;
 	}
 
+	// todo: add port + request scheme to validate destination address
+
 	function _validateHostname($hostname, $allowIpAddress = false) {
 		$response = false;
 
