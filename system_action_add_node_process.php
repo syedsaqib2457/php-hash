@@ -16,6 +16,11 @@
 			_output($response);
 		}
 
+		if (empty($parameters['data']['port_number']) === true) {
+			$response['message'] = 'Node process must have a port number, please try again.';
+			_output($response);
+		}
+
 		$node = _list(array(
 			'columns' => array(
 				'node_id',
