@@ -29,7 +29,7 @@
 			return $response;
 		}
 
-		$urlComponents = array_filter(path_info($hostname));
+		$urlComponents = array_filter(parse_url($hostname));
 
 		if (
 			(count($urlComponents) === 1) === false) ||
