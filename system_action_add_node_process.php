@@ -16,11 +16,31 @@
 			_output($response);
 		}
 
+		$node = _list(array(
+			'columns' => array(
+				'node_id',
+				'node_node_id'
+			),
+			'in' => $parameters['databases']['node_processes'],
+			'where' => array(
+				'node_id' => $parameters['data']['node_id']
+			)
+		), $response);
+		$node = current($node);
+
+		if (empty($node) === true) {
+			$response['message'] = 'Invalid node process node ID, please try again.';
+			return $response;
+		}
+
+		$nodeIds = array_filter($node);
+
 		// todo: validate node process data
 
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true
+				'id' => true,
+				'node_id' => true
 			)),
 			'in' => $parameters['databases']['node_processes']
 		), $response);
