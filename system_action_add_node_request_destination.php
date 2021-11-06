@@ -6,19 +6,19 @@
 	$parameters['databases'] += _connect(array(
 		'node_request_destinations'
 	), $parameters['databases'], $response);
-	require_once('/var/www/ghostcompute/system_action_validate_request_destination_address.php');
+	require_once('/var/www/ghostcompute/system_action_validate_hostname.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
-		if (empty($parameters['data']['address']) === true) {
-			$response['message'] = 'Node request destination must have an address.';
+		if (empty($parameters['data']['hostname']) === true) {
+			$response['message'] = 'Node request destination must have a hostname.';
 			_output($response);
 		}
 
-		// todo: add validation with reference to _validateRequestDestinationAddress
+		// todo: add validation with reference to _validateHostname
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
-				'address' => true,
+				'hostname' => true,
 				'id' => true
 			)),
 			'in' => $parameters['databases']['node_request_destinations']
