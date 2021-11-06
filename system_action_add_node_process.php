@@ -31,6 +31,16 @@
 			_output($response);
 		}
 
+		if (in_array(strval($parameters['data']['type']), array(
+			'http_proxy',
+			'load_balancer',
+			'recursive_dns',
+			'socks_proxy'
+		)) === false) {
+			$response['message'] = 'Invalid node process type, please try again.';
+			_output($response);
+		}
+
 		$node = _list(array(
 			'columns' => array(
 				'node_id',
