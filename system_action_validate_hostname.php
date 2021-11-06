@@ -3,20 +3,20 @@
 		exit;
 	}
 
-	// todo: add port + request scheme to validate destination address
-
 	function _validateHostname($hostname, $allowIpAddress = false) {
 		$response = false;
+		$urlComponents = array_filter(path_info($hostname));
 
-		if (is_int(strpos($hostname, '://')) === true) {
+		if (
+			(count($urlComponents) === 1) === false) ||
+			(($hostname === $urlComponents['hostname']) === false)
+		) {
 			return $response;
 		}
 
-		// todo: validate special domain cases return true for valid domains with TLDs such as .be
-
 		if (
 			(empty($hostname) === false) &&
-			((filter_var('http://' . $hostname, FILTER_SANITIZE_URL) === filter_var('http://' . $hostname, FILTER_VALIDATE_URL)) === true)
+			(is_string(filter_var('http://' . $hostname, FILTER_VALIDATE_URL)) === true)
 		) {
 			$response = $hostname;
 		}
@@ -26,7 +26,6 @@
 			($allowIpAddress === true)
 		) {
 			require_once('/var/www/ghostcompute/system_action_validate_ip_address_version.php');
-
 			$hostnameIpAddressVersions = array(
 				4,
 				6
