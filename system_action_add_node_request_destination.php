@@ -10,11 +10,15 @@
 
 	function _addNodeRequestDestination($parameters, $response) {
 		if (empty($parameters['data']['hostname']) === true) {
-			$response['message'] = 'Node request destination must have a hostname.';
+			$response['message'] = 'Node request destination must have a hostname, please try again.';
 			_output($response);
 		}
 
-		// todo: add validation with reference to _validateHostname
+		if (_validateHostname($parameters['data']['hostname'], true) === false) {
+			$response['message'] = 'Invalid node request destination hostname, please try again.';
+			_output($response);
+		}
+
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
