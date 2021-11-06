@@ -59,13 +59,13 @@
 		}
 
 		$nodeIds = array_filter($node);
-
-		// todo: validate node process data
-
+		// todo: create node reserved internal IP for the node process
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
-				'node_id' => true
+				'node_id' => true,
+				'port_number' => true,
+				'type' => true
 			)),
 			'in' => $parameters['databases']['node_processes']
 		), $response);
