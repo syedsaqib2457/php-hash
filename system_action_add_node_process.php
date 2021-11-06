@@ -13,22 +13,22 @@
 
 		if (empty($parameters['data']['node_id']) === true) {
 			$response['message'] = 'Node process must have a node ID, please try again.';
-			_output($response);
+			return $response;
 		}
 
 		if (empty($parameters['data']['port_number']) === true) {
 			$response['message'] = 'Node process must have a port number, please try again.';
-			_output($response);
+			return $response;
 		}
 
 		if (_validatePortNumber($parameters['data']['port_number']) === false) {
 			$response['message'] = 'Invalid node process port number, please try again.';
-			_output($response);
+			return $response;
 		}
 
 		if (empty($parameters['data']['type']) === true) {
 			$response['message'] = 'Node process must have a type, please try again.';
-			_output($response);
+			return $response;
 		}
 
 		if (in_array(strval($parameters['data']['type']), array(
@@ -38,7 +38,7 @@
 			'socks_proxy'
 		)) === false) {
 			$response['message'] = 'Invalid node process type, please try again.';
-			_output($response);
+			return $response;
 		}
 
 		$node = _list(array(
