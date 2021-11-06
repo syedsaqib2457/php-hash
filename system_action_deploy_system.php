@@ -520,9 +520,9 @@
 	$databases = array(
 		'node_process_blockchain_mining_resource_usage_rules' => array(),
 		'node_process_forwarding_destinations' => array(
-			'address_version_4',
-			'address_version_6',
 			'created_timestamp',
+			'hostname_version_4',
+			'hostname_version_6',
 			'id',
 			'modified_timestamp',
 			'node_id',
@@ -573,7 +573,7 @@
 			'node_id',
 			'node_node_id',
 			'node_process_type',
-			'node_request_destination_address',
+			'node_request_destination_hostname',
 			'node_request_destination_id',
 			'node_user_id'
 		),
@@ -670,8 +670,8 @@
 			'type'
 		),
 		'node_request_destinations' => array(
-			'address',
 			'created_timestamp',
+			'hostname',
 			'id',
 			'modified_timestamp'
 		),
