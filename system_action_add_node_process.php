@@ -26,6 +26,11 @@
 			_output($response);
 		}
 
+		if (empty($parameters['data']['type']) === true) {
+			$response['message'] = 'Node process must have a type, please try again.';
+			_output($response);
+		}
+
 		$node = _list(array(
 			'columns' => array(
 				'node_id',
