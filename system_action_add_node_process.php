@@ -59,7 +59,6 @@
 		}
 
 		$nodeIds = array_filter($node);
-		// todo: create node reserved internal IP for the node process
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
