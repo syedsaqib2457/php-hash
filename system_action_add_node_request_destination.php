@@ -6,9 +6,15 @@
 	$parameters['databases'] += _connect(array(
 		'node_request_destinations'
 	), $parameters['databases'], $response);
+	require_once('/var/www/ghostcompute/system_action_validate_request_destination_address.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
-		// todo: validate address URL with system validation action
+		if (empty($parameters['data']['address']) === true) {
+			$response['message'] = 'Node request destination must have an address.';
+			_output($response);
+		}
+
+		// todo: add validation with reference to _validateRequestDestinationAddress
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
