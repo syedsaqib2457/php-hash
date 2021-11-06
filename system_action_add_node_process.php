@@ -21,6 +21,11 @@
 			_output($response);
 		}
 
+		if (_validatePortNumber($parameters['data']['port_number']) === false) {
+			$response['message'] = 'Invalid node process port number, please try again.';
+			_output($response);
+		}
+
 		$node = _list(array(
 			'columns' => array(
 				'node_id',
