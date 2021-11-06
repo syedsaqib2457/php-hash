@@ -7,6 +7,7 @@
 		$response = false;	
 
 		if (
+			((trim($portNumber) === $portNumber) === true) &&
 			(is_numeric($portNumber) === true) &&
 			(
 				(($portNumber > 0) === true) &&
