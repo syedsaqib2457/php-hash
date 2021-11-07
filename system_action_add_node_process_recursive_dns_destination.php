@@ -30,6 +30,18 @@
 			return $response;
 		}
 
+		$node = _list(array(
+			'columns' => array(
+				'node_id',
+				'node_node_id'
+			),
+			'in' => $parameters['databases']['node_processes'],
+			'where' => array(
+				'node_id' => $parameters['data']['node_id']
+			)
+		), $response);
+		$node = current($node);
+
 		// todo: validate + save data
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
