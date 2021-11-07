@@ -74,6 +74,8 @@
 				}
 			}
 
+			unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
+
 			if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === false) {
 				$parameters['data'][$nodeIpAddressKey] = strval(_validateIpAddressVersion($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion));
 
@@ -108,7 +110,10 @@
 				), $response);
 				$listeningIpAddressNode = current($listeningIpAddressNode);
 
-				// todo: set listening IP address node_id
+				if (empty($listeningIpAddressNode) === false) {
+					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id'] = $listeningIpAddressNode['id'];
+				}
+
 				// todo: set internal IP if external IP is set when an internal IP exists
 				// todo: validate source IPs
 			}
