@@ -4,7 +4,8 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		'node_process_recursive_dns_destinations'
+		'node_process_recursive_dns_destinations',
+		'nodes'
 	), $parameters['databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_type.php');
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
@@ -34,20 +35,12 @@
 
 		$node = _list(array(
 			'columns' => array(
-				'external_ip_address_version_4',
-				'external_ip_address_version_4_type',
-				'external_ip_address_version_6',
-				'external_ip_address_version_6_type',
-				'internal_ip_address_version_4',
-				'internal_ip_address_version_4_type',
-				'internal_ip_address_version_6',
-				'internal_ip_address_version_6_type',
-				'node_id',
-				'node_node_id'
+				'id',
+				'node_id'
 			),
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['databases']['nodes'],
 			'where' => array(
-				'node_id' => $parameters['data']['node_id']
+				'id' => $parameters['data']['node_id']
 			)
 		), $response);
 		$node = current($node);
@@ -57,10 +50,6 @@
 			return $response;
 		}
 
-		$nodeIpAddressReachTypes = array(
-			'external',
-			'internal'
-		);
 		$nodeIpAddressVersions = array(
 			'4',
 			'6'
@@ -84,26 +73,41 @@
 				}
 			}
 
-			foreach ($nodeIpAddressReachTypes as $nodeIpAddressReachType) {
-				$nodeIpAddressKey = $nodeIpAddressReachType . '_listening_ip_address_version_' . $nodeIpAddressVersion;
+			if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+				$parameters['data'][$nodeIpAddressKey] = strval(_validateIpAddressVersion($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion));
 
-				if (empty($parameters['data'][$nodeIpAddressKey]) === false) {
-					$parameters['data'][$nodeIpAddressKey] = strval(_validateIpAddressVersion($parameters['data'][$nodeIpAddressKey], $nodeIpAddressVersion));
-
-					if (empty($parameters['data'][$nodeIpAddressKey]) === true) {
-						$response['message'] = 'Invalid node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ', please try again.';
-						return $response;
-					}
-
-					// todo: set listening IP address node_id
-					// todo: set internal IP if external IP is set when an internal IP exists
+				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
+					$response['message'] = 'Invalid node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ', please try again.';
+					return $response;
 				}
 
+				$listeningIpAddressNode = _list(array(
+					'columns' => array(
+						'id'
+					),
+					'in' => $parameters['databases']['nodes'],
+					'where' => array(
+						'either' => array(
+							array(
+								'either' => array(
+									'id' => $node['id'],
+									'node_id' => $node['node_id']
+								),
+								'internal_ip_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]
+							)
+
+						)
+					)
+				), $response);
+				$listeningIpAddressNode = current($listeningIpAddressNode);
+
+				// todo: set listening IP address node_id
+				// todo: set internal IP if external IP is set when an internal IP exists
 				// todo: validate source IPs
 			}
 		}
 
-		$parameters['data']['node_node_id'] = $node['node_node_id'];
+		$parameters['data']['node_node_id'] = $node['node_id'];
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
