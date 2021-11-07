@@ -55,18 +55,22 @@
 			return $response;
 		}
 
+		$nodeIpAddressReachTypes = array(
+			'external',
+			'internal'
+		);
 		$nodeIpAddressVersions = array(
 			'4',
 			'6'
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			
+			foreach ($nodeIpAddressReachTypes as $nodeIpAddressReachType) {
+				// todo: validate + save recursive DNS IP address data
+			}
 		}
 
 		$parameters['data']['node_node_id'] = $node['node_node_id'];
-
-		// todo: validate + save data
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true
