@@ -32,6 +32,14 @@
 
 		$node = _list(array(
 			'columns' => array(
+				'external_ip_address_version_4',
+				'external_ip_address_version_4_type',
+				'external_ip_address_version_6',
+				'external_ip_address_version_6_type',
+				'internal_ip_address_version_4',
+				'internal_ip_address_version_4_type',
+				'internal_ip_address_version_6',
+				'internal_ip_address_version_6_type',
 				'node_id',
 				'node_node_id'
 			),
@@ -45,6 +53,15 @@
 		if (empty($node) === true) {
 			$response['message'] = 'Invalid node process node ID, please try again.';
 			return $response;
+		}
+
+		$nodeIpAddressVersions = array(
+			'4',
+			'6'
+		);
+
+		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
+			
 		}
 
 		$parameters['data']['node_node_id'] = $node['node_node_id'];
