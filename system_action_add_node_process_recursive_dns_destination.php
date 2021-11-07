@@ -79,8 +79,20 @@
 			// todo: validate listening IP + port
 
 			foreach ($nodeIpAddressReachTypes as $nodeIpAddressReachType) {
-				$nodeInternalIpAddressKey = $nodeIpAddressReachType . '_ip_address_version_' . $nodeIpAddressVersion;
-				// todo: validate + save recursive DNS IP address data
+				$nodeIpAddressKey = $nodeIpAddressReachType . '_listening_ip_address_version_' . $nodeIpAddressVersion;
+
+				if (empty($parameters['data'][$nodeIpAddressKey]) === false) {
+					$parameters['data'][$nodeIpAddressKey] = strval(_validateIpAddressVersion($parameters['data'][$nodeIpAddressKey], $nodeIpAddressVersion));
+
+					if (empty($parameters['data'][$nodeIpAddressKey]) === true) {
+						$response['message'] = 'Invalid node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ', please try again.';
+						return $response;
+					}
+
+					// todo: set internal IP if external IP is set when an internal IP exists
+				}
+
+				// todo: validate source IPs
 			}
 		}
 
