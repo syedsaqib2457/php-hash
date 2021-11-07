@@ -57,6 +57,8 @@
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
+			unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
+
 			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
 				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
 					$response['message'] = 'Node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ' is required, please try again.';
@@ -74,8 +76,6 @@
 				}
 			}
 
-			unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
-
 			if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === false) {
 				$parameters['data'][$nodeIpAddressKey] = strval(_validateIpAddressVersion($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion));
 
@@ -86,7 +86,9 @@
 
 				$listeningIpAddressNode = _list(array(
 					'columns' => array(
-						'id'
+						'external_ip_address_version_' . $nodeIpAddressVersion,
+						'id',
+						'internal_ip_address_version_' . $nodeIpAddressVersion
 					),
 					'in' => $parameters['databases']['nodes'],
 					'where' => array(
