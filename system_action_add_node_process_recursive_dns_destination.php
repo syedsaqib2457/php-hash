@@ -50,6 +50,7 @@
 			return $response;
 		}
 
+		$nodeIds = array_filter($node);
 		$nodeIpAddressVersions = array(
 			'4',
 			'6'
@@ -90,12 +91,18 @@
 						'either' => array(
 							array(
 								'either' => array(
-									'id' => $node['id'],
-									'node_id' => $node['node_id']
-								),
-								'internal_ip_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]
+									array(
+										'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion],
+										'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
+									),
+									'internal_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]
+								)
+								'node_id' => $nodeIds
+							),
+							array(
+								'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion],
+								'external_ip_address_version_' . $nodeIpAddressVersion . '_type' => 'public_network'
 							)
-
 						)
 					)
 				), $response);
