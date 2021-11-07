@@ -67,16 +67,19 @@
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			if (
-				(empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) &&
-				(empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true)
-			) {
-				$response['message'] = 'Node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ' is required, please try again.';
-				return $response;
-			}
+			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
+					$response['message'] = 'Node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ' is required, please try again.';
+					return $response;
+				}
 
-			// todo: validate listening port not empty
-			// todo: validate listening IP + port
+				if (empty($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === true) {
+					$response['message'] = 'Node process recursive DNS destination port number version ' . $nodeIpAddressVersion . ' is required, please try again.';
+					return $response;
+				}
+
+				// todo: validate port
+			}
 
 			foreach ($nodeIpAddressReachTypes as $nodeIpAddressReachType) {
 				$nodeIpAddressKey = $nodeIpAddressReachType . '_listening_ip_address_version_' . $nodeIpAddressVersion;
@@ -89,6 +92,7 @@
 						return $response;
 					}
 
+					// todo: set listening IP address type
 					// todo: set internal IP if external IP is set when an internal IP exists
 				}
 
