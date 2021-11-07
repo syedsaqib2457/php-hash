@@ -6,7 +6,7 @@
 	$parameters['databases'] += _connect(array(
 		'nodes'
 	), $parameters['databases'], $response);
-	require_once('/var/www/ghostcompute/system_action_validate_ip_address_types.php');
+	require_once('/var/www/ghostcompute/system_action_validate_ip_address_type.php');
 
 	function _addNode($parameters, $response) {
 		$parameters['data']['activated_status'] = $parameters['data']['deployed_status'] = '0';
