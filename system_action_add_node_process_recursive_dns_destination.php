@@ -20,6 +20,16 @@
 			return $response;
 		}
 
+		if (in_array(strval($parameters['data']['node_process_type']), array(
+			'http_proxy',
+			'load_balancer',
+			'recursive_dns',
+			'socks_proxy'
+		)) === false) {
+			$response['message'] = 'Invalid node process type, please try again.';
+			return $response;
+		}
+
 		// todo: validate + save data
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
