@@ -58,11 +58,12 @@
 			return $response;
 		}
 
-		$nodeIds = array_filter($node);
+		$parameters['data']['node_node_id'] = $node['node_node_id'];
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
 				'node_id' => true,
+				'node_node_id' => true,
 				'port_number' => true,
 				'type' => true
 			)),
