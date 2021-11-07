@@ -6,6 +6,8 @@
 	$parameters['databases'] += _connect(array(
 		'node_process_recursive_dns_destinations'
 	), $parameters['databases'], $response);
+	require_once('/var/www/ghostcompute/system_action_validate_ip_address_type.php');
+	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
 	function _addNodeProcessRecursiveDnsDestination($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
@@ -65,7 +67,19 @@
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
+			if (
+				(empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) &&
+				(empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true)
+			) {
+				$response['message'] = 'Node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ' is required, please try again.';
+				return $response;
+			}
+
+			// todo: validate listening port not empty
+			// todo: validate listening IP + port
+
 			foreach ($nodeIpAddressReachTypes as $nodeIpAddressReachType) {
+				$nodeInternalIpAddressKey = $nodeIpAddressReachType . '_ip_address_version_' . $nodeIpAddressVersion;
 				// todo: validate + save recursive DNS IP address data
 			}
 		}
