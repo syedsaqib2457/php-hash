@@ -42,6 +42,13 @@
 		), $response);
 		$node = current($node);
 
+		if (empty($node) === true) {
+			$response['message'] = 'Invalid node process node ID, please try again.';
+			return $response;
+		}
+
+		$parameters['data']['node_node_id'] = $node['node_node_id'];
+
 		// todo: validate + save data
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
