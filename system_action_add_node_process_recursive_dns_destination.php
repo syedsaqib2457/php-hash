@@ -92,7 +92,7 @@
 						return $response;
 					}
 
-					// todo: set listening IP address type
+					// todo: set listening IP address node_id
 					// todo: set internal IP if external IP is set when an internal IP exists
 				}
 
