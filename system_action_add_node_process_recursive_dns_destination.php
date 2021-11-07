@@ -9,6 +9,17 @@
 
 	function _addNodeProcessRecursiveDnsDestination($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+
+		if (empty($parameters['data']['node_id']) === true) {
+			$response['message'] = 'Node process recursive DNS destination must have a node ID, please try again.';
+			return $response;
+		}
+
+		if (empty($parameters['data']['node_process_type']) === true) {
+			$response['message'] = 'Node process recursive DNS destination must have a node process type, please try again.';
+			return $response;
+		}
+
 		// todo: validate + save data
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
