@@ -87,7 +87,10 @@
 		$parameters['data']['node_node_id'] = $node['node_node_id'];
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true
+				'id' => true,
+				'node_id' => true,
+				'node_node_id' => true,
+				'node_process_type' => true
 			)),
 			'in' => $parameters['databases']['node_process_recursive_dns_destinations']
 		), $response);
