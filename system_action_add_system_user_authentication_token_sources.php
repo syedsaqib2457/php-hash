@@ -15,14 +15,20 @@
 			(empty($parameters['data']['ip_address_range_start']) === true) ||
 			(empty($parameters['data']['ip_address_range_stop']) === true)
 		) {
-			$response['message'] = 'System user authentication token source IP address range is required, please try again.';
+			$response['message'] = 'System user authentication token source must have an IP address range, please try again.';
 			return $response;
 		}
 
-		// todo: validate token source IP ranges
+		$parameters['data']['ip_address_range_version'] = '4';
+
+		if (is_int(strpos($parameters['data']['ip_address_range_start'], ':')) === true) {
+			$parameters['data']['ip_address_range_version'] = '6';
+		}
+
+		// todo: validate token source IP ranges _validateIpAddressVersion
 
 		if (empty($parameters['data']['system_user_authentication_token_id']) === true) {
-			$response['message'] = 'System user authentication token source system user authentication token ID is required, please try again.';
+			$response['message'] = 'System user authentication token source must have a system user authentication token ID, please try again.';
 			return $response;
 		}
 
