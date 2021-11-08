@@ -12,6 +12,8 @@
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 
 		if (empty($parameters['data']['system_user_authentication_token_id']) === true) {
+			$response['message'] = 'System user authentication token ID is required, please try again.';
+			return $response;
 		}
 
 		$systemUserAuthenticationToken = _list(array(
