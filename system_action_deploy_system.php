@@ -823,7 +823,7 @@
 			'id',
 			'ip_address_range_start',
 			'ip_address_range_stop',
-			'ip_address_version',
+			'ip_address_range_version',
 			'modified_timestamp',
 			'system_user_authentication_token_id',
 			'system_user_id'
