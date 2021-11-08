@@ -121,7 +121,7 @@
 
 			foreach ($existingNodeIpAddresses as $existingNodeIpAddress) {
 				if (in_array($existingNodeIpAddress, $nodeIpAddresses) === true) {
-					$response['message'] = 'Node IP address ' . $existingNodeIpAddress . ' already in use, please try again.';
+					$response['message'] = 'Node IP address ' . $existingNodeIpAddress . ' already exists, please try again.';
 					break;
 				}
 			}
