@@ -47,6 +47,24 @@
 			$parameters['data']['request_count_interval_minutes'] = '0';
 		}
 
+		$existingNodeRequestLimitRule = _list(array(
+			'columns' => array(
+				'id'
+			),
+			'in' => $parameters['databases']['node_request_limit_rules'],
+			'where' => array_intersect_key($parameters['data'], array(
+				'interval_minutes' => true,
+				'request_count' => true,
+				'request_count_interval_minutes' => true
+			))
+		), $response);
+		$existingNodeRequestLimitRule = current($existingNodeRequestLimitRule);
+
+		if (empty($existingNodeRequestLimitRule) === false) {
+			$response['message'] = 'Node request limit rule already exists, please try again.';
+			return $response;
+		}
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
