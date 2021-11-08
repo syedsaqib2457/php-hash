@@ -98,7 +98,7 @@
 			$systemUserAuthenticationTokenSourceCountParameters['where'] += array(
 				'ip_address_range_start <=' => $parameters['source']['ip_address'],
 				'ip_address_range_stop >=' => $parameters['source']['ip_address'],
-				'ip_address_version' => $parameters['source']['ip_address_version']
+				'ip_address_range_version' => $parameters['source']['ip_address_version']
 			);
 			$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
