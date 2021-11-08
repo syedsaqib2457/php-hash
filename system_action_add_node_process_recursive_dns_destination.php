@@ -101,7 +101,7 @@
 										'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
 									),
 									'internal_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]
-								)
+								),
 								'node_id' => $nodeIds
 							),
 							array(
@@ -118,10 +118,9 @@
 				}
 
 				if (empty($listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-					
+					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion'];
+					$parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['external_ip_address_version_' . $nodeIpAddressVersion'];
 				}
-
-				// todo: set internal IP + source IP if external IP is set when an internal IP exists
 			} else {
 				unset($parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion]);
 			}
