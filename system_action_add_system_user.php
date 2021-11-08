@@ -8,6 +8,8 @@
 	), $parameters['databases'], $response);
 
 	function _addSystemUser($parameters, $response) {
+		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+
 		if (empty($parameters['data']['system_user_id']) === false) {
 			$systemUser = _list(array(
 				'columns' => array(
@@ -26,7 +28,6 @@
 			}
 		}
 
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
