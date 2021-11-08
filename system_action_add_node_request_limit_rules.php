@@ -11,7 +11,12 @@
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 
 		if (empty($parameters['data']['interval_minutes']) === true) {
-			$response['message'] = 'Node request limit rule must have an interval in minutes, please try again.';
+			$response['message'] = 'Node request limit rule must have interval minutes, please try again.';
+			return $response;
+		}
+
+		if (true) {
+			$response['message'] = 'Invalid node request limit rule interval minutes, please try again.';
 			return $response;
 		}
 
