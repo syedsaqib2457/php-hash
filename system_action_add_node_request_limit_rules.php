@@ -23,7 +23,10 @@
 			return $response;
 		}
 
-		if (isset($parameters['data']['request_count']) === true) {
+		if (
+			(isset($parameters['data']['request_count']) === true) &&
+			(isset($parameters['data']['request_count_interval_minutes']) === true)
+		) {
 			if (
 				(is_numeric($parameters['data']['request_count']) === false) ||
 				((strval(intval($parameters['data']['request_count'])) === $parameters['data']['request_count']) === false)
@@ -31,17 +34,25 @@
 				$response['message'] = 'Invalid node request limit rule request count, please try again.';
 				return $response;
 			}
+
+			if (
+				(is_numeric($parameters['data']['request_count_interval_minutes']) === false) ||
+				((strval(intval($parameters['data']['request_count_interval_minutes'])) === $parameters['data']['request_count_interval_minutes']) === false)
+			) {
+				$response['message'] = 'Invalid node request limit rule request count, please try again.';
+				return $response;
+			}
 		} else {
 			$parameters['data']['request_count'] = '0';
+			$parameters['data']['request_count_interval_minutes'] = '0';
 		}
-
-		// todo: validate + save data
 
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
 				'interval_minutes' => true,
-				'request_count' => true
+				'request_count' => true,
+				'request_count_interval_minutes' => true
 			)),
 			'in' => $parameters['databases']['node_request_limit_rules']
 		), $response);
