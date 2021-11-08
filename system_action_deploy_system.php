@@ -904,7 +904,7 @@
 	foreach ($databaseCommands as $databaseCommandKey => $databaseCommand) {
 		if (
 			(is_numeric($databaseCommandKey) === false) &&
-			(strpos($databaseCommand, 'add primary key') !== false)
+			(is_int(strpos($databaseCommand, 'add primary key')) === true)
 		) {
 			$databaseCommandKey = explode('__', $databaseCommandKey);
 
