@@ -13,7 +13,7 @@
 		$parameters['data']['string'] = time() . random_bytes(mt_rand(10, 25)) . uniqid();
 
 		if (empty($parameters['data']['system_user_id']) === true) {
-			$response['message'] = 'System user ID is required, please try again.';
+			$response['message'] = 'System user authentication token must have a system user ID, please try again.';
 			return $response;
 		}
 
