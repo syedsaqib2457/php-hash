@@ -23,12 +23,22 @@
 	), $parameters['databases'], $response);
 
 	function _deleteNode($parameters, $response) {
+		if (empty($parameters['where']['id']) === true) {
+			$response['message'] = 'Node must have an ID, please try again.';
+			return $response;
+		}
+
+		if (is_string($parameters['where']['id']) === false) {
+			$response['message'] = 'Invalid node ID, please try again.';
+			return $response;
+		}
+
 		_delete(array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
 				'either' => array(
-					'id' => ($nodeIds = array_filter($parameters['where']['id'])),
-					'node_id' => $nodeIds
+					'id' => $parameters['where']['id'],
+					'node_id' => $parameters['where']['id']
 				)
 			)
 		), $response);
@@ -62,8 +72,8 @@
 				'in' => $parameters['databases'][$database],
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $parameters['where']['id'],
+						'node_node_id' => $parameters['where']['id']
 					)
 				)
 			), $response);
