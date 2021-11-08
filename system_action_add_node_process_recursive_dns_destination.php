@@ -130,9 +130,15 @@
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
+				'listening_ip_address_version_4' => true,
+				'listening_ip_address_version_4_node_id' => true,
+				'listening_ip_address_version_6' => true,
+				'listening_ip_address_version_6_node_id' => true,
 				'node_id' => true,
 				'node_node_id' => true,
-				'node_process_type' => true
+				'node_process_type' => true,
+				'source_ip_address_version_4' => true,
+				'source_ip_address_version_6' => true
 			)),
 			'in' => $parameters['databases']['node_process_recursive_dns_destinations']
 		), $response);
