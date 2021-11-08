@@ -70,10 +70,12 @@
 					return $response;
 				}
 
-				if (is_string(_validatePortNumber($parameters['data']['port_number'])) === true) {
+				if (is_string(_validatePortNumber($parameters['data']['port_number_version_' . $nodeIpAddressVersion])) === true) {
 					$response['message'] = 'Invalid node process recursive DNS destination port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
+			} else {
+				unset($parameters['data']['port_number_version_' . $nodeIpAddressVersion]);
 			}
 
 			if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === false) {
@@ -117,6 +119,8 @@
 				}
 
 				// todo: set internal IP + source IP if external IP is set when an internal IP exists
+			} else {
+				unset($parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion]);
 			}
 		}
 
