@@ -56,9 +56,9 @@
 			'6'
 		);
 
-		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
+		// todo: sanitize inputs for saved data to prevent source IP addresses from being assigned to invalid internal IP addresses
 
+		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
 			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
 				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
 					$response['message'] = 'Node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ' is required, please try again.';
@@ -116,8 +116,7 @@
 					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id'] = $listeningIpAddressNode['id'];
 				}
 
-				// todo: set internal IP if external IP is set when an internal IP exists
-				// todo: validate source IPs
+				// todo: set internal IP + source IP if external IP is set when an internal IP exists
 			}
 		}
 
