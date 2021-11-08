@@ -9,7 +9,7 @@
 
 	function _updateNode($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
-			$response['message'] = 'Node ID is required, please try again.';
+			$response['message'] = 'Node must have an ID, please try again.';
 			return $response;
 		}
 
