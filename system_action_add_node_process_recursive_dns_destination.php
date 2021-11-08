@@ -75,6 +75,7 @@
 					return $response;
 				}
 			} else {
+				unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]);
 				unset($parameters['data']['port_number_version_' . $nodeIpAddressVersion]);
 			}
 
