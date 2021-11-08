@@ -56,7 +56,7 @@
 			'6'
 		);
 
-		// todo: sanitize inputs for saved data to prevent source IP addresses from being assigned to invalid internal IP addresses
+		// todo: simplify request parameters by accepting either node_id or external IP
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
 			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
@@ -117,6 +117,10 @@
 
 				if (empty($listeningIpAddressNode) === false) {
 					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id'] = $listeningIpAddressNode['id'];
+				}
+
+				if (empty($listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+					
 				}
 
 				// todo: set internal IP + source IP if external IP is set when an internal IP exists
