@@ -10,17 +10,16 @@
 	function _addNodeRequestLimitRules($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 
-		if (empty($parameters['data']['interval_minutes']) === true) {
-			$response['message'] = 'Node request limit rule must have interval minutes, please try again.';
-			return $response;
-		}
-
-		if (
-			(is_numeric($parameters['data']['interval_minutes']) === false) ||
-			((strval(intval($parameters['data']['interval_minutes'])) === $parameters['data']['interval_minutes']) === false)
-		) {
-			$response['message'] = 'Invalid node request limit rule interval minutes, please try again.';
-			return $response;
+		if (isset($parameters['data']['interval_minutes']) === true) {
+			if (
+				(is_numeric($parameters['data']['interval_minutes']) === false) ||
+				((strval(intval($parameters['data']['interval_minutes'])) === $parameters['data']['interval_minutes']) === false)
+			) {
+				$response['message'] = 'Invalid node request limit rule interval minutes, please try again.';
+				return $response;
+			}
+		} else {
+			$parameters['data']['interval_minutes'] = '0';
 		}
 
 		if (isset($parameters['data']['request_count']) === true) {
