@@ -15,7 +15,10 @@
 			return $response;
 		}
 
-		if (true) {
+		if (
+			(is_numeric($parameters['data']['interval_minutes']) === false) ||
+			((intval($parameters['data']['interval_minutes']) === $parameters['data']['interval_minutes']) === false)
+		) {
 			$response['message'] = 'Invalid node request limit rule interval minutes, please try again.';
 			return $response;
 		}
@@ -24,7 +27,8 @@
 
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true
+				'id' => true,
+				'interval_minutes' => true
 			)),
 			'in' => $parameters['databases']['node_request_limit_rules']
 		), $response);
