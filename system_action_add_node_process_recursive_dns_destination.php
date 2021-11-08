@@ -68,7 +68,7 @@
 					return $response;
 				}
 
-				if (is_string(_validatePortNumber($parameters['data']['port_number_version_' . $nodeIpAddressVersion])) === true) {
+				if (_validatePortNumber($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === false) {
 					$response['message'] = 'Invalid node process recursive DNS destination port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
