@@ -12,22 +12,25 @@
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		$parameters['data']['string'] = time() . random_bytes(mt_rand(10, 25)) . uniqid();
 
-		if (empty($parameters['data']['system_user_id']) === false) {
-			$systemUser = _list(array(
-				'columns' => array(
-					'id'
-				),
-				'in' => $parameters['databases']['system_users'],
-				'where' => array(
-					'id' => $parameters['data']['system_user_id']
-				)
-			), $response);
-			$systemUser = current($systemUser);
+		if (empty($parameters['data']['system_user_id']) === true) {
+			$response['message'] = 'System user ID is required, please try again.';
+			return $response;
+		}
 
-			if (empty($systemUser) === true) {
-				$response['message'] = 'Invalid system user ID, please try again.';
-				return $response;
-			}
+		$systemUser = _list(array(
+			'columns' => array(
+				'id'
+			),
+			'in' => $parameters['databases']['system_users'],
+			'where' => array(
+				'id' => $parameters['data']['system_user_id']
+			)
+		), $response);
+		$systemUser = current($systemUser);
+
+		if (empty($systemUser) === true) {
+			$response['message'] = 'Invalid system user ID, please try again.';
+			return $response;
 		}
 
 		_save(array(
