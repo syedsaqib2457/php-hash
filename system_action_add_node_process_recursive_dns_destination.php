@@ -56,8 +56,6 @@
 			'6'
 		);
 
-		// todo: simplify request parameters by accepting either node_id or external IP
-
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
 			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
 				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
