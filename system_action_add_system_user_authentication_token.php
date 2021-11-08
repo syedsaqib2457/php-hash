@@ -10,7 +10,7 @@
 
 	function _addSystemUserAuthenticationToken($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
-		// todo: random string value
+		$parameters['data']['string'] = time() . random_bytes(mt_rand(10, 25)) . uniqid();
 
 		if (empty($parameters['data']['system_user_id']) === false) {
 			$systemUser = _list(array(
@@ -33,6 +33,7 @@
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
+				'string' => true,
 				'system_user_id' => true
 			)),
 			'in' => $parameters['databases']['system_user_authentication_tokens']
