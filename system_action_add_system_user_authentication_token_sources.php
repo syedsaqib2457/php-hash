@@ -39,6 +39,11 @@
 			return $response;
 		}
 
+		if (($parameters['data']['ip_address_range_start'] > $parameters['data']['ip_address_range_stop']) === true) {
+			$response['message'] = 'System user authentication token source IP address range stop must be greater than or equal to system user authentication token source IP address range start, please try again.';
+			return $response;
+		}
+
 		if (empty($parameters['data']['system_user_authentication_token_id']) === true) {
 			$response['message'] = 'System user authentication token source must have a system user authentication token ID, please try again.';
 			return $response;
