@@ -9,6 +9,7 @@
 
 	function _addNodeRequestLimitRules($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+		// todo: indefinite limits should have an empty request limit rule ID instead of allowing 0 values
 
 		if (isset($parameters['data']['interval_minutes']) === true) {
 			if (
