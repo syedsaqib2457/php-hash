@@ -11,8 +11,18 @@
 	function _addSystemUserAuthenticationTokenSource($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 
+		if (
+			(empty($parameters['data']['ip_address_range_start']) === true) ||
+			(empty($parameters['data']['ip_address_range_stop']) === true)
+		) {
+			$response['message'] = 'System user authentication token source IP address range is required, please try again.';
+			return $response;
+		}
+
+		// todo: validate token source IP ranges
+
 		if (empty($parameters['data']['system_user_authentication_token_id']) === true) {
-			$response['message'] = 'System user authentication token ID is required, please try again.';
+			$response['message'] = 'System user authentication token source system user authentication token ID is required, please try again.';
 			return $response;
 		}
 
