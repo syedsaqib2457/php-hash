@@ -48,15 +48,19 @@
 			return $response;
 		}
 
-		$nodeIds = array_filter($node);
 		$nodeIpAddressVersions = array(
 			'4',
 			'6'
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			if (empty($node['hostname_version_' . $nodeIpAddressVersion]) === false) {
-				// todo: validate hostname url + IP
+			if (empty($parameters['data']['hostname_version_' . $nodeIpAddressVersion]) === false) {
+				$parameters['data']['hostname_version_' . $nodeIpAddressVersion] = _validateHostname($parameters['data']['hostname_version_' . $nodeIpAddressVersion], true);
+
+				if ($parameters['data']['hostname_version_' . $nodeIpAddressVersion] === false) {
+					$response['message'] = 'Invalid node process forwarding destination hostname version ' . $nodeIpAddressVersion . ', please try again.';
+					return $response;
+				}
 
 				if (empty($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === true) {
 					$response['message'] = 'Node process forwarding destination must have a port number version ' . $nodeIpAddressVersion . ', please try again.';
