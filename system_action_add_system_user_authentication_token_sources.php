@@ -70,6 +70,10 @@
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
+				'ip_address_range_start' => true,
+				'ip_address_range_stop' => true,
+				'ip_address_range_version' => true,
+				'system_user_authentication_token_id' => true,
 				'system_user_id' => true
 			)),
 			'in' => $parameters['databases']['system_user_authentication_token_sources']
