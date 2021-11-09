@@ -67,6 +67,16 @@
 		}
 
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
+		$existingSystemUserAuthenticationTokenSource = _count(array(
+			'in' => $parameters['databases']['system_user_authentication_token_sources'],
+			'where' => array_intersect_key($parameters['data'], array(
+				'ip_address_range_start' => true,
+				'ip_address_range_stop' => true,
+				'ip_address_range_version' => true,
+				'system_user_authentication_token_id' => true,
+				'system_user_id' => true
+			))
+		));
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
