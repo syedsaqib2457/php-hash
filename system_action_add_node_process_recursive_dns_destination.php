@@ -29,7 +29,7 @@
 			'recursive_dns',
 			'socks_proxy'
 		)) === false) {
-			$response['message'] = 'Invalid node process type, please try again.';
+			$response['message'] = 'Invalid node process recursive DNS destination node process type, please try again.';
 			return $response;
 		}
 
