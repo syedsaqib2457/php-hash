@@ -76,7 +76,7 @@
 				'system_user_authentication_token_id' => true,
 				'system_user_id' => true
 			))
-		));
+		), $response);
 
 		if (($existingSystemUserAuthenticationTokenSourceCount > 0) === true) {
 			$response['message'] = 'System user authentication token source already exists, please try again.';
