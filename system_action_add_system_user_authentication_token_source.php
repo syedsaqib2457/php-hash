@@ -77,6 +77,12 @@
 				'system_user_id' => true
 			))
 		));
+
+		if (($existingSystemUserAuthenticationTokenSourceCount > 0) === true) {
+			$response['message'] = 'System user authentication token source already exists, please try again.';
+			return $response;
+		}
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
