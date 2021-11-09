@@ -42,12 +42,18 @@
 				)
 			)
 		), $response);
-
-		/*
-		node_reserved_internal_destinations
-			update status_added false, node_id null, node_node_id null, status_processed false
-		*/
-
+		_update(array(
+			'data' => array(
+				'added_status' => '0'
+			),
+			'in' => $parameters['databases']['node_reserved_internal_destinations'],
+			'where' => array(
+				'either' => array(
+					'node_id' => $parameters['node'][$nodeIpAddressVersion],
+					'node_node_id' => $parameters['node'][$nodeIpAddressVersion]
+				)
+			)
+		), $response);
 		$databases = array(
 			'node_process_forwarding_destinations',
 			'node_process_node_user_authentication_credentials',
