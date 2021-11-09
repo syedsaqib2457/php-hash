@@ -47,6 +47,20 @@
 		}
 
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
+		$existingSystemUserAuthenticationTokenScopeCount = _count(array(
+			'in' => $parameters['databases']['system_user_authentication_token_scopes'],
+			'where' => array_intersect_key($parameters['data'], array(
+				'system_action' => true,
+				'system_user_authentication_token_id' => true,
+				'system_user_id' => true
+			))
+		));
+
+		if (($existingSystemUserAuthenticationTokenScopeCount > 0) === true) {
+			$response['message'] = 'System user authentication token scope already exists, please try again.';
+			return $response;
+		}
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
