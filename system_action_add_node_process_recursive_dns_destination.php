@@ -127,7 +127,23 @@
 		}
 
 		$parameters['data']['node_node_id'] = $node['node_id'];
-		// todo: prevent adding duplicates
+		$existingNodeProcessRecursiveDnsDestinationCount = _count(array(
+			'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
+			'where' => array_intersect_key($parameters['data'], array(
+				'listening_ip_address_version_4' => true,
+				'listening_ip_address_version_6' => true,
+				'node_id' => true,
+				'node_process_type' => true,
+				'source_ip_address_version_4' => true,
+				'source_ip_address_version_6' => true
+			))
+		));
+
+		if (($existingNodeProcessRecursiveDnsDestinationCount > 0) === true) {
+			$response['message'] = 'Node process recursive DNS destination already exists, please try again.';
+			return $response;
+		}
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
