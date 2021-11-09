@@ -59,12 +59,12 @@
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
 			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
 				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
-					$response['message'] = 'Node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ' is required, please try again.';
+					$response['message'] = 'Node process recursive DNS destination must have a listening IP address version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 
 				if (empty($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === true) {
-					$response['message'] = 'Node process recursive DNS destination port number version ' . $nodeIpAddressVersion . ' is required, please try again.';
+					$response['message'] = 'Node process recursive DNS destination must have a port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 
