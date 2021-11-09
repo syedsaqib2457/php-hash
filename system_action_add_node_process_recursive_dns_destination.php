@@ -78,9 +78,9 @@
 			}
 
 			if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-				$parameters['data'][$nodeIpAddressKey] = strval(_validateIpAddressVersion($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion));
+				$parameters['data'][$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] = strval(_validateIpAddressVersion($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion));
 
-				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
+				if ($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] === false) {
 					$response['message'] = 'Invalid node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
