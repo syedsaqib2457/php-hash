@@ -27,7 +27,7 @@
 			'http_proxy',
 			'socks_proxy'
 		)) === false) {
-			$response['message'] = 'Invalid node process forwarding destination process type, please try again.';
+			$response['message'] = 'Invalid node process forwarding destination node process type, please try again.';
 			return $response;
 		}
 
@@ -55,25 +55,22 @@
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			/*if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
-					$response['message'] = 'Node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ' is required, please try again.';
-					return $response;
-				}
+			if (empty($node['hostname_version_' . $nodeIpAddressVersion]) === false) {
+				// todo: validate hostname url + IP
 
 				if (empty($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === true) {
-					$response['message'] = 'Node process recursive DNS destination port number version ' . $nodeIpAddressVersion . ' is required, please try again.';
+					$response['message'] = 'Node process forwarding destination must have a port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 
 				if (_validatePortNumber($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === false) {
-					$response['message'] = 'Invalid node process recursive DNS destination port number version ' . $nodeIpAddressVersion . ', please try again.';
+					$response['message'] = 'Invalid node process forwarding destination port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 			} else {
-				unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]);
+				unset($parameters['data']['hostname_version_' . $nodeIpAddressVersion]);
 				unset($parameters['data']['port_number_version_' . $nodeIpAddressVersion]);
-			}*/
+			}
 		}
 
 		$parameters['data']['node_node_id'] = $node['node_id'];
