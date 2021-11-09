@@ -91,7 +91,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_system_user_authentication_token_sources') === true) {
+	if (($parameters['action'] === 'add_system_user_authentication_token_source') === true) {
 		$response = _addSystemUserAuthenticationTokenSource($parameters, $response);
 		_output($response);
 	}
