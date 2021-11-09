@@ -32,8 +32,8 @@
 		$databases = array(
 			'system_user_authentication_token_scopes',
 			'system_user_authentication_token_sources',
-			'system_user_request_logs',
-			'system_user_authentication_tokens'
+			'system_user_authentication_tokens',
+			'system_user_request_logs'
 		);
 
 		foreach ($databases as $database) {
