@@ -46,8 +46,6 @@
 		/*
 		node_reserved_internal_destinations
 			update status_added false, node_id null, node_node_id null, status_processed false
-			add status_processed field to prevent adding deleted / unassigned internal ips to other nodes before processing
-			set status_processed to true after process_node action completes
 		*/
 
 		$databases = array(
@@ -79,7 +77,7 @@
 			), $response);
 		}
 
-		$response['message'] = 'Nodes removed successfully.';
+		$response['message'] = 'Node removed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
 	}
