@@ -44,7 +44,8 @@
 		), $response);
 		_update(array(
 			'data' => array(
-				'added_status' => '0'
+				'added_status' => '0',
+				'processed_status' => '0'
 			),
 			'in' => $parameters['databases']['node_reserved_internal_destinations'],
 			'where' => array(
@@ -70,6 +71,19 @@
 			'node_recursive_dns_destinations',
 			'node_resource_usage_logs'
 		);
+		$nodeCount = _count(array(
+			'in' => $parameters['databases']['nodes'],
+			'where' => array(
+				'either' => array(
+					'id' => $parameters['node'][$nodeIpAddressVersion],
+					'node_id' => $parameters['node'][$nodeIpAddressVersion]
+				)
+			)
+		), $response);
+
+		if ($nodeCount === 0) {
+			$databases[] = 'node_reserved_internal_destinations';
+		}
 
 		foreach ($databases as $database) {
 			_delete(array(
