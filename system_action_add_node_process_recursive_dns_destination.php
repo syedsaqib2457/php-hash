@@ -127,6 +127,7 @@
 		}
 
 		$parameters['data']['node_node_id'] = $node['node_id'];
+		// todo: prevent adding duplicates
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
