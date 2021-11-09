@@ -29,20 +29,22 @@
 			return $response;
 		}
 
-		$urlComponents = array_filter(parse_url($hostname));
+		if ($response === false) {
+			$urlComponents = array_filter(parse_url($hostname));
 
-		if (
-			(count($urlComponents) === 1) === false) ||
-			(($hostname === $urlComponents['hostname']) === false)
-		) {
-			return $response;
-		}
+			if (
+				(count($urlComponents) === 1) === false) ||
+				(($hostname === $urlComponents['hostname']) === false)
+			) {
+				return $response;
+			}
 
-		if (
-			(empty($hostname) === false) &&
-			(is_string(filter_var('http://' . $hostname, FILTER_VALIDATE_URL)) === true)
-		) {
-			$response = $hostname;
+			if (
+				(empty($hostname) === false) &&
+				(is_string(filter_var('http://' . $hostname, FILTER_VALIDATE_URL)) === true)
+			) {
+				$response = $hostname;
+			}
 		}
 
 		return $response;
