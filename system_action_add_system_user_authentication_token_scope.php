@@ -54,7 +54,7 @@
 				'system_user_authentication_token_id' => true,
 				'system_user_id' => true
 			))
-		));
+		), $response);
 
 		if (($existingSystemUserAuthenticationTokenScopeCount > 0) === true) {
 			$response['message'] = 'System user authentication token scope already exists, please try again.';
