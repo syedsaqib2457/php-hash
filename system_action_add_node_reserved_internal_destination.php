@@ -85,7 +85,7 @@
 					)
 				), $response);
 
-				if (($existingNodeCount === 0) === true) {
+				if (($existingNodeCount > 0) === false) {
 					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 					$existingNodeReservedInternalDestination['added_status'] = "1";
 				}
@@ -134,7 +134,7 @@
 				)
 			), $response);
 
-			if (($existingNodeCount === 0) === true) {
+			if (($existingNodeCount > 0) === false) {
 				$existingNodeReservedInternalDestinationData[1]['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 			}
 		}
