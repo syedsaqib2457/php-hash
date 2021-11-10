@@ -22,7 +22,6 @@
 
 		$systemUserAuthenticationToken = _list(array(
 			'columns' => array(
-				'id',
 				'system_user_id'
 			),
 			'in' => $parameters['databases']['system_user_authentication_tokens'],
@@ -31,6 +30,16 @@
 			)
 		), $response);
 		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
+		$systemUserAuthenticationTokenSource = _list(array(
+			'columns' => array(
+				'system_user_id'
+			),
+			'in' => $parameters['databases']['system_user_authentication_token_sources'],
+			'where' => array(
+				'id' => $parameters['where']['id']
+			)
+		), $response);
+		$systemUserAuthenticationTokenSource = current($systemUserAuthenticationTokenSource);
 		$systemUser = _list(array(
 			'columns' => array(
 				'id'
@@ -38,10 +47,13 @@
 			'in' => $parameters['databases']['system_users'],
 			'where' => array(
 				'either' => array(
-					'id' => $systemUserAuthenticationToken['system_user_id'],
-					'system_user_id' => array(
-						null,
-						$systemUserAuthenticationToken['system_user_id']
+					array(
+						'id' => $systemUserAuthenticationToken['system_user_id'],
+						'system_user_id' => null
+					),
+					array(
+						'id' => $systemUserAuthenticationTokenSource['system_user_id'],
+						'system_user_id' => $systemUserAuthenticationToken['system_user_id']
 					)
 				)
 			)
