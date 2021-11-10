@@ -97,7 +97,7 @@
 			), $response);
 		}
 
-		$response['message'] = 'Node removed successfully.';
+		$response['message'] = 'Node deleted successfully.';
 		$response['valid_status'] = '1';
 		return $response;
 	}
