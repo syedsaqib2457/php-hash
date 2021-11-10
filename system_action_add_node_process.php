@@ -4,7 +4,8 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		'node_processes'
+		'node_processes',
+		'nodes'
 	), $parameters['databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
@@ -43,12 +44,12 @@
 
 		$node = _list(array(
 			'columns' => array(
-				'node_id',
-				'node_node_id'
+				'id',
+				'node_id'
 			),
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['databases']['nodes'],
 			'where' => array(
-				'node_id' => $parameters['data']['node_id']
+				'id' => $parameters['data']['node_id']
 			)
 		), $response);
 		$node = current($node);
@@ -58,8 +59,21 @@
 			return $response;
 		}
 
-		$parameters['data']['node_node_id'] = $node['node_node_id'];
-		// todo: existing node process validation
+		$parameters['data']['node_node_id'] = $node['node_id'];
+		$existingNodeProcessCount = _count(array(
+			'in' => $parameters['databases']['node_processes'],
+			'where' => array_intersect_key($parameters['data'], array(
+				'node_id' => true,
+				'port_number' => true,
+				'type' => true
+			))
+		), $response);
+
+		if (($existingNodeProcessCount > 0) === true) {
+			$response['message'] = 'Node process already exists, please try again.';
+			return $response;
+		}
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
