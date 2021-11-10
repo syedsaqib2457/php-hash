@@ -12,6 +12,7 @@
 		$parameters['data']['node_request_destinations_only_allowed_status'] = strval(intval(empty($parameters['data']['strict_authentication_required_status']) === false));
 		$parameters['data']['node_request_logs_allowed_status'] = strval(intval(empty($parameters['data']['node_request_logs_allowed_status']) === false));
 		$parameters['data']['node_user_authentication_strict_status'] = strval(intval(empty($parameters['data']['node_user_authentication_strict_status']) === false));
+		// todo: existing node user validation
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
