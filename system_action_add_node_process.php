@@ -59,6 +59,7 @@
 		}
 
 		$parameters['data']['node_node_id'] = $node['node_node_id'];
+		// todo: existing node process validation
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
