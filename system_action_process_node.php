@@ -17,7 +17,6 @@
 	), $parameters['databases'], $response);
 
 	function _processNode($parameters, $response) {
-		// todo: verify no reserved internal ip duplicates before each process reconfig
 		$response['data'] = array(
 			'node_ip_address_versions' => array(
 				'32' => '4',
@@ -34,7 +33,7 @@
 				'socks' => 'socks_proxy'
 			),
 			'reserved_network' => array(), // todo: add reserved network IP data from validation file
-			'version' => '1' // todo: add system version nber from file
+			'version' => '1' // todo: add system version number from file
 		);
 
 		if (empty($parameters['where']['authentication_token']) === true) {
