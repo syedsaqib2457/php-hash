@@ -84,7 +84,7 @@
 				'node_id' => true,
 				'node_process_type' => true
 			))
-		));
+		), $response);
 
 		if (($existingNodeProcessForwardingDestinationCount > 0) === true) {
 			$response['message'] = 'Node process forwarding destination already exists, please try again.';
