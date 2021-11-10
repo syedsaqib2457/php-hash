@@ -40,6 +40,12 @@
 			)
 		), $response);
 		$systemUserAuthenticationTokenScope = current($systemUserAuthenticationTokenScope);
+
+		if (($systemUserAuthenticationToken['system_user_id'] === $systemUserAuthenticationTokenScope['system_user_id']) === true) {
+			$response['message'] = 'System user authentication token scope must belong to another user, please try again.';
+			return $response;
+		}
+
 		$systemUser = _list(array(
 			'columns' => array(
 				'id'
