@@ -45,13 +45,19 @@
 			)
 		), $response);
 		$systemUser = current($systemUser);
+
+		if (empty($systemUser) === true) {
+			$response['message'] = 'Invalid permissions to delete system user authentication token source, please try again.';
+			return $response;
+		}
+
 		_delete(array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
 		), $response);
-		$response['message'] = 'System user authentication token source removed successfully.';
+		$response['message'] = 'System user authentication token source deleted successfully.';
 		$response['valid_status'] = '1';
 		return $response;
 	}
