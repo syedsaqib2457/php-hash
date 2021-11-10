@@ -18,6 +18,33 @@
 			return $response;
 		}
 
+		$systemUserAuthenticationToken = _list(array(
+			'columns' => array(
+				'id',
+				'system_user_id'
+			),
+			'in' => $parameters['databases']['system_user_authentication_tokens'],
+			'where' => array(
+				'string' => $parameters['authentication_token']
+			)
+		), $response);
+		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
+		$systemUser = _list(array(
+			'columns' => array(
+				'id'
+			),
+			'in' => $parameters['databases']['system_user_authentication_tokens'],
+			'where' => array(
+				'either' => array(
+					'id' => $systemUserAuthenticationToken['system_user_id'],
+					'system_user_id' => array(
+						null,
+						$systemUserAuthenticationToken['system_user_id']
+					)
+				)
+			)
+		), $response);
+		$systemUser = current($systemUser);
 		_delete(array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
 			'where' => array(
