@@ -4,7 +4,9 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		'system_user_authentication_token_sources'
+		'system_user_authentication_token_sources',
+		'system_user_authentication_tokens',
+		'system_users'
 	), $parameters['databases'], $response);
 
 	function _deleteSystemUserAuthenticationTokenSource($parameters, $response) {
@@ -33,7 +35,7 @@
 			'columns' => array(
 				'id'
 			),
-			'in' => $parameters['databases']['system_user_authentication_tokens'],
+			'in' => $parameters['databases']['system_users'],
 			'where' => array(
 				'either' => array(
 					'id' => $systemUserAuthenticationToken['system_user_id'],
