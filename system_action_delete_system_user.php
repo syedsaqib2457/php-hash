@@ -22,6 +22,29 @@
 			return $response;
 		}
 
+		$systemUserAuthenticationToken = _list(array(
+			'columns' => array(
+				'system_user_id'
+			),
+			'in' => $parameters['databases']['system_user_authentication_tokens'],
+			'where' => array(
+				'string' => $parameters['authentication_token']
+			)
+		), $response);
+		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
+		$systemUserCount = _count(array(
+			'in' => $parameters['databases']['system_users'],
+			'where' => array(
+				'id' => $parameters['where']['id'],
+				'system_user_id' => $systemUserAuthenticationToken['system_user_id']
+			)
+		), $response);
+
+		if (($systemUserCount > 0) === false) {
+			$response['message'] = 'System user must belong to system user ID ' . $systemUserAuthenticationToken['system_user_id'] . ', please try again.';
+			return $response;
+		}
+
 		_delete(array(
 			'in' => $parameters['databases']['system_users'],
 			'where' => array(
