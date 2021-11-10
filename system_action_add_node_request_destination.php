@@ -20,6 +20,7 @@
 		}
 
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+		// todo: existing node request destination validation
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'hostname' => true,
