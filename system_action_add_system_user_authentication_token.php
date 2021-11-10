@@ -17,18 +17,14 @@
 			return $response;
 		}
 
-		$systemUser = _list(array(
-			'columns' => array(
-				'id'
-			),
+		$systemUserCount = _count(array(
 			'in' => $parameters['databases']['system_users'],
 			'where' => array(
 				'id' => $parameters['data']['system_user_id']
 			)
 		), $response);
-		$systemUser = current($systemUser);
 
-		if (empty($systemUser) === true) {
+		if (($systemUserCount > 0) === false) {
 			$response['message'] = 'Invalid system user ID, please try again.';
 			return $response;
 		}
