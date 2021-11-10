@@ -45,7 +45,7 @@
 			), $response);
 		}
 
-		$response['message'] = 'System user removed successfully.';
+		$response['message'] = 'System user deleted successfully.';
 		$response['valid_status'] = '1';
 		return $response;
 	}
