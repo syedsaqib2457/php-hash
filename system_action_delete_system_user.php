@@ -45,6 +45,7 @@
 			return $response;
 		}
 
+		// todo: delete all system users created by system user
 		_delete(array(
 			'in' => $parameters['databases']['system_users'],
 			'where' => array(
