@@ -137,7 +137,7 @@
 				'source_ip_address_version_4' => true,
 				'source_ip_address_version_6' => true
 			))
-		));
+		), $response);
 
 		if (($existingNodeProcessRecursiveDnsDestinationCount > 0) === true) {
 			$response['message'] = 'Node process recursive DNS destination already exists, please try again.';
