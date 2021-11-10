@@ -33,6 +33,7 @@
 			return $response;
 		}
 
+		todo: only allow node deletion for system user ID
 		_delete(array(
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
