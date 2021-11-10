@@ -982,7 +982,7 @@
 		}
 	}
 
-	echo 'System user authentication token is ' . $systemUserAuthenticationTokenString . "\n";
+	echo 'Main system user authentication token is ' . $systemUserAuthenticationTokenString . "\n";
 	echo 'System deployed successfully.' . "\n";
 	exit;
 ?>
