@@ -4,31 +4,17 @@
 	}
 
 	$parameters['databases'] += _connect(array(
+		'system_user_system_users',
 		'system_users'
 	), $parameters['databases'], $response);
 
 	function _addSystemUser($parameters, $response) {
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
-
-		if (empty($parameters['data']['system_user_id']) === false) {
-			$systemUserCount = _count(array(
-				'in' => $parameters['databases']['system_users'],
-				'where' => array(
-					'id' => $parameters['data']['system_user_id']
-				)
-			), $response);
-
-			if (($systemUserCount > 0) === false) {
-				$response['message'] = 'Invalid system user ID, please try again.';
-				return $response;
-			}
-		}
-
+		$parameters['data'] = array(
+			'id' => random_bytes(10) . time() . random_bytes(10),
+			'system_user_id' => $parameters['system_user_id']
+		);
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true,
-				'system_user_id' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['databases']['system_users']
 		), $response);
 		$systemUser = _list(array(
