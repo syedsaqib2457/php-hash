@@ -22,26 +22,17 @@
 			return $response;
 		}
 
-		$systemUserAuthenticationToken = _list(array(
-			'columns' => array(
-				'system_user_id'
-			),
-			'in' => $parameters['databases']['system_user_authentication_tokens'],
-			'where' => array(
-				'string' => $parameters['authentication_token']
-			)
-		), $response);
-		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 		$systemUserCount = _count(array(
 			'in' => $parameters['databases']['system_users'],
 			'where' => array(
 				'id' => $parameters['where']['id'],
-				'system_user_id' => $systemUserAuthenticationToken['system_user_id']
+				'system_user_id' => $parameters['system_user_id']
 			)
 		), $response);
+		// todo: create system_user_system_users for relational system user validation
 
 		if (($systemUserCount > 0) === false) {
-			$response['message'] = 'System user must belong to system user ID ' . $systemUserAuthenticationToken['system_user_id'] . ', please try again.';
+			$response['message'] = 'System user must belong to system user ID ' . $parameters['system_user_id'] . ', please try again.';
 			return $response;
 		}
 
