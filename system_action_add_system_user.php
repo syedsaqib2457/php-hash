@@ -13,7 +13,13 @@
 			'id' => random_bytes(10) . time() . random_bytes(10),
 			'system_user_id' => $parameters['system_user_id']
 		);
-		$systemUserSystemUserData = array();
+		$systemUserSystemUserData = array(
+			array(
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'system_user_id' => $parameters['data']['id'],
+				'system_user_system_user_id' => $parameters['system_user_id']
+			)
+		);
 		$systemUserSystemUserDataProcessed = false;
 
 		while ($systemUserSystemUserDataProcessed === false) {
@@ -28,8 +34,18 @@
 				)
 			), $response);
 			$systemUser = current($systemUser);
-			// todo
-			sleep(1);
+
+			if (empty($systemUser['system_user_id']) === false) {
+				$parameters['system_user_id'] = $systemUser['system_user_id'];
+				$systemUserSystemUserData[] = array(
+					'id' => random_bytes(10) . time() . random_bytes(10),
+					'system_user_id' => $parameters['data']['id'],
+					'system_user_system_user_id' => $systemUser['system_user_id']
+				);
+				continue;
+			}
+
+			$systemUserSystemUserDataProcessed = true;
 		}
 
 		_save(array(
