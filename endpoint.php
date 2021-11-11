@@ -42,7 +42,8 @@
 
 		$systemUserAuthenticationToken = _list(array(
 			'columns' => array(
-				'id'
+				'id',
+				'system_user_id'
 			),
 			'in' => $parameters['databases']['system_user_authentication_tokens'],
 			'where' => array(
@@ -56,6 +57,7 @@
 			_output($response);
 		}
 
+		$parameters['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 		$systemUserAuthenticationTokenScopeCount = _count(array(
 			'in' => $parameters['databases']['system_user_authentication_token_scopes'],
 			'where' => array(
