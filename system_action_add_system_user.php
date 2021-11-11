@@ -13,6 +13,25 @@
 			'id' => random_bytes(10) . time() . random_bytes(10),
 			'system_user_id' => $parameters['system_user_id']
 		);
+		$systemUserSystemUserData = array();
+		$systemUserSystemUserDataProcessed = false;
+
+		while ($systemUserSystemUserDataProcessed === false) {
+			$systemUser = _list(array(
+				'columns' => array(
+					'id',
+					'system_user_id'
+				),
+				'in' => $parameters['databases']['system_users'],
+				'where' => array(
+					'id' => $parameters['system_user_id']
+				)
+			), $response);
+			$systemUser = current($systemUser);
+			// todo
+			sleep(1);
+		}
+
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['databases']['system_users']
