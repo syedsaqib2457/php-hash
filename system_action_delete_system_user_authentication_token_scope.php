@@ -56,6 +56,8 @@
 			return $response;
 		}
 
+		// todo: validate permissions for $systemUserAuthenticationTokenScope['system_user_id'] from $parameters['system_user_id'] in system_user_system_users
+
 		_delete(array(
 			'in' => $parameters['databases']['system_user_authentication_token_scopes'],
 			'where' => array(
