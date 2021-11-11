@@ -29,6 +29,8 @@
 			return $response;
 		}
 
+		// todo: validate permissions for $parameters['data']['system_user_id'] from $parameters['system_user_id'] in system_user_system_users
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
