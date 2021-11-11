@@ -4,8 +4,7 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		'system_user_authentication_token_scopes',
-		'system_user_authentication_tokens'
+		'system_user_authentication_token_scopes'
 	), $parameters['databases'], $response);
 
 	function _addSystemUserAuthenticationTokenScope($parameters, $response) {
@@ -29,24 +28,7 @@
 			return $response;
 		}
 
-		$systemUserAuthenticationToken = _list(array(
-			'columns' => array(
-				'id',
-				'system_user_id'
-			),
-			'in' => $parameters['databases']['system_user_authentication_tokens'],
-			'where' => array(
-				'id' => $parameters['data']['system_user_authentication_token_id']
-			)
-		), $response);
-		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
-
-		if (empty($systemUserAuthenticationToken) === true) {
-			$response['message'] = 'Invalid system user authentication token ID, please try again.';
-			return $response;
-		}
-
-		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
+		$parameters['data']['system_user_id'] = $parameters['system_user_id'];
 		$existingSystemUserAuthenticationTokenScopeCount = _count(array(
 			'in' => $parameters['databases']['system_user_authentication_token_scopes'],
 			'where' => array_intersect_key($parameters['data'], array(
