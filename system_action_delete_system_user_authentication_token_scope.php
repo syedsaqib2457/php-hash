@@ -5,7 +5,6 @@
 
 	$parameters['databases'] += _connect(array(
 		'system_user_authentication_token_scopes',
-		'system_user_authentication_tokens',
 		'system_users'
 	), $parameters['databases'], $response);
 
@@ -20,16 +19,6 @@
 			return $response;
 		}
 
-		$systemUserAuthenticationToken = _list(array(
-			'columns' => array(
-				'system_user_id'
-			),
-			'in' => $parameters['databases']['system_user_authentication_tokens'],
-			'where' => array(
-				'string' => $parameters['authentication_token']
-			)
-		), $response);
-		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 		$systemUserAuthenticationTokenScope = _list(array(
 			'columns' => array(
 				'system_user_id'
@@ -41,7 +30,7 @@
 		), $response);
 		$systemUserAuthenticationTokenScope = current($systemUserAuthenticationTokenScope);
 
-		if (($systemUserAuthenticationToken['system_user_id'] === $systemUserAuthenticationTokenScope['system_user_id']) === true) {
+		if (($parameters['system_user_id'] === $systemUserAuthenticationTokenScope['system_user_id']) === true) {
 			$response['message'] = 'System user authentication token scope must belong to another user, please try again.';
 			return $response;
 		}
@@ -51,12 +40,12 @@
 			'where' => array(
 				'either' => array(
 					array(
-						'id' => $systemUserAuthenticationToken['system_user_id'],
+						'id' => $parameters['system_user_id'],
 						'system_user_id' => null
 					),
 					array(
 						'id' => $systemUserAuthenticationTokenScope['system_user_id'],
-						'system_user_id' => $systemUserAuthenticationToken['system_user_id']
+						'system_user_id' => $parameters['system_user_id']
 					)
 				)
 			)
