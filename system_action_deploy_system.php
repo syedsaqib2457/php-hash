@@ -850,6 +850,13 @@
 			'system_user_authentication_token_id',
 			'system_user_id'
 		),
+		'system_user_system_users' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'system_user_id',
+			'system_user_system_user_id'
+		),
 		'system_users' => array(
 			'created_timestamp',
 			'id',
