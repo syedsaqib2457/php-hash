@@ -49,6 +49,10 @@
 		}
 
 		_save(array(
+			'data' => $systemUserSystemUserData,
+			'in' => $parameters['databases']['system_user_system_users']
+		), $response);
+		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['databases']['system_users']
 		), $response);
