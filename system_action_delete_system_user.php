@@ -8,6 +8,7 @@
 		'system_user_authentication_token_sources',
 		'system_user_authentication_tokens',
 		'system_user_request_logs',
+		'system_user_system_users',
 		'system_users'
 	), $parameters['databases'], $response);
 
@@ -22,25 +23,37 @@
 			return $response;
 		}
 
-		$systemUserCount = _count(array(
-			'in' => $parameters['databases']['system_users'],
+		$systemUserSystemUserCount = _count(array(
+			'in' => $parameters['databases']['system_user_system_users'],
 			'where' => array(
-				'id' => $parameters['where']['id'],
-				'system_user_id' => $parameters['system_user_id']
+				'system_user_id' => $parameters['where']['id'],
+				'system_user_system_user_id' => $parameters['system_user_id']
 			)
 		), $response);
-		// todo: create system_user_system_users for relational system user validation
 
-		if (($systemUserCount > 0) === false) {
-			$response['message'] = 'System user must belong to system user ID ' . $parameters['system_user_id'] . ', please try again.';
+		if (($systemUserSystemUserCount > 0) === false) {
+			$response['message'] = 'Invalid permissions to delete system user, please try again.';
 			return $response;
 		}
 
-		// todo: delete all system users created by system user
-		_delete(array(
-			'in' => $parameters['databases']['system_users'],
+		$systemUserSystemUsers = _list(array(
+			'columns' => array(
+				'system_user_id'
+			),
+			'in' => $parameters['databases']['system_user_system_users'],
 			'where' => array(
-				'id' => $parameters['where']['id']
+				'system_user_system_user_id' => $parameters['where']['id']
+			)
+		), $response);
+		$systemUserSystemUsers = current($systemUserSystemUsers);
+		// todo
+		_delete(array(
+			'in' => $parameters['databases']['system_user_system_users'],
+			'where' => array(
+				'either' => array(
+					'system_user_id' => $parameters['where']['id'],
+					'system_user_system_user_id' => $parameters['where']['id']
+				)
 			)
 		), $response);
 
