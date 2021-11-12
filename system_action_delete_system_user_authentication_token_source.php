@@ -5,7 +5,7 @@
 
 	$parameters['databases'] += _connect(array(
 		'system_user_authentication_token_sources',
-		'system_users'
+		'system_user_system_users'
 	), $parameters['databases'], $response);
 
 	function _deleteSystemUserAuthenticationTokenSource($parameters, $response) {
@@ -29,28 +29,18 @@
 			)
 		), $response);
 		$systemUserAuthenticationTokenSource = current($systemUserAuthenticationTokenSource);
-		$systemUserCount = _count(array(
-			'in' => $parameters['databases']['system_users'],
+		$systemUserSystemUserCount = _count(array(
+			'in' => $parameters['databases']['system_user_system_users'],
 			'where' => array(
-				'either' => array(
-					array(
-						'id' => $parameters['system_user_id'],
-						'system_user_id' => null
-					),
-					array(
-						'id' => $systemUserAuthenticationTokenSource['system_user_id'],
-						'system_user_id' => $parameters['system_user_id']
-					)
-				)
+				'system_user_id' => $systemUserAuthenticationTokenSource['system_user_id'],
+				'system_user_system_user_id' => $parameters['system_user_id']
 			)
 		), $response);
 
-		if (($systemUserCount > 0) === false) {
+		if (($systemUserSystemUserCount > 0) === false) {
 			$response['message'] = 'Invalid permissions to delete system user authentication token source, please try again.';
 			return $response;
 		}
-
-		// todo: validate permissions for $systemUserAuthenticationTokenSource['system_user_id'] from $parameters['system_user_id'] in system_user_system_users
 
 		_delete(array(
 			'in' => $parameters['databases']['system_user_authentication_token_sources'],
