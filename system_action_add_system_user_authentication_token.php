@@ -29,7 +29,18 @@
 			return $response;
 		}
 
-		// todo: validate permissions for $parameters['data']['system_user_id'] from $parameters['system_user_id'] in system_user_system_users
+		$systemUserSystemUserCount = _count(array(
+			'in' => $parameters['databases']['system_user_system_users'],
+			'where' => array(
+				'system_user_id' => $parameters['data']['system_user_id'],
+				'system_user_system_user_id' => $parameters['system_user_id']
+			)
+		), $response);
+
+		if (($systemUserSystemUserCount > 0) === false) {
+			$response['message'] = 'Invalid permissions to add system user authentication token, please try again.';
+			return $response;
+		}
 
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
