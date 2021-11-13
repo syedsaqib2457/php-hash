@@ -37,7 +37,10 @@
 			)
 		), $response);
 
-		if (($systemUserSystemUserCount > 0) === false) {
+		if (
+			(($systemUserSystemUserCount > 0) === false) &&
+			(($parameters['system_user_id'] === $parameters['data']['system_user_id']) === false)
+		) {
 			$response['message'] = 'Invalid permissions to add system user authentication token, please try again.';
 			return $response;
 		}
