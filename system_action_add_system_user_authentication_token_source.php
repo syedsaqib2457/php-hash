@@ -5,7 +5,8 @@
 
 	$parameters['databases'] += _connect(array(
 		'system_user_authentication_token_sources',
-		'system_user_authentication_tokens'
+		'system_user_authentication_tokens',
+		'system_user_system_users'
 	), $parameters['databases'], $response);
 
 	function _addSystemUserAuthenticationTokenSource($parameters, $response) {
@@ -65,6 +66,13 @@
 			return $response;
 		}
 
+		$systemUserSystemUserCount = _count(array(
+			'in' => $parameters['databases']['system_user_system_users'],
+			'where' => array(
+				'system_user_id' => $systemUserAuthenticationToken['system_user_id'],
+				'system_user_system_user_id' => $parameters['system_user_id']
+			)
+		), $response);
 		// todo: validate permissions for $systemUserAuthenticationToken['system_user_id'] from $parameters['system_user_id'] in system_user_system_users
 
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
