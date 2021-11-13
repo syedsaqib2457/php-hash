@@ -73,7 +73,11 @@
 				'system_user_system_user_id' => $parameters['system_user_id']
 			)
 		), $response);
-		// todo: validate permissions for $systemUserAuthenticationToken['system_user_id'] from $parameters['system_user_id'] in system_user_system_users
+
+		if (($systemUserSystemUserCount > 0) === false) {
+			$response['message'] = 'Invalid permissions to add system user authentication token source, please try again.';
+			return $response;
+		}
 
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 		$existingSystemUserAuthenticationTokenSourceCount = _count(array(
