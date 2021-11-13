@@ -54,7 +54,10 @@
 			)
 		), $response);
 
-		if (($systemUserSystemUserCount > 0) === false) {
+		if (
+			(($systemUserSystemUserCount > 0) === false) &&
+			(($parameters['system_user_id'] === $systemUserAuthenticationToken['system_user_id']) === false)
+		) {
 			$response['message'] = 'Invalid permissions to add system user authentication token scope, please try again.';
 			return $response;
 		}
