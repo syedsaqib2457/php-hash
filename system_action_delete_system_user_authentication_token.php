@@ -48,10 +48,23 @@
 		}
 
 		// todo: validate minimum 1 authentication token
-		// todo: delete token scopes and sources
+
+		$databases = array(
+			'system_user_authentication_token_scopes',
+			'system_user_authentication_token_sources',
+		);
+
+		foreach ($databases as $database) {
+			_delete(array(
+				'in' => $parameters['databases'][$database],
+				'where' => array(
+					'system_user_authentication_token_id' => $parameters['where']['id']
+				)
+			), $response);
+		}
 
 		_delete(array(
-			'in' => $parameters['databases']['system_user_authentication_token_sources'],
+			'in' => $parameters['databases']['system_user_authentication_tokens'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
