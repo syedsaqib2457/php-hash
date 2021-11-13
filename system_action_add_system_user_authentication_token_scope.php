@@ -5,7 +5,8 @@
 
 	$parameters['databases'] += _connect(array(
 		'system_user_authentication_token_scopes',
-		'system_user_authentication_tokens'
+		'system_user_authentication_tokens',
+		'system_user_system_users'
 	), $parameters['databases'], $response);
 
 	function _addSystemUserAuthenticationTokenScope($parameters, $response) {
@@ -45,7 +46,18 @@
 			return $response;
 		}
 
-		// todo: validate permissions for $systemUserAuthenticationToken['system_user_id'] from $parameters['system_user_id'] in system_user_system_users
+		$systemUserSystemUserCount = _count(array(
+			'in' => $parameters['databases']['system_user_system_users'],
+			'where' => array(
+				'system_user_id' => $systemUserAuthenticationToken['system_user_id'],
+				'system_user_system_user_id' => $parameters['system_user_id']
+			)
+		), $response);
+
+		if (($systemUserSystemUserCount > 0) === false) {
+			$response['message'] = 'Invalid permissions to add system user authentication token scope, please try again.';
+			return $response;
+		}
 
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 		$existingSystemUserAuthenticationTokenScopeCount = _count(array(
