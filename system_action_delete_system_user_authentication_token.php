@@ -47,7 +47,10 @@
 			return $response;
 		}
 
-		// todo: validate minimum 1 authentication token
+		if (($parameters['authentication_token'] === $parameters['where']['id']) === true) {
+			$response['message'] = 'System user authentication token must not be the current system user authentication token, please try again.';
+			return $response;
+		}
 
 		$databases = array(
 			'system_user_authentication_token_scopes',
