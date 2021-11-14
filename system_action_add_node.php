@@ -128,15 +128,20 @@
 
 		if (empty($parameters['data']['node_id']) === true) {
 			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
+			$parameters['data']['node_id'] = null;
 		}
 
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
 			if (empty($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-				$nodeReservedInternalDestinationParameters = array(
+				$parameters['node'] = array(
+					$nodeIpAddressVersion => array(
+						'id' => $parameters['data']['id'],
+						'node_id' => $parameters['data']['node_id']
+					)
 				);
-				_addNodeReservedInternalDestination($nodeReservedInternalDestinationParameters, $response);
+				_addNodeReservedInternalDestination($parameters, $response);
 			}
 		}
 
