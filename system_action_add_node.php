@@ -6,6 +6,7 @@
 	$parameters['databases'] += _connect(array(
 		'nodes'
 	), $parameters['databases'], $response);
+	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_type.php');
 
 	function _addNode($parameters, $response) {
@@ -45,17 +46,15 @@
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			$nodeExternalIpAddressKey = 'external_ip_address_version_' . $nodeIpAddressVersion;
+			if (empty($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+				$nodeExternalIpAddresses['external_ip_address_version_' . $nodeIpAddressVersion] = _validateIpAddressVersion($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion);
 
-			if (empty($parameters['data'][$nodeExternalIpAddressKey]) === false) {
-				$nodeExternalIpAddresses[$nodeExternalIpAddressKey] = _validateIpAddressVersion($parameters['data'][$nodeExternalIpAddressKey], $nodeIpAddressVersion);
-
-				if ($nodeExternalIpAddresses[$nodeExternalIpAddressKey] === false) {
+				if ($nodeExternalIpAddresses['external_ip_address_version_' . $nodeIpAddressVersion] === false) {
 					$response['message'] = 'Invalid node external IP address version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 
-				$parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion . '_type'] = _validateIpAddressType($nodeExternalIpAddresses[$nodeExternalIpAddressKey], $nodeIpAddressVersion);
+				$parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion . '_type'] = _validateIpAddressType($nodeExternalIpAddresses['external_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion);
 			}
 		}
 
@@ -65,10 +64,8 @@
 		}
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			$nodeInternalIpAddressKey = 'internal_ip_address_version_' . $nodeIpAddressVersion;
-
-			if (empty($parameters['data'][$nodeInternalIpAddressKey]) === false) {
-				$nodeInternalIpAddresses[$nodeInternalIpAddressKey] = _validateIpAddressVersion($parameters['data'][$nodeInternalIpAddressKey], $nodeIpAddressVersion);
+			if (empty($parameters['data']['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+				$nodeInternalIpAddresses['internal_ip_address_version_' . $nodeIpAddressVersion] = _validateIpAddressVersion($parameters['data']['internal_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion);
 
 				if ($nodeInternalIpAddresses[$nodeIpAddressVersion] === false) {
 					$response['message'] = 'Invalid node internal IP address version ' . $nodeIpAddressVersion . ', please try again.';
@@ -80,7 +77,7 @@
 					return $response;
 				}
 
-				$parameters['data']['internal_ip_address_version_' . $nodeIpAddressVersion . '_type'] = _validateIpAddressType($nodeInternalIpAddresses[$nodeIpAddressVersion], $nodeIpAddressVersion);
+				$parameters['data']['internal_ip_address_version_' . $nodeIpAddressVersion . '_type'] = _validateIpAddressType($nodeInternalIpAddresses['internal_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion);
 
 				if (($parameters['data']['internal_ip_address_version_' . $nodeIpAddressVersion] === 'public_network') === true) {
 					$response['message'] = 'Node internal IP address version ' . $nodeIpAddressVersion . ' must be a reserved IP address, please try again.';
@@ -134,6 +131,13 @@
 		}
 
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+
+		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
+			if (empty($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+				// todo: set node reserved internal destinations
+			}
+		}
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'activated_status' => true,
