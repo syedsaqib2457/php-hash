@@ -37,6 +37,9 @@
 			if (empty($nodeNode['node_id']) === false) {
 				$parameters['data']['node_id'] = $nodeNode['node_id'];
 			}
+		} else {
+			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
+			$parameters['data']['node_id'] = null;
 		}
 
 		$nodeExternalIpAddresses = $nodeInternalIpAddresses = array();
@@ -124,11 +127,6 @@
 			}
 
 			return $response;
-		}
-
-		if (empty($parameters['data']['node_id']) === true) {
-			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
-			$parameters['data']['node_id'] = null;
 		}
 
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
