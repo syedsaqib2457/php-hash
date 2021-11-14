@@ -134,7 +134,9 @@
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
 			if (empty($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-				// todo: set node reserved internal destinations
+				$nodeReservedInternalDestinationParameters = array(
+				);
+				_addNodeReservedInternalDestination($nodeReservedInternalDestinationParameters, $response);
 			}
 		}
 
