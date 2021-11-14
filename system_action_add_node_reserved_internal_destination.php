@@ -88,7 +88,7 @@
 
 				if (($existingNodeCount > 0) === false) {
 					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
-					$existingNodeReservedInternalDestination['added_status'] = "1";
+					$existingNodeReservedInternalDestination['added_status'] = '1';
 				}
 			}
 		} else {
@@ -99,7 +99,7 @@
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
-		$existingNodeReservedInternalDestinationData[1]['added_status'] = "0";
+		$existingNodeReservedInternalDestinationData[1]['added_status'] = '0';
 		unset($existingNodeReservedInternalDestinationData[1]['id']);
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
