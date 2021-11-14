@@ -10,6 +10,28 @@
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_type.php');
 
 	function _editNode($parameters, $response) {
+		if (empty($parameters['where']['id']) === true) {
+			$response['message'] = 'Node must have an ID, please try again.';
+			return $response;
+		}
+
+		$node = _list(array(
+			'columns' => array(
+				'external_ip_address_version_4',
+				'external_ip_address_version_6',
+				'internal_ip_address_version_4',
+				'internal_ip_address_version_6',
+				'node_id'
+			),
+			'in' => $parameters['databases']['nodes'],
+			'where' => array(
+				'id' => $parameters['where']['id']
+			)
+		), $response);
+		$node = current($node);
+
+
+
 		$nodeExternalIpAddresses = $nodeInternalIpAddresses = array();
 		$nodeIpAddressVersions = array(
 			'4',
