@@ -8,6 +8,7 @@
 	), $parameters['databases'], $response);
 
 	function _addNodeReservedInternalDestination($parameters, $response) {
+		$nodeIpAddressVersion = key($parameters['node']);
 		$existingNodeReservedInternalDestination = _list(array(
 			'columns' => array(
 				'added_status',
@@ -26,7 +27,7 @@
 					'node_id' => $parameters['node'][$nodeIpAddressVersion],
 					'node_node_id' => $parameters['node'][$nodeIpAddressVersion]
 				),
-				'ip_address_version' => ($nodeIpAddressVersion = key($parameters['node'])),
+				'ip_address_version' => $nodeIpAddressVersion,
 				'processed_status' => '1'
 			)
 		), $response);
