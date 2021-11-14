@@ -30,7 +30,10 @@
 		), $response);
 		$node = current($node);
 
-
+		if (empty($node) === true) {
+			$response['message'] = 'Invalid node ID, please try again.';
+			return $response;
+		}
 
 		$nodeExternalIpAddresses = $nodeInternalIpAddresses = array();
 		$nodeIpAddressVersions = array(
@@ -78,6 +81,8 @@
 				}
 			}
 		}
+
+		// todo: validate existing internal IPs on same node and existing external IPs on different nodes
 
 		$existingNodeParameters = array(
 			'columns' => array(
