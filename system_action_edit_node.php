@@ -82,8 +82,6 @@
 			}
 		}
 
-		// todo: validate existing internal IPs on same node and existing external IPs on different nodes
-
 		$existingNodeParameters = array(
 			'columns' => array(
 				'external_ip_address_version_4',
@@ -93,14 +91,17 @@
 			),
 			'in' => $parameters['databases']['nodes'],
 			'where' => array(
-				'either' => $nodeExternalIpAddresses
+				'either' => $nodeExternalIpAddresses,
+				'id !=' => $parameters['where']['id']
 			)
 		);
 		$nodeIpAddresses = array_merge($nodeExternalIpAddresses, $nodeInternalIpAddresses);
 
 		if (empty($parameters['data']['node_id']) === false) {
 			$existingNodeParameters['where']['either'] = array(
-				$existingNodeParameters['where'],
+				array(
+					$existingNodeParameters['where']['either'],
+				),
 				array(
 					'either' => $nodeIpAddresses,
 					'node_id' => $parameters['data']['node_id']
