@@ -83,6 +83,14 @@
 			}
 		}
 
+		$nodeIds = array(
+			$parameters['where']['id']
+		);
+
+		if (empty($node['node_id']) === false) {
+			$nodeIds[] = $node['node_id'];
+		}
+
 		$existingNodeParameters = array(
 			'columns' => array(
 				'external_ip_address_version_4',
@@ -105,7 +113,7 @@
 				),
 				array(
 					'either' => $nodeIpAddresses,
-					'node_id' => $parameters['data']['node_id']
+					'node_id' => $nodeIds
 				)
 			);
 		}
@@ -127,10 +135,17 @@
 		}
 
 		$existingNodeReservedInternalDestinations = array(
-			'columns' => array(),
+			'columns' => array(
+				'ip_address',
+				'ip_address_version'
+			),
 			'in' => $parameters['databases']['node_reserved_internal_destinations'],
-			'where' => array()
+			'where' => array(
+				'ip_address' => $nodeIpAddresses,
+				'node_node_id' => $nodeIds
+			)
 		);
+
 		// todo: overwrite assigned internal reserved IPs with edited node IPs
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
