@@ -134,40 +134,34 @@
 			return $response;
 		}
 
-		$existingNodeReservedInternalDestinations = array(
+		$existingNodeReservedInternalDestinations = _list(array(
 			'columns' => array(
-				'ip_address',
-				'ip_address_version'
+				'id',
+				'ip_address_version',
+				'node_id',
+				'node_node_id'
 			),
 			'in' => $parameters['databases']['node_reserved_internal_destinations'],
 			'where' => array(
 				'ip_address' => $nodeIpAddresses,
 				'node_node_id' => $nodeIds
 			)
-		);
+		), $response);
 
 		foreach ($existingNodeReservedInternalDestinations as $existingNodeReservedInternalDestination) {
-			// delete reserved IP address
-
 			$parameters['node'] = array(
 				$existingNodeReservedInternalDestination['ip_address_version'] => array(
-					'id' => $parameters['where']['id'],
-					'node_id' => $node['node_id']
+					'id' => $existingNodeReservedInternalDestination['node_id'],
+					'node_id' => $existingNodeReservedInternalDestination['node_node_id']
 				)
 			);
 			_addNodeReservedInternalDestination($parameters, $response);
-		}
-
-		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			if (empty($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-				$parameters['node'] = array(
-					$nodeIpAddressVersion => array(
-						'id' => $parameters['data']['id'],
-						'node_id' => $parameters['data']['node_id']
-					)
-				);
-				_addNodeReservedInternalDestination($parameters, $response);
-			}
+			_delete(array(
+				'in' => $parameters['databases']['node_reserved_internal_destinations'],
+				'where' => array(
+					'id' => $existingNodeReservedInternalDestination['id']
+				)
+			), $response);
 		}
 
 		_save(array(
