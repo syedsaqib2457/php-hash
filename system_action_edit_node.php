@@ -146,7 +146,17 @@
 			)
 		);
 
-		// todo: overwrite assigned internal reserved IPs with edited node IPs
+		foreach ($existingNodeReservedInternalDestinations as $existingNodeReservedInternalDestination) {
+			// delete reserved IP address
+
+			$parameters['node'] = array(
+				$existingNodeReservedInternalDestination['ip_address_version'] => array(
+					'id' => $parameters['where']['id'],
+					'node_id' => $node['node_id']
+				)
+			);
+			_addNodeReservedInternalDestination($parameters, $response);
+		}
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
 			if (empty($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
