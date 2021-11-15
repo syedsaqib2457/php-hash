@@ -4,6 +4,7 @@
 	}
 
 	$parameters['databases'] += _connect(array(
+		'node_reserved_internal_destinations',
 		'nodes'
 	), $parameters['databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
@@ -125,6 +126,11 @@
 			return $response;
 		}
 
+		$existingNodeReservedInternalDestinations = array(
+			'columns' => array(),
+			'in' => $parameters['databases']['node_reserved_internal_destinations'],
+			'where' => array()
+		);
 		// todo: overwrite assigned internal reserved IPs with edited node IPs
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
