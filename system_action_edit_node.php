@@ -100,7 +100,7 @@
 		if (empty($parameters['data']['node_id']) === false) {
 			$existingNodeParameters['where']['either'] = array(
 				array(
-					$existingNodeParameters['where']['either'],
+					$existingNodeParameters['where']['either']
 				),
 				array(
 					'either' => $nodeIpAddresses,
