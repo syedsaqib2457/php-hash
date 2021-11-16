@@ -49,7 +49,7 @@
 			)
 		), $response);
 
-		if (($nodeNodeProcessCount <= 1 ) === true) {
+		if (($nodeNodeProcessCount <= 1) === true) {
 			$databases = array(
 				'node_process_forwarding_destinations',
 				'node_process_node_user_authentication_credentials',
