@@ -64,8 +64,7 @@
 			'in' => $parameters['databases']['node_processes'],
 			'where' => array_intersect_key($parameters['data'], array(
 				'node_id' => true,
-				'port_number' => true,
-				'type' => true
+				'port_number' => true
 			))
 		), $response);
 
