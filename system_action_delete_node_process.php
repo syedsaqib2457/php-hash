@@ -41,7 +41,7 @@
 			return $response;
 		}
 
-		$nodeNodeProcessCount = _count(array(
+		$nodeProcessCount = _count(array(
 			'in' => $parameters['databases']['node_processes'],
 			'where' => array(
 				'node_id' => $nodeProcess['node_id'],
@@ -49,7 +49,7 @@
 			)
 		), $response);
 
-		if (($nodeNodeProcessCount <= 1) === true) {
+		if (($nodeProcessCount <= 1) === true) {
 			$databases = array(
 				'node_process_forwarding_destinations',
 				'node_process_node_user_authentication_credentials',
