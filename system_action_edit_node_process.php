@@ -39,10 +39,13 @@
 			'in' => $parameters['databases']['node_processes'],
 			'where' => array(
 				'id !=' => $parameters['where']['id'],
-				'node_id' => $nodeProcess['node_id'],
-				'port_number' => $parameters['data']['port_number']
+				'node_id' => $nodeProcess['node_id']
 			)
 		);
+
+		if (empty($parameters['data']['port_number']) === false) {
+			$existingNodeProcessCountParameters['where']['port_number'] = $parameters['data']['port_number'];
+		}
 
 		if (empty($parameters['data']['type']) === false) {
 			$existingNodeProcessCountParameters['where']['type'] = $parameters['data']['type'];
