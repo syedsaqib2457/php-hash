@@ -35,6 +35,21 @@
 			return $response;
 		}
 
+		
+
+		$existingNodeProcessCount = _count(array(
+			'in' => $parameters['databases']['node_processes'],
+			'where' => array(
+				'node_id' => $nodeProcess['node_id'],
+				'port_number' => $parameters['data']['port_number']
+			)
+		), $response);
+
+		if (($existingNodeProcessCount > 0) === true) {
+			$response['message'] = 'Node process port number already exists for node ID ' . $nodeProcess['node_id'] . ', please try again.';
+			return $response;
+		}
+
 		_update(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'port_number' => true,
