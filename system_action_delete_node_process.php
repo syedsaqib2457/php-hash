@@ -29,30 +29,14 @@
 			return $response;
 		}
 
-		// todo
-
 		_delete(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['databases']['node_processes'],
 			'where' => array(
-				'either' => array(
-					'id' => $parameters['where']['id'],
-					'node_id' => $parameters['where']['id']
-				)
+				'id' => $parameters['where']['id']
 			)
 		), $response);
-		_update(array(
-			'data' => array(
-				'added_status' => '0',
-				'processed_status' => '0'
-			),
-			'in' => $parameters['databases']['node_reserved_internal_destinations'],
-			'where' => array(
-				'either' => array(
-					'node_id' => $parameters['node'][$nodeIpAddressVersion],
-					'node_node_id' => $parameters['node'][$nodeIpAddressVersion]
-				)
-			)
-		), $response);
+
+		// todo: delete node_process relational tables if the deleted node process is the only port number for the process type
 		$databases = array(
 			'node_process_forwarding_destinations',
 			'node_process_node_user_authentication_credentials',
@@ -63,9 +47,8 @@
 			'node_process_node_user_request_logs',
 			'node_process_node_user_resource_usage_logs',
 			'node_process_node_users',
-			'node_process_recursive_dns_destinations',
 			'node_process_resource_usage_logs',
-			'node_processes'
+			'node_process_recursive_dns_destinations'
 		);
 		$nodeCount = _count(array(
 			'in' => $parameters['databases']['nodes'],
