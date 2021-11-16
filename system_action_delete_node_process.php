@@ -25,6 +25,10 @@
 		}
 
 		$nodeProcess = _list(array(
+			'columns' => array(
+				'node_id',
+				'type'
+			),
 			'in' => $parameters['databases']['node_processes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
