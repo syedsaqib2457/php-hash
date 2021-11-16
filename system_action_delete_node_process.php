@@ -65,7 +65,6 @@
 					'in' => $parameters['databases'][$database],
 					'where' => array(
 						'node_id' => $nodeProcess['node_id']
-						)
 					)
 				), $response);
 			}
