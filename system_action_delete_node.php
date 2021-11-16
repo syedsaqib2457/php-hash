@@ -16,7 +16,6 @@
 		'node_process_recursive_dns_destinations',
 		'node_process_resource_usage_logs',
 		'node_processes',
-		'node_recursive_dns_destinations',
 		'node_reserved_internal_destinations',
 		'node_resource_usage_logs',
 		'nodes'
@@ -68,7 +67,6 @@
 			'node_process_recursive_dns_destinations',
 			'node_process_resource_usage_logs',
 			'node_processes',
-			'node_recursive_dns_destinations',
 			'node_resource_usage_logs'
 		);
 		$nodeCount = _count(array(
