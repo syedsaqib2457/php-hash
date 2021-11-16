@@ -22,17 +22,15 @@
 			return $response;
 		}
 
-		if (empty($parameters['data']['type']) === true) {
-			$response['message'] = 'Node process must have a type, please try again.';
-			return $response;
-		}
-
-		if (in_array(strval($parameters['data']['type']), array(
-			'http_proxy',
-			'load_balancer',
-			'recursive_dns',
-			'socks_proxy'
-		)) === false) {
+		if (
+			(empty($parameters['data']['type']) === false) &&
+			(in_array(strval($parameters['data']['type']), array(
+				'http_proxy',
+				'load_balancer',
+				'recursive_dns',
+				'socks_proxy'
+			)) === false)
+		) {
 			$response['message'] = 'Invalid node process type, please try again.';
 			return $response;
 		}
