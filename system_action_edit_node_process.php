@@ -14,7 +14,28 @@
 			return $response;
 		}
 
-		// todo
+		if (
+			(empty($parameters['data']['port_number']) === false) &&
+			(_validatePortNumber($parameters['data']['port_number']) === false)
+		) {
+			$response['message'] = 'Invalid node process port number, please try again.';
+			return $response;
+		}
+
+		if (empty($parameters['data']['type']) === true) {
+			$response['message'] = 'Node process must have a type, please try again.';
+			return $response;
+		}
+
+		if (in_array(strval($parameters['data']['type']), array(
+			'http_proxy',
+			'load_balancer',
+			'recursive_dns',
+			'socks_proxy'
+		)) === false) {
+			$response['message'] = 'Invalid node process type, please try again.';
+			return $response;
+		}
 
 		_update(array(
 			'data' => array_intersect_key($parameters['data'], array(
