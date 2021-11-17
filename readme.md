@@ -21,14 +21,14 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
 ```json
 {
     "action": "add_node",
-    "authentication_token": "123456789",
     "data": {
         "external_ip_address_version_4": "0.0.0.0",
         "external_ip_address_version_6": "::0",
         "internal_ip_address_version_4": "10.10.10.10",
         "internal_ip_address_version_6": "::1",
         "node_id": "unique_id_1"
-    }
+    },
+    "system_user_authentication_token": "123456789"
 }
 
 ```
