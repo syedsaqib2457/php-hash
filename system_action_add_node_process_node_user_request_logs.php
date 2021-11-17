@@ -39,8 +39,7 @@
 						'node_process_type' => $parameters['data']['node_process_type'],
 						'node_user_id' => $parameters['data']['node_user_id'],
 						'response_code' => $nodeProcessNodeUserRequestLog[5],
-						'source_ip_address' => $nodeProcessNodeUserRequestLog[6],
-						'username' => $nodeProcessNodeUserRequestLog[7]
+						'source_ip_address' => $nodeProcessNodeUserRequestLog[6]
 					);
 				}
 
