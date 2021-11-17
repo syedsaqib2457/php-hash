@@ -20,6 +20,7 @@
 			return $response;	
 		}
 
+		// todo: validate node_user_id belongs to $parameters['node']
 		$nodeProcessNodeUserRequestLogData = array();
 
 		switch ($parameters['data']['node_process_type']) {
@@ -53,7 +54,7 @@
 		}
 
 		_save(array(
-			'data' => ,
+			'data' => $nodeProcessNodeUserRequestLogData,
 			'in' => $parameters['databases']['node_process_node_user_request_logs']
 		), $response);
 		$response['message'] = 'Node process node user request logs added successfully.';
