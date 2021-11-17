@@ -9,13 +9,13 @@
 
 	function _addNodeProcessNodeUserRequestLogs($parameters, $response) {
 		if (empty($_FILES['data']['tmp_name']) === true) {
-			$response['message'] = 'Invalid node process node user request log data, please try again.';
+			$response['message'] = 'Node process node user request logs must have a data file, please try again.';
 			return $response;	
 		}
 
 		$nodeProcessNodeUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
 
-		if (empty($_FILES['data']['tmp_name']) === true) {
+		if (empty($nodeProcessNodeUserRequestLogs) === true) {
 			$response['message'] = 'Invalid node process node user request log data, please try again.';
 			return $response;	
 		}
@@ -34,12 +34,12 @@
 						'bytes_sent' => $nodeProcessNodeUserRequestLog[1],
 						'created' => $nodeProcessNodeUserRequestLog[2],
 						'destination_hostname' => '$nodeProcessNodeUserRequestLog[3]',
-						'destination_ip' => $nodeProcessNodeUserRequestLog[4],
+						'destination_ip_address' => $nodeProcessNodeUserRequestLog[4],
 						'node_id' => $parameters['data']['node_id'],
 						'node_process_type' => $parameters['data']['node_process_type'],
 						'node_user_id' => $parameters['data']['node_user_id'],
 						'response_code' => $nodeProcessNodeUserRequestLog[5],
-						'source_ip' => $nodeProcessNodeUserRequestLog[6],
+						'source_ip_address' => $nodeProcessNodeUserRequestLog[6],
 						'username' => $nodeProcessNodeUserRequestLog[7]
 					);
 				}
