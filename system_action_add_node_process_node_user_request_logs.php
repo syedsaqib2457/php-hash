@@ -20,6 +20,7 @@
 			return $response;	
 		}
 
+		// todo: validate node_process_type
 		// todo: validate node_user_id belongs to $parameters['node']
 		$nodeProcessNodeUserRequestLogData = array();
 
