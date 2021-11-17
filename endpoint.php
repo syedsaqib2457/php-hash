@@ -69,6 +69,15 @@
 				)
 			), $response);
 			$node = current($node);
+
+			if (empty($node) === true) {
+				$response['message'] = 'Invalid endpoint node authentication token, please try again.';
+				_output($response);
+			}
+
+			$parameters['node_ids'] = array_filter($node);
+
+			// todo: validate hard-coded scopes for node log requests
 		} else {
 			$systemUserAuthenticationToken = _list(array(
 				'columns' => array(
