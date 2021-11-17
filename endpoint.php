@@ -76,7 +76,10 @@
 
 			$parameters['node'] = $node;
 
-			// todo: validate hard-coded scopes for node log requests
+			if (in_array() === false) {
+				$response['message'] = 'Invalid endpoint node authentication token scope, please try again.';
+				_output($response);
+			}
 		} else {
 			$systemUserAuthenticationToken = _list(array(
 				'columns' => array(
