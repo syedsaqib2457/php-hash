@@ -8,7 +8,17 @@
 	), $parameters['databases'], $response);
 
 	function _addNodeProcessNodeUserRequestLogs($parameters, $response) {
-		// todo
+		if (empty($_FILES['data']['tmp_name']) === true) {
+			$response['message'] = 'Invalid node process node user request log data, please try again.';
+			return $response;	
+		}
+
+		$nodeProcessNodeUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
+
+		if (empty($_FILES['data']['tmp_name']) === true) {
+			$response['message'] = 'Invalid node process node user request log data, please try again.';
+			return $response;	
+		}
 
 		$nodeProcessNodeUserRequestLogData = array();
 
