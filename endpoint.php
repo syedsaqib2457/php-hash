@@ -76,7 +76,9 @@
 
 			$parameters['node'] = $node;
 
-			if (in_array() === false) {
+			if (in_array(strval($parameters['action']), array(
+				'add_node_process_node_user_request_logs'
+			)) === false) {
 				$response['message'] = 'Invalid endpoint node authentication token scope, please try again.';
 				_output($response);
 			}
