@@ -594,7 +594,7 @@
 			'bytes_sent',
 			'created_timestamp',
 			'destination_ip_address',
-			'destination_url',
+			'destination_hostname',
 			'id',
 			'modified_timestamp',
 			'node_id',
