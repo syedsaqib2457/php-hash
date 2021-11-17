@@ -1,6 +1,6 @@
 <?php
 	function _output($response) {
-		if (empty($response['status_authenticated']) === true) {
+		if (empty($response['authenticated_status']) === true) {
 			// todo: log invalid action for DDoS protection
 		}
 
