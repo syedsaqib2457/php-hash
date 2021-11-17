@@ -22,7 +22,6 @@
 			_output($response);
 		}
 
-		$parameters['system_user_id'] = $parameters['node_id'] = false;
 		require_once('/var/www/ghostcompute/system_databases.php');
 
 		if (
@@ -37,7 +36,7 @@
 			(empty($parameters['node_authentication_token']) === true) &&
 			(empty($parameters['system_user_authentication_token']) === true)
 		) {
-			$response['message'] = 'Either a node or system user authentication token is required for endpoint requests, please try again.';
+			$response['message'] = 'Endpoint request must have either a node or system user authentication token, please try again.';
 			_output($response);
 		}
 
@@ -75,7 +74,7 @@
 				_output($response);
 			}
 
-			$parameters['node_ids'] = array_filter($node);
+			$parameters['node'] = $node;
 
 			// todo: validate hard-coded scopes for node log requests
 		} else {
