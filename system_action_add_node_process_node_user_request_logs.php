@@ -9,23 +9,43 @@
 
 	function _addNodeProcessNodeUserRequestLogs($parameters, $response) {
 		// todo
+
+		$nodeProcessNodeUserRequestLogData = array();
+
+		switch ($parameters['data']['node_process_type']) {
+			case 'http_proxy':
+			case 'socks_proxy':
+				array_pop($nodeProcessNodeUserRequestLogs);
+
+				foreach ($nodeProcessNodeUserRequestLogs as $nodeProcessNodeUserRequestLog) {
+					$nodeProcessNodeUserRequestLog = explode(' _ ', $nodeProcessNodeUserRequestLog);
+					$nodeProcessNodeUserRequestLogData[] = array(
+						'bytes_received' => $nodeProcessNodeUserRequestLog[0],
+						'bytes_sent' => $nodeProcessNodeUserRequestLog[1],
+						'created' => $nodeProcessNodeUserRequestLog[2],
+						'destination_hostname' => '$nodeProcessNodeUserRequestLog[3]',
+						'destination_ip' => $nodeProcessNodeUserRequestLog[4],
+						'node_id' => $parameters['data']['node_id'],
+						'node_process_type' => $parameters['data']['node_process_type'],
+						'node_user_id' => $parameters['data']['node_user_id'],
+						'response_code' => $nodeProcessNodeUserRequestLog[5],
+						'source_ip' => $nodeProcessNodeUserRequestLog[6],
+						'username' => $nodeProcessNodeUserRequestLog[7]
+					);
+				}
+
+				break;
+			case 'load_balancer':
+				// todo: format load_balancer request logs for node_process_node_user_request_logs
+				break;
+			case 'recursive_dns':
+				// todo: format recursive_dns request logs for node_process_node_user_request_logs
+				break;
+		}
+
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'activated_status' => true,
-				'authentication_token' => true,
-				'deployed_status' => true,
-				'external_ip_address_version_4' => true,
-				'external_ip_address_version_4_type' => true,
-				'external_ip_address_version_6' => true,
-				'external_ip_address_version_6_type' => true,
-				'id' => true,
-				'internal_ip_address_version_4' => true,
-				'internal_ip_address_version_4_type' => true,
-				'internal_ip_address_version_6' => true,
-				'internal_ip_address_version_6_type' => true,
-				'node_id' => true
-			)),
-			'in' => $parameters['databases']['nodes']
+			'data' => ,
+			'in' => $parameters['databases']['node_process_node_user_request_logs']
 		), $response);
 		$response['message'] = 'Node process node user request logs added successfully.';
 		$response['valid_status'] = '1';
