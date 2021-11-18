@@ -4,7 +4,8 @@
 	}
 
 	$parameters['databases'] += _connect(array(
-		'node_process_node_user_request_logs'
+		'node_process_node_user_request_logs',
+		'node_process_node_users'
 	), $parameters['databases'], $response);
 
 	function _addNodeProcessNodeUserRequestLogs($parameters, $response) {
@@ -33,6 +34,22 @@
 			return $response;
 		}
 
+		$nodeProcessNodeUserCount = _count(array(
+			'in' => $parameters['databases']['node_process_node_users'],
+			'where' => array(
+				'either' => array(
+					'node_id' => $parameters['node'],
+					'node_node_id' => $parameters['node']
+				),
+				'node_process_type' => $parameters['data']['node_process_type']
+			)
+		), $response);
+
+		if (($nodeProcessNodeUserCount < 1) === true) {
+			$response['message'] = 'Invalid node process node user request log node process node user, please try again.';
+			return $response;
+		}
+
 		$nodeProcessNodeUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
 
 		if (empty($nodeProcessNodeUserRequestLogs) === true) {
@@ -40,7 +57,6 @@
 			return $response;	
 		}
 
-		// todo: validate node_user_id belongs to $parameters['node']
 		$nodeProcessNodeUserRequestLogData = array();
 
 		switch ($parameters['data']['node_process_type']) {
