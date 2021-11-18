@@ -1,5 +1,5 @@
 <?php
-	if (empty($_SERVER['argv'][0]) === true) {
+	if (empty($_SERVER['argv'][1]) === true) {
 		exit;
 	}
 
