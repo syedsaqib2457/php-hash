@@ -13,6 +13,16 @@
 			return $response;	
 		}
 
+		if (empty($parameters['data']['node_process_type']) === true) {
+			$response['message'] = 'Node process node user request logs must have a node process type, please try again.';
+			return $response;
+		}
+
+		if (empty($parameters['data']['node_user_id']) === true) {
+			$response['message'] = 'Node process node user request logs must have a node user ID, please try again.';
+			return $response;
+		}
+
 		$nodeProcessNodeUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
 
 		if (empty($nodeProcessNodeUserRequestLogs) === true) {
@@ -20,7 +30,6 @@
 			return $response;	
 		}
 
-		// todo: validate node_process_type
 		// todo: validate node_user_id belongs to $parameters['node']
 		$nodeProcessNodeUserRequestLogData = array();
 
