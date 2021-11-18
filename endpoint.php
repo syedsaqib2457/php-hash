@@ -59,7 +59,11 @@
 		if (empty($parameters['node_authentication_token']) === false) {
 			$node = _list(array(
 				'columns' => array(
+					'external_ip_address_version_4',
+					'external_ip_address_version_6',
 					'id',
+					'internal_ip_address_version_4',
+					'internal_ip_address_version_6',
 					'node_id'
 				),
 				'in' => $parameters['databases']['nodes'],
