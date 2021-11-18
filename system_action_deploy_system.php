@@ -755,7 +755,7 @@
 			'tag'
 		),
 		'nodes' => array(
-			'activated_,status',
+			'activated_status',
 			'authentication_token',
 			'cpu_capacity_megahertz',
 			'cpu_core_count',
