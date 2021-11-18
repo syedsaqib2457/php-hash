@@ -23,6 +23,16 @@
 			return $response;
 		}
 
+		if (in_array(strval($parameters['data']['node_process_type']), array(
+			'http_proxy',
+			'load_balancer',
+			'recursive_dns',
+			'socks_proxy'
+		)) === false) {
+			$response['message'] = 'Invalid node process node user request log node process type, please try again.';
+			return $response;
+		}
+
 		$nodeProcessNodeUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
 
 		if (empty($nodeProcessNodeUserRequestLogs) === true) {
