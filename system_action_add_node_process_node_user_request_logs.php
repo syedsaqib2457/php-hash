@@ -34,12 +34,16 @@
 			return $response;
 		}
 
+		$nodeIds = array(
+			$parameters['node']['id'],
+			$parameters['node']['node_id']
+		);
 		$nodeProcessNodeUserCount = _count(array(
 			'in' => $parameters['databases']['node_process_node_users'],
 			'where' => array(
 				'either' => array(
-					'node_id' => $parameters['node'],
-					'node_node_id' => $parameters['node']
+					'node_id' => $nodeIds,
+					'node_node_id' => $nodeIds
 				),
 				'node_process_type' => $parameters['data']['node_process_type']
 			)
