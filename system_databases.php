@@ -6,8 +6,6 @@
 	}
 
 	function _connect($databases, $existingDatabaseConnections, $response) {
-		// todo: add tag to $database in database_name__database_tag format
-
 		foreach ($databases as $database) {
 			if (
 				(empty($existingDatabaseConnections) === false) &&
@@ -16,7 +14,15 @@
 				continue;
 			}
 
-			$systemDatabase = _list(array(
+			$databaseName = $database;
+			$databaseParts = explode('__', $database);
+
+			if (isset($databaseParts[1]) === true) {
+				$databaseTable = $databaseParts[0];
+				$databaseTag = $databaseParts[1];
+			}
+
+			$systemDatabaseParameters = array(
 				'columns' => array(
 					'authentication_credential_hostname',
 					'authentication_credential_password',
@@ -29,9 +35,15 @@
 					'order' => 'descending'
 				),
 				'where' => array(
-					'name' => $database
+					'name' => $databaseTable
 				)
-			));
+			);
+
+			if (isset($databaseTag) === true) {
+				$systemDatabaseParameters['where']['tag'] = $databaseTag;
+			}
+
+			$systemDatabase = _list($systemDatabaseParameters, $response);
 			$systemDatabase = current($systemDatabase);
 
 			if (empty($systemDatabase) === true) {
@@ -43,7 +55,7 @@
 			$response['_connect'][$database] = array(
 				'connection' => mysqli_connect($systemDatabase['authentication_credential_hostname'], 'root', $systemDatabase['authentication_credential_password'], 'ghostcompute'),
 				'structure'=> array(
-					'table' => $database
+					'table' => $databaseTable
 				)
 			);
 
@@ -61,7 +73,7 @@
 				'where' => array(
 					'system_database_id' => $systemDatabase['id']
 				)
-			));
+			), $response);
 
 			if (empty($systemDatabaseColumns) === true) {
 				$response['message'] = 'Invalid system database columns for ' . $database . ' system database, please try again.';
