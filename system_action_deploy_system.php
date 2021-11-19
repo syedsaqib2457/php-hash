@@ -955,8 +955,7 @@
 			'created_timestamp' => $timestamp,
 			'id' => ($systemDatabaseId = random_bytes(10) . time() . random_bytes(10)),
 			'modified_timestamp' => $timestamp,
-			'name' => $databaseTable,
-			'tag' => $databaseTable
+			'name' => $databaseTable
 		);
 
 		foreach ($databaseColumns as $databaseColumn) {
