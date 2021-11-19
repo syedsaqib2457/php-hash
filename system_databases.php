@@ -14,25 +14,6 @@
 				continue;
 			}
 
-			$databaseTable = $database;
-			unset($databaseTag);
-
-			if (is_int(strpos($database, '__')) === true) {
-				$databaseParts = explode('__', $database);
-
-				if (
-					(isset($databaseParts[1]) === false) ||
-					(isset($databaseParts[2]) === true)
-				) {
-					$response['message'] = 'Invalid system database tag for ' . $database . ', please try again.';
-					unset($response['_connect']);
-					_output($response);
-				}
-
-				$databaseTable = $databaseParts[0];
-				$databaseTag = $databaseParts[1];
-			}
-
 			$systemDatabaseParameters = array(
 				'columns' => array(
 					'authentication_credential_hostname',
@@ -46,12 +27,26 @@
 					'order' => 'descending'
 				),
 				'where' => array(
-					'name' => $databaseTable
+					'name' => $database
 				)
 			);
 
-			if (isset($databaseTag) === true) {
-				$systemDatabaseParameters['where']['tag'] = $databaseTag;
+			if (is_int(strpos($database, '__')) === true) {
+				$databaseParts = explode('__', $database);
+
+				if (
+					(isset($databaseParts[1]) === false) ||
+					(isset($databaseParts[2]) === true)
+				) {
+					$response['message'] = 'Invalid system database tag for ' . $database . ', please try again.';
+					unset($response['_connect']);
+					_output($response);
+				}
+
+				$systemDatabaseParameters['where'] = array(
+					'name' => $databaseParts[0],
+					'tag' => $databaseParts[1]
+				);
 			}
 
 			$systemDatabase = _list($systemDatabaseParameters, $response);
@@ -66,9 +61,10 @@
 			$response['_connect'][$database] = array(
 				'connection' => mysqli_connect($systemDatabase['authentication_credential_hostname'], 'root', $systemDatabase['authentication_credential_password'], 'ghostcompute'),
 				'structure'=> array(
-					'table' => $databaseTable
+					'table' => $systemDatabaseParameters['where']['name']
 				)
 			);
+			// todo: add tag to structure in response
 
 			if ($response['_connect'][$database]['connection'] === false) {
 				$response['message'] = 'Error connecting to ' . $database . ' system database, please try again.';
