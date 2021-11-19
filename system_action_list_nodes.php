@@ -38,7 +38,7 @@
 			'offset' => (($pagination['results_page_number'] - 1) * $pagination['results_count_per_page']),
 			'where' => $parameters['where']
 		), $response);
-		$response['data'] = $node;
+		$response['data'] = $nodes;
 		$response['message'] = 'Nodes listed successfully.';
 		$response['pagination'] = $pagination;
 		$response['valid_status'] = '1';
