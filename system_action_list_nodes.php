@@ -27,7 +27,11 @@
 			$pagination['results_page_number'] = $parameters['pagination']['results_page_number'];
 		}
 
-		// todo: count results_count_total
+		// todo: add most-recent modified result timestamp
+		$pagination['results_count_total'] = _count(array(
+			'in' => $parameters['databases']['nodes'],
+			'where' => $parameters['where']
+		), $response);
 		$nodes = _list(array(
 			'in' => $parameters['databases']['nodes'],
 			'limit' => $pagination['results_count_per_page'],
