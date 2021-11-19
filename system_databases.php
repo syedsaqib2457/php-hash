@@ -14,10 +14,21 @@
 				continue;
 			}
 
-			$databaseName = $database;
-			$databaseParts = explode('__', $database);
+			$databaseTable = $database;
+			unset($databaseTag);
 
-			if (isset($databaseParts[1]) === true) {
+			if (is_int(strpos($database, '__')) === true) {
+				$databaseParts = explode('__', $database);
+
+				if (
+					(isset($databaseParts[1]) === false) ||
+					(isset($databaseParts[2]) === true)
+				) {
+					$response['message'] = 'Invalid system database tag for ' . $database . ', please try again.';
+					unset($response['_connect']);
+					_output($response);
+				}
+
 				$databaseTable = $databaseParts[0];
 				$databaseTag = $databaseParts[1];
 			}
