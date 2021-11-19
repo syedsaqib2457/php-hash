@@ -8,10 +8,19 @@
 	), $parameters['databases'], $response);
 
 	function _listNodes($parameters, $response) {
-		// todo: validate pagination + where conditions
+		$pagination = array(
+			'results_count_per_page' => 100
+		);
+
+		if (empty($parameters['pagination']['results_count_per_page']) === false) {
+
+		}
+
+		// todo: count results_count_total
+		// todo: set current_results_page_number
 		$nodes = _list(array(
 			'in' => $parameters['databases']['nodes'],
-			'where' => '' // todo
+			'where' => $parameters['where']
 		), $response);
 		$response['data'] = $node;
 		$response['message'] = 'Nodes listed successfully.';
