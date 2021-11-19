@@ -6,6 +6,8 @@
 	}
 
 	function _connect($databases, $existingDatabaseConnections, $response) {
+		// todo: add tag to $database in database_name__database_tag format
+
 		foreach ($databases as $database) {
 			if (
 				(empty($existingDatabaseConnections) === false) &&
@@ -21,6 +23,11 @@
 					'id'
 				),
 				'in' => $parameters['databases']['system_databases'],
+				'limit' => 1,
+				'sort' => array(
+					'column' => 'created_timestamp',
+					'order' => 'descending'
+				),
 				'where' => array(
 					'name' => $database
 				)
@@ -142,8 +149,8 @@
 			$command .= ' order by ';
 
 			if ($parameters['sort'] === 'random') {
-				$command .= 'rand()';
-			} elseif (empty($parameters['sort']['key']) === false) {
+				$command .= 'RAND()';
+			} elseif (empty($parameters['sort']['column']) === false) {
 				if (empty($parameters['sort']['order']) === true) {
 					$parameters['sort']['order'] = 'desc';
 				} else {
@@ -154,7 +161,7 @@
 					$parameters['sort']['order'] = $sortOrders[$parameters['sort']['order']];
 				}
 
-				$command .= $parameters['sort']['key'] . ' ' . $parameters['sort']['order'] . ', id DESC';
+				$command .= $parameters['sort']['column'] . ' ' . $parameters['sort']['order'] . ', id DESC';
 			}
 		}
 
