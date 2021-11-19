@@ -93,7 +93,6 @@
 				break;
 		}
 
-		// todo: save data in most-recent node_process_node_user_request_logs database with timestamp in tag column
 		_save(array(
 			'data' => $nodeProcessNodeUserRequestLogData,
 			'in' => $parameters['databases']['node_process_node_user_request_logs']
