@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _activateNode($parameters, $response) {
 		$nodeParameters = array(
@@ -13,7 +13,7 @@
 				'activated_status',
 				'deployed_status'
 			),
-			'in' => $parameters['databases']['nodes']
+			'in' => $parameters['system_databases']['nodes']
 		);
 
 		if (empty($parameters['where']['authentication_token']) === false) {
