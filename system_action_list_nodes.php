@@ -27,17 +27,35 @@
 			$pagination['results_page_number'] = $parameters['pagination']['results_page_number'];
 		}
 
-		// todo: add most-recent modified result timestamp
 		$pagination['results_count_total'] = _count(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => $parameters['where']
 		), $response);
+		// todo: add user input for sort order
 		$nodes = _list(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'limit' => $pagination['results_count_per_page'],
 			'offset' => (($pagination['results_page_number'] - 1) * $pagination['results_count_per_page']),
 			'where' => $parameters['where']
 		), $response);
+
+		if (empty($nodes) === false) {
+			$mostRecentNode = _list(array(
+				'columns' => array(
+					'modified_timestamp'
+				),
+				'in' => $parameters['system_databases']['nodes'],
+				'limit' => 1,
+				'sort' => array(
+					'column' => 'modified_timestamp',
+					'order' => 'descending'
+				),
+				'where' => $parameters['where']
+			), $response);
+			$mostRecentNode = current($mostRecentNode);
+			$pagination['modified_timestamp'] = $mostRecentNode['modified_timestamp'];
+		}
+
 		$response['data'] = $nodes;
 		$response['message'] = 'Nodes listed successfully.';
 		$response['pagination'] = $pagination;
