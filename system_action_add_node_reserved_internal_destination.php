@@ -18,7 +18,7 @@
 			'in' => $parameters['databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
 			'sort' => array(
-				'key' => 'ip_address',
+				'column' => 'ip_address',
 				'order' => 'ascending'
 			),
 			'where' => array(
