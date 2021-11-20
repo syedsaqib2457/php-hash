@@ -1,6 +1,4 @@
 <?php
-	// todo: switch to uppercase MySQL actions to ensure compatability
-
 	if (empty($_SERVER['argv'][1]) === true) {
 		echo 'Invalid URL parameter, please try again.' . "\n";
 		exit;
@@ -867,7 +865,7 @@
 	$databaseCommands = array();
 
 	foreach ($databases as $databaseTable => $databaseColumns) {
-		$databaseCommands[] = 'create table if not exists `' . $databaseTable . '` (`created_timestamp` varchar(10) null default null);';
+		$databaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $databaseTable . '` (`created_timestamp` VARCHAR(10) NULL DEFAULT NULL);';
 
 		foreach ($databaseColumns as $databaseColumn) {
 			if (($databaseColumn === 'created_timestamp') === true) {
@@ -877,33 +875,33 @@
 			$databaseColumnType = 'text';
 
 			if ((substr($databaseColumn, -3) === '_id') === true) {
-				$databaseColumnType = 'varchar(30)';
+				$databaseColumnType = 'VARCHAR(30)';
 			}
 
 			if ((substr($databaseColumn, -11) === '_percentage') === true) {
-				$databaseColumnType = 'varchar(3)';
+				$databaseColumnType = 'VARCHAR(3)';
 			}
 
 			if ((substr($databaseColumn, -7) === '_status') === true) {
-				$databaseColumnType = 'varchar(1)';
+				$databaseColumnType = 'VARCHAR(1)';
 			}
 
 			if ((substr($databaseColumn, -10) === '_timestamp') === true) {
-				$databaseColumnType = 'varchar(10)';
+				$databaseColumnType = 'VARCHAR(10)';
 			}
 
 			$databaseCommandActions = array(
-				'add' => 'add `' . $databaseColumn . '`',
-				'change' => 'change `' . $databaseColumn . '` `' . $databaseColumn . '`'
+				'add' => 'ADD `' . $databaseColumn . '`',
+				'change' => 'CHANGE `' . $databaseColumn . '` `' . $databaseColumn . '`'
 			);
-			$databaseCommand = 'alter table `' . $databaseTable . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumnType . ' null default null';
+			$databaseCommand = 'ALTER TABLE `' . $databaseTable . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumnType . ' NULL DEFAULT NULL';
 
 			if (mysqli_query($databaseConnection, $databaseCommand) === false) {
 				$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
 			}
 
 			if ($databaseColumn === 'id') {
-				$databaseCommands[$databaseColumn . '__' . $databaseTable] = 'alter table `' . $databaseTable . '` add primary key(`' . $databaseColumn . '`)';
+				$databaseCommands[$databaseColumn . '__' . $databaseTable] = 'ALTER TABLE `' . $databaseTable . '` ADD PRIMARY KEY (`' . $databaseColumn . '`)';
 			}
 		}
 	}
@@ -911,11 +909,11 @@
 	foreach ($databaseCommands as $databaseCommandKey => $databaseCommand) {
 		if (
 			(is_numeric($databaseCommandKey) === false) &&
-			(is_int(strpos($databaseCommand, 'add primary key')) === true)
+			(is_int(strpos($databaseCommand, 'ADD PRIMARY KEY')) === true)
 		) {
 			$databaseCommandKey = explode('__', $databaseCommandKey);
 
-			if (empty(mysqli_query($databaseConnection, 'show keys from `' . $databaseCommandKey[1] . '` where Column_name=\'' . $databaseCommandKey[0] . '\'')->num_rows) === false) {
+			if (empty(mysqli_query($databaseConnection, 'SHOW KEYS FROM `' . $databaseCommandKey[1] . '` WHERE Column_name=\'' . $databaseCommandKey[0] . '\'')->num_rows) === false) {
 				continue;
 			}
 		}
@@ -949,11 +947,12 @@
 	);
 
 	foreach ($databases as $databaseTable => $databaseColumns) {
+		$systemDatabaseId = random_bytes(10) . time() . random_bytes(10);
 		$databaseData['system_databases'][] = array(
 			'authentication_credential_hostname' => 'localhost',
 			'authentication_credential_password' => 'password',
 			'created_timestamp' => $timestamp,
-			'id' => ($systemDatabaseId = random_bytes(10) . time() . random_bytes(10)),
+			'id' => $systemDatabaseId,
 			'modified_timestamp' => $timestamp,
 			'name' => $databaseTable
 		);
@@ -984,7 +983,7 @@
 
 	foreach ($databaseData as $databaseTableName => $databaseRows) {
 		foreach ($databaseRows as $databaseRow) {
-			mysqli_query($databaseConnection, 'insert ignore into `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) values (' . implode(', ', array_values($databaseRow)) . ')');
+			mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
 		}
 	}
 
