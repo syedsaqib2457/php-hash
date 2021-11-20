@@ -148,6 +148,7 @@
 	}
 
 	function _list($parameters, $response) {
+		// todo: validate sort and where parameters with system database column_names
 		$databaseColumns = '*';
 
 		if (empty($parameters['columns']) === false) {
