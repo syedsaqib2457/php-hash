@@ -83,7 +83,7 @@
 			), $response);
 
 			if (empty($systemDatabaseColumns) === true) {
-				$response['message'] = 'Invalid system database columns for ' . $database . ' system database, please try again.';
+				$response['message'] = 'Invalid system database columns in ' . $database . ' system database, please try again.';
 				unset($response['_connect']);
 				_output($response);
 			}
@@ -98,30 +98,30 @@
 	}
 
 	function _count($parameters, $response) {
-		$command = 'select count(id) from ' . $parameters['in']['structure']['table'];
+		$command = 'SELECT COUNT (id) FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
+			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
 		}
 
 		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
 
 		if ($commandResponse === false) {
-			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
 		$commandResponse = mysqli_fetch_assoc($commandResponse);
 
 		if ($commandResponse === false) {
-			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
 		$commandResponse = current($commandResponse);
 
 		if (is_int($commandResponse) === false) {
-			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
