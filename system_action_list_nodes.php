@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _listNodes($parameters, $response) {
 		$pagination = array(
