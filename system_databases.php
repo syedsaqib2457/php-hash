@@ -130,16 +130,16 @@
 	}
 
 	function _delete($parameters, $response) {
-		$command = 'delete from ' . $parameters['in']['structure']['table'];
+		$command = 'DELETE FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
+			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
 		}
 
 		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
 
 		if ($commandResponse === false) {
-			$response['message'] = 'Error deleting data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			$response['message'] = 'Error deleting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
@@ -158,24 +158,24 @@
 			}
 		}
 
-		$command = 'select ' . rtrim($databaseColumns, ',') . ' from ' . $parameters['in']['structure']['table'];
+		$command = 'SELECT ' . rtrim($databaseColumns, ',') . ' FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
+			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
 		}
 
 		if (empty($parameters['sort']) === false) {
-			$command .= ' order by ';
+			$command .= ' ORDER BY ';
 
 			if ($parameters['sort'] === 'random') {
 				$command .= 'RAND()';
 			} elseif (empty($parameters['sort']['column']) === false) {
 				if (empty($parameters['sort']['order']) === true) {
-					$parameters['sort']['order'] = 'desc';
+					$parameters['sort']['order'] = 'DESC';
 				} else {
 					$sortOrders = array(
-						'ascending' => 'asc',
-						'descending' => 'desc'
+						'ascending' => 'ASC',
+						'descending' => 'DESC'
 					);
 					$parameters['sort']['order'] = $sortOrders[$parameters['sort']['order']];
 				}
@@ -185,24 +185,24 @@
 		}
 
 		if (empty($parameters['limit']) === false) {
-			$command .= ' limit ' . $parameters['limit'];
+			$command .= ' LIMIT ' . $parameters['limit'];
 		}
 
 		if (empty($parameters['offset']) === false) {
-			$command .= ' offset ' . $parameters['offset'];
+			$command .= ' OFFSET ' . $parameters['offset'];
 		}
 
 		$commandResponse = mysqli_query($connection, $command);
 
 		if ($commandResponse === false) {
-			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
 		$commandResponse = mysqli_fetch_assoc($commandResponse);
 
 		if ($commandResponse === false) {
-			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
@@ -210,10 +210,10 @@
 		return $response;
 	}
 
-	function _parseCommandWhereConditions($parameters, $whereConditionConjunction = 'and') {
+	function _parseCommandWhereConditions($parameters, $whereConditionConjunction = 'AND') {
 		foreach ($parameters['where'] as $whereConditionKey => $whereConditionValue) {
 			if ($whereConditionKey === 'either') {
-				$whereConditionConjunction = 'or';
+				$whereConditionConjunction = 'OR';
 			}
 
 			if (
@@ -239,17 +239,17 @@
 					}
 
 					if (is_null($whereConditionValueValue) === true) {
-						$whereConditionValueValue = 'is null';
+						$whereConditionValueValue = 'IS NULL';
 					}
 
 					$whereConditionValue[$whereConditionValueKey] = $whereConditionValueValue;
 
 					if (($whereConditionKey === 'either') === true) {
-						$whereConditionValueValueCondition = 'in';
+						$whereConditionValueValueCondition = 'IN';
 
 						if (is_int(strpos($whereConditionValueKey, ' !=')) === true) {
 							$whereConditionValueKey = substr($whereConditionValueKey, 0, strpos($whereConditionValueKey, ' '));
-							$whereConditionValueValueCondition = 'not ' . $whereConditionValueValueCondition;
+							$whereConditionValueValueCondition = 'NOT ' . $whereConditionValueValueCondition;
 						}
 
 						$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueValueCondition . " ('" . str_replace("'", "\'", $whereConditionValueValue) . "')";
@@ -263,12 +263,12 @@
 					) {
 						$whereConditionValueConditions[] = $whereConditionKey . ' ' . str_replace("'", "\'", current($whereConditionValue));
 					} else {
-						$whereConditionValueCondition = 'in';
+						$whereConditionValueCondition = 'IN';
 						$whereConditionValueKey = $whereConditionKey;
 
 						if (is_int(strpos($whereConditionValueKey, ' !=')) === true) {
 							$whereConditionValueKey = substr($whereConditionValueKey, 0, strpos($whereConditionValueKey, ' '));
-							$whereConditionValueCondition = 'not ' . $whereConditionValueCondition;
+							$whereConditionValueCondition = 'NOT ' . $whereConditionValueCondition;
 						}
 
 						$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueCondition . " ('" . implode("','", str_replace("'", "\'", $whereConditionValue)) . "')";
@@ -314,13 +314,13 @@
 					$dataKeys .= ',created_timestamp';
 					$dataUpdateValues = '';
 				} else {
-					$dataUpdateValues = ' on duplicate key update ' . substr($dataUpdateValues, 1);
+					$dataUpdateValues = ' ON DUPLICATE KEY UPDATE ' . substr($dataUpdateValues, 1);
 				}
 
-				$commandResponse = mysqli_query($parameters['in']['connection'], 'insert into ' . $parameters['in']['structure']['table'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
+				$commandResponse = mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
 
 				if ($commandResponse === false) {
-					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 					_output($response);
 				}
 			}
@@ -332,7 +332,7 @@
 
 	function _update($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			$command = 'update ' . $parameters['in']['table'] . ' set ';
+			$command = 'UPDATE ' . $parameters['in']['table_name'] . ' SET ';
 
 			if (isset($parameters['data']['modified']) === false) {
 				$parameters['data']['modified'] = time();
@@ -342,11 +342,11 @@
 				$command .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
 			}
 
-			$command = rtrim($command, ',') . ' where ' . implode(' and ', _parseCommandWhereConditions($parameters['where']));
+			$command = rtrim($command, ',') . ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
 			$commandResponse = mysqli_query($parameters['in']['connection'], $command);
 
 			if ($commandResponse === false) {
-				$response['message'] = 'Error updating data in ' . $parameters['in']['structure']['table'] . ' system database, please try again.';
+				$response['message'] = 'Error updating data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 				_output($response);
 			}
 		}
@@ -355,33 +355,34 @@
 		return $response;
 	}
 
-	$parameters['databases'] = array(
+	$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
+	$parameters['system_databases'] = array(
 		'system_database_columns' => array(
-			'connection' => ($systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute')),
+			'connection' => $systemDatabaseConnection,
 			'structure' => array(
-				'columns' => array(
+				'column_names' => array(
 					'created_timestamp',
 					'id',
 					'modified_timestamp',
 					'name',
 					'system_database_id'
 				),
-				'table' => 'system_database_columns'
+				'table_name' => 'system_database_columns'
 			)
 		),
 		'system_databases' => array(
 			'connection' => $systemDatabaseConnection,
 			'structure' => array(
-				'columns' => array(
+				'column_names' => array(
 					'authentication_credential_hostname',
 					'authentication_credential_password',
 					'created_timestamp',
 					'id',
 					'modified_timestamp',
-					'name',
+					'table_name',
 					'tag'
 				),
-				'table' => 'system_databases'
+				'table_name' => 'system_databases'
 			)
 		)
 	);
@@ -391,10 +392,10 @@
 		_output($response);
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'system_user_authentication_token_scopes',
 		'system_user_authentication_token_sources',
 		'system_user_authentication_tokens',
 		'system_users'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 ?>
