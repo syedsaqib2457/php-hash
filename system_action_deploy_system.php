@@ -790,7 +790,7 @@
 			'created_timestamp',
 			'id',
 			'modified_timestamp',
-			'name',
+			'table_name',
 			'tag'
 		),
 		'system_resource_usage_logs' => array(
@@ -954,7 +954,7 @@
 			'created_timestamp' => $timestamp,
 			'id' => $systemDatabaseId,
 			'modified_timestamp' => $timestamp,
-			'name' => $databaseTable
+			'table_name' => $databaseTable
 		);
 
 		foreach ($databaseColumns as $databaseColumn) {
