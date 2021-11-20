@@ -15,7 +15,7 @@
 			'data' => $nodeProcessNodeUserRequestLogData,
 			'in' => $parameters['databases']['node_process_node_user_request_logs']
 		), $response);
-		$response['message'] = 'Node process node user request logs added successfully.';
+		$response['message'] = 'Node process node user request logs processed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
 	}
