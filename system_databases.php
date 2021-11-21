@@ -98,7 +98,7 @@
 	}
 
 	function _count($parameters, $response) {
-		$command = 'SELECT COUNT (id) FROM ' . $parameters['in']['structure']['table_name'];
+		$command = 'SELECT COUNT(id) FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
 			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
