@@ -83,7 +83,7 @@
 			), $response);
 
 			if (empty($systemDatabaseColumns) === true) {
-				$response['message'] = 'Invalid system database columns in ' . $database . ' system database, please try again.';
+				$response['message'] = 'Invalid system database columns in ' . $systemDatabaseKey . ' system database, please try again.';
 				unset($response['_connect']);
 				_output($response);
 			}
