@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_type.php');
 
