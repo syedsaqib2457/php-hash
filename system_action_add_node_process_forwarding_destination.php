@@ -3,10 +3,10 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_process_forwarding_destinations',
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_validate_hostname.php');
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
