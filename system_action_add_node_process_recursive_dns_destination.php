@@ -3,10 +3,10 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_process_recursive_dns_destinations',
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_type.php');
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
@@ -38,7 +38,7 @@
 				'id',
 				'node_id'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'id' => $parameters['data']['node_id']
 			)
@@ -91,7 +91,7 @@
 						'id',
 						'internal_ip_address_version_' . $nodeIpAddressVersion
 					),
-					'in' => $parameters['databases']['nodes'],
+					'in' => $parameters['system_databases']['nodes'],
 					'where' => array(
 						'either' => array(
 							array(
@@ -128,7 +128,7 @@
 
 		$parameters['data']['node_node_id'] = $node['node_id'];
 		$existingNodeProcessRecursiveDnsDestinationCount = _count(array(
-			'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
+			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 			'where' => array_intersect_key($parameters['data'], array(
 				'listening_ip_address_version_4' => true,
 				'listening_ip_address_version_6' => true,
@@ -157,10 +157,10 @@
 				'source_ip_address_version_4' => true,
 				'source_ip_address_version_6' => true
 			)),
-			'in' => $parameters['databases']['node_process_recursive_dns_destinations']
+			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations']
 		), $response);
 		$nodeProcessRecursiveDnsDestination = _list(array(
-			'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
+			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
