@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_request_destinations'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_validate_hostname.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
@@ -26,10 +26,10 @@
 				'hostname' => true,
 				'id' => true
 			)),
-			'in' => $parameters['databases']['node_request_destinations']
+			'in' => $parameters['system_databases']['node_request_destinations']
 		), $response);
 		$nodeRequestDestination = _list(array(
-			'in' => $parameters['databases']['node_request_destinations'],
+			'in' => $parameters['system_databases']['node_request_destinations'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
