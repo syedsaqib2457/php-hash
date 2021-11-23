@@ -3,10 +3,10 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'system_user_system_users',
 		'system_users'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _addSystemUser($parameters, $response) {
 		$parameters['data'] = array(
@@ -28,7 +28,7 @@
 					'id',
 					'system_user_id'
 				),
-				'in' => $parameters['databases']['system_users'],
+				'in' => $parameters['system_databases']['system_users'],
 				'where' => array(
 					'id' => $parameters['system_user_id']
 				)
@@ -50,14 +50,14 @@
 
 		_save(array(
 			'data' => $systemUserSystemUserData,
-			'in' => $parameters['databases']['system_user_system_users']
+			'in' => $parameters['system_databases']['system_user_system_users']
 		), $response);
 		_save(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['databases']['system_users']
+			'in' => $parameters['system_databases']['system_users']
 		), $response);
 		$systemUser = _list(array(
-			'in' => $parameters['databases']['system_users'],
+			'in' => $parameters['system_databases']['system_users'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
