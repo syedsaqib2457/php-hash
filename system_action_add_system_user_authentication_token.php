@@ -3,10 +3,10 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'system_user_authentication_tokens',
 		'system_users'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _addSystemUserAuthenticationToken($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
@@ -18,7 +18,7 @@
 		}
 
 		$systemUserCount = _count(array(
-			'in' => $parameters['databases']['system_users'],
+			'in' => $parameters['system_databases']['system_users'],
 			'where' => array(
 				'id' => $parameters['data']['system_user_id']
 			)
@@ -30,7 +30,7 @@
 		}
 
 		$systemUserSystemUserCount = _count(array(
-			'in' => $parameters['databases']['system_user_system_users'],
+			'in' => $parameters['system_databases']['system_user_system_users'],
 			'where' => array(
 				'system_user_id' => $parameters['data']['system_user_id'],
 				'system_user_system_user_id' => $parameters['system_user_id']
@@ -51,10 +51,10 @@
 				'string' => true,
 				'system_user_id' => true
 			)),
-			'in' => $parameters['databases']['system_user_authentication_tokens']
+			'in' => $parameters['system_databases']['system_user_authentication_tokens']
 		), $response);
 		$systemUserAuthenticationToken = _list(array(
-			'in' => $parameters['databases']['system_user_authentication_tokens'],
+			'in' => $parameters['system_databases']['system_user_authentication_tokens'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
