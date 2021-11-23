@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_reserved_internal_destinations'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _addNodeReservedInternalDestination($parameters, $response) {
 		$nodeIpAddressVersion = key($parameters['node']);
@@ -15,7 +15,7 @@
 				'id',
 				'ip_address'
 			),
-			'in' => $parameters['databases']['node_reserved_internal_destinations'],
+			'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
 			'sort' => array(
 				'column' => 'ip_address',
@@ -68,7 +68,7 @@
 				}
 
 				$existingNodeCount = _count(array(
-					'in' => $parameters['databases']['nodes'],
+					'in' => $parameters['system_databases']['nodes'],
 					'where' => array(
 						'either' => array(
 							array(
@@ -117,7 +117,7 @@
 			}
 
 			$existingNodeCount = _count(array(
-				'in' => $parameters['databases']['nodes'],
+				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
 						array(
@@ -142,7 +142,7 @@
 
 		_save(array(
 			'data' => $existingNodeReservedInternalDestinationData,
-			'to' => $parameters['databases']['node_reserved_internal_destinations']
+			'to' => $parameters['system_databases']['node_reserved_internal_destinations']
 		), $response);
 		$response = $nodeReservedInternalDestinationIpAddress;
 		return $response;
