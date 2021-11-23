@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_request_limit_rules'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _addNodeRequestLimitRules($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
@@ -48,7 +48,7 @@
 		}
 
 		$existingNodeRequestLimitRuleCount = _count(array(
-			'in' => $parameters['databases']['node_request_limit_rules'],
+			'in' => $parameters['system_databases']['node_request_limit_rules'],
 			'where' => array_intersect_key($parameters['data'], array(
 				'interval_minutes' => true,
 				'request_count' => true,
@@ -68,10 +68,10 @@
 				'request_count' => true,
 				'request_count_interval_minutes' => true
 			)),
-			'in' => $parameters['databases']['node_request_limit_rules']
+			'in' => $parameters['system_databases']['node_request_limit_rules']
 		), $response);
 		$nodeRequestLimitRule = _list(array(
-			'in' => $parameters['databases']['node_request_limit_rules'],
+			'in' => $parameters['system_databases']['node_request_limit_rules'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
