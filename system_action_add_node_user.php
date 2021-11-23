@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_users'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _addNodeUser($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
@@ -21,10 +21,10 @@
 				'node_user_authentication_strict_status' => true,
 				'tag' => true
 			)),
-			'in' => $parameters['databases']['node_users']
+			'in' => $parameters['system_databases']['node_users']
 		), $response);
 		$nodeUser = _list(array(
-			'in' => $parameters['databases']['node_users'],
+			'in' => $parameters['system_databases']['node_users'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
