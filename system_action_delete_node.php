@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
 		'node_process_node_user_authentication_sources',
@@ -19,7 +19,7 @@
 		'node_reserved_internal_destinations',
 		'node_resource_usage_logs',
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _deleteNode($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
@@ -33,7 +33,7 @@
 		}
 
 		_delete(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'either' => array(
 					'id' => $parameters['where']['id'],
@@ -46,7 +46,7 @@
 				'added_status' => '0',
 				'processed_status' => '0'
 			),
-			'in' => $parameters['databases']['node_reserved_internal_destinations'],
+			'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 			'where' => array(
 				'either' => array(
 					'node_id' => $parameters['node'][$nodeIpAddressVersion],
@@ -54,7 +54,7 @@
 				)
 			)
 		), $response);
-		$databases = array(
+		$systemDatabaseNames = array(
 			'node_process_forwarding_destinations',
 			'node_process_node_user_authentication_credentials',
 			'node_process_node_user_authentication_sources',
@@ -70,7 +70,7 @@
 			'node_resource_usage_logs'
 		);
 		$nodeCount = _count(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'either' => array(
 					'id' => $parameters['node'][$nodeIpAddressVersion],
@@ -83,9 +83,9 @@
 			$databases[] = 'node_reserved_internal_destinations';
 		}
 
-		foreach ($databases as $database) {
+		foreach ($systemDatabaseNames as $systemDatabaseName) {
 			_delete(array(
-				'in' => $parameters['databases'][$database],
+				'in' => $parameters['system_databases'][$systemDatabaseName],
 				'where' => array(
 					'either' => array(
 						'node_id' => $parameters['where']['id'],
