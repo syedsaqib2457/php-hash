@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _deactivateNode($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
@@ -17,7 +17,7 @@
 			'columns' => array(
 				'activated_status'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
