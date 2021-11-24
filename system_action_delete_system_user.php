@@ -3,14 +3,14 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'system_user_authentication_token_scopes',
 		'system_user_authentication_token_sources',
 		'system_user_authentication_tokens',
 		'system_user_request_logs',
 		'system_user_system_users',
 		'system_users'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _deleteSystemUser($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
@@ -24,7 +24,7 @@
 		}
 
 		$systemUserSystemUserCount = _count(array(
-			'in' => $parameters['databases']['system_user_system_users'],
+			'in' => $parameters['system_databases']['system_user_system_users'],
 			'where' => array(
 				'system_user_id' => $parameters['where']['id'],
 				'system_user_system_user_id' => $parameters['system_user_id']
@@ -49,7 +49,7 @@
 			'columns' => array(
 				'system_user_id'
 			),
-			'in' => $parameters['databases']['system_user_system_users'],
+			'in' => $parameters['system_databases']['system_user_system_users'],
 			'where' => array(
 				'system_user_system_user_id' => $parameters['where']['id']
 		), $response);
@@ -63,7 +63,7 @@
 			$systemUserSystemUserIdParts[$systemUserSystemUserIdPartIndex][] = $systemUserSystemUser['system_user_id'];
 		}
 
-		$databases = array(
+		$systemDatabaseNames = array(
 			'system_user_authentication_token_scopes',
 			'system_user_authentication_token_sources',
 			'system_user_authentication_tokens',
@@ -71,9 +71,9 @@
 		);
 
 		foreach ($systemUserSystemUserIdParts as $systemUserSystemUserIdPart) {
-			foreach ($databases as $database) {
+			foreach ($systemDatabaseNames as $systemDatabaseName) {
 				_delete(array(
-					'in' => $parameters['databases'][$database],
+					'in' => $parameters['system_databases'][$systemDatabaseName],
 					'where' => array(
 						'system_user_id' => $systemUserSystemUserIdPart
 					)
@@ -81,7 +81,7 @@
 			}
 
 			_delete(array(
-				'in' => $parameters['databases']['system_users'],
+				'in' => $parameters['system_databases']['system_users'],
 				'where' => array(
 					'id' => $systemUserSystemUserIdPart
 				)
@@ -89,7 +89,7 @@
 		}
 
 		_delete(array(
-			'in' => $parameters['databases']['system_user_system_users'],
+			'in' => $parameters['system_databases']['system_user_system_users'],
 			'where' => array(
 				'either' => array(
 					'system_user_id' => $parameters['where']['id'],
