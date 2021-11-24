@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
 		'node_process_node_user_authentication_sources',
@@ -16,7 +16,7 @@
 		'node_process_recursive_dns_destinations',
 		'node_process_resource_usage_logs',
 		'node_processes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _deleteNodeProcess($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
@@ -29,7 +29,7 @@
 				'node_id',
 				'type'
 			),
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
@@ -42,7 +42,7 @@
 		}
 
 		$nodeProcessCount = _count(array(
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'node_id' => $nodeProcess['node_id'],
 				'type' => $nodeProcess['type']
@@ -50,7 +50,7 @@
 		), $response);
 
 		if (($nodeProcessCount <= 1) === true) {
-			$databases = array(
+			$systemDatabaseNames = array(
 				'node_process_forwarding_destinations',
 				'node_process_node_user_authentication_credentials',
 				'node_process_node_user_authentication_sources',
@@ -64,9 +64,9 @@
 				'node_process_recursive_dns_destinations'
 			);
 
-			foreach ($databases as $database) {
+			foreach ($systemDatabaseNames as $systemDatabaseName) {
 				_delete(array(
-					'in' => $parameters['databases'][$database],
+					'in' => $parameters['system_databases'][$systemDatabaseName],
 					'where' => array(
 						'node_id' => $nodeProcess['node_id']
 					)
@@ -75,7 +75,7 @@
 		}
 
 		_delete(array(
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
