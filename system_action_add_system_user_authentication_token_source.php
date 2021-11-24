@@ -3,11 +3,11 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'system_user_authentication_token_sources',
 		'system_user_authentication_tokens',
 		'system_user_system_users'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _addSystemUserAuthenticationTokenSource($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
@@ -54,7 +54,7 @@
 			'columns' => array(
 				'system_user_id'
 			),
-			'in' => $parameters['databases']['system_user_authentication_tokens'],
+			'in' => $parameters['system_databases']['system_user_authentication_tokens'],
 			'where' => array(
 				'id' => $parameters['data']['system_user_authentication_token_id']
 			)
@@ -67,7 +67,7 @@
 		}
 
 		$systemUserSystemUserCount = _count(array(
-			'in' => $parameters['databases']['system_user_system_users'],
+			'in' => $parameters['system_databases']['system_user_system_users'],
 			'where' => array(
 				'system_user_id' => $systemUserAuthenticationToken['system_user_id'],
 				'system_user_system_user_id' => $parameters['system_user_id']
@@ -84,7 +84,7 @@
 
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 		$existingSystemUserAuthenticationTokenSourceCount = _count(array(
-			'in' => $parameters['databases']['system_user_authentication_token_sources'],
+			'in' => $parameters['system_databases']['system_user_authentication_token_sources'],
 			'where' => array_intersect_key($parameters['data'], array(
 				'ip_address_range_start' => true,
 				'ip_address_range_stop' => true,
@@ -108,10 +108,10 @@
 				'system_user_authentication_token_id' => true,
 				'system_user_id' => true
 			)),
-			'in' => $parameters['databases']['system_user_authentication_token_sources']
+			'in' => $parameters['system_databases']['system_user_authentication_token_sources']
 		), $response);
 		$systemUserAuthenticationTokenSource = _list(array(
-			'in' => $parameters['databases']['system_user_authentication_token_sources'],
+			'in' => $parameters['system_databases']['system_user_authentication_token_sources'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
