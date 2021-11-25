@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _deployNode($parameters, $response) {
 		if (empty($parameters['where']['authentication_token']) === true) {
@@ -19,7 +19,7 @@
 				'id',
 				'node_id'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'authentication_token' => $parameters['where']['authentication_token']
 			)
