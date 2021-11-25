@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
 		'node_process_node_user_authentication_sources',
@@ -14,7 +14,7 @@
 		'node_processes',
 		'node_reserved_internal_destinations',
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 
 	function _processNode($parameters, $response) {
 		$response['data'] = array(
@@ -46,7 +46,7 @@
 				'id',
 				'node_id'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'authentication_token' => $parameters['where']['authentication_token']
 			)
@@ -74,7 +74,7 @@
 					'processing_progress_checkpoint' => $parameters['data']['processing_progress_checkpoint'],
 					'processing_progress_percentage' => $parameters['data']['processing_progress_percentage']
 				),
-				'in' => $parameters['databases']['nodes'],
+				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
 						'id' => $nodeIds,
@@ -84,7 +84,7 @@
 			), $response);
 		} else {
 			$nodeCount = _count(array(
-				'in' => $parameters['databases']['nodes'],
+				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
 						'id' => $nodeIds,
@@ -106,7 +106,7 @@
 					'port_number',
 					'type'
 				),
-				'in' => $parameters['databases']['node_processes'],
+				'in' => $parameters['system_databases']['node_processes'],
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -123,7 +123,7 @@
 					'port_number_version_4',
 					'port_number_version_6'
 				),
-				'in' => $parameters['databases']['node_process_forwarding_destinations'],
+				'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -137,7 +137,7 @@
 					'node_user_authentication_credential_username',
 					'node_user_id'
 				),
-				'in' => $parameters['databases']['node_process_node_user_authentication_credentials'],
+				'in' => $parameters['system_databases']['node_process_node_user_authentication_credentials'],
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -151,7 +151,7 @@
 					'node_user_authentication_source_ip_address_block_length',
 					'node_user_id'
 				),
-				'in' => $parameters['databases']['node_process_node_user_authentication_sources'],
+				'in' => $parameters['system_databases']['node_process_node_user_authentication_sources'],
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -165,7 +165,7 @@
 					'node_user_node_request_destination_address',
 					'node_user_node_request_destination_id'
 				),
-				'in' => $parameters['databases']['node_process_node_user_node_request_destinations'],
+				'in' => $parameters['system_databases']['node_process_node_user_node_request_destinations'],
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -178,7 +178,7 @@
 					'node_user_id',
 					'node_user_node_request_destination_id'
 				),
-				'in' => $parameters['databases']['node_process_node_user_node_request_limit_rules'],
+				'in' => $parameters['system_databases']['node_process_node_user_node_request_limit_rules'],
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -195,7 +195,7 @@
 					'node_user_node_request_logs_allowed_status',
 					'node_user_strict_authentication_required_status'
 				),
-				'in' => $parameters['databases']['node_process_node_users'], 
+				'in' => $parameters['system_databases']['node_process_node_users'], 
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -216,7 +216,7 @@
 					'source_ip_address_version_4',
 					'source_ip_address_version_6'
 				),
-				'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
+				'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 				'where' => array(
 					'either' => array(
 						'node_id' => $nodeIds,
@@ -229,7 +229,7 @@
 					'ip_address',
 					'ip_address_version'
 				),
-				'in' => $parameters['databases']['node_reserved_internal_destinations'],
+				'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 				'where' => array(
 					'assigned_status' => '1',
 					'either' => array(
@@ -247,7 +247,7 @@
 					'internal_ip_address_version_4',
 					'internal_ip_address_version_6'
 				),
-				'in' => $parameters['databases']['nodes'],
+				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
 						'id' => $nodeIds,
