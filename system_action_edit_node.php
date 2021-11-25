@@ -3,10 +3,10 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_reserved_internal_destinations',
 		'nodes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
 	require_once('/var/www/ghostcompute/system_action_validate_ip_address_type.php');
 
@@ -24,7 +24,7 @@
 				'internal_ip_address_version_6',
 				'node_id'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
@@ -98,7 +98,7 @@
 				'internal_ip_address_version_4',
 				'internal_ip_address_version_6'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'either' => $nodeExternalIpAddresses,
 				'id !=' => $parameters['where']['id']
@@ -141,7 +141,7 @@
 				'node_id',
 				'node_node_id'
 			),
-			'in' => $parameters['databases']['node_reserved_internal_destinations'],
+			'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 			'where' => array(
 				'ip_address' => $nodeIpAddresses,
 				'node_node_id' => $nodeIds
@@ -157,7 +157,7 @@
 			);
 			_addNodeReservedInternalDestination($parameters, $response);
 			_delete(array(
-				'in' => $parameters['databases']['node_reserved_internal_destinations'],
+				'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 				'where' => array(
 					'id' => $existingNodeReservedInternalDestination['id']
 				)
@@ -176,10 +176,10 @@
 				'internal_ip_address_version_6' => true,
 				'internal_ip_address_version_6_type' => true
 			)),
-			'in' => $parameters['databases']['nodes']
+			'in' => $parameters['system_databases']['nodes']
 		), $response);
 		$node = _list(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
