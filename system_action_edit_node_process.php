@@ -3,9 +3,9 @@
 		exit;
 	}
 
-	$parameters['databases'] += _connect(array(
+	$parameters['system_databases'] += _connect(array(
 		'node_processes'
-	), $parameters['databases'], $response);
+	), $parameters['system_databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
 	function _editNodeProcess($parameters, $response) {
@@ -36,7 +36,7 @@
 		}
 
 		$existingNodeProcessCountParameters = array(
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'id !=' => $parameters['where']['id'],
 				'node_id' => $nodeProcess['node_id']
@@ -63,13 +63,13 @@
 				'port_number' => true,
 				'type' => true
 			)),
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
 		), $response);
 		$nodeProcess = _list(array(
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
