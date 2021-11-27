@@ -28,7 +28,7 @@
 		}
 
 		$pagination['results_count_total'] = _count(array(
-			'in' => $parameters['system_databases']['system_databases'],
+			'in' => $parameters['system_databases']['system_database_columns'],
 			'where' => $parameters['where']
 		), $response);
 		// todo: add user input for sort order
