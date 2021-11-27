@@ -57,7 +57,7 @@
 		}
 
 		$response['data'] = $systemDatabases;
-		$response['message'] = 'System database listed successfully.';	
+		$response['message'] = 'System databases listed successfully.';	
 		$response['pagination'] = $pagination;
 		$response['valid_status'] = '1';
 		return $response;
