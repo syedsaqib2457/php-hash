@@ -16,7 +16,7 @@
 
 			$systemDatabaseKey = $systemDatabase;
 			$systemDatabaseParameters = array(
-				'columns' => array(
+				'data' => array(
 					'authentication_credential_hostname',
 					'authentication_credential_password',
 					'id'
@@ -24,7 +24,7 @@
 				'in' => $parameters['system_databases']['system_databases'],
 				'limit' => 1,
 				'sort' => array(
-					'column' => 'created_timestamp',
+					'data' => 'created_timestamp',
 					'order' => 'descending'
 				),
 				'where' => array(
@@ -73,7 +73,7 @@
 			}
 
 			$systemDatabaseColumns = _list(array(
-				'columns' => array(
+				'data' => array(
 					'name'
 				),
 				'in' => $parameters['system_databases']['system_database_columns'],
@@ -149,17 +149,14 @@
 
 	function _list($parameters, $response) {
 		// todo: validate sort and where parameters with system database column_names
-		$databaseColumns = '*';
 
-		if (empty($parameters['columns']) === false) {
-			$databaseColumns = '';
-
-			foreach ($parameters['columns'] as $databaseColumn) {
-				$databaseColumns .= $databaseColumn . ',';
-			}
+		if (empty($parameters['data']) === true) {
+			$parameters['data'] = array(
+				'*'
+			);
 		}
 
-		$command = 'SELECT ' . rtrim($databaseColumns, ',') . ' FROM ' . $parameters['in']['structure']['table_name'];
+		$command = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
 			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
@@ -170,7 +167,7 @@
 
 			if ($parameters['sort'] === 'random') {
 				$command .= 'RAND()';
-			} elseif (empty($parameters['sort']['column']) === false) {
+			} elseif (empty($parameters['sort']['data']) === false) {
 				if (empty($parameters['sort']['order']) === true) {
 					$parameters['sort']['order'] = 'DESC';
 				} else {
@@ -181,7 +178,7 @@
 					$parameters['sort']['order'] = $sortOrders[$parameters['sort']['order']];
 				}
 
-				$command .= $parameters['sort']['column'] . ' ' . $parameters['sort']['order'] . ', id DESC';
+				$command .= $parameters['sort']['data'] . ' ' . $parameters['sort']['order'] . ', id DESC';
 			}
 		}
 
