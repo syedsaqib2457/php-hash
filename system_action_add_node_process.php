@@ -43,7 +43,7 @@
 		}
 
 		$node = _list(array(
-			'columns' => array(
+			'data' => array(
 				'id',
 				'node_id'
 			),
