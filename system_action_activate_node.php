@@ -9,7 +9,7 @@
 
 	function _activateNode($parameters, $response) {
 		$nodeParameters = array(
-			'columns' => array(
+			'data' => array(
 				'activated_status',
 				'deployed_status'
 			),
