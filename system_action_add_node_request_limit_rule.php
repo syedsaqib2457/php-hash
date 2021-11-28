@@ -7,7 +7,7 @@
 		'node_request_limit_rules'
 	), $parameters['system_databases'], $response);
 
-	function _addNodeRequestLimitRules($parameters, $response) {
+	function _addNodeRequestLimitRule($parameters, $response) {
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 
 		if (empty($parameters['data']['interval_minutes']) === true) {
@@ -83,8 +83,8 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_node_request_limit_rules') === true) {
-		$response = _addNodeRequestLimitRules($parameters, $response);
+	if (($parameters['action'] === 'add_node_request_limit_rule') === true) {
+		$response = _addNodeRequestLimitRule($parameters, $response);
 		_output($response);
 	}
 ?>
