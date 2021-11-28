@@ -34,7 +34,7 @@
 		}
 
 		$node = _list(array(
-			'columns' => array(
+			'data' => array(
 				'id',
 				'node_id'
 			),
@@ -86,7 +86,7 @@
 				}
 
 				$listeningIpAddressNode = _list(array(
-					'columns' => array(
+					'data' => array(
 						'external_ip_address_version_' . $nodeIpAddressVersion,
 						'id',
 						'internal_ip_address_version_' . $nodeIpAddressVersion
