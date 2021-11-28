@@ -14,7 +14,7 @@
 
 		if (empty($parameters['data']['node_id']) === false) {
 			$nodeNode = _list(array(
-				'columns' => array(
+				'data' => array(
 					'deployed_status',
 					'id',
 					'node_id'
@@ -90,7 +90,7 @@
 		}
 
 		$existingNodeParameters = array(
-			'columns' => array(
+			'data' => array(
 				'external_ip_address_version_4',
 				'external_ip_address_version_6',
 				'internal_ip_address_version_4',
