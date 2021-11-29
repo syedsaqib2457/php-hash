@@ -14,7 +14,7 @@
 		}
 
 		$nodeParameters = array(
-			'columns' => array(
+			'data' => array(
 				'activated_status'
 			),
 			'in' => $parameters['system_databases']['nodes'],
