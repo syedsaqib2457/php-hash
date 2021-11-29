@@ -14,7 +14,7 @@
 		}
 
 		$node = _list(array(
-			'columns' => array(
+			'data' => array(
 				'id'
 			),
 			'in' => $parameters['system_databases']['nodes'],
