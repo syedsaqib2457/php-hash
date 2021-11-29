@@ -25,7 +25,7 @@
 		}
 
 		$nodeProcess = _list(array(
-			'columns' => array(
+			'data' => array(
 				'node_id',
 				'type'
 			),
