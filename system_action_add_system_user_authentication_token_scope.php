@@ -31,7 +31,7 @@
 		}
 
 		$systemUserAuthenticationToken = _list(array(
-			'columns' => array(
+			'data' => array(
 				'system_user_id'
 			),
 			'in' => $parameters['system_databases']['system_user_authentication_tokens'],
