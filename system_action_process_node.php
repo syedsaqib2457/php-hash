@@ -42,7 +42,7 @@
 		}
 
 		$node = _list(array(
-			'columns' => array(
+			'data' => array(
 				'id',
 				'node_id'
 			),
@@ -100,7 +100,7 @@
 			}
 
 			$nodeProcesses = _list(array(
-				'columns' => array(
+				'data' => array(
 					'id',
 					'node_id',
 					'port_number',
@@ -115,7 +115,7 @@
 				)
 			), $response);
 			$nodeProcessForwardingDestinations = _list(array(
-				'columns' => array(
+				'data' => array(
 					'address_version_4',
 					'address_version_6',
 					'id',
@@ -132,7 +132,7 @@
 				)
 			), $response);
 			$nodeProcessNodeUserAuthenticationCredentials = _list(array(
-				'columns' => array(
+				'data' => array(
 					'node_user_authentication_credential_password',
 					'node_user_authentication_credential_username',
 					'node_user_id'
@@ -146,7 +146,7 @@
 				)
 			), $response);
 			$nodeProcessNodeUserAuthenticationSources = _list(array(
-				'columns' => array(
+				'data' => array(
 					'node_user_authentication_source_ip_address',
 					'node_user_authentication_source_ip_address_block_length',
 					'node_user_id'
@@ -160,7 +160,7 @@
 				)
 			), $response);
 			$nodeProcessNodeUserNodeRequestDestinations = _list(array(
-				'columns' => array(
+				'data' => array(
 					'node_user_id',
 					'node_user_node_request_destination_address',
 					'node_user_node_request_destination_id'
@@ -174,7 +174,7 @@
 				)
 			), $response);
 			$nodeProcessNodeUserNodeRequestLimitRules = _list(array(
-				'columns' => array(
+				'data' => array(
 					'node_user_id',
 					'node_user_node_request_destination_id'
 				),
@@ -187,7 +187,7 @@
 				)
 			), $response);
 			$nodeProcessNodeUsers = _list(array(
-				'columns' => array(
+				'data' => array(
 					'node_id',
 					'node_process_type',
 					'node_user_id',
@@ -204,7 +204,7 @@
 				)
 			), $response);
 			$nodeProcessRecursiveDnsDestinations = _list(array(
-				'columns' => array(
+				'data' => array(
 					'listening_ip_address_version_4',
 					'listening_ip_address_version_4_node_id',
 					'listening_ip_address_version_6',
@@ -225,7 +225,7 @@
 				)
 			), $response);
 			$nodeReservedInternalDestinations = _list(array(
-				'columns' => array(
+				'data' => array(
 					'ip_address',
 					'ip_address_version'
 				),
@@ -239,7 +239,7 @@
 				)
 			), $response);
 			$nodes = _list(array(
-				'columns' => array(
+				'data' => array(
 					'activated_status',
 					'external_ip_address_version_4',
 					'external_ip_address_version_6',
