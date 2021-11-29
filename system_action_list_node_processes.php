@@ -41,13 +41,13 @@
 
 		if (empty($nodeProcesses) === false) {
 			$mostRecentNodeProcess = _list(array(
-				'columns' => array(
+				'data' => array(
 					'modified_timestamp'
 				),
 				'in' => $parameters['system_databases']['node_processes'],
 				'limit' => 1,
 				'sort' => array(
-					'column' => 'modified_timestamp',
+					'data' => 'modified_timestamp',
 					'order' => 'descending'
 				),
 				'where' => $parameters['where']
