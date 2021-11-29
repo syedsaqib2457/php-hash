@@ -24,7 +24,7 @@
 
 		while ($systemUserSystemUserDataProcessed === false) {
 			$systemUser = _list(array(
-				'columns' => array(
+				'data' => array(
 					'id',
 					'system_user_id'
 				),
