@@ -10,7 +10,7 @@
 	function _addNodeReservedInternalDestination($parameters, $response) {
 		$nodeIpAddressVersion = key($parameters['node']);
 		$existingNodeReservedInternalDestination = _list(array(
-			'columns' => array(
+			'data' => array(
 				'added_status',
 				'id',
 				'ip_address'
@@ -18,7 +18,7 @@
 			'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
 			'sort' => array(
-				'column' => 'ip_address',
+				'data' => 'ip_address',
 				'order' => 'ascending'
 			),
 			'where' => array(
