@@ -14,7 +14,7 @@
 		}
 
 		$nodeParameters = array(
-			'columns' => array(
+			'data' => array(
 				'deployed_status',
 				'id',
 				'node_id'
