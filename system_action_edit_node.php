@@ -17,7 +17,7 @@
 		}
 
 		$node = _list(array(
-			'columns' => array(
+			'data' => array(
 				'external_ip_address_version_4',
 				'external_ip_address_version_6',
 				'internal_ip_address_version_4',
@@ -92,7 +92,7 @@
 		}
 
 		$existingNodeParameters = array(
-			'columns' => array(
+			'data' => array(
 				'external_ip_address_version_4',
 				'external_ip_address_version_6',
 				'internal_ip_address_version_4',
@@ -135,7 +135,7 @@
 		}
 
 		$existingNodeReservedInternalDestinations = _list(array(
-			'columns' => array(
+			'data' => array(
 				'id',
 				'ip_address_version',
 				'node_id',
