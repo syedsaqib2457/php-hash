@@ -167,18 +167,12 @@
 
 			if ($parameters['sort'] === 'random') {
 				$command .= 'RAND()';
-			} elseif (empty($parameters['sort']['data']) === false) {
-				if (empty($parameters['sort']['order']) === true) {
-					$parameters['sort']['order'] = 'DESC';
-				} else {
-					$sortOrders = array(
-						'ascending' => 'ASC',
-						'descending' => 'DESC'
-					);
-					$parameters['sort']['order'] = $sortOrders[$parameters['sort']['order']];
+			} else {
+				foreach ($parameters['sort'] as $sortColumnName => $sortOrder) {
+					$command .= $sortColumnName . ' ' . strtoupper(str_replace('ending', '', $sortOrder)) . ',';
 				}
 
-				$command .= $parameters['sort']['data'] . ' ' . $parameters['sort']['order'] . ', id DESC';
+				$command = rtrim($command, ',');
 			}
 		}
 
