@@ -76,6 +76,7 @@
 						'created' => $nodeProcessNodeUserRequestLog[2],
 						'destination_hostname' => '$nodeProcessNodeUserRequestLog[3]',
 						'destination_ip_address' => $nodeProcessNodeUserRequestLog[4],
+						'id' => random_bytes(10) . time() . random_bytes(10),
 						'node_id' => $parameters['data']['node_id'],
 						'node_process_type' => $parameters['data']['node_process_type'],
 						'node_user_id' => $parameters['data']['node_user_id'],
