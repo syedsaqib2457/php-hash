@@ -9,7 +9,7 @@
 	), $parameters['system_databases'], $response);
 
 	function _addSystemUser($parameters, $response) {
-		$parameters['data'] = array(
+		$systemUserData = array(
 			'id' => random_bytes(10) . time() . random_bytes(10),
 			'system_user_id' => $parameters['system_user_id']
 		);
@@ -53,13 +53,13 @@
 			'in' => $parameters['system_databases']['system_user_system_users']
 		), $response);
 		_save(array(
-			'data' => $parameters['data'],
+			'data' => $systemUserData,
 			'in' => $parameters['system_databases']['system_users']
 		), $response);
 		$systemUser = _list(array(
 			'in' => $parameters['system_databases']['system_users'],
 			'where' => array(
-				'id' => $parameters['data']['id']
+				'id' => $systemUserData['id']
 			)
 		), $response);
 		$systemUser = current($systemUser);
