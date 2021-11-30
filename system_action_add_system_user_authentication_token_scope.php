@@ -10,8 +10,6 @@
 	), $parameters['system_databases'], $response);
 
 	function _addSystemUserAuthenticationTokenScope($parameters, $response) {
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
-
 		if (empty($parameters['data']['system_action']) === true) {
 			$response['message'] = 'System user authentication token scope must have a system action, please try again.';
 			return $response;
@@ -59,6 +57,7 @@
 			return $response;
 		}
 
+		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 		$existingSystemUserAuthenticationTokenScopeCount = _count(array(
 			'in' => $parameters['system_databases']['system_user_authentication_token_scopes'],
