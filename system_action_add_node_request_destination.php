@@ -19,8 +19,19 @@
 			return $response;
 		}
 
+		$existingNodeRequestDestinationCount = _count(array(
+			'in' => $parameters['system_databases']['node_request_destinations'],
+			'where' => array_intersect_key($parameters['data'], array(
+				'hostname' => true
+			))
+		), $response);
+
+		if (($existingNodeRequestDestinationCount > 0) === true) {
+			$response['message'] = 'Node request destination already exists, please try again.';
+			return $response;
+		}
+
 		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
-		// todo: existing node request destination validation
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'hostname' => true,
