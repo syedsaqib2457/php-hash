@@ -18,8 +18,7 @@
 			'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 			'limit' => 1,
 			'sort' => array(
-				'data' => 'ip_address',
-				'order' => 'ascending'
+				'ip_address' => 'ascending'
 			),
 			'where' => array(
 				'added_status' => '0'
