@@ -10,8 +10,6 @@
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
 	function _addNodeProcess($parameters, $response) {
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
-
 		if (empty($parameters['data']['node_id']) === true) {
 			$response['message'] = 'Node process must have a node ID, please try again.';
 			return $response;
@@ -73,6 +71,7 @@
 			return $response;
 		}
 
+		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
