@@ -47,8 +47,7 @@
 				'in' => $parameters['system_databases']['system_database_columns'],
 				'limit' => 1,
 				'sort' => array(
-					'data' => 'modified_timestamp',
-					'order' => 'descending'
+					'modified_timestamp' => 'descending'
 				),
 				'where' => $parameters['where']
 			), $response);
