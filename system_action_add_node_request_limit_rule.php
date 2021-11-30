@@ -8,8 +8,6 @@
 	), $parameters['system_databases'], $response);
 
 	function _addNodeRequestLimitRule($parameters, $response) {
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
-
 		if (empty($parameters['data']['interval_minutes']) === true) {
 			$response['message'] = 'Node request limit rule must have interval minutes, please try again.';
 			return $response;
@@ -61,6 +59,7 @@
 			return $response;
 		}
 
+		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
