@@ -9,9 +9,6 @@
 	), $parameters['system_databases'], $response);
 
 	function _addSystemUserAuthenticationToken($parameters, $response) {
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
-		$parameters['data']['string'] = time() . random_bytes(mt_rand(10, 25)) . uniqid();
-
 		if (empty($parameters['data']['system_user_id']) === true) {
 			$response['message'] = 'System user authentication token must have a system user ID, please try again.';
 			return $response;
@@ -45,6 +42,8 @@
 			return $response;
 		}
 
+		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+		$parameters['data']['string'] = time() . random_bytes(mt_rand(10, 25)) . uniqid();
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
