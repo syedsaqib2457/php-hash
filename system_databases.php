@@ -24,8 +24,7 @@
 				'in' => $parameters['system_databases']['system_databases'],
 				'limit' => 1,
 				'sort' => array(
-					'data' => 'created_timestamp',
-					'order' => 'descending'
+					'created_timestamp' => 'descending'
 				),
 				'where' => array(
 					'table_name' => $systemDatabase
