@@ -31,11 +31,12 @@
 			'in' => $parameters['system_databases']['node_processes'],
 			'where' => $parameters['where']
 		), $response);
-		// todo: add user input for columns and sort order
 		$nodeProcesses = _list(array(
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_processes'],
 			'limit' => $pagination['results_count_per_page'],
 			'offset' => (($pagination['results_page_number'] - 1) * $pagination['results_count_per_page']),
+			'sort' => $parameters['sort'],
 			'where' => $parameters['where']
 		), $response);
 
