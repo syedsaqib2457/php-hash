@@ -2,7 +2,7 @@
 
 Currently in a pre-release development phase.
 
-API documentation and usage tutorials are in the [documentation repository](https://github.com/ghostcompute/documentation/blob/main/readme.md).
+API documentation and usage tutorials are in the [documentation repository](https://github.com/ghostcompute/framework-documentation/blob/main/readme.md).
 
 ### An Essential API Framework for Cloud Privacy and Security
 
