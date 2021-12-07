@@ -16,7 +16,8 @@
 	}
 
 	$parameters = array(
-		'action' => $_SERVER['argv'][1]
+		'action' => $_SERVER['argv'][1],
+		'system_endpoint_destination_address' => '' // todo: add system endpoint URL to parameters, add system_settings database with system_endpoint_destination_address for when URL changes
 	);
 
 	if (
