@@ -15,14 +15,18 @@
 		_output($response);
 	}
 
+	$parameters = array(
+		'action' => $_SERVER['argv'][1]
+	);
+
 	if (
-		(ctype_alnum(str_replace('_', '', $_SERVER['argv'][1])) === false) ||
-		(file_exists('/usr/local/ghostcompute/node_action_' . $_SERVER['argv'][1] . '.php') === false)
+		(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||
+		(file_exists('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '.php') === false)
 	) {
 		$response['message'] = 'Invalid node endpoint request action, please try again.';
 		_output($response);
 	}
 
-	require_once('/usr/local/ghostcompute/node_action_' . $_SERVER['argv'][1] . '.php');
+	require_once('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '.php');
 	_output($response);
 ?>
