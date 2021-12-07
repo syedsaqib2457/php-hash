@@ -41,4 +41,9 @@
 			usleep(200000);
 		}
 	}
+
+	if (($parameters['action'] === 'process_system_recursive_dns_destination') === true) {
+		$response = _processNodeSystemRecursiveDnsDestination();
+		_output($response);
+	}
 ?>
