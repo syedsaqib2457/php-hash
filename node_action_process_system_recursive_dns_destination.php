@@ -1,50 +1,44 @@
 <?php
-	// todo: refactor for simplified procedural API design
+	function _killProcessIds($processIds) {
+		$commands = array(
+			'#!/bin/bash'
+		);
+		$processIdParts = array_chunk($processIds, 10);
 
-	class ProcessNodeSystemRecursiveDnsDestination {
+		foreach ($processIdParts as $processIds) {
+			$commands[] = 'sudo kill -9 ' . implode(' ', $processIds);
+		}
 
-		protected function _killProcessIds($processIds) {
-			$commands = array(
-				'#!/bin/bash'
-			);
-			$processIdParts = array_chunk($processIds, 10);
+		$commands = array_merge($commands, array(
+			'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')',
+			// 'sudo ' . $this->nodeData['binary_files']['telinit'] . ' u' // todo: add binary_files to node_endpoint.php
+		));
+		$commandsFile = '/tmp/commands.sh';
 
-			foreach ($processIdParts as $processIds) {
-				$commands[] = 'sudo kill -9 ' . implode(' ', $processIds);
-			}
-
-			$commands = array_merge($commands, array(
-				'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')',
-				'sudo ' . $this->nodeData['binary_files']['telinit'] . ' u'
-			));
-			$commandsFile = '/tmp/commands.sh';
-
-			if (file_exists($commandsFile) === true) {
-				unlink($commandsFile);
-			}
-
-			file_put_contents($commandsFile, implode("\n", $commands));
-			chmod($commandsFile, 0755);
-			shell_exec('cd /tmp/ && sudo ./' . basename($commandsFile));
+		if (file_exists($commandsFile) === true) {
 			unlink($commandsFile);
-			return;
 		}
 
-		public function process() {
-			exec('ps -h -o pid -o cmd $(pgrep php) | grep "process.php node_system_recursive_dns_destination" | awk \'{print $1}\'', $nodeSystemRecursiveDnsDestinationProcessIds);
-			$nodeSystemRecursiveDnsDestinationProcessIds = array_diff($nodeSystemRecursiveDnsDestinationProcessIds, array(
-				getmypid()
-			));
+		file_put_contents($commandsFile, implode("\n", $commands));
+		chmod($commandsFile, 0755);
+		shell_exec('cd /tmp/ && sudo ./' . basename($commandsFile));
+		unlink($commandsFile);
+		return;
+	}
 
-			if (empty($nodeSystemRecursiveDnsDestinationProcessIds) === false) {
-				$this->_killProcessIds($nodeSystemRecursiveDnsDestinationProcessIds);
-			}
+	_processNodeSystemRecursiveDnsDestination() {
+		exec('ps -h -o pid -o cmd $(pgrep php) | grep "process.php node_system_recursive_dns_destination" | awk \'{print $1}\'', $nodeSystemRecursiveDnsDestinationProcessIds);
+		$nodeSystemRecursiveDnsDestinationProcessIds = array_diff($nodeSystemRecursiveDnsDestinationProcessIds, array(
+			getmypid()
+		));
 
-			while (true) {
-				shell_exec('sudo cp /usr/local/ghostcompute/resolv.conf /etc/resolv.conf');
-				usleep(200000);
-			}
+		if (empty($nodeSystemRecursiveDnsDestinationProcessIds) === false) {
+			_killProcessIds($nodeSystemRecursiveDnsDestinationProcessIds);
 		}
 
+		while (true) {
+			shell_exec('sudo cp /usr/local/ghostcompute/resolv.conf /etc/resolv.conf');
+			usleep(200000);
+		}
 	}
 ?>
