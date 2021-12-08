@@ -58,7 +58,7 @@
 
 		if (empty($parameters['node_authentication_token']) === false) {
 			$node = _list(array(
-				'columns' => array(
+				'data' => array(
 					'external_ip_address_version_4',
 					'external_ip_address_version_6',
 					'id',
@@ -88,7 +88,7 @@
 			}
 		} else {
 			$systemUserAuthenticationToken = _list(array(
-				'columns' => array(
+				'data' => array(
 					'id',
 					'system_user_id'
 				),
