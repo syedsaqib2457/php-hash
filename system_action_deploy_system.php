@@ -808,6 +808,13 @@
 			'storage_capacity_megabytes',
 			'storage_percentage'
 		),
+		'system_settings' => array(
+			'created_timestamp',
+			'id',
+			'modified_timestamp',
+			'name',
+			'value'
+		),
 		'system_user_authentication_token_scopes' => array(
 			'created_timestamp',
 			'id',
