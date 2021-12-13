@@ -16,8 +16,7 @@
 	}
 
 	$parameters = array(
-		'action' => $_SERVER['argv'][1],
-		'system_endpoint_destination_address' => '' // todo: add system endpoint URL to parameters, add system_settings database with system_endpoint_destination_address for when URL changes
+		'action' => $_SERVER['argv'][1]
 	);
 
 	if (file_exists('/usr/local/ghostcompute/system_data.json') === false) {
@@ -42,7 +41,10 @@
 		_output($response);
 	}
 
-	// todo: set system parameters
+	$parameters += array(
+		'system_endpoint_destination_address' => $systemData['endpoint_destination_address'],
+		'system_version' => $systemData['version']
+	);
 
 	if (
 		(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||
