@@ -1,6 +1,29 @@
 <?php
 	function _killProcessIds($processIds) {
 		$commands = array(
+			'#!/bin/bash',
+			'whereis telinit | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "_' . uniqid() . time() . '") 2>&1) | grep -c "single" && echo $binaryFile && break; done | tail -1'
+		);
+		$commandsFile = '/tmp/system_recursive_dns_destination_commands.sh';
+
+		if (file_exists($commandsFile) === true) {
+			unlink($commandsFile);
+		}
+
+		file_put_contents($commandsFile, implode("\n", $commands));
+		chmod($commandsFile, 0755);
+		exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
+		$telinitBinaryFile = current($telinitBinaryFile);
+		unlink($commandsFile);
+
+		if (empty($telinitBinaryFile) === true) {
+			shell_exec('sudo apt-get update');
+			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install systemd');
+			echo 'Error listing telinit binary file, please try again.' . "\n";
+			exit;
+		}
+
+		$commands = array(
 			'#!/bin/bash'
 		);
 		$processIdParts = array_chunk($processIds, 10);
@@ -11,9 +34,9 @@
 
 		$commands = array_merge($commands, array(
 			'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')',
-			// 'sudo ' . $this->nodeData['binary_files']['telinit'] . ' u' // todo: add binary_files to node_endpoint.php
+			'sudo ' . $telinitBinaryFile . ' u'
 		));
-		$commandsFile = '/tmp/commands.sh';
+		$commandsFile = '/tmp/system_recursive_dns_destination_commands.sh';
 
 		if (file_exists($commandsFile) === true) {
 			unlink($commandsFile);
