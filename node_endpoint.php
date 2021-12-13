@@ -46,6 +46,8 @@
 		'system_version' => $systemData['version']
 	);
 
+	// todo: list system_version from system_endpoint_destination_address data and update files if new version is available
+
 	if (
 		(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||
 		(file_exists('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '.php') === false)
