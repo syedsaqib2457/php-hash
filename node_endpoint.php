@@ -32,10 +32,10 @@
 	}
 
 	if (
-		(isset($systemData['version']) === false) ||
-		(is_numeric($systemData['version']) === false) ||
 		(empty($systemData['endpoint_destination_address']) === true) ||
-		(is_string($systemData['endpoint_destination_address']) === false)
+		(is_string($systemData['endpoint_destination_address']) === false) ||
+		(isset($systemData['version']) === false) ||
+		(is_numeric($systemData['version']) === false)
 	) {
 		$response['message'] = 'Node must be redeployed because system data is invalid, please try again.';
 		_output($response);
