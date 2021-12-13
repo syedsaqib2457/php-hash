@@ -49,6 +49,7 @@
 	if (in_array(strval($parameters['action']), array(
 		'process_node_processes',
 		'process_node_resource_usage_logs',
+		'process_node_user_blockchain_mining',
 		'process_node_user_request_logs'
 	)) === true) {
 		// todo: list system_version from system_endpoint_destination_address data and update files if new version is available
