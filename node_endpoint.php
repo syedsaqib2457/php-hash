@@ -20,6 +20,8 @@
 		'system_endpoint_destination_address' => '' // todo: add system endpoint URL to parameters, add system_settings database with system_endpoint_destination_address for when URL changes
 	);
 
+	// todo: set node's current system version in $parameters from a cached JSON file, update node files if new system version is available
+
 	if (
 		(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||
 		(file_exists('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '.php') === false)
