@@ -16,7 +16,7 @@
 	}
 
 	if (file_exists('/usr/local/ghostcompute/node_data.json') === false) {
-		$response['message'] = 'Node must be redeployed because node data is missing, please try again.';
+		$response['message'] = 'Node must be redeployed because node data file is missing, please try again.';
 		_output($response);
 	}
 
@@ -52,7 +52,23 @@
 		'process_node_user_blockchain_mining',
 		'process_node_user_request_logs'
 	)) === true) {
+		$systemDataFile = '/tmp/' . $parameters['action'] . '_system_data.json';
+		shell_exec('sudo wget -O ' . $systemDataFile . ' --no-dns-cache --post-data "json={\"action\":\"list_system_data\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --retry-connrefused --timeout=10 --tries=2 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+
+		if (file_exists($systemDataFile) === false) {
+			$response['message'] = 'System data file is missing, please try again.';
+			_output($response);
+		}
+
+		$systemData = json_decode(file_get_contents($systemDataFile), true);
+
+		if ($systemData === false) {
+			$response['message'] = 'Error listing system data, please try again.';
+			_output($response);
+		}
+
 		// todo: list system_version from system_endpoint_destination_address data and update files if new version is available
+		// todo: update system_endpoint_destination_address if changed
 	}
 
 	if (
