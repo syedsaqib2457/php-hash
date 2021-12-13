@@ -15,10 +15,6 @@
 		_output($response);
 	}
 
-	$parameters = array(
-		'action' => $_SERVER['argv'][1]
-	);
-
 	if (file_exists('/usr/local/ghostcompute/node_data.json') === false) {
 		$response['message'] = 'Node must be redeployed because node data is missing, please try again.';
 		_output($response);
@@ -43,7 +39,8 @@
 		_output($response);
 	}
 
-	$parameters += array(
+	$parameters = array(
+		'action' => $_SERVER['argv'][1],
 		'node_authentication_token' => $nodeData['authentication_token'],
 		'system_endpoint_destination_address' => $nodeData['system_endpoint_destination_address'],
 		'system_version' => $nodeData['system_version']
