@@ -20,6 +20,13 @@
 		'system_endpoint_destination_address' => '' // todo: add system endpoint URL to parameters, add system_settings database with system_endpoint_destination_address for when URL changes
 	);
 
+	if (file_exists('/usr/local/ghostcompute/system_data.json') === false) {
+		$response['message'] = 'Node must be redeployed because system data is missing, please try again.';
+		_output($response);
+	}
+
+	$systemData = file_get_contents('/usr/local/ghostcompute/system_data.json');
+
 	// todo: set node's current system version in $parameters from a cached JSON file, update node files if new system version is available
 
 	if (
