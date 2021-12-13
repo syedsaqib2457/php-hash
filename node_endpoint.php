@@ -19,31 +19,34 @@
 		'action' => $_SERVER['argv'][1]
 	);
 
-	if (file_exists('/usr/local/ghostcompute/system_data.json') === false) {
-		$response['message'] = 'Node must be redeployed because system data is missing, please try again.';
+	if (file_exists('/usr/local/ghostcompute/node_data.json') === false) {
+		$response['message'] = 'Node must be redeployed because node data is missing, please try again.';
 		_output($response);
 	}
 
-	$systemData = json_decode(file_get_contents('/usr/local/ghostcompute/system_data.json'), true);
+	$nodeData = json_decode(file_get_contents('/usr/local/ghostcompute/node_data.json'), true);
 
-	if ($systemData === false) {
-		$response['message'] = 'Error listing system data, please try again.';
+	if ($nodeData === false) {
+		$response['message'] = 'Error listing node data, please try again.';
 		_output($response);
 	}
 
 	if (
-		(empty($systemData['endpoint_destination_address']) === true) ||
-		(is_string($systemData['endpoint_destination_address']) === false) ||
-		(isset($systemData['version']) === false) ||
-		(is_numeric($systemData['version']) === false)
+		(empty($nodeData['authentication_token']) === true) ||
+		(is_string($nodeData['authentication_token']) === false) ||
+		(empty($nodeData['system_endpoint_destination_address']) === true) ||
+		(is_string($nodeData['system_endpoint_destination_address']) === false) ||
+		(isset($nodeData['system_version']) === false) ||
+		(is_numeric($nodeData['system_version']) === false)
 	) {
-		$response['message'] = 'Node must be redeployed because system data is invalid, please try again.';
+		$response['message'] = 'Node must be redeployed because node data is invalid, please try again.';
 		_output($response);
 	}
 
 	$parameters += array(
-		'system_endpoint_destination_address' => $systemData['endpoint_destination_address'],
-		'system_version' => $systemData['version']
+		'node_authentication_token' => $nodeData['authentication_token'],
+		'system_endpoint_destination_address' => $nodeData['system_endpoint_destination_address'],
+		'system_version' => $nodeData['system_version']
 	);
 
 	// todo: list system_version from system_endpoint_destination_address data and update files if new version is available
