@@ -25,9 +25,24 @@
 		_output($response);
 	}
 
-	$systemData = file_get_contents('/usr/local/ghostcompute/system_data.json');
+	$systemData = json_decode(file_get_contents('/usr/local/ghostcompute/system_data.json'), true);
 
-	// todo: set node's current system version in $parameters from a cached JSON file, update node files if new system version is available
+	if ($systemData === false) {
+		$response['message'] = 'Error listing system data, please try again.';
+		_output($response);
+	}
+
+	if (
+		(isset($systemData['version']) === false) ||
+		(is_numeric($systemData['version']) === false) ||
+		(empty($systemData['endpoint_destination_address']) === true) ||
+		(is_string($systemData['endpoint_destination_address']) === false)
+	) {
+		$response['message'] = 'Node must be redeployed because system data is invalid, please try again.';
+		_output($response);
+	}
+
+	// todo: set system parameters
 
 	if (
 		(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||
