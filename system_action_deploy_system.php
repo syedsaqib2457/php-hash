@@ -944,6 +944,13 @@
 				'created_timestamp' => $timestamp,
 				'id' => random_bytes(10) . time() . random_bytes(10),
 				'modified_timestamp' => $timestamp,
+				'name' => 'endpoint_destination_address',
+				'value' => $systemUrl
+			),
+			array(
+				'created_timestamp' => $timestamp,
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'modified_timestamp' => $timestamp,
 				'name' => 'version',
 				'value' => '1'
 			)
