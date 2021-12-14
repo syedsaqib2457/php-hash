@@ -67,7 +67,10 @@
 			_output($response);
 		}
 
-		// todo: list system_version from system_endpoint_destination_address data and update files if new version is available
+		if (($parameters['system_version'] < $systemData['version']) === true) {
+			// todo: update system files
+		}
+
 		// todo: update system_endpoint_destination_address if changed
 	}
 
