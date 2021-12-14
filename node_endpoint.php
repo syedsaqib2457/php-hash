@@ -69,14 +69,11 @@
 
 		if (($parameters['system_version'] < $systemSettings['version']) === true) {
 			$systemFiles = json_decode($systemSettings['files'], true);
-			// todo: stop crontab
 
 			foreach ($systemFiles as $systemFile) {
 				// todo: kill existing $systemFile process
 				// todo: update system file
 			}
-
-			// todo: start crontab
 		}
 
 		// todo: update system_endpoint_destination_address if changed
