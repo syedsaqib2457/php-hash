@@ -31,6 +31,7 @@
 		}
 
 		if (in_array(strval($parameters['data']['type']), array(
+			'bitcoin',
 			'http_proxy',
 			'load_balancer',
 			'recursive_dns',
