@@ -934,14 +934,27 @@
 		}
 	}
 
+	$systemUserAuthenticationTokenId = random_bytes(10) . time() . random_bytes(10);
+	$systemUserAuthenticationTokenString = $timestamp . random_bytes(mt_rand(10, 25)) . uniqid();
+	$systemUserId = random_bytes(10) . time() . random_bytes(10);
+	$timestamp = time();
 	$databaseData = array(
+		'system_settings' => array(
+			array(
+				'created_timestamp' => $timestamp,
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'modified_timestamp' => $timestamp,
+				'name' => 'version',
+				'value' => '1'
+			)
+		),
 		'system_user_authentication_tokens' => array(
 			array(
-				'created_timestamp' => ($timestamp = time()),
-				'id' => ($systemUserAuthenticationTokenId = random_bytes(10) . time() . random_bytes(10)),
+				'created_timestamp' => $timestamp,
+				'id' => $systemUserAuthenticationTokenId,
 				'modified_timestamp' => $timestamp,
-				'string' => ($systemUserAuthenticationTokenString = $timestamp . random_bytes(mt_rand(10, 25)) . uniqid()),
-				'system_user_id' => ($systemUserId = random_bytes(10) . time() . random_bytes(10))
+				'string' => $systemUserAuthenticationTokenString,
+				'system_user_id' => $systemUserId
 			)
 		),
 		'system_users' => array(
