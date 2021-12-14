@@ -196,7 +196,7 @@
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
 			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
-			echo 'Error listing required binary file, please try again.' . "\n";
+			echo 'Error listing ' . $binary['name'] . ' binary file from the ' . $binary['package'] . ' package, please try again.' . "\n";
 			exit;
 		}
 
