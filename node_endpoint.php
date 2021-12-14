@@ -68,7 +68,11 @@
 		}
 
 		if (($parameters['system_version'] < $systemSettings['version']) === true) {
-			// todo: update system files
+			$systemFiles = json_decode($systemSettings['files'], true);
+
+			foreach ($systemFiles as $systemFile) {
+				// todo: update system files
+			}
 		}
 
 		// todo: update system_endpoint_destination_address if changed
