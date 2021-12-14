@@ -52,22 +52,22 @@
 		'process_node_user_blockchain_mining',
 		'process_node_user_request_logs'
 	)) === true) {
-		$systemDataFile = '/tmp/' . $parameters['action'] . '_system_data.json';
-		shell_exec('sudo wget -O ' . $systemDataFile . ' --no-dns-cache --post-data "json={\"action\":\"list_system_data\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --retry-connrefused --timeout=10 --tries=2 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		$systemSettingsFile = '/tmp/' . $parameters['action'] . '_system_settings.json';
+		shell_exec('sudo wget -O ' . $systemSettingsFile . ' --no-dns-cache --post-data "json={\"action\":\"list_system_settings\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --retry-connrefused --timeout=10 --tries=2 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
-		if (file_exists($systemDataFile) === false) {
-			$response['message'] = 'System data file is missing, please try again.';
+		if (file_exists($systemSettingsFile) === false) {
+			$response['message'] = 'System settings file is missing, please try again.';
 			_output($response);
 		}
 
-		$systemData = json_decode(file_get_contents($systemDataFile), true);
+		$systemSettings = json_decode(file_get_contents($systemSettingsFile), true);
 
-		if ($systemData === false) {
-			$response['message'] = 'Error listing system data, please try again.';
+		if ($systemSettings === false) {
+			$response['message'] = 'Error listing system settings, please try again.';
 			_output($response);
 		}
 
-		if (($parameters['system_version'] < $systemData['version']) === true) {
+		if (($parameters['system_version'] < $systemSettings['version']) === true) {
 			// todo: update system files
 		}
 
