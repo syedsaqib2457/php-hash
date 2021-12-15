@@ -220,19 +220,18 @@
 	}
 
 	$nodeAuthenticationToken = $_SERVER['argv'][1];
-	$systemActionActivateNodeResponseFile = '/tmp/system_action_activate_node_response.json';
 	$systemEndpointDestinationAddress = $_SERVER['argv'][2];
 	$wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2';
 	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0');
-	shell_exec('sudo wget -O ' . $systemActionActivateNodeResponseFile . ' ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo wget -O /tmp/system_action_activate_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-	if (file_exists($systemActionActivateNodeResponseFile) === false) {
+	if (file_exists('/tmp/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionActivateNodeResponse = json_decode(file_get_contents($systemActionActivateNodeResponseFile), true);
-	unlink($systemActionActivateNodeResponseFile);
+	$systemActionActivateNodeResponse = json_decode(file_get_contents('/tmp/system_action_activate_node_response.json'), true);
+	unlink('/tmp/system_action_activate_node_response.json');
 
 	if (empty($systemActionActivateNodeResponse['message']) === true) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -245,24 +244,24 @@
 		exit;
 	}
 
-	shell_exec('sudo wget -O /tmp/node_process_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"process\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo wget -O /tmp/system_action_process_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"process\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-	if (file_exists('/tmp/node_process_response.json') === false) {
+	if (file_exists('/tmp/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
 		exit;
 	}
 
-	$nodeProcessResponse = json_decode(file_get_contents('/tmp/node_process_response.json'), true);
-	unlink('/tmp/node_process_response.json');
+	$systemActionProcessNodeResponse = json_decode(file_get_contents('/tmp/node_process_response.json'), true);
+	unlink('/tmp/system_action_process_node_response.json');
 
-	if (empty($nodeProcessResponse['message']) === true) {
+	if (empty($systemActionProcessNodeResponse['message']) === true) {
 		echo 'Error processing node, please try again.' . "\n";
 		exit;
 	}
 
-	echo $nodeProcessResponse['message'] . "\n";
+	echo $systemActionProcessNodeResponse['message'] . "\n";
 
-	if (($nodeProcessResponse['status_valid'] === '0') === false) {
+	if (($systemActionProcessNodeResponse['status_valid'] === '0') === true) {
 		exit;
 	}
 
