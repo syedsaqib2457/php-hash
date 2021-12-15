@@ -17,6 +17,30 @@
 		return;
 	}
 
+	function _killProcessIds($processIds, $telinitBinaryFile) {
+		$commands = array(
+			'#!/bin/bash'
+		);
+		$processIdParts = array_chunk($processIds, 10);
+
+		foreach ($processIdParts as $processIds) {
+			$commands[] = 'sudo kill -9 ' . implode(' ', $processIds);
+		}
+
+		$commands[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$commands[] = 'sudo ' . $telinitBinaryFile . ' u';
+
+		if (file_exists('/tmp/commands.sh') === true) {
+			unlink('/tmp/commands.sh');
+		}
+
+		file_put_contents('/tmp/commands.sh', implode("\n", $commands));
+		shell_exec('sudo chmod +x /tmp/commands.sh');
+		shell_exec('cd /tmp/ && sudo ./commands.sh');
+		unlink('/tmp/commands.sh');
+		return;
+	}
+
 	$supportedOperatingSystems = array(
 		'debian' => array(
 			'9' => array(
