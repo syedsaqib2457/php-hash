@@ -4,19 +4,6 @@
 		exit;
 	}
 
-	function _executeCommands($commands) {
-		foreach ($commands as $command) {
-			if (
-				(empty($command) === false) &&
-				(is_string($command) === true)
-			) {
-				echo shell_exec($command);
-			}
-		}
-
-		return;
-	}
-
 	function _killProcessIds($processIds, $telinitBinaryFile) {
 		$commands = array(
 			'#!/bin/bash'
@@ -138,11 +125,8 @@
 		exit;
 	}
 
-	$commands = array(
-		'sudo apt-get update',
-		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps systemd'
-	);
-	_executeCommands($commands);
+	shell_exec('sudo apt-get update');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps systemd');
 	$uniqueId = '_' . uniqid() . time();
 	$binaries = array(
 		array(
@@ -239,11 +223,8 @@
 	$systemActionActivateNodeResponseFile = '/tmp/system_action_activate_node_response.json';
 	$systemEndpointDestinationAddress = $_SERVER['argv'][2];
 	$wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2';
-	$commands = array(
-		'sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0',
-		'sudo wget -O ' . $systemActionActivateNodeResponseFile . ' ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php'
-	);
-	_executeCommands($commands);
+	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0');
+	shell_exec('sudo wget -O ' . $systemActionActivateNodeResponseFile . ' ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 	if (file_exists($systemActionActivateNodeResponseFile) === false) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -266,18 +247,14 @@
 
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	_killProcessIds($lockedProcessIds, $binaryFiles['telinit']);
-	$commands = array(
-		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux',
-		'sudo /etc/init.d/apache2 stop',
-	);
-	_executeCommands($commands);
-	$nodePath = '/usr/local/ghostcompute/';
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux');
+	shell_exec('sudo /etc/init.d/apache2 stop');
 
-	if (is_dir($nodePath) === true) {
-		rmdir($nodePath);
+	if (is_dir('/usr/local/ghostcompute/') === true) {
+		rmdir('/usr/local/ghostcompute/');
 	}
 
-	mkdir($nodePath);
-	chmod($nodePath, 0755);
+	mkdir('/usr/local/ghostcompute/');
+	chmod('/usr/local/ghostcompute/', 0755);
 	// todo
 ?>
