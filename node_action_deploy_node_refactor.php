@@ -211,14 +211,14 @@
 		$binaryFiles[$binary['name']] = $binaryFile;
 	}
 
-	$nodeId = $_SERVER['argv'][1];
+	$nodeAuthenticationToken = $_SERVER['argv'][1];
+	$nodeId = $_SERVER['argv'][2];
 	$systemActionActivateNodeResponseFile = '/tmp/system_action_activate_node_response.json';
-	$systemEndpointDestinationAddress = $_SERVER['argv'][2];
+	$systemEndpointDestinationAddress = $_SERVER['argv'][3];
 	$wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2';
-	// todo: node authentication token
 	$commands = array(
 		'sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0',
-		'sudo wget -O ' . $systemActionActivateNodeResponseFile . ' ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"where\":{\"id\":\"' . $nodeId . '\"}}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php'
+		'sudo wget -O ' . $systemActionActivateNodeResponseFile . ' ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"where\":{\"id\":\"' . $nodeId . '\"},\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php'
 	);
 	_executeCommands($commands);
 
