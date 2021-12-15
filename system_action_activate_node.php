@@ -46,6 +46,7 @@
 				'data' => array(
 					'value'
 				),
+				'in' => $parameters['system_databases']['system_settings'],
 				'where' => array(
 					'name' => 'system_endpoint_destination_address'
 				)
