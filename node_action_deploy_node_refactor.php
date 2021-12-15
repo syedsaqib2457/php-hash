@@ -126,6 +126,42 @@
 	$binaries = array(
 		array(
 			'command' => $uniqueId,
+			'name' => 'a2enmod',
+			'output' => 'Module ' . $uniqueId,
+			'package' => 'apache2'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'a2ensite',
+			'output' => 'Site ' . $uniqueId,
+			'package' => 'apache2'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'crontab',
+			'output' => 'invalid option',
+			'package' => 'cron'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'ifconfig',
+			'output' => 'interface',
+			'package' => 'net-tools'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'netstat',
+			'output' => 'invalid option',
+			'package' => 'net-tools'
+		),
+		array(
+			'command' => '-v',
+			'name' => 'php',
+			'output' => 'PHP ',
+			'package' => 'php'
+		),
+		array(
+			'command' => ($uniqueId = '_' . uniqid() . time()),
 			'name' => 'service',
 			'output' => 'unrecognized service',
 			'package' => 'systemd'
@@ -135,6 +171,12 @@
 			'name' => 'sysctl',
 			'output' => 'cannot',
 			'package' => 'procps'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'systemctl',
+			'output' => 'invalid option',
+			'package' => 'systemd'
 		),
 		array(
 			'command' => $uniqueId,
