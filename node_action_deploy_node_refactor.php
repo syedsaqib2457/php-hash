@@ -122,5 +122,26 @@
 		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps systemd'
 	);
 	_executeCommands($commands);
+	$uniqueId = '_' . uniqid() . time();
+	$binaries = array(
+		array(
+			'command' => $uniqueId,
+			'name' => 'service',
+			'output' => 'unrecognized service',
+			'package' => 'systemd'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'sysctl',
+			'output' => 'cannot',
+			'package' => 'procps'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'telinit',
+			'output' => 'single',
+			'package' => 'systemd'
+		)
+	);
 	// todo
 ?>
