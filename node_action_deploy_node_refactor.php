@@ -222,7 +222,8 @@
 	}
 
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
-	_killProcessIds($lockedProcessIds, $binaryFiles['telinit']);
+	$parameters['process_ids'] = $lockedProcessIds;
+	_killProcessIds($parameters);
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux');
 	shell_exec('sudo /etc/init.d/apache2 stop');
 
