@@ -1,6 +1,6 @@
 <?php
 	_processNodeSystemRecursiveDnsDestination($parameters) {
-		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_action_process_system_recursive_dns_destination.php" | awk \'{print $1}\'', $nodeSystemRecursiveDnsDestinationProcessIds);
+		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_system_recursive_dns_destination" | awk \'{print $1}\'', $nodeSystemRecursiveDnsDestinationProcessIds);
 		$nodeSystemRecursiveDnsDestinationProcessIds = array_diff($nodeSystemRecursiveDnsDestinationProcessIds, array(
 			getmypid()
 		));
