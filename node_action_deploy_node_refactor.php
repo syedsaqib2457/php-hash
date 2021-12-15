@@ -234,5 +234,11 @@
 		exit;
 	}
 
+	echo $systemActionActivateNodeResponse['message'] . "\n";
+
+	if (($systemActionActivateNodeResponse['valid_status'] === '0') === true) {
+		exit;
+	}
+
 	// todo
 ?>
