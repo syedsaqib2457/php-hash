@@ -56,7 +56,7 @@
 		shell_exec('sudo wget -O ' . $systemSettingsFile . ' --no-dns-cache --post-data "json={\"action\":\"list_system_settings\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --retry-connrefused --timeout=10 --tries=2 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 		if (file_exists($systemSettingsFile) === false) {
-			$response['message'] = 'System settings file is missing, please try again.';
+			$response['message'] = 'Error listing system settings, please try again.';
 			_output($response);
 		}
 
