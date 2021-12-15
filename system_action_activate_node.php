@@ -43,14 +43,23 @@
 			(($node['deployed_status'] === '0') === true)
 		) {
 			// todo: use system_settings
-			$systemIpAddress = file_get_contents('/var/www/ghostcompute/system_ip_address.txt');
+			$systemEndpointDestinationAddress = _list(array(
+				'data' => array(
+					'value'
+				),
+				'where' => array(
+					'name' => 'system_endpoint_destination_address'
+				)
+			), $response);
+			$systemEndpointDestinationAddress = current(current($systemEndpointDestinationAddress));
 
-			if (empty($systemIpAddress) === true) {
-				$response['message'] = 'Error listing system IP address, please try again.';
+			if (empty($systemEndpointDestinationAddress) === true) {
+				$response['message'] = 'Error listing system endpoint destination address, please try again.';
 				return $response;
 			}
 
-			$response['data']['command'] = 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . ($url = $_SERVER['REQUEST_SCHEME'] . '://' . $systemIpAddress) . '/node_action_deploy_node.php?' . random_bytes(10) . '" && sudo php node_action_deploy_node.php ' . $node['id'] . ' ' . $_SERVER['REQUEST_SCHEME'] . '://' . $systemIpAddress;
+			// todo: use updated filename instead of proxy.php after node deploy refactor
+			$response['data']['command'] = 'cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\') ; sudo $(whereis telinit | awk \'{print $2}\') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y php wget --fix-missing && sudo wget -O proxy.php --no-dns-cache --retry-connrefused --timeout=60 --tries=2 "' . $systemEndpointDestinationAddress . '/node_action_deploy_node.php?' . random_bytes(10) . '" && sudo php node_action_deploy_node.php ' . $node['id'] . ' ' . $systemEndpointDestinationAddress;
 			$response['message'] = 'Node is ready for activation.';
 			return $response;
 		}
