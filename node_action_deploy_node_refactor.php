@@ -264,5 +264,20 @@
 		exit;
 	}
 
+	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
+	_killProcessIds($lockedProcessIds, $binaryFiles['telinit']);
+	$commands = array(
+		'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux',
+		'sudo /etc/init.d/apache2 stop',
+	);
+	_executeCommands($commands);
+	$nodePath = '/usr/local/ghostcompute/';
+
+	if (is_dir($nodePath) === true) {
+		rmdir($nodePath);
+	}
+
+	mkdir($nodePath);
+	chmod($nodePath, 0755);
 	// todo
 ?>
