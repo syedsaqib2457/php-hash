@@ -161,7 +161,7 @@
 			'package' => 'php'
 		),
 		array(
-			'command' => ($uniqueId = '_' . uniqid() . time()),
+			'command' => $uniqueId,
 			'name' => 'service',
 			'output' => 'unrecognized service',
 			'package' => 'systemd'
@@ -185,5 +185,34 @@
 			'package' => 'systemd'
 		)
 	);
+	$binaryFiles = array();
+
+	foreach ($binaries as $binary) {
+		$commands = array(
+			'#!/bin/bash',
+			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
+		);
+		$commandsFile = '/tmp/commands.sh';
+
+		if (file_exists($commandsFile) === true) {
+			unlink($commandsFile);
+		}
+
+		file_put_contents($commandsFile, implode("\n", $commands));
+		chmod($commandsFile, 0755);
+		exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
+		$binaryFile = current($binaryFile);
+		unlink($commandsFile);
+
+		if (empty($binaryFile) === true) {
+			shell_exec('sudo apt-get update');
+			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
+			echo 'Error listing ' . $binary['name'] . ' binary file from the ' . $binary['package'] . ' package, please try again.' . "\n";
+			exit;
+		}
+
+		$binaryFiles[$binary['name']] = $binaryFile;
+	}
+
 	// todo
 ?>
