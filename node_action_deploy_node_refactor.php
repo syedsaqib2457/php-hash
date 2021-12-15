@@ -261,7 +261,7 @@
 
 	echo $systemActionProcessNodeResponse['message'] . "\n";
 
-	if (($systemActionProcessNodeResponse['status_valid'] === '0') === true) {
+	if (($systemActionProcessNodeResponse['valid_status'] === '0') === true) {
 		exit;
 	}
 
