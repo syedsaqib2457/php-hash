@@ -245,6 +245,27 @@
 		exit;
 	}
 
+	shell_exec('sudo wget -O /tmp/node_process_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"process\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+
+	if (file_exists('/tmp/node_process_response.json') === false) {
+		echo 'Error processing node, please try again.' . "\n";
+		exit;
+	}
+
+	$nodeProcessResponse = json_decode(file_get_contents('/tmp/node_process_response.json'), true);
+	unlink('/tmp/node_process_response.json');
+
+	if (empty($nodeProcessResponse['message']) === true) {
+		echo 'Error processing node, please try again.' . "\n";
+		exit;
+	}
+
+	echo $nodeProcessResponse['message'] . "\n";
+
+	if (($nodeProcessResponse['status_valid'] === '0') === false) {
+		exit;
+	}
+
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	$parameters['process_ids'] = $lockedProcessIds;
 	_killProcessIds($parameters);
