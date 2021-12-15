@@ -41,10 +41,100 @@
 
 	$parameters = array(
 		'action' => $_SERVER['argv'][1],
+		'binary_files' => array(),
 		'node_authentication_token' => $nodeData['authentication_token'],
 		'system_endpoint_destination_address' => $nodeData['system_endpoint_destination_address'],
 		'system_version' => $nodeData['system_version']
 	);
+	$uniqueId = '_' . uniqid() . time();
+	$binaries = array(
+		array(
+			'command' => $uniqueId,
+			'name' => 'a2enmod',
+			'output' => 'Module ' . $uniqueId,
+			'package' => 'apache2'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'a2ensite',
+			'output' => 'Site ' . $uniqueId,
+			'package' => 'apache2'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'crontab',
+			'output' => 'invalid option',
+			'package' => 'cron'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'ifconfig',
+			'output' => 'interface',
+			'package' => 'net-tools'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'netstat',
+			'output' => 'invalid option',
+			'package' => 'net-tools'
+		),
+		array(
+			'command' => '-v',
+			'name' => 'php',
+			'output' => 'PHP ',
+			'package' => 'php'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'service',
+			'output' => 'unrecognized service',
+			'package' => 'systemd'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'sysctl',
+			'output' => 'cannot',
+			'package' => 'procps'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'systemctl',
+			'output' => 'invalid option',
+			'package' => 'systemd'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'telinit',
+			'output' => 'single',
+			'package' => 'systemd'
+		)
+	);
+
+	foreach ($binaries as $binary) {
+		$commands = array(
+			'#!/bin/bash',
+			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
+		);
+
+		if (file_exists('/tmp/commands.sh') === true) {
+			unlink('/tmp/commands.sh');
+		}
+
+		file_put_contents('/tmp/commands.sh', implode("\n", $commands));
+		chmod('/tmp/commands.sh', 0755);
+		exec('cd /tmp/ && sudo ./commands.sh', $binaryFile);
+		$binaryFile = current($binaryFile);
+		unlink('/tmp/commands.sh');
+
+		if (empty($binaryFile) === true) {
+			shell_exec('sudo apt-get update');
+			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
+			echo 'Error listing ' . $binary['name'] . ' binary file from the ' . $binary['package'] . ' package, please try again.' . "\n";
+			exit;
+		}
+
+		$parameters['binary_files'][$binary['name']] = $binaryFile;
+	}
 
 	if (in_array(strval($parameters['action']), array(
 		'process_node_processes',
