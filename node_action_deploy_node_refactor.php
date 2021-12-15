@@ -7,5 +7,16 @@
 		exit;
 	}
 
+	function _executeCommands($commands) {
+		foreach ($commands as $command) {
+			if (
+				(empty($command) === false) &&
+				(is_string($command) === true)
+			) {
+				echo shell_exec($command);
+			}
+		}
 
+		return;
+	}
 ?>
