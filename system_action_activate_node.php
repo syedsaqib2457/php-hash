@@ -17,8 +17,8 @@
 			'in' => $parameters['system_databases']['nodes']
 		);
 
-		if (empty($parameters['where']['authentication_token']) === false) {
-			$nodeParameters['where']['authentication_token'] = $parameters['where']['authentication_token'];
+		if (empty($parameters['node_authentication_token']) === false) {
+			$nodeParameters['where']['authentication_token'] = $parameters['node_authentication_token'];
 		}
 
 		if (empty($parameters['where']['id']) === false) {
