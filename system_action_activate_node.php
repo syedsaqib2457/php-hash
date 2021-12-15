@@ -11,6 +11,7 @@
 		$nodeParameters = array(
 			'data' => array(
 				'activated_status',
+				'authentication_token',
 				'deployed_status'
 			),
 			'in' => $parameters['system_databases']['nodes']
