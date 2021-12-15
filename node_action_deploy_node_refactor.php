@@ -257,5 +257,13 @@
 
 	mkdir('/usr/local/ghostcompute/');
 	chmod('/usr/local/ghostcompute/', 0755);
+	exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
+	$interfaceName = current($interfaceName);
+
+	if (empty($interfaceName) === true) {
+		echo 'Error detecting network interface, please try again.' . "\n";
+		exit;
+	}
+
 	// todo
 ?>
