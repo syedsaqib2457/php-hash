@@ -39,9 +39,10 @@
 		}
 
 		if (
-			(empty($parameters['where']['authentication_token']) === true) &&
+			(empty($parameters['node_authentication_token']) === true) &&
 			(($node['deployed_status'] === '0') === true)
 		) {
+			// todo: use system_settings
 			$systemIpAddress = file_get_contents('/var/www/ghostcompute/system_ip_address.txt');
 
 			if (empty($systemIpAddress) === true) {
