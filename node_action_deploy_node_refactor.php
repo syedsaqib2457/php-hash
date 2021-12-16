@@ -302,5 +302,7 @@
 	}
 
 	shell_exec('sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_network_interface_ip_addresses.php');
-	// todo
+	// todo: add recursive DNS config
+	// todo: add proxy config
+	// todo: add crontab config
 ?>
