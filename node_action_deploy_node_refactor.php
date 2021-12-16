@@ -295,5 +295,12 @@
 
 	$nodeNetworkInterfaceIpAddressFileContents = '<?php shell_exec(\'' . implode('\'); shell_exec(\'', $nodeNetworkInterfaceIpAddressFileContents) . '\'); ?>';
 	file_put_contents('/usr/local/ghostcompute/node_network_interface_ip_addresses.php', $nodeNetworkInterfaceIpAddressFileContents);
+
+	if (empty($nodeNetworkInterfaceName) === true) {
+		echo 'Error adding node network interface IP addresses, please try again.' . "\n";
+		exit;
+	}
+
+	shell_exec('sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_network_interface_ip_addresses.php');
 	// todo
 ?>
