@@ -149,9 +149,9 @@
 		),
 		array(
 			'command' => $uniqueId,
-			'name' => 'ifconfig',
-			'output' => 'interface',
-			'package' => 'net-tools'
+			'name' => 'ip',
+			'output' => 'ip help',
+			'package' => 'iproute2'
 		),
 		array(
 			'command' => '-' . $uniqueId,
