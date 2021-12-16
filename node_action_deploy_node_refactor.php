@@ -316,7 +316,10 @@
 	);
 	$nodeActions = array(
 		'process_node_processes',
-		// todo
+		'process_node_resource_usage_logs',
+		'process_node_user_blockchain_mining',
+		'process_node_user_request_logs',
+		'process_node_system_recursive_dns_destination'
 	);
 
 	foreach ($nodeActions as $nodeAction) {
