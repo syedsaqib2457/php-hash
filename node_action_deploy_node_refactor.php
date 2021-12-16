@@ -379,6 +379,10 @@
 	}
 
 	echo $systemActionDeployNodeResponse['message'] . "\n";
-	shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
+
+	if (($systemActionProcessNodeResponse['valid_status'] === '1') === true) {
+		shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
+	}
+
 	exit;
 ?>
