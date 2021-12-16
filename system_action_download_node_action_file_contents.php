@@ -13,7 +13,7 @@
 		}
 
 		header('Content-Type: text/plain');
-		echo file_get_contents('/usr/local/ghostcompute/node_action_' . strval($parameters['where']['node_action']) . '.php');
+		echo file_get_contents('/var/www/ghostcompute/node_action_' . strval($parameters['where']['node_action']) . '.php');
 		exit;
 	}
 
