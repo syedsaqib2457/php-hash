@@ -4,6 +4,14 @@
 	}
 
 	function _downloadNodeActionFileContents($parameters, $response) {
+		if (
+			(empty($parameters['where']['node_action']) === true) ||
+			(file_exists('node_action_' . strval($parameters['where']['node_action']) . '.php') === false)
+		) {
+			$response['message'] = 'Error listing node action, please try again.';
+			return $response;
+		}
+
 		// todo
 	}
 
