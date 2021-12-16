@@ -312,9 +312,28 @@
 	// todo: add proxy config
 	$crontabCommands = array(
 		'# ghostcompute',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_processes.php',
 		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php',
 	);
+	$nodeActions = array(
+		'process_node_processes',
+		// todo
+	);
+
+	foreach ($nodeActions as $nodeAction) {
+		$crontabCommands[] = '* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_' . $nodeAction . '.php';
+		unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php');
+		shell_exec('sudo wget -O /usr/local/ghostcompute/node_action_' . $nodeAction . '.php ' . $wgetParameters . ' --post-data "json={\"action\":\"download_node_action_file_contents\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\",\"where\":{\"node_action\":\"' . $nodeAction . '\"}}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+
+		if (file_exists('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php') === false) {
+			echo 'Error downloading node action file contents, please try again.' . "\n";
+			exit;
+		}
+
+		if (file_get_contents('node_action_' . $nodeAction . '.php') === false) {
+			echo 'Error listing node action file contents, please try again.' . "\n";
+			exit;
+		}
+	}
 
 	if (file_exists('/etc/crontab') === false) {
 		echo 'Error listing crontab file contents, please try again.' . "\n";
@@ -344,8 +363,6 @@
 
 	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
 	file_put_contents('/etc/crontab', implode("\n", $crontabFileContents));
-	// todo: use download action to download files
-	shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 	shell_exec('sudo wget -O /tmp/system_action_deploy_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 	if (file_exists('/tmp/system_action_deploy_node_response.json') === false) {
@@ -362,5 +379,6 @@
 	}
 
 	echo $systemActionDeployNodeResponse['message'] . "\n";
+	shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 	exit;
 ?>
