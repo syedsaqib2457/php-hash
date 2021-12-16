@@ -344,5 +344,21 @@
 
 	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
 	file_put_contents('/etc/crontab', implode("\n", $crontabFileContents));
-	// todo
+	shell_exec('sudo wget -O /tmp/system_action_deploy_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+
+	if (file_exists('/tmp/system_action_deploy_node_response.json') === false) {
+		echo 'Error deploying node, please try again.' . "\n";
+		exit;
+	}
+
+	$systemActionDeployNodeResponse = json_decode(file_get_contents('/tmp/system_action_deploy_node_response.json'), true);
+	unlink('/tmp/system_action_deploy_node_response.json');
+
+	if (empty($systemActionDeployNodeResponse['message']) === true) {
+		echo 'Error deploying node, please try again.' . "\n";
+		exit;
+	}
+
+	echo $systemActionDeployNodeResponse['message'] . "\n";
+	exit;
 ?>
