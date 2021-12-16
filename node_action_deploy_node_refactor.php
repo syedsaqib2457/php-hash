@@ -354,7 +354,7 @@
 
 	$crontabFileContents = file_get_contents('/etc/crontab');
 
-	if ($crontabFileContents === false) {
+	if (empty($crontabFileContents) === true) {
 		echo 'Error listing crontab file contents, please try again.' . "\n";
 		exit;
 	}
