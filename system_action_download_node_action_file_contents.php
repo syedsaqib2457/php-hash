@@ -8,7 +8,7 @@
 			(empty($parameters['where']['node_action']) === true) ||
 			(file_exists('node_action_' . strval($parameters['where']['node_action']) . '.php') === false)
 		) {
-			$response['message'] = 'Error listing node action file contents, please try again.';
+			$response['message'] = 'Error downloading node action file contents, please try again.';
 			return $response;
 		}
 
