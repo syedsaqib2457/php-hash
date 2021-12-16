@@ -344,6 +344,7 @@
 
 	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
 	file_put_contents('/etc/crontab', implode("\n", $crontabFileContents));
+	// todo: use download action to download files
 	shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 	shell_exec('sudo wget -O /tmp/system_action_deploy_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
