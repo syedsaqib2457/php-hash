@@ -332,8 +332,17 @@
 			exit;
 		}
 
-		if (file_get_contents('node_action_' . $nodeAction . '.php') === false) {
-			echo 'Error listing node action file contents, please try again.' . "\n";
+		$nodeActionFileContentsResponse = file_get_contents('node_action_' . $nodeAction . '.php');
+
+		if (empty($nodeActionFileContentsResponse)) === true) {
+			echo 'Error downloading node action file contents, please try again.' . "\n";
+			exit;
+		}
+
+		$nodeActionFileContentsResponse = json_decode($nodeActionFileContentsResponse, true);
+
+		if (empty($nodeActionFileContentsResponse['message']) === false) {
+			echo $nodeActionFileContentsResponse['message'] . "\n";
 			exit;
 		}
 	}
