@@ -277,6 +277,12 @@
 
 	mkdir('/usr/local/ghostcompute/');
 	chmod('/usr/local/ghostcompute/', 0755);
+
+	if (is_dir('/usr/local/ghostcompute/') === false) {
+		echo 'Error adding root directory, please try again.' . "\n";
+		exit;
+	}
+
 	exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $nodeNetworkInterfaceName);
 	$nodeNetworkInterfaceName = current($nodeNetworkInterfaceName);
 
