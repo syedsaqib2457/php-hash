@@ -311,10 +311,9 @@
 	// todo: add recursive DNS config
 	// todo: add proxy config
 	$crontabCommands = array(
-		'# [Start]',
+		'# ghostcompute',
 		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_processes.php',
 		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php',
-		'# [Stop]'
 	);
 
 	if (file_exists('/etc/crontab') === false) {
@@ -330,7 +329,20 @@
 	}
 
 	$crontabFileContents = explode("\n", $crontabFileContents);
-	// todo: delete existing crontab commands before appending
+	$crontabFileContentIndex = array_search('# ghostcompute', $crontabFileContents);
+
+	if (is_int($crontabFileContentIndex) === true) {
+		while (is_int($crontabFileContentIndex) === true) {
+			unset($crontabFileContents[$crontabFileContentIndex]);
+			$crontabFileContentIndex++;
+
+			if (strpos($crontabFileContents[$crontabFileContentIndex], 'ghostcompute') === false) {
+				$crontabFileContentIndex = false;
+			}
+		}
+	}
+
 	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
+	file_put_contents('/etc/crontab', implode("\n", $crontabFileContents));
 	// todo
 ?>
