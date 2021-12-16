@@ -277,12 +277,20 @@
 
 	mkdir('/usr/local/ghostcompute/');
 	chmod('/usr/local/ghostcompute/', 0755);
-	exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
-	$interfaceName = current($interfaceName);
+	exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $nodeNetworkInterfaceName);
+	$nodeNetworkInterfaceName = current($nodeNetworkInterfaceName);
 
-	if (empty($interfaceName) === true) {
-		echo 'Error detecting network interface, please try again.' . "\n";
+	if (empty($nodeNetworkInterfaceName) === true) {
+		echo 'Error detecting node network interface, please try again.' . "\n";
 		exit;
+	}
+
+	$nodeNetworkInterfaceIpAddressFileContents = array();
+
+	foreach ($systemActionProcessNodeResponse['data']['node_ip_address_versions'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersion) {
+		foreach ($systemActionProcessNodeResponse['data']['node_ip_addresses'][$nodeIpAddressVersionNetworkMask] as $nodeIpAddress) {
+			$nodeNetworkInterfaceIpAddressFileContents[] = 'shell_exec(\'' . ($command = 'sudo ' . $parameters['binary_files']['ip'] . ' -' . $nodeIpAddressVersion . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $nodeNetworkInterfaceName) . '\');';
+		}
 	}
 
 	// todo
