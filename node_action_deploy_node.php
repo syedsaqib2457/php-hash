@@ -13,15 +13,15 @@
 		$commandFileContents[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$commandFileContents[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
 		$commandFileContents = implode("\n", $commandFileContents);
-		$commandFileContentsResponse = file_put_contents('/tmp/node_action_deploy_node_commands.sh', $commandFileContents);
+		$commandFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commandFileContents);
 
 		if (empty($commandFileContentsResponse) === true) {
 			echo 'Error adding command file contents, please try again.' . "\n";
 			exit;
 		}
 
-		shell_exec('sudo chmod +x /tmp/node_action_deploy_node_commands.sh');
-		shell_exec('cd /tmp/ && sudo ./node_action_deploy_node_commands.sh');
+		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_deploy_node_commands.sh');
+		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_deploy_node_commands.sh');
 		return;
 	}
 
@@ -133,10 +133,8 @@
 
 	mkdir('/usr/local/ghostcompute/');
 	chmod('/usr/local/ghostcompute/', 0755);
-	mkdir('/usr/local/ghostcompute/tmp/');
-	chmod('/usr/local/ghostcompute/tmp/', 0755);
 
-	if (is_dir('/usr/local/ghostcompute/tmp/') === false) {
+	if (is_dir('/usr/local/ghostcompute/') === false) {
 		echo 'Error adding root directory, please try again.' . "\n";
 		exit;
 	}
@@ -214,14 +212,14 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commandFileContents = implode("\n", $commandFileContents);
-		$commandFileContentsResponse = file_put_contents('/tmp/node_action_deploy_node_commands.sh', $commandsFileContents);
+		$commandFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commandsFileContents);
 
 		if (empty($commandFileContentsResponse) === true) {
 			echo 'Error adding command file contents, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/tmp/node_action_deploy_node_commands.sh', 0755);
+		chmod('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', 0755);
 		exec('cd /tmp/ && sudo ./node_action_deploy_node_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
@@ -239,14 +237,14 @@
 	$systemEndpointDestinationAddress = $_SERVER['argv'][2];
 	$wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2';
 	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0');
-	shell_exec('sudo wget -O /tmp/system_action_activate_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_activate_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-	if (file_exists('/tmp/system_action_activate_node_response.json') === false) {
+	if (file_exists('/usr/local/ghostcompute/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionActivateNodeResponse = file_get_contents('/tmp/system_action_activate_node_response.json');
+	$systemActionActivateNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_activate_node_response.json');
 	$systemActionActivateNodeResponse = json_decode($systemActionActivateNodeResponse, true);
 
 	if (empty($systemActionActivateNodeResponse['message']) === true) {
@@ -260,14 +258,14 @@
 		exit;
 	}
 
-	shell_exec('sudo wget -O /tmp/system_action_process_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-	if (file_exists('/tmp/system_action_process_node_response.json') === false) {
+	if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionProcessNodeResponse = file_get_contents('/tmp/system_action_process_node_response.json');
+	$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_response.json');
 	$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 	if (empty($systemActionProcessNodeResponse['message']) === true) {
@@ -400,14 +398,14 @@
 		exit;
 	}
 
-	shell_exec('sudo wget -O /tmp/system_action_deploy_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_deploy_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-	if (file_exists('/tmp/system_action_deploy_node_response.json') === false) {
+	if (file_exists('/usr/local/ghostcompute/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionDeployNodeResponse = json_decode(file_get_contents('/tmp/system_action_deploy_node_response.json'), true);
+	$systemActionDeployNodeResponse = json_decode(file_get_contents('/usr/local/ghostcompute/system_action_deploy_node_response.json'), true);
 
 	if (empty($systemActionDeployNodeResponse['message']) === true) {
 		echo 'Error deploying node, please try again.' . "\n";
