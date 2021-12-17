@@ -329,7 +329,6 @@
 
 			unset($this->nodeData['current']['node_process_type_firewall_rule_set_port_numbers']);
 			unset($this->nodeData['current']['node_process_type_firewall_rule_set_reserved_internal_destinations']);
-
 			$kernelOptions = array(
 				'fs.aio-max-nr = 1000000000',
 				'fs.file-max = 1000000000',
