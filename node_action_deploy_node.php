@@ -6,7 +6,8 @@
 		$processIdParts = array_chunk($parameters['process_ids'], 10);
 
 		foreach ($processIdParts as $processIds) {
-			$commandFileContents[] = 'sudo kill -9 ' . implode(' ', $processIds);
+			$processIds = implode(' ', $processIds);
+			$commandFileContents[] = 'sudo kill -9 ' . $processIds;
 		}
 
 		$commandFileContents[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
