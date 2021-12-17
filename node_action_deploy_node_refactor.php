@@ -308,7 +308,16 @@
 	}
 
 	shell_exec('sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php');
-	// todo: add recursive DNS config
+	$recursiveDnsNodeProcessDefaultServiceName = 'named';
+
+	if (is_dir('/etc/default/bind9') === true) {
+		$recursiveDnsNodeProcessDefaultServiceName = 'bind9';
+	}
+
+	exec('pgrep ' . $recursiveDnsNodeProcessDefaultServiceName, $recursiveDnsDefaultProcessIds);
+	$parameters['process_ids'] = $recursiveDnsDefaultProcessIds;
+	_killProcessIds($parameters);
+	shell_exec('sudo mkdir -m 0775 /var/run/named');
 	// todo: add proxy config
 	$crontabCommands = array(
 		'# ghostcompute',
