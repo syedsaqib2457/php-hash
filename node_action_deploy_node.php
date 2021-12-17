@@ -245,7 +245,7 @@
 		exit;
 	}
 
-	shell_exec('sudo wget -O /tmp/system_action_process_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"process\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo wget -O /tmp/system_action_process_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 	if (file_exists('/tmp/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
