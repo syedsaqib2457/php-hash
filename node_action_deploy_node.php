@@ -127,6 +127,20 @@
 		exit;
 	}
 
+	if (is_dir('/usr/local/ghostcompute/') === true) {
+		rmdir('/usr/local/ghostcompute/');
+	}
+
+	mkdir('/usr/local/ghostcompute/');
+	chmod('/usr/local/ghostcompute/', 0755);
+	mkdir('/usr/local/ghostcompute/tmp/');
+	chmod('/usr/local/ghostcompute/tmp/', 0755);
+
+	if (is_dir('/usr/local/ghostcompute/tmp/') === false) {
+		echo 'Error adding root directory, please try again.' . "\n";
+		exit;
+	}
+
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps systemd');
 	$uniqueId = '_' . uniqid() . time();
@@ -272,19 +286,6 @@
 	_killProcessIds($parameters);
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux');
 	shell_exec('sudo /etc/init.d/apache2 stop');
-
-	if (is_dir('/usr/local/ghostcompute/') === true) {
-		rmdir('/usr/local/ghostcompute/');
-	}
-
-	mkdir('/usr/local/ghostcompute/');
-	chmod('/usr/local/ghostcompute/', 0755);
-
-	if (is_dir('/usr/local/ghostcompute/') === false) {
-		echo 'Error adding root directory, please try again.' . "\n";
-		exit;
-	}
-
 	exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $nodeNetworkInterfaceName);
 	$nodeNetworkInterfaceName = current($nodeNetworkInterfaceName);
 
