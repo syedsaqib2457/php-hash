@@ -13,15 +13,15 @@
 		$commandFileContents[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$commandFileContents[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
 		$commandFileContents = implode("\n", $commandFileContents);
-		$commandFileContentsResponse = file_put_contents('/tmp/commands.sh', $commandFileContents);
+		$commandFileContentsResponse = file_put_contents('/tmp/node_action_deploy_node_commands.sh', $commandFileContents);
 
 		if (empty($commandFileContentsResponse) === true) {
 			echo 'Error adding command file contents, please try again.' . "\n";
 			exit;
 		}
 
-		shell_exec('sudo chmod +x /tmp/commands.sh');
-		shell_exec('cd /tmp/ && sudo ./commands.sh');
+		shell_exec('sudo chmod +x /tmp/node_action_deploy_node_commands.sh');
+		shell_exec('cd /tmp/ && sudo ./node_action_deploy_node_commands.sh');
 		return;
 	}
 
@@ -195,21 +195,21 @@
 	$binaryFiles = array();
 
 	foreach ($binaries as $binary) {
-		$commands = array(
+		$commandFileContents = array(
 			'#!/bin/bash',
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
-		$commandsFile = '/tmp/commands.sh';
+		$commandFileContents = implode("\n", $commandFileContents);
+		$commandFileContentsResponse = file_put_contents('/tmp/node_action_deploy_node_commands.sh', $commandsFileContents);
 
-		if (file_exists($commandsFile) === true) {
-			unlink($commandsFile);
+		if (empty($commandFileContentsResponse) === true) {
+			echo 'Error adding command file contents, please try again.' . "\n";
+			exit;
 		}
 
-		file_put_contents($commandsFile, implode("\n", $commands));
-		chmod($commandsFile, 0755);
-		exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
+		chmod('/tmp/node_action_deploy_node_commands.sh', 0755);
+		exec('cd /tmp/ && sudo ./node_action_deploy_node_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
-		unlink($commandsFile);
 
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
@@ -325,15 +325,6 @@
 	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux && sudo make -f Makefile.Linux install');
 	shell_exec('sudo mkdir -p /var/log/3proxy');
-	$crontabCommands = array(
-		'# ghostcompute',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_processes.php',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_resource_usage_logs.php',
-		// todo: add process_node_user_blockchain_mining with parameters
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_user_request_logs.php',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_system_recursive_dns_destination.php',
-		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php'
-	);
 	$nodeActions = array(
 		'process_node_processes',
 		'process_node_resource_usage_logs',
@@ -343,7 +334,6 @@
 	);
 
 	foreach ($nodeActions as $nodeAction) {
-		unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php');
 		shell_exec('sudo wget -O /usr/local/ghostcompute/node_action_' . $nodeAction . '.php ' . $wgetParameters . ' --post-data "json={\"action\":\"download_node_action_file_contents\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\",\"where\":{\"node_action\":\"' . $nodeAction . '\"}}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php') === false) {
@@ -392,7 +382,15 @@
 		}
 	}
 
-	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
+	$crontabFileContents += array(
+		'# ghostcompute',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_processes.php',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_resource_usage_logs.php',
+		// todo: add process_node_user_blockchain_mining with parameters
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_user_request_logs.php',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_system_recursive_dns_destination.php',
+		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php'
+	);
 	$crontabFileContents = implode("\n", $crontabFileContents);
 	$crontabFileContentsResponse = file_put_contents('/etc/crontab', $crontabFileContents);
 
