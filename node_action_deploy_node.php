@@ -391,7 +391,14 @@
 	}
 
 	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
-	file_put_contents('/etc/crontab', implode("\n", $crontabFileContents));
+	$crontabFileContents = implode("\n", $crontabFileContents);
+	$crontabFileContentsResponse = file_put_contents('/etc/crontab', $crontabFileContents);
+
+	if (empty($crontabFileContentsResponse) === true) {
+		echo 'Error adding crontab file contents, please try again.' . "\n";
+		exit;
+	}
+
 	shell_exec('sudo wget -O /tmp/system_action_deploy_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 	if (file_exists('/tmp/system_action_deploy_node_response.json') === false) {
