@@ -11,7 +11,14 @@
 
 		$commandFileContents[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$commandFileContents[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
-		file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', implode("\n", $commandFileContents));
+		$commandFileContents = implode("\n", $commandFileContents);
+		$commandFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commandFileContents);
+
+		if (empty($commandFileContentsResponse) === true) {
+			echo 'Error adding command file contents, please try again.' . "\n";
+			exit;
+		}
+
 		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh');
 		shell_exec('cd /tmp/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh');
 		return;
