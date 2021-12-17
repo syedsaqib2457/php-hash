@@ -101,10 +101,6 @@
 		exit;
 	}
 
-	if (is_dir('/usr/local/ghostcompute/') === true) {
-		rmdir('/usr/local/ghostcompute/');
-	}
-
 	mkdir('/usr/local/ghostcompute/');
 	chmod('/usr/local/ghostcompute/', 0755);
 
