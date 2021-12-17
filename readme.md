@@ -241,9 +241,11 @@ Decreasing the usage of external services wherever possible for application moni
 
 #### Redefined Coding Standards for Simplicity
 
-GhostCompute is built using native PHP with a consistent procedural style and clean modular design. Complexity with secure code structure is solved by avoiding fundamentals such as classes, controllers, namespaces, object-oriented design, routing and view templates.
+GhostCompute is built using native PHP with a consistent procedural style and clean modular design.
 
-Complexity with secure relational database structure is solved by using MySQL as "dumb storage" and processing relational data with fast PHP array indexes.
+Complexity with secure code structure is solved by avoiding fundamentals such as classes, controllers, namespaces, object-oriented design, routing and view templates.
+
+Complexity with secure relational database structure is solved by using MySQL as "dumb storage" with string types only and processing relational data with fast PHP array indexes.
 
 Raw SQL commands are fast and secure with a simplified PHP interface for complex query conditions while avoiding slow, complex prepared statements and SQL joins.
 
