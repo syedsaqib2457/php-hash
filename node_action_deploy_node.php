@@ -262,23 +262,23 @@
 		exit;
 	}
 
-	$nodeActionAddNodeNetworkInterfaceIpAddressFileContents = array();
+	$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents = array();
 
 	foreach ($systemActionProcessNodeResponse['data']['node_ip_address_versions'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersion) {
 		foreach ($systemActionProcessNodeResponse['data']['node_ip_addresses'][$nodeIpAddressVersionNetworkMask] as $nodeIpAddress) {
-			$nodeActionAddNodeNetworkInterfaceIpAddressFileContents[] = 'shell_exec(\'sudo ' . $parameters['binary_files']['ip'] . ' -' . $nodeIpAddressVersion . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $nodeNetworkInterfaceName . '\');';
+			$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents[] = 'shell_exec(\'sudo ' . $parameters['binary_files']['ip'] . ' -' . $nodeIpAddressVersion . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $nodeNetworkInterfaceName . '\');';
 		}
 	}
 
-	$nodeActionAddNodeNetworkInterfaceIpAddressFileContents = '<?php shell_exec(\'' . implode('\'); shell_exec(\'', $nodeActionAddNodeNetworkInterfaceIpAddressFileContents) . '\'); ?>';
-	$nodeActionAddNodeNetworkInterfaceIpAddressFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php', $nodeActionAddNodeNetworkInterfaceIpAddressFileContents);
+	$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents = '<?php shell_exec(\'' . implode('\'); shell_exec(\'', $nodeActionProcessNodeNetworkInterfaceIpAddressFileContents) . '\'); ?>';
+	$nodeActionProcessNodeNetworkInterfaceIpAddressFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php', $nodeActionProcessNodeNetworkInterfaceIpAddressFileContents);
 
-	if (empty($nodeActionAddNodeNetworkInterfaceIpAddressFileContentsResponse) === true) {
-		echo 'Error adding network interface IP addresses, please try again.' . "\n";
+	if (empty($nodeActionProcessNodeNetworkInterfaceIpAddressFileContentsResponse) === true) {
+		echo 'Error processing network interface IP addresses, please try again.' . "\n";
 		exit;
 	}
 
-	shell_exec('sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php');
+	shell_exec('sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php');
 	$recursiveDnsNodeProcessDefaultServiceName = 'named';
 
 	if (is_dir('/etc/default/bind9') === true) {
@@ -353,12 +353,12 @@
 
 	$crontabFileContents += array(
 		'# ghostcompute',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_processes.php',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_resource_usage_logs.php',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_processes',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_resource_usage_logs',
 		// todo: add process_node_user_blockchain_mining with parameters
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_user_request_logs.php',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_system_recursive_dns_destination.php',
-		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php'
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_user_request_logs',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_system_recursive_dns_destination',
+		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_network_interface_ip_addresses'
 	);
 	$crontabFileContents = implode("\n", $crontabFileContents);
 	$crontabFileContentsResponse = file_put_contents('/etc/crontab', $crontabFileContents);
