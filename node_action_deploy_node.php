@@ -30,100 +30,74 @@
 		exit;
 	}
 
-	$supportedOperatingSystems = array(
+	$packageSourceFileContents = array(
 		'debian' => array(
 			'9' => array(
-				'sources' => array(
-					'aptitude' => array(
-						'contents' => array(
-							'deb http://deb.debian.org/debian stretch main',
-							'deb-src http://deb.debian.org/debian stretch main',
-							'deb http://deb.debian.org/debian stretch-updates main',
-							'deb-src http://deb.debian.org/debian stretch-updates main',
-							'deb http://security.debian.org/debian-security/ stretch/updates main',
-							'deb-src http://security.debian.org/debian-security/ stretch/updates main'
-						),
-						'path' => '/etc/apt/sources.list'
-					)
-				)
+				'deb http://deb.debian.org/debian stretch main',
+				'deb-src http://deb.debian.org/debian stretch main',
+				'deb http://deb.debian.org/debian stretch-updates main',
+				'deb-src http://deb.debian.org/debian stretch-updates main',
+				'deb http://security.debian.org/debian-security/ stretch/updates main',
+				'deb-src http://security.debian.org/debian-security/ stretch/updates main'
 			),
 			'10' => array(
-				'sources' => array(
-					'aptitude' => array(
-						'contents' => array(
-							'deb http://deb.debian.org/debian buster main',
-							'deb-src http://deb.debian.org/debian buster main',
-							'deb http://deb.debian.org/debian buster-updates main',
-							'deb-src http://deb.debian.org/debian buster-updates main',
-							'deb http://security.debian.org/debian-security/ buster/updates main',
-							'deb-src http://security.debian.org/debian-security/ buster/updates main'
-						),
-						'path' => '/etc/apt/sources.list'
-					)
-				)
+				'deb http://deb.debian.org/debian buster main',
+				'deb-src http://deb.debian.org/debian buster main',
+				'deb http://deb.debian.org/debian buster-updates main',
+				'deb-src http://deb.debian.org/debian buster-updates main',
+				'deb http://security.debian.org/debian-security/ buster/updates main',
+				'deb-src http://security.debian.org/debian-security/ buster/updates main'
 			)
 		),
 		'ubuntu' => array(
 			'18.04' => array(
-				'sources' => array(
-					'aptitude' => array(
-						'contents' => array(
-							'deb http://archive.ubuntu.com/ubuntu bionic main',
-							'deb http://archive.ubuntu.com/ubuntu bionic-updates main',
-							'deb http://archive.ubuntu.com/ubuntu bionic-backports main',
-							'deb http://security.ubuntu.com/ubuntu bionic-security main',
-							'deb-src http://archive.ubuntu.com/ubuntu bionic main',
-							'deb-src http://archive.ubuntu.com/ubuntu bionic-backports main',
-							'deb-src http://archive.ubuntu.com/ubuntu bionic-updates main',
-							'deb-src http://security.ubuntu.com/ubuntu bionic-security main'
-						),
-						'path' => '/etc/apt/sources.list'
-					)
-				)
+				'deb http://archive.ubuntu.com/ubuntu bionic main',
+				'deb http://archive.ubuntu.com/ubuntu bionic-updates main',
+				'deb http://archive.ubuntu.com/ubuntu bionic-backports main',
+				'deb http://security.ubuntu.com/ubuntu bionic-security main',
+				'deb-src http://archive.ubuntu.com/ubuntu bionic main',
+				'deb-src http://archive.ubuntu.com/ubuntu bionic-backports main',
+				'deb-src http://archive.ubuntu.com/ubuntu bionic-updates main',
+				'deb-src http://security.ubuntu.com/ubuntu bionic-security main'
 			),
 			'20.04' => array(
-				'sources' => array(
-					'aptitude' => array(
-						'contents' => array(
-							'deb http://archive.ubuntu.com/ubuntu focal main',
-							'deb http://archive.ubuntu.com/ubuntu focal-updates main',
-							'deb http://archive.ubuntu.com/ubuntu focal-backports main',
-							'deb http://security.ubuntu.com/ubuntu focal-security main',
-							'deb-src http://archive.ubuntu.com/ubuntu focal main',
-							'deb-src http://archive.ubuntu.com/ubuntu focal-backports main',
-							'deb-src http://archive.ubuntu.com/ubuntu focal-updates main',
-							'deb-src http://security.ubuntu.com/ubuntu focal-security main'
-						),
-						'path' => '/etc/apt/sources.list'
-					)
-				)
+				'deb http://archive.ubuntu.com/ubuntu focal main',
+				'deb http://archive.ubuntu.com/ubuntu focal-updates main',
+				'deb http://archive.ubuntu.com/ubuntu focal-backports main',
+				'deb http://security.ubuntu.com/ubuntu focal-security main',
+				'deb-src http://archive.ubuntu.com/ubuntu focal main',
+				'deb-src http://archive.ubuntu.com/ubuntu focal-backports main',
+				'deb-src http://archive.ubuntu.com/ubuntu focal-updates main',
+				'deb-src http://security.ubuntu.com/ubuntu focal-security main'
 			)
 		)
 	);
 	exec('sudo cat /etc/*-release 2>&1', $operatingSystemDetails);
 
 	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
-		$operatingSystemDetail = explode('=', $operatingSystemDetail);
+		$operatingSystemDetails = explode('=', $operatingSystemDetails);
+		unset($operatingSystemDetails[$operatingSystemDetailKey]);
 
 		if (empty($operatingSystemDetail[1]) === false) {
-			$operatingSystemDetails[strtolower($operatingSystemDetail[0])] = trim($operatingSystemDetail[1], '"');
+			$operatingSystemDetailKey = strtolower($operatingSystemDetail[0]);
+			$operatingSystemDetails[$operatingSystemDetailKey] = trim($operatingSystemDetail[1], '"');
 		}
-
-		unset($operatingSystemDetails[$operatingSystemDetailKey]);
 	}
 
-	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
+	if (empty($packageSourceFileContents[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
 		echo 'Error detecting a supported operating system, please try again.' . "\n";
 		exit;
 	}
 
-	$operatingSystemConfiguration = $supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']];
+	if (file_exists('/etc/apt/sources.list') === false) {
+		echo 'Error listing package source file contents, please try again.' . "\n";
+		exit;
+	}
 
-	if (
-		(file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) === false) ||
-		(file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents'])) === false)
-	) {
-		echo 'Error updating package sources, please try again.' . "\n";
+	$packageSourceFileContents = implode("\n", $packageSourceFileContents[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
+
+	if (file_put_contents('/etc/apt/sources.list', $packageSourceFileContents) === false) {
+		echo 'Error updating package source file contents, please try again.' . "\n";
 		exit;
 	}
 
