@@ -1,25 +1,26 @@
 <?php
 	function _killProcessIds($parameters) {
-		$commands = array(
+		$commandFileContents = array(
 			'#!/bin/bash'
 		);
 		$processIdParts = array_chunk($parameters['process_ids'], 10);
 
 		foreach ($processIdParts as $processIds) {
-			$commands[] = 'sudo kill -9 ' . implode(' ', $processIds);
+			$commandFileContents[] = 'sudo kill -9 ' . implode(' ', $processIds);
 		}
 
-		$commands[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
-		$commands[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
+		$commandFileContents[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$commandFileContents[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
+		$commandFileContents = implode("\n", $commandFileContents);
+		$commandFileContentsResponse = file_put_contents('/tmp/commands.sh', $commandFileContents);
 
-		if (file_exists('/tmp/commands.sh') === true) {
-			unlink('/tmp/commands.sh');
+		if (empty($commandFileContentsResponse) === true) {
+			echo 'Error adding command file contents, please try again.' . "\n";
+			exit;
 		}
 
-		file_put_contents('/tmp/commands.sh', implode("\n", $commands));
 		shell_exec('sudo chmod +x /tmp/commands.sh');
 		shell_exec('cd /tmp/ && sudo ./commands.sh');
-		unlink('/tmp/commands.sh');
 		return;
 	}
 
@@ -230,8 +231,8 @@
 		exit;
 	}
 
-	$systemActionActivateNodeResponse = json_decode(file_get_contents('/tmp/system_action_activate_node_response.json'), true);
-	unlink('/tmp/system_action_activate_node_response.json');
+	$systemActionActivateNodeResponse = file_get_contents('/tmp/system_action_activate_node_response.json');
+	$systemActionActivateNodeResponse = json_decode($systemActionActivateNodeResponse, true);
 
 	if (empty($systemActionActivateNodeResponse['message']) === true) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -251,8 +252,8 @@
 		exit;
 	}
 
-	$systemActionProcessNodeResponse = json_decode(file_get_contents('/tmp/node_process_response.json'), true);
-	unlink('/tmp/system_action_process_node_response.json');
+	$systemActionProcessNodeResponse = file_get_contents('/tmp/system_action_process_node_response.json');
+	$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 	if (empty($systemActionProcessNodeResponse['message']) === true) {
 		echo 'Error processing node, please try again.' . "\n";
@@ -300,9 +301,9 @@
 	}
 
 	$nodeActionAddNodeNetworkInterfaceIpAddressFileContents = '<?php shell_exec(\'' . implode('\'); shell_exec(\'', $nodeActionAddNodeNetworkInterfaceIpAddressFileContents) . '\'); ?>';
-	file_put_contents('/usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php', $nodeActionAddNodeNetworkInterfaceIpAddressFileContents);
+	$nodeActionAddNodeNetworkInterfaceIpAddressFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php', $nodeActionAddNodeNetworkInterfaceIpAddressFileContents);
 
-	if (file_get_contents('/usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php') === false) {
+	if (empty($nodeActionAddNodeNetworkInterfaceIpAddressFileContentsResponse) === true) {
 		echo 'Error adding network interface IP addresses, please try again.' . "\n";
 		exit;
 	}
@@ -407,7 +408,6 @@
 	}
 
 	$systemActionDeployNodeResponse = json_decode(file_get_contents('/tmp/system_action_deploy_node_response.json'), true);
-	unlink('/tmp/system_action_deploy_node_response.json');
 
 	if (empty($systemActionDeployNodeResponse['message']) === true) {
 		echo 'Error deploying node, please try again.' . "\n";
