@@ -312,7 +312,12 @@
 	// todo: add proxy config
 	$crontabCommands = array(
 		'# ghostcompute',
-		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_processes.php',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_resource_usage_logs.php',
+		// todo: add process_node_user_blockchain_mining with parameters
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_user_request_logs.php',
+		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/process_node_system_recursive_dns_destination.php',
+		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_add_node_network_interface_ip_addresses.php'
 	);
 	$nodeActions = array(
 		'process_node_processes',
@@ -323,7 +328,6 @@
 	);
 
 	foreach ($nodeActions as $nodeAction) {
-		$crontabCommands[] = '* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_' . $nodeAction . '.php';
 		unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php');
 		shell_exec('sudo wget -O /usr/local/ghostcompute/node_action_' . $nodeAction . '.php ' . $wgetParameters . ' --post-data "json={\"action\":\"download_node_action_file_contents\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\",\"where\":{\"node_action\":\"' . $nodeAction . '\"}}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
