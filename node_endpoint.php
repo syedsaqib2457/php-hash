@@ -1,25 +1,19 @@
 <?php
 	function _killProcessIds($parameters) {
-		$commands = array(
+		$commandFileContents = array(
 			'#!/bin/bash'
 		);
 		$processIdParts = array_chunk($parameters['process_ids'], 10);
 
 		foreach ($processIdParts as $processIds) {
-			$commands[] = 'sudo kill -9 ' . implode(' ', $processIds);
+			$commandFileContents[] = 'sudo kill -9 ' . implode(' ', $processIds);
 		}
 
-		$commands[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
-		$commands[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
-
-		if (file_exists('/tmp/commands.sh') === true) {
-			unlink('/tmp/commands.sh');
-		}
-
-		file_put_contents('/tmp/commands.sh', implode("\n", $commands));
-		shell_exec('sudo chmod +x /tmp/commands.sh');
-		shell_exec('cd /tmp/ && sudo ./commands.sh');
-		unlink('/tmp/commands.sh');
+		$commandFileContents[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$commandFileContents[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
+		file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', implode("\n", $commandFileContents));
+		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh');
+		shell_exec('cd /tmp/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh');
 		return;
 	}
 
