@@ -270,6 +270,7 @@
 		}
 	}
 
+	// todo: add interface IPs in JSON file with node_action_process_node_network_interface_ip_addresses.php file executed in crontab every 5 minutes because binary path listing may fail on @reboot
 	$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents = '<?php shell_exec(\'' . implode('\'); shell_exec(\'', $nodeActionProcessNodeNetworkInterfaceIpAddressFileContents) . '\'); ?>';
 	$nodeActionProcessNodeNetworkInterfaceIpAddressFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php', $nodeActionProcessNodeNetworkInterfaceIpAddressFileContents);
 
