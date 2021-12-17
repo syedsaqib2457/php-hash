@@ -323,7 +323,6 @@
 	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux && sudo make -f Makefile.Linux install');
 	shell_exec('sudo mkdir -p /var/log/3proxy');
-	// todo: add proxy config
 	$crontabCommands = array(
 		'# ghostcompute',
 		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_processes.php',
