@@ -318,6 +318,11 @@
 	$parameters['process_ids'] = $recursiveDnsDefaultProcessIds;
 	_killProcessIds($parameters);
 	shell_exec('sudo mkdir -m 0775 /var/run/named');
+	shell_exec('sudo rm -rf /usr/src/3proxy/ && sudo mkdir -p /usr/src/3proxy/');
+	shell_exec('cd /usr/src/3proxy/ && sudo wget -O 3proxy.tar.gz ' . $wgetParameters . ' https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
+	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
+	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux && sudo make -f Makefile.Linux install');
+	shell_exec('sudo mkdir -p /var/log/3proxy');
 	// todo: add proxy config
 	$crontabCommands = array(
 		'# ghostcompute',
