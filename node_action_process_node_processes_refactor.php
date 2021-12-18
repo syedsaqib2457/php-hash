@@ -81,7 +81,7 @@
 
 									if ($verifyNodeProcessResponse === false) {
 										// todo: add progress percentage status data
-										exec('sudo curl --connect-timeout 600 --form-string "json={\"action\":\"process_node\",\"data\":{\"processed_status\":\"0\"},\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --silent ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $response);
+										exec('sudo curl --connect-timeout 60 --form-string "json={\"action\":\"process_node\",\"data\":{\"processed_status\":\"0\"},\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --max-time 60 --silent ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $response);
 										return $response;
 									}
 								}
