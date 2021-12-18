@@ -121,7 +121,7 @@
 	}
 
 	if (($parameters['action'] === 'process_node_processes') === true) {
-		_processNodeProcesses($parameters, $response);
+		$response = _processNodeProcesses($parameters, $response);
 		_output($response);
 	}
 ?>
