@@ -162,6 +162,8 @@
 		$parameters['binary_files'][$binary['name']] = $binaryFile;
 	}
 
+	// todo: prevent running duplicate node processes
+
 	if (in_array(strval($parameters['action']), array(
 		'process_node_processes',
 		'process_node_resource_usage_logs',
