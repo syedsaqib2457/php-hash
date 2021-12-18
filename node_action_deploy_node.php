@@ -327,6 +327,8 @@
 		}
 	}
 
+	// todo: download node_endpoint.php in download_node_action_file_contents
+
 	if (file_exists('/etc/crontab') === false) {
 		echo 'Error listing crontab commands, please try again.' . "\n";
 		exit;
@@ -387,6 +389,7 @@
 	echo $systemActionDeployNodeResponse['message'] . "\n";
 
 	if (($systemActionProcessNodeResponse['valid_status'] === '1') === true) {
+		// todo: add node data to node_data.json
 		shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 	}
 
