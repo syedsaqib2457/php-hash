@@ -40,6 +40,10 @@
 			exit;
 		}
 
+		if (empty($nodeProcessResponseFileContents['data']) === false) {
+			// todo
+		}
+
 		// todo
 	}
 
