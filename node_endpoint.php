@@ -141,17 +141,16 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commands = implode("\n", $commands);
-		$filePutContentsResponse = file_put_contents('/tmp/commands.sh', $commands);
+		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commands);
 		
 		if (empty($filePutContentsResponse) === true) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/tmp/commands.sh', 0755);
-		exec('cd /tmp/ && sudo ./commands.sh', $binaryFile);
+		chmod('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', 0755);
+		exec('cd /tmp/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
-		unlink('/tmp/commands.sh');
 
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
