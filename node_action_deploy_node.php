@@ -89,7 +89,7 @@
 		exit;
 	}
 
-	$packageSources = implode("\n", $packageSourceFileContents[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
+	$packageSources = implode("\n", $packageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
 	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
 
 	if (empty($filePutContentsResponse) === true) {
