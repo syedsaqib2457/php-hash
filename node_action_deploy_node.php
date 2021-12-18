@@ -201,9 +201,8 @@
 
 	$nodeAuthenticationToken = $_SERVER['argv'][1];
 	$systemEndpointDestinationAddress = $_SERVER['argv'][2];
-	$wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2';
 	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0');
-	shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_activate_node_response.json ' . $wgetParameters . ' --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
