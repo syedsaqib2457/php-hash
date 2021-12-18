@@ -77,7 +77,7 @@
 						foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
 							foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
 								foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-									$verifyNodeProcessResponse = _verifyNodeProcess($nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
+									$verifyNodeProcessResponse = _verifyNodeProcess($parameters, $nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
 
 									if ($verifyNodeProcessResponse === false) {
 										// todo: add progress percentage status data
@@ -98,20 +98,21 @@
 		// todo
 	}
 
-	function _verifyNodeProcess($nodeProcessNodeIp, $nodeProcessNodeIpVersion, $nodeProcessPortNumber, $nodeProcessType) {
+	function _verifyNodeProcess($parameters, $nodeProcessNodeIp, $nodeProcessNodeIpVersion, $nodeProcessPortNumber, $nodeProcessType) {
 		$response = false;
 
 		switch ($nodeProcessType) {
 			case 'http_proxy':
 			case 'socks_proxy':
-				$parameters = array(
+				$nodeProcessTypeParameters = array(
 					'http_proxy' => '-x',
 					'socks_proxy' => '--socks5-hostname'
 				);
-				exec('curl -' . $nodeProcessNodeIpVersion . ' ' . $parameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+				exec('sudo ' . $parameters['binary_files']['curl'] . ' -' . $nodeProcessNodeIpVersion . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 				$response = (empty($proxyNodeProcessResponse) === true);
 				break;
 			case 'recursive_dns':
+				// todo: add dig to $parameters['binary_files']
 				exec('dig -' . $nodeProcessNodeIpVersion . ' +time=2 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 				$response = (empty($recursiveDnsNodeProcessResponse) === false);
 				break;
