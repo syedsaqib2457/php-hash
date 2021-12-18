@@ -44,16 +44,16 @@
 		shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --timeout=600 --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
-			echo 'Error processing node, please try again.' . "\n";
-			exit;
+			$response['message'] = 'Error processing node, please try again.' . "\n";
+			return $response;
 		}
 
 		$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_next_response.json');
 		$systemActionProcessNodeResponse = json_decode($nodeProcessResponseFileContents, true);
 
 		if ($systemActionProcessNodeResponse === false) {
-			echo 'Error processing node, please try again.' . "\n";
-			exit;
+			$response['message'] = 'Error processing node, please try again.' . "\n";
+			return $response;
 		}
 
 		if (empty($systemActionProcessNodeResponse['data']) === false) {
