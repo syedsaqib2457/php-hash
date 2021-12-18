@@ -20,7 +20,7 @@
 		}
 
 		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh');
-		shell_exec('cd /tmp/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh');
+		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh');
 		return;
 	}
 
@@ -149,7 +149,7 @@
 		}
 
 		chmod('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', 0755);
-		exec('cd /tmp/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh', $binaryFile);
+		exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
