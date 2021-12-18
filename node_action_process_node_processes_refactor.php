@@ -25,7 +25,7 @@
 			}
 		}
 
-		shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --retry-connrefused --timeout=10 --tries=2 --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --timeout=600 --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 		// todo
 	}
 
