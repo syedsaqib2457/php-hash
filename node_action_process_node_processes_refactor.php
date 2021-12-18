@@ -18,6 +18,20 @@
 		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
 		$parameters['node_process_type_firewall_rule_set_index'] = 0;
 
+		if (file_exists('/etc/ssh/sshd_config') === true) {
+			exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
+			$parameters['node_ssh_port_numbers'] = $sshPortNumbers;
+
+			foreach ($parameters['node_ssh_port_numbers'] as $sshPortNumberKey => $sshPortNumber) {
+				if (
+					((strlen($sshPortNumber) > 5) === true) ||
+					(is_numeric($sshPortNumber) === false)
+				) {
+					unset($parameters['node_ssh_port_numbers'][$sshPortNumberKey]);
+				}
+			}
+		}
+
 		if (file_exists('/usr/local/ghostcompute/system_action_process_node_current_response.json') === true) {
 			$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_current_response.json');
 			$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
