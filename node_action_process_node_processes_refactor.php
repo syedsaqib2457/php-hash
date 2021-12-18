@@ -1,5 +1,5 @@
 <?php
-	function _processNodeProcesses($parameters) {
+	function _processNodeProcesses($parameters, $response) {
 		$parameters['ip_address_versions'] = array(
 			4 => array(
 				'interface_type' => 'inet',
@@ -15,11 +15,11 @@
 		exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
 		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
 		$parameters['node_process_type_firewall_rule_set_index'] = 0;
+		// todo
 	}
 
-	// todo
-
 	if (($parameters['action'] === 'process_node_processes') === true) {
-		_processNodeProcesses($parameters);
+		_processNodeProcesses($parameters, $response);
+		_output($response);
 	}
 ?>
