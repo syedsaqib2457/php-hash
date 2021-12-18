@@ -1,5 +1,27 @@
 <?php
 	function _processNodeProcesses($parameters, $response) {
+		function _verifyNodeProcess($nodeProcessNodeIp, $nodeProcessNodeIpVersion, $nodeProcessPortNumber, $nodeProcessType) {
+			$response = false;
+
+			switch ($nodeProcessType) {
+				case 'http_proxy':
+				case 'socks_proxy':
+					$parameters = array(
+						'http_proxy' => '-x',
+						'socks_proxy' => '--socks5-hostname'
+					);
+					exec('curl -' . $nodeProcessNodeIpVersion . ' ' . $parameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 --max-time | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+					$response = (empty($proxyNodeProcessResponse) === true);
+					break;
+				case 'recursive_dns':
+					exec('dig -' . $nodeProcessNodeIpVersion . ' +time=2 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+					$response = (empty($recursiveDnsNodeProcessResponse) === false);
+					break;
+			}
+
+			return $response;
+		}
+
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
 		$parameters['ip_address_versions'] = array(
