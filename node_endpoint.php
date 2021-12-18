@@ -140,12 +140,14 @@
 			'#!/bin/bash',
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
-
-		if (file_exists('/tmp/commands.sh') === true) {
-			unlink('/tmp/commands.sh');
+		$commands = implode("\n", $commands);
+		$filePutContentsResponse = file_put_contents('/tmp/commands.sh', $commands);
+		
+		if (empty($filePutContentsResponse) === true) {
+			echo 'Error adding binary file list commands, please try again.' . "\n";
+			exit;
 		}
 
-		file_put_contents('/tmp/commands.sh', implode("\n", $commands));
 		chmod('/tmp/commands.sh', 0755);
 		exec('cd /tmp/ && sudo ./commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
