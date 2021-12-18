@@ -186,7 +186,7 @@
 		}
 
 		chmod('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', 0755);
-		exec('cd /tmp/ && sudo ./node_action_deploy_node_commands.sh', $binaryFile);
+		exec('cd /usr/local/ghostcompute/ && sudo ./node_action_deploy_node_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
