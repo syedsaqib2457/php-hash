@@ -66,6 +66,33 @@
 			// todo
 		}
 
+		if (empty($parameters['data']['next']['nodes']) === true) {
+			if (empty($parameters['data']['current']) === false) {
+				// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
+
+				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
+					foreach (array(0, 1) as $nodeProcessPartKey) {
+						$nodeIpVersion = key($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
+
+						foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
+							foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
+								foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
+									$verifyNodeProcessResponse = _verifyNodeProcess($nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
+
+									if ($verifyNodeProcessResponse === false) {
+										// todo
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// todo: add default $response with "no new node data to process, etc"
+			return;
+		}
+
 		// todo
 	}
 
