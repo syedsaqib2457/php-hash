@@ -80,7 +80,8 @@
 									$verifyNodeProcessResponse = _verifyNodeProcess($nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
 
 									if ($verifyNodeProcessResponse === false) {
-										exec('sudo curl -s --form-string "json={\"action\":\"process_node\",\"data\":{\"processed_status\":false},\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $response);
+										// todo: add progress percentage status data
+										exec('sudo curl -s --form-string "json={\"action\":\"process_node\",\"data\":{\"processed_status\":\"0\"},\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $response);
 										return $response;
 									}
 								}
