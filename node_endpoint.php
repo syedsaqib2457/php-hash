@@ -1,21 +1,21 @@
 <?php
 	function _killProcessIds($parameters) {
-		$commandFileContents = array(
+		$commands = array(
 			'#!/bin/bash'
 		);
 		$processIdParts = array_chunk($parameters['process_ids'], 10);
 
 		foreach ($processIdParts as $processIds) {
-			$commandFileContents[] = 'sudo kill -9 ' . implode(' ', $processIds);
+			$commands[] = 'sudo kill -9 ' . implode(' ', $processIds);
 		}
 
-		$commandFileContents[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
-		$commandFileContents[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
-		$commandFileContents = implode("\n", $commandFileContents);
-		$commandFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commandFileContents);
+		$commands[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$commands[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
+		$commands = implode("\n", $commands);
+		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commands);
 
-		if (empty($commandFileContentsResponse) === true) {
-			echo 'Error adding command file contents, please try again.' . "\n";
+		if (empty($filePutContentsResponse) === true) {
+			echo 'Error adding kill process ID commands, please try again.' . "\n";
 			exit;
 		}
 
