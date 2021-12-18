@@ -1,5 +1,7 @@
 <?php
 	function _processNodeProcesses($parameters, $response) {
+		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
+		$parameters['interface_name'] = current($interfaceName);
 		$parameters['ip_address_versions'] = array(
 			4 => array(
 				'interface_type' => 'inet',
