@@ -92,6 +92,12 @@
 			'package' => 'cron'
 		),
 		array(
+			'command' => '_' . $uniqueId,
+			'name' => 'curl',
+			'output' => 'Could not resolve host',
+			'package' => 'curl'
+		),
+		array(
 			'command' => $uniqueId,
 			'name' => 'ifconfig',
 			'output' => 'interface',
