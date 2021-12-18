@@ -58,6 +58,11 @@
 
 		if (empty($systemActionProcessNodeResponse['data']) === false) {
 			$parameters['data']['next'] = $systemActionProcessNodeResponse['data'];
+
+			if (empty($parameters['data']['current']) === true) {
+				$parameters['data']['current'] = $parameters['data']['next'];
+			}
+
 			// todo
 		}
 
