@@ -26,6 +26,20 @@
 		}
 
 		shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --timeout=600 --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+
+		if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === false) {
+			echo 'Error processing node, please try again.' . "\n";
+			exit;
+		}
+
+		$nodeProcessResponseFileContents = file_get_contents('/usr/local/ghostcompute/system_action_process_node_response.json');
+		$nodeProcessResponseFileContents = json_decode($nodeProcessResponseFileContents, true);
+
+		if ($nodeProcessResponseFileContents === false) {
+			echo 'Error processing node, please try again.' . "\n";
+			exit;
+		}
+
 		// todo
 	}
 
