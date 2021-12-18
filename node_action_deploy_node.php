@@ -1,22 +1,22 @@
 <?php
 	function _killProcessIds($parameters) {
-		$commandFileContents = array(
+		$commands = array(
 			'#!/bin/bash'
 		);
 		$processIdParts = array_chunk($parameters['process_ids'], 10);
 
 		foreach ($processIdParts as $processIds) {
 			$processIds = implode(' ', $processIds);
-			$commandFileContents[] = 'sudo kill -9 ' . $processIds;
+			$commands[] = 'sudo kill -9 ' . $processIds;
 		}
 
-		$commandFileContents[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
-		$commandFileContents[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
-		$commandFileContents = implode("\n", $commandFileContents);
-		$commandFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commandFileContents);
+		$commands[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$commands[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
+		$commands = implode("\n", $commands);
+		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
 
-		if (empty($commandFileContentsResponse) === true) {
-			echo 'Error adding command file contents, please try again.' . "\n";
+		if (empty($filePutContentsResponse) === true) {
+			echo 'Error adding kill commands, please try again.' . "\n";
 			exit;
 		}
 
@@ -30,7 +30,7 @@
 		exit;
 	}
 
-	$packageSourceFileContents = array(
+	$packageSources = array(
 		'debian' => array(
 			'9' => array(
 				'deb http://deb.debian.org/debian stretch main',
@@ -84,20 +84,16 @@
 		}
 	}
 
-	if (empty($packageSourceFileContents[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
+	if (empty($packageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
 		echo 'Error detecting a supported operating system, please try again.' . "\n";
 		exit;
 	}
 
-	if (file_exists('/etc/apt/sources.list') === false) {
-		echo 'Error listing package source file contents, please try again.' . "\n";
-		exit;
-	}
+	$packageSources = implode("\n", $packageSourceFileContents[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
+	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
 
-	$packageSourceFileContents = implode("\n", $packageSourceFileContents[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
-
-	if (file_put_contents('/etc/apt/sources.list', $packageSourceFileContents) === false) {
-		echo 'Error updating package source file contents, please try again.' . "\n";
+	if (empty($filePutContentsResponse) === true) {
+		echo 'Error updating package sources, please try again.' . "\n";
 		exit;
 	}
 
@@ -177,15 +173,15 @@
 	$binaryFiles = array();
 
 	foreach ($binaries as $binary) {
-		$commandFileContents = array(
+		$commands = array(
 			'#!/bin/bash',
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
-		$commandFileContents = implode("\n", $commandFileContents);
-		$commandFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commandsFileContents);
+		$commands = implode("\n", $commands);
+		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
 
-		if (empty($commandFileContentsResponse) === true) {
-			echo 'Error adding command file contents, please try again.' . "\n";
+		if (empty($filePutContentsResponse) === true) {
+			echo 'Error adding kill commands, please try again.' . "\n";
 			exit;
 		}
 
@@ -327,32 +323,32 @@
 	}
 
 	if (file_exists('/etc/crontab') === false) {
-		echo 'Error listing crontab file contents, please try again.' . "\n";
+		echo 'Error listing crontab commands, please try again.' . "\n";
 		exit;
 	}
 
-	$crontabFileContents = file_get_contents('/etc/crontab');
+	$crontabCommands = file_get_contents('/etc/crontab');
 
-	if (empty($crontabFileContents) === true) {
-		echo 'Error listing crontab file contents, please try again.' . "\n";
+	if (empty($crontabCommands) === true) {
+		echo 'Error listing crontab commands, please try again.' . "\n";
 		exit;
 	}
 
-	$crontabFileContents = explode("\n", $crontabFileContents);
-	$crontabFileContentIndex = array_search('# ghostcompute', $crontabFileContents);
+	$crontabCommands = explode("\n", $crontabCommands);
+	$crontabCommandIndex = array_search('# ghostcompute', $crontabCommands);
 
-	if (is_int($crontabFileContentIndex) === true) {
-		while (is_int($crontabFileContentIndex) === true) {
-			unset($crontabFileContents[$crontabFileContentIndex]);
-			$crontabFileContentIndex++;
+	if (is_int($crontabCommandIndex) === true) {
+		while (is_int($crontabCommandIndex) === true) {
+			unset($crontabCommands[$crontabCommandIndex]);
+			$crontabCommandIndex++;
 
-			if (strpos($crontabFileContents[$crontabFileContentIndex], 'ghostcompute') === false) {
-				$crontabFileContentIndex = false;
+			if (strpos($crontabCommands[$crontabCommandIndex], 'ghostcompute') === false) {
+				$crontabCommandIndex = false;
 			}
 		}
 	}
 
-	$crontabFileContents += array(
+	$crontabCommands += array(
 		'# ghostcompute',
 		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_processes',
 		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_resource_usage_logs',
@@ -361,11 +357,11 @@
 		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_system_recursive_dns_destination',
 		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_network_interface_ip_addresses'
 	);
-	$crontabFileContents = implode("\n", $crontabFileContents);
-	$crontabFileContentsResponse = file_put_contents('/etc/crontab', $crontabFileContents);
+	$crontabCommands = implode("\n", $crontabCommands);
+	$filePutContentsResponse = file_put_contents('/etc/crontab', $crontabCommands);
 
-	if (empty($crontabFileContentsResponse) === true) {
-		echo 'Error adding crontab file contents, please try again.' . "\n";
+	if (empty($filePutContentsResponse) === true) {
+		echo 'Error adding crontab commands, please try again.' . "\n";
 		exit;
 	}
 
