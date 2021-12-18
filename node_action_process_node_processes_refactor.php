@@ -15,6 +15,16 @@
 		exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
 		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
 		$parameters['node_process_type_firewall_rule_set_index'] = 0;
+
+		if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === true) {
+			$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_response.json');
+			$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
+
+			if (empty($systemActionProcessNodeResponse) === false) {
+				$parameters['data']['current'] = $systemActionProcessNodeResponse;
+			}
+		}
+
 		// todo
 	}
 
