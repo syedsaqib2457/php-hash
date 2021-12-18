@@ -75,7 +75,7 @@
 	exec('sudo cat /etc/*-release 2>&1', $operatingSystemDetails);
 
 	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
-		$operatingSystemDetails = explode('=', $operatingSystemDetails);
+		$operatingSystemDetail = explode('=', $operatingSystemDetail);
 		unset($operatingSystemDetails[$operatingSystemDetailKey]);
 
 		if (empty($operatingSystemDetail[1]) === false) {
