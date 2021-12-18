@@ -41,6 +41,7 @@
 		}
 
 		if (empty($nodeProcessResponseFileContents['data']) === false) {
+			$parameters['data']['next'] = $nodeProcessResponseFileContents['data'];
 			// todo
 		}
 
