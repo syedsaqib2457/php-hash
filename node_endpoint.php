@@ -168,23 +168,23 @@
 		'process_node_user_blockchain_mining',
 		'process_node_user_request_logs'
 	)) === true) {
-		$systemSettingsFile = '/tmp/' . $parameters['action'] . '_system_settings.json';
-		shell_exec('sudo wget -O ' . $systemSettingsFile . ' --no-dns-cache --post-data "json={\"action\":\"list_system_settings\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --retry-connrefused --timeout=10 --tries=2 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo wget -O /usr/local/ghostcompute/system_settings.json --no-dns-cache --post-data "json={\"action\":\"list_system_settings\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --timeout=60 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
-		if (file_exists($systemSettingsFile) === false) {
+		if (file_exists('/usr/local/ghostcompute/system_settings.json') === false) {
 			$response['message'] = 'Error listing system settings, please try again.';
 			_output($response);
 		}
 
-		$systemSettings = json_decode(file_get_contents($systemSettingsFile), true);
+		$systemSettingsResponse = file_get_contents('/usr/local/ghostcompute/system_settings.json');
+		$systemSettingsResponse = json_decode($systemSettingsResponse, true);
 
-		if ($systemSettings === false) {
+		if ($systemSettingsResponse === false) {
 			$response['message'] = 'Error listing system settings, please try again.';
 			_output($response);
 		}
 
-		if (($parameters['system_version'] < $systemSettings['version']) === true) {
-			$systemFiles = json_decode($systemSettings['files'], true);
+		if (($parameters['system_version'] < $systemSettingsResponse['version']) === true) {
+			$systemFiles = json_decode($systemSettingsResponse['files'], true);
 
 			foreach ($systemFiles as $systemFile) {
 				// todo: kill existing $systemFile process
