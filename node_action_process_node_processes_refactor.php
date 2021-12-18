@@ -32,8 +32,8 @@
 			}
 		}
 
-		if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === true) {
-			$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_response.json');
+		if (file_exists('/usr/local/ghostcompute/system_action_process_node_current_response.json') === true) {
+			$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_current_response.json');
 			$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 			if (empty($systemActionProcessNodeResponse) === false) {
@@ -41,10 +41,15 @@
 			}
 		}
 
-		$systemActionProcessNodeResponse = array();
-		exec('sudo ' . $parameters['binary_files']['curl'] . ' --connect-timeout 600 --form-string "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --max-time 600 --silent ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $systemActionProcessNodeResponse);
-		$systemActionProcessNodeResponse = current($systemActionProcessNodeResponse);
-		$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
+		shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --timeout=600 --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+
+		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
+			$response['message'] = 'Error processing node, please try again.' . "\n";
+			return $response;
+		}
+
+		$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_next_response.json');
+		$systemActionProcessNodeResponse = json_decode($nodeProcessResponseFileContents, true);
 
 		if ($systemActionProcessNodeResponse === false) {
 			$response['message'] = 'Error processing node, please try again.' . "\n";
