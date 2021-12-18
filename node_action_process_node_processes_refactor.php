@@ -16,8 +16,8 @@
 		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
 		$parameters['node_process_type_firewall_rule_set_index'] = 0;
 
-		if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === true) {
-			$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_response.json');
+		if (file_exists('/usr/local/ghostcompute/system_action_process_node_current_response.json') === true) {
+			$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_current_response.json');
 			$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 			if (empty($systemActionProcessNodeResponse) === false) {
@@ -25,23 +25,23 @@
 			}
 		}
 
-		shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --timeout=600 --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --timeout=600 --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
-		if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === false) {
+		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
 			echo 'Error processing node, please try again.' . "\n";
 			exit;
 		}
 
-		$nodeProcessResponseFileContents = file_get_contents('/usr/local/ghostcompute/system_action_process_node_response.json');
-		$nodeProcessResponseFileContents = json_decode($nodeProcessResponseFileContents, true);
+		$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_next_response.json');
+		$systemActionProcessNodeResponse = json_decode($nodeProcessResponseFileContents, true);
 
-		if ($nodeProcessResponseFileContents === false) {
+		if ($systemActionProcessNodeResponse === false) {
 			echo 'Error processing node, please try again.' . "\n";
 			exit;
 		}
 
-		if (empty($nodeProcessResponseFileContents['data']) === false) {
-			$parameters['data']['next'] = $nodeProcessResponseFileContents['data'];
+		if (empty($systemActionProcessNodeResponse['data']) === false) {
+			$parameters['data']['next'] = $systemActionProcessNodeResponse['data'];
 			// todo
 		}
 
