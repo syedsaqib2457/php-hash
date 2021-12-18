@@ -16,7 +16,7 @@
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
 
 		if (empty($filePutContentsResponse) === true) {
-			echo 'Error adding kill commands, please try again.' . "\n";
+			echo 'Error adding kill process ID commands, please try again.' . "\n";
 			exit;
 		}
 
@@ -181,7 +181,7 @@
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
 
 		if (empty($filePutContentsResponse) === true) {
-			echo 'Error adding kill commands, please try again.' . "\n";
+			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
