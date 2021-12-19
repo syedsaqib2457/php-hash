@@ -220,7 +220,7 @@
 	$nodeAuthenticationToken = $_SERVER['argv'][1];
 	$systemEndpointDestinationAddress = $_SERVER['argv'][2];
 	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0');
-	shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -304,7 +304,7 @@
 	_killProcessIds($parameters);
 	shell_exec('sudo mkdir -m 0775 /var/run/named');
 	shell_exec('sudo rm -rf /usr/src/3proxy/ && sudo mkdir -p /usr/src/3proxy/');
-	shell_exec('cd /usr/src/3proxy/ && sudo wget -O 3proxy.tar.gz --no-dns-cache --timeout=60 https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
+	shell_exec('cd /usr/src/3proxy/ && sudo ' . $parameters['binary_files']['wget'] . ' -O 3proxy.tar.gz --no-dns-cache --timeout=60 https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
 	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux && sudo make -f Makefile.Linux install');
 	shell_exec('sudo mkdir -p /var/log/3proxy');
