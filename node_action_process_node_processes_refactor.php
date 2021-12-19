@@ -3,13 +3,13 @@
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
 		$parameters['ip_address_versions'] = array(
-			4 => array(
+			'4' => array(
 				'interface_type' => 'inet',
-				'network_mask' => 32
+				'network_mask' => '32'
 			),
-			6 => array(
+			'6' => array(
 				'interface_type' => 'inet6',
-				'network_mask' => 128
+				'network_mask' => '128'
 			)
 		);
 		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
@@ -232,7 +232,6 @@
 				}
 			}
 
-			// todo: test ~4000 records with array_diff vs foreach
 			$nodeIpAddressesToDelete[$ipAddressVersion] = array_diff(current($existingNodeIpAddresses), $parameters['data']['next']['node_ip_addresses'][$ipAddressVersionNumber]);
 			shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' create _ hash:ip family ' . $ipAddressVersion['interface_type'] . ' timeout 0');
 
