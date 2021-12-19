@@ -422,22 +422,23 @@
 					}
 				}
 
-					ksort($recursiveDnsNodeProcessConfiguration);
+				ksort($recursiveDnsNodeProcessConfiguration);
 
-					foreach ($recursiveDnsNodeProcessPortNumbers as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
-						while ($this->_verifyNodeProcessConnections($recursiveDnsNodeProcessNodeIps, $recursiveDnsNodeProcessPortNumber) === true) {
-							sleep(1);
+				foreach ($recursiveDnsNodeProcessPortNumbers as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
+					// todo: add default node column to wait for X seconds before closing open connections
+					while (_verifyNodeProcessConnections($recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) {
+						sleep(1);
+					}
+
+					$recursiveDnsNodeProcessName = 'recursive_dns_' . $recursiveDnsNodeProcessId;
+
+					if (file_exists('/etc/' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
+						$recursiveDnsNodeProcessProcessIds = $this->fetchProcessIds($recursiveDnsNodeProcessName . ' ', $recursiveDnsNodeProcessName . '/');
+
+						if (empty($recursiveDnsNodeProcessProcessIds) === false) {
+							_killProcessIds($recursiveDnsNodeProcessProcessIds);
 						}
-
-						$recursiveDnsNodeProcessName = 'recursive_dns_' . $recursiveDnsNodeProcessId;
-
-						if (file_exists('/etc/' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
-							$recursiveDnsNodeProcessProcessIds = $this->fetchProcessIds($recursiveDnsNodeProcessName . ' ', $recursiveDnsNodeProcessName . '/');
-
-							if (empty($recursiveDnsNodeProcessProcessIds) === false) {
-								$this->_killProcessIds($recursiveDnsNodeProcessProcessIds);
-							}
-						}
+					}
 
 						foreach ($recursiveDnsNodeProcessInterfaceDestinationIps as $recursiveDnsNodeProcessInterfaceDestinationIpIndex => $recursiveDnsNodeProcessInterfaceDestinationIp) {
 							$recursiveDnsNodeProcessConfiguration[$recursiveDnsNodeProcessInterfaceDestinationIpIndex] = $recursiveDnsNodeProcessInterfaceDestinationIp . ':' . $recursiveDnsNodeProcessPortNumber . ';';
