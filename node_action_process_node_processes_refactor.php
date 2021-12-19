@@ -62,8 +62,6 @@
 			if (empty($parameters['data']['current']) === true) {
 				$parameters['data']['current'] = $parameters['data']['next'];
 			}
-
-			// todo
 		}
 
 		if (empty($parameters['data']['next']['nodes']) === true) {
