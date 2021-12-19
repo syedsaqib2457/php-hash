@@ -94,6 +94,131 @@
 			return;
 		}
 
+		$kernelOptions = array(
+			'fs.aio-max-nr = 1000000000',
+			'fs.file-max = 1000000000',
+			'fs.nr_open = 1000000000',
+			'fs.pipe-max-size = 10000000',
+			'fs.suid_dumpable = 0',
+			'kernel.core_uses_pid = 1',
+			'kernel.hung_task_timeout_secs = 2',
+			'kernel.io_delay_type = 3',
+			'kernel.kptr_restrict = 2',
+			'kernel.msgmax = 65535',
+			'kernel.msgmnb = 65535',
+			'kernel.printk = 7 7 7 7',
+			'kernel.sem = 404 256000 64 2048',
+			'kernel.shmmni = 32767',
+			'kernel.sysrq = 0',
+			'kernel.threads-max = 1000000000',
+			'net.core.default_qdisc = fq',
+			'net.core.dev_weight = 100000',
+			'net.core.netdev_max_backlog = 1000000',
+			'net.core.somaxconn = 1000000000',
+			'net.ipv4.conf.all.accept_redirects = 0',
+			'net.ipv4.conf.all.accept_source_route = 0',
+			'net.ipv4.conf.all.arp_ignore = 1',
+			'net.ipv4.conf.all.bootp_relay = 0',
+			'net.ipv4.conf.all.forwarding = 0',
+			'net.ipv4.conf.all.rp_filter = 1',
+			'net.ipv4.conf.all.secure_redirects = 0',
+			'net.ipv4.conf.all.send_redirects = 0',
+			'net.ipv4.conf.all.log_martians = 0',
+			'net.ipv4.icmp_echo_ignore_all = 0',
+			'net.ipv4.icmp_echo_ignore_broadcasts = 0',
+			'net.ipv4.icmp_ignore_bogus_error_responses = 1',
+			'net.ipv4.ip_forward = 0',
+			'net.ipv4.ip_local_port_range = 1024 65000',
+			'net.ipv4.ipfrag_high_thresh = 64000000',
+			'net.ipv4.ipfrag_low_thresh = 32000000',
+			'net.ipv4.ipfrag_time = 10',
+			'net.ipv4.neigh.default.gc_interval = 50',
+			'net.ipv4.neigh.default.gc_stale_time = 10',
+			'net.ipv4.neigh.default.gc_thresh1 = 32',
+			'net.ipv4.neigh.default.gc_thresh2 = 1024',
+			'net.ipv4.neigh.default.gc_thresh3 = 2048',
+			'net.ipv4.route.gc_timeout = 2',
+			'net.ipv4.tcp_adv_win_scale = 2',
+			'net.ipv4.tcp_congestion_control = htcp',
+			'net.ipv4.tcp_fastopen = 2',
+			'net.ipv4.tcp_fin_timeout = 2',
+			'net.ipv4.tcp_keepalive_intvl = 2',
+			'net.ipv4.tcp_keepalive_probes = 2',
+			'net.ipv4.tcp_keepalive_time = 2',
+			'net.ipv4.tcp_low_latency = 1',
+			'net.ipv4.tcp_max_orphans = 100000',
+			'net.ipv4.tcp_max_syn_backlog = 1000000',
+			'net.ipv4.tcp_max_tw_buckets = 100000000',
+			'net.ipv4.tcp_moderate_rcvbuf = 1',
+			'net.ipv4.tcp_no_metrics_save = 1',
+			'net.ipv4.tcp_orphan_retries = 0',
+			'net.ipv4.tcp_retries2 = 1',
+			'net.ipv4.tcp_rfc1337 = 0',
+			'net.ipv4.tcp_sack = 0',
+			'net.ipv4.tcp_slow_start_after_idle = 0',
+			'net.ipv4.tcp_syn_retries = 2',
+			'net.ipv4.tcp_synack_retries = 2',
+			'net.ipv4.tcp_syncookies = 0',
+			'net.ipv4.tcp_thin_linear_timeouts = 1',
+			'net.ipv4.tcp_timestamps = 1',
+			'net.ipv4.tcp_tw_reuse = 0',
+			'net.ipv4.tcp_window_scaling = 1',
+			'net.ipv4.udp_rmem_min = 1',
+			'net.ipv4.udp_wmem_min = 1',
+			'net.ipv6.bindv6only = 0',
+			'net.ipv6.conf.all.accept_redirects = 0',
+			'net.ipv6.conf.all.accept_source_route = 0',
+			'net.ipv6.conf.all.disable_ipv6 = 0',
+			'net.ipv6.conf.all.forwarding = 0',
+			'net.ipv6.ip6frag_high_thresh = 64000000',
+			'net.ipv6.ip6frag_low_thresh = 32000000',
+			'net.ipv6.neigh.default.gc_interval = 50',
+			'net.ipv6.neigh.default.gc_stale_time = 10',
+			'net.ipv6.neigh.default.gc_thresh1 = 32',
+			'net.ipv6.neigh.default.gc_thresh2 = 1024',
+			'net.ipv6.neigh.default.gc_thresh3 = 2048',
+			'net.ipv6.route.gc_timeout = 2',
+			'vm.dirty_background_ratio = 10',
+			'vm.dirty_expire_centisecs = 10',
+			'vm.dirty_ratio = 10',
+			'vm.dirty_writeback_centisecs = 100',
+			'vm.max_map_count = 1000000',
+			'vm.mmap_min_addr = 4096',
+			'vm.overcommit_memory = 0',
+			'vm.swappiness = 0'
+		);
+		$kernelOptions = implode("\n", $kernelOptions);
+		$filePutContentsResponse = file_put_contents('/etc/sysctl.conf', $kernelOptions);
+
+		if (empty($filePutContentsResponse) === true) {
+			echo 'Error adding kernel options, please try again.' . "\n";
+			exit;
+		}
+
+		shell_exec('sudo ' . $parameters['binary_files']['sysctl'] . ' -p');
+		$defaultSocketBufferMemoryBytes = ceil($parameters['memory_capacity_bytes'] * 0.0003);
+		$dynamicKernelOptions = array(
+			'kernel.shmall' => floor($parameters['memory_capacity_bytes'] / $parameters['kernel_page_size']),
+			'kernel.shmmax' => $parameters['memory_capacity_bytes'],
+			'net.core.optmem_max' => ceil($parameters['memory_capacity_bytes'] * 0.02),
+			'net.core.rmem_default' => $defaultSocketBufferMemoryBytes,
+			'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
+			'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
+			'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
+		);
+		$memoryCapacityPages = ceil($parameters['memory_capacity_bytes'] / $parameters['kernel_page_size']);
+
+		foreach ($parameters['data']['next']['node_ip_address_versions'] as $nodeIpAddressVersion) {
+			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_mem'] = $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
+			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
+			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_rmem'];
+			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_mem'];
+		}
+
+		foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
+			shell_exec('sudo ' . $parameters['binary_files']['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
+		}
+
 		// todo
 	}
 
