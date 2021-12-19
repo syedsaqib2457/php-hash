@@ -249,6 +249,38 @@
 			return $response;
 		}
 
+		if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
+			$recursiveDnsNodeProcessDefaultServiceName = 'named';
+
+			if (is_dir('/etc/default/bind9') === true) {
+				$recursiveDnsNodeProcessDefaultServiceName = 'bind9';
+			}
+		}
+
+		$nodeProcessesToRemove = $nodeRecursiveDnsDestinations = array();
+
+		foreach ($parameters['data']['next']['node_process_types'] as $nodeProcessType) {
+			$parameters['data']['next']['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
+				'current',
+				'next'
+			);
+
+			foreach ($parameters['data']['current']['node_processes'][$nodeProcessType] as $nodeProcessNodeParts) {
+				foreach ($nodeProcessNodeParts as $nodeProcessNodePart) {
+					foreach ($nodeProcessNodePart as $nodeProcessNodeId => $nodeProcessPortNumbers) {
+						foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
+							if (
+								(empty($parameters['data']['next']['node_processes'][$nodeProcessType][0][$nodeProcessNodeId][$nodeProcessId]) === true) &&
+								(empty($parameters['data']['next']['node_processes'][$nodeProcessType][1][$nodeProcessNodeId][$nodeProcessId]) === true)
+							) {
+								$nodeProcessesToRemove[$nodeProcessType][$nodeProcessId] = $nodeProcessId;
+							}
+						}
+					}
+				}
+			}
+		}
+
 		// todo
 	}
 
