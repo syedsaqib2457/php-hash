@@ -208,11 +208,11 @@
 		);
 		$memoryCapacityPages = ceil($parameters['memory_capacity_bytes'] / $parameters['kernel_page_size']);
 
-		foreach ($parameters['data']['next']['node_ip_address_versions'] as $nodeIpAddressVersion) {
+		foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $nodeIpAddressVersionNumber) {
 			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_mem'] = $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
 			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
-			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_rmem'];
-			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_mem'];
+			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $nodeIpAddressVersionNumber . '.tcp_rmem'];
+			$dynamicKernelOptions['net.ipv' . $nodeIpAddressVersion . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $nodeIpAddressVersionNumber . '.tcp_mem'];
 		}
 
 		foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
