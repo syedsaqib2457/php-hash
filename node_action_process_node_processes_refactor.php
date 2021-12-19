@@ -219,6 +219,30 @@
 			shell_exec('sudo ' . $parameters['binary_files']['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
 		}
 
+		$nodeInterfaces = $nodeIpAddressesToDelete = array();
+
+		foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
+			$existingNodeIpAddresses = array();
+			exec('sudo ' . $parameters['binary_files']['ip'] . ' addr show dev ' . $parameters['interface_name'] . ' | grep "' . $ipAddressVersion['interface_type'] . ' " | grep "' . $ipAddressVersion['network_mask'] . ' " | awk \'{print substr($2, 0, length($2) - ' . ($ipAddressVersionNumber / 2) . ')}\'', $existingNodeIpAddresses);
+
+			if (empty($parameters['data']['next']['node_ip_addresses'][$ipAddressVersionNumber]) === false) {
+				foreach ($parameters['data']['next']['node_ip_addresses'][$ipAddressVersionNumber] as $nodeIpAddress) {
+					$nodeInterfaces[] = 'shell_exec(\'' . ($command = 'sudo ' . $parameters['binary_files']['ip'] . ' -' . $ipAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $ipAddressVersion['network_mask'] . ' dev ' . $parameters['interface_name']) . '\');';
+					shell_exec($command);
+				}
+			}
+
+			// todo: test ~4000 records with array_diff vs foreach
+			$nodeIpAddressesToDelete[$ipAddressVersion] = array_diff(current($existingNodeIpAddresses), $parameters['data']['next']['node_ip_addresses'][$ipAddressVersionNumber]);
+			shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' create _ hash:ip family ' . $ipAddressVersion['interface_type'] . ' timeout 0');
+
+			foreach ($parameters['data']['next']['node_reserved_internal_destination_ip_addresses'][$ipAddressVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
+				shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' add _ ' . $nodeReservedInternalDestinationIpAddress);
+			}
+		}
+
+		array_unshift($nodeInterfaces, '<?php');
+		file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $nodeInterfaces));
 		// todo
 	}
 
