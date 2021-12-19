@@ -242,7 +242,13 @@
 		}
 
 		array_unshift($nodeInterfaces, '<?php');
-		file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $nodeInterfaces));
+		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_interfaces.php', implode("\n", $nodeInterfaces));
+
+		if (empty($filePutContentsResponse) === true) {
+			echo 'Error adding node interfaces, please try again.' . "\n";
+			exit;
+		}
+
 		// todo
 	}
 
