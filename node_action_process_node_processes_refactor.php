@@ -505,14 +505,15 @@
 			}
 
 			$nodeRecursiveDnsDestinations = array();
+		*/
 
-			foreach ($this->nodeData['next']['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
-				foreach ($this->ipVersions as $ipVersionNumber => $ipVersion) {
-					if (empty($nodeRecursiveDnsDestination['listening_ip_version_' . $ipVersionNumber]) === false) {
-						$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip_version_' . $ipVersionNumber] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $ipVersionNumber];
-					}
+		foreach ($parameters['data']['next']['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
+			foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
+				if (empty($nodeRecursiveDnsDestination['listening_ip_address_version_' . $ipAddressVersionNumber]) === false) {
+					$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['listening_ip_address_version_' . $ipAddressVersionNumber] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $ipAddressVersionNumber];
 				}
-			}*/
+			}
+		}
 
 		$nodeRecursiveDnsDestinations = implode("\n", $nodeRecursiveDnsDestinations);
 		file_put_contents('/usr/local/ghostcompute/resolv.conf', $nodeRecursiveDnsDestinations);
