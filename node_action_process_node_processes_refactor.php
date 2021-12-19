@@ -343,8 +343,9 @@
 								(empty($recursiveDnsNodeProcessConfigurationIndexes['node_process_node_user_ids'][$recursiveDnsNodeProcessNodeUserId]) === true) &&
 								(empty($recursiveDnsNodeProcessNodeUser['authentication_whitelist']) === false)
 							) {
-								$recursiveDnsNodeProcessConfigurationIndexes['user_ids'][$recursiveDnsNodeProcessUserId] = true;
-								$recursiveDnsNodeProcessWhitelistedSources = explode("\n", $recursiveDnsNodeProcessUser['authentication_whitelist']);
+								$recursiveDnsNodeProcessConfigurationIndexes['node_process_node_user_ids'][$recursiveDnsNodeProcessNodeUserId] = true;
+								// todo: update authentication and whitelisted sources with new columns
+								$recursiveDnsNodeProcessWhitelistedSources = explode("\n", $recursiveDnsNodeProcessNodeUser['authentication_whitelist']);
 
 								foreach ($recursiveDnsNodeProcessWhitelistedSources as $recursiveDnsNodeProcessWhitelistedSource) {
 									$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $recursiveDnsNodeProcessWhitelistedSource . ';';
