@@ -951,7 +951,7 @@
 				'created_timestamp' => $timestamp,
 				'id' => random_bytes(10) . time() . random_bytes(10),
 				'modified_timestamp' => $timestamp,
-				'name' => 'version',
+				'name' => 'version_number',
 				'value' => '1'
 			)
 		),
