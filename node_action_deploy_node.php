@@ -141,6 +141,12 @@
 		),
 		array(
 			'command' => '-' . $uniqueId,
+			'name' => 'kill',
+			'output' => 'invalid signal',
+			'package' => 'procps'
+		),
+		array(
+			'command' => '-' . $uniqueId,
 			'name' => 'netstat',
 			'output' => 'invalid option',
 			'package' => 'net-tools'
