@@ -308,38 +308,37 @@
 	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux && sudo make -f Makefile.Linux install');
 	shell_exec('sudo mkdir -p /var/log/3proxy');
-	$nodeActions = array(
-		'process_node_processes',
-		'process_node_resource_usage_logs',
-		'process_node_user_blockchain_mining',
-		'process_node_user_request_logs',
-		'process_node_system_recursive_dns_destination'
+	$nodeFiles = array(
+		'node_endpoint.php',
+		'process_node_processes.php',
+		'process_node_resource_usage_logs.php',
+		'process_node_user_blockchain_mining.php',
+		'process_node_user_request_logs.php',
+		'process_node_system_recursive_dns_destination.php'
 	);
 
-	foreach ($nodeActions as $nodeAction) {
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/node_action_' . $nodeAction . '.php --no-dns-cache --post-data "json={\"action\":\"download_node_action_file_contents\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\",\"where\":{\"node_action\":\"' . $nodeAction . '\"}}" --timeout=60 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	foreach ($nodeFiles as $nodeFile) {
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/' . $nodeFile . ' --no-dns-cache --post-data "json={\"action\":\"download_node_file_contents\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\",\"where\":{\"node_file\":\"' . $nodeFile . '\"}}" --timeout=60 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-		if (file_exists('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php') === false) {
-			echo 'Error downloading node action file contents, please try again.' . "\n";
+		if (file_exists('/usr/local/ghostcompute/' . $nodeFile) === false) {
+			echo 'Error downloading node file contents, please try again.' . "\n";
 			exit;
 		}
 
-		$nodeActionFileContentsResponse = file_get_contents('node_action_' . $nodeAction . '.php');
+		$nodeFileContentsResponse = file_get_contents($nodeFile);
 
-		if (empty($nodeActionFileContentsResponse)) === true) {
-			echo 'Error downloading node action file contents, please try again.' . "\n";
+		if (empty($nodeFileContentsResponse)) === true) {
+			echo 'Error downloading node file contents, please try again.' . "\n";
 			exit;
 		}
 
-		$nodeActionFileContentsResponse = json_decode($nodeActionFileContentsResponse, true);
+		$nodeFileContentsResponse = json_decode($nodeFileContentsResponse, true);
 
-		if (empty($nodeActionFileContentsResponse['message']) === false) {
-			echo $nodeActionFileContentsResponse['message'] . "\n";
+		if (empty($nodeFileContentsResponse['message']) === false) {
+			echo $nodeFileContentsResponse['message'] . "\n";
 			exit;
 		}
 	}
-
-	// todo: download node_endpoint.php in download_node_action_file_contents
 
 	if (file_exists('/etc/crontab') === false) {
 		echo 'Error listing crontab commands, please try again.' . "\n";
