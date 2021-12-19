@@ -93,7 +93,7 @@
 	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
 
 	if (empty($filePutContentsResponse) === true) {
-		echo 'Error updating package sources, please try again.' . "\n";
+		echo 'Error adding package sources, please try again.' . "\n";
 		exit;
 	}
 
@@ -323,17 +323,17 @@
 			exit;
 		}
 
-		$nodeFileContentsResponse = file_get_contents($nodeFile);
+		$downloadNodeFileContentsResponse = file_get_contents($nodeFile);
 
-		if (empty($nodeFileContentsResponse)) === true) {
+		if (empty($downloadNodeFileContentsResponse)) === true) {
 			echo 'Error downloading node file contents, please try again.' . "\n";
 			exit;
 		}
 
-		$nodeFileContentsResponse = json_decode($nodeFileContentsResponse, true);
+		$downloadNodeFileContentsResponse = json_decode($downloadNodeFileContentsResponse, true);
 
-		if (empty($nodeFileContentsResponse['message']) === false) {
-			echo $nodeFileContentsResponse['message'] . "\n";
+		if (empty($downloadNodeFileContentsResponse['message']) === false) {
+			echo $downloadNodeFileContentsResponse['message'] . "\n";
 			exit;
 		}
 	}
