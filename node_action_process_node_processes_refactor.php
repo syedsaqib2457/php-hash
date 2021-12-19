@@ -260,7 +260,7 @@
 		$nodeProcessesToRemove = $nodeRecursiveDnsDestinations = array();
 
 		foreach ($parameters['data']['next']['node_process_types'] as $nodeProcessType) {
-			$parameters['data']['next']['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
+			$parameters['data']['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
 				'current',
 				'next'
 			);
