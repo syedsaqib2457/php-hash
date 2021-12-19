@@ -273,19 +273,19 @@
 		exit;
 	}
 
-	$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents = array();
+	$nodeActionProcessNodeNetworkInterfaceIpAddresses = array();
 
-	foreach ($systemActionProcessNodeResponse['data']['node_ip_address_versions'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersion) {
+	foreach ($systemActionProcessNodeResponse['data']['node_ip_address_versions'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
 		foreach ($systemActionProcessNodeResponse['data']['node_ip_addresses'][$nodeIpAddressVersionNetworkMask] as $nodeIpAddress) {
-			$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents[] = 'shell_exec(\'sudo ' . $parameters['binary_files']['ip'] . ' -' . $nodeIpAddressVersion . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $nodeNetworkInterfaceName . '\');';
+			$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents[] = 'shell_exec(\'sudo ' . $parameters['binary_files']['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $nodeNetworkInterfaceName . '\');';
 		}
 	}
 
 	// todo: add interface IPs in JSON file with node_action_process_node_network_interface_ip_addresses.php file executed in crontab every 5 minutes because binary path listing may fail on @reboot
-	$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents = '<?php shell_exec(\'' . implode('\'); shell_exec(\'', $nodeActionProcessNodeNetworkInterfaceIpAddressFileContents) . '\'); ?>';
-	$nodeActionProcessNodeNetworkInterfaceIpAddressFileContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php', $nodeActionProcessNodeNetworkInterfaceIpAddressFileContents);
+	$nodeActionProcessNodeNetworkInterfaceIpAddresses = '<?php shell_exec(\'' . implode('\'); shell_exec(\'', $nodeActionProcessNodeNetworkInterfaceIpAddresses) . '\'); ?>';
+	$nodeActionProcessNodeNetworkInterfaceIpAddressesResponse = file_put_contents('/usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php', $nodeActionProcessNodeNetworkInterfaceIpAddresses);
 
-	if (empty($nodeActionProcessNodeNetworkInterfaceIpAddressFileContentsResponse) === true) {
+	if (empty($nodeActionProcessNodeNetworkInterfaceIpAddressesResponse) === true) {
 		echo 'Error processing network interface IP addresses, please try again.' . "\n";
 		exit;
 	}
@@ -401,7 +401,7 @@
 		$nodeData = array(
 			'authentication_token' => $_SERVER['argv'][1],
 			'system_endpoint_destination_address' => $_SERVER['argv'][2],
-			'system_version' => '1'
+			'system_version_number' => '1'
 		);
 		$nodeData = json_encode($nodeData);
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_data.json', $nodeData);
