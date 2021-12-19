@@ -191,8 +191,8 @@
 		$filePutContentsResponse = file_put_contents('/etc/sysctl.conf', $kernelOptions);
 
 		if (empty($filePutContentsResponse) === true) {
-			echo 'Error adding kernel options, please try again.' . "\n";
-			exit;
+			$response['message'] = 'Error adding kernel options, please try again.' . "\n";
+			return $response;
 		}
 
 		shell_exec('sudo ' . $parameters['binary_files']['sysctl'] . ' -p');
@@ -246,8 +246,8 @@
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_interfaces.php', $nodeInterfaces);
 
 		if (empty($filePutContentsResponse) === true) {
-			echo 'Error adding node interfaces, please try again.' . "\n";
-			exit;
+			$response['message'] = 'Error adding node interfaces, please try again.' . "\n";
+			return $response;
 		}
 
 		// todo
