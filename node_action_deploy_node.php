@@ -7,10 +7,10 @@
 
 		foreach ($processIdParts as $processIds) {
 			$processIds = implode(' ', $processIds);
-			$commands[] = 'sudo kill -9 ' . $processIds;
+			$commands[] = 'sudo ' . $parameters['binary_files']['kill'] . ' -9 ' . $processIds;
 		}
 
-		$commands[] = 'sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$commands[] = 'sudo ' . $parameters['binary_files']['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$commands[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
 		$commands = implode("\n", $commands);
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
