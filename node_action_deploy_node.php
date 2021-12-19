@@ -217,10 +217,8 @@
 		$binaryFiles[$binary['name']] = $binaryFile;
 	}
 
-	$nodeAuthenticationToken = $_SERVER['argv'][1];
-	$systemEndpointDestinationAddress = $_SERVER['argv'][2];
 	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0');
-	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -241,7 +239,7 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --timeout=600 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=600 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
@@ -318,7 +316,7 @@
 	);
 
 	foreach ($nodeFiles as $nodeFile) {
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/' . $nodeFile . ' --no-dns-cache --post-data "json={\"action\":\"download_node_file_contents\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\",\"where\":{\"node_file\":\"' . $nodeFile . '\"}}" --timeout=60 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/' . $nodeFile . ' --no-dns-cache --post-data "json={\"action\":\"download_node_file_contents\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\",\"where\":{\"node_file\":\"' . $nodeFile . '\"}}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/' . $nodeFile) === false) {
 			echo 'Error downloading node file contents, please try again.' . "\n";
@@ -383,7 +381,7 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --timeout=60 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
@@ -400,6 +398,10 @@
 	echo $systemActionDeployNodeResponse['message'] . "\n";
 
 	if (($systemActionProcessNodeResponse['valid_status'] === '1') === true) {
+		$nodeData = array(
+			'system_endpoint_destination_address' => $_SERVER['argv'][2],
+			'system_version' => 1
+		);
 		// todo: add node data to node_data.json
 		shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 	}
