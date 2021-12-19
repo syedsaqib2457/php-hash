@@ -58,8 +58,8 @@
 		(is_string($nodeData['authentication_token']) === false) ||
 		(empty($nodeData['system_endpoint_destination_address']) === true) ||
 		(is_string($nodeData['system_endpoint_destination_address']) === false) ||
-		(isset($nodeData['system_version']) === false) ||
-		(is_numeric($nodeData['system_version']) === false)
+		(isset($nodeData['system_version_number']) === false) ||
+		(is_numeric($nodeData['system_version_number']) === false)
 	) {
 		$response['message'] = 'Node must be redeployed because node data is invalid, please try again.';
 		_output($response);
@@ -70,7 +70,7 @@
 		'binary_files' => array(),
 		'node_authentication_token' => $nodeData['authentication_token'],
 		'system_endpoint_destination_address' => $nodeData['system_endpoint_destination_address'],
-		'system_version' => $nodeData['system_version']
+		'system_version_number' => $nodeData['system_version_number']
 	);
 	$uniqueId = '_' . uniqid() . time();
 	$binaries = array(
