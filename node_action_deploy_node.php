@@ -399,10 +399,18 @@
 
 	if (($systemActionProcessNodeResponse['valid_status'] === '1') === true) {
 		$nodeData = array(
+			'authentication_token' => $_SERVER['argv'][1],
 			'system_endpoint_destination_address' => $_SERVER['argv'][2],
-			'system_version' => 1
+			'system_version' => '1'
 		);
-		// todo: add node data to node_data.json
+		$nodeData = json_encode($nodeData);
+		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_data.json', $nodeData);
+
+		if (empty($filePutContentsResponse) === true) {
+			echo 'Error adding node data, please try again.' . "\n";
+			exit;
+		}
+
 		shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 	}
 
