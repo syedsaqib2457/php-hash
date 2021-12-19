@@ -45,7 +45,8 @@
 		_output($response);
 	}
 
-	$nodeData = json_decode(file_get_contents('/usr/local/ghostcompute/node_data.json'), true);
+	$nodeData = file_get_contents('/usr/local/ghostcompute/node_data.json');
+	$nodeData = json_decode($nodeData, true);
 
 	if ($nodeData === false) {
 		$response['message'] = 'Error listing node data, please try again.';
