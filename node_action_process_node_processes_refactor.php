@@ -294,104 +294,101 @@
 					'a1' => $parameters['data']['next']['reserved_network']['ip_blocks']['4'],
 					'a2' => $parameters['data']['next']['reserved_network']['ip_blocks']['6'],
 					'a3' => '};',
+					'a4' => 'acl whitelistedSources {',
+					'b0' => '};',
+					'b1' => 'options {',
+					'b2' => 'allow-query {',
+					'b3' => 'privateNetworkIpBlocks;',
+					'b4' => 'whitelistedSources;',
+					'b5' => '}',
+					'b6' => 'allow-recursion {',
+					'b7' => 'privateNetworkIpBlocks;',
+					'b8' => '}',
+					'b9' => 'cleaning-interval 1;',
+					'b10' => 'dnssec-enable yes;',
+					'b11' => 'dnssec-must-be-secure mydomain.local no;',
+					'b12' => 'dnssec-validation yes;',
+					'b13' => 'empty-zones-enable no;',
+					'b14' => 'lame-ttl 0;',
+					'b15' => 'max-cache-ttl 1;',
+					'b16' => 'max-ncache-ttl 1;',
+					'b17' => 'max-zone-ttl 1;',
+					'b19' => 'rate-limit {',
+					'b20' => 'exempt-clients {',
+					'b21' => 'any;',
+					'b22' => '};',
+					'b23' => '};',
+					'b24' => 'resolver-query-timeout 10;',
+					'b25' => 'tcp-clients 1000000000;',
+					'd' => false,
+					'e' => false,
+					'f' => '};'
+				);
+				$recursiveDnsNodeProcessConfigurationIndexes = array(
+					'a' => 5,
+					'b' => 26,
+					'c' => 0,
+					'g' => 0
+				);
 
-						// todo: update variable names and array keys for new node_process data format
+				if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns']) === false) {
+					$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'logging {';
+					$recursiveDnsNodeProcessConfigurationIndexes['g']++;
 
-						'a4' => 'acl whitelistedSources {',
-						'b0' => '};',
-						'b1' => 'options {',
-						'b2' => 'allow-query {',
-						'b3' => 'privateNetworkIpBlocks;',
-						'b4' => 'whitelistedSources;',
-						'b5' => '}',
-						'b6' => 'allow-recursion {',
-						'b7' => 'privateNetworkIpBlocks;',
-						'b8' => '}',
-						'b9' => 'cleaning-interval 1;',
-						'b10' => 'dnssec-enable yes;',
-						'b11' => 'dnssec-must-be-secure mydomain.local no;',
-						'b12' => 'dnssec-validation yes;',
-						'b13' => 'empty-zones-enable no;',
-						'b14' => 'lame-ttl 0;',
-						'b15' => 'max-cache-ttl 1;',
-						'b16' => 'max-ncache-ttl 1;',
-						'b17' => 'max-zone-ttl 1;',
-						'b19' => 'rate-limit {',
-						'b20' => 'exempt-clients {',
-						'b21' => 'any;',
-						'b22' => '};',
-						'b23' => '};',
-						'b24' => 'resolver-query-timeout 10;',
-						'b25' => 'tcp-clients 1000000000;',
-						'd' => false,
-						'e' => false,
-						'f' => '};'
-					);
-					$recursiveDnsNodeProcessConfigurationIndexes = array(
-						'a' => 5,
-						'b' => 26,
-						'c' => 0,
-						'g' => 0
-					);
+					foreach ($parameters['data']['next']['node_process_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserIds) {
+						foreach ($recursiveDnsNodeProcessNodeUserIds as $recursiveDnsNodeProcessNodeUserId) {
+							$recursiveDnsNodeProcessUser = $parameters['data']['next']['node_process_node_users'][$recursiveDnsNodeProcessNodeUserId];
 
-					if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns']) === false) {
-						$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'logging {';
-						$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+							if (
+								(empty($recursiveDnsNodeProcessConfigurationIndexes['node_process_node_user_ids'][$recursiveDnsNodeProcessNodeUserId]) === true) &&
+								(empty($recursiveDnsNodeProcessNodeUser['authentication_whitelist']) === false)
+							) {
+								$recursiveDnsNodeProcessConfigurationIndexes['user_ids'][$recursiveDnsNodeProcessUserId] = true;
+								$recursiveDnsNodeProcessWhitelistedSources = explode("\n", $recursiveDnsNodeProcessUser['authentication_whitelist']);
 
-						foreach ($parameters['data']['next']['node_process_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserIds) {
-							foreach ($recursiveDnsNodeProcessNodeUserIds as $recursiveDnsNodeProcessNodeUserId) {
-								$recursiveDnsNodeProcessUser = $parameters['data']['next']['node_process_node_users'][$recursiveDnsNodeProcessNodeUserId];
-
-								if (
-									(empty($recursiveDnsNodeProcessConfigurationIndexes['node_process_node_user_ids'][$recursiveDnsNodeProcessNodeUserId]) === true) &&
-									(empty($recursiveDnsNodeProcessNodeUser['authentication_whitelist']) === false)
-								) {
-									$recursiveDnsNodeProcessConfigurationIndexes['user_ids'][$recursiveDnsNodeProcessUserId] = true;
-									$recursiveDnsNodeProcessWhitelistedSources = explode("\n", $recursiveDnsNodeProcessUser['authentication_whitelist']);
-
-									foreach ($recursiveDnsNodeProcessWhitelistedSources as $recursiveDnsNodeProcessWhitelistedSource) {
-										$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $recursiveDnsNodeProcessWhitelistedSource . ';';
-										$recursiveDnsNodeProcessConfigurationIndexes['a']++;
-									}
+								foreach ($recursiveDnsNodeProcessWhitelistedSources as $recursiveDnsNodeProcessWhitelistedSource) {
+									$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $recursiveDnsNodeProcessWhitelistedSource . ';';
+									$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 								}
-
-								$recursiveDnsNodeProcessName = $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessUserId;
-								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'channel ' . $recursiveDnsNodeProcessName . ' {';
-								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
-								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessName . '"';
-								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
-								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'print-time yes';
-								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
-								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
-								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
-								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'category ' . $recursiveDnsNodeProcessName . ' {';
-								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
-								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'queries_log;';
-								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
-								$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
-								$recursiveDnsNodeProcessConfigurationIndexes['g']++;
 							}
-						}
 
-						$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
+							$recursiveDnsNodeProcessName = $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId;
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'channel ' . $recursiveDnsNodeProcessName . ' {';
+							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessName . '"';
+							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'print-time yes';
+							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
+							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'category ' . $recursiveDnsNodeProcessName . ' {';
+							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'queries_log;';
+							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
+							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
+						}
 					}
 
-					$recursiveDnsNodeProcessesStart = true;
-					$recursiveDnsNodeProcessInterfaceDestinationIps = $recursiveDnsNodeProcessNodeIps = array();
+					$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
+				}
 
-					foreach ($this->nodeData['next']['node_ip_versions'] as $recursiveDnsNodeIpVersion) {
-						$recursiveDnsNodeProcessConfigurationOptionSuffix = '';
+				$recursiveDnsNodeProcessesStart = true;
+				$recursiveDnsNodeProcessInterfaceDestinationIpAddresses = $recursiveDnsNodeProcessNodeIpAddresses = array();
 
-						if ($recursiveDnsNodeIpVersion === 6) {
-							$recursiveDnsNodeProcessConfigurationOptionSuffix = '-v6';
+				foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $recursiveDnsNodeIpAddressVersionNumbers) {
+					$recursiveDnsNodeProcessConfigurationOptionSuffix = '';
+
+					if ($recursiveDnsNodeIpAddressVersion === 6) {
+						$recursiveDnsNodeProcessConfigurationOptionSuffix = '-v6';
+					}
+
+					if (empty($parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersion]) === false) {
+						$recursiveDnsNodeProcessInterfaceSourceIp = $recursiveDnsNodeProcessNodeIps[$recursiveDnsNodeIpVersion] = $this->nodeData['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersion];
+
+						if (empty($this->nodeData['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_version_' . $recursiveDnsNodeIpVersion]) === false) {
+							$recursiveDnsNodeProcessInterfaceSourceIp = $recursiveDnsNodeProcessNodeIps[$recursiveDnsNodeIpVersion] = $this->nodeData['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_version_' . $recursiveDnsNodeIpVersion];
 						}
-
-						if (empty($this->nodeData['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_version_' . $recursiveDnsNodeIpVersion]) === false) {
-							$recursiveDnsNodeProcessInterfaceSourceIp = $recursiveDnsNodeProcessNodeIps[$recursiveDnsNodeIpVersion] = $this->nodeData['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_version_' . $recursiveDnsNodeIpVersion];
-
-							if (empty($this->nodeData['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_version_' . $recursiveDnsNodeIpVersion]) === false) {
-								$recursiveDnsNodeProcessInterfaceSourceIp = $recursiveDnsNodeProcessNodeIps[$recursiveDnsNodeIpVersion] = $this->nodeData['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_version_' . $recursiveDnsNodeIpVersion];
-							}
 
 							$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = 'listen-on' . $recursiveDnsNodeProcessConfigurationOptionSuffix . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['b']++;
