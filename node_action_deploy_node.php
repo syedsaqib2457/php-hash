@@ -180,6 +180,12 @@
 			'name' => 'telinit',
 			'output' => 'single',
 			'package' => 'systemd'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'wget',
+			'output' => 'unable to resolve host address',
+			'package' => 'wget'
 		)
 	);
 	$binaryFiles = array();
