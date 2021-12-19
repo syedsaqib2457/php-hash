@@ -241,7 +241,7 @@
 		exit;
 	}
 
-	shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --timeout=600 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --timeout=600 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
@@ -317,7 +317,7 @@
 	);
 
 	foreach ($nodeActions as $nodeAction) {
-		shell_exec('sudo wget -O /usr/local/ghostcompute/node_action_' . $nodeAction . '.php --no-dns-cache --post-data "json={\"action\":\"download_node_action_file_contents\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\",\"where\":{\"node_action\":\"' . $nodeAction . '\"}}" --timeout=60 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/node_action_' . $nodeAction . '.php --no-dns-cache --post-data "json={\"action\":\"download_node_action_file_contents\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\",\"where\":{\"node_action\":\"' . $nodeAction . '\"}}" --timeout=60 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php') === false) {
 			echo 'Error downloading node action file contents, please try again.' . "\n";
@@ -384,7 +384,7 @@
 		exit;
 	}
 
-	shell_exec('sudo wget -O /usr/local/ghostcompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --timeout=60 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $nodeAuthenticationToken . '\"}" --timeout=60 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
