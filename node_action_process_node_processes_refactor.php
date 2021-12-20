@@ -579,7 +579,7 @@
 							$proxyNodeProcessConfigurationIndexes['c']++;
 
 							foreach ($proxyNodeProcessNodeUserIds as $proxyNodeProcessNodeUserId) {
-								$proxyNodeProcessConfigurationIndexes['f'] = $proxyNodeProcessConfigurationPartIndexes['f'] = $proxyNodeProcessConfigurationIndexes['g'] = $proxyNodeProcessConfigurationPartIndexes['g'] = 0;
+								$proxyNodeProcessNodeUserAuthenticationCredentialParts = array();
 
 								if (($proxyNodeProcessConfigurationIndexes['b'] % 10) === 0) {
 									$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationIndexes['b']] = 'users';
@@ -600,22 +600,15 @@
 										(empty($proxyNodeProcessNodeUser['authentication_whitelist']) === false)
 									)
 								) {
-									$proxyNodeProcessUserRequestDestinationParts = array(
+									$proxyNodeProcessNodeUserNodeRequestDestinationParts = array(
 										array(
 											'*'
 										)
 									);
 
-
-
-									nodeProcessNodeUserAuthenticationCredential
-
-
-									$proxyNodeProcessNodeUserNodeRequestDestinationParts = array();
-
 									foreach ($proxyNodeProcessNodeUser['node_request_destination_ids'] as $proxyNodeProcessNodeUserNodeRequestDestinationId) {
 										if (($proxyNodeProcessConfigurationIndexes['h'] % 10) === 0) {
-											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['h']] = $parameters['data']['next']['node_request_destinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
+											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessConfigurationPartIndexes['h']] = $parameters['data']['next']['node_request_destinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
 											$proxyNodeProcessConfigurationPartIndexes['h'] = $proxyNodeProcessConfigurationIndexes['h'];
 										} else {
 											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessUserRequestDestinationPartIndexes['h']] .= ',' . $parameters['data']['next']['node_request_destinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
