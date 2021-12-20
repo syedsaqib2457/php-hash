@@ -433,10 +433,10 @@
 					$recursiveDnsNodeProcessName = 'recursive_dns_' . $recursiveDnsNodeProcessId;
 
 					if (file_exists('/etc/' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
-						$recursiveDnsNodeProcessProcessIds = $this->fetchProcessIds($recursiveDnsNodeProcessName . ' ', $recursiveDnsNodeProcessName . '/');
+						$parameters['process_ids'] = _listProcessIds($recursiveDnsNodeProcessName . ' ', $recursiveDnsNodeProcessName . '/');
 
-						if (empty($recursiveDnsNodeProcessProcessIds) === false) {
-							_killProcessIds($recursiveDnsNodeProcessProcessIds);
+						if (empty($parameters['process_ids']) === false) {
+							_killProcessIds($parameters);
 						}
 					}
 
