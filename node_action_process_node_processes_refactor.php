@@ -359,7 +359,7 @@
 					$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'logging {';
 					$recursiveDnsNodeProcessConfigurationIndexes['g']++;
 
-					foreach ($parameters['data']['next']['node_process_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserIds) {
+					foreach ($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserIds) {
 						foreach ($recursiveDnsNodeProcessNodeUserIds as $recursiveDnsNodeProcessNodeUserId) {
 							$recursiveDnsNodeProcessUser = $parameters['data']['next']['node_process_node_users'][$recursiveDnsNodeProcessNodeUserId];
 
