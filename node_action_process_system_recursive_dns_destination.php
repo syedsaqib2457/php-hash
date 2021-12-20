@@ -1,5 +1,5 @@
 <?php
-	function _processNodeSystemRecursiveDnsDestination($parameters) {
+	function _processNodeSystemRecursiveDnsDestination($parameters, $response) {
 		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_system_recursive_dns_destination" | awk \'{print $1}\'', $nodeSystemRecursiveDnsDestinationProcessIds);
 		$nodeSystemRecursiveDnsDestinationProcessIds = array_diff($nodeSystemRecursiveDnsDestinationProcessIds, array(
 			getmypid()
@@ -7,7 +7,7 @@
 
 		if (empty($nodeSystemRecursiveDnsDestinationProcessIds) === false) {
 			$parameters['process_ids'] = $nodeSystemRecursiveDnsDestinationProcessIds;
-			_killProcessIds($parameters);
+			_killProcessIds($parameters, $response);
 		}
 
 		while (true) {
@@ -17,6 +17,6 @@
 	}
 
 	if (($parameters['action'] === 'process_system_recursive_dns_destination') === true) {
-		_processNodeSystemRecursiveDnsDestination($parameters);
+		_processNodeSystemRecursiveDnsDestination($parameters, $response);
 	}
 ?>
