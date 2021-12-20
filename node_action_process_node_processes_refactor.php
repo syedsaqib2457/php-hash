@@ -232,7 +232,7 @@
 				}
 			}
 
-			$nodeIpAddressesToDelete[$ipAddressVersion] = array_diff(current($existingNodeIpAddresses), $parameters['data']['next']['node_ip_addresses'][$ipAddressVersionNumber]);
+			$nodeIpAddressesToDelete[$ipAddressVersion] = array_diff($existingNodeIpAddresses, $parameters['data']['next']['node_ip_addresses'][$ipAddressVersionNumber]);
 			shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' create _ hash:ip family ' . $ipAddressVersion['interface_type'] . ' timeout 0');
 
 			foreach ($parameters['data']['next']['node_reserved_internal_destination_ip_addresses'][$ipAddressVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
@@ -281,7 +281,6 @@
 			}
 		}
 
-		/*
 		$parameters['node_process_type_firewall_rule_sets'] = array();
 
 		foreach (array(0, 1) as $nodeProcessPartKey) {
