@@ -624,10 +624,10 @@
 			'node_id',
 			'node_node_id',
 			'node_process_type',
+			'node_user_authentication_strict_only_allowed_status',
 			'node_user_id',
 			'node_user_node_request_destinations_only_allowed_status',
-			'node_user_node_request_logs_allowed_status',
-			'node_user_strict_authentication_required_status'
+			'node_user_node_request_logs_allowed_status'
 		),
 		'node_process_recursive_dns_destinations' => array(
 			'created_timestamp',
@@ -744,12 +744,12 @@
 			'node_user_id'
 		),
 		'node_users' => array(
+			'authentication_strict_only_allowed_status',
 			'created_timestamp',
 			'id',
 			'modified_timestamp',
 			'node_request_destinations_only_allowed_status',
 			'node_request_logs_allowed_status',
-			'node_user_authentication_strict_status',
 			'tag'
 		),
 		'nodes' => array(
