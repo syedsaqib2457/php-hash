@@ -18,20 +18,20 @@
 			return $response;
 		}
 
-		$parameters['data']['ip_address_range_version'] = '4';
+		$parameters['data']['ip_address_range_version_number'] = '4';
 
 		if (is_int(strpos($parameters['data']['ip_address_range_start'], ':')) === true) {
-			$parameters['data']['ip_address_range_version'] = '6';
+			$parameters['data']['ip_address_range_version_number'] = '6';
 		}
 
-		$parameters['data']['ip_address_range_start'] = _validateIpAddressVersion($parameters['data']['ip_address_range_start'], $parameters['data']['ip_address_range_version']);
+		$parameters['data']['ip_address_range_start'] = _validateIpAddressVersionNumber($parameters['data']['ip_address_range_start'], $parameters['data']['ip_address_range_version_number']);
 
 		if ($parameters['data']['ip_address_range_start'] === false) {
 			$response['message'] = 'Invalid system user authentication token source IP address range start, please try again.';
 			return $response;
 		}
 
-		$parameters['data']['ip_address_range_stop'] = _validateIpAddressVersion($parameters['data']['ip_address_range_stop'], $parameters['data']['ip_address_range_version']);
+		$parameters['data']['ip_address_range_stop'] = _validateIpAddressVersionNumber($parameters['data']['ip_address_range_stop'], $parameters['data']['ip_address_range_version_number']);
 
 		if ($parameters['data']['ip_address_range_stop'] === false) {
 			$response['message'] = 'Invalid system user authentication token source IP address range stop, please try again.';
@@ -86,7 +86,7 @@
 			'where' => array_intersect_key($parameters['data'], array(
 				'ip_address_range_start' => true,
 				'ip_address_range_stop' => true,
-				'ip_address_range_version' => true,
+				'ip_address_range_version_number' => true,
 				'system_user_authentication_token_id' => true,
 				'system_user_id' => true
 			))
@@ -103,7 +103,7 @@
 				'id' => true,
 				'ip_address_range_start' => true,
 				'ip_address_range_stop' => true,
-				'ip_address_range_version' => true,
+				'ip_address_range_version_number' => true,
 				'system_user_authentication_token_id' => true,
 				'system_user_id' => true
 			)),
