@@ -377,32 +377,32 @@
 				$recursiveDnsNodeProcessesStart = true;
 				$recursiveDnsNodeProcessInterfaceDestinationIpAddresses = $recursiveDnsNodeProcessNodeIpAddresses = array();
 
-				foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $recursiveDnsNodeIpAddressVersionNumbers) {
+				foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $recursiveDnsNodeIpAddressVersionNumber) {
 					$recursiveDnsNodeProcessConfigurationOptionSuffix = '';
 
 					if ($recursiveDnsNodeIpAddressVersion === 6) {
 						$recursiveDnsNodeProcessConfigurationOptionSuffix = '-v6';
 					}
 
-					if (empty($parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersion]) === false) {
-						$recursiveDnsNodeProcessInterfaceSourceIpAddress = $recursiveDnsNodeProcessNodeIpAddresses[$recursiveDnsNodeIpAddressVersion] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersion];
+					if (empty($parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber]) === false) {
+						$recursiveDnsNodeProcessInterfaceSourceIpAddress = $recursiveDnsNodeProcessNodeIpAddresses[$recursiveDnsNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber];
 
-						if (empty($this->nodeData['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_address_version_' . $recursiveDnsNodeIpAddressVersion]) === false) {
-							$recursiveDnsNodeProcessInterfaceSourceIpAddress = $recursiveDnsNodeProcessNodeIpAddresses[$recursiveDnsNodeIpAddressVersion] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_address_version_' . $recursiveDnsNodeIpAddressVersion];
+						if (empty($parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber]) === false) {
+							$recursiveDnsNodeProcessInterfaceSourceIpAddress = $recursiveDnsNodeProcessNodeIpAddresses[$recursiveDnsNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber];
 						}
 
 						$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = 'listen-on' . $recursiveDnsNodeProcessConfigurationOptionSuffix . ' {';
 						$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 						$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = false;
-						$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $parameters['data']['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_address_version_' . $recursiveDnsNodeIpAddressVersion];
+						$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $parameters['data']['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber];
 						$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
-						if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpAddressVersion][$parameters['data']['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_address_version_' . $recursiveDnsNodeIpAddressVersion]]) === false) {
+						if (empty($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpAddressVersionNumber][$parameters['data']['next']['node_process_recursive_dns_destinations']['recursive_dns'][$recursiveDnsNodeProcessNodeId]['listening_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber]]) === false) {
 							$recursiveDnsNodeProcessesStart = false;
 						}
 
 						$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = false;
-						$recursiveDnsNodeProcessInterfaceDestinationIps['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'];
+						$recursiveDnsNodeProcessInterfaceDestinationIpAddressess['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersionNumber]['ip_address'];
 						$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
 						if (empty($parameters['data']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
@@ -410,7 +410,7 @@
 							$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessInterfaceSourceIpAddress;
 							$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
-							if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpVersion][$recursiveDnsNodeProcessInterfaceSourceIp]) === false) {
+							if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpVersion][$recursiveDnsNodeProcessInterfaceSourceIpAddress]) === false) {
 								$recursiveDnsNodeProcessesStart = false;
 							}
 						}
@@ -440,72 +440,72 @@
 						}
 					}
 
-						foreach ($recursiveDnsNodeProcessInterfaceDestinationIps as $recursiveDnsNodeProcessInterfaceDestinationIpIndex => $recursiveDnsNodeProcessInterfaceDestinationIp) {
-							$recursiveDnsNodeProcessConfiguration[$recursiveDnsNodeProcessInterfaceDestinationIpIndex] = $recursiveDnsNodeProcessInterfaceDestinationIp . ':' . $recursiveDnsNodeProcessPortNumber . ';';
-						}
+					foreach ($recursiveDnsNodeProcessInterfaceDestinationIpAddresses as $recursiveDnsNodeProcessInterfaceDestinationIpAddressIndex => $recursiveDnsNodeProcessInterfaceDestinationIpAddress) {
+						$recursiveDnsNodeProcessConfiguration[$recursiveDnsNodeProcessInterfaceDestinationIpAddressIndex] = $recursiveDnsNodeProcessInterfaceDestinationIpAddress . ':' . $recursiveDnsNodeProcessPortNumber . ';';
+					}
 
-						$recursiveDnsNodeProcessConfiguration['d'] = '"/var/cache/' . $recursiveDnsNodeProcessName . '";';
-						$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
-						file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options', implode("\n", $recursiveDnsNodeProcessConfiguration));
-						shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named ' . $recursiveDnsNodeProcessName);
-						$recursiveDnsNodeProcessService = array(
-							'[Service]',
-							'ExecStart=/usr/sbin/named_' . $recursiveDnsNodeProcessName . ' -f -c /etc/' . $recursiveDnsNodeProcessName . '/named.conf -S 40000 -u root'
-						);
-						file_put_contents('/lib/systemd/system/' . $recursiveDnsNodeProcessName . '.service', implode("\n", $recursiveDnsNodeProcessService));
+					$recursiveDnsNodeProcessConfiguration['d'] = '"/var/cache/' . $recursiveDnsNodeProcessName . '";';
+					$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
+					$recursiveDnsNodeProcessConfiguration = implode("\n", $recursiveDnsNodeProcessConfiguration);
+					file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options', $recursiveDnsNodeProcessConfiguration);
+					shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named ' . $recursiveDnsNodeProcessName);
+					$recursiveDnsNodeProcessService = array(
+						'[Service]',
+						'ExecStart=/usr/sbin/named_' . $recursiveDnsNodeProcessName . ' -f -c /etc/' . $recursiveDnsNodeProcessName . '/named.conf -S 40000 -u root'
+					);
+					file_put_contents('/lib/systemd/system/' . $recursiveDnsNodeProcessName . '.service', implode("\n", $recursiveDnsNodeProcessService));
 
-						if (file_exists('/etc/default/' . $recursiveDnsNodeProcessName) === false) {
-							copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/' . $recursiveDnsNodeProcessName);
-						}
+					if (file_exists('/etc/default/' . $recursiveDnsNodeProcessName) === false) {
+						copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/' . $recursiveDnsNodeProcessName);
+					}
 
-						if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName) === false) {
-							shell_exec('sudo cp -r /etc/bind /etc/' . $recursiveDnsNodeProcessName);
-							file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf', 'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options"; include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.local"; include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.default-zones";');
-						}
+					if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName) === false) {
+						shell_exec('sudo cp -r /etc/bind /etc/' . $recursiveDnsNodeProcessName);
+						file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf', 'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options"; include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.local"; include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.default-zones";');
+					}
 
-						if (is_dir('/var/cache/' . $recursiveDnsNodeProcessName) === false) {
-							mkdir('/var/cache/' . $recursiveDnsNodeProcessName);
-						}
+					if (is_dir('/var/cache/' . $recursiveDnsNodeProcessName) === false) {
+						mkdir('/var/cache/' . $recursiveDnsNodeProcessName);
+					}
 
-						shell_exec('sudo ' . $this->nodeData['next']['binary_files']['systemctl'] . ' daemon-reload');
-						unlink('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
-						$recursiveDnsNodeProcessEnded = false;
-						$recursiveDnsNodeProcessEndedTime = time();
+					shell_exec('sudo ' . $parameters['binary_files']['systemctl'] . ' daemon-reload');
+					unlink('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
+					$recursiveDnsNodeProcessEnded = false;
+					$recursiveDnsNodeProcessEndedTime = time();
 
-						while ($recursiveDnsNodeProcessEnded === false) {
-							$recursiveDnsNodeProcessEnded = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion]['ip_address'], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
+					while ($recursiveDnsNodeProcessEnded === false) {
+						$recursiveDnsNodeProcessEnded = (_verifyNodeProcess($parameter['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
+						sleep(1);
+					}
+
+					$recursiveDnsNodeProcessStarted = false;
+					$recursiveDnsNodeProcessStartedTime = time();
+
+					if ($recursiveDnsNodeProcessesStart === true) {
+						while ($recursiveDnsNodeProcessStarted === false) {
+							shell_exec('sudo ' . $parameters['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
+							$recursiveDnsNodeProcessStarted = (_verifyNodeProcess($parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
 							sleep(1);
 						}
+					} else {
+						$parameters['reprocess'] = true;
+					}
 
-						$recursiveDnsNodeProcessStarted = false;
-						$recursiveDnsNodeProcessStartedTime = time();
+					if (file_exists('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid') === true) {
+						$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
 
-						if ($recursiveDnsNodeProcessesStart === true) {
-							while ($recursiveDnsNodeProcessStarted === false) {
-								shell_exec('sudo ' . $this->nodeData['next']['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
-								$recursiveDnsNodeProcessStarted = ($this->_verifyNodeProcess($this->nodeData['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpVersion]['ip_address'], $recursiveDnsNodeIpVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
-								sleep(1);
-							}
-						} else {
-							$this->reprocess = true;
-						}
-
-						if (file_exists('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid') === true) {
-							$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
-
-							if (is_numeric($recursiveDnsNodeProcessProcessId) === true) {
-								shell_exec('sudo ' . $this->nodeData['next']['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n1000000000');
-								shell_exec('sudo ' . $this->nodeData['next']['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n=1000000000');
-								shell_exec('sudo ' . $this->nodeData['next']['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s"unlimited"');
-								shell_exec('sudo ' . $this->nodeData['next']['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s=unlimited');
-							}
+						if (is_numeric($recursiveDnsNodeProcessProcessId) === true) {
+							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n1000000000');
+							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n=1000000000');
+							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s"unlimited"');
+							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s=unlimited');
 						}
 					}
 				}
 			}
+		}
 
-			$nodeRecursiveDnsDestinations = array();
-		*/
+		$nodeRecursiveDnsDestinations = array();
 
 		foreach ($parameters['data']['next']['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
 			foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
@@ -521,7 +521,6 @@
 			'next',
 			'next'
 		);
-
 		// todo
 	}
 
