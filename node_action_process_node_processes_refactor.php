@@ -287,7 +287,7 @@
 		$nodeProcessesToRemove = $nodeRecursiveDnsDestinations = array();
 
 		foreach ($parameters['data']['next']['node_process_types'] as $nodeProcessType) {
-			$parameters['data']['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
+			$parameters['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
 				'current',
 				'next'
 			);
@@ -540,7 +540,7 @@
 
 		$nodeRecursiveDnsDestinations = implode("\n", $nodeRecursiveDnsDestinations);
 		file_put_contents('/usr/local/ghostcompute/resolv.conf', $nodeRecursiveDnsDestinations);
-		$parameters['data']['node_process_type_process_part_data_keys']['recursive_dns'] = array(
+		$parameters['node_process_type_process_part_data_keys']['recursive_dns'] = array(
 			'next',
 			'next'
 		);
@@ -779,28 +779,28 @@
 		$this->nodeProcessTypeFirewallRuleSets = array();
 
 		foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
-			$this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
+			$parameters['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
 				'next',
 				'next'
 			);
 		}
 
-		$this->_processFirewall();
+		_processFirewall();
 
 		foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSet) {
-			shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSet);
+			shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSet);
 		}
 
-		foreach ($this->ipVersions as $ipVersionNumber => $ipVersion) {
-			if (empty($nodeIpsToDelete[$ipVersionNumber]) === false) {
-				foreach ($nodeIpsToDelete[$ipVersionNumber] as $nodeIpToDelete) {
-					shell_exec('sudo ' . $this->nodeData['next']['binary_files']['ip'] . ' -' . $ipVersionNumber . ' addr delete ' . $nodeIpToDelete . '/' . $ipVersion['network_mask'] . ' dev ' . $this->nodeData['next']['interface_name']) . '\');';
+		foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
+			if (empty($nodeIpAddressesToDelete[$ipAddressVersionNumber]) === false) {
+				foreach ($nodeIpAddressesToDelete[$ipAddressVersionNumber] as $nodeIpAddressToDelete) {
+					shell_exec('sudo ' . $parameters['binary_files']['ip'] . ' -' . $ipAddressVersionNumber . ' addr delete ' . $nodeIpAddressToDelete . '/' . $ipAddressVersion['network_mask'] . ' dev ' . $parameters['interface_name']) . '\');';
 				}
 			}
 
-			foreach ($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
-				if (empty($this->nodeData['next']['node_reserved_internal_destination_ip_addresses'][$ipVersionNumber][$nodeReservedInternalDestinationIpAddress]) === true) {
-					shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' del _ ' . $nodeReservedInternalDestinationIpAddress);
+			foreach ($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$ipAddressVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
+				if (empty($parameters['data']['next']['node_reserved_internal_destination_ip_addresses'][$ipAddressVersionNumber][$nodeReservedInternalDestinationIpAddress]) === true) {
+					shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' del _ ' . $nodeReservedInternalDestinationIpAddress);
 				}
 			}
 		}
