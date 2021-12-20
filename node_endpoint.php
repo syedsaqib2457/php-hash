@@ -1,5 +1,5 @@
 <?php
-	function _killProcessIds($parameters) {
+	function _killProcessIds($parameters, $response) {
 		$commands = array(
 			'#!/bin/bash'
 		);
@@ -15,8 +15,8 @@
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commands);
 
 		if (empty($filePutContentsResponse) === true) {
-			echo 'Error adding kill process ID commands, please try again.' . "\n";
-			exit;
+			$response['message'] = 'Error adding kill process ID commands, please try again.' . "\n";
+			_output($response);
 		}
 
 		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh');
