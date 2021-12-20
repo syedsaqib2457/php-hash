@@ -3,10 +3,10 @@
 		exit;
 	}
 
-	function _validateIpAddressVersion($ipAddress, $ipAddressVersion, $allowIpAddressRanges = false) {
+	function _validateIpAddressVersionNumber($ipAddress, $ipAddressVersionNumber, $allowIpAddressRanges = false) {
 		$response = false;
 
-		switch ($ipAddress) {
+		switch ($ipAddressVersionNumber) {
 			case '4':
 				$ipAddressParts = explode('.', $ipAddress);
 
