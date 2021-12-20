@@ -579,16 +579,20 @@
 							$proxyNodeProcessConfigurationIndexes['c']++;
 
 							foreach ($proxyNodeProcessNodeUserIds as $proxyNodeProcessNodeUserId) {
+								$proxyNodeProcessNodeUser = $parameters['data']['next']['node_users'][$proxyNodeProcessNodeUserId];
 								$proxyNodeProcessNodeUserAuthenticationCredentialParts = array();
 
-								if (($proxyNodeProcessConfigurationIndexes['b'] % 10) === 0) {
-									$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationIndexes['b']] = 'users';
-									$proxyNodeProcessConfigurationPartIndexes['b'] = $proxyNodeProcessConfigurationIndexes['b'];
-								}
+								if (empty($proxyNodeProcessNodeUser['node_user_authentication_credentials']) === false) {
+									foreach ($proxyNodeProcessNodeUser['node_user_authentication_credentials'] as $proxyNodeProcessNodeUserAuthenticationCredential) {	
+										if (($proxyNodeProcessConfigurationIndexes['b'] % 10) === 0) {
+											$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationIndexes['b']] = 'users';
+											$proxyNodeProcessConfigurationPartIndexes['b'] = $proxyNodeProcessConfigurationIndexes['b'];
+										}
 
-								$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationPartIndexes['b']] .= ' ' . $proxyNodeProcessUser['authentication_username'] . ':CL:' . $proxyNodeProcessUser['authentication_password'];
-								$proxyNodeProcessConfigurationIndexes['b']++;
-								$proxyNodeProcessNodeUser = $parameters['data']['next']['node_users'][$proxyNodeProcessNodeUserId];
+										$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationPartIndexes['b']] .= ' ' . $proxyNodeProcessNodeUserAuthenticationCredential['username'] . ':CL:' . $proxyNodeProcessNodeUserAuthenticationCredential['password'];
+										$proxyNodeProcessConfigurationIndexes['b']++;
+									}
+								}
 
 								if (
 									(
