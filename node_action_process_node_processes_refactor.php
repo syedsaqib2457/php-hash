@@ -561,7 +561,9 @@
 							'a5' => 'allow * * * * HTTP',
 							'a6' => 'allow * * * * HTTPS',
 							'a7' => 'nolog',
-							'a8' => false
+							'a8' => false,
+							'f' => $proxyNodeProcessTypeServiceName . ' -a ',
+							'g' => $proxyNodeProcessTypeServiceName . ' -a '
 						);
 						$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
 							'b' => 0,
@@ -698,7 +700,6 @@
 							}
 
 							if (empty($proxyNodeProcessInterfaceDestinationIps[$proxyNodeIpVersion] = $this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['external_ip_version_' . $proxyNodeIpVersion]) === false) {
-								$proxyNodeProcessConfiguration['f'] = $proxyNodeProcessConfiguration['g'] = $proxyNodeProcessTypeServiceName . ' -a ';
 								$proxyNodeProcessInterfaceDestinationIp = $proxyNodeProcessNodeIps[$proxyNodeIpVersion] = $this->nodeData['nodes'][$proxyNodeProcessNodeId]['external_ip_version_' . $proxyNodeIpVersion];
 
 								if (empty($this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion]) === false) {
