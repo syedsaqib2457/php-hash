@@ -190,10 +190,10 @@
 				'data' => array(
 					'node_id',
 					'node_process_type',
+					'node_user_authentication_strict_only_allowed_status',
 					'node_user_id',
 					'node_user_node_request_destinations_only_allowed_status',
-					'node_user_node_request_logs_allowed_status',
-					'node_user_strict_authentication_required_status'
+					'node_user_node_request_logs_allowed_status'
 				),
 				'in' => $parameters['system_databases']['node_process_node_users'], 
 				'where' => array(
@@ -294,9 +294,9 @@
 				foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
 					$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
 					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']] = array(
+						'authentication_strict_only_allowed_status' => $nodeProcessNodeUser['node_user_authentication_strict_only_allowed_status'],
 						'node_request_destinations_only_allowed_status' => $nodeProcessNodeUser['node_user_node_request_destinations_only_allowed_status'],
-						'node_request_logs_allowed_status' => $nodeProcessNodeUser['node_user_node_request_logs_allowed_status'],
-						'strict_authentication_required_status' => $nodeProcessNodeUser['node_user_strict_authentication_required_status']
+						'node_request_logs_allowed_status' => $nodeProcessNodeUser['node_user_node_request_logs_allowed_status']
 					);
 				}
 
