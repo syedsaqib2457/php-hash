@@ -641,7 +641,9 @@
 										}
 									}
 
-									if (empty($proxyNodeProcessNodeUser['node_user_authentication_strict_only_allowed_status']) === true) {
+									if (empty($proxyNodeProcessNodeUser['authentication_strict_only_allowed_status']) === true) {
+										// todo: add $proxyNodeProcessNodeUserAuthenticationCredentialParts loop instead of $proxyNodeProcessNodeUser['authentication_username']
+
 										if (
 											(empty($proxyNodeProcessNodeUser['authentication_username']) === false) &&
 											(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === false)
@@ -671,6 +673,7 @@
 
 										foreach ($proxyNodeProcessNodeUserAuthenticationSourceParts as $proxyNodeProcessNodeUserAuthenticationSourcePart) {
 											foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
+												// todo: add $proxyNodeProcessNodeUserAuthenticationCredentialParts loop instead of $proxyNodeProcessNodeUser['authentication_username']
 												$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'allow ' . $proxyNodeProcessNodeUser['authentication_username'] . ' ' . implode(',', $proxyNodeProcessNodeUserAuthenticationSourcePart) . ' ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
 												$proxyNodeProcessConfigurationIndexes['c']++;
 											}
@@ -685,12 +688,7 @@
 							}
 						}
 
-
-
-
-
-
-						$proxyNodeProcessesStart = true;
+						/* $proxyNodeProcessesStart = true;
 						$proxyNodeProcessNodeIps = array();
 
 						foreach ($this->nodeData['next']['node_ip_versions'] as $proxyNodeIpVersion) {
@@ -780,13 +778,13 @@
 									shell_exec('sudo ' . $this->nodeData['next']['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
 								}
 							}
-						}
+						} */
 					}
 				}
 			}
 		}
 
-		$nodeProcessTypeFirewallRuleSetsToDestroy = $this->nodeProcessTypeFirewallRuleSets;
+		/* $nodeProcessTypeFirewallRuleSetsToDestroy = $this->nodeProcessTypeFirewallRuleSets;
 		$this->nodeProcessTypeFirewallRuleSets = array();
 
 		foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
@@ -796,7 +794,7 @@
 			);
 		}
 
-		_processFirewall();
+		_processFirewall(); */
 
 		foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSet) {
 			shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSet);
