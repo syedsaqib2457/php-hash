@@ -603,20 +603,26 @@
 											'*'
 										)
 									);
+
+
+
+									nodeProcessNodeUserAuthenticationCredential
+
+
 									$proxyNodeProcessNodeUserNodeRequestDestinationParts = array();
 
 									foreach ($proxyNodeProcessNodeUser['node_request_destination_ids'] as $proxyNodeProcessNodeUserNodeRequestDestinationId) {
 										if (($proxyNodeProcessConfigurationIndexes['h'] % 10) === 0) {
-											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['h']] = $this->nodeData['next']['request_destinations'][$proxyNodeProcessUserDestinationId];
+											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessConfigurationIndexes['h']] = $parameters['data']['next']['node_request_destinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
 											$proxyNodeProcessConfigurationPartIndexes['h'] = $proxyNodeProcessConfigurationIndexes['h'];
 										} else {
-											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessUserRequestDestinationPartIndexes['h']] .= ',' . $this->nodeData['next']['request_destinations'][$proxyNodeProcessUserDestinationId];
+											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessUserRequestDestinationPartIndexes['h']] .= ',' . $parameters['data']['next']['node_request_destinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
 										}
 
 										$proxyNodeProcessConfigurationIndexes['h']++;
 									}
 
-									if (empty($parameters['data']['next']['node_users'][$proxyNodeProcessNodeUserId]['status_allowing_request_logs']) === false) {
+									if (empty($proxyNodeProcessNodeUser['status_allowing_request_logs']) === false) {
 										$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessNodeUserId;
 										$proxyNodeProcessConfigurationIndexes['c']++;
 										$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C _ %U"';
@@ -624,7 +630,7 @@
 									}
 
 									if (
-										(empty($parameters['data']['next']['node_users'][$proxyNodeProcessNodeUserId]['status_allowing_request_destinations_only']) === true) &&
+										(empty($proxyNodeProcessNodeUser['status_allowing_request_destinations_only']) === true) &&
 										(empty($proxyNodeProcessNodeUserNodeRequestDestinationParts) === false)
 									) {
 										foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
