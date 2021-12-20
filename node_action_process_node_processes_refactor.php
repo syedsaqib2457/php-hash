@@ -599,8 +599,8 @@
 
 								if (
 									(
-										(empty($proxyNodeProcessNodeUser['request_destination_ids']) === false) ||
-										(empty($proxyNodeProcessNodeUser['status_allowing_request_destinations_only']) === true)
+										(empty($proxyNodeProcessNodeUser['node_request_destination_ids']) === false) ||
+										(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === true)
 									) &&
 									(
 										(empty($proxyNodeProcessNodeUser['node_user_authentication_credentials']) === false) ||
@@ -624,7 +624,7 @@
 										$proxyNodeProcessConfigurationIndexes['h']++;
 									}
 
-									if (empty($proxyNodeProcessNodeUser['status_allowing_request_logs']) === false) {
+									if (empty($proxyNodeProcessNodeUser['node_request_logs_allowed_status']) === false) {
 										$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessNodeUserId;
 										$proxyNodeProcessConfigurationIndexes['c']++;
 										$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C _ %U"';
@@ -632,7 +632,7 @@
 									}
 
 									if (
-										(empty($proxyNodeProcessNodeUser['status_allowing_request_destinations_only']) === true) &&
+										(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === true) &&
 										(empty($proxyNodeProcessNodeUserNodeRequestDestinationParts) === false)
 									) {
 										foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
@@ -641,10 +641,10 @@
 										}
 									}
 
-									if (empty($proxyNodeProcessNodeUser['status_requiring_strict_authentication']) === true) {
+									if (empty($proxyNodeProcessNodeUser['node_user_authentication_strict_only_allowed_status']) === true) {
 										if (
 											(empty($proxyNodeProcessNodeUser['authentication_username']) === false) &&
-											(empty($proxyNodeProcessNodeUser['status_allowing_request_destinations_only']) === false)
+											(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === false)
 										) {
 											foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
 												$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'allow ' . $proxyNodeProcessNodeUser['authentication_username'] . ' * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
