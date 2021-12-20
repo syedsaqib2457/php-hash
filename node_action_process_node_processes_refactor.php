@@ -1,4 +1,29 @@
 <?php
+	function _listProcessIds($processName, $processFile = false) {
+		$response = array();
+		exec('ps -h -o pid -o cmd $(pgrep -f "' . $processName . '") | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
+
+		if (empty($processes) === false) {
+			foreach ($processes as $process) {
+				$processColumns = explode(' ', $process);
+				$processColumns = array_filter($processColumns);
+
+				if (
+					(empty($processColumns) === false) &&
+					(
+						(empty($processFile) === true) ||
+						((strpos($process, $processFile) === false) === true)
+					)
+				) {
+					$processColumnKey = key($processColumns);
+					$response[] = $processColumns[$processColumnKey];
+				}
+			}
+		}
+
+		return $response;
+	}
+
 	function _processNodeProcesses($parameters, $response) {
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
