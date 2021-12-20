@@ -118,17 +118,17 @@
 				_output($response);
 			}
 
-			require_once('/var/www/ghostcompute/system_action_validate_ip_address_version.php');
+			require_once('/var/www/ghostcompute/system_action_validate_ip_address_version_number.php');
 			$parameters['source'] = array(
 				'ip_address' => $_SERVER['REMOTE_ADDR'],
-				'ip_address_version' => '4'
+				'ip_address_version_number' => '4'
 			);
 
 			if (is_int(strpos($parameters['source']['ip_address'], ':')) === true) {
-				$parameters['source']['ip_address_version'] = '6';
+				$parameters['source']['ip_address_version_number'] = '6';
 			}
 
-			$parameters['source']['ip_address'] = _validateIpAddressVersion($parameters['source']['ip_address'], $parameters['source']['ip_address_version']);
+			$parameters['source']['ip_address'] = _validateIpAddressVersionNumber($parameters['source']['ip_address'], $parameters['source']['ip_address_version_number']);
 
 			if ($parameters['source']['ip_address'] === false) {
 				$response['message'] = 'Invalid source IP address, please try again.';
@@ -147,7 +147,7 @@
 				$systemUserAuthenticationTokenSourceCountParameters['where'] += array(
 					'ip_address_range_start <=' => $parameters['source']['ip_address'],
 					'ip_address_range_stop >=' => $parameters['source']['ip_address'],
-					'ip_address_range_version' => $parameters['source']['ip_address_version']
+					'ip_address_range_version_number' => $parameters['source']['ip_address_version_number']
 				);
 				$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
