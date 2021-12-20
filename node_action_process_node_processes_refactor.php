@@ -314,19 +314,20 @@
 
 			foreach ($parameters['data']['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
 				$recursiveDnsNodeProcessConfiguration = array(
-					'a0' => 'acl privateNetworkIpBlocks {',
-					'a1' => $parameters['data']['next']['reserved_network']['ip_blocks']['4'],
-					'a2' => $parameters['data']['next']['reserved_network']['ip_blocks']['6'],
+					'a0' => 'acl reservedNetworkSources {',
+					// todo: add reserved network sources to database for each node
+					// 'a1' => $parameters['data']['next']['reserved_network']['ip_blocks']['4'],
+					// 'a2' => $parameters['data']['next']['reserved_network']['ip_blocks']['6'],
 					'a3' => '};',
-					'a4' => 'acl whitelistedSources {',
+					'a4' => 'acl nodeUserAuthenticationSources {',
 					'b0' => '};',
 					'b1' => 'options {',
 					'b2' => 'allow-query {',
-					'b3' => 'privateNetworkIpBlocks;',
-					'b4' => 'whitelistedSources;',
+					'b3' => 'nodeUserAuthenticationSources;',
+					'b4' => 'reservedNetworkSources;',
 					'b5' => '}',
 					'b6' => 'allow-recursion {',
-					'b7' => 'privateNetworkIpBlocks;',
+					'b7' => 'reservedNetworkSources;',
 					'b8' => '}',
 					'b9' => 'cleaning-interval 1;',
 					'b10' => 'dnssec-enable yes;',
