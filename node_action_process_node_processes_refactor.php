@@ -425,7 +425,7 @@
 				ksort($recursiveDnsNodeProcessConfiguration);
 
 				foreach ($recursiveDnsNodeProcessPortNumbers as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
-					// todo: add default node column to wait for X seconds before closing open connections
+					// todo: add default node timeout column to wait for X seconds before closing open connections
 					while (_verifyNodeProcessConnections($recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) {
 						sleep(1);
 					}
@@ -436,7 +436,7 @@
 						$parameters['process_ids'] = _listProcessIds($recursiveDnsNodeProcessName . ' ', $recursiveDnsNodeProcessName . '/');
 
 						if (empty($parameters['process_ids']) === false) {
-							_killProcessIds($parameters);
+							_killProcessIds($parameters, $response);
 						}
 					}
 
