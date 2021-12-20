@@ -311,16 +311,16 @@
 		'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
 		'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
 	);
-	$systemIpAddressVersions = array(
+	$systemIpAddressVersionNumbers = array(
 		32 => 4,
 		128 => 6
 	);
 
-	foreach ($systemIpAddressVersions as $systemIpAddressVersion) {
-		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_mem'] = ($memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize)) . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
-		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
-		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_rmem'];
-		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $systemIpAddressVersion . '.tcp_mem'];
+	foreach ($systemIpAddressVersionNumbers as $systemIpAddressVersionNumber) {
+		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem'] = ($memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize)) . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
+		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
+		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem'];
+		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem'];
 	}
 
 	foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
@@ -462,7 +462,7 @@
 		6 => $binaryFiles['ip6tables-restore']
 	);
 
-	foreach ($systemIpAddressVersions as $systemIpAddressVersionNetworkMask => $systemIpAddressVersion) {
+	foreach ($systemIpAddressVersionNumbers as $systemIpAddressVersionNetworkMask => $systemIpAddressVersionNumber) {
 		$firewallRules = array(
 			'*filter',
 			':INPUT ACCEPT [0:0]',
@@ -495,7 +495,7 @@
 			shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
 		}
 
-		shell_exec('sudo ' . $firewallBinaryFiles[$systemIpAddressVersion] . ' < ' . $firewallRulesFile);
+		shell_exec('sudo ' . $firewallBinaryFiles[$systemIpAddressVersionNumber] . ' < ' . $firewallRulesFile);
 		unlink($firewallRulesFile);
 	}
 
@@ -550,7 +550,7 @@
 			'node_process_type',
 			'node_user_authentication_source_ip_address',
 			'node_user_authentication_source_ip_address_block_length',
-			'node_user_authentication_source_ip_address_version',
+			'node_user_authentication_source_ip_address_version_number',
 			'node_user_id'
 		),
 		'node_process_node_user_request_destination_logs' => array(
@@ -686,7 +686,7 @@
 			'created_timestamp',
 			'id',
 			'ip_address',
-			'ip_address_version',
+			'ip_address_version_number',
 			'modified_timestamp',
 			'node_id',
 			'node_node_id',
@@ -722,7 +722,7 @@
 			'id',
 			'ip_address',
 			'ip_address_block_length',
-			'ip_address_version',
+			'ip_address_version_number',
 			'modified_timestamp',
 			'node_user_id'
 		),
@@ -828,7 +828,7 @@
 			'id',
 			'ip_address_range_start',
 			'ip_address_range_stop',
-			'ip_address_range_version',
+			'ip_address_range_version_number',
 			'modified_timestamp',
 			'system_user_authentication_token_id',
 			'system_user_id'
