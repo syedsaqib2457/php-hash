@@ -368,7 +368,7 @@
 								$recursiveDnsNodeProcessConfigurationIndexes['node_process_node_user_ids'][$recursiveDnsNodeProcessNodeUserId] = true;
 
 								foreach ($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources'] as $recursiveDnsNodeProcessNodeUserAuthenticationSource) {
-									$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $recursiveDnsNodeProcessWhitelistedSource . ';';
+									$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $recursiveDnsNodeProcessNodeUserAuthenticationSource['ip_address'] . '/' . $recursiveDnsNodeProcessNodeUserAuthenticationSource['ip_address_block_length'] . ';';
 									$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 								}
 							}
