@@ -603,8 +603,8 @@
 										(empty($proxyNodeProcessNodeUser['status_allowing_request_destinations_only']) === true)
 									) &&
 									(
-										(empty($proxyNodeProcessNodeUser['authentication_username']) === false) ||
-										(empty($proxyNodeProcessNodeUser['authentication_whitelist']) === false)
+										(empty($proxyNodeProcessNodeUser['node_user_authentication_credentials']) === false) ||
+										(empty($proxyNodeProcessNodeUser['node_user_authentication_sources']) === false)
 									)
 								) {
 									$proxyNodeProcessNodeUserNodeRequestDestinationParts = array(
