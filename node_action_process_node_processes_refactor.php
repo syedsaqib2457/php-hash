@@ -95,9 +95,9 @@
 
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
 					foreach (array(0, 1) as $nodeProcessPartKey) {
-						$nodeIpVersion = key($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
+						$nodeIpAddressVersion = key($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
 
-						foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
+						foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersion] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
 							foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
 								foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
 									$verifyNodeProcessResponse = _verifyNodeProcess($parameters, $nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
@@ -431,7 +431,7 @@
 							$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessInterfaceSourceIpAddress;
 							$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 
-							if (empty($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpVersion][$recursiveDnsNodeProcessInterfaceSourceIpAddress]) === false) {
+							if (empty($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpAddressVersion][$recursiveDnsNodeProcessInterfaceSourceIpAddress]) === false) {
 								$recursiveDnsNodeProcessesStart = false;
 							}
 						}
@@ -545,7 +545,7 @@
 		// todo
 	}
 
-	function _verifyNodeProcess($parameters, $nodeProcessNodeIp, $nodeProcessNodeIpVersion, $nodeProcessPortNumber, $nodeProcessType) {
+	function _verifyNodeProcess($parameters, $nodeProcessNodeIpAddress, $nodeProcessNodeIpAddressVersion, $nodeProcessPortNumber, $nodeProcessType) {
 		$response = false;
 
 		switch ($nodeProcessType) {
@@ -555,12 +555,12 @@
 					'http_proxy' => '-x',
 					'socks_proxy' => '--socks5-hostname'
 				);
-				exec('sudo ' . $parameters['binary_files']['curl'] . ' -' . $nodeProcessNodeIpVersion . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+				exec('sudo ' . $parameters['binary_files']['curl'] . ' -' . $nodeProcessNodeIpAddressVersion . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 				$response = (empty($proxyNodeProcessResponse) === true);
 				break;
 			case 'recursive_dns':
 				// todo: add dig to $parameters['binary_files']
-				exec('dig -' . $nodeProcessNodeIpVersion . ' +time=2 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+				exec('dig -' . $nodeProcessNodeIpAddressVersion . ' +time=2 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 				$response = (empty($recursiveDnsNodeProcessResponse) === false);
 				break;
 		}
