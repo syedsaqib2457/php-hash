@@ -379,7 +379,7 @@
 				foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $recursiveDnsNodeIpAddressVersionNumber) {
 					$recursiveDnsNodeProcessConfigurationOptionSuffix = '';
 
-					if ($recursiveDnsNodeIpAddressVersion === 6) {
+					if ($recursiveDnsNodeIpAddressVersion === '6') {
 						$recursiveDnsNodeProcessConfigurationOptionSuffix = '-v6';
 					}
 
