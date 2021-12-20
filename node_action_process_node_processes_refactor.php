@@ -1,4 +1,6 @@
 <?php
+	todo: create addFile and deleteFile functions for file_put_contents and unlink response validation
+
 	function _listProcessIds($processName, $processFile = false) {
 		$response = array();
 		exec('ps -h -o pid -o cmd $(pgrep -f "' . $processName . '") | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
