@@ -311,7 +311,8 @@
 		$parameters['node_process_type_firewall_rule_sets'] = array();
 
 		foreach (array(0, 1) as $nodeProcessPartKey) {
-			_processNodeFirewall($nodeProcessPartKey);
+			$parameters['node_process_part_key'] = $nodeProcessPartKey;
+			_processNodeFirewall($parameters);
 			$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
 			foreach ($parameters['data']['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
@@ -546,7 +547,8 @@
 		);
 
 		foreach (array(0, 1) as $nodeProcessPartKey) {
-			$this->_processFirewall($nodeProcessPartKey);
+			$parameters['node_process_part_key'] = $nodeProcessPartKey;
+			_processFirewall($parameters);
 			$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
 			foreach ($this->nodeData['next']['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
