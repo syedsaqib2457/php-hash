@@ -3,17 +3,17 @@
 		exit;
 	}
 
-	require_once('/var/www/ghostcompute/system_action_validate_ip_address_version.php');
+	require_once('/var/www/ghostcompute/system_action_validate_ip_address_version_number.php');
 
 	function _validateHostname($hostname, $allowIpAddress = false) {
 		$response = false;
-		$hostnameIpAddressVersions = array(
-			4,
-			6
+		$hostnameIpAddressVersionNumbers = array(
+			'4',
+			'6'
 		);
 
-		foreach ($hostnameIpAddressVersions as $hostnameIpAddressVersion) {
-			$hostnameIpAddress = _validateIpAddressVersion($hostname, $hostnameIpAddressVersion);
+		foreach ($hostnameIpAddressVersionNumbers as $hostnameIpAddressVersionNumber) {
+			$hostnameIpAddress = _validateIpAddressVersionNumber($hostname, $hostnameIpAddressVersionNumber);
 
 			if (is_string($hostnameIpAddress) === true) {
 				$response = $hostnameIpAddress;
