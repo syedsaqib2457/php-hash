@@ -404,7 +404,7 @@
 				foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $recursiveDnsNodeIpAddressVersionNumber) {
 					$recursiveDnsNodeProcessConfigurationOptionSuffix = '';
 
-					if ($recursiveDnsNodeIpAddressVersion === '6') {
+					if ($recursiveDnsNodeIpAddressVersionNumber === '6') {
 						$recursiveDnsNodeProcessConfigurationOptionSuffix = '-v6';
 					}
 
@@ -566,6 +566,28 @@
 				exec('dig -' . $nodeProcessNodeIpVersion . ' +time=2 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 				$response = (empty($recursiveDnsNodeProcessResponse) === false);
 				break;
+		}
+
+		return $response;
+	}
+
+	function _verifyNodeProcessConnections($nodeProcessNodeIpAddresses, $nodeProcessPortNumber) {
+		foreach ($nodeProcessNodeIpAddresses as $nodeProcessNodeIpAddressVersionNumber => $nodeProcessNodeIpAddress) {
+			if ($nodeProcessNodeIpAddressVersionNumber === '6') {
+				$nodeProcessNodeIpAddress = '[' . $nodeProcessNodeIpAddress . ']';
+			}
+
+			exec('sudo ' . $parameters['binary_files']['ss'] . ' -p -t -u state connected "( sport = :' . $nodeProcessPortNumber . ' )" src ' . $nodeProcessNodeIpAddress . ' | head -1 2>&1', $response);
+
+			if (is_array($response) === false) {
+				$response = _verifyNodeProcessConnections($nodeProcessNodeIpAddresses, $nodeProcessPortNumber);
+			}
+
+			$response = boolval($response);
+
+			if ($response === true) {
+				return $response;
+			}
 		}
 
 		return $response;
