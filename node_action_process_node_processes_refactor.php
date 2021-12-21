@@ -25,7 +25,133 @@
 	}
 
 	function _processNodeFirewall($parameters) {
-		// todo
+		/* $firewallBinaryFiles = array(
+			4 => $this->nodeData['next']['binary_files']['iptables-restore'],
+			6 => $this->nodeData['next']['binary_files']['ip6tables-restore']
+		);
+		$nodeProcessPartKeys = array(
+			0,
+			1
+		);
+
+		if (
+			($nodeProcessPartKey !== false) &&
+			(in_array($nodeProcessPartKey, $nodeProcessPartKeys) === true)
+		) {
+			$nodeProcessPartKeys = array($nodeProcessPartKey);
+		}
+
+		foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
+			$this->_processFirewallRuleSets($nodeProcessPartKey);
+		}
+
+		foreach ($this->nodeData['next']['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
+			$firewallRules = array(
+				'*filter',
+				':INPUT ACCEPT [0:0]',
+				':FORWARD ACCEPT [0:0]',
+				':OUTPUT ACCEPT [0:0]',
+				'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP'
+			);
+
+			foreach ($this->nodeData['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
+				$firewallRules[] = '-A INPUT -p tcp --dport ' . $nodeSshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpVersionNetworkMask . ' -j DROP';
+			}
+
+			$firewallRules[] = 'COMMIT';
+			$firewallRules[] = '*nat';
+			$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
+			$firewallRules[] = ':INPUT ACCEPT [0:0]';
+			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
+			$firewallRules[] = ':POSTROUTING ACCEPT [0:0]';
+
+			// todo: make sure prerouting NAT load balancing works with DNS from system requests and proxy process requests, use output instead of prerouting if not
+
+			foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
+				$nodeProcessTypeFirewallRuleSetPortNumberIndexes = array();
+
+				foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
+					$nodeDataKey = $this->nodeData['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey];
+
+					if (empty($this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$nodeDataKey][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion]) === false) {
+						foreach ($this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$nodeDataKey][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
+							if (empty($nodeProcessTypeFirewallRuleSetPortNumberIndexes[$nodeProcessTypeFirewallRuleSet]) === true) {
+								$nodeProcessTypeFirewallRuleSetPortNumberIndexes[$nodeProcessTypeFirewallRuleSet] = 0;
+							}
+
+							$nodeProcessTypeFirewallRuleSetPortNumberIndexes[$nodeProcessTypeFirewallRuleSet] += count($nodeProcessPortNumbers);
+						}
+					}
+				}
+
+				foreach ($nodeProcessTypeFirewallRuleSetPortNumberIndexes as $nodeProcessTypeFirewallRuleSet => $nodeProcessTypeFirewallRuleSetPortNumberIndex) {
+					foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
+						foreach ($this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$nodeDataKey][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion][$nodeProcessTypeFirewallRuleSet] as $nodeProcessPortNumbers) {
+							foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
+								$nodeProcessTypeFirewallRuleSetLoadBalancer = '-m statistic --mode nth --every ' . $nodeProcessTypeFirewallRuleSetPortNumberIndex . ' --packet 0 ';
+
+								if ($nodeProcessTypeFirewallRuleSetPortNumberIndex === 0) {
+									$nodeProcessTypeFirewallRuleSetLoadBalancer = '';
+								}
+
+								$nodeProcessTransportProtocols = array(
+									'tcp',
+									'udp'
+								);
+
+								if ($nodeProcessType === 'http_proxy') {
+									unset($nodeProcessTransportProtocols[1]);
+								}
+
+								foreach ($nodeProcessTransportProtocols as $nodeProcessTransportProtocol) {
+									$firewallRules[] = '-A PREROUTING -p ' . $nodeProcessTransportProtocol . ' -m set ! --match-set _ dst,src -m set --match-set ' . $nodeProcessTypeFirewallRuleSet . ' dst,src ' . $nodeProcessTypeFirewallRuleSetLoadBalancer . '-j DNAT --to-destination :' . $nodeProcessPortNumber . ' --persistent';
+								}
+
+								$nodeProcessTypeFirewallRuleSetPortNumberIndex--;
+							}
+						}
+					}
+				}
+			}
+
+			$firewallRules[] = 'COMMIT';
+			$firewallRules[] = '*raw';
+			$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
+			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
+			// todo: allow dropping external packets from additional public IP blocks with per-node settings
+			// todo: differentiate reserved IP types + only select private networking ips after premium script for detecting public/reserved ipv4 + ipv6 addresses is built
+
+			if (empty($this->nodeData['next']['reserved_network']['ip_blocks'][$nodeIpVersion]) === false) {
+				foreach ($this->nodeData['next']['reserved_network']['ip_blocks'][$nodeIpVersion] as $reservedNetworkIpBlock) {
+					$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $reservedNetworkIpBlock . ' -j DROP';
+				}
+			}
+
+			foreach ($this->nodeData['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
+				$firewallRules[] = '-A PREROUTING -p tcp --dport ' . $nodeSshPortNumber . ' -j ACCEPT';
+			}
+
+			foreach ($this->nodeProcessTypeFirewallRuleSets as $nodeProcessTypeFirewallRuleSet) {
+				$firewallRules[] = '-A PREROUTING -m set --match-set ' . $nodeProcessTypeFirewallRuleSet . ' dst,src -j ACCEPT';
+			}
+
+			$firewallRules[] = '-A PREROUTING -i ' . $this->nodeData['next']['interface_name'] . ' -m set ! --match-set _ dst,src -j DROP';
+			$firewallRules[] = 'COMMIT';
+			$firewallRulesFile = '/tmp/firewall_' . $nodeIpVersion;
+			unlink($firewallRulesFile);
+			touch($firewallRulesFile);
+			$firewallRuleParts = array_chunk($firewallRules, 1000);
+
+			foreach ($firewallRuleParts as $firewallRulePart) {
+				$saveFirewallRules = implode("\n", $firewallRulePart);
+				shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
+			}
+
+			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpVersion] . ' < ' . $firewallRulesFile);
+			sleep(1);
+		}
+
+		return; */
 	}
 
 	function _processNodeFirewallRuleSets($parameters) {
