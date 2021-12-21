@@ -689,28 +689,28 @@
 							}
 						}
 
-						/* $proxyNodeProcessesStart = true;
-						$proxyNodeProcessNodeIps = array();
+						$proxyNodeProcessesStart = true;
+						$proxyNodeProcessNodeIpAddresses = array();
 
-						foreach ($this->nodeData['next']['node_ip_versions'] as $proxyNodeIpVersion) {
-							if (empty($this->nodeData['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_version_' . $proxyNodeIpVersion]) === false) {
-								$proxyNodeProcessConfiguration['e' . $proxyNodeProcessConfigurationIndexes['e']] = 'nserver ' . $this->nodeData['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_version_' . $proxyNodeIpVersion] . '[:' . $this->nodeData['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_port_number_version_' . $proxyNodeIpVersion] . ']';
+						foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $proxyNodeIpAddressVersionNumber) {
+							if (empty($parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_address_version_' . $proxyNodeIpAddressVersionNumber]) === false) {
+								$proxyNodeProcessConfiguration['e' . $proxyNodeProcessConfigurationIndexes['e']] = 'nserver ' . $parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_address_version_' . $proxyNodeIpAddressVersionNumber] . '[:' . $parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_port_number_version_' . $proxyNodeIpAddressVersionNumber] . ']';
 								$proxyNodeProcessConfigurationIndexes['e']++;
 							}
 
-							if (empty($proxyNodeProcessInterfaceDestinationIps[$proxyNodeIpVersion] = $this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['external_ip_version_' . $proxyNodeIpVersion]) === false) {
-								$proxyNodeProcessInterfaceDestinationIp = $proxyNodeProcessNodeIps[$proxyNodeIpVersion] = $this->nodeData['nodes'][$proxyNodeProcessNodeId]['external_ip_version_' . $proxyNodeIpVersion];
+							if (empty($proxyNodeProcessInterfaceDestinationIps[$proxyNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['external_ip_address_version_' . $proxyNodeIpAddressVersionNumber]) === false) {
+								$proxyNodeProcessInterfaceDestinationIp = $proxyNodeProcessNodeIps[$proxyNodeIpVersion] = $parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['external_ip_address_version_' . $proxyNodeIpAddressVersionNumber];
 
-								if (empty($this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion]) === false) {
-									$proxyNodeProcessInterfaceDestinationIp = $proxyNodeProcessNodeIps[$proxyNodeIpVersion] = $this->nodeData['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpVersion];
+								if (empty($parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpAddressVersionNumber]) === false) {
+									$proxyNodeProcessInterfaceDestinationIp = $proxyNodeProcessNodeIps[$proxyNodeIpVersion] = $parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_version_' . $proxyNodeIpAddressVersionNumber];
 
-									if (empty($this->nodeData['current']['node_reserved_internal_destination_ip_addresses'][$proxyNodeIpVersion][$proxyNodeProcessInterfaceDestinationIp]) === false) {
+									if (empty($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$proxyNodeIpVersion][$proxyNodeProcessInterfaceDestinationIp]) === false) {
 										$proxyNodeProcessesStart = false;
 									}
 								}
 
-								$proxyNodeProcessConfiguration['f'] .= ' -e' . $proxyNodeProcessInterfaceDestinationIp . ' -i' . $proxyNodeProcessInterfaceDestinationIp;
-								$proxyNodeProcessConfiguration['g'] .= ' -e' . $this->nodeData['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'] . ' -i' . $this->nodeData['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'];
+								$proxyNodeProcessConfiguration['f'] .= ' -e' . $proxyNodeProcessInterfaceDestinationIpAddress . ' -i' . $proxyNodeProcessInterfaceDestinationIp;
+								$proxyNodeProcessConfiguration['g'] .= ' -e' . $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersion]['ip_address'] . ' -i' . $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'];
 							}
 						}
 
