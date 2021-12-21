@@ -731,29 +731,27 @@
 								sleep(1);
 							}
 
-							$proxyNodeProcessName = $proxyNodeProcessType . '_' . $proxyNodeProcessId;
-
-							if (file_exists('/etc/3proxy/' . $proxyNodeProcessName . '.cfg') === true) {
-								$proxyNodeProcessProcessIds = _listProcessIds($proxyNodeProcessName . ' ', '/etc/3proxy/' . $proxyNodeProcessName . '.cfg');
+							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg') === true) {
+								$proxyNodeProcessProcessIds = _listProcessIds($proxyNodeProcessType . '_' . $proxyNodeProcessId . ' ', '/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg');
 
 								if (empty($proxyNodeProcessProcessIds) === false) {
 									_killProcessIds($parameters['binary_files'], $proxyNodeProcessProcessIds, $response);
 								}
 							}
 
-							shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessName);
+							shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessType . '_' . $proxyNodeProcessId);
 							$proxyNodeProcessSystemdServiceFileContents = array(
 								'[Service]',
-								'ExecStart=/bin/' . $proxyNodeProcessName . ' /etc/3proxy/' . $proxyNodeProcessName . '.cfg')
+								'ExecStart=/bin/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . ' /etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg')
 							);
-							file_put_contents('/etc/systemd/system/' . $proxyNodeProcessName . '.service', implode("\n", $proxyNodeProcessSystemdServiceFileContents));
-							$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessName . '.pid';
+							file_put_contents('/etc/systemd/system/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.service', implode("\n", $proxyNodeProcessSystemdServiceFileContents));
+							$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid';
 							$proxyNodeProcessConfiguration['f'] = $proxyNodeProcessInterfaceConfigurations['f'] . ' -p' . $proxyNodeProcessPortNumber;
 							$proxyNodeProcessConfiguration['g'] = $proxyNodeProcessInterfaceConfigurations['g'] . ' -p' . $proxyNodeProcessPortNumber;
-							file_put_contents('/etc/3proxy/' . $proxyNodeProcessName . '.cfg', implode("\n", $proxyNodeProcessConfiguration));
-							chmod('/etc/3proxy/' . $proxyNodeProcessName . '.cfg', 0755);
+							file_put_contents('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg', implode("\n", $proxyNodeProcessConfiguration));
+							chmod('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg', 0755);
 							shell_exec('sudo ' . $parameters['binary_files']['systemctl'] . ' daemon-reload');
-							unlink('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
+							unlink('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid');
 							$proxyNodeProcessEnded = false;
 							$proxyNodeProcessEndedTime = time();
 
@@ -767,7 +765,7 @@
 
 							if ($proxyNodeProcessesStart === true) {
 								while ($proxyNodeProcessStarted === false) {
-									shell_exec('sudo ' . $parameters['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
+									shell_exec('sudo ' . $parameters['binary_files']['service'] . ' ' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . ' start');
 									$proxyNodeProcessStarted = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
 									sleep(1);
 								}
@@ -775,8 +773,8 @@
 								$parameters['reprocess'] = true;
 							}
 
-							if (file_exists('/var/run/3proxy/' . $proxyNodeProcessName . '.pid') === true) {
-								$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessName . '.pid');
+							if (file_exists('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid') === true) {
+								$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid');
 
 								if (is_numeric($proxyNodeProcessProcessId) === true) {
 									shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n1000000000');
@@ -825,31 +823,29 @@
 			$nodeProcessProcessIds = array();
 
 			foreach ($nodeProcessIds as $nodeProcessId) {
-				$nodeProcessName = $nodeProcessType . '_' . $nodeProcessId;
-
 				switch ($nodeProcessType) {
 					case 'http_proxy':
 					case 'socks_proxy':
-						if (file_exists('/var/run/3proxy/' . $nodeProcessName . '.pid') === true) {
-							$nodeProcessProcessIds[] = file_get_contents('/var/run/3proxy/' . $nodeProcessName . '.pid');
+						if (file_exists('/var/run/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.pid') === true) {
+							$nodeProcessProcessIds[] = file_get_contents('/var/run/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.pid');
 						}
 
-						unlink('/bin/' . $nodeProcessName);
-						unlink('/etc/3proxy/' . $nodeProcessName . '.cfg');
-						unlink('/etc/systemd/system/' . $nodeProcessName . '.service');
-						unlink('/var/run/3proxy/' . $nodeProcessName . '.pid');
+						unlink('/bin/' . $nodeProcessType . '_' . $nodeProcessId);
+						unlink('/etc/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.cfg');
+						unlink('/etc/systemd/system/' . $nodeProcessType . '_' . $nodeProcessId . '.service');
+						unlink('/var/run/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.pid');
 						break;
 					case 'recursive_dns':
 						if (file_exists('/var/run/named/named_' . $nodeProcess['id'] . '.pid') === true) {
 							$nodeProcessProcessIds[] = file_get_contents('/var/run/named/named_' . $nodeProcess['id'] . '.pid');
 						}
 
-						rmdir('/etc/bind_' . $nodeProcessName);
-						rmdir('/var/cache/bind_' . $nodeProcessName);
-						unlink('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessName);
-						unlink('/lib/systemd/system/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessName . '.service');
-						unlink('/usr/sbin/named_' . $nodeProcessName);
-						unlink('/var/run/named/' . $nodeProcessName . '.pid');
+						rmdir('/etc/' . $nodeProcessType . '_' . $nodeProcessId);
+						rmdir('/var/cache/' . $nodeProcessType . '_' . $nodeProcessId);
+						unlink('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessType . '_' . $nodeProcessId);
+						unlink('/lib/systemd/system/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessType . '_' . $nodeProcessId . '.service');
+						unlink('/usr/sbin/' . $nodeProcessType . '_' . $nodeProcessId);
+						unlink('/var/run/named/' . $nodeProcessType . '_' . $nodeProcessId . '.pid');
 						break;
 				}
 			}
