@@ -100,7 +100,7 @@
 						foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersion] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
 							foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
 								foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-									$verifyNodeProcessResponse = _verifyNodeProcess($parameters, $nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
+									$verifyNodeProcessResponse = _verifyNodeProcess($parameters['binary_files'], $nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
 
 									if ($verifyNodeProcessResponse === false) {
 										// todo: add progress percentage status data
@@ -448,7 +448,7 @@
 
 				foreach ($recursiveDnsNodeProcessPortNumbers as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
 					// todo: add default node timeout column to wait for X seconds before closing open connections
-					while (_verifyNodeProcessConnections($parameters, $recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) {
+					while (_verifyNodeProcessConnections($parameters['binary_files'], $recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) {
 						sleep(1);
 					}
 
@@ -497,7 +497,7 @@
 					$recursiveDnsNodeProcessEndedTime = time();
 
 					while ($recursiveDnsNodeProcessEnded === false) {
-						$recursiveDnsNodeProcessEnded = (_verifyNodeProcess($parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
+						$recursiveDnsNodeProcessEnded = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
 						sleep(1);
 					}
 
@@ -507,7 +507,7 @@
 					if ($recursiveDnsNodeProcessesStart === true) {
 						while ($recursiveDnsNodeProcessStarted === false) {
 							shell_exec('sudo ' . $parameters['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
-							$recursiveDnsNodeProcessStarted = (_verifyNodeProcess($parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
+							$recursiveDnsNodeProcessStarted = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
 							sleep(1);
 						}
 					} else {
@@ -722,7 +722,7 @@
 						);
 
 						foreach ($proxyNodeProcessPortNumbers as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
-							while (_verifyNodeProcessConnections($parameters, $proxyNodeProcessNodeIpAddresses, $proxyNodeProcessPortNumber) === true) {
+							while (_verifyNodeProcessConnections($parameters['binary_files'], $proxyNodeProcessNodeIpAddresses, $proxyNodeProcessPortNumber) === true) {
 								sleep(1);
 							}
 
@@ -753,7 +753,7 @@
 							$proxyNodeProcessEndedTime = time();
 
 							while ($proxyNodeProcessEnded === false) {
-								$proxyNodeProcessEnded = _verifyNodeProcess($parameters, $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
+								$proxyNodeProcessEnded = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
 								sleep(1);
 							}
 
@@ -763,7 +763,7 @@
 							if ($proxyNodeProcessesStart === true) {
 								while ($proxyNodeProcessStarted === false) {
 									shell_exec('sudo ' . $parameters['binary_files']['service'] . ' ' . $proxyNodeProcessName . ' start');
-									$proxyNodeProcessStarted = _verifyNodeProcess($parameters, $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
+									$proxyNodeProcessStarted = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
 									sleep(1);
 								}
 							} else {
