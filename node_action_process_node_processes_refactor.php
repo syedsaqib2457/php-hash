@@ -671,11 +671,12 @@
 											$proxyNodeProcessConfigurationIndexes['i']++;
 										}
 
-										foreach ($proxyNodeProcessNodeUserAuthenticationSourceParts as $proxyNodeProcessNodeUserAuthenticationSourcePart) {
-											foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
-												// todo: add $proxyNodeProcessNodeUserAuthenticationCredentialParts loop instead of $proxyNodeProcessNodeUser['authentication_username']
-												$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'allow ' . $proxyNodeProcessNodeUser['authentication_username'] . ' ' . implode(',', $proxyNodeProcessNodeUserAuthenticationSourcePart) . ' ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
-												$proxyNodeProcessConfigurationIndexes['c']++;
+										foreach ($proxyNodeProcessNodeUserAuthenticationCredentialParts as $proxyNodeProcessNodeUserAuthenticationCredentialPart) {
+											foreach ($proxyNodeProcessNodeUserAuthenticationSourceParts as $proxyNodeProcessNodeUserAuthenticationSourcePart) {
+												foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
+													$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' ' . $proxyNodeProcessNodeUserAuthenticationSourcePart . ' ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
+													$proxyNodeProcessConfigurationIndexes['c']++;
+												}
 											}
 										}
 									}
