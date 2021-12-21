@@ -4,6 +4,7 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
+		'node_reserved_internal_sources',
 		'nodes'
 	), $parameters['system_databases'], $response);
 	require_once('/var/www/ghostcompute/system_action_add_node_reserved_internal_destination.php');
@@ -143,6 +144,7 @@
 			}
 		}
 
+		// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'activated_status' => true,
