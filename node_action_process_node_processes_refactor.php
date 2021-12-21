@@ -24,6 +24,14 @@
 		return $response;
 	}
 
+	function _processNodeFirewall($parameters) {
+		// todo
+	}
+
+	function _processNodeFirewallRuleSets($parameters) {
+		// todo
+	}
+
 	function _processNodeProcesses($parameters, $response) {
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
