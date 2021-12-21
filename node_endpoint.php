@@ -1,16 +1,17 @@
 <?php
-	function _killProcessIds($parameters, $response) {
+	function _killProcessIds($binaryFiles, $processIds, $response) {
 		$commands = array(
 			'#!/bin/bash'
 		);
-		$processIdParts = array_chunk($parameters['process_ids'], 10);
+		$processIdParts = array_chunk($processIds, 10);
 
-		foreach ($processIdParts as $processIds) {
-			$commands[] = 'sudo ' . $parameters['binary_files']['kill'] . ' -9 ' . implode(' ', $processIds);
+		foreach ($processIdParts as $processIdPart) {
+			$processIdPart = implode(' ', $processIdPart);
+			$commands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
 		}
 
-		$commands[] = 'sudo ' . $parameters['binary_files']['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
-		$commands[] = 'sudo ' . $parameters['binary_files']['telinit'] . ' u';
+		$commands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$commands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$commands = implode("\n", $commands);
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commands);
 
