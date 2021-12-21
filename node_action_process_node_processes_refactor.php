@@ -1026,7 +1026,20 @@
 			}
 		}
 
+		$parameters['data']['current'] = array_intersect_key($parameters['data']['next'], array(
+			'node_processes' => true,
+			'node_process_type_firewall_rule_set_reserved_internal_destinations' => true,
+			'node_process_types' => true,
+			'node_recursive_dns_destinations' => true,
+			'node_reserved_internal_destinations' => true,
+			'node_ssh_port_numbers' => true
+		));
+		$parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'] = $parameters['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
+		// file_put_contents('/tmp/node_data', json_encode($this->nodeData['current']));
+		// exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"node_ssh_port_numbers\":' . json_encode($this->nodeData['current']['node_ssh_port_numbers']) . ',\"processed\":' . (empty($this->reprocess) === true) . '},\"where\":{\"token\":\"' . $this->parameters['token'] . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
+		// $response = json_decode(current($response), true);
 		// todo
+		return $response;
 	}
 
 	function _verifyNodeProcess($binaryFiles, $nodeProcessNodeIpAddress, $nodeProcessNodeIpAddressVersionNumber, $nodeProcessPortNumber, $nodeProcessType) {
