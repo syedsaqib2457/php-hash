@@ -13,13 +13,7 @@
 		$commands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$commands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$commands = implode("\n", $commands);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commands);
-
-		if (empty($filePutContentsResponse) === true) {
-			$response['message'] = 'Error adding kill process ID commands, please try again.' . "\n";
-			_output($response);
-		}
-
+		file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commands);
 		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh');
 		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh');
 		return;
