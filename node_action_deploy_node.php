@@ -218,7 +218,7 @@
 	}
 
 	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0');
-	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -239,7 +239,7 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=600 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=600 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
@@ -261,11 +261,10 @@
 	}
 
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
-	$parameters['process_ids'] = $lockedProcessIds;
-	_killProcessIds($parameters);
+	_killProcessIds($binaryFiles, $lockedProcessIds);
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux');
 	shell_exec('sudo /etc/init.d/apache2 stop');
-	exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $nodeNetworkInterfaceName);
+	exec('sudo ' . $binaryFiles['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $nodeNetworkInterfaceName);
 	$nodeNetworkInterfaceName = current($nodeNetworkInterfaceName);
 
 	if (empty($nodeNetworkInterfaceName) === true) {
@@ -277,7 +276,7 @@
 
 	foreach ($systemActionProcessNodeResponse['data']['node_ip_address_versions'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
 		foreach ($systemActionProcessNodeResponse['data']['node_ip_addresses'][$nodeIpAddressVersionNetworkMask] as $nodeIpAddress) {
-			$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents[] = 'shell_exec(\'sudo ' . $parameters['binary_files']['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $nodeNetworkInterfaceName . '\');';
+			$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents[] = 'shell_exec(\'sudo ' . $binaryFiles['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $nodeNetworkInterfaceName . '\');';
 		}
 	}
 
@@ -290,7 +289,7 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php');
+	shell_exec('sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php');
 	$recursiveDnsNodeProcessDefaultServiceName = 'named';
 
 	if (is_dir('/etc/default/bind9') === true) {
@@ -298,11 +297,10 @@
 	}
 
 	exec('pgrep ' . $recursiveDnsNodeProcessDefaultServiceName, $recursiveDnsDefaultProcessIds);
-	$parameters['process_ids'] = $recursiveDnsDefaultProcessIds;
-	_killProcessIds($parameters);
+	_killProcessIds($binaryFiles, $recursiveDnsDefaultProcessIds);
 	shell_exec('sudo mkdir -m 0775 /var/run/named');
 	shell_exec('sudo rm -rf /usr/src/3proxy/ && sudo mkdir -p /usr/src/3proxy/');
-	shell_exec('cd /usr/src/3proxy/ && sudo ' . $parameters['binary_files']['wget'] . ' -O 3proxy.tar.gz --no-dns-cache --timeout=60 https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
+	shell_exec('cd /usr/src/3proxy/ && sudo ' . $binaryFiles['wget'] . ' -O 3proxy.tar.gz --no-dns-cache --timeout=60 https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
 	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux && sudo make -f Makefile.Linux install');
 	shell_exec('sudo mkdir -p /var/log/3proxy');
@@ -316,7 +314,7 @@
 	);
 
 	foreach ($nodeFiles as $nodeFile) {
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/' . $nodeFile . ' --no-dns-cache --post-data "json={\"action\":\"download_node_file_contents\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\",\"where\":{\"node_file\":\"' . $nodeFile . '\"}}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+		shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/' . $nodeFile . ' --no-dns-cache --post-data "json={\"action\":\"download_node_file_contents\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\",\"where\":{\"node_file\":\"' . $nodeFile . '\"}}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/' . $nodeFile) === false) {
 			echo 'Error downloading node file contents, please try again.' . "\n";
@@ -366,12 +364,12 @@
 
 	$crontabCommands += array(
 		'# ghostcompute',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_processes',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_resource_usage_logs',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_resource_usage_logs',
 		// todo: add process_node_user_blockchain_mining with parameters
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_user_request_logs',
-		'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_system_recursive_dns_destination',
-		'@reboot root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_network_interface_ip_addresses'
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_user_request_logs',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_system_recursive_dns_destination',
+		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_network_interface_ip_addresses'
 	);
 	$crontabCommands = implode("\n", $crontabCommands);
 	$filePutContentsResponse = file_put_contents('/etc/crontab', $crontabCommands);
@@ -381,7 +379,7 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/ghostcompute/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
@@ -411,7 +409,7 @@
 			exit;
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
+		shell_exec('sudo ' . $binaryFiles['crontab'] . ' /etc/crontab');
 	}
 
 	exit;
