@@ -25,6 +25,8 @@
 		return;
 	}
 
+	// todo: modify php.ini settings
+
 	if (empty($_SERVER['argv'][2]) === true) {
 		echo 'Error deploying node, please try again.' . "\n";
 		exit;
