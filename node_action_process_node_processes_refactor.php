@@ -383,16 +383,15 @@
 								}
 							}
 
-							$recursiveDnsNodeProcessName = $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId;
-							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'channel ' . $recursiveDnsNodeProcessName . ' {';
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'channel ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
-							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessName . '"';
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . '"';
 							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
 							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'print-time yes';
 							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
 							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = '};';
 							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
-							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'category ' . $recursiveDnsNodeProcessName . ' {';
+							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'category ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
 							$recursiveDnsNodeProcessConfiguration['g' . $recursiveDnsNodeProcessConfigurationIndexes['g']] = 'queries_log;';
 							$recursiveDnsNodeProcessConfigurationIndexes['g']++;
@@ -460,10 +459,8 @@
 						sleep(1);
 					}
 
-					$recursiveDnsNodeProcessName = 'recursive_dns_' . $recursiveDnsNodeProcessId;
-
-					if (file_exists('/etc/' . $recursiveDnsNodeProcessName . '/named.conf') === true) {
-						$recursiveDnsNodeProcessProcessIds = _listProcessIds($recursiveDnsNodeProcessName . ' ', $recursiveDnsNodeProcessName . '/');
+					if (file_exists('/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf') === true) {
+						$recursiveDnsNodeProcessProcessIds = _listProcessIds('recursive_dns_' . $recursiveDnsNodeProcessId . ' ', 'recursive_dns_' . $recursiveDnsNodeProcessId . '/');
 
 						if (empty($recursiveDnsNodeProcessProcessIds) === false) {
 							_killProcessIds($parameters['binary_files'], $recursiveDnsNodeProcessProcessIds, $response);
@@ -474,33 +471,33 @@
 						$recursiveDnsNodeProcessConfiguration[$recursiveDnsNodeProcessInterfaceDestinationIpAddressIndex] = $recursiveDnsNodeProcessInterfaceDestinationIpAddress . ':' . $recursiveDnsNodeProcessPortNumber . ';';
 					}
 
-					$recursiveDnsNodeProcessConfiguration['d'] = '"/var/cache/' . $recursiveDnsNodeProcessName . '";';
-					$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/' . $recursiveDnsNodeProcessName . '.pid";';
+					$recursiveDnsNodeProcessConfiguration['d'] = '"/var/cache/recursive_dns_' . $recursiveDnsNodeProcessId . '";';
+					$recursiveDnsNodeProcessConfiguration['e'] = 'pid-file "/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid";';
 					$recursiveDnsNodeProcessConfiguration = implode("\n", $recursiveDnsNodeProcessConfiguration);
-					file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options', $recursiveDnsNodeProcessConfiguration);
-					shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named ' . $recursiveDnsNodeProcessName);
+					file_put_contents('/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf.options', $recursiveDnsNodeProcessConfiguration);
+					shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named recursive_dns_' . $recursiveDnsNodeProcessId);
 					$recursiveDnsNodeProcessService = array(
 						'[Service]',
-						'ExecStart=/usr/sbin/named_' . $recursiveDnsNodeProcessName . ' -f -c /etc/' . $recursiveDnsNodeProcessName . '/named.conf -S 40000 -u root'
+						'ExecStart=/usr/sbin/recursive_dns_' . $recursiveDnsNodeProcessId . ' -f -c /etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf -S 40000 -u root'
 					);
 					$recursiveDnsNodeProcessService = implode("\n", $recursiveDnsNodeProcessService);
-					file_put_contents('/lib/systemd/system/' . $recursiveDnsNodeProcessName . '.service', $recursiveDnsNodeProcessService);
+					file_put_contents('/lib/systemd/system/recursive_dns_' . $recursiveDnsNodeProcessId . '.service', $recursiveDnsNodeProcessService);
 
-					if (file_exists('/etc/default/' . $recursiveDnsNodeProcessName) === false) {
-						copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/' . $recursiveDnsNodeProcessName);
+					if (file_exists('/etc/default/recursive_dns_' . $recursiveDnsNodeProcessId) === false) {
+						copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/recursive_dns_' . $recursiveDnsNodeProcessId);
 					}
 
-					if (file_exists('/etc/bind_' . $recursiveDnsNodeProcessName) === false) {
-						shell_exec('sudo cp -r /etc/bind /etc/' . $recursiveDnsNodeProcessName);
-						file_put_contents('/etc/' . $recursiveDnsNodeProcessName . '/named.conf', 'include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.options"; include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.local"; include "/etc/' . $recursiveDnsNodeProcessName . '/named.conf.default-zones";');
+					if (file_exists('/etc/recursive_dns_' . $recursiveDnsNodeProcessId) === false) {
+						shell_exec('sudo cp -r /etc/bind /etc/recursive_dns_' . $recursiveDnsNodeProcessId);
+						file_put_contents('/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf', 'include "/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf.options"; include "/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf.local"; include "/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf.default-zones";');
 					}
 
-					if (is_dir('/var/cache/' . $recursiveDnsNodeProcessName) === false) {
-						mkdir('/var/cache/' . $recursiveDnsNodeProcessName);
+					if (is_dir('/var/cache/recursive_dns_' . $recursiveDnsNodeProcessId) === false) {
+						mkdir('/var/cache/recursive_dns_' . $recursiveDnsNodeProcessId);
 					}
 
 					shell_exec('sudo ' . $parameters['binary_files']['systemctl'] . ' daemon-reload');
-					unlink('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
+					unlink('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid');
 					$recursiveDnsNodeProcessEnded = false;
 					$recursiveDnsNodeProcessEndedTime = time();
 
@@ -514,7 +511,7 @@
 
 					if ($recursiveDnsNodeProcessesStart === true) {
 						while ($recursiveDnsNodeProcessStarted === false) {
-							shell_exec('sudo ' . $parameters['binary_files']['service'] . ' ' . $recursiveDnsNodeProcessName . ' start');
+							shell_exec('sudo ' . $parameters['binary_files']['service'] . ' recursive_dns_' . $recursiveDnsNodeProcessId . ' start');
 							$recursiveDnsNodeProcessStarted = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
 							sleep(1);
 						}
@@ -522,8 +519,8 @@
 						$parameters['reprocess'] = true;
 					}
 
-					if (file_exists('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid') === true) {
-						$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/' . $recursiveDnsNodeProcessName . '.pid');
+					if (file_exists('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid') === true) {
+						$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid');
 
 						if (is_numeric($recursiveDnsNodeProcessProcessId) === true) {
 							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n1000000000');
