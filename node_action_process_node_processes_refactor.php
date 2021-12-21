@@ -38,7 +38,7 @@
 				$nodeProcessPortNumbersVerified = array();
 
 				foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
-					if ($this->_verifyNodeProcess($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey]]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion]['ip_address'], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === true) {
+					if ($this->_verifyNodeProcess($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion]['ip_address'], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === true) {
 						$nodeProcessPortNumberString .= '_' . $nodeProcessPortNumber;
 						$nodeProcessPortNumbersVerified[] = $nodeProcessPortNumber;
 					}
@@ -46,15 +46,15 @@
 
 				$nodeProcessPortNumberString = sha1($nodeProcessPortNumberString);
 
-				foreach ($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey]]['node_ip_versions'] as $nodeIpVersion) {
-					if (empty($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey]]['nodes'][$nodeProcessNodeId]['external_ip_version_' . $nodeIpVersion]) === false) {
-						$nodeProcessNodeIp = $this->nodeData[$nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey]]['nodes'][$nodeProcessNodeId]['external_ip_version_' . $nodeIpVersion];
+				foreach ($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_ip_versions'] as $nodeIpVersion) {
+					if (empty($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['nodes'][$nodeProcessNodeId]['external_ip_version_' . $nodeIpVersion]) === false) {
+						$nodeProcessNodeIp = $this->nodeData[$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['nodes'][$nodeProcessNodeId]['external_ip_version_' . $nodeIpVersion];
 
-						if (empty($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey]]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion]) === false) {
-							$nodeProcessNodeIp = $this->nodeData[$nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey]]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion];
+						if (empty($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion]) === false) {
+							$nodeProcessNodeIp = $this->nodeData[$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['nodes'][$nodeProcessNodeId]['internal_ip_version_' . $nodeIpVersion];
 						}
 
-						$this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpVersion][($nodeProcessTypeFirewallRuleSet = $nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey] . '_' . $nodeIpVersion . '_' . $nodeProcessPartKey . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberString . '_' . $this->nodeProcessTypeFirewallRuleSetIndex)] = $nodeProcessPortNumbersVerified;
+						$this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]][$nodeProcessType][$parameters['node_process_part_key']][$nodeIpVersion][($nodeProcessTypeFirewallRuleSet = $nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberString . '_' . $parameters['node_process_type_firewall_rule_set_index'])] = $nodeProcessPortNumbersVerified;
 						shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' create ' . $nodeProcessTypeFirewallRuleSet . ' hash:ip,port family ' . $this->ipVersions[$nodeIpVersion]['interface_type'] . ' timeout 0');
 
 						foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
@@ -68,7 +68,7 @@
 				}
 
 				if ($parameters['node_process_type_firewall_rule_set_index'] === 4) {
-					$parameters['data']['next']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet][$nodeProcessNodeId] = $this->nodeData[$nodeProcessTypeProcessPartDataKeys[$nodeProcessPartKey]]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion];
+					$parameters['data']['next']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet][$nodeProcessNodeId] = $this->nodeData[$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion];
 				}
 			}
 		}
