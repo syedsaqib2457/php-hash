@@ -547,7 +547,7 @@
 
 		foreach (array(0, 1) as $nodeProcessPartKey) {
 			$parameters['node_process_part_key'] = $nodeProcessPartKey;
-			_processFirewall($parameters);
+			_processNodeFirewall($parameters);
 			$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
 			foreach ($parameters['data']['next']['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
@@ -796,7 +796,7 @@
 			);
 		}
 
-		_processFirewall($parameters);
+		_processNodeFirewall($parameters);
 
 		foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSet) {
 			shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSet);
