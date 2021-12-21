@@ -74,7 +74,7 @@
 				$nodeProcessTypeFirewallRuleSetPortNumberIndexes = array();
 
 				foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
-					if (empty($parameters['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$parameters['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber]) === false) {
+					if (empty($parameters['node_process_type_firewall_rule_set_port_numbers'][$parameters['node_process_type_firewall_rule_set_index']][$parameters['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber]) === false) {
 						foreach ($parameters['node_process_type_firewall_rule_set_port_numbers'][$parameters['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
 							if (empty($nodeProcessTypeFirewallRuleSetPortNumberIndexes[$nodeProcessTypeFirewallRuleSet]) === true) {
 								$nodeProcessTypeFirewallRuleSetPortNumberIndexes[$nodeProcessTypeFirewallRuleSet] = 0;
@@ -87,7 +87,7 @@
 
 				foreach ($nodeProcessTypeFirewallRuleSetPortNumberIndexes as $nodeProcessTypeFirewallRuleSet => $nodeProcessTypeFirewallRuleSetPortNumberIndex) {
 					foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
-						foreach ($parameters['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$parameters['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber][$nodeProcessTypeFirewallRuleSet] as $nodeProcessPortNumbers) {
+						foreach ($parameters['node_process_type_firewall_rule_set_port_numbers'][$parameters['node_process_type_firewall_rule_set_index']][$parameters['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber][$nodeProcessTypeFirewallRuleSet] as $nodeProcessPortNumbers) {
 							foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
 								$nodeProcessTypeFirewallRuleSetLoadBalancer = '-m statistic --mode nth --every ' . $nodeProcessTypeFirewallRuleSetPortNumberIndex . ' --packet 0 ';
 
@@ -132,7 +132,7 @@
 				$firewallRules[] = '-A PREROUTING -p tcp --dport ' . $nodeSshPortNumber . ' -j ACCEPT';
 			}
 
-			foreach ($this->nodeProcessTypeFirewallRuleSets as $nodeProcessTypeFirewallRuleSet) {
+			foreach ($parameters['node_process_type_firewall_rule_sets'] as $nodeProcessTypeFirewallRuleSet) {
 				$firewallRules[] = '-A PREROUTING -m set --match-set ' . $nodeProcessTypeFirewallRuleSet . ' dst,src -j ACCEPT';
 			}
 
