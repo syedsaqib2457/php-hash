@@ -858,7 +858,7 @@
 		// todo
 	}
 
-	function _verifyNodeProcess($parameters, $nodeProcessNodeIpAddress, $nodeProcessNodeIpAddressVersion, $nodeProcessPortNumber, $nodeProcessType) {
+	function _verifyNodeProcess($binaryFiles, $nodeProcessNodeIpAddress, $nodeProcessNodeIpAddressVersionNumber, $nodeProcessPortNumber, $nodeProcessType) {
 		$response = false;
 
 		switch ($nodeProcessType) {
@@ -868,12 +868,12 @@
 					'http_proxy' => '-x',
 					'socks_proxy' => '--socks5-hostname'
 				);
-				exec('sudo ' . $parameters['binary_files']['curl'] . ' -' . $nodeProcessNodeIpAddressVersion . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIp . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 				$response = (empty($proxyNodeProcessResponse) === true);
 				break;
 			case 'recursive_dns':
 				// todo: add dig to $parameters['binary_files']
-				exec('dig -' . $nodeProcessNodeIpAddressVersion . ' +time=2 +tries=1 ghostcompute @' . $nodeProcessNodeIp . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+				exec('dig -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 ghostcompute @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 				$response = (empty($recursiveDnsNodeProcessResponse) === false);
 				break;
 		}
@@ -881,16 +881,16 @@
 		return $response;
 	}
 
-	function _verifyNodeProcessConnections($nodeProcessNodeIpAddresses, $nodeProcessPortNumber) {
+	function _verifyNodeProcessConnections($binaryFiles, $nodeProcessNodeIpAddresses, $nodeProcessPortNumber) {
 		foreach ($nodeProcessNodeIpAddresses as $nodeProcessNodeIpAddressVersionNumber => $nodeProcessNodeIpAddress) {
 			if ($nodeProcessNodeIpAddressVersionNumber === '6') {
 				$nodeProcessNodeIpAddress = '[' . $nodeProcessNodeIpAddress . ']';
 			}
 
-			exec('sudo ' . $parameters['binary_files']['ss'] . ' -p -t -u state connected "( sport = :' . $nodeProcessPortNumber . ' )" src ' . $nodeProcessNodeIpAddress . ' | head -1 2>&1', $response);
+			exec('sudo ' . $binaryFiles['ss'] . ' -p -t -u state connected "( sport = :' . $nodeProcessPortNumber . ' )" src ' . $nodeProcessNodeIpAddress . ' | head -1 2>&1', $response);
 
 			if (is_array($response) === false) {
-				$response = _verifyNodeProcessConnections($nodeProcessNodeIpAddresses, $nodeProcessPortNumber);
+				$response = _verifyNodeProcessConnections($binaryFiles, $nodeProcessNodeIpAddresses, $nodeProcessPortNumber);
 			}
 
 			$response = boolval($response);
