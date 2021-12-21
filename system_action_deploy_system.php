@@ -693,6 +693,15 @@
 			'node_node_external_ip_address_type',
 			'processed_status'
 		),
+		'node_reserved_internal_sources' => array(
+			'created_timestamp',
+			'id',
+			'ip_address',
+			'ip_address_block_length',
+			'ip_address_version_number',
+			'modified_timestamp',
+			'node_id'
+		),
 		'node_resource_usage_logs' => array(
 			'bytes_received',
 			'bytes_sent',
