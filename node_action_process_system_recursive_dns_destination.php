@@ -6,8 +6,7 @@
 		));
 
 		if (empty($nodeSystemRecursiveDnsDestinationProcessIds) === false) {
-			$parameters['process_ids'] = $nodeSystemRecursiveDnsDestinationProcessIds;
-			_killProcessIds($parameters, $response);
+			_killProcessIds($parameters['binary_files'], $nodeSystemRecursiveDnsDestinationProcessIds, $response);
 		}
 
 		while (true) {
