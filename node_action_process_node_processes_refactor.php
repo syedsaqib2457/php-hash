@@ -1006,8 +1006,8 @@
 						unlink('/var/run/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.pid');
 						break;
 					case 'recursive_dns':
-						if (file_exists('/var/run/named/named_' . $nodeProcess['id'] . '.pid') === true) {
-							$nodeProcessProcessIds[] = file_get_contents('/var/run/named/named_' . $nodeProcess['id'] . '.pid');
+						if (file_exists('/var/run/named/' . $nodeProcessType . '_' . $nodeProcess['id'] . '.pid') === true) {
+							$nodeProcessProcessIds[] = file_get_contents('/var/run/named/' . $nodeProcessType . '_' . $nodeProcess['id'] . '.pid');
 						}
 
 						rmdir('/etc/' . $nodeProcessType . '_' . $nodeProcessId);
