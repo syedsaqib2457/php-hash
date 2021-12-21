@@ -26,8 +26,8 @@
 
 	function _processNodeFirewall($parameters) {
 		/* $firewallBinaryFiles = array(
-			4 => $this->nodeData['next']['binary_files']['iptables-restore'],
-			6 => $this->nodeData['next']['binary_files']['ip6tables-restore']
+			4 => $parameters['binary_files']['iptables-restore'],
+			6 => $parameters['binary_files']['ip6tables-restore']
 		);
 		$nodeProcessPartKeys = array(
 			0,
@@ -42,10 +42,11 @@
 		}
 
 		foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
-			$this->_processFirewallRuleSets($nodeProcessPartKey);
+			$parameters['node_process_part_key'] = $nodeProcessPartKey;
+			$parameters = _processNodeFirewallRuleSets($parameters);
 		}
 
-		foreach ($this->nodeData['next']['node_ip_versions'] as $nodeIpVersionNetworkMask => $nodeIpVersion) {
+		foreach ($this->nodeData['next']['node_ip_address_version_numbers'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
 			$firewallRules = array(
 				'*filter',
 				':INPUT ACCEPT [0:0]',
@@ -127,7 +128,7 @@
 				}
 			}
 
-			foreach ($this->nodeData['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
+			foreach ($parameters['data']['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
 				$firewallRules[] = '-A PREROUTING -p tcp --dport ' . $nodeSshPortNumber . ' -j ACCEPT';
 			}
 
