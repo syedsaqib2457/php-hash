@@ -786,17 +786,17 @@
 			}
 		}
 
-		/* $nodeProcessTypeFirewallRuleSetsToDestroy = $this->nodeProcessTypeFirewallRuleSets;
-		$this->nodeProcessTypeFirewallRuleSets = array();
+		$nodeProcessTypeFirewallRuleSetsToDestroy = $parameters['node_process_type_firewall_rule_sets'];
+		$parameters['node_process_type_firewall_rule_sets'] = array();
 
-		foreach ($this->nodeData['next']['node_process_types'] as $nodeProcessType) {
+		foreach ($parameters['data']['next']['node_process_types'] as $nodeProcessType) {
 			$parameters['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
 				'next',
 				'next'
 			);
 		}
 
-		_processFirewall(); */
+		_processFirewall($parameters);
 
 		foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSet) {
 			shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSet);
