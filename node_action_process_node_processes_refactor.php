@@ -475,7 +475,8 @@
 						'[Service]',
 						'ExecStart=/usr/sbin/named_' . $recursiveDnsNodeProcessName . ' -f -c /etc/' . $recursiveDnsNodeProcessName . '/named.conf -S 40000 -u root'
 					);
-					file_put_contents('/lib/systemd/system/' . $recursiveDnsNodeProcessName . '.service', implode("\n", $recursiveDnsNodeProcessService));
+					$recursiveDnsNodeProcessService = implode("\n", $recursiveDnsNodeProcessService);
+					file_put_contents('/lib/systemd/system/' . $recursiveDnsNodeProcessName . '.service', $recursiveDnsNodeProcessService);
 
 					if (file_exists('/etc/default/' . $recursiveDnsNodeProcessName) === false) {
 						copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/' . $recursiveDnsNodeProcessName);
@@ -496,7 +497,7 @@
 					$recursiveDnsNodeProcessEndedTime = time();
 
 					while ($recursiveDnsNodeProcessEnded === false) {
-						$recursiveDnsNodeProcessEnded = (_verifyNodeProcess($parameter['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
+						$recursiveDnsNodeProcessEnded = (_verifyNodeProcess($parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
 						sleep(1);
 					}
 
