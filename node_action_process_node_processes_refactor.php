@@ -38,7 +38,7 @@
 				$nodeProcessPortNumbersVerified = array();
 
 				foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
-					if ($this->_verifyNodeProcess($this->nodeData[$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpVersion]['ip_address'], $nodeReservedInternalDestinationIpVersion, $nodeProcessPortNumber, $nodeProcessType) === true) {
+					if (_verifyNodeProcess($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpAddressVersionNumber]['ip_address'], $nodeReservedInternalDestinationIpAddressVersionNumber, $nodeProcessPortNumber, $nodeProcessType) === true) {
 						$nodeProcessPortNumberString .= '_' . $nodeProcessPortNumber;
 						$nodeProcessPortNumbersVerified[] = $nodeProcessPortNumber;
 					}
@@ -55,11 +55,11 @@
 						}
 
 						$this->nodeData['node_process_type_firewall_rule_set_port_numbers'][$this->nodeProcessTypeFirewallRuleSetIndex][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]][$nodeProcessType][$parameters['node_process_part_key']][$nodeIpVersion][($nodeProcessTypeFirewallRuleSet = $nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberString . '_' . $parameters['node_process_type_firewall_rule_set_index'])] = $nodeProcessPortNumbersVerified;
-						shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' create ' . $nodeProcessTypeFirewallRuleSet . ' hash:ip,port family ' . $this->ipVersions[$nodeIpVersion]['interface_type'] . ' timeout 0');
+						shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' create ' . $nodeProcessTypeFirewallRuleSet . ' hash:ip,port family ' . $this->ipVersions[$nodeIpVersion]['interface_type'] . ' timeout 0');
 
 						foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-							shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',tcp:' . $nodeProcessPortNumber);
-							shell_exec('sudo ' . $this->nodeData['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',udp:' . $nodeProcessPortNumber);
+							shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',tcp:' . $nodeProcessPortNumber);
+							shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' add ' . $nodeProcessTypeFirewallRuleSet . ' ' . $nodeProcessNodeIp . ',udp:' . $nodeProcessPortNumber);
 						}
 
 						$this->nodeProcessTypeFirewallRuleSets[$nodeProcessTypeFirewallRuleSet] = $nodeProcessTypeFirewallRuleSet;
