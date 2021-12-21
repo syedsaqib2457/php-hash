@@ -608,9 +608,7 @@
 									)
 								) {
 									$proxyNodeProcessNodeUserNodeRequestDestinationParts = array(
-										array(
-											'*'
-										)
+										'*'
 									);
 
 									foreach ($proxyNodeProcessNodeUser['node_request_destination_ids'] as $proxyNodeProcessNodeUserNodeRequestDestinationId) {
@@ -642,19 +640,21 @@
 									}
 
 									if (empty($proxyNodeProcessNodeUser['authentication_strict_only_allowed_status']) === true) {
-										// todo: add $proxyNodeProcessNodeUserAuthenticationCredentialParts loop instead of $proxyNodeProcessNodeUser['authentication_username']
-
 										if (
-											(empty($proxyNodeProcessNodeUser['authentication_username']) === false) &&
-											(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === false)
+											(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === false) &&
+											(empty($proxyNodeProcessNodeUser['node_user_authentication_credentials']) === false)
 										) {
-											foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
-												$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'allow ' . $proxyNodeProcessNodeUser['authentication_username'] . ' * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
-												$proxyNodeProcessConfigurationIndexes['d']++;
+											foreach ($proxyNodeProcessNodeUserAuthenticationCredentialParts as $proxyNodeProcessNodeUserAuthenticationCredentialPart) {
+												foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
+													$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
+													$proxyNodeProcessConfigurationIndexes['d']++;
+												}
 											}
 										}
 
-										$proxyNodeProcessNodeUser['authentication_username'] = '*';
+										$proxyNodeProcessNodeUserAuthenticationCredentialParts = array(
+											'*'
+										);
 									}
 
 									if (empty($proxyNodeProcessNodeUser['node_user_authentication_sources']) === false) {
