@@ -498,21 +498,20 @@
 
 					shell_exec('sudo ' . $parameters['binary_files']['systemctl'] . ' daemon-reload');
 					unlink('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid');
-					$recursiveDnsNodeProcessEnded = false;
-					$recursiveDnsNodeProcessEndedTime = time();
+					// todo: add default node timeout column to wait for X seconds before proceeding with processing after processes start + stop
+					$recursiveDnsNodeProcessResponse = false;
 
-					while ($recursiveDnsNodeProcessEnded === false) {
-						$recursiveDnsNodeProcessEnded = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
+					while ($recursiveDnsNodeProcessResponse === false) {
+						$recursiveDnsNodeProcessResponse = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
 						sleep(1);
 					}
 
-					$recursiveDnsNodeProcessStarted = false;
-					$recursiveDnsNodeProcessStartedTime = time();
+					$recursiveDnsNodeProcessResponse = false;
 
 					if ($recursiveDnsNodeProcessesStart === true) {
-						while ($recursiveDnsNodeProcessStarted === false) {
+						while ($recursiveDnsNodeProcessResponse === false) {
 							shell_exec('sudo ' . $parameters['binary_files']['service'] . ' recursive_dns_' . $recursiveDnsNodeProcessId . ' start');
-							$recursiveDnsNodeProcessStarted = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
+							$recursiveDnsNodeProcessResponse = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersion]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
 							sleep(1);
 						}
 					} else {
@@ -740,33 +739,34 @@
 							}
 
 							shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessType . '_' . $proxyNodeProcessId);
-							$proxyNodeProcessSystemdServiceFileContents = array(
+							$proxyNodeProcessService = array(
 								'[Service]',
 								'ExecStart=/bin/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . ' /etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg')
 							);
-							file_put_contents('/etc/systemd/system/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.service', implode("\n", $proxyNodeProcessSystemdServiceFileContents));
+							$proxyNodeProcessService = implode("\n", $proxyNodeProcessService);
+							file_put_contents('/etc/systemd/system/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.service', $proxyNodeProcessService);
 							$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid';
 							$proxyNodeProcessConfiguration['f'] = $proxyNodeProcessInterfaceConfigurations['f'] . ' -p' . $proxyNodeProcessPortNumber;
 							$proxyNodeProcessConfiguration['g'] = $proxyNodeProcessInterfaceConfigurations['g'] . ' -p' . $proxyNodeProcessPortNumber;
-							file_put_contents('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg', implode("\n", $proxyNodeProcessConfiguration));
+							$proxyNodeProcessConfiguration = implode("\n", $proxyNodeProcessConfiguration);
+							file_put_contents('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg', $proxyNodeProcessConfiguration);
 							chmod('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg', 0755);
 							shell_exec('sudo ' . $parameters['binary_files']['systemctl'] . ' daemon-reload');
 							unlink('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid');
-							$proxyNodeProcessEnded = false;
-							$proxyNodeProcessEndedTime = time();
+							// todo: add default node timeout column to wait for X seconds before proceeding with processing after processes start + stop
+							$proxyNodeProcessResponse = false;
 
-							while ($proxyNodeProcessEnded === false) {
-								$proxyNodeProcessEnded = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpVersion]['ip_address'], $proxyNodeIpVersion, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
+							while ($proxyNodeProcessResponse === false) {
+								$proxyNodeProcessResponse = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
 								sleep(1);
 							}
 
-							$proxyNodeProcessStarted = false;
-							$proxyNodeProcessStartedTime = time();
+							$proxyNodeProcessResponse = false;
 
 							if ($proxyNodeProcessesStart === true) {
-								while ($proxyNodeProcessStarted === false) {
+								while ($proxyNodeProcessResponse === false) {
 									shell_exec('sudo ' . $parameters['binary_files']['service'] . ' ' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . ' start');
-									$proxyNodeProcessStarted = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
+									$proxyNodeProcessResponse = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
 									sleep(1);
 								}
 							} else {
