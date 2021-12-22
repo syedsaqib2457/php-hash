@@ -225,6 +225,22 @@
 					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0001',
 					'ip_address_block_length' => '128'
 				),
+				array(
+					'ip_address' => '0000:0000:0000:0000:0000:ffff:0000:0000',
+					'ip_address_block_length' => '96'
+				),
+				array(
+					'ip_address' => '0000:0000:0000:0000:ffff:0000:0000:0000',
+					'ip_address_block_length' => '96'
+				),
+				array(
+					'ip_address' => '0064:ff9b:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '96'
+				),
+				array(
+					'ip_address' => '0064:ff9b:0001:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '48'
+				),
 				// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
 			)
 		);
