@@ -59,7 +59,11 @@
 			return $response;
 		}
 
-		$nodeIds = array_filter($node);
+		$nodeNodeId = $node['id'];
+
+		if (empty($node['node_id']) === false) {
+			$nodeNodeId = $node['node_id'];
+		}
 
 		if (
 			(isset($parameters['data']['processed_status']) === true) &&
@@ -78,8 +82,8 @@
 				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
-						'id' => $nodeIds,
-						'node_id' => $nodeIds
+						'id' => $nodeNodeId,
+						'node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -88,8 +92,8 @@
 				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
-						'id' => $nodeIds,
-						'node_id' => $nodeIds
+						'id' => $nodeNodeId,
+						'node_id' => $nodeNodeId
 					),
 					'processed_status' => '0'
 				)
@@ -110,8 +114,8 @@
 				'in' => $parameters['system_databases']['node_processes'],
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -127,8 +131,8 @@
 				'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -141,8 +145,8 @@
 				'in' => $parameters['system_databases']['node_process_node_user_authentication_credentials'],
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -155,8 +159,8 @@
 				'in' => $parameters['system_databases']['node_process_node_user_authentication_sources'],
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -169,8 +173,8 @@
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_destinations'],
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -182,8 +186,8 @@
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_limit_rules'],
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -199,8 +203,8 @@
 				'in' => $parameters['system_databases']['node_process_node_users'], 
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -220,8 +224,8 @@
 				'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 				'where' => array(
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -234,8 +238,8 @@
 				'where' => array(
 					'assigned_status' => '1',
 					'either' => array(
-						'node_id' => $nodeIds,
-						'node_node_id' => $nodeIds
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
 					)
 				)
 			), $response);
@@ -247,7 +251,7 @@
 				),
 				'in' => $parameters['system_databases']['node_reserved_internal_sources'],
 				'where' => array(
-					'node_id' => $nodeIds
+					'node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodes = _list(array(
@@ -262,8 +266,8 @@
 				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
-						'id' => $nodeIds,
-						'node_id' => $nodeIds
+						'id' => $nodeNodeId,
+						'node_id' => $nodeNodeId
 					)
 				)
 			), $response);
