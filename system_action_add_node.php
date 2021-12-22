@@ -33,11 +33,7 @@
 			}
 
 			$parameters['data']['deployed_status'] = $nodeNode['deployed_status'];
-			$parameters['data']['id'] = $nodeNode['id'];
-
-			if (empty($nodeNode['node_id']) === false) {
-				$parameters['data']['node_id'] = $nodeNode['node_id'];
-			}
+			$parameters['data']['node_id'] = $nodeNode['id'];
 		} else {
 			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
 			$parameters['data']['node_id'] = null;
