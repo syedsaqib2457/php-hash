@@ -144,7 +144,12 @@
 			}
 		}
 
+		$nodeReservedInternalSources = array();
 		// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
+		_save(array(
+			'data' => $nodeReservedInternalSources,
+			'in' => $parameters['databases']['node_reserved_internal_sources']
+		), $response);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'activated_status' => true,
