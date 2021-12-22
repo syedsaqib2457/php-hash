@@ -292,8 +292,8 @@
 				}
 			}
 
-			// todo: add default $response with "no new node data to process, etc"
-			return;
+			$response = $systemActionProcessNodeResponse;
+			return $response;
 		}
 
 		$kernelOptions = array(
