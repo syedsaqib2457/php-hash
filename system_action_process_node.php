@@ -320,10 +320,7 @@
 				}
 
 				foreach ($nodeProcessNodeUserAuthenticationSources as $nodeProcessNodeUserAuthenticationSource) {
-					$response['data']['node_users'][$nodeProcessNodeUserAuthenticationSource['node_user_id']]['node_user_authentication_sources'] = array(
-						'ip_address' => $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address'],
-						'ip_address_block_length' => $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address_block_length']
-					);
+					$response['data']['node_users'][$nodeProcessNodeUserAuthenticationSource['node_user_id']]['node_user_authentication_sources'][] = $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address'] . '/' . $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address_block_length'];
 				}
 
 				if (empty($nodeProcessNodeUserNodeRequestDestinations) === false) {
