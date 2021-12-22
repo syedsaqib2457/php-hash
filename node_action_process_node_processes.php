@@ -1034,6 +1034,7 @@
 			'node_process_types' => true,
 			'node_recursive_dns_destinations' => true,
 			'node_reserved_internal_destinations' => true,
+			'node_reserved_internal_sources' => true,
 			'node_ssh_port_numbers' => true
 		));
 		$parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'] = $parameters['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
