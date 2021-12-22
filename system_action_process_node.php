@@ -13,6 +13,7 @@
 		'node_process_recursive_dns_destinations',
 		'node_processes',
 		'node_reserved_internal_destinations',
+		'node_reserved_internal_sources',
 		'nodes'
 	), $parameters['system_databases'], $response);
 
@@ -238,6 +239,17 @@
 					)
 				)
 			), $response);
+			$nodeReservedInternalSources = _list(array(
+				'data' => array(
+					'ip_address',
+					'ip_address_block_length',
+					'ip_address_version_number'
+				),
+				'in' => $parameters['system_databases']['node_reserved_internal_sources'],
+				'where' => array(
+					'node_id' => $nodeIds
+				)
+			), $response);
 			$nodes = _list(array(
 				'data' => array(
 					'activated_status',
@@ -359,6 +371,10 @@
 					'ip_address' => $nodeReservedInternalDestination['ip_address'],
 					'ip_address_version_number' => $nodeReservedInternalDestination['ip_address_version_number']
 				);
+			}
+
+			foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
+				$response['data']['node_reserved_internal_sources'][$nodeReservedInternalSource['ip_address_version_number']][] = $nodeReservedInternalDestination['ip_address'] . '/' . $nodeReservedInternalDestination['ip_address_block_length'];
 			}
 		}
 
