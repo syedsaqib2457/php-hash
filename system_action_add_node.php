@@ -245,14 +245,18 @@
 			)
 		);
 
-		foreach ($nodeReservedInternalSources as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSource) {
-			$nodeReservedInternalSourceData[] = array(
-				'id' => random_bytes(10) . time() . random_bytes(10),
-				'ip_address' => $nodeReservedInternalSource['ip_address'],
-				'ip_address_block_length' => $nodeReservedInternalSource['ip_address_block_length'],
-				'ip_address_version_number' => $nodeReservedInternalSourceIpAddressVersionNumber,
-				'node_id' => $parameters['data']['id']
-			);
+		foreach ($nodeReservedInternalSources as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
+			foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
+				if (empty($nodeExternalIpAddresses['external_ip_address_version_' . $nodeReservedInternalSourceIpAddressVersionNumber]) === false) {
+					$nodeReservedInternalSourceData[] = array(
+						'id' => random_bytes(10) . time() . random_bytes(10),
+						'ip_address' => $nodeReservedInternalSource['ip_address'],
+						'ip_address_block_length' => $nodeReservedInternalSource['ip_address_block_length'],
+						'ip_address_version_number' => $nodeReservedInternalSourceIpAddressVersionNumber,
+						'node_id' => $parameters['data']['id']
+					);
+				}
+			}
 		}
 
 		_save(array(
