@@ -494,9 +494,6 @@
 			foreach ($parameters['data']['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
 				$recursiveDnsNodeProcessConfiguration = array(
 					'a0' => 'acl nodeReservedInternalSources {',
-					// todo: add reserved network sources to database for each node
-					// 'a1' => $parameters['data']['next']['reserved_network']['ip_blocks']['4'],
-					// 'a2' => $parameters['data']['next']['reserved_network']['ip_blocks']['6'],
 					'b0' => '};',
 					'b1' => 'acl nodeUserAuthenticationSources {',
 					'c0' => '};',
@@ -534,6 +531,13 @@
 					'c' => 25,
 					'h' => 0
 				);
+
+				foreach ($parameters['data']['next']['node_reserved_internal_sources'] as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
+					foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
+						$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $nodeReservedInternalSource . ';';
+						$recursiveDnsNodeProcessConfigurationIndexes['a']++;
+					}
+				}
 
 				if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns']) === false) {
 					$recursiveDnsNodeProcessConfiguration['h' . $recursiveDnsNodeProcessConfigurationIndexes['h']] = 'logging {';
