@@ -152,6 +152,27 @@
 				'ip_address_version_number' => '4',
 				'node_id' => $parameters['data']['id']
 			),
+			array(
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'ip_address' => '10.0.0.0',
+				'ip_address_block_length' => '8',
+				'ip_address_version_number' => '4',
+				'node_id' => $parameters['data']['id']
+			),
+			array(
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'ip_address' => '100.64.0.0',
+				'ip_address_block_length' => '10',
+				'ip_address_version_number' => '4',
+				'node_id' => $parameters['data']['id']
+			),
+			array(
+				'id' => random_bytes(10) . time() . random_bytes(10),
+				'ip_address' => '127.0.0.0',
+				'ip_address_block_length' => '8',
+				'ip_address_version_number' => '4',
+				'node_id' => $parameters['data']['id']
+			),
 			// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
 		);
 		_save(array(
