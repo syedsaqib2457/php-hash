@@ -187,8 +187,36 @@
 					'ip_address' => '192.168.0.0',
 					'ip_address_block_length' => '16'
 				),
-				// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
-			)
+				array(
+					'ip_address' => '198.18.0.0',
+					'ip_address_block_length' => '15'
+				),
+				array(
+					'ip_address' => '198.51.100.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '203.0.113.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '224.0.0.0',
+					'ip_address_block_length' => '4'
+				),
+				array(
+					'ip_address' => '233.252.0.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '240.0.0.0',
+					'ip_address_block_length' => '4'
+				),
+				array(
+					'ip_address' => '255.255.255.255',
+					'ip_address_block_length' => '32'
+				)
+			),
+			'6' => array() // todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
 		);
 
 		foreach ($nodeReservedInternalSources as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSource) {
