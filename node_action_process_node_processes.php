@@ -119,14 +119,12 @@
 			$nodeFirewallRules[] = '*raw';
 			$nodeFirewallRules[] = ':PREROUTING ACCEPT [0:0]';
 			$nodeFirewallRules[] = ':OUTPUT ACCEPT [0:0]';
-			// todo: allow dropping external packets from additional public IP blocks with per-node settings
-			// todo: add reserved network sources to database for each node
 
-			/* if (empty($this->nodeData['next']['reserved_network']['ip_blocks'][$nodeIpVersion]) === false) {
-				foreach ($this->nodeData['next']['reserved_network']['ip_blocks'][$nodeIpAddressVersionNumber] as $reservedNetworkIpBlock) {
-					$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $reservedNetworkIpBlock . ' -j DROP';
+			foreach ($parameters['data']['next']['node_reserved_internal_sources'][$nodeIpAddressVersionNumber] as $nodeReservedInternalSource) {
+				foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
+					$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
 				}
-			} */
+			}
 
 			foreach ($parameters['data']['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
 				$nodeFirewallRules[] = '-A PREROUTING -p tcp --dport ' . $nodeSshPortNumber . ' -j ACCEPT';
