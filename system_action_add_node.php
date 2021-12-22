@@ -167,6 +167,26 @@
 					'ip_address' => '169.254.0.0',
 					'ip_address_block_length' => '16'
 				),
+				array(
+					'ip_address' => '172.16.0.0',
+					'ip_address_block_length' => '12'
+				),
+				array(
+					'ip_address' => '192.0.0.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '192.0.2.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '192.88.99.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '192.168.0.0',
+					'ip_address_block_length' => '16'
+				),
 				// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
 			)
 		);
