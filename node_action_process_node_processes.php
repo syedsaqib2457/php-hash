@@ -552,7 +552,7 @@
 								$recursiveDnsNodeProcessConfigurationIndexes['node_process_node_user_ids'][$recursiveDnsNodeProcessNodeUserId] = true;
 
 								foreach ($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources'] as $recursiveDnsNodeProcessNodeUserAuthenticationSource) {
-									$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessNodeUserAuthenticationSource['ip_address'] . '/' . $recursiveDnsNodeProcessNodeUserAuthenticationSource['ip_address_block_length'] . ';';
+									$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessNodeUserAuthenticationSource . ';';
 									$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 								}
 							}
@@ -841,10 +841,10 @@
 
 										foreach ($proxyNodeProcessNodeUser['node_user_authentication_sources'] as $proxyNodeProcessNodeUserAuthenticationSource) {
 											if (($proxyNodeProcessConfigurationIndexes['i'] % 10) === 0) {
-												$proxyNodeProcessNodeUserAuthenticationSourceParts[$proxyNodeProcessConfigurationIndexes['i']] = $proxyNodeProcessNodeUserAuthenticationSource['ip_address'] . '/' . $proxyNodeProcessNodeUserAuthenticationSource['ip_address_block_length'];
+												$proxyNodeProcessNodeUserAuthenticationSourceParts[$proxyNodeProcessConfigurationIndexes['i']] = $proxyNodeProcessNodeUserAuthenticationSource;
 												$proxyNodeProcessConfigurationPartIndexes['i'] = $proxyNodeProcessConfigurationIndexes['i'];
 											} else {
-												$proxyNodeProcessNodeUserAuthenticationSourceParts[$proxyNodeProcessConfigurationPartIndexes['i']] .= ',' . $proxyNodeProcessNodeUserAuthenticationSource['ip_address'] . '/' . $proxyNodeProcessNodeUserAuthenticationSource['ip_address_block_length'];
+												$proxyNodeProcessNodeUserAuthenticationSourceParts[$proxyNodeProcessConfigurationPartIndexes['i']] .= ',' . $proxyNodeProcessNodeUserAuthenticationSource;
 											}
 
 											$proxyNodeProcessConfigurationIndexes['i']++;
