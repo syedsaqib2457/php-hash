@@ -216,7 +216,17 @@
 					'ip_address_block_length' => '32'
 				)
 			),
-			'6' => array() // todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
+			'6' => array(
+				array(
+					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '128'
+				),
+				array(
+					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0001',
+					'ip_address_block_length' => '128'
+				),
+				// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
+			)
 		);
 
 		foreach ($nodeReservedInternalSources as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSource) {
