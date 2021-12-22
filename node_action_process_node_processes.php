@@ -250,7 +250,8 @@
 		}
 
 		$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_next_response.json');
-		$systemActionProcessNodeResponse = json_decode($nodeProcessResponseFileContents, true);
+		$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
+		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
 
 		if ($systemActionProcessNodeResponse === false) {
 			$response['message'] = 'Error processing node, please try again.' . "\n";
@@ -687,7 +688,7 @@
 							sleep(1);
 						}
 					} else {
-						$parameters['reprocess'] = true;
+						$parameters['data']['processed_status'] = '0';
 					}
 
 					if (file_exists('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid') === true) {
@@ -942,7 +943,7 @@
 									sleep(1);
 								}
 							} else {
-								$parameters['reprocess'] = true;
+								$parameters['data']['processed_status'] = '0';
 							}
 
 							if (file_exists('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid') === true) {
@@ -1038,10 +1039,30 @@
 			'node_ssh_port_numbers' => true
 		));
 		$parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'] = $parameters['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
-		// file_put_contents('/tmp/node_data', json_encode($this->nodeData['current']));
-		// exec('sudo curl -s --form-string "json={\"action\":\"process\",\"data\":{\"node_ssh_port_numbers\":' . json_encode($this->nodeData['current']['node_ssh_port_numbers']) . ',\"processed\":' . (empty($this->reprocess) === true) . '},\"where\":{\"token\":\"' . $this->parameters['token'] . '\"}}" ' . $this->parameters['system_url'] . '/endpoint/nodes 2>&1', $response);
-		// $response = json_decode(current($response), true);
-		// todo
+		// todo: encode all --post-data parameters with $callbackParameters + json_encode
+
+		if (isset($parameters['data']['processed_status']) === false) {
+			$parameters['data']['processed_status'] = '1';
+		}
+
+		$parameters['data']['processing_status'] = '0';
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --timeout=60 --post-data "json={\"action\":\"process_node\",\"data\":{\"processed_status\":\"' . $parameters['data']['processed_status'] . '\",\"processing_status\":\"' . $parameters['data']['processing_status'] . '\"},\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+
+		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
+			$response['message'] = 'Error processing node, please try again.' . "\n";
+			return $response;
+		}
+
+		$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_next_response.json');
+		$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
+		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
+
+		if ($systemActionProcessNodeResponse === false) {
+			$response['message'] = 'Error processing node, please try again.' . "\n";
+			return $response;
+		}
+
+		$response = $systemActionProcessNodeResponse;
 		return $response;
 	}
 
