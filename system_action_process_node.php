@@ -100,6 +100,7 @@
 
 			if (($nodeCount > 0) === false) {
 				$response['message'] = 'Node is already processed, please try again.';
+				$response['valid_status'] = '1';
 				return $response;
 			}
 
