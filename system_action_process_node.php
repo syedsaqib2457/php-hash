@@ -71,7 +71,6 @@
 			(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
 			(isset($parameters['data']['processing_progress_percentage']) === true)
 		) {
-			// todo: validate string 1 or 0
 			_update(array(
 				'data' => array(
 					'processed_status' => $parameters['data']['processed_status'],
