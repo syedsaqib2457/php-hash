@@ -140,125 +140,128 @@
 			}
 		}
 
-		$nodeReservedInternalSourceData = array();
-		$nodeReservedInternalSources = array(
-			'4' => array(
-				array(
-					'ip_address' => '0.0.0.0',
-					'ip_address_block_length' => '8'
+		if (empty($parameters['data']['node_id']) === true) {
+			$nodeReservedInternalSourceData = array();
+			$nodeReservedInternalSources = array(
+				'4' => array(
+					array(
+						'ip_address' => '0.0.0.0',
+						'ip_address_block_length' => '8'
+					),
+					array(
+						'ip_address' => '10.0.0.0',
+						'ip_address_block_length' => '8'
+					),
+					array(
+						'ip_address' => '100.64.0.0',
+						'ip_address_block_length' => '10'
+					),
+					array(
+						'ip_address' => '127.0.0.0',
+						'ip_address_block_length' => '8'
+					),
+					array(
+						'ip_address' => '169.254.0.0',
+						'ip_address_block_length' => '16'
+					),
+					array(
+						'ip_address' => '172.16.0.0',
+						'ip_address_block_length' => '12'
+					),
+					array(
+						'ip_address' => '192.0.0.0',
+						'ip_address_block_length' => '24'
+					),
+					array(
+						'ip_address' => '192.0.2.0',
+						'ip_address_block_length' => '24'
+					),
+					array(
+						'ip_address' => '192.88.99.0',
+						'ip_address_block_length' => '24'
+					),
+					array(
+						'ip_address' => '192.168.0.0',
+						'ip_address_block_length' => '16'
+					),
+					array(
+						'ip_address' => '198.18.0.0',
+						'ip_address_block_length' => '15'
+					),
+					array(
+						'ip_address' => '198.51.100.0',
+						'ip_address_block_length' => '24'
+					),
+					array(
+						'ip_address' => '203.0.113.0',
+						'ip_address_block_length' => '24'
+					),
+					array(
+						'ip_address' => '224.0.0.0',
+						'ip_address_block_length' => '4'
+					),
+					array(
+						'ip_address' => '233.252.0.0',
+						'ip_address_block_length' => '24'
+					),
+					array(
+						'ip_address' => '240.0.0.0',
+						'ip_address_block_length' => '4'
+					),
+					array(
+						'ip_address' => '255.255.255.255',
+						'ip_address_block_length' => '32'
+					)
 				),
-				array(
-					'ip_address' => '10.0.0.0',
-					'ip_address_block_length' => '8'
-				),
-				array(
-					'ip_address' => '100.64.0.0',
-					'ip_address_block_length' => '10'
-				),
-				array(
-					'ip_address' => '127.0.0.0',
-					'ip_address_block_length' => '8'
-				),
-				array(
-					'ip_address' => '169.254.0.0',
-					'ip_address_block_length' => '16'
-				),
-				array(
-					'ip_address' => '172.16.0.0',
-					'ip_address_block_length' => '12'
-				),
-				array(
-					'ip_address' => '192.0.0.0',
-					'ip_address_block_length' => '24'
-				),
-				array(
-					'ip_address' => '192.0.2.0',
-					'ip_address_block_length' => '24'
-				),
-				array(
-					'ip_address' => '192.88.99.0',
-					'ip_address_block_length' => '24'
-				),
-				array(
-					'ip_address' => '192.168.0.0',
-					'ip_address_block_length' => '16'
-				),
-				array(
-					'ip_address' => '198.18.0.0',
-					'ip_address_block_length' => '15'
-				),
-				array(
-					'ip_address' => '198.51.100.0',
-					'ip_address_block_length' => '24'
-				),
-				array(
-					'ip_address' => '203.0.113.0',
-					'ip_address_block_length' => '24'
-				),
-				array(
-					'ip_address' => '224.0.0.0',
-					'ip_address_block_length' => '4'
-				),
-				array(
-					'ip_address' => '233.252.0.0',
-					'ip_address_block_length' => '24'
-				),
-				array(
-					'ip_address' => '240.0.0.0',
-					'ip_address_block_length' => '4'
-				),
-				array(
-					'ip_address' => '255.255.255.255',
-					'ip_address_block_length' => '32'
+				'6' => array(
+					array(
+						'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0000',
+						'ip_address_block_length' => '128'
+					),
+					array(
+						'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0001',
+						'ip_address_block_length' => '128'
+					),
+					array(
+						'ip_address' => '0000:0000:0000:0000:0000:ffff:0000:0000',
+						'ip_address_block_length' => '96'
+					),
+					array(
+						'ip_address' => '0000:0000:0000:0000:ffff:0000:0000:0000',
+						'ip_address_block_length' => '96'
+					),
+					array(
+						'ip_address' => '0064:ff9b:0000:0000:0000:0000:0000:0000',
+						'ip_address_block_length' => '96'
+					),
+					array(
+						'ip_address' => '0064:ff9b:0001:0000:0000:0000:0000:0000',
+						'ip_address_block_length' => '48'
+					),
+					// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
 				)
-			),
-			'6' => array(
-				array(
-					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '128'
-				),
-				array(
-					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0001',
-					'ip_address_block_length' => '128'
-				),
-				array(
-					'ip_address' => '0000:0000:0000:0000:0000:ffff:0000:0000',
-					'ip_address_block_length' => '96'
-				),
-				array(
-					'ip_address' => '0000:0000:0000:0000:ffff:0000:0000:0000',
-					'ip_address_block_length' => '96'
-				),
-				array(
-					'ip_address' => '0064:ff9b:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '96'
-				),
-				array(
-					'ip_address' => '0064:ff9b:0001:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '48'
-				),
-				// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
-			)
-		);
+			);
 
-		foreach ($nodeReservedInternalSources as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
-			foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
-				if (empty($nodeExternalIpAddresses['external_ip_address_version_' . $nodeReservedInternalSourceIpAddressVersionNumber]) === false) {
-					$nodeReservedInternalSourceData[] = array(
-						'id' => random_bytes(10) . time() . random_bytes(10),
-						'ip_address' => $nodeReservedInternalSource['ip_address'],
-						'ip_address_block_length' => $nodeReservedInternalSource['ip_address_block_length'],
-						'ip_address_version_number' => $nodeReservedInternalSourceIpAddressVersionNumber,
-						'node_id' => $parameters['data']['id']
-					);
+			foreach ($nodeReservedInternalSources as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
+				foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
+					if (empty($nodeExternalIpAddresses['external_ip_address_version_' . $nodeReservedInternalSourceIpAddressVersionNumber]) === false) {
+						$nodeReservedInternalSourceData[] = array(
+							'id' => random_bytes(10) . time() . random_bytes(10),
+							'ip_address' => $nodeReservedInternalSource['ip_address'],
+							'ip_address_block_length' => $nodeReservedInternalSource['ip_address_block_length'],
+							'ip_address_version_number' => $nodeReservedInternalSourceIpAddressVersionNumber,
+							'node_id' => $parameters['data']['id']
+						);
+					}
 				}
 			}
+
+			_save(array(
+				'data' => $nodeReservedInternalSourceData,
+				'in' => $parameters['databases']['node_reserved_internal_sources']
+			), $response);
 		}
 
-		_save(array(
-			'data' => $nodeReservedInternalSourceData,
-			'in' => $parameters['databases']['node_reserved_internal_sources']
-		), $response);
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'activated_status' => true,
