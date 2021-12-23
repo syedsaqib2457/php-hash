@@ -532,9 +532,7 @@
 					'h' => 0
 				);
 				// todo: delete $recursiveDnsNodeProcessConfigurationIndexLengths and add index lengths to $parameters['data']['next']
-				$recursiveDnsNodeProcessConfigurationIndexLengths = array(
-					'b' => 1 // todo: add node_process_node_user_authentication_source_counts
-				);
+				$recursiveDnsNodeProcessConfigurationIndexLengths = array();
 				$recursiveDnsNodeProcessConfiguration[str_pad('a', ($parameters['data']['next']['node_reserved_internal_source_index_length'] + 1), '0', STR_PAD_RIGHT)] = 'acl nodeReservedInternalSources {';
 				$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 
@@ -554,8 +552,7 @@
 					foreach ($recursiveDnsNodeProcessNodeUserIds as $recursiveDnsNodeProcessNodeUserId) {
 						if (empty($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources']) === false) {
 							foreach ($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources'] as $recursiveDnsNodeProcessNodeUserAuthenticationSource) {
-								// todo: add node_process_node_user_authentication_source_counts
-								$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessNodeUserAuthenticationSource . ';';
+								$recursiveDnsNodeProcessConfiguration['b' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['b'], $parameters['data']['next']['node_process_node_user_authentication_source_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = $recursiveDnsNodeProcessNodeUserAuthenticationSource . ';';
 								$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 							}
 
