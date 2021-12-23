@@ -308,7 +308,15 @@
 			}
 
 			if (empty($nodeProcessNodeUsers) === false) {
+				$nodeProcessNodeUserCounts = array();
+
 				foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
+					if (empty($nodeProcessNodeUserCounts[$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']]) === true) {
+						$nodeProcessNodeUserCounts[$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']] = 0;
+					}
+
+					$nodeProcessNodeUserCounts[$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']]++;
+					$response['data']['node_process_node_user_request_log_index_lengths'][$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']] = strlen($nodeProcessNodeUserCounts[$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']]) * 9;
 					$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
 					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']] = array(
 						'authentication_strict_only_allowed_status' => $nodeProcessNodeUser['node_user_authentication_strict_only_allowed_status'],
