@@ -374,9 +374,14 @@
 				);
 			}
 
+			$response['data']['node_reserved_internal_source_index_length'] = 0;
+
 			foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
+				$response['data']['node_reserved_internal_source_index_length']++;
 				$response['data']['node_reserved_internal_sources'][$nodeReservedInternalSource['ip_address_version_number']][] = $nodeReservedInternalDestination['ip_address'] . '/' . $nodeReservedInternalDestination['ip_address_block_length'];
 			}
+
+			$response['data']['node_reserved_internal_source_index_length'] = strlen($response['data']['node_reserved_internal_source_index_length']);
 		}
 
 		$response['message'] = 'Nodes processed successfully.';
