@@ -36,8 +36,7 @@
 			'proxy_node_process_types' => array(
 				'proxy' => 'http_proxy',
 				'socks' => 'socks_proxy'
-			),
-			'reserved_network' => array() // todo: add reserved network IP data from validation file
+			)
 		);
 
 		if (empty($parameters['node_authentication_token']) === true) {
