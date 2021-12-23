@@ -484,6 +484,7 @@
 		}
 
 		$parameters['node_process_type_firewall_rule_sets'] = array();
+		// todo: dynamic 0 padding for sorting key indexes
 
 		foreach (array(0, 1) as $nodeProcessPartKey) {
 			$parameters['node_process_part_key'] = $nodeProcessPartKey;
@@ -495,16 +496,16 @@
 					'a0' => 'acl nodeReservedInternalSources {',
 					'b0' => '};',
 					'b1' => 'acl nodeUserAuthenticationSources {',
-					'c0' => '};',
-					'c1' => 'options {',
-					'c2' => 'allow-query {',
-					'c3' => 'nodeReservedInternalSources;',
-					'c4' => 'nodeUserAuthenticationSources;',
-					'c5' => '}',
-					'c6' => 'allow-recursion {',
-					'c7' => 'nodeReservedInternalSources;',
-					'c8' => '}',
-					'c9' => 'cleaning-interval 1;',
+					'c00' => '};',
+					'c01' => 'options {',
+					'c02' => 'allow-query {',
+					'c03' => 'nodeReservedInternalSources;',
+					'c04' => 'nodeUserAuthenticationSources;',
+					'c05' => '}',
+					'c06' => 'allow-recursion {',
+					'c07' => 'nodeReservedInternalSources;',
+					'c08' => '}',
+					'c09' => 'cleaning-interval 1;',
 					'c10' => 'dnssec-enable yes;',
 					'c11' => 'dnssec-must-be-secure mydomain.local no;',
 					'c12' => 'dnssec-validation yes;',
