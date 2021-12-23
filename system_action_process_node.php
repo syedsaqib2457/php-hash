@@ -20,7 +20,7 @@
 	function _processNode($parameters, $response) {
 		$response['data'] = array(
 			'blockchain_node_process_types' => array(
-				'bitcoin'
+				'/path/to/bitcoin/binary/file' => 'bitcoin' // todo: add path after installing bitcoin
 			),
 			'node_ip_address_version_numbers' => array(
 				'32' => '4',
