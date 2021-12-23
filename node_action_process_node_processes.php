@@ -492,6 +492,7 @@
 
 			foreach ($parameters['data']['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
 				$recursiveDnsNodeProcessConfiguration = array(
+					'a0' => 'acl nodeReservedInternalSources {',
 					'b0' => '};',
 					'b1' => 'acl nodeUserAuthenticationSources {',
 					'c00' => '};',
@@ -530,12 +531,10 @@
 					'd' => 0,
 					'h' => 0
 				);
-				$recursiveDnsNodeProcessConfiguration[str_pad('a', ($parameters['data']['next']['node_reserved_internal_source_index_length'] + 1), '0', STR_PAD_RIGHT)] = 'acl nodeReservedInternalSources {';
-				$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 
 				foreach ($parameters['data']['next']['node_reserved_internal_sources'] as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
 					foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
-						$recursiveDnsNodeProcessConfiguration['a' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['a'], $parameters['data']['next']['node_reserved_internal_source_index_length'], '0', STR_PAD_LEFT)] = $nodeReservedInternalSource . ';';
+						$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $nodeReservedInternalSource . ';';
 						$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 					}
 				}
@@ -547,7 +546,7 @@
 					foreach ($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserId) {
 						if (empty($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources']) === false) {
 							foreach ($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources'] as $recursiveDnsNodeProcessNodeUserAuthenticationSource) {
-								$recursiveDnsNodeProcessConfiguration['b' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['b'], $parameters['data']['next']['node_process_node_user_authentication_source_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = $recursiveDnsNodeProcessNodeUserAuthenticationSource . ';';
+								$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessNodeUserAuthenticationSource . ';';
 								$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 							}
 
