@@ -242,7 +242,18 @@
 			}
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --timeout=600 --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		$systemParameters = array(
+			'action' => 'process_node',
+			'node_authentication_token' => $parameters['node_authentication_token']
+		);
+		$encodedSystemParameters = json_encode($systemParameters);
+
+		if ($encodedSystemParameters === false) {
+			$response['message'] = 'Error processing node, please try again.' . "\n";
+			return $response;
+		}
+
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --timeout=600 --post-data \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
 			$response['message'] = 'Error processing node, please try again.' . "\n";
