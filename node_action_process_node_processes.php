@@ -531,6 +531,7 @@
 					'd' => 0,
 					'h' => 0
 				);
+				// todo: delete $recursiveDnsNodeProcessConfigurationIndexLengths and add index lengths to $parameters['data']['next']
 				$recursiveDnsNodeProcessConfigurationIndexLengths = array(
 					'a' => $parameters['data']['next']['node_reserved_internal_source_index_length'],
 					'b' => 1 // todo: add node_process_node_user_authentication_source_counts
