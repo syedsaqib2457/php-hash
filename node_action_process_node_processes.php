@@ -277,7 +277,9 @@
 			}
 		}
 
-		if (empty($parameters['data']['next']['nodes']) === true) {
+		if (empty($parameters['data']['next']['nodes']) === false) {
+			// todo: crypto CLI installation for optimized mining + transactions
+		} else {
 			if (empty($parameters['data']['current']) === false) {
 				// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
 
