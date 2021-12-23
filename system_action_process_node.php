@@ -152,6 +152,7 @@
 			), $response);
 			$nodeProcessNodeUserAuthenticationSources = _list(array(
 				'data' => array(
+					'node_id',
 					'node_user_authentication_source_ip_address',
 					'node_user_authentication_source_ip_address_block_length',
 					'node_user_id'
@@ -323,7 +324,15 @@
 					);
 				}
 
+				$nodeProcessNodeUserAuthenticationSourceCounts = array();
+
 				foreach ($nodeProcessNodeUserAuthenticationSources as $nodeProcessNodeUserAuthenticationSource) {
+					if (empty($nodeProcessNodeUserAuthenticationSourceCounts[$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']]) === true) {
+						$nodeProcessNodeUserAuthenticationSourceCounts[$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']] = 0;
+					}
+
+					$nodeProcessNodeUserAuthenticationSourceCounts[$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']]++;
+					$response['data']['node_process_node_user_authentication_source_index_lengths'][$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']] = strlen($nodeProcessNodeUserAuthenticationSourceCounts[$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']]);
 					$response['data']['node_users'][$nodeProcessNodeUserAuthenticationSource['node_user_id']]['node_user_authentication_sources'][] = $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address'] . '/' . $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address_block_length'];
 				}
 
