@@ -484,7 +484,6 @@
 		}
 
 		$parameters['node_process_type_firewall_rule_sets'] = array();
-		// todo: dynamic 0 padding for sorting key indexes
 
 		foreach (array(0, 1) as $nodeProcessPartKey) {
 			$parameters['node_process_part_key'] = $nodeProcessPartKey;
@@ -544,9 +543,8 @@
 				if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
 					$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = 'logging {';
 					$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-					$recursiveDnsNodeProcessNodeUserIds = $parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId];
 
-					foreach ($recursiveDnsNodeProcessNodeUserIds as $recursiveDnsNodeProcessNodeUserId) {
+					foreach ($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserId) {
 						if (empty($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources']) === false) {
 							foreach ($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources'] as $recursiveDnsNodeProcessNodeUserAuthenticationSource) {
 								$recursiveDnsNodeProcessConfiguration['b' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['b'], $parameters['data']['next']['node_process_node_user_authentication_source_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = $recursiveDnsNodeProcessNodeUserAuthenticationSource . ';';
