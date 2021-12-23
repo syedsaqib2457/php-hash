@@ -740,7 +740,7 @@
 						$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
 							'b' => 0,
 							'c' => 0, // todo: add index lengths for padding 0's
-							'd' => 0,
+							'd' => 0, // todo: add index lengths for padding 0's
 							'e' => 0,
 							'h' => 0,
 							'i' => 0
