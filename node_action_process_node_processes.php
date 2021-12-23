@@ -531,8 +531,6 @@
 					'd' => 0,
 					'h' => 0
 				);
-				// todo: delete $recursiveDnsNodeProcessConfigurationIndexLengths and add index lengths to $parameters['data']['next']
-				$recursiveDnsNodeProcessConfigurationIndexLengths = array();
 				$recursiveDnsNodeProcessConfiguration[str_pad('a', ($parameters['data']['next']['node_reserved_internal_source_index_length'] + 1), '0', STR_PAD_RIGHT)] = 'acl nodeReservedInternalSources {';
 				$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 
@@ -544,8 +542,7 @@
 				}
 
 				if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
-					$recursiveDnsNodeProcessConfigurationIndexLengths['h'] = strlen(count($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) * 9);
-					$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = 'logging {';
+					$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = 'logging {';
 					$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 					$recursiveDnsNodeProcessNodeUserIds = $parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId];
 
@@ -556,24 +553,24 @@
 								$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 							}
 
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = 'channel ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
+							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = 'channel ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . '"';
+							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . '"';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = 'print-time yes';
+							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = 'print-time yes';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = '};';
+							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = '};';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = 'category ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
+							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = 'category ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = 'queries_log;';
+							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = 'queries_log;';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = '};';
+							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = '};';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 						}
 					}
 
-					$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = '};';
+					$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $parameters['data']['next']['node_process_node_user_request_log_index_lengths'][$recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId], '0', STR_PAD_LEFT)] = '};';
 				}
 
 				$recursiveDnsNodeProcessesStart = true;
