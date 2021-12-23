@@ -24,6 +24,7 @@
 				'128' => '6'
 			),
 			'node_process_types' => array(
+				'blockchain',
 				'http_proxy',
 				'load_balancer',
 				'recursive_dns',
