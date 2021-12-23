@@ -739,15 +739,15 @@
 						);
 						$proxyNodeProcessConfigurationIndexes = $proxyNodeProcessConfigurationPartIndexes = array(
 							'b' => 0,
-							'c' => 0, // todo: add index lengths for padding 0's
-							'd' => 0, // todo: add index lengths for padding 0's
+							'c' => 0,
+							'd' => 0,
 							'e' => 0,
 							'h' => 0,
 							'i' => 0
 						);
 
 						foreach ($parameters['data']['next']['node_process_node_users'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessNodeUserIds) {
-							$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'auth iponly strong';
+							$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'auth iponly strong';
 							$proxyNodeProcessConfigurationIndexes['c']++;
 
 							foreach ($proxyNodeProcessNodeUserIds as $proxyNodeProcessNodeUserId) {
@@ -795,9 +795,9 @@
 									}
 
 									if (empty($proxyNodeProcessNodeUser['node_request_logs_allowed_status']) === false) {
-										$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessNodeUserId;
+										$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessNodeUserId;
 										$proxyNodeProcessConfigurationIndexes['c']++;
-										$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C _ %U"';
+										$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C _ %U"';
 										$proxyNodeProcessConfigurationIndexes['c']++;
 									}
 
@@ -806,7 +806,7 @@
 										(empty($proxyNodeProcessNodeUserNodeRequestDestinationParts) === false)
 									) {
 										foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
-											$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'deny * * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
+											$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'deny * * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
 											$proxyNodeProcessConfigurationIndexes['c']++;
 										}
 									}
@@ -818,7 +818,7 @@
 										) {
 											foreach ($proxyNodeProcessNodeUserAuthenticationCredentialParts as $proxyNodeProcessNodeUserAuthenticationCredentialPart) {
 												foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
-													$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
+													$proxyNodeProcessConfiguration['d' . str_pad($proxyNodeProcessConfigurationIndexes['d'], 10, '0', STR_PAD_LEFT)] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
 													$proxyNodeProcessConfigurationIndexes['d']++;
 												}
 											}
@@ -846,16 +846,16 @@
 										foreach ($proxyNodeProcessNodeUserAuthenticationCredentialParts as $proxyNodeProcessNodeUserAuthenticationCredentialPart) {
 											foreach ($proxyNodeProcessNodeUserAuthenticationSourceParts as $proxyNodeProcessNodeUserAuthenticationSourcePart) {
 												foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
-													$proxyNodeProcessConfiguration['c' . $proxyNodeProcessConfigurationIndexes['c']] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' ' . $proxyNodeProcessNodeUserAuthenticationSourcePart . ' ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
+													$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' ' . $proxyNodeProcessNodeUserAuthenticationSourcePart . ' ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
 													$proxyNodeProcessConfigurationIndexes['c']++;
 												}
 											}
 										}
 									}
 
-									$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'deny *';
+									$proxyNodeProcessConfiguration['d' . str_pad($proxyNodeProcessConfigurationIndexes['d'], 10, '0', STR_PAD_LEFT)] = 'deny *';
 									$proxyNodeProcessConfigurationIndexes['d']++;
-									$proxyNodeProcessConfiguration['d' . $proxyNodeProcessConfigurationIndexes['d']] = 'flush';
+									$proxyNodeProcessConfiguration['d' . str_pad($proxyNodeProcessConfigurationIndexes['d'], 10, '0', STR_PAD_LEFT)] = 'flush';
 									$proxyNodeProcessConfigurationIndexes['d']++;
 								}
 							}
