@@ -19,12 +19,15 @@
 
 	function _processNode($parameters, $response) {
 		$response['data'] = array(
+			'blockchain_node_process_types' => array(
+				'bitcoin'
+			),
 			'node_ip_address_version_numbers' => array(
 				'32' => '4',
 				'128' => '6'
 			),
 			'node_process_types' => array(
-				'blockchain',
+				'bitcoin',
 				'http_proxy',
 				'load_balancer',
 				'recursive_dns',
