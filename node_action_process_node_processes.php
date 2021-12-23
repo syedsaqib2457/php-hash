@@ -532,7 +532,7 @@
 					'h' => 0
 				);
 				$recursiveDnsNodeProcessConfigurationIndexLengths = array(
-					'a' => 1,
+					'a' => $parameters['data']['next']['node_reserved_internal_source_index_length'],
 					'b' => 1
 				);
 				$recursiveDnsNodeProcessConfiguration[str_pad('a', ($recursiveDnsNodeProcessConfigurationIndexLengths['a'] + 1), '0', STR_PAD_RIGHT)] = 'acl nodeReservedInternalSources {';
@@ -540,7 +540,7 @@
 
 				foreach ($parameters['data']['next']['node_reserved_internal_sources'] as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
 					foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
-						$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $nodeReservedInternalSource . ';';
+						$recursiveDnsNodeProcessConfiguration['a' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['a'], $recursiveDnsNodeProcessConfigurationIndexLengths['a'], '0', STR_PAD_LEFT)] = $nodeReservedInternalSource . ';';
 						$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 					}
 				}
