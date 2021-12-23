@@ -533,7 +533,7 @@
 				);
 				$recursiveDnsNodeProcessConfigurationIndexLengths = array(
 					'a' => $parameters['data']['next']['node_reserved_internal_source_index_length'],
-					'b' => 1
+					'b' => 1 // todo: add node_process_node_user_authentication_source_counts
 				);
 				$recursiveDnsNodeProcessConfiguration[str_pad('a', ($recursiveDnsNodeProcessConfigurationIndexLengths['a'] + 1), '0', STR_PAD_RIGHT)] = 'acl nodeReservedInternalSources {';
 				$recursiveDnsNodeProcessConfigurationIndexes['a']++;
