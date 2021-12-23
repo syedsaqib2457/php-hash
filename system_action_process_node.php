@@ -308,15 +308,7 @@
 			}
 
 			if (empty($nodeProcessNodeUsers) === false) {
-				$nodeProcessNodeUserCounts = array();
-
 				foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
-					if (empty($nodeProcessNodeUserCounts[$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']]) === true) {
-						$nodeProcessNodeUserCounts[$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']] = 0;
-					}
-
-					$nodeProcessNodeUserCounts[$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']]++;
-					$response['data']['node_process_node_user_request_log_index_lengths'][$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']] = strlen($nodeProcessNodeUserCounts[$nodeProcessNodeUser['node_id'] . '_' . $nodeProcessNodeUser['node_user_id']]) * 9;
 					$response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
 					$response['data']['node_users'][$nodeProcessNodeUser['node_user_id']] = array(
 						'authentication_strict_only_allowed_status' => $nodeProcessNodeUser['node_user_authentication_strict_only_allowed_status'],
@@ -332,15 +324,7 @@
 					);
 				}
 
-				$nodeProcessNodeUserAuthenticationSourceCounts = array();
-
 				foreach ($nodeProcessNodeUserAuthenticationSources as $nodeProcessNodeUserAuthenticationSource) {
-					if (empty($nodeProcessNodeUserAuthenticationSourceCounts[$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']]) === true) {
-						$nodeProcessNodeUserAuthenticationSourceCounts[$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']] = 0;
-					}
-
-					$nodeProcessNodeUserAuthenticationSourceCounts[$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']]++;
-					$response['data']['node_process_node_user_authentication_source_index_lengths'][$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']] = strlen($nodeProcessNodeUserAuthenticationSourceCounts[$nodeProcessNodeUserAuthenticationSource['node_id'] . '_' . $nodeProcessNodeUserAuthenticationSource['node_user_id']]);
 					$response['data']['node_users'][$nodeProcessNodeUserAuthenticationSource['node_user_id']]['node_user_authentication_sources'][] = $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address'] . '/' . $nodeProcessNodeUserAuthenticationSource['node_user_authentication_source_ip_address_block_length'];
 				}
 
@@ -391,14 +375,9 @@
 				);
 			}
 
-			$response['data']['node_reserved_internal_source_index_length'] = 0;
-
 			foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
-				$response['data']['node_reserved_internal_source_index_length']++;
 				$response['data']['node_reserved_internal_sources'][$nodeReservedInternalSource['ip_address_version_number']][] = $nodeReservedInternalDestination['ip_address'] . '/' . $nodeReservedInternalDestination['ip_address_block_length'];
 			}
-
-			$response['data']['node_reserved_internal_source_index_length'] = strlen($response['data']['node_reserved_internal_source_index_length']);
 		}
 
 		$response['message'] = 'Nodes processed successfully.';
