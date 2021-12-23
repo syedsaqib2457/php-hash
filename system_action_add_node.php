@@ -238,6 +238,10 @@
 						'ip_address' => '0064:ff9b:0001:0000:0000:0000:0000:0000',
 						'ip_address_block_length' => '48'
 					),
+					array(
+						'ip_address' => '0100:0000:0000:0000:0000:0000:0000:0000',
+						'ip_address_block_length' => '64'
+					),
 					// todo: add default node reserved internal destinations (link-local IPs can be deleted for GCP nodes after adding)
 				)
 			);
