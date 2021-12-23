@@ -492,12 +492,7 @@
 			$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
 			foreach ($parameters['data']['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
-				$recursiveDnsNodeProcessConfigurationIndexLengths = array(
-					// 'a' => 1,
-					// 'b' => 1
-				);
 				$recursiveDnsNodeProcessConfiguration = array(
-					'a0' => 'acl nodeReservedInternalSources {',
 					'b0' => '};',
 					'b1' => 'acl nodeUserAuthenticationSources {',
 					'c00' => '};',
@@ -536,6 +531,18 @@
 					'd' => 0,
 					'h' => 0
 				);
+				$recursiveDnsNodeProcessConfigurationIndexLengths = array(
+					'a' => 1,
+					'b' => 1
+				);
+
+				if (empty($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources']) === false) {
+					end($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources']);
+					$recursiveDnsNodeProcessConfigurationIndexLengths['a'] = key($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources']);
+				}
+
+				$recursiveDnsNodeProcessConfiguration[str_pad('a', ($recursiveDnsNodeProcessConfigurationIndexLengths['a'] + 1), '0', STR_PAD_RIGHT)] = 'acl nodeReservedInternalSources {';
+				$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 
 				foreach ($parameters['data']['next']['node_reserved_internal_sources'] as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
 					foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
