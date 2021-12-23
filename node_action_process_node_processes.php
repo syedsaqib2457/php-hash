@@ -122,7 +122,7 @@
 
 			foreach ($parameters['data']['next']['node_reserved_internal_sources'][$nodeIpAddressVersionNumber] as $nodeReservedInternalSource) {
 				foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
-					$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
+					$nodeFirewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
 				}
 			}
 
