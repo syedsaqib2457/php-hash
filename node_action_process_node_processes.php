@@ -278,7 +278,14 @@
 		}
 
 		if (empty($parameters['data']['next']['nodes']) === false) {
-			// todo: crypto CLI installation for optimized mining + transactions
+			foreach ($parameters['data']['next']['blockchain_node_process_types'] as $blockchainNodeProcessBinaryFile => $blockchainNodeProcessType) {
+				if (
+					(empty($parameters['data']['next']['node_processes'][$blockchainNodeProcessType]) === false) &&
+					(file_exists($blockchainNodeProcessBinaryFile) === false)
+				) {
+					// todo: crypto CLI installation for optimized mining + transactions
+				}
+			}
 		} else {
 			if (empty($parameters['data']['current']) === false) {
 				// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
