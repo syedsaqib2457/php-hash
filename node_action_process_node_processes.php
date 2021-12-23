@@ -492,6 +492,10 @@
 			$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
 			foreach ($parameters['data']['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
+				$recursiveDnsNodeProcessConfigurationIndexLengths = array(
+					// 'a' => 1,
+					// 'b' => 1
+				);
 				$recursiveDnsNodeProcessConfiguration = array(
 					'a0' => 'acl nodeReservedInternalSources {',
 					'b0' => '};',
@@ -529,6 +533,7 @@
 					'a' => 1,
 					'b' => 2,
 					'c' => 25,
+					'd' => 0,
 					'h' => 0
 				);
 
@@ -540,7 +545,8 @@
 				}
 
 				if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns']) === false) {
-					$recursiveDnsNodeProcessConfiguration['h' . $recursiveDnsNodeProcessConfigurationIndexes['h']] = 'logging {';
+					$recursiveDnsNodeProcessConfigurationIndexLengths['h'] = strlen(count($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) * 8);
+					$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], $recursiveDnsNodeProcessConfigurationIndexLengths['h'], '0', STR_PAD_LEFT)] = 'logging {';
 					$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 
 					foreach ($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserIds) {
