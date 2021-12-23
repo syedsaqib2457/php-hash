@@ -742,9 +742,7 @@
 							'b' => 0,
 							'c' => 0,
 							'd' => 0,
-							'e' => 0,
-							'f' => 0,
-							'g' => 0
+							'e' => 0
 						);
 
 						foreach ($parameters['data']['next']['node_process_node_users'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessNodeUserIds) {
