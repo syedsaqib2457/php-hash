@@ -74,31 +74,31 @@
 			)
 		)
 	);
-	exec('sudo cat /etc/*-release 2>&1', $operatingSystemDetails);
+	exec('sudo cat /etc/*-release 2>&1', $imageDetails);
 
-	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
-		$operatingSystemDetail = explode('=', $operatingSystemDetail);
-		unset($operatingSystemDetails[$operatingSystemDetailKey]);
+	foreach ($imageDetails as $imageDetailKey => $imageDetail) {
+		$imageDetail = explode('=', $imageDetail);
+		unset($imageDetails[$imageDetailKey]);
 
-		if (empty($operatingSystemDetail[1]) === false) {
-			$operatingSystemDetailKey = strtolower($operatingSystemDetail[0]);
-			$operatingSystemDetails[$operatingSystemDetailKey] = trim($operatingSystemDetail[1], '"');
+		if (empty($imageDetail[1]) === false) {
+			$imageDetailKey = strtolower($imageDetail[0]);
+			$imageDetails[$imageDetailKey] = trim($imageDetail[1], '"');
 		}
 	}
 
-	if (empty($nodePackageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
-		echo 'Error detecting a supported operating system, please try again.' . "\n";
+	if (empty($packageSources[$imageDetails['id']][$imageDetails['version_id']]) === true) {
+		echo 'Error installing on unsupported ' . $imageDetails['id'] . ' ' . $imageDetails['version_id'] . ' image, please try again.' . "\n";
 		exit;
 	}
 
-	$nodePackageSources = implode("\n", $nodePackageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
-	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $nodePackageSources);
+	$packageSources = implode("\n", $packageSources[$imageDetails['id']][$imageDetails['version_id']]);
+	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
 
 	if (
-		($nodePackageSources === false) ||
+		($packageSources === false) ||
 		(empty($filePutContentsResponse) === true)
 	) {
-		echo 'Error adding system package sources, please try again.' . "\n";
+		echo 'Error adding package sources, please try again.' . "\n";
 		exit;
 	}
 
@@ -203,7 +203,10 @@
 		$commands = implode("\n", $commands);
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (
+			($commands === false) ||
+			(empty($filePutContentsResponse) === true)
+		) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
