@@ -6,73 +6,45 @@
 		exit;
 	}
 
-	$supportedOperatingSystems = array(
+	$systemPackageSources = array(
 		'debian' => array(
 			'9' => array(
-				'sources' => array(
-					'aptitude' => array(
-						'contents' => array(
-							'deb http://deb.debian.org/debian stretch main',
-							'deb-src http://deb.debian.org/debian stretch main',
-							'deb http://deb.debian.org/debian stretch-updates main',
-							'deb-src http://deb.debian.org/debian stretch-updates main',
-							'deb http://security.debian.org/debian-security/ stretch/updates main',
-							'deb-src http://security.debian.org/debian-security/ stretch/updates main'
-						),
-						'path' => '/etc/apt/sources.list'
-					)
-				)
+				'deb http://deb.debian.org/debian stretch main',
+				'deb-src http://deb.debian.org/debian stretch main',
+				'deb http://deb.debian.org/debian stretch-updates main',
+				'deb-src http://deb.debian.org/debian stretch-updates main',
+				'deb http://security.debian.org/debian-security/ stretch/updates main',
+				'deb-src http://security.debian.org/debian-security/ stretch/updates main'
 			),
 			'10' => array(
-				'sources' => array(
-					'aptitude' => array(
-						'contents' => array(
-							'deb http://deb.debian.org/debian buster main',
-							'deb-src http://deb.debian.org/debian buster main',
-							'deb http://deb.debian.org/debian buster-updates main',
-							'deb-src http://deb.debian.org/debian buster-updates main',
-							'deb http://security.debian.org/debian-security/ buster/updates main',
-							'deb-src http://security.debian.org/debian-security/ buster/updates main'
-						),
-						'path' => '/etc/apt/sources.list'
-					)
-				)
+				'deb http://deb.debian.org/debian buster main',
+				'deb-src http://deb.debian.org/debian buster main',
+				'deb http://deb.debian.org/debian buster-updates main',
+				'deb-src http://deb.debian.org/debian buster-updates main',
+				'deb http://security.debian.org/debian-security/ buster/updates main',
+				'deb-src http://security.debian.org/debian-security/ buster/updates main'
 			)
 		),
 		'ubuntu' => array(
 			'18.04' => array(
-				'sources' => array(
-					'aptitude' => array(
-						'contents' => array(
-							'deb http://archive.ubuntu.com/ubuntu bionic main',
-							'deb http://archive.ubuntu.com/ubuntu bionic-updates main',
-							'deb http://archive.ubuntu.com/ubuntu bionic-backports main',
-							'deb http://security.ubuntu.com/ubuntu bionic-security main',
-							'deb-src http://archive.ubuntu.com/ubuntu bionic main',
-							'deb-src http://archive.ubuntu.com/ubuntu bionic-backports main',
-							'deb-src http://archive.ubuntu.com/ubuntu bionic-updates main',
-							'deb-src http://security.ubuntu.com/ubuntu bionic-security main'
-						),
-						'path' => '/etc/apt/sources.list'
-					)
-				)
+				'deb http://archive.ubuntu.com/ubuntu bionic main',
+				'deb http://archive.ubuntu.com/ubuntu bionic-updates main',
+				'deb http://archive.ubuntu.com/ubuntu bionic-backports main',
+				'deb http://security.ubuntu.com/ubuntu bionic-security main',
+				'deb-src http://archive.ubuntu.com/ubuntu bionic main',
+				'deb-src http://archive.ubuntu.com/ubuntu bionic-backports main',
+				'deb-src http://archive.ubuntu.com/ubuntu bionic-updates main',
+				'deb-src http://security.ubuntu.com/ubuntu bionic-security main'
 			),
 			'20.04' => array(
-				'sources' => array(
-					'aptitude' => array(
-						'contents' => array(
-							'deb http://archive.ubuntu.com/ubuntu focal main',
-							'deb http://archive.ubuntu.com/ubuntu focal-updates main',
-							'deb http://archive.ubuntu.com/ubuntu focal-backports main',
-							'deb http://security.ubuntu.com/ubuntu focal-security main',
-							'deb-src http://archive.ubuntu.com/ubuntu focal main',
-							'deb-src http://archive.ubuntu.com/ubuntu focal-backports main',
-							'deb-src http://archive.ubuntu.com/ubuntu focal-updates main',
-							'deb-src http://security.ubuntu.com/ubuntu focal-security main'
-						),
-						'path' => '/etc/apt/sources.list'
-					)
-				)
+				'deb http://archive.ubuntu.com/ubuntu focal main',
+				'deb http://archive.ubuntu.com/ubuntu focal-updates main',
+				'deb http://archive.ubuntu.com/ubuntu focal-backports main',
+				'deb http://security.ubuntu.com/ubuntu focal-security main',
+				'deb-src http://archive.ubuntu.com/ubuntu focal main',
+				'deb-src http://archive.ubuntu.com/ubuntu focal-backports main',
+				'deb-src http://archive.ubuntu.com/ubuntu focal-updates main',
+				'deb-src http://security.ubuntu.com/ubuntu focal-security main'
 			)
 		)
 	);
@@ -80,27 +52,27 @@
 
 	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
 		$operatingSystemDetail = explode('=', $operatingSystemDetail);
+		unset($operatingSystemDetails[$operatingSystemDetailKey]);
 
 		if (empty($operatingSystemDetail[1]) === false) {
-			$operatingSystemDetails[strtolower($operatingSystemDetail[0])] = trim($operatingSystemDetail[1], '"');
+			$operatingSystemDetailKey = strtolower($operatingSystemDetail[0]);
+			$operatingSystemDetails[$operatingSystemDetailKey] = trim($operatingSystemDetail[1], '"');
 		}
-
-		unset($operatingSystemDetails[$operatingSystemDetailKey]);
 	}
 
-	if (empty($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
+	if (empty($systemPackageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
 		echo 'Error detecting a supported operating system, please try again.' . "\n";
 		exit;
 	}
 
-	$operatingSystemConfigurationPackageSources = implode("\n", $supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]['sources']['aptitude']['contents']);
-	$filePutContentsResponse = file_put_contents($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]['sources']['aptitude']['path'], $operatingSystemConfigurationPackageSources);
+	$systemPackageSources = implode("\n", $systemPackageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
+	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $systemPackageSources);
 
 	if (
-		($operatingSystemConfigurationPackageSources) === false) ||
-		($filePutContentsResponse === false)
+		($systemPackageSources === false) ||
+		(empty($filePutContentsResponse) === true)
 	) {
-		echo 'Error updating package sources, please try again.' . "\n";
+		echo 'Error adding system package sources, please try again.' . "\n";
 		exit;
 	}
 
@@ -338,7 +310,7 @@
 	shell_exec('cd /tmp && sudo wget -O mysql_apt_config.deb ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
 
 	if (file_exists('/tmp/mysql_apt_config.deb') === false) {
-		echo 'Error downloading MySQL source file, please try again.' . "\n";
+		echo 'Error downloading system database source file, please try again.' . "\n";
 		exit;
 	}
 
@@ -349,11 +321,11 @@
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-common mysql-client mysql-community-server-core mysql-community-client mysql-community-client-core mysql-community-server mysql-community-client-plugins mysql-server');
 
 	if (file_exists('/etc/mysql/mysql.conf.d/mysqld.cnf') === false) {
-		echo 'Error installing MySQL, please try again.' . "\n";
+		echo 'Error installing system database, please try again.' . "\n";
 		exit;
 	}
 
-	$mysqlConfigurationContents = array(
+	$systemDatabaseConfiguration = array(
 		'[mysqld]',
 		'bind-address = 127.0.0.1',
 		'datadir = /var/lib/mysql',
@@ -362,7 +334,17 @@
 		'pid-file = /var/run/mysqld/mysqld.pid',
 		'socket = /var/run/mysqld/mysqld.sock'
 	);
-	file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', implode("\n", $mysqlConfigurationContents));
+	$systemDatabaseConfiguration = implode("\n", $systemDatabaseConfiguration);
+	$filePutContentsResponse = file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $systemDatabaseConfiguration);
+
+	if (
+		($systemDatabaseConfiguration) === false) ||
+		($filePutContentsResponse === false)
+	) {
+		echo 'Error updating system database configuration, please try again.' . "\n";
+		exit;
+	}
+
 	shell_exec('sudo /usr/sbin/service mysql restart');
 	shell_exec('sudo mysql -u root -p"password" -e "DELETE FROM mysql.user WHERE User=\'\'; DELETE FROM mysql.user WHERE User=\'root\' AND Host NOT IN (\'localhost\', \'127.0.0.1\', \'::1\');"');
 	shell_exec('sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"');
@@ -372,7 +354,7 @@
 	mkdir('/var/www/ghostcompute/');
 	chmod('/var/www/ghostcompute/', 0755);
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
-	$virtualHostContents = array(
+	$systemHostConfiguration = array(
 		'<VirtualHost *:80>',
 		'ServerAlias ' . $_SERVER['argv'][1],
 		'ServerName ' . $_SERVER['argv'][1],
@@ -384,7 +366,17 @@
 		'</Directory>',
 		'</VirtualHost>'
 	);
-	file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', implode("\n", $virtualHostContents));
+	$systemHostConfiguration = implode("\n", $systemHostConfiguration);
+	$filePutContentsResponse = file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $systemHostConfiguration);
+
+	if (
+		($systemHostConfiguration) === false) ||
+		($filePutContentsResponse === false)
+	) {
+		echo 'Error updating system host configuration, please try again.' . "\n";
+		exit;
+	}
+
 	shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $_SERVER['argv'][1]);
 	shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
@@ -497,15 +489,21 @@
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password');
 
 	if ($databaseConnection === false) {
-		echo 'Error: ' . mysqli_connect_error() . '.';
+		echo 'Error connecting to system database, please try again.';
 		exit;
 	}
 
-	mysqli_query($databaseConnection, 'create database if not exists `ghostcompute` charset utf8');
+	$mysqliQueryResponse = mysqli_query($databaseConnection, 'CREATE DATABASE IF NOT EXISTS `ghostcompute` CHARSET UTF8');
+
+	if ($mysqliQueryResponse === false) {
+		echo 'Error creating system database, please try again.';
+		exit;
+	}
+
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
 
-	if ($connection === false) {
-		echo 'Error: ' . mysqli_connect_error() . ', please try again.';
+	if ($databaseConnection === false) {
+		echo 'Error connecting to system database, please try again.';
 		exit;
 	}
 
@@ -928,10 +926,9 @@
 			}
 		}
 
-		$databaseCommandResult = mysqli_query($databaseConnection, $databaseCommand);
+		$mysqliQueryResponse = mysqli_query($databaseConnection, $databaseCommand);
 
-		if ($databaseCommandResult === false) {
-			echo $databaseCommand . "\n";
+		if ($mysqliQueryResponse === false) {
 			echo 'Error executing database command, please try again.';
 			exit;
 		}
@@ -1017,7 +1014,12 @@
 
 	foreach ($databaseData as $databaseTableName => $databaseRows) {
 		foreach ($databaseRows as $databaseRow) {
-			mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
+			$mysqliQueryResponse = mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
+
+			if ($mysqliQueryResponse === false) {
+				echo 'Error executing database command, please try again.';
+				exit;
+			}
 		}
 	}
 
