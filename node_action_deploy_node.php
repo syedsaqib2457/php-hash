@@ -316,7 +316,6 @@
 		'node_endpoint.php',
 		'process_node_processes.php',
 		'process_node_resource_usage_logs.php',
-		'process_node_user_blockchain_mining.php',
 		'process_node_user_request_logs.php',
 		'process_node_system_recursive_dns_destination.php'
 	);
@@ -357,32 +356,34 @@
 	}
 
 	$crontabCommands = explode("\n", $crontabCommands);
-	$crontabCommandIndex = array_search('# ghostcompute', $crontabCommands);
+	$crontabCommandIndex = array_search('# ghostcompute_default', $crontabCommands);
 
 	if (is_int($crontabCommandIndex) === true) {
 		while (is_int($crontabCommandIndex) === true) {
 			unset($crontabCommands[$crontabCommandIndex]);
 			$crontabCommandIndex++;
 
-			if (strpos($crontabCommands[$crontabCommandIndex], 'ghostcompute') === false) {
+			if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_default') === false) {
 				$crontabCommandIndex = false;
 			}
 		}
 	}
 
 	$crontabCommands += array(
-		'# ghostcompute',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_resource_usage_logs',
-		// todo: add process_node_user_blockchain_mining with parameters
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_user_request_logs',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_system_recursive_dns_destination',
-		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php /usr/local/ghostcompute/process_node_network_interface_ip_addresses'
+		'# ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_processes ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_resource_usage_logs ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_user_request_logs ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_system_recursive_dns_destination ghostcompute_default',
+		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_network_interface_ip_addresses ghostcompute_default'
 	);
 	$crontabCommands = implode("\n", $crontabCommands);
 	$filePutContentsResponse = file_put_contents('/etc/crontab', $crontabCommands);
 
-	if (empty($filePutContentsResponse) === true) {
+	if (
+		($crontabCommands === false) ||
+		(empty($filePutContentsResponse) === true)
+	) {
 		echo 'Error adding crontab commands, please try again.' . "\n";
 		exit;
 	}
@@ -412,7 +413,10 @@
 		$nodeData = json_encode($nodeData);
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_data.json', $nodeData);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (
+			($nodeData === false) ||
+			(empty($filePutContentsResponse) === true)
+		) {
 			echo 'Error adding node data, please try again.' . "\n";
 			exit;
 		}
