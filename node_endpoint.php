@@ -151,20 +151,23 @@
 	);
 
 	foreach ($binaries as $binary) {
-		$commands = array(
+		$binaryFileListCommands = array(
 			'#!/bin/bash',
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
-		$commands = implode("\n", $commands);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commands);
+		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
+		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_binary_file_list_commands.sh', $binaryFileListCommands);
 		
-		if (empty($filePutContentsResponse) === true) {
+		if (
+			($binaryFileListCommands === false) ||
+			(empty($filePutContentsResponse) === true)
+		) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', 0755);
-		exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh', $binaryFile);
+		chmod('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_binary_file_list_commands.sh', 0755);
+		exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_binary_file_list_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -177,6 +180,7 @@
 		$parameters['binary_files'][$binary['name']] = $binaryFile;
 	}
 
+	unlink('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_binary_file_list_commands.sh');
 	// todo: prevent running duplicate node processes
 
 	if (in_array(strval($parameters['action']), array(
