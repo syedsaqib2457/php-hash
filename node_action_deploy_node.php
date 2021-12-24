@@ -32,7 +32,7 @@
 		exit;
 	}
 
-	$packageSources = array(
+	$systemPackageSources = array(
 		'debian' => array(
 			'9' => array(
 				'deb http://deb.debian.org/debian stretch main',
@@ -86,16 +86,19 @@
 		}
 	}
 
-	if (empty($packageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
+	if (empty($systemPackageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
 		echo 'Error detecting a supported operating system, please try again.' . "\n";
 		exit;
 	}
 
-	$packageSources = implode("\n", $packageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
-	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
+	$systemPackageSources = implode("\n", $systemPackageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
+	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $systemPackageSources);
 
-	if (empty($filePutContentsResponse) === true) {
-		echo 'Error adding package sources, please try again.' . "\n";
+	if (
+		($systemPackageSources === false) ||
+		(empty($filePutContentsResponse) === true)
+	) {
+		echo 'Error adding system package sources, please try again.' . "\n";
 		exit;
 	}
 
