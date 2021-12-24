@@ -20,8 +20,8 @@
 	function _processNode($parameters, $response) {
 		$response['data'] = array(
 			'cryptocurrency_node_process_types' => array(
-				'/path/to/bitcoin/binary/file' => 'bitcoin_cryptocurrency' // todo: add path after installing bitcoin
-				'/path/to/monero/binary/file' => 'monero_cryptocurrency' // todo: add path after installing monero
+				'bitcoin_cryptocurrency',
+				'monero_cryptocurrency'
 			),
 			'node_ip_address_version_numbers' => array(
 				'32' => '4',
