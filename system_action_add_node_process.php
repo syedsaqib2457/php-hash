@@ -31,9 +31,10 @@
 		}
 
 		if (in_array(strval($parameters['data']['type']), array(
-			'bitcoin',
+			'bitcoin_cryptocurrency',
 			'http_proxy',
 			'load_balancer',
+			'monero_cryptocurrency',
 			'recursive_dns',
 			'socks_proxy'
 		)) === false) {
