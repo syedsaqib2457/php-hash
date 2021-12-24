@@ -6,7 +6,7 @@
 		exit;
 	}
 
-	$systemPackageSources = array(
+	$packageSources = array(
 		'debian' => array(
 			'9' => array(
 				'deb http://deb.debian.org/debian stretch main',
@@ -48,31 +48,31 @@
 			)
 		)
 	);
-	exec('sudo cat /etc/*-release 2>&1', $operatingSystemDetails);
+	exec('sudo cat /etc/*-release 2>&1', $imageDetails);
 
-	foreach ($operatingSystemDetails as $operatingSystemDetailKey => $operatingSystemDetail) {
-		$operatingSystemDetail = explode('=', $operatingSystemDetail);
-		unset($operatingSystemDetails[$operatingSystemDetailKey]);
+	foreach ($imageDetails as $imageDetailKey => $imageDetail) {
+		$imageDetail = explode('=', $imageDetail);
+		unset($imageDetails[$imageDetailKey]);
 
-		if (empty($operatingSystemDetail[1]) === false) {
-			$operatingSystemDetailKey = strtolower($operatingSystemDetail[0]);
-			$operatingSystemDetails[$operatingSystemDetailKey] = trim($operatingSystemDetail[1], '"');
+		if (empty($imageDetail[1]) === false) {
+			$imageDetailKey = strtolower($imageDetail[0]);
+			$imageDetails[$imageDetailKey] = trim($imageDetail[1], '"');
 		}
 	}
 
-	if (empty($systemPackageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]) === true) {
-		echo 'Error detecting a supported operating system, please try again.' . "\n";
+	if (empty($packageSources[$imageDetails['id']][$imageDetails['version_id']]) === true) {
+		echo 'Error installing on unsupported ' . $imageDetails['id'] . ' ' . $imageDetails['version_id'] . ' image, please try again.' . "\n";
 		exit;
 	}
 
-	$systemPackageSources = implode("\n", $systemPackageSources[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]);
-	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $systemPackageSources);
+	$packageSources = implode("\n", $packageSources[$imageDetails['id']][$imageDetails['version_id']]);
+	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
 
 	if (
-		($systemPackageSources === false) ||
+		($packageSources === false) ||
 		(empty($filePutContentsResponse) === true)
 	) {
-		echo 'Error adding system package sources, please try again.' . "\n";
+		echo 'Error adding package sources, please try again.' . "\n";
 		exit;
 	}
 
@@ -325,7 +325,7 @@
 		exit;
 	}
 
-	$systemDatabaseConfiguration = array(
+	$databaseConfiguration = array(
 		'[mysqld]',
 		'bind-address = 127.0.0.1',
 		'datadir = /var/lib/mysql',
@@ -334,14 +334,14 @@
 		'pid-file = /var/run/mysqld/mysqld.pid',
 		'socket = /var/run/mysqld/mysqld.sock'
 	);
-	$systemDatabaseConfiguration = implode("\n", $systemDatabaseConfiguration);
-	$filePutContentsResponse = file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $systemDatabaseConfiguration);
+	$databaseConfiguration = implode("\n", $databaseConfiguration);
+	$filePutContentsResponse = file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $databaseConfiguration);
 
 	if (
-		($systemDatabaseConfiguration) === false) ||
+		($databaseConfiguration) === false) ||
 		($filePutContentsResponse === false)
 	) {
-		echo 'Error updating system database configuration, please try again.' . "\n";
+		echo 'Error adding database configuration, please try again.' . "\n";
 		exit;
 	}
 
@@ -354,7 +354,7 @@
 	mkdir('/var/www/ghostcompute/');
 	chmod('/var/www/ghostcompute/', 0755);
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
-	$systemHostConfiguration = array(
+	$virtualHostConfiguration = array(
 		'<VirtualHost *:80>',
 		'ServerAlias ' . $_SERVER['argv'][1],
 		'ServerName ' . $_SERVER['argv'][1],
@@ -366,14 +366,14 @@
 		'</Directory>',
 		'</VirtualHost>'
 	);
-	$systemHostConfiguration = implode("\n", $systemHostConfiguration);
-	$filePutContentsResponse = file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $systemHostConfiguration);
+	$virtualHostConfiguration = implode("\n", $virtualHostConfiguration);
+	$filePutContentsResponse = file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $virtualHostConfiguration);
 
 	if (
-		($systemHostConfiguration) === false) ||
+		($virtualHostConfiguration) === false) ||
 		($filePutContentsResponse === false)
 	) {
-		echo 'Error updating system host configuration, please try again.' . "\n";
+		echo 'Error adding virtual host configuration, please try again.' . "\n";
 		exit;
 	}
 
