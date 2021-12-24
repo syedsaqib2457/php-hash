@@ -889,44 +889,44 @@
 	);
 	$databaseCommands = array();
 
-	foreach ($databases as $databaseTable => $databaseColumns) {
-		$databaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $databaseTable . '` (`created_timestamp` VARCHAR(10) NULL DEFAULT NULL);';
+	foreach ($databases as $databaseTableName => $databaseColumnNames) {
+		$databaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $databaseTableName . '` (`created_timestamp` VARCHAR(10) NULL DEFAULT NULL);';
 
-		foreach ($databaseColumns as $databaseColumn) {
-			if (($databaseColumn === 'created_timestamp') === true) {
+		foreach ($databaseColumnNames as $databaseColumnName) {
+			if (($databaseColumnName === 'created_timestamp') === true) {
 				continue;
 			}
 
 			$databaseColumnType = 'text';
 
-			if ((substr($databaseColumn, -3) === '_id') === true) {
+			if ((substr($databaseColumnName, -3) === '_id') === true) {
 				$databaseColumnType = 'VARCHAR(30)';
 			}
 
-			if ((substr($databaseColumn, -11) === '_percentage') === true) {
+			if ((substr($databaseColumnName, -11) === '_percentage') === true) {
 				$databaseColumnType = 'VARCHAR(3)';
 			}
 
-			if ((substr($databaseColumn, -7) === '_status') === true) {
+			if ((substr($databaseColumnName, -7) === '_status') === true) {
 				$databaseColumnType = 'VARCHAR(1)';
 			}
 
-			if ((substr($databaseColumn, -10) === '_timestamp') === true) {
+			if ((substr($databaseColumnName, -10) === '_timestamp') === true) {
 				$databaseColumnType = 'VARCHAR(10)';
 			}
 
 			$databaseCommandActions = array(
-				'add' => 'ADD `' . $databaseColumn . '`',
-				'change' => 'CHANGE `' . $databaseColumn . '` `' . $databaseColumn . '`'
+				'add' => 'ADD `' . $databaseColumnName . '`',
+				'change' => 'CHANGE `' . $databaseColumnName . '` `' . $databaseColumnName . '`'
 			);
-			$databaseCommand = 'ALTER TABLE `' . $databaseTable . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumnType . ' NULL DEFAULT NULL';
+			$databaseCommand = 'ALTER TABLE `' . $databaseTableName . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumnType . ' NULL DEFAULT NULL';
 
 			if (mysqli_query($databaseConnection, $databaseCommand) === false) {
 				$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
 			}
 
-			if ($databaseColumn === 'id') {
-				$databaseCommands[$databaseColumn . '__' . $databaseTable] = 'ALTER TABLE `' . $databaseTable . '` ADD PRIMARY KEY (`' . $databaseColumn . '`)';
+			if ($databaseColumnName === 'id') {
+				$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'ALTER TABLE `' . $databaseTableName . '` ADD PRIMARY KEY (`' . $databaseColumnName . '`)';
 			}
 		}
 	}
@@ -990,7 +990,7 @@
 		)
 	);
 
-	foreach ($databases as $databaseTable => $databaseColumns) {
+	foreach ($databases as $databaseTableName => $databaseColumnNames) {
 		$systemDatabaseId = random_bytes(10) . time() . random_bytes(10);
 		$databaseData['system_databases'][] = array(
 			'authentication_credential_hostname' => 'localhost',
@@ -998,15 +998,15 @@
 			'created_timestamp' => $timestamp,
 			'id' => $systemDatabaseId,
 			'modified_timestamp' => $timestamp,
-			'table_name' => $databaseTable
+			'table_name' => $databaseTableName
 		);
 
-		foreach ($databaseColumns as $databaseColumn) {
+		foreach ($databaseColumnNames as $databaseColumnName) {
 			$databaseData['system_database_columns'][] = array(
 				'created_timestamp' => $timestamp,
 				'id' => random_bytes(10) . time() . random_bytes(10),
 				'modified_timestamp' => $timestamp,
-				'name' => $databaseColumn,
+				'name' => $databaseColumnName,
 				'system_database_id' => $systemDatabaseId
 			);
 		}
