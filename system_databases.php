@@ -92,8 +92,7 @@
 			}
 		}
 
-		$response = $response['_connect'];
-		return $response;
+		return $response['_connect'];
 	}
 
 	function _count($parameters, $response) {
@@ -124,8 +123,7 @@
 			_output($response);
 		}
 
-		$response = $commandResponse;
-		return $response;
+		return $commandResponse;
 	}
 
 	function _delete($parameters, $response) {
@@ -142,13 +140,10 @@
 			_output($response);
 		}
 
-		$response = true;
-		return $response;
+		return true;
 	}
 
 	function _list($parameters, $response) {
-		// todo: validate sort and where parameters with system database column_names
-
 		if (empty($parameters['data']) === true) {
 			$parameters['data'] = array(
 				'*'
@@ -197,8 +192,7 @@
 			_output($response);
 		}
 
-		$response = $commandResponse;
-		return $response;
+		return $commandResponse;
 	}
 
 	function _parseCommandWhereConditions($parameters, $whereConditionConjunction = 'AND') {
@@ -270,8 +264,7 @@
 			}
 		}
 
-		$response = $parameters['where'];
-		return $response;
+		return $parameters['where'];
 	}
 
 	function _save($parameters, $response) {
@@ -317,8 +310,7 @@
 			}
 		}
 
-		$response = true;
-		return $response;
+		return true;
 	}
 
 	function _update($parameters, $response) {
@@ -342,8 +334,7 @@
 			}
 		}
 
-		$response = true;
-		return $response;
+		return true;
 	}
 
 	$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
