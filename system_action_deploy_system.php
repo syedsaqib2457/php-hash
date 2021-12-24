@@ -76,6 +76,9 @@
 		exit;
 	}
 
+	rmdir('/var/www/ghostcompute/');
+	mkdir('/var/www/ghostcompute/');
+	chmod('/var/www/ghostcompute/', 0755);
 	shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils cron curl git iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux');
@@ -157,7 +160,7 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commands = implode("\n", $commands);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/system_action_deploy_system_commands.sh', $commands);
+		$filePutContentsResponse = file_put_contents('/var/www/ghostcompute/system_action_deploy_system_commands.sh', $commands);
 
 		if (
 			($commands === false) ||
@@ -167,8 +170,8 @@
 			exit;
 		}
 
-		chmod('/usr/local/ghostcompute/system_action_deploy_system_commands.sh', 0755);
-		exec('cd /usr/local/ghostcompute/ && sudo ./system_action_deploy_system_commands.sh', $binaryFile);
+		chmod('/var/www/ghostcompute/system_action_deploy_system_commands.sh', 0755);
+		exec('cd /var/www/ghostcompute/ && sudo ./system_action_deploy_system_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -274,7 +277,17 @@
 		'vm.overcommit_memory = 0',
 		'vm.swappiness = 0'
 	);
-	file_put_contents('/etc/sysctl.conf', implode("\n", $kernelOptions));
+	$kernelOptions = implode("\n", $kernelOptions);
+	$filePutContentsResponse = file_put_contents('/etc/sysctl.conf', $kernelOptions);
+
+	if (
+		($kernelOptions === false) ||
+		(empty($filePutContentsResponse) === true)
+	) {
+		echo 'Error adding kernel options, please try again.' . "\n";
+		exit;
+	}
+
 	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -p');
 	exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
 	$kernelPageSize = current($kernelPageSize);
@@ -353,9 +366,6 @@
 	shell_exec('sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"');
 	shell_exec('sudo /usr/sbin/service mysql restart');
 	shell_exec('sudo apt-get update');
-	rmdir('/var/www/ghostcompute/');
-	mkdir('/var/www/ghostcompute/');
-	chmod('/var/www/ghostcompute/', 0755);
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	$virtualHostConfiguration = array(
 		'<VirtualHost *:80>',
