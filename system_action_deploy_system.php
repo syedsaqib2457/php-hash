@@ -405,45 +405,48 @@
 		exit;
 	}
 
-	$crontabFile = '/etc/crontab';
-
-	if (file_exists($crontabFile) === true) {
-		$crontabFileContents = file_get_contents($crontabFile);
-	}
-
-	$crontabCommands = array(
-		'# [Start]',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/ghostcompute/system_action_process_node_request_logs.php',
-		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
-		'# [Stop]'
-	);
-
-	if (
-		(file_exists($crontabFile) === false) ||
-		(boolval($crontabFileContents) === false)
-	) {
-		echo 'Error listing crontab contents, please try again.' . "\n";
+	if (file_exists('/etc/crontab') === false) {
+		echo 'Error listing crontab commands, please try again.' . "\n";
 		exit;
 	}
 
-	$crontabFileContents = explode("\n", $crontabFileContents);
+	$crontabCommands = file_get_contents('/etc/crontab');
 
-	while (is_int(array_search('# [Start]', $crontabFileContents)) === true) {
-		$startCrontabFileContents = array_search('# [Start]', $crontabFileContents);
-		$stopCrontabFileContents = array_search('# [Stop]', $crontabFileContents);
+	if (empty($crontabCommands) === true) {
+		echo 'Error listing crontab commands, please try again.' . "\n";
+		exit;
+	}
 
-		if (
-			(is_int($stopCrontabFileContents) === true) &&
-			(($stopCrontabFileContents > $startCrontabFileContents) === true)
-		) {
-			foreach (range($startCrontabFileContents, $stopCrontabFileContents) as $crontabContentLineIndex) {
-				unset($crontabFileContents[$crontabContentLineIndex]);
+	$crontabCommands = explode("\n", $crontabCommands);
+	$crontabCommandIndex = array_search('# ghostcompute_default', $crontabCommands);
+
+	if (is_int($crontabCommandIndex) === true) {
+		while (is_int($crontabCommandIndex) === true) {
+			unset($crontabCommands[$crontabCommandIndex]);
+			$crontabCommandIndex++;
+
+			if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_default') === false) {
+				$crontabCommandIndex = false;
 			}
 		}
 	}
 
-	$crontabFileContents = array_merge($crontabFileContents, $crontabCommands);
-	file_put_contents($crontabFile, implode("\n", $crontabFileContents));
+	$crontabCommands += array(
+		'# ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/ghostcompute/system_action_process_node_request_logs.php 1',
+		'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab'
+	);
+	$crontabCommands = implode("\n", $crontabCommands);
+	$filePutContentsResponse = file_put_contents('/etc/crontab', $crontabCommands);
+
+	if (
+		($crontabCommands === false) ||
+		(empty($filePutContentsResponse) === true)
+	) {
+		echo 'Error adding crontab commands, please try again.' . "\n";
+		exit;
+	}
+
 	shell_exec('sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile);
 	$sshPortNumbers = array();
 
