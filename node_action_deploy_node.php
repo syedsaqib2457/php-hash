@@ -32,7 +32,7 @@
 		exit;
 	}
 
-	$nodePackageSources = array(
+	$packageSources = array(
 		'debian' => array(
 			'9' => array(
 				'deb http://deb.debian.org/debian stretch main',
@@ -272,52 +272,55 @@
 	_killProcessIds($binaryFiles, $lockedProcessIds);
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential cron curl dnsutils net-tools php-curl syslinux systemd util-linux');
 	shell_exec('sudo /etc/init.d/apache2 stop');
-	exec('sudo ' . $binaryFiles['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $nodeNetworkInterfaceName);
-	$nodeNetworkInterfaceName = current($nodeNetworkInterfaceName);
+	exec('sudo ' . $binaryFiles['netstat'] . ' -i | grep -v face | awk \'NR==1{print $1}\' 2>&1', $networkInterfaceName);
+	$networkInterfaceName = current($networkInterfaceName);
 
-	if (empty($nodeNetworkInterfaceName) === true) {
-		echo 'Error detecting node network interface, please try again.' . "\n";
+	if (empty($networkInterfaceName) === true) {
+		echo 'Error listing network interface name, please try again.' . "\n";
 		exit;
 	}
 
-	$nodeActionProcessNodeNetworkInterfaceIpAddresses = array();
+	$nodeActionProcessNetworkInterfaceIpAddresses = array();
 
 	foreach ($systemActionProcessNodeResponse['data']['node_ip_address_versions'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
 		foreach ($systemActionProcessNodeResponse['data']['node_ip_addresses'][$nodeIpAddressVersionNetworkMask] as $nodeIpAddress) {
-			$nodeActionProcessNodeNetworkInterfaceIpAddressFileContents[] = 'shell_exec(\'sudo ' . $binaryFiles['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $nodeNetworkInterfaceName . '\');';
+			$nodeActionProcessNetworkInterfaceIpAddresses[] = 'shell_exec(\'sudo ' . $binaryFiles['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $networkInterfaceName . '\');';
 		}
 	}
 
 	// todo: add interface IPs in JSON file with node_action_process_node_network_interface_ip_addresses.php file executed in crontab every 5 minutes because binary path listing may fail on @reboot
-	$nodeActionProcessNodeNetworkInterfaceIpAddresses = '<?php shell_exec(\'' . implode('\'); shell_exec(\'', $nodeActionProcessNodeNetworkInterfaceIpAddresses) . '\'); ?>';
-	$nodeActionProcessNodeNetworkInterfaceIpAddressesResponse = file_put_contents('/usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php', $nodeActionProcessNodeNetworkInterfaceIpAddresses);
+	$nodeActionProcessNetworkInterfaceIpAddresses = implode('\'); shell_exec(\'', $nodeActionProcessNetworkInterfaceIpAddresses);
+	$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_process_network_interface_ip_addresses.php', '<?php shell_exec(\'' . $nodeActionProcessNetworkInterfaceIpAddresses . '\'); ?>');
 
-	if (empty($nodeActionProcessNodeNetworkInterfaceIpAddressesResponse) === true) {
+	if (
+		($nodeActionProcessNetworkInterfaceIpAddresses === false) ||
+		(empty($filePutContentsResponse) === true)
+	) {
 		echo 'Error processing network interface IP addresses, please try again.' . "\n";
 		exit;
 	}
 
-	shell_exec('sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_action_process_node_network_interface_ip_addresses.php');
+	shell_exec('sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_action_process_network_interface_ip_addresses.php');
 	$recursiveDnsNodeProcessDefaultServiceName = 'named';
 
-	if (is_dir('/etc/default/bind9') === true) {
+	if (is_dir('/etc/default/bind9/') === true) {
 		$recursiveDnsNodeProcessDefaultServiceName = 'bind9';
 	}
 
 	exec('pgrep ' . $recursiveDnsNodeProcessDefaultServiceName, $recursiveDnsDefaultProcessIds);
 	_killProcessIds($binaryFiles, $recursiveDnsDefaultProcessIds);
-	shell_exec('sudo mkdir -m 0775 /var/run/named');
+	shell_exec('sudo mkdir -m 0775 /var/run/named/');
 	shell_exec('sudo rm -rf /usr/src/3proxy/ && sudo mkdir -p /usr/src/3proxy/');
 	shell_exec('cd /usr/src/3proxy/ && sudo ' . $binaryFiles['wget'] . ' -O 3proxy.tar.gz --no-dns-cache --timeout=60 https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
 	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux && sudo make -f Makefile.Linux install');
-	shell_exec('sudo mkdir -p /var/log/3proxy');
+	shell_exec('sudo mkdir -p /var/log/3proxy/');
 	$nodeFiles = array(
 		'node_endpoint.php',
 		'process_node_processes.php',
 		'process_node_resource_usage_logs.php',
 		'process_node_user_request_logs.php',
-		'process_node_system_recursive_dns_destination.php'
+		'process_recursive_dns_destination.php'
 	);
 
 	foreach ($nodeFiles as $nodeFile) {
@@ -374,8 +377,8 @@
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_processes ghostcompute_default',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_resource_usage_logs ghostcompute_default',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_user_request_logs ghostcompute_default',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_system_recursive_dns_destination ghostcompute_default',
-		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_network_interface_ip_addresses ghostcompute_default'
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_recursive_dns_destination ghostcompute_default',
+		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_network_interface_ip_addresses ghostcompute_default'
 	);
 	$crontabCommands = implode("\n", $crontabCommands);
 	$filePutContentsResponse = file_put_contents('/etc/crontab', $crontabCommands);
