@@ -76,17 +76,18 @@
 		exit;
 	}
 
-	rmdir('/var/www/ghostcompute/');
-	mkdir('/var/www/ghostcompute/');
-	chmod('/var/www/ghostcompute/', 0755);
 	shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils cron curl git iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
+	rmdir('/var/www/ghostcompute/');
+	mkdir('/var/www/ghostcompute/');
+	chmod('/var/www/ghostcompute/', 0755);
+	$uniqueId = '_' . uniqid() . time();
 	$binaries = array(
 		array(
-			'command' => ($uniqueId = '_' . uniqid() . time()),
+			'command' => $uniqueId,
 			'name' => 'a2enmod',
 			'output' => 'Module ' . $uniqueId,
 			'package' => 'apache2'
@@ -155,23 +156,23 @@
 	$binaryFiles = array();
 
 	foreach ($binaries as $binary) {
-		$commands = array(
+		$binaryFileListCommands = array(
 			'#!/bin/bash',
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
-		$commands = implode("\n", $commands);
-		$filePutContentsResponse = file_put_contents('/var/www/ghostcompute/system_action_deploy_system_commands.sh', $commands);
+		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
+		$filePutContentsResponse = file_put_contents('/var/www/ghostcompute/system_action_deploy_system_binary_file_list_commands.sh', $binaryFileListCommands);
 
 		if (
-			($commands === false) ||
+			($binaryFileListCommands === false) ||
 			(empty($filePutContentsResponse) === true)
 		) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/var/www/ghostcompute/system_action_deploy_system_commands.sh', 0755);
-		exec('cd /var/www/ghostcompute/ && sudo ./system_action_deploy_system_commands.sh', $binaryFile);
+		chmod('/var/www/ghostcompute/system_action_deploy_system_binary_file_list_commands.sh', 0755);
+		exec('cd /var/www/ghostcompute/ && sudo ./system_action_deploy_system_binary_file_list_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -184,6 +185,7 @@
 		$binaryFiles[$binary['name']] = $binaryFile;
 	}
 
+	unlink('/var/www/ghostcompute/system_action_deploy_system_binary_file_list_commands.sh');
 	$kernelSettings = array(
 		'fs.aio-max-nr = 1000000000',
 		'fs.file-max = 1000000000',
