@@ -19,17 +19,19 @@
 
 	function _processNode($parameters, $response) {
 		$response['data'] = array(
-			'blockchain_node_process_types' => array(
-				'/path/to/bitcoin/binary/file' => 'bitcoin' // todo: add path after installing bitcoin
+			'cryptocurrency_node_process_types' => array(
+				'/path/to/bitcoin/binary/file' => 'bitcoin_cryptocurrency' // todo: add path after installing bitcoin
+				'/path/to/monero/binary/file' => 'monero_cryptocurrency' // todo: add path after installing monero
 			),
 			'node_ip_address_version_numbers' => array(
 				'32' => '4',
 				'128' => '6'
 			),
 			'node_process_types' => array(
-				'bitcoin',
+				'bitcoin_cryptocurrency',
 				'http_proxy',
 				'load_balancer',
+				'monero_cryptocurrency',
 				'recursive_dns',
 				'socks_proxy'
 			),
