@@ -371,8 +371,7 @@
 	rmdir($systemPath);
 	mkdir($systemPath);
 	chmod($systemPath, 0755);
-	$systemUrl = $_SERVER['argv'][1];
-	file_put_contents($systemPath . '/system_ip_address.txt', $systemUrl);
+	file_put_contents($systemPath . '/system_ip_address.txt', $_SERVER['argv'][1]);
 
 	if (file_exists($systemPath . '/system_ip_address.txt') === false) {
 		echo 'Error adding system IP address, please try again.' . "\n";
@@ -382,8 +381,8 @@
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	$virtualHostContents = array(
 		'<VirtualHost *:80>',
-		'ServerAlias ' . $systemUrl,
-		'ServerName ' . $systemUrl,
+		'ServerAlias ' . $_SERVER['argv'][1],
+		'ServerName ' . $_SERVER['argv'][1],
 		'DocumentRoot ' . $systemPath,
 		'<Directory ' . $systemPath . '>',
 		'Allow from all',
@@ -392,8 +391,8 @@
 		'</Directory>',
 		'</VirtualHost>'
 	);
-	file_put_contents('/etc/apache2/sites-available/' . $systemUrl . '.conf', implode("\n", $virtualHostContents));
-	shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $systemUrl);
+	file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', implode("\n", $virtualHostContents));
+	shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $_SERVER['argv'][1]);
 	shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
@@ -956,7 +955,7 @@
 				'id' => random_bytes(10) . time() . random_bytes(10),
 				'modified_timestamp' => $timestamp,
 				'name' => 'endpoint_destination_address',
-				'value' => $systemUrl
+				'value' => $_SERVER['argv'][1]
 			),
 			array(
 				'created_timestamp' => $timestamp,
