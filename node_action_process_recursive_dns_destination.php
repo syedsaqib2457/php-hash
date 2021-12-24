@@ -1,0 +1,21 @@
+<?php
+	function _processRecursiveDnsDestination($parameters, $response) {
+		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_recursive_dns_destination" | awk \'{print $1}\'', $recursiveDnsDestinationProcessIds);
+		$recursiveDnsDestinationProcessIds = array_diff($recursiveDnsDestinationProcessIds, array(
+			getmypid()
+		));
+
+		if (empty($recursiveDnsDestinationProcessIds) === false) {
+			_killProcessIds($parameters['binary_files'], $recursiveDnsDestinationProcessIds, $response);
+		}
+
+		while (true) {
+			shell_exec('sudo cp /usr/local/ghostcompute/resolv.conf /etc/resolv.conf');
+			usleep(200000);
+		}
+	}
+
+	if (($parameters['action'] === 'process_recursive_dns_destination') === true) {
+		_processRecursiveDnsDestination($parameters, $response);
+	}
+?>
