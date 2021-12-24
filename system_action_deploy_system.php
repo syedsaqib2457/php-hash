@@ -484,22 +484,19 @@
 		}
 
 		$firewallRules[] = 'COMMIT';
-		$firewallRulesFile = '/tmp/firewall';
-
-		if (file_exists($firewallRulesFile) === true) {
-			unlink($firewallRulesFile);
-		}
-
-		touch($firewallRulesFile);
+		$firewallRulesFile = '/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt';
+		unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
+		touch('/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
 		$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 		foreach ($firewallRuleParts as $firewallRulePart) {
-			$saveFirewallRules = implode("\n", $firewallRulePart);
-			shell_exec('sudo echo "' . $saveFirewallRules . '" >> ' . $firewallRulesFile);
+			$firewallRulePart = implode("\n", $firewallRulePart);
+			shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
 		}
 
-		shell_exec('sudo ' . $firewallBinaryFiles[$systemIpAddressVersionNumber] . ' < ' . $firewallRulesFile);
-		unlink($firewallRulesFile);
+		shell_exec('sudo ' . $firewallBinaryFiles[$systemIpAddressVersionNumber] . ' < /var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
+		unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
+		sleep(1);
 	}
 
 	require_once('/var/www/ghostcompute/system_databases.php');
