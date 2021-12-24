@@ -254,7 +254,7 @@
 			return $response;
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --timeout=600 --post-data \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=600 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
 			$response['message'] = 'Error processing node, please try again.' . "\n";
