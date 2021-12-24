@@ -93,11 +93,12 @@
 		exit;
 	}
 
-	$operatingSystemConfiguration = $supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']];
+	$operatingSystemConfigurationPackageSources = implode("\n", $supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]['sources']['aptitude']['contents']);
+	$filePutContentsResponse = file_put_contents($supportedOperatingSystems[$operatingSystemDetails['id']][$operatingSystemDetails['version_id']]['sources']['aptitude']['path'], $operatingSystemConfigurationPackageSources);
 
 	if (
-		(file_exists($operatingSystemConfiguration['sources']['aptitude']['path']) === false) ||
-		(file_put_contents($operatingSystemConfiguration['sources']['aptitude']['path'], implode("\n", $operatingSystemConfiguration['sources']['aptitude']['contents'])) === false)
+		($operatingSystemConfigurationPackageSources) === false) ||
+		($filePutContentsResponse === false)
 	) {
 		echo 'Error updating package sources, please try again.' . "\n";
 		exit;
