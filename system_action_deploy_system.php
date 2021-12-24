@@ -460,6 +460,7 @@
 		}
 	}
 
+	// todo: add dynamic system firewall with system_reserved_internal_sources
 	$firewallBinaryFiles = array(
 		4 => $binaryFiles['iptables-restore'],
 		6 => $binaryFiles['ip6tables-restore']
