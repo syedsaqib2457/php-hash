@@ -184,7 +184,7 @@
 		$binaryFiles[$binary['name']] = $binaryFile;
 	}
 
-	$kernelOptions = array(
+	$kernelSettings = array(
 		'fs.aio-max-nr = 1000000000',
 		'fs.file-max = 1000000000',
 		'fs.nr_open = 1000000000',
@@ -277,14 +277,14 @@
 		'vm.overcommit_memory = 0',
 		'vm.swappiness = 0'
 	);
-	$kernelOptions = implode("\n", $kernelOptions);
-	$filePutContentsResponse = file_put_contents('/etc/sysctl.conf', $kernelOptions);
+	$kernelSettings = implode("\n", $kernelSettings);
+	$filePutContentsResponse = file_put_contents('/etc/sysctl.conf', $kernelSettings);
 
 	if (
-		($kernelOptions === false) ||
+		($kernelSettings === false) ||
 		(empty($filePutContentsResponse) === true)
 	) {
-		echo 'Error adding kernel options, please try again.' . "\n";
+		echo 'Error adding kernel settings, please try again.' . "\n";
 		exit;
 	}
 
@@ -293,14 +293,16 @@
 	$kernelPageSize = current($kernelPageSize);
 	exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
 	$memoryCapacityBytes = current($memoryCapacityBytes);
-	$dynamicKernelOptions = array(
-		'kernel.shmall' => floor($memoryCapacityBytes / $kernelPageSize),
-		'kernel.shmmax' => $memoryCapacityBytes,
-		'net.core.optmem_max' => ceil($memoryCapacityBytes * 0.02),
-		'net.core.rmem_default' => ($defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034)),
-		'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
-		'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
-		'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
+	$memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize);
+	$defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034);
+	$kernelSettings = array(
+		'kernel.shmall="' . floor($memoryCapacityBytes / $kernelPageSize) . '"',
+		'kernel.shmmax="' . $memoryCapacityBytes . '"',
+		'net.core.optmem_max="' . ceil($memoryCapacityBytes * 0.02) . '"',
+		'net.core.rmem_default="' . $defaultSocketBufferMemoryBytes . '"',
+		'net.core.rmem_max="' . ($defaultSocketBufferMemoryBytes * 2) . '"',
+		'net.core.wmem_default="' . $defaultSocketBufferMemoryBytes . '"',
+		'net.core.wmem_max="' . ($defaultSocketBufferMemoryBytes * 2) . '"'
 	);
 	$systemIpAddressVersionNumbers = array(
 		32 => 4,
@@ -308,14 +310,14 @@
 	);
 
 	foreach ($systemIpAddressVersionNumbers as $systemIpAddressVersionNumber) {
-		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem'] = ($memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize)) . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
-		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
-		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_wmem'] = $dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem'];
-		$dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.udp_mem'] = $dynamicKernelOptions['net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem'];
+		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
+		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
+		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_wmem="' . $kernelSettings['net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem'] . '"';
+		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.udp_mem="' . $kernelSettings['net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem'] . '"';
 	}
 
-	foreach ($dynamicKernelOptions as $dynamicKernelOptionKey => $dynamicKernelOptionValue) {
-		shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w ' . $dynamicKernelOptionKey . '="' . $dynamicKernelOptionValue . '"');
+	foreach ($kernelSettings as $kernelSetting) {
+		shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w ' . $kernelSetting);
 	}
 
 	shell_exec('sudo /usr/bin/systemctl stop mysql');
