@@ -156,17 +156,20 @@
 			'#!/bin/bash',
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
-		$commandsFile = '/tmp/commands.sh';
+		$commands = implode("\n", $commands);
+		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/system_action_deploy_system_commands.sh', $commands);
 
-		if (file_exists($commandsFile) === true) {
-			unlink($commandsFile);
+		if (
+			($commands === false) ||
+			(empty($filePutContentsResponse) === true)
+		) {
+			echo 'Error adding binary file list commands, please try again.' . "\n";
+			exit;
 		}
 
-		file_put_contents($commandsFile, implode("\n", $commands));
-		chmod($commandsFile, 0755);
-		exec('cd /tmp/ && sudo ./' . basename($commandsFile), $binaryFile);
+		chmod('/usr/local/ghostcompute/system_action_deploy_system_commands.sh', 0755);
+		exec('cd /usr/local/ghostcompute/ && sudo ./system_action_deploy_system_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
-		unlink($commandsFile);
 
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
