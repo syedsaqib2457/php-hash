@@ -367,17 +367,16 @@
 	shell_exec('sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"');
 	shell_exec('sudo /usr/sbin/service mysql restart');
 	shell_exec('sudo apt-get update');
-	$systemPath = '/var/www/ghostcompute';
-	rmdir($systemPath);
-	mkdir($systemPath);
-	chmod($systemPath, 0755);
+	rmdir('/var/www/ghostcompute/');
+	mkdir('/var/www/ghostcompute/');
+	chmod('/var/www/ghostcompute/', 0755);
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	$virtualHostContents = array(
 		'<VirtualHost *:80>',
 		'ServerAlias ' . $_SERVER['argv'][1],
 		'ServerName ' . $_SERVER['argv'][1],
-		'DocumentRoot ' . $systemPath,
-		'<Directory ' . $systemPath . '>',
+		'DocumentRoot /var/www/ghostcompute/',
+		'<Directory /var/www/ghostcompute/>',
 		'Allow from all',
 		'Options FollowSymLinks',
 		'AllowOverride All',
@@ -389,10 +388,10 @@
 	shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
-	shell_exec('cd ' . $systemPath . ' && sudo git clone https://github.com/ghostcompute/framework .');
+	shell_exec('cd /var/www/ghostcompute/ && sudo git clone https://github.com/ghostcompute/framework .');
 
-	if (file_exists($systemPath . '/readme.md') === false) {
-		echo 'Error extracting system files, please try again.' . "\n";
+	if (file_exists('/var/www/ghostcompute/readme.md') === false) {
+		echo 'Error downloading system files, please try again.' . "\n";
 		exit;
 	}
 
@@ -404,7 +403,7 @@
 
 	$crontabCommands = array(
 		'# [Start]',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' ' . $systemPath . 'system_action_process_node_request_logs.php',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/ghostcompute/system_action_process_node_request_logs.php',
 		'@reboot root sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile,
 		'# [Stop]'
 	);
@@ -998,13 +997,17 @@
 		}
 	}
 
-	foreach (scandir($systemPath) as $systemFile) {
+	$systemFiles = scandir('/var/www/ghostcompute/');
+
+	foreach ($systemFiles as $systemFile) {
 		if ((substr($systemFile, 0, 13) === 'system_action') === true) {
+			$systemAction = substr($systemFile, 14);
+			$systemAction = substr($systemAction, 0, -4);
 			$databaseData['system_user_authentication_token_scopes'][] = array(
 				'created_timestamp' => $timestamp,
 				'id' => random_bytes(10) . time() . random_bytes(10),
 				'modified_timestamp' => $timestamp,
-				'system_action' => substr(substr($systemFile, 14), 0, -4),
+				'system_action' => $systemAction,
 				'system_user_authentication_token_id' => $systemUserAuthenticationTokenId,
 				'system_user_id' => $systemUserId
 			);
