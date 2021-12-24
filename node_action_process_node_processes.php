@@ -279,10 +279,10 @@
 		}
 
 		if (empty($parameters['data']['next']['nodes']) === false) {
-			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessBinaryFile => $cryptocurrencyNodeProcessType) {
+			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
 				if (
 					(empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) &&
-					(file_exists($cryptocurrencyNodeProcessBinaryFile) === false)
+					(_verifyNodeProcess($parameters['binary_files'], false, false, false, $cryptocurrencyNodeProcessType) === false)
 				) {
 					// todo: crypto CLI installation for optimized mining + transactions
 					require_once('/usr/local/ghostcompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
@@ -1086,6 +1086,8 @@
 		$response = false;
 
 		switch ($nodeProcessType) {
+			case 'bitcoin_cryptocurrency':
+				break;
 			case 'http_proxy':
 			case 'socks_proxy':
 				$nodeProcessTypeParameters = array(
@@ -1094,6 +1096,8 @@
 				);
 				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 				$response = (empty($proxyNodeProcessResponse) === true);
+				break;
+			case 'monero_cryptocurrency':
 				break;
 			case 'recursive_dns':
 				// todo: add dig to $parameters['binary_files']
