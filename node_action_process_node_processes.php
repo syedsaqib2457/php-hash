@@ -278,13 +278,13 @@
 		}
 
 		if (empty($parameters['data']['next']['nodes']) === false) {
-			foreach ($parameters['data']['next']['blockchain_node_process_types'] as $blockchainNodeProcessBinaryFile => $blockchainNodeProcessType) {
+			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessBinaryFile => $cryptocurrencyNodeProcessType) {
 				if (
-					(empty($parameters['data']['next']['node_processes'][$blockchainNodeProcessType]) === false) &&
-					(file_exists($blockchainNodeProcessBinaryFile) === false)
+					(empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) &&
+					(file_exists($cryptocurrencyNodeProcessBinaryFile) === false)
 				) {
 					// todo: crypto CLI installation for optimized mining + transactions
-					require_once('/usr/local/ghostcompute/node_action_deploy_' . $blockchainNodeProcessType . '_node_process.php');
+					require_once('/usr/local/ghostcompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
 				}
 			}
 		} else {
