@@ -136,17 +136,17 @@
 
 			$firewallRules[] = '-A PREROUTING -i ' . $parameters['interface_name'] . ' -m set ! --match-set _ dst,src -j DROP';
 			$firewallRules[] = 'COMMIT';
-			unlink('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber);
-			touch('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber);
+			unlink('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
+			touch('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
 			$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 			foreach ($firewallRuleParts as $firewallRulePart) {
 				$firewallRulePart = implode("\n", $firewallRulePart);
-				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber);
+				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
 			}
 
-			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber);
-			unlink('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber);
+			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
+			unlink('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
 			sleep(1);
 		}
 
