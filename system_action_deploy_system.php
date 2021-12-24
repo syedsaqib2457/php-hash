@@ -393,7 +393,7 @@
 		'</VirtualHost>'
 	);
 	file_put_contents('/etc/apache2/sites-available/' . $systemUrl . '.conf', implode("\n", $virtualHostContents));
-	shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $url);
+	shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $systemUrl);
 	shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 	shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
