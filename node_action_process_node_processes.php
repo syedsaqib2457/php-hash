@@ -284,6 +284,7 @@
 					(file_exists($blockchainNodeProcessBinaryFile) === false)
 				) {
 					// todo: crypto CLI installation for optimized mining + transactions
+					require_once('/usr/local/ghostcompute/node_action_deploy_' . $blockchainNodeProcessType . '_node_process.php');
 				}
 			}
 		} else {
