@@ -1,21 +1,22 @@
 <?php
 	function _killProcessIds($binaryFiles, $processIds, $response) {
-		$commands = array(
+		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
 		$processIdParts = array_chunk($processIds, 10);
 
 		foreach ($processIdParts as $processIdPart) {
 			$processIdPart = implode(' ', $processIdPart);
-			$commands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
+			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
 		}
 
-		$commands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
-		$commands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
-		$commands = implode("\n", $commands);
-		file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh', $commands);
-		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $parameters['action'] . '_commands.sh');
-		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_commands.sh');
+		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
+		$killProcessCommands = implode("\n", $killProcessCommands);
+		file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_kill_process_commands.sh', $killProcessCommands);
+		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $parameters['action'] . '_kill_process_commands.sh');
+		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_kill_process_commands.sh');
+		unlink('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_kill_process_commands.sh');
 		return;
 	}
 
