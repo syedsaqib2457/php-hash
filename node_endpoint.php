@@ -189,7 +189,18 @@
 		'process_node_user_blockchain_mining',
 		'process_node_user_request_logs'
 	)) === true) {
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_list_system_settings_response.json --no-dns-cache --post-data "json={\"action\":\"list_system_settings\",\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --timeout=60 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		$systemParameters = array(
+			'action' => 'list_system_settings',
+			'node_authentication_token' => $parameters['node_authentication_token']
+		);
+		$encodedSystemParameters = json_encode($systemParameters);
+
+		if ($encodedSystemParameters === false) {
+			$response['message'] = 'Error listing system settings, please try again.' . "\n";
+			return $response;
+		}
+
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_list_system_settings_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=60 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/system_action_list_system_settings_response.json') === false) {
 			$response['message'] = 'Error listing system settings, please try again.';
