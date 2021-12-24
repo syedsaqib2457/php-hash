@@ -322,13 +322,13 @@
 
 	shell_exec('sudo /usr/bin/systemctl stop mysql');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*');
-	shell_exec('sudo rm -rf /etc/mysql /var/lib/mysql /var/log/mysql');
+	shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
-	shell_exec('cd /tmp && sudo wget -O mysql_apt_config.deb ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
+	shell_exec('cd /var/www/ghostcompute/ && sudo wget -O mysql_apt_config.deb ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
 
-	if (file_exists('/tmp/mysql_apt_config.deb') === false) {
-		echo 'Error downloading system database source file, please try again.' . "\n";
+	if (file_exists('/var/www/ghostcompute/mysql_apt_config.deb') === false) {
+		echo 'Error downloading MySQL, please try again.' . "\n";
 		exit;
 	}
 
@@ -339,37 +339,37 @@
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-common mysql-client mysql-community-server-core mysql-community-client mysql-community-client-core mysql-community-server mysql-community-client-plugins mysql-server');
 
 	if (file_exists('/etc/mysql/mysql.conf.d/mysqld.cnf') === false) {
-		echo 'Error installing system database, please try again.' . "\n";
+		echo 'Error installing MySQL, please try again.' . "\n";
 		exit;
 	}
 
-	$databaseConfiguration = array(
+	$mysqlSettings = array(
 		'[mysqld]',
 		'bind-address = 127.0.0.1',
-		'datadir = /var/lib/mysql',
+		'datadir = /var/lib/mysql/',
 		'default-authentication-plugin = mysql_native_password',
 		'log-error = /var/log/mysql/error.log',
 		'pid-file = /var/run/mysqld/mysqld.pid',
 		'socket = /var/run/mysqld/mysqld.sock'
 	);
-	$databaseConfiguration = implode("\n", $databaseConfiguration);
-	$filePutContentsResponse = file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $databaseConfiguration);
+	$mysqlSettings = implode("\n", $mysqlSettings);
+	$filePutContentsResponse = file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $mysqlSettings);
 
 	if (
-		($databaseConfiguration) === false) ||
+		($mysqlSettings) === false) ||
 		($filePutContentsResponse === false)
 	) {
-		echo 'Error adding database configuration, please try again.' . "\n";
+		echo 'Error adding MySQL settings, please try again.' . "\n";
 		exit;
 	}
 
-	shell_exec('sudo /usr/sbin/service mysql restart');
+	shell_exec('sudo ' . $binaryFiles['service'] . ' mysql restart');
 	shell_exec('sudo mysql -u root -p"password" -e "DELETE FROM mysql.user WHERE User=\'\'; DELETE FROM mysql.user WHERE User=\'root\' AND Host NOT IN (\'localhost\', \'127.0.0.1\', \'::1\');"');
 	shell_exec('sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"');
-	shell_exec('sudo /usr/sbin/service mysql restart');
+	shell_exec('sudo ' . $binaryFiles['service'] . ' mysql restart');
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
-	$virtualHostConfiguration = array(
+	$apacheSettings = array(
 		'<VirtualHost *:80>',
 		'ServerAlias ' . $_SERVER['argv'][1],
 		'ServerName ' . $_SERVER['argv'][1],
@@ -381,14 +381,14 @@
 		'</Directory>',
 		'</VirtualHost>'
 	);
-	$virtualHostConfiguration = implode("\n", $virtualHostConfiguration);
-	$filePutContentsResponse = file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $virtualHostConfiguration);
+	$apacheSettings = implode("\n", $apacheSettings);
+	$filePutContentsResponse = file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $apacheSettings);
 
 	if (
-		($virtualHostConfiguration) === false) ||
+		($apacheSettings) === false) ||
 		($filePutContentsResponse === false)
 	) {
-		echo 'Error adding virtual host configuration, please try again.' . "\n";
+		echo 'Error adding Apache settings, please try again.' . "\n";
 		exit;
 	}
 
