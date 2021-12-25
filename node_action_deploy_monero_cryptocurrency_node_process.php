@@ -11,4 +11,5 @@
 	shell_exec('cd /usr/src/monero/ && sudo ' . $binaryFiles['wget'] . ' -O monero.tar.gz --no-dns-cache --timeout=60 https://github.com/monero-project/monero/archive/refs/tags/v0.17.3.0.tar.gz');
 	// todo: download + compile monero from source without git CLI + submodules
 	// todo: add submodules if RPC fails
+	shell_exec('cd /usr/src/monero/*/ && sudo make');
 ?>
