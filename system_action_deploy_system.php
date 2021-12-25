@@ -314,8 +314,8 @@
 	foreach ($systemIpAddressVersionNumbers as $systemIpAddressVersionNumber) {
 		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
 		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
-		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_wmem="' . $kernelSettings['net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem'] . '"';
-		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.udp_mem="' . $kernelSettings['net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem'] . '"';
+		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_wmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
+		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.udp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
 	}
 
 	foreach ($kernelSettings as $kernelSetting) {
