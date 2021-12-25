@@ -208,10 +208,8 @@
 				(is_array($whereConditionValue) === true) &&
 				((count($whereConditionValue) === count($whereConditionValue, true)) === false)
 			) {
-				$recursiveParameters = array(
-					'where' => $whereConditionValue
-				);
-				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseCommandWhereConditions($recursiveParameters, $conjunction)) . ')';
+				$recursiveWhereConditions = $whereConditionValue;
+				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseCommandWhereConditions($recursiveWhereConditions, $conjunction)) . ')';
 			} else {
 				if (is_array($whereConditionValue) === false) {
 					$whereConditionValue = array(
