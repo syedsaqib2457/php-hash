@@ -358,7 +358,7 @@
 	$filePutContentsResponse = file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $mysqlSettings);
 
 	if (
-		($mysqlSettings) === false) ||
+		($mysqlSettings === false) ||
 		($filePutContentsResponse === false)
 	) {
 		echo 'Error adding MySQL settings, please try again.' . "\n";
@@ -387,7 +387,7 @@
 	$filePutContentsResponse = file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $apacheSettings);
 
 	if (
-		($apacheSettings) === false) ||
+		($apacheSettings === false) ||
 		($filePutContentsResponse === false)
 	) {
 		echo 'Error adding Apache settings, please try again.' . "\n";
