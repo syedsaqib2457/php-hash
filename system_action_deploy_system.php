@@ -81,7 +81,7 @@
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils cron curl git iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
-	rmdir('/var/www/ghostcompute/');
+	shell_exec('sudo rm -rf /var/www/ghostcompute/');
 	mkdir('/var/www/ghostcompute/');
 	chmod('/var/www/ghostcompute/', 0755);
 	$uniqueId = '_' . uniqid() . time();
@@ -324,9 +324,7 @@
 
 	shell_exec('sudo /usr/bin/systemctl stop mysql');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*');
-	rmdir('/etc/mysql/');
-	rmdir('/var/lib/mysql/');
-	rmdir('/var/log/mysql/');
+	shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
 	shell_exec('cd /var/www/ghostcompute/ && sudo wget -O mysql_apt_config.deb ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
