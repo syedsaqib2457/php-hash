@@ -180,7 +180,7 @@
 			$command .= ' OFFSET ' . $parameters['offset'];
 		}
 
-		$commandResponse = mysqli_query($connection, $command);
+		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
 
 		if ($commandResponse === false) {
 			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
