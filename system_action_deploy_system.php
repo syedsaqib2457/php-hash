@@ -6,6 +6,11 @@
 		exit;
 	}
 
+	function _output($response) {
+		echo $response[$message];
+		exit;
+	}
+
 	$packageSources = array(
 		'debian' => array(
 			'9' => array(
