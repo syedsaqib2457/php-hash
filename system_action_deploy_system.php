@@ -9,7 +9,7 @@
 	$response = array();
 
 	function _output($response) {
-		echo $response[$message];
+		echo $response['message'];
 		exit;
 	}
 
