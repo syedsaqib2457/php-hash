@@ -324,7 +324,9 @@
 
 	shell_exec('sudo /usr/bin/systemctl stop mysql');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*');
-	shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
+	rmdir('/etc/mysql/');
+	rmdir('/var/lib/mysql/');
+	rmdir('/var/log/mysql/');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
 	shell_exec('cd /var/www/ghostcompute/ && sudo wget -O mysql_apt_config.deb ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
@@ -335,6 +337,7 @@
 	}
 
 	shell_exec('cd /var/www/ghostcompute/ && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql_apt_config.deb');
+	unlink('/var/www/ghostcompute/mysql_apt_config.deb');
 	shell_exec('sudo add-apt-repository -y universe');
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libmecab2');
