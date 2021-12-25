@@ -12,12 +12,11 @@
 		foreach ($systemDatabases as $systemDatabase) {
 			if (
 				(empty($existingSystemDatabaseConnections) === false) &&
-				(empty($existingSystemDatabaseConnections[$systemDatabase['structure']['table_name']]) === false)
+				(empty($existingSystemDatabaseConnections[$systemDatabase]) === false)
 			) {
 				continue;
 			}
 
-			$systemDatabaseKey = $systemDatabase;
 			$systemDatabaseParameters = array(
 				'data' => array(
 					'authentication_credential_hostname',
@@ -41,7 +40,7 @@
 					(isset($systemDatabaseParts[1]) === false) ||
 					(isset($systemDatabaseParts[2]) === true)
 				) {
-					$response['message'] = 'Invalid system database tag for ' . $systemDatabaseKey . ', please try again.';
+					$response['message'] = 'Invalid system database tag for ' . $systemDatabase . ', please try again.';
 					unset($response['_connect']);
 					_output($response);
 				}
@@ -56,20 +55,20 @@
 			$systemDatabase = current($systemDatabase);
 
 			if (empty($systemDatabase) === true) {
-				$response['message'] = 'Invalid system database ' . $systemDatabaseKey . ', please try again.';
+				$response['message'] = 'Invalid system database ' . $systemDatabase['table_name'] . ', please try again.';
 				unset($response['_connect']);
 				_output($response);
 			}
 
-			$response['_connect'][$systemDatabase] = array(
+			$response['_connect'][$systemDatabase['table_name']] = array(
 				'connection' => mysqli_connect($systemDatabase['authentication_credential_hostname'], 'root', $systemDatabase['authentication_credential_password'], 'ghostcompute'),
 				'structure'=> array(
 					'table_name' => $systemDatabaseParameters['where']['table_name']
 				)
 			);
 
-			if ($response['_connect'][$systemDatabaseKey]['connection'] === false) {
-				$response['message'] = 'Error connecting to ' . $systemDatabaseKey . ' system database, please try again.';
+			if ($response['_connect'][$systemDatabase['table_name']]['connection'] === false) {
+				$response['message'] = 'Error connecting to ' . $systemDatabase['table_name'] . ' system database, please try again.';
 				unset($response['connect']);
 				_output($response);
 			}
@@ -85,13 +84,13 @@
 			), $response);
 
 			if (empty($systemDatabaseColumns) === true) {
-				$response['message'] = 'Invalid system database columns in ' . $systemDatabaseKey . ' system database, please try again.';
+				$response['message'] = 'Invalid system database columns in ' . $systemDatabase['table_name'] . ' system database, please try again.';
 				unset($response['_connect']);
 				_output($response);
 			}
 
 			foreach ($systemDatabaseColumns as $systemDatabaseColumn) {
-				$response['_connect'][$systemDatabaseKey]['structure']['column_names'][] = [$systemDatabaseColumn['name']];
+				$response['_connect'][$systemDatabase['table_name']]['structure']['column_names'][] = [$systemDatabaseColumn['name']];
 			}
 		}
 
