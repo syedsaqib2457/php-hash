@@ -1029,8 +1029,7 @@
 							$nodeProcessProcessIds[] = file_get_contents('/var/run/named/' . $nodeProcessType . '_' . $nodeProcess['id'] . '.pid');
 						}
 
-						rmdir('/etc/' . $nodeProcessType . '_' . $nodeProcessId);
-						rmdir('/var/cache/' . $nodeProcessType . '_' . $nodeProcessId);
+						shell_exec('sudo rm -rf /etc/' . $nodeProcessType . '_' . $nodeProcessId . ' /var/cache/' . $nodeProcessType . '_' . $nodeProcessId);
 						unlink('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessType . '_' . $nodeProcessId);
 						unlink('/lib/systemd/system/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessType . '_' . $nodeProcessId . '.service');
 						unlink('/usr/sbin/' . $nodeProcessType . '_' . $nodeProcessId);
