@@ -8,11 +8,11 @@
 		exit;
 	}
 
-	function _connect($systemDatabases, $existingSystemDatabaseConnections, $response) {
+	function _connect($systemDatabases, $existingSystemDatabases, $response) {
 		foreach ($systemDatabases as $systemDatabase) {
 			if (
-				(empty($existingSystemDatabaseConnections) === false) &&
-				(empty($existingSystemDatabaseConnections[$systemDatabase]) === false)
+				(empty($existingSystemDatabases) === false) &&
+				(empty($existingSystemDatabases[$systemDatabase]) === false)
 			) {
 				continue;
 			}
@@ -21,9 +21,10 @@
 				'data' => array(
 					'authentication_credential_hostname',
 					'authentication_credential_password',
-					'id'
+					'id',
+					'table_name'
 				),
-				'in' => $parameters['system_databases']['system_databases'],
+				'in' => $existingSystemDatabases['system_databases'],
 				'limit' => 1,
 				'sort' => array(
 					'created_timestamp' => 'descending'
@@ -77,7 +78,7 @@
 				'data' => array(
 					'name'
 				),
-				'in' => $parameters['system_databases']['system_database_columns'],
+				'in' => $existingSystemDatabases['system_database_columns'],
 				'where' => array(
 					'system_database_id' => $systemDatabase['id']
 				)
