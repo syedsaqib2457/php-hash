@@ -334,7 +334,7 @@
 		exit;
 	}
 
-	shell_exec('cd /tmp && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql_apt_config.deb');
+	shell_exec('cd /var/www/ghostcompute/ && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql_apt_config.deb');
 	shell_exec('sudo add-apt-repository -y universe');
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libmecab2');
