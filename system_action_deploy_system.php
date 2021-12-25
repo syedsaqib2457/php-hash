@@ -489,7 +489,6 @@
 		}
 
 		$firewallRules[] = 'COMMIT';
-		$firewallRulesFile = '/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt';
 		unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
 		touch('/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
 		$firewallRuleParts = array_chunk($firewallRules, 1000);
