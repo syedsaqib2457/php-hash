@@ -6,6 +6,8 @@
 		exit;
 	}
 
+	$response = array();
+
 	function _output($response) {
 		echo $response[$message];
 		exit;
