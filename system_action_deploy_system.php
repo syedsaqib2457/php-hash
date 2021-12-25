@@ -304,6 +304,10 @@
 	$memoryCapacityBytes = current($memoryCapacityBytes);
 	$memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize);
 	$defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034);
+	$ipAddressVersionNumbers = array(
+		32 => 4,
+		128 => 6
+	);
 	$kernelSettings = array(
 		'kernel.shmall="' . floor($memoryCapacityBytes / $kernelPageSize) . '"',
 		'kernel.shmmax="' . $memoryCapacityBytes . '"',
@@ -313,16 +317,12 @@
 		'net.core.wmem_default="' . $defaultSocketBufferMemoryBytes . '"',
 		'net.core.wmem_max="' . ($defaultSocketBufferMemoryBytes * 2) . '"'
 	);
-	$systemIpAddressVersionNumbers = array(
-		32 => 4,
-		128 => 6
-	);
 
-	foreach ($systemIpAddressVersionNumbers as $systemIpAddressVersionNumber) {
-		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
-		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_rmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
-		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.tcp_wmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
-		$kernelSettings[] = 'net.ipv' . $systemIpAddressVersionNumber . '.udp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
+	foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
+		$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
+		$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_rmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
+		$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_wmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
+		$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.udp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
 	}
 
 	foreach ($kernelSettings as $kernelSetting) {
@@ -334,7 +334,7 @@
 	shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
-	shell_exec('cd /var/www/ghostcompute/ && sudo wget -O mysql_apt_config.deb ' . ($wgetParameters = '--no-dns-cache --retry-connrefused --timeout=60 --tries=2') . ' https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
+	shell_exec('cd /var/www/ghostcompute/ && sudo wget -O mysql_apt_config.deb --no-dns-cache --retry-connrefused --timeout=60 --tries=2 https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
 
 	if (file_exists('/var/www/ghostcompute/mysql_apt_config.deb') === false) {
 		echo 'Error downloading MySQL, please try again.' . "\n";
@@ -477,13 +477,13 @@
 		6 => $binaryFiles['ip6tables-restore']
 	);
 
-	foreach ($systemIpAddressVersionNumbers as $systemIpAddressVersionNetworkMask => $systemIpAddressVersionNumber) {
+	foreach ($ipAddressVersionNumbers as $ipAddressVersionNetworkMask => $ipAddressVersionNumber) {
 		$firewallRules = array(
 			'*filter',
 			':INPUT ACCEPT [0:0]',
 			':FORWARD ACCEPT [0:0]',
 			':OUTPUT ACCEPT [0:0]',
-			'-A INPUT -p icmp -m hashlimit --hashlimit-above 2/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $systemIpAddressVersionNetworkMask . ' -j DROP'
+			'-A INPUT -p icmp -m hashlimit --hashlimit-above 2/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $ipAddressVersionNetworkMask . ' -j DROP'
 		);
 
 		if (
@@ -491,22 +491,22 @@
 			(is_array($sshPortNumbers) === true)
 		) {
 			foreach ($sshPortNumbers as $sshPortNumber) {
-				$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPortNumber . ' -m hashlimit --hashlimit-above 10/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $systemIpAddressVersionNetworkMask . ' -j DROP';
+				$firewallRules[] = '-A INPUT -p tcp --dport ' . $sshPortNumber . ' -m hashlimit --hashlimit-above 10/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $ipAddressVersionNetworkMask . ' -j DROP';
 			}
 		}
 
 		$firewallRules[] = 'COMMIT';
-		unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
-		touch('/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
+		unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+		touch('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 		$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 		foreach ($firewallRuleParts as $firewallRulePart) {
 			$firewallRulePart = implode("\n", $firewallRulePart);
-			shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
+			shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 		}
 
-		shell_exec('sudo ' . $firewallBinaryFiles[$systemIpAddressVersionNumber] . ' < /var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
-		unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $systemIpAddressVersionNumber . '.txt');
+		shell_exec('sudo ' . $firewallBinaryFiles[$ipAddressVersionNumber] . ' < /var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+		unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 		sleep(1);
 	}
 
