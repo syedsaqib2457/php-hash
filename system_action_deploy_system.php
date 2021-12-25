@@ -450,7 +450,7 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $binaryFiles['crontab'] . ' ' . $crontabFile);
+	shell_exec('sudo ' . $binaryFiles['crontab'] . ' /etc/crontab');
 	$sshPortNumbers = array();
 
 	if (file_exists('/etc/ssh/sshd_config') === true) {
