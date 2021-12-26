@@ -92,7 +92,7 @@
 	shell_exec('sudo rm -rf /var/www/ghostcompute/');
 	mkdir('/var/www/ghostcompute/');
 	chmod('/var/www/ghostcompute/', 0755);
-	$uniqueId = '_' . uniqid() . time();
+	$uniqueId = '_' . uniqid();
 	$binaries = array(
 		array(
 			'command' => $uniqueId,
@@ -962,22 +962,22 @@
 		}
 	}
 
-	$systemUserAuthenticationTokenId = random_bytes(10) . time() . random_bytes(10);
-	$systemUserAuthenticationTokenString = $timestamp . random_bytes(mt_rand(10, 25)) . uniqid();
-	$systemUserId = random_bytes(10) . time() . random_bytes(10);
 	$timestamp = time();
+	$systemUserAuthenticationTokenId = random_bytes(10) . $timestamp . random_bytes(10);
+	$systemUserAuthenticationTokenString = random_bytes(mt_rand(20, 35)) . uniqid();
+	$systemUserId = random_bytes(10) . $timestamp . random_bytes(10);
 	$databaseData = array(
 		'system_settings' => array(
 			array(
 				'created_timestamp' => $timestamp,
-				'id' => random_bytes(10) . time() . random_bytes(10),
+				'id' => '0' . random_bytes(9) . $timestamp . random_bytes(10),
 				'modified_timestamp' => $timestamp,
 				'name' => 'endpoint_destination_address',
 				'value' => $_SERVER['argv'][1]
 			),
 			array(
 				'created_timestamp' => $timestamp,
-				'id' => random_bytes(10) . time() . random_bytes(10),
+				'id' => '1' . random_bytes(9) . $timestamp . random_bytes(10),
 				'modified_timestamp' => $timestamp,
 				'name' => 'version_number',
 				'value' => '1'
@@ -1002,7 +1002,7 @@
 	);
 
 	foreach ($databases as $databaseTableName => $databaseColumnNames) {
-		$systemDatabaseId = random_bytes(10) . time() . random_bytes(10);
+		$systemDatabaseId = random_bytes(10) . $timestamp . random_bytes(10);
 		$databaseData['system_databases'][] = array(
 			'authentication_credential_hostname' => 'localhost',
 			'authentication_credential_password' => 'password',
@@ -1015,7 +1015,7 @@
 		foreach ($databaseColumnNames as $databaseColumnName) {
 			$databaseData['system_database_columns'][] = array(
 				'created_timestamp' => $timestamp,
-				'id' => random_bytes(10) . time() . random_bytes(10),
+				'id' => random_bytes(10) . $timestamp . random_bytes(10),
 				'modified_timestamp' => $timestamp,
 				'name' => $databaseColumnName,
 				'system_database_id' => $systemDatabaseId
@@ -1031,7 +1031,7 @@
 			$systemAction = substr($systemAction, 0, -4);
 			$databaseData['system_user_authentication_token_scopes'][] = array(
 				'created_timestamp' => $timestamp,
-				'id' => random_bytes(10) . time() . random_bytes(10),
+				'id' => random_bytes(10) . $timestamp . random_bytes(10),
 				'modified_timestamp' => $timestamp,
 				'system_action' => $systemAction,
 				'system_user_authentication_token_id' => $systemUserAuthenticationTokenId,
