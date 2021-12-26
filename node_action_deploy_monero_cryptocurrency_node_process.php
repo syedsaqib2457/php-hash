@@ -3,7 +3,7 @@
 	// sudo apt-get update && sudo apt-get -y install php wget && sudo wget -O deploy_monero.php https://raw.githubusercontent.com/ghostcompute/framework/main/node_action_deploy_monero_cryptocurrency_node_process.php && sudo php deploy_monero.php
 
 	shell_exec('sudo apt-get update');
-	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libgtest-dev');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install cmake libgtest-dev');
 	shell_exec('cd /usr/src/gtest/ && sudo cmake . && sudo make');
 	shell_exec('sudo mv /usr/src/gtest/libg* /usr/lib/');
 	shell_exec('sudo mv /usr/src/gtest/lib/libg* /usr/lib/');
