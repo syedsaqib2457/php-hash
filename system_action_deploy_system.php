@@ -998,11 +998,12 @@
 		);
 
 		foreach ($databases as $databaseTableName => $databaseColumnNames) {
+			$systemDatabaseId = _createUniqueId();
 			$databaseData['system_databases'][] = array(
 				'authentication_credential_hostname' => 'localhost',
 				'authentication_credential_password' => 'password',
 				'created_timestamp' => $timestamp,
-				'id' => _createUniqueId(),
+				'id' => $systemDatabaseId,
 				'modified_timestamp' => $timestamp,
 				'table_name' => $databaseTableName
 			);
