@@ -68,7 +68,7 @@
 		'system_endpoint_destination_address' => $nodeData['system_endpoint_destination_address'],
 		'system_version_number' => $nodeData['system_version_number']
 	);
-	$uniqueId = '_' . uniqid() . time();
+	$uniqueId = '_' . uniqid();
 	$binaries = array(
 		array(
 			'command' => $uniqueId,
