@@ -952,6 +952,12 @@
                 }
 
 		$timestamp = time();
+		$systemSettingEndpointDestinationAddressId = random_bytes(17);
+		$systemSettingEndpointDestinationAddressId = bin2hex($systemSettingEndpointDestinationAddressId);
+		$systemSettingEndpointDestinationAddressId = uniqid() . $systemSettingEndpointDestinationAddressId;
+		$systemSettingVersionNumberId = random_bytes(17);
+		$systemSettingVersionNumberId = bin2hex($systemSettingVersionNumberId);
+		$systemSettingVersionNumberId = uniqid() . $systemSettingVersionNumberId;
 		$systemUserAuthenticationTokenId = random_bytes(17);
 		$systemUserAuthenticationTokenId = bin2hex($systemUserAuthenticationTokenId);
 		$systemUserAuthenticationTokenId = uniqid() . $systemUserAuthenticationTokenId;
@@ -966,14 +972,14 @@
 			'system_settings' => array(
 				array(
 					'created_timestamp' => $timestamp,
-					'id' => '0' . random_bytes(9) . $timestamp . random_bytes(10),
+					'id' => $systemSettingEndpointDestinationAddressId,
 					'modified_timestamp' => $timestamp,
 					'name' => 'endpoint_destination_address',
 					'value' => $_SERVER['argv'][1]
 				),
 				array(
 					'created_timestamp' => $timestamp,
-					'id' => '1' . random_bytes(9) . $timestamp . random_bytes(10),
+					'id' => $systemSettingVersionNumberId,
 					'modified_timestamp' => $timestamp,
 					'name' => 'version_number',
 					'value' => '1'
