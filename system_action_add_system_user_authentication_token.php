@@ -42,8 +42,8 @@
 			return $response;
 		}
 
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
-		$parameters['data']['string'] = time() . random_bytes(mt_rand(10, 25)) . uniqid();
+		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['string'] = _createUniqueId();
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
