@@ -1,4 +1,11 @@
 <?php
+	function _createUniqueId() {
+		$uniqueId = random_bytes(17);
+		$uniqueId = bin2hex($uniqueId);
+		$uniqueId = uniqid() . $uniqueId;
+		return $uniqueId;
+	}
+
 	function _output($response) {
 		if (empty($response['authenticated_status']) === true) {
 			// todo: log invalid action for DDoS protection
