@@ -285,20 +285,19 @@
 					$dataUpdateValues .= "," . $dataKey . "='" . $dataInsertValue . "'";
 				}
 
+				if (empty($data['created_timestamp']) === true) {
+					$dataInsertValues .= "','" . $timestamp;
+					$dataKeys .= ',created_timestamp';
+					$dataUpdateValues = '';
+				}
+
 				if (empty($data['modified_timestamp']) === true) {
 					$dataInsertValues .= "','" . $timestamp;
 					$dataKeys .= ',modified_timestamp';
 					$dataUpdateValues .= ",modified_timestamp='" . $timestamp . "'";
 				}
 
-				if (empty($data['id']) === true) {
-					$dataInsertValues .= "','" . $timestamp . "','" . _createUniqueId();
-					$dataKeys .= ',created_timestamp,id';
-					$dataUpdateValues = '';
-				} else {
-					$dataUpdateValues = ' ON DUPLICATE KEY UPDATE ' . substr($dataUpdateValues, 1);
-				}
-
+				$dataUpdateValues = ' ON DUPLICATE KEY UPDATE ' . substr($dataUpdateValues, 1);
 				$commandResponse = mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
 
 				if ($commandResponse === false) {
