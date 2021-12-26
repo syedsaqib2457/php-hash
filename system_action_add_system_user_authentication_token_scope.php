@@ -57,7 +57,7 @@
 			return $response;
 		}
 
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+		$parameters['data']['id'] = _createUniqueId();
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 		$existingSystemUserAuthenticationTokenScopeCount = _count(array(
 			'in' => $parameters['system_databases']['system_user_authentication_token_scopes'],
