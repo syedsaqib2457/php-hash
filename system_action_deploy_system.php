@@ -906,7 +906,10 @@
 
 			$databaseColumnType = 'text';
 
-			if ((substr($databaseColumnName, -3) === '_id') === true) {
+			if (
+				(($databaseColumnName === 'id') === true) ||
+				((substr($databaseColumnName, -3) === '_id') === true)
+			) {
 				$databaseColumnType = 'VARCHAR(30)';
 			}
 
