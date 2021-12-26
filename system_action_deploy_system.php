@@ -941,6 +941,7 @@
 		$systemUserAuthenticationTokenId = random_bytes(10) . $timestamp . random_bytes(10);
 		$systemUserAuthenticationTokenString = random_bytes(mt_rand(20, 35)) . uniqid();
 		$systemUserId = random_bytes(10) . $timestamp . random_bytes(10);
+		// todo: guarantee unique primary IDs
 		$databaseData = array(
 			'system_settings' => array(
 				array(
