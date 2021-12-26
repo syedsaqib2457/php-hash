@@ -959,34 +959,21 @@
                 }
 
 		$timestamp = time();
-		$systemSettingEndpointDestinationAddressId = random_bytes(17);
-		$systemSettingEndpointDestinationAddressId = bin2hex($systemSettingEndpointDestinationAddressId);
-		$systemSettingEndpointDestinationAddressId = uniqid() . $systemSettingEndpointDestinationAddressId;
-		$systemSettingVersionNumberId = random_bytes(17);
-		$systemSettingVersionNumberId = bin2hex($systemSettingVersionNumberId);
-		$systemSettingVersionNumberId = uniqid() . $systemSettingVersionNumberId;
-		$systemUserAuthenticationTokenId = random_bytes(17);
-		$systemUserAuthenticationTokenId = bin2hex($systemUserAuthenticationTokenId);
-		$systemUserAuthenticationTokenId = uniqid() . $systemUserAuthenticationTokenId;
-		$systemUserAuthenticationTokenString = mt_rand(20, 35);
-		$systemUserAuthenticationTokenString = random_bytes($systemUserAuthenticationTokenString);
-		$systemUserAuthenticationTokenString = bin2hex($systemUserAuthenticationTokenString);
-		$systemUserAuthenticationTokenString = uniqid() . $systemUserAuthenticationTokenString;
-		$systemUserId = random_bytes(17);
-		$systemUserId = bin2hex($systemUserId);
-		$systemUserId = uniqid() . $systemUserId;
+		$systemUserAuthenticationTokenId = _createUniqueId();
+		$systemUserAuthenticationTokenString = _createUniqueId();
+		$systemUserId = _createUniqueId();
 		$databaseData = array(
 			'system_settings' => array(
 				array(
 					'created_timestamp' => $timestamp,
-					'id' => $systemSettingEndpointDestinationAddressId,
+					'id' => _createUniqueId(),
 					'modified_timestamp' => $timestamp,
 					'name' => 'endpoint_destination_address',
 					'value' => $_SERVER['argv'][1]
 				),
 				array(
 					'created_timestamp' => $timestamp,
-					'id' => $systemSettingVersionNumberId,
+					'id' => _createUniqueId(),
 					'modified_timestamp' => $timestamp,
 					'name' => 'version_number',
 					'value' => '1'
@@ -1011,26 +998,19 @@
 		);
 
 		foreach ($databases as $databaseTableName => $databaseColumnNames) {
-			$systemDatabaseId = random_bytes(17);
-			$systemDatabaseId = bin2hex($systemDatabaseId);
-			$systemDatabaseId = uniqid() . $systemDatabaseId;
-
 			$databaseData['system_databases'][] = array(
 				'authentication_credential_hostname' => 'localhost',
 				'authentication_credential_password' => 'password',
 				'created_timestamp' => $timestamp,
-				'id' => $systemDatabaseId,
+				'id' => _createUniqueId(),
 				'modified_timestamp' => $timestamp,
 				'table_name' => $databaseTableName
 			);
 
 			foreach ($databaseColumnNames as $databaseColumnName) {
-				$systemDatabaseColumnId = random_bytes(17);
-				$systemDatabaseColumnId = bin2hex($systemDatabaseColumnId);
-				$systemDatabaseColumnId = uniqid() . $systemDatabaseColumnId;
 				$databaseData['system_database_columns'][] = array(
 					'created_timestamp' => $timestamp,
-					'id' => $systemDatabaseColumnId,
+					'id' => _createUniqueId(),
 					'modified_timestamp' => $timestamp,
 					'name' => $databaseColumnName,
 					'system_database_id' => $systemDatabaseId
@@ -1046,7 +1026,7 @@
 				$systemAction = substr($systemAction, 0, -4);
 				$databaseData['system_user_authentication_token_scopes'][] = array(
 					'created_timestamp' => $timestamp,
-					'id' => random_bytes(10) . $timestamp . random_bytes(10),
+					'id' => _createUniqueId(),
 					'modified_timestamp' => $timestamp,
 					'system_action' => $systemAction,
 					'system_user_authentication_token_id' => $systemUserAuthenticationTokenId,
