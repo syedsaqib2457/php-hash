@@ -11,7 +11,7 @@
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
 	function _addNodeProcessRecursiveDnsDestination($parameters, $response) {
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+		$parameters['data']['id'] = _createUniqueId();
 
 		if (empty($parameters['data']['node_id']) === true) {
 			$response['message'] = 'Node process recursive DNS destination must have a node ID, please try again.';
@@ -25,7 +25,6 @@
 
 		if (in_array(strval($parameters['data']['node_process_type']), array(
 			'http_proxy',
-			'load_balancer',
 			'recursive_dns',
 			'socks_proxy'
 		)) === false) {
