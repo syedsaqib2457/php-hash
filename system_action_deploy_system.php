@@ -953,7 +953,7 @@
 		$mysqliQueryResponse = mysqli_query($databaseConnection, $databaseCommand);
 
 		if ($mysqliQueryResponse === false) {
-			echo 'Error executing database command, please try again.';
+			echo 'Error executing database command ' . $databaseCommand . ', please try again.';
 			exit;
 		}
 	}
@@ -1041,7 +1041,7 @@
 			$mysqliQueryResponse = mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
 
 			if ($mysqliQueryResponse === false) {
-				echo 'Error executing database command, please try again.';
+				echo 'Error executing database command ' . $databaseCommand . ', please try again.';
 				exit;
 			}
 		}
