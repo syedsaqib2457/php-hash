@@ -10,12 +10,12 @@
 
 	function _addSystemUser($parameters, $response) {
 		$systemUserData = array(
-			'id' => random_bytes(10) . time() . random_bytes(10),
+			'id' => _createUniqueId(),
 			'system_user_id' => $parameters['system_user_id']
 		);
 		$systemUserSystemUserData = array(
 			array(
-				'id' => random_bytes(10) . time() . random_bytes(10),
+				'id' => _createUniqueId(),
 				'system_user_id' => $parameters['data']['id'],
 				'system_user_system_user_id' => $parameters['system_user_id']
 			)
@@ -38,7 +38,7 @@
 			if (empty($systemUser['system_user_id']) === false) {
 				$parameters['system_user_id'] = $systemUser['system_user_id'];
 				$systemUserSystemUserData[] = array(
-					'id' => random_bytes(10) . time() . random_bytes(10),
+					'id' => _createUniqueId(),
 					'system_user_id' => $parameters['data']['id'],
 					'system_user_system_user_id' => $systemUser['system_user_id']
 				);
