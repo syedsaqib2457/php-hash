@@ -1038,7 +1038,7 @@
 
 		foreach ($databaseData as $databaseTableName => $databaseRows) {
 			foreach ($databaseRows as $databaseRow) {
-				$mysqliQueryResponse = mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
+				$mysqliQueryResponse = mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (\'' . implode('\', \'', array_values($databaseRow)) . '\')');
 
 				if ($mysqliQueryResponse === false) {
 					echo 'Error executing database commands, please try again.';
