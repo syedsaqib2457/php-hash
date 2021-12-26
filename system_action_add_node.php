@@ -126,7 +126,7 @@
 			return $response;
 		}
 
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+		$parameters['data']['id'] = _createUniqueId();
 
 		foreach ($nodeIpAddressVersionNumbers as $nodeIpAddressVersionNumber) {
 			if (empty($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersionNumber]) === false) {
@@ -277,7 +277,7 @@
 				foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
 					if (empty($nodeExternalIpAddresses['external_ip_address_version_' . $nodeReservedInternalSourceIpAddressVersionNumber]) === false) {
 						$nodeReservedInternalSourceData[] = array(
-							'id' => random_bytes(10) . time() . random_bytes(10),
+							'id' => _createUniqueId(),
 							'ip_address' => $nodeReservedInternalSource['ip_address'],
 							'ip_address_block_length' => $nodeReservedInternalSource['ip_address_block_length'],
 							'ip_address_version_number' => $nodeReservedInternalSourceIpAddressVersionNumber,
