@@ -94,10 +94,7 @@
 	$packageSources = implode("\n", $packageSources[$imageDetails['id']][$imageDetails['version_id']]);
 	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
 
-	if (
-		($packageSources === false) ||
-		(empty($filePutContentsResponse) === true)
-	) {
+	if (empty($filePutContentsResponse) === true) {
 		echo 'Error adding package sources, please try again.' . "\n";
 		exit;
 	}
@@ -203,10 +200,7 @@
 		$commands = implode("\n", $commands);
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
 
-		if (
-			($commands === false) ||
-			(empty($filePutContentsResponse) === true)
-		) {
+		if (empty($filePutContentsResponse) === true) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
@@ -292,10 +286,7 @@
 	$nodeActionProcessNetworkInterfaceIpAddresses = implode('\'); shell_exec(\'', $nodeActionProcessNetworkInterfaceIpAddresses);
 	$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_process_network_interface_ip_addresses.php', '<?php shell_exec(\'' . $nodeActionProcessNetworkInterfaceIpAddresses . '\'); ?>');
 
-	if (
-		($nodeActionProcessNetworkInterfaceIpAddresses === false) ||
-		(empty($filePutContentsResponse) === true)
-	) {
+	if (empty($filePutContentsResponse) === true) {
 		echo 'Error processing network interface IP addresses, please try again.' . "\n";
 		exit;
 	}
@@ -383,10 +374,7 @@
 	$crontabCommands = implode("\n", $crontabCommands);
 	$filePutContentsResponse = file_put_contents('/etc/crontab', $crontabCommands);
 
-	if (
-		($crontabCommands === false) ||
-		(empty($filePutContentsResponse) === true)
-	) {
+	if (empty($filePutContentsResponse) === true) {
 		echo 'Error adding crontab commands, please try again.' . "\n";
 		exit;
 	}
@@ -416,10 +404,7 @@
 		$nodeData = json_encode($nodeData);
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_data.json', $nodeData);
 
-		if (
-			($nodeData === false) ||
-			(empty($filePutContentsResponse) === true)
-		) {
+		if (empty($filePutContentsResponse) === true) {
 			echo 'Error adding node data, please try again.' . "\n";
 			exit;
 		}
