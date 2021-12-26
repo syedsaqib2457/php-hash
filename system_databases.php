@@ -292,8 +292,8 @@
 				}
 
 				if (empty($data['id']) === true) {
-					$dataInsertValues .= "','" . $timestamp;
-					$dataKeys .= ',created_timestamp';
+					$dataInsertValues .= "','" . $timestamp . "','" . _createUniqueId();
+					$dataKeys .= ',created_timestamp,id';
 					$dataUpdateValues = '';
 				} else {
 					$dataUpdateValues = ' ON DUPLICATE KEY UPDATE ' . substr($dataUpdateValues, 1);
