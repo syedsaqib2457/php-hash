@@ -942,7 +942,7 @@
 			$databaseCommandResponse = mysqli_fetch_assoc($databaseCommandResponse);
 			$databaseCommandResponse = current($databaseCommandResponse);
 			end($databaseColumnNames);
-			$databaseColumnNameCount = key($databaseColumnNames);
+			$databaseColumnNameCount = (key($databaseColumnNames) + 1);
 
 			if (($databaseCommandResponse === $databaseColumnNameCount) === false) {
 				echo 'Error executing database commands, please try again.';
