@@ -911,7 +911,7 @@
 					$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
 				}
 
-				if ($databaseColumnName === 'id') {
+				if (($databaseColumnName === 'id') === true) {
 					$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'ALTER TABLE `' . $databaseTableName . '` ADD PRIMARY KEY (`' . $databaseColumnName . '`)';
 				}
 			}
