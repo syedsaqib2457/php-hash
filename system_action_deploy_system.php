@@ -1004,7 +1004,10 @@
 		);
 
 		foreach ($databases as $databaseTableName => $databaseColumnNames) {
-			$systemDatabaseId = random_bytes(10) . $timestamp . random_bytes(10);
+			$systemDatabaseId = random_bytes(17);
+			$systemDatabaseId = bin2hex($systemDatabaseId);
+			$systemDatabaseId = uniqid() . $systemDatabaseId;
+
 			$databaseData['system_databases'][] = array(
 				'authentication_credential_hostname' => 'localhost',
 				'authentication_credential_password' => 'password',
@@ -1015,9 +1018,12 @@
 			);
 
 			foreach ($databaseColumnNames as $databaseColumnName) {
+				$systemDatabaseColumnId = random_bytes(17);
+				$systemDatabaseColumnId = bin2hex($systemDatabaseColumnId);
+				$systemDatabaseColumnId = uniqid() . $systemDatabaseColumnId;
 				$databaseData['system_database_columns'][] = array(
 					'created_timestamp' => $timestamp,
-					'id' => random_bytes(10) . $timestamp . random_bytes(10),
+					'id' => $systemDatabaseColumnId,
 					'modified_timestamp' => $timestamp,
 					'name' => $databaseColumnName,
 					'system_database_id' => $systemDatabaseId
