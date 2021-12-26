@@ -932,7 +932,7 @@
 		}
 
 		foreach ($databases as $databaseTableName => $databaseColumnNames) {
-			$databaseCommandResponse = mysqli_query($databaseConnection, 'SHOW COLUMNS FROM `' . $databaseTableName . '`');
+			$databaseCommandResponse = mysqli_query($databaseConnection, 'SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = \'' . $databaseTableName . '\'');
 
 			if (empty($databaseCommandResponse->num_rows) === true) {
 				echo 'Error executing database commands, please try again.';
@@ -940,10 +940,11 @@
 			}
 
 			$databaseCommandResponse = mysqli_fetch_assoc($databaseCommandResponse);
+			$databaseCommandResponse = current($databaseCommandResponse);
 			end($databaseColumnNames);
-			end($databaseCommandResponse);
+			$databaseColumnNameCount = key($databaseColumnNames);
 
-			if ((key($databaseColumnNames) === key($databaseCommandResponse)) === false) {
+			if (($databaseCommandResponse === $databaseColumnNameCount) === false) {
 				echo 'Error executing database commands, please try again.';
 				exit;
 			}
