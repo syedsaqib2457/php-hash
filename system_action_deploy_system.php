@@ -932,7 +932,7 @@
 			$mysqliQueryResponse = mysqli_query($databaseConnection, $databaseCommand);
 
 			if ($mysqliQueryResponse === false) {
-				// todo: determine why command returns false with error - ALTER TABLE `system_users` ADD `system_user_id` VARCHAR(30) NULL DEFAULT NULL
+				// todo: add SHOW COLUMNS for verification instead of false failure from ALTER TABLE responses
 				echo 'Error executing database command ' . $databaseCommand . ', please try again.';
 				exit;
 			}
