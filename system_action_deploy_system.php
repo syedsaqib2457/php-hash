@@ -7,13 +7,7 @@
 		exit;
 	}
 
-	$response = array();
-
-	function _output($response) {
-		echo $response['message'];
-		exit;
-	}
-
+	if (empty($_SERVER['argv'][2]) === true) {
 	$packageSources = array(
 		'debian' => array(
 			'9' => array(
@@ -510,7 +504,7 @@
 		unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 		sleep(1);
 	}
-
+	} else {
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password');
 
 	if ($databaseConnection === false) {
@@ -769,289 +763,290 @@
 			'node_request_limit_rule_id',
 			'node_user_id'
 		),
-		'node_users' => array(
-			'authentication_strict_only_allowed_status',
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'node_request_destinations_only_allowed_status',
-			'node_request_logs_allowed_status',
-			'tag'
-		),
-		'nodes' => array(
-			'activated_status',
-			'authentication_token',
-			'cpu_capacity_megahertz',
-			'cpu_core_count',
-			'created_timestamp',
-			'deployed_status',
-			'external_ip_address_version_4',
-			'external_ip_address_version_4_type',
-			'external_ip_address_version_6',
-			'external_ip_address_version_6_type',
-			'id',
-			'internal_ip_address_version_4',
-			'internal_ip_address_version_4_type',
-			'internal_ip_address_version_6',
-			'internal_ip_address_version_6_type',
-			'memory_capacity_megabytes',
-			'modified_timestamp',
-			'node_id',
-			'processed_status',
-			'processing_progress_checkpoint',
-			'processing_progress_percentage',
-			'processing_status',
-			'storage_capacity_megabytes'
-		),
-		'system_database_columns' => array(
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'name',
-			'system_database_id'
-		),
-		'system_databases' => array(
-			'authentication_credential_hostname',
-			'authentication_credential_password',
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'table_name',
-			'tag'
-		),
-		'system_resource_usage_logs' => array(
-			'bytes_received',
-			'bytes_sent',
-			'cpu_capacity_megahertz',
-			'cpu_core_count',
-			'cpu_percentage',
-			'created_timestamp',
-			'destination_ip_address',
-			'id',
-			'memory_capacity_megabytes',
-			'memory_percentage',
-			'modified_timestamp',
-			'storage_capacity_megabytes',
-			'storage_percentage'
-		),
-		'system_settings' => array(
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'name',
-			'value'
-		),
-		'system_user_authentication_token_scopes' => array(
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'system_action',
-			'system_user_authentication_token_id',
-			'system_user_id'
-		),
-		'system_user_authentication_token_sources' => array(
-			'created_timestamp',
-			'id',
-			'ip_address_range_start',
-			'ip_address_range_stop',
-			'ip_address_range_version_number',
-			'modified_timestamp',
-			'system_user_authentication_token_id',
-			'system_user_id'
-		),
-		'system_user_authentication_tokens' => array(
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'string',
-			'system_user_id'
-		),
-		'system_user_request_logs' => array(
-			'authorized_status',
-			'bytes_received',
-			'bytes_sent',
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'node_id',
-			'response_code',
-			'source_ip_address',
-			'successful_status',
-			'system_action',
-			'system_user_authentication_token_id',
-			'system_user_id'
-		),
-		'system_user_system_users' => array(
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'system_user_id',
-			'system_user_system_user_id'
-		),
-		'system_users' => array(
-			'created_timestamp',
-			'id',
-			'modified_timestamp',
-			'system_user_id'
-		)
-	);
-	$databaseCommands = array();
-
-	foreach ($databases as $databaseTableName => $databaseColumnNames) {
-		$databaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $databaseTableName . '` (`created_timestamp` VARCHAR(10) NULL DEFAULT NULL);';
-
-		foreach ($databaseColumnNames as $databaseColumnName) {
-			if (($databaseColumnName === 'created_timestamp') === true) {
-				continue;
-			}
-
-			$databaseColumnType = 'text';
-
-			if (
-				(($databaseColumnName === 'id') === true) ||
-				((substr($databaseColumnName, -3) === '_id') === true)
-			) {
-				$databaseColumnType = 'VARCHAR(30)';
-			}
-
-			if ((substr($databaseColumnName, -11) === '_percentage') === true) {
-				$databaseColumnType = 'VARCHAR(3)';
-			}
-
-			if ((substr($databaseColumnName, -7) === '_status') === true) {
-				$databaseColumnType = 'VARCHAR(1)';
-			}
-
-			if ((substr($databaseColumnName, -10) === '_timestamp') === true) {
-				$databaseColumnType = 'VARCHAR(10)';
-			}
-
-			$databaseCommandActions = array(
-				'add' => 'ADD `' . $databaseColumnName . '`',
-				'change' => 'CHANGE `' . $databaseColumnName . '` `' . $databaseColumnName . '`'
-			);
-			$databaseCommand = 'ALTER TABLE `' . $databaseTableName . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumnType . ' NULL DEFAULT NULL';
-
-			if (mysqli_query($databaseConnection, $databaseCommand) === false) {
-				$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
-			}
-
-			if ($databaseColumnName === 'id') {
-				$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'ALTER TABLE `' . $databaseTableName . '` ADD PRIMARY KEY (`' . $databaseColumnName . '`)';
-			}
-		}
-	}
-
-	foreach ($databaseCommands as $databaseCommandKey => $databaseCommand) {
-		if (
-			(is_numeric($databaseCommandKey) === false) &&
-			(is_int(strpos($databaseCommand, 'ADD PRIMARY KEY')) === true)
-		) {
-			$databaseCommandKey = explode('__', $databaseCommandKey);
-
-			if (empty(mysqli_query($databaseConnection, 'SHOW KEYS FROM `' . $databaseCommandKey[1] . '` WHERE Column_name=\'' . $databaseCommandKey[0] . '\'')->num_rows) === false) {
-				continue;
-			}
-		}
-
-		$mysqliQueryResponse = mysqli_query($databaseConnection, $databaseCommand);
-
-		if ($mysqliQueryResponse === false) {
-			echo 'Error executing database command ' . $databaseCommand . ', please try again.';
-			exit;
-		}
-	}
-
-	$timestamp = time();
-	$systemUserAuthenticationTokenId = random_bytes(10) . $timestamp . random_bytes(10);
-	$systemUserAuthenticationTokenString = random_bytes(mt_rand(20, 35)) . uniqid();
-	$systemUserId = random_bytes(10) . $timestamp . random_bytes(10);
-	$databaseData = array(
-		'system_settings' => array(
-			array(
-				'created_timestamp' => $timestamp,
-				'id' => '0' . random_bytes(9) . $timestamp . random_bytes(10),
-				'modified_timestamp' => $timestamp,
-				'name' => 'endpoint_destination_address',
-				'value' => $_SERVER['argv'][1]
+			'node_users' => array(
+				'authentication_strict_only_allowed_status',
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'node_request_destinations_only_allowed_status',
+				'node_request_logs_allowed_status',
+				'tag'
 			),
-			array(
-				'created_timestamp' => $timestamp,
-				'id' => '1' . random_bytes(9) . $timestamp . random_bytes(10),
-				'modified_timestamp' => $timestamp,
-				'name' => 'version_number',
-				'value' => '1'
+			'nodes' => array(
+				'activated_status',
+				'authentication_token',
+				'cpu_capacity_megahertz',
+				'cpu_core_count',
+				'created_timestamp',
+				'deployed_status',
+				'external_ip_address_version_4',
+				'external_ip_address_version_4_type',
+				'external_ip_address_version_6',
+				'external_ip_address_version_6_type',
+				'id',
+				'internal_ip_address_version_4',
+				'internal_ip_address_version_4_type',
+				'internal_ip_address_version_6',
+				'internal_ip_address_version_6_type',
+				'memory_capacity_megabytes',
+				'modified_timestamp',
+				'node_id',
+				'processed_status',
+				'processing_progress_checkpoint',
+				'processing_progress_percentage',
+				'processing_status',
+				'storage_capacity_megabytes'
+			),
+			'system_database_columns' => array(
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'name',
+				'system_database_id'
+			),
+			'system_databases' => array(
+				'authentication_credential_hostname',
+				'authentication_credential_password',
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'table_name',
+				'tag'
+			),
+			'system_resource_usage_logs' => array(
+				'bytes_received',
+				'bytes_sent',
+				'cpu_capacity_megahertz',
+				'cpu_core_count',
+				'cpu_percentage',
+				'created_timestamp',
+				'destination_ip_address',
+				'id',
+				'memory_capacity_megabytes',
+				'memory_percentage',
+				'modified_timestamp',
+				'storage_capacity_megabytes',
+				'storage_percentage'
+			),
+			'system_settings' => array(
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'name',
+				'value'
+			),
+			'system_user_authentication_token_scopes' => array(
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'system_action',
+				'system_user_authentication_token_id',
+				'system_user_id'
+			),
+			'system_user_authentication_token_sources' => array(
+				'created_timestamp',
+				'id',
+				'ip_address_range_start',
+				'ip_address_range_stop',
+				'ip_address_range_version_number',
+				'modified_timestamp',
+				'system_user_authentication_token_id',
+				'system_user_id'
+			),
+			'system_user_authentication_tokens' => array(
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'string',
+				'system_user_id'
+			),
+			'system_user_request_logs' => array(
+				'authorized_status',
+				'bytes_received',
+				'bytes_sent',
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'node_id',
+				'response_code',
+				'source_ip_address',
+				'successful_status',
+				'system_action',
+				'system_user_authentication_token_id',
+				'system_user_id'
+			),
+			'system_user_system_users' => array(
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'system_user_id',
+				'system_user_system_user_id'
+			),
+			'system_users' => array(
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'system_user_id'
 			)
-		),
-		'system_user_authentication_tokens' => array(
-			array(
-				'created_timestamp' => $timestamp,
-				'id' => $systemUserAuthenticationTokenId,
-				'modified_timestamp' => $timestamp,
-				'string' => $systemUserAuthenticationTokenString,
-				'system_user_id' => $systemUserId
-			)
-		),
-		'system_users' => array(
-			array(
-				'created_timestamp' => $timestamp,
-				'id' => $systemUserId,
-				'modified_timestamp' => $timestamp
-			)
-		)
-	);
-
-	foreach ($databases as $databaseTableName => $databaseColumnNames) {
-		$systemDatabaseId = random_bytes(10) . $timestamp . random_bytes(10);
-		$databaseData['system_databases'][] = array(
-			'authentication_credential_hostname' => 'localhost',
-			'authentication_credential_password' => 'password',
-			'created_timestamp' => $timestamp,
-			'id' => $systemDatabaseId,
-			'modified_timestamp' => $timestamp,
-			'table_name' => $databaseTableName
 		);
+		$databaseCommands = array();
 
-		foreach ($databaseColumnNames as $databaseColumnName) {
-			$databaseData['system_database_columns'][] = array(
-				'created_timestamp' => $timestamp,
-				'id' => random_bytes(10) . $timestamp . random_bytes(10),
-				'modified_timestamp' => $timestamp,
-				'name' => $databaseColumnName,
-				'system_database_id' => $systemDatabaseId
-			);
+		foreach ($databases as $databaseTableName => $databaseColumnNames) {
+			$databaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $databaseTableName . '` (`created_timestamp` VARCHAR(10) NULL DEFAULT NULL);';
+
+			foreach ($databaseColumnNames as $databaseColumnName) {
+				if (($databaseColumnName === 'created_timestamp') === true) {
+					continue;
+				}
+
+				$databaseColumnType = 'text';
+
+				if (
+					(($databaseColumnName === 'id') === true) ||
+					((substr($databaseColumnName, -3) === '_id') === true)
+				) {
+					$databaseColumnType = 'VARCHAR(30)';
+				}
+
+				if ((substr($databaseColumnName, -11) === '_percentage') === true) {
+					$databaseColumnType = 'VARCHAR(3)';
+				}
+
+				if ((substr($databaseColumnName, -7) === '_status') === true) {
+					$databaseColumnType = 'VARCHAR(1)';
+				}
+
+				if ((substr($databaseColumnName, -10) === '_timestamp') === true) {
+					$databaseColumnType = 'VARCHAR(10)';
+				}
+
+				$databaseCommandActions = array(
+					'add' => 'ADD `' . $databaseColumnName . '`',
+					'change' => 'CHANGE `' . $databaseColumnName . '` `' . $databaseColumnName . '`'
+				);
+				$databaseCommand = 'ALTER TABLE `' . $databaseTableName . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumnType . ' NULL DEFAULT NULL';
+
+				if (mysqli_query($databaseConnection, $databaseCommand) === false) {
+					$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
+				}
+
+				if ($databaseColumnName === 'id') {
+					$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'ALTER TABLE `' . $databaseTableName . '` ADD PRIMARY KEY (`' . $databaseColumnName . '`)';
+				}
+			}
 		}
-	}
 
-	$systemFiles = scandir('/var/www/ghostcompute/');
+		foreach ($databaseCommands as $databaseCommandKey => $databaseCommand) {
+			if (
+				(is_numeric($databaseCommandKey) === false) &&
+				(is_int(strpos($databaseCommand, 'ADD PRIMARY KEY')) === true)
+			) {
+				$databaseCommandKey = explode('__', $databaseCommandKey);
 
-	foreach ($systemFiles as $systemFile) {
-		if ((substr($systemFile, 0, 13) === 'system_action') === true) {
-			$systemAction = substr($systemFile, 14);
-			$systemAction = substr($systemAction, 0, -4);
-			$databaseData['system_user_authentication_token_scopes'][] = array(
-				'created_timestamp' => $timestamp,
-				'id' => random_bytes(10) . $timestamp . random_bytes(10),
-				'modified_timestamp' => $timestamp,
-				'system_action' => $systemAction,
-				'system_user_authentication_token_id' => $systemUserAuthenticationTokenId,
-				'system_user_id' => $systemUserId
-			);
-		}
-	}
+				if (empty(mysqli_query($databaseConnection, 'SHOW KEYS FROM `' . $databaseCommandKey[1] . '` WHERE Column_name=\'' . $databaseCommandKey[0] . '\'')->num_rows) === false) {
+					continue;
+				}
+			}
 
-	foreach ($databaseData as $databaseTableName => $databaseRows) {
-		foreach ($databaseRows as $databaseRow) {
-			$mysqliQueryResponse = mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
+			$mysqliQueryResponse = mysqli_query($databaseConnection, $databaseCommand);
 
 			if ($mysqliQueryResponse === false) {
 				echo 'Error executing database command ' . $databaseCommand . ', please try again.';
 				exit;
 			}
 		}
-	}
 
-	echo 'Main system user authentication token is ' . $systemUserAuthenticationTokenString . "\n";
-	echo 'System deployed successfully.' . "\n";
-	exit;
+		$timestamp = time();
+		$systemUserAuthenticationTokenId = random_bytes(10) . $timestamp . random_bytes(10);
+		$systemUserAuthenticationTokenString = random_bytes(mt_rand(20, 35)) . uniqid();
+		$systemUserId = random_bytes(10) . $timestamp . random_bytes(10);
+		$databaseData = array(
+			'system_settings' => array(
+				array(
+					'created_timestamp' => $timestamp,
+					'id' => '0' . random_bytes(9) . $timestamp . random_bytes(10),
+					'modified_timestamp' => $timestamp,
+					'name' => 'endpoint_destination_address',
+					'value' => $_SERVER['argv'][1]
+				),
+				array(
+					'created_timestamp' => $timestamp,
+					'id' => '1' . random_bytes(9) . $timestamp . random_bytes(10),
+					'modified_timestamp' => $timestamp,
+					'name' => 'version_number',
+					'value' => '1'
+				)
+			),
+			'system_user_authentication_tokens' => array(
+				array(
+					'created_timestamp' => $timestamp,
+					'id' => $systemUserAuthenticationTokenId,
+					'modified_timestamp' => $timestamp,
+					'string' => $systemUserAuthenticationTokenString,
+					'system_user_id' => $systemUserId
+				)
+			),
+			'system_users' => array(
+				array(
+					'created_timestamp' => $timestamp,
+					'id' => $systemUserId,
+					'modified_timestamp' => $timestamp
+				)
+			)
+		);
+
+		foreach ($databases as $databaseTableName => $databaseColumnNames) {
+			$systemDatabaseId = random_bytes(10) . $timestamp . random_bytes(10);
+			$databaseData['system_databases'][] = array(
+				'authentication_credential_hostname' => 'localhost',
+				'authentication_credential_password' => 'password',
+				'created_timestamp' => $timestamp,
+				'id' => $systemDatabaseId,
+				'modified_timestamp' => $timestamp,
+				'table_name' => $databaseTableName
+			);
+
+			foreach ($databaseColumnNames as $databaseColumnName) {
+				$databaseData['system_database_columns'][] = array(
+					'created_timestamp' => $timestamp,
+					'id' => random_bytes(10) . $timestamp . random_bytes(10),
+					'modified_timestamp' => $timestamp,
+					'name' => $databaseColumnName,
+					'system_database_id' => $systemDatabaseId
+				);
+			}
+		}
+
+		$systemFiles = scandir('/var/www/ghostcompute/');
+
+		foreach ($systemFiles as $systemFile) {
+			if ((substr($systemFile, 0, 13) === 'system_action') === true) {
+				$systemAction = substr($systemFile, 14);
+				$systemAction = substr($systemAction, 0, -4);
+				$databaseData['system_user_authentication_token_scopes'][] = array(
+					'created_timestamp' => $timestamp,
+					'id' => random_bytes(10) . $timestamp . random_bytes(10),
+					'modified_timestamp' => $timestamp,
+					'system_action' => $systemAction,
+					'system_user_authentication_token_id' => $systemUserAuthenticationTokenId,
+					'system_user_id' => $systemUserId
+				);
+			}
+		}
+
+		foreach ($databaseData as $databaseTableName => $databaseRows) {
+			foreach ($databaseRows as $databaseRow) {
+				$mysqliQueryResponse = mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
+
+				if ($mysqliQueryResponse === false) {
+					echo 'Error executing database command ' . $databaseCommand . ', please try again.';
+					exit;
+				}
+			}
+		}
+
+		echo 'Main system user authentication token is ' . $systemUserAuthenticationTokenString . "\n";
+		echo 'System deployed successfully.' . "\n";
+		exit;
+	}
 ?>
