@@ -1,10 +1,7 @@
 <?php
 	// todo: create functionality to allow API access to list specific chronologically-sorted request logs in multiple databases for a custom date range
 
-	if (
-		(empty($parameters) === true) &&
-		(empty($_SERVER['argv'][1]) === true)
-	) {
+	if (empty($parameters) === true) {
 		exit;
 	}
 
