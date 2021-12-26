@@ -524,7 +524,6 @@
 		exit;
 	}
 
-	require_once('/var/www/ghostcompute/system_databases.php');
 	$databaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
 
 	if ($databaseConnection === false) {
