@@ -941,6 +941,7 @@
 
 			$databaseCommandResponse = mysqli_fetch_assoc($databaseCommandResponse);
 			$databaseCommandResponse = current($databaseCommandResponse);
+			$databaseCommandResponse = intval($databaseCommandResponse);
 			end($databaseColumnNames);
 			$databaseColumnNameCount = (key($databaseColumnNames) + 1);
 
