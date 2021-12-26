@@ -288,7 +288,7 @@
 				if (empty($data['created_timestamp']) === true) {
 					$dataInsertValues .= "','" . $timestamp;
 					$dataKeys .= ',created_timestamp';
-					$dataUpdateValues = '';
+					$dataUpdateValues .= ",created_timestamp='" . $timestamp . "'";
 				}
 
 				if (empty($data['modified_timestamp']) === true) {
