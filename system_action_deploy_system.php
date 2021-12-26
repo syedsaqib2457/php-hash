@@ -508,7 +508,6 @@
 		}
 
 		$databases = array(
-			'node_process_blockchain_mining_resource_usage_rules' => array(),
 			'node_process_forwarding_destinations' => array(
 				'created_timestamp',
 				'hostname_version_4',
@@ -929,14 +928,26 @@
 				}
 			}
 
-			$mysqliQueryResponse = mysqli_query($databaseConnection, $databaseCommand);
+			mysqli_query($databaseConnection, $databaseCommand);
+		}
 
-			if ($mysqliQueryResponse === false) {
-				// todo: add SHOW COLUMNS for verification instead of false failure from ALTER TABLE responses
-				echo 'Error executing database command ' . $databaseCommand . ', please try again.';
+		foreach ($databases as $databaseTableName => $databaseColumnNames) {
+			$databaseCommandResponse = mysqli_query($databaseConnection, 'SHOW COLUMNS FROM `' . $databaseTableName . '`');
+
+			if (empty($databaseCommandResponse->num_rows) === true) {
+				echo 'Error executing database commands, please try again.';
 				exit;
 			}
-		}
+
+			$databaseCommandResponse = mysqli_fetch_assoc($databaseCommandResponse);
+			end($databaseColumnNames);
+			end($databaseCommandResponse);
+
+			if ((key($databaseColumnNames) === key($databaseCommandResponse)) === false) {
+				echo 'Error executing database commands, please try again.';
+				exit;
+			}
+                }
 
 		$timestamp = time();
 		$systemUserAuthenticationTokenId = random_bytes(10) . $timestamp . random_bytes(10);
@@ -1022,7 +1033,7 @@
 				$mysqliQueryResponse = mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (' . implode(', ', array_values($databaseRow)) . ')');
 
 				if ($mysqliQueryResponse === false) {
-					echo 'Error executing database command ' . $databaseCommand . ', please try again.';
+					echo 'Error executing database commands, please try again.';
 					exit;
 				}
 			}
