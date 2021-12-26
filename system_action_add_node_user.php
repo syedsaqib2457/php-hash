@@ -9,7 +9,7 @@
 
 	function _addNodeUser($parameters, $response) {
 		$parameters['data']['authentication_strict_only_allowed_status'] = strval(intval(empty($parameters['data']['authentication_strict_only_allowed_status']) === false));
-		$parameters['data']['id'] = random_bytes(10) . time() . random_bytes(10);
+		$parameters['data']['id'] = _createUniqueId();
 		$parameters['data']['node_request_destinations_only_allowed_status'] = strval(intval(empty($parameters['data']['node_request_destinations_only_allowed_status']) === false));
 		$parameters['data']['node_request_logs_allowed_status'] = strval(intval(empty($parameters['data']['node_request_logs_allowed_status']) === false));
 		_save(array(
