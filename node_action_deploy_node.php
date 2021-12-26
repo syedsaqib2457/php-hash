@@ -112,7 +112,7 @@
 
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps systemd');
-	$uniqueId = '_' . uniqid() . time();
+	$uniqueId = '_' . uniqid();
 	$binaries = array(
 		array(
 			'command' => $uniqueId,
