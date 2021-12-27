@@ -588,7 +588,21 @@
 				)
 			)
 		);
-		exec('whereis gcloud | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "-_-") 2>&1) | grep -c "unrecognized" && echo $binaryFile && break; done | tail -1', $gcloudBinaryFile);
+		$gcloudBinaryFileListCommands = array(
+			'#!/bin/bash',
+			'whereis gcloud | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r gcloudBinaryFile; do echo $((sudo $gcloudBinaryFile "-_-") 2>&1) | grep -c "unrecognized" && echo $gcloudBinaryFile && break; done | tail -1'
+		);
+		$gcloudBinaryFileListCommands = implode("\n", $gcloudBinaryFileListCommands);
+		$filePutContentsResponse = file_put_contents('/var/www/ghostcompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFileListCommands);
+
+		if (empty($filePutContentsResponse) === true) {
+			echo 'Error adding gcloud binary file list commands, please try again.' . "\n";
+			exit;
+		}
+
+		chmod('/var/www/ghostcompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', 0755);
+		exec('cd /var/www/ghostcompute/ && sudo ./system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFile);
+		$gcloudBinaryFile = current($gcloudBinaryFile);
 		// todo: add default node reserved internal sources to firewall
 		// todo: if gcloud binary is found as footprint, unset link local IPs from internal IPs restricted to loopback interface (required for SSH + other functions)
 
