@@ -609,8 +609,6 @@
 			unset($nodeReservedInternalSources['6'][12]);
 		}
 
-		// todo: add default node reserved internal sources to firewall
-
 		foreach ($ipAddressVersionNumbers as $ipAddressVersionNetworkMask => $ipAddressVersionNumber) {
 			$firewallRules = array(
 				'*filter',
