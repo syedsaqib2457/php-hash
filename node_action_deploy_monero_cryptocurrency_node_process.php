@@ -11,6 +11,7 @@
 	// todo: add submodules if RPC fails
 
 	$moneroSubmodules = array(
+		'randomx' => 'https://github.com/tevador/RandomX/archive/refs/tags/v1.1.10.tar.gz',
 		'supercop' => 'https://github.com/monero-project/supercop/archive/refs/heads/monero.tar.gz'
 	);
 
