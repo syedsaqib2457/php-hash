@@ -9,9 +9,17 @@
 	shell_exec('cd /usr/src/monero/ && sudo tar -xvzf monero.tar.gz');
 	// todo: download + compile monero from source without git CLI + submodules
 	// todo: add submodules if RPC fails
-	shell_exec('cd /usr/src/monero/*/external/supercop && sudo ' . $binaryFiles['wget'] . ' -O supercop.tar.gz --no-dns-cache --timeout=60 https://github.com/monero-project/supercop/archive/refs/heads/monero.tar.gz');
-	shell_exec('cd /usr/src/monero/*/external/supercop && sudo tar -xvzf supercop.tar.gz');
-	shell_exec('sudo mv /usr/src/monero/*/external/supercop/*/* /usr/src/monero/*/external/supercop/*/.* /usr/src/monero/*/external/supercop/');
+
+	$moneroSubmodules = array(
+		'supercop' => 'https://github.com/monero-project/supercop/archive/refs/heads/monero.tar.gz'
+	);
+
+	foreach ($moneroSubmodules as $moneroSubmoduleName => $moneroSubmoduleDestinationAddress) {
+		shell_exec('cd /usr/src/monero/*/external/' . $moneroSubmoduleName . '/ && sudo ' . $binaryFiles['wget'] . ' -O ' . $moneroSubmoduleName . '.tar.gz --no-dns-cache --timeout=60 ' . $moneroSubmoduleDestinationAddress);
+		shell_exec('cd /usr/src/monero/*/external/' . $moneroSubmoduleName . '/ && sudo tar -xvzf ' . $moneroSubmoduleName . '.tar.gz');
+		shell_exec('sudo mv /usr/src/monero/*/external/' . $moneroSubmoduleName . '/*/* /usr/src/monero/*/external/' . $moneroSubmoduleName . '/*/.* /usr/src/monero/*/external/' . $moneroSubmoduleName . '/');
+	}
+
 	// todo: try reserve_size 1 when listing block header details since it defaults to 1 in the source code
 	shell_exec('cd /usr/src/monero/*/ && sudo make');
 ?>
