@@ -9,7 +9,7 @@
 	shell_exec('cd /usr/src/monero/ && sudo tar -xvzf monero.tar.gz');
 	// todo: download + compile monero from source without git CLI + submodules
 	// todo: add submodules if RPC fails
-	shell_exec('cd /usr/src/monero/*/external/supercop && sudo ' . $binaryFiles['wget'] . ' -O supercop.tar.gz --no-dns-cache --timeout=60 https://github.com/monero-project/supercop/archive/refs/heads/monero.zip');
+	shell_exec('cd /usr/src/monero/*/external/supercop && sudo ' . $binaryFiles['wget'] . ' -O supercop.tar.gz --no-dns-cache --timeout=60 https://github.com/monero-project/supercop/archive/refs/heads/monero.tar.gz');
 	shell_exec('cd /usr/src/monero/*/external/supercop && sudo tar -xvzf supercop.tar.gz');
 	// todo: try reserve_size 1 when listing block header details since it defaults to 1 in the source code
 	shell_exec('cd /usr/src/monero/*/ && sudo make');
