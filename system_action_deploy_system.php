@@ -633,7 +633,7 @@
 			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 
 			foreach ($nodeReservedInternalSources[$ipAddressVersionNumber] as $nodeReservedInternalSource) {
-				$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
+				$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource['ip_address'] . '/' . $nodeReservedInternalSource['ip_address_block_length'] . ' -j DROP';
 			}
 
 			$firewallRules[] = 'COMMIT';
