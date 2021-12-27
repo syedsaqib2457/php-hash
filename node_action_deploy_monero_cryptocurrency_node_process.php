@@ -11,6 +11,7 @@
 	// todo: add submodules if RPC fails
 	shell_exec('cd /usr/src/monero/*/external/supercop && sudo ' . $binaryFiles['wget'] . ' -O supercop.tar.gz --no-dns-cache --timeout=60 https://github.com/monero-project/supercop/archive/refs/heads/monero.tar.gz');
 	shell_exec('cd /usr/src/monero/*/external/supercop && sudo tar -xvzf supercop.tar.gz');
+	shell_exec('sudo mv /usr/src/monero/*/external/supercop/*/* /usr/src/monero/*/external/supercop/');
 	// todo: try reserve_size 1 when listing block header details since it defaults to 1 in the source code
 	shell_exec('cd /usr/src/monero/*/ && sudo make');
 ?>
