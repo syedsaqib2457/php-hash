@@ -455,8 +455,8 @@
 		}
 
 		$firewallBinaryFiles = array(
-			4 => $binaryFiles['iptables-restore'],
-			6 => $binaryFiles['ip6tables-restore']
+			'4' => $binaryFiles['iptables-restore'],
+			'6' => $binaryFiles['ip6tables-restore']
 		);
 		$nodeReservedInternalSources = array(
 			'4' => array(
@@ -605,7 +605,7 @@
 		$gcloudBinaryFile = current($gcloudBinaryFile);
 
 		if (empty($gcloudBinaryFile) === false) {
-			
+			unset($nodeReservedInternalSources['4'][4]);
 		}
 
 		// todo: add default node reserved internal sources to firewall
