@@ -588,6 +588,7 @@
 				)
 			)
 		);
+		exec('whereis gcloud | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "-_-") 2>&1) | grep -c "unrecognized" && echo $binaryFile && break; done | tail -1', $gcloudBinaryFile);
 		// todo: add default node reserved internal sources to firewall
 		// todo: if gcloud binary is found as footprint, unset link local IPs from internal IPs restricted to loopback interface (required for SSH + other functions)
 
