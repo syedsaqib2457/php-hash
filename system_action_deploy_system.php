@@ -603,8 +603,12 @@
 		chmod('/var/www/ghostcompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', 0755);
 		exec('cd /var/www/ghostcompute/ && sudo ./system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFile);
 		$gcloudBinaryFile = current($gcloudBinaryFile);
+
+		if (empty($gcloudBinaryFile) === false) {
+			
+		}
+
 		// todo: add default node reserved internal sources to firewall
-		// todo: if gcloud binary is found as footprint, unset link local IPs from internal IPs restricted to loopback interface (required for SSH + other functions)
 
 		foreach ($ipAddressVersionNumbers as $ipAddressVersionNetworkMask => $ipAddressVersionNumber) {
 			$firewallRules = array(
