@@ -11,7 +11,8 @@
 		'miniupnp' => 'https://github.com/miniupnp/miniupnp/archive/refs/tags/miniupnpc_2_1.tar.gz',
 		'randomx' => 'https://github.com/tevador/RandomX/archive/refs/tags/v1.1.10.tar.gz',
 		'rapidjson' => 'https://github.com/Tencent/rapidjson/archive/refs/tags/v1.1.0.tar.gz',
-		'supercop' => 'https://github.com/monero-project/supercop/archive/refs/heads/monero.tar.gz'
+		'supercop' => 'https://github.com/monero-project/supercop/archive/refs/heads/monero.tar.gz',
+		'trezor-common' => 'https://github.com/trezor/trezor-common/archive/refs/heads/master.tar.gz'
 	);
 
 	foreach ($moneroSubmodules as $moneroSubmoduleName => $moneroSubmoduleDestinationAddress) {
