@@ -628,6 +628,15 @@
 			}
 
 			$firewallRules[] = 'COMMIT';
+			$firewallRules[] = '*raw';
+			$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
+			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
+
+			foreach ($nodeReservedInternalSources[$ipAddressVersionNumber] as $nodeReservedInternalSource) {
+				$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
+			}
+
+			$firewallRules[] = 'COMMIT';
 			unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 			touch('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 			$firewallRuleParts = array_chunk($firewallRules, 1000);
