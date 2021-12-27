@@ -454,11 +454,141 @@
 			}
 		}
 
-		// todo: add dynamic system firewall with system_reserved_internal_sources
 		$firewallBinaryFiles = array(
 			4 => $binaryFiles['iptables-restore'],
 			6 => $binaryFiles['ip6tables-restore']
 		);
+		$nodeReservedInternalSources = array(
+			'4' => array(
+				array(
+					'ip_address' => '0.0.0.0',
+					'ip_address_block_length' => '8'
+				),
+				array(
+					'ip_address' => '10.0.0.0',
+					'ip_address_block_length' => '8'
+				),
+				array(
+					'ip_address' => '100.64.0.0',
+					'ip_address_block_length' => '10'
+				),
+				array(
+					'ip_address' => '127.0.0.0',
+					'ip_address_block_length' => '8'
+				),
+				array(
+					'ip_address' => '169.254.0.0',
+					'ip_address_block_length' => '16'
+				),
+				array(
+					'ip_address' => '172.16.0.0',
+					'ip_address_block_length' => '12'
+				),
+				array(
+					'ip_address' => '192.0.0.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '192.0.2.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '192.88.99.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '192.168.0.0',
+					'ip_address_block_length' => '16'
+				),
+				array(
+					'ip_address' => '198.18.0.0',
+					'ip_address_block_length' => '15'
+				),
+				array(
+					'ip_address' => '198.51.100.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '203.0.113.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '224.0.0.0',
+					'ip_address_block_length' => '4'
+				),
+				array(
+					'ip_address' => '233.252.0.0',
+					'ip_address_block_length' => '24'
+				),
+				array(
+					'ip_address' => '240.0.0.0',
+					'ip_address_block_length' => '4'
+				),
+				array(
+					'ip_address' => '255.255.255.255',
+					'ip_address_block_length' => '32'
+				)
+			),
+			'6' => array(
+				array(
+					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '128'
+				),
+				array(
+					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0001',
+					'ip_address_block_length' => '128'
+				),
+				array(
+					'ip_address' => '0000:0000:0000:0000:0000:ffff:0000:0000',
+					'ip_address_block_length' => '96'
+				),
+				array(
+					'ip_address' => '0000:0000:0000:0000:ffff:0000:0000:0000',
+					'ip_address_block_length' => '96'
+				),
+				array(
+					'ip_address' => '0064:ff9b:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '96'
+				),
+				array(
+					'ip_address' => '0064:ff9b:0001:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '48'
+				),
+				array(
+					'ip_address' => '0100:0000:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '64'
+				),
+				array(
+					'ip_address' => '2001:0000:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '32'
+				),
+				array(
+					'ip_address' => '2001:0020:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '28'
+				),
+				array(
+					'ip_address' => '2001:0db8:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '32'
+				),
+				array(
+					'ip_address' => '2002:0000:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '16'
+				),
+				array(
+					'ip_address' => 'fc00:0000:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '7'
+				),
+				array(
+					'ip_address' => 'fe80:0000:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '10'
+				),
+				array(
+					'ip_address' => 'ff00:0000:0000:0000:0000:0000:0000:0000',
+					'ip_address_block_length' => '8'
+				)
+			)
+		);
+		// todo: add default node reserved internal sources to firewall
 
 		foreach ($ipAddressVersionNumbers as $ipAddressVersionNetworkMask => $ipAddressVersionNumber) {
 			$firewallRules = array(
