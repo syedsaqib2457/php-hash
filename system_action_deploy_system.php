@@ -606,6 +606,7 @@
 
 		if (empty($gcloudBinaryFile) === false) {
 			unset($nodeReservedInternalSources['4'][4]);
+			unset($nodeReservedInternalSources['6'][12]);
 		}
 
 		// todo: add default node reserved internal sources to firewall
