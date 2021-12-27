@@ -297,8 +297,8 @@
 		$memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize);
 		$defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034);
 		$ipAddressVersionNumbers = array(
-			32 => 4,
-			128 => 6
+			'32' => '4',
+			'128' => '6'
 		);
 		$kernelSettings = array(
 			'kernel.shmall="' . floor($memoryCapacityBytes / $kernelPageSize) . '"',
