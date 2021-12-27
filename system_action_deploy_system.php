@@ -589,6 +589,7 @@
 			)
 		);
 		// todo: add default node reserved internal sources to firewall
+		// todo: if gcloud binary is found as footprint, unset link local IPs from internal IPs restricted to loopback interface (required for SSH + other functions)
 
 		foreach ($ipAddressVersionNumbers as $ipAddressVersionNetworkMask => $ipAddressVersionNumber) {
 			$firewallRules = array(
