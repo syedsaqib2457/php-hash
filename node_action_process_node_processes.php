@@ -26,8 +26,8 @@
 
 	function _processFirewall($parameters) {
 		$firewallBinaryFiles = array(
-			4 => $parameters['binary_files']['iptables-restore'],
-			6 => $parameters['binary_files']['ip6tables-restore']
+			'4' => $parameters['binary_files']['iptables-restore'],
+			'6' => $parameters['binary_files']['ip6tables-restore']
 		);
 		$nodeProcessPartKeys = array(
 			0,
