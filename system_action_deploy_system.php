@@ -3,8 +3,9 @@
 		for debugging
 		  systemEndpointDestinationAddress=127.0.0.1
  		  cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system_action_deploy_system.php ; sudo wget -O system_action_deploy_system.php --no-dns-cache --retry-connrefused --timeout=10 --tries=2 "https://raw.githubusercontent.com/ghostcompute/framework/main/system_action_deploy_system.php?$RANDOM" && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress 1;
-		  nodeExternalIpVersion4Address=127.0.0.2
-		  nodeInternalIpVersion4Address=127.0.0.3
+		  nodeExternalIpAddressVersion4=127.0.0.2
+		  nodeInternalIpAddressVersion4=127.0.0.3
+		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node","data":{"external_ip_address_version_4":"$nodeExternalIpAddressVersion4","internal_ip_address_version_4":"$nodeInternalIpAddressVersion4"},"node_authentication_token":""}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 		  todo: API calls for adding a node with proxy + recursive DNS processes before debugging node_action_deploy_node.php
 	*/
 
