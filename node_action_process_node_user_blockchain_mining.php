@@ -43,6 +43,8 @@
 							}
 						}
 					}
+
+					// todo: add usleep(1), usleep (2), etc for lower-spec devices
 				}
 
 				echo 'Hash attempts: ' . $_3 . "\n";
