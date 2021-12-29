@@ -164,6 +164,8 @@
 				'listening_ip_address_version_4_node_id' => true,
 				'listening_ip_address_version_6' => true,
 				'listening_ip_address_version_6_node_id' => true,
+				'listening_port_number_version_4' => true,
+				'listening_port_number_version_6' => true,
 				'node_id' => true,
 				'node_node_id' => true,
 				'node_process_type' => true,
