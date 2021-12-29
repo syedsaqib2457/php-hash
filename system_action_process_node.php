@@ -220,10 +220,10 @@
 					'listening_ip_address_version_4_node_id',
 					'listening_ip_address_version_6',
 					'listening_ip_address_version_6_node_id',
-					'listening_port_number_version_4',
-					'listening_port_number_version_6',
 					'node_id',
 					'node_process_type',
+					'port_number_version_4',
+					'port_number_version_6',
 					'source_ip_address_version_4',
 					'source_ip_address_version_6'
 				),
