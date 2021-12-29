@@ -11,7 +11,6 @@
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
 	function _addNodeProcessRecursiveDnsDestination($parameters, $response) {
-		// todo: add correct logic for setting node recursive DNS destinations
 		$parameters['data']['id'] = _createUniqueId();
 
 		if (empty($parameters['data']['node_id']) === true) {
@@ -74,18 +73,18 @@
 					return $response;
 				}
 
-				if (empty($parameters['data']['listening_port_number_version_' . $nodeIpAddressVersion]) === true) {
-					$response['message'] = 'Node process recursive DNS destination must have a listening port number version ' . $nodeIpAddressVersion . ', please try again.';
+				if (empty($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === true) {
+					$response['message'] = 'Node process recursive DNS destination must have a port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 
-				if (_validatePortNumber($parameters['data']['listening_port_number_version_' . $nodeIpAddressVersion]) === false) {
-					$response['message'] = 'Invalid node process recursive DNS destination listening port number version ' . $nodeIpAddressVersion . ', please try again.';
+				if (_validatePortNumber($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === false) {
+					$response['message'] = 'Invalid node process recursive DNS destination port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 			} else {
 				unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]);
-				unset($parameters['data']['listening_port_number_version_' . $nodeIpAddressVersion]);
+				unset($parameters['data']['port_number_version_' . $nodeIpAddressVersion]);
 			}
 
 			if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === false) {
@@ -133,6 +132,26 @@
 
 				if (empty($listeningIpAddressNode) === false) {
 					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id'] = $listeningIpAddressNode['id'];
+					$portNumberNodeProcess = _list(array(
+						'data' => array(
+							'port_number',
+							'type'
+						),
+						'in' => $parameters['system_databases']['node_processes'],
+						'where' => array(
+							'either' => array(
+								'id' => $listeningIpAddressNode['id'],
+								'node_id' => $listeningIpAddressNode['id']
+							),
+							'port_number' => $parameters['data']['port_number_version_' . $nodeIpAddressVersion],
+							'type' => 'recursive_dns'
+						)
+					));
+
+					if (empty($portNumberNodeProcess) === true) {
+						$response['message'] = 'Node process recursive DNS destination port number must have a matching recursive DNS node process port number, please try again.';
+						return $response;
+					}
 				}
 
 				if (empty($listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
@@ -167,11 +186,11 @@
 				'listening_ip_address_version_4_node_id' => true,
 				'listening_ip_address_version_6' => true,
 				'listening_ip_address_version_6_node_id' => true,
-				'listening_port_number_version_4' => true,
-				'listening_port_number_version_6' => true,
 				'node_id' => true,
 				'node_node_id' => true,
 				'node_process_type' => true,
+				'port_number_version_4' => true,
+				'port_number_version_6' => true,
 				'source_ip_address_version_4' => true,
 				'source_ip_address_version_6' => true
 			)),
