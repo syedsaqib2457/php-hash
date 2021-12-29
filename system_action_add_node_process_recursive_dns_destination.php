@@ -132,6 +132,7 @@
 				$listeningIpAddressNode = current($listeningIpAddressNode);
 
 				if (empty($listeningIpAddressNode) === false) {
+					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['external_ip_address_version_' . $nodeIpAddressVersion];
 					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id'] = $listeningIpAddressNode['id'];
 				}
 
