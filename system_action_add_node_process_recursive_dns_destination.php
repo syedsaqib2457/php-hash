@@ -11,6 +11,7 @@
 	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
 
 	function _addNodeProcessRecursiveDnsDestination($parameters, $response) {
+		// todo: add correct logic for setting node recursive DNS destinations
 		$parameters['data']['id'] = _createUniqueId();
 
 		if (empty($parameters['data']['node_id']) === true) {
@@ -49,13 +50,21 @@
 			return $response;
 		}
 
-		$nodeIds = array_filter($node);
+
+		$nodeNodeId = $node['id'];
+
+		if (empty($node['node_id']) === false) {
+			$nodeNodeId = $node['node_id'];
+		}
+
 		$nodeIpAddressVersions = array(
 			'4',
 			'6'
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
+			unset($parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion]);
+
 			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
 				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
 					$response['message'] = 'Node process recursive DNS destination must have a listening IP address version ' . $nodeIpAddressVersion . ', please try again.';
@@ -94,14 +103,21 @@
 					'where' => array(
 						'either' => array(
 							array(
-								'either' => array(
-									array(
-										'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion],
-										'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
-									),
-									'internal_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]
+								array(
+									'either' => array(
+										array(
+											'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion],
+											'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
+										),
+										'internal_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]
+									)
 								),
-								'node_id' => $nodeIds
+								array(
+									'either => array(
+										'id' => $nodeNodeId,
+										'node_id' => $nodeNodeId
+									)
+								)
 							),
 							array(
 								'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion],
@@ -120,8 +136,6 @@
 					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion];
 					$parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['external_ip_address_version_' . $nodeIpAddressVersion];
 				}
-			} else {
-				unset($parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion]);
 			}
 		}
 
