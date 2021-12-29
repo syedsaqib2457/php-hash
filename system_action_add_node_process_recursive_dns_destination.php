@@ -132,11 +132,7 @@
 
 				if (empty($listeningIpAddressNode) === false) {
 					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id'] = $listeningIpAddressNode['id'];
-					$portNumberNodeProcess = _list(array(
-						'data' => array(
-							'port_number',
-							'type'
-						),
+					$portNumberNodeProcessCount = _count(array(
 						'in' => $parameters['system_databases']['node_processes'],
 						'where' => array(
 							'either' => array(
@@ -148,7 +144,7 @@
 						)
 					));
 
-					if (empty($portNumberNodeProcess) === true) {
+					if (($portNumberNodeProcessCount <= 0) === true) {
 						$response['message'] = 'Node process recursive DNS destination port number must have a matching recursive DNS node process port number, please try again.';
 						return $response;
 					}
