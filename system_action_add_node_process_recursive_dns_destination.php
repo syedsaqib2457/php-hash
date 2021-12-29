@@ -74,18 +74,18 @@
 					return $response;
 				}
 
-				if (empty($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === true) {
-					$response['message'] = 'Node process recursive DNS destination must have a port number version ' . $nodeIpAddressVersion . ', please try again.';
+				if (empty($parameters['data']['listening_port_number_version_' . $nodeIpAddressVersion]) === true) {
+					$response['message'] = 'Node process recursive DNS destination must have a listening port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 
-				if (_validatePortNumber($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === false) {
-					$response['message'] = 'Invalid node process recursive DNS destination port number version ' . $nodeIpAddressVersion . ', please try again.';
+				if (_validatePortNumber($parameters['data']['listening_port_number_version_' . $nodeIpAddressVersion]) === false) {
+					$response['message'] = 'Invalid node process recursive DNS destination listening port number version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 			} else {
 				unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]);
-				unset($parameters['data']['port_number_version_' . $nodeIpAddressVersion]);
+				unset($parameters['data']['listening_port_number_version_' . $nodeIpAddressVersion]);
 			}
 
 			if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === false) {
