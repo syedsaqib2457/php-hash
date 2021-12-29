@@ -9,7 +9,8 @@
 		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node","data":{"external_ip_address_version_4":"$nodeExternalIpAddressVersion4","internal_ip_address_version_4":"$nodeInternalIpAddressVersion4"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 		  sudo cat /tmp/debug.php for node ID
 		  nodeId="1"
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id"="$nodeId","port_number":"80","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
+		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id"="$nodeId","port_number":"1080","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
+		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id"="$nodeId","port_number":"1081","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 		  todo: API calls for adding a node with proxy + recursive DNS processes before debugging node_action_deploy_node.php
 	*/
 
