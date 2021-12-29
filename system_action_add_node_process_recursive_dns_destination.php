@@ -63,6 +63,7 @@
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
+			unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
 			unset($parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion]);
 
 			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
