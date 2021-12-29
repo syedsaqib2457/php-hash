@@ -35,6 +35,8 @@
 
 		$node = _list(array(
 			'data' => array(
+				'external_ip_address_version_4',
+				'external_ip_address_version_6',
 				'id',
 				'node_id'
 			),
