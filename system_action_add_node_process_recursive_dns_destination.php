@@ -117,8 +117,8 @@
 				}
 
 				if (empty($listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion'];
-					$parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['external_ip_address_version_' . $nodeIpAddressVersion'];
+					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion];
+					$parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['external_ip_address_version_' . $nodeIpAddressVersion];
 				}
 			} else {
 				unset($parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion]);
