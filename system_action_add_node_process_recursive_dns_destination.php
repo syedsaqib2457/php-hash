@@ -113,7 +113,7 @@
 									)
 								),
 								array(
-									'either => array(
+									'either' => array(
 										'id' => $nodeNodeId,
 										'node_id' => $nodeNodeId
 									)
