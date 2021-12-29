@@ -26,7 +26,7 @@
 
 		if (in_array(strval($parameters['data']['node_process_type']), array(
 			'http_proxy',
-			'recursive_dns',
+			'recursive_dns', // todo: review node processing code to confirm recursive_dns node recursive DNS destinations are required
 			'socks_proxy'
 		)) === false) {
 			$response['message'] = 'Invalid node process recursive DNS destination node process type, please try again.';
