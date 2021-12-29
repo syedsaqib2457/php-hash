@@ -888,7 +888,7 @@
 
 						foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $proxyNodeIpAddressVersionNumber) {
 							if (empty($parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_address_version_' . $proxyNodeIpAddressVersionNumber]) === false) {
-								$proxyNodeProcessConfiguration['e' . $proxyNodeProcessConfigurationIndexes['e']] = 'nserver ' . $parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_address_version_' . $proxyNodeIpAddressVersionNumber] . '[:' . $parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_port_number_version_' . $proxyNodeIpAddressVersionNumber] . ']';
+								$proxyNodeProcessConfiguration['e' . $proxyNodeProcessConfigurationIndexes['e']] = 'nserver ' . $parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['listening_ip_address_version_' . $proxyNodeIpAddressVersionNumber] . '[:' . $parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['port_number_version_' . $proxyNodeIpAddressVersionNumber] . ']';
 								$proxyNodeProcessConfigurationIndexes['e']++;
 							}
 
