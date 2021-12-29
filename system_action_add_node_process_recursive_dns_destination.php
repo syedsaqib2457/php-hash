@@ -63,12 +63,12 @@
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
+			unset($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion . '_node_id']);
 			unset($parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion]);
 
 			if (empty($node['external_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-				if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === true) {
-					$response['message'] = 'Node process recursive DNS destination must have a listening IP address version ' . $nodeIpAddressVersion . ', please try again.';
+				if (empty($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion]) === true) {
+					$response['message'] = 'Node process recursive DNS destination must have a destination IP address version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 
@@ -82,19 +82,19 @@
 					return $response;
 				}
 			} else {
-				unset($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]);
+				unset($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion]);
 				unset($parameters['data']['port_number_version_' . $nodeIpAddressVersion]);
 			}
 
-			if (empty($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-				$parameters['data'][$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] = strval(_validateIpAddressVersion($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion));
+			if (empty($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+				$parameters['data'][$parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion] = strval(_validateIpAddressVersion($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion));
 
-				if ($parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] === false) {
-					$response['message'] = 'Invalid node process recursive DNS destination listening IP address version ' . $nodeIpAddressVersion . ', please try again.';
+				if ($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion] === false) {
+					$response['message'] = 'Invalid node process recursive DNS destination destination IP address version ' . $nodeIpAddressVersion . ', please try again.';
 					return $response;
 				}
 
-				$listeningIpAddressNode = _list(array(
+				$destinationIpAddressNode = _list(array(
 					'data' => array(
 						'external_ip_address_version_' . $nodeIpAddressVersion,
 						'id',
@@ -107,10 +107,10 @@
 								array(
 									'either' => array(
 										array(
-											'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion],
+											'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion],
 											'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
 										),
-										'internal_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion]
+										'internal_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion]
 									)
 								),
 								array(
@@ -121,22 +121,22 @@
 								)
 							),
 							array(
-								'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion],
+								'external_ip_address_version_' . $nodeIpAddressVersion => $parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion],
 								'external_ip_address_version_' . $nodeIpAddressVersion . '_type' => 'public_network'
 							)
 						)
 					)
 				), $response);
-				$listeningIpAddressNode = current($listeningIpAddressNode);
+				$destinationIpAddressNode = current($destinationIpAddressNode);
 
-				if (empty($listeningIpAddressNode) === false) {
-					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion . '_node_id'] = $listeningIpAddressNode['id'];
+				if (empty($destinationIpAddressNode) === false) {
+					$parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion . '_node_id'] = $destinationIpAddressNode['id'];
 					$portNumberNodeProcessCount = _count(array(
 						'in' => $parameters['system_databases']['node_processes'],
 						'where' => array(
 							'either' => array(
-								'id' => $listeningIpAddressNode['id'],
-								'node_id' => $listeningIpAddressNode['id']
+								'id' => $destinationIpAddressNode['id'],
+								'node_id' => $destinationIpAddressNode['id']
 							),
 							'port_number' => $parameters['data']['port_number_version_' . $nodeIpAddressVersion],
 							'type' => 'recursive_dns'
@@ -149,9 +149,9 @@
 					}
 				}
 
-				if (empty($listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
-					$parameters['data']['listening_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion];
-					$parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion] = $listeningIpAddressNode['external_ip_address_version_' . $nodeIpAddressVersion];
+				if (empty($destinationIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion]) === false) {
+					$parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersion] = $destinationIpAddressNode['internal_ip_address_version_' . $nodeIpAddressVersion];
+					$parameters['data']['source_ip_address_version_' . $nodeIpAddressVersion] = $destinationIpAddressNode['external_ip_address_version_' . $nodeIpAddressVersion];
 				}
 			}
 		}
@@ -160,8 +160,8 @@
 		$existingNodeProcessRecursiveDnsDestinationCount = _count(array(
 			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 			'where' => array_intersect_key($parameters['data'], array(
-				'listening_ip_address_version_4' => true,
-				'listening_ip_address_version_6' => true,
+				'destination_ip_address_version_4' => true,
+				'destination_ip_address_version_6' => true,
 				'node_id' => true,
 				'node_process_type' => true,
 				'source_ip_address_version_4' => true,
@@ -177,10 +177,10 @@
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'id' => true,
-				'listening_ip_address_version_4' => true,
-				'listening_ip_address_version_4_node_id' => true,
-				'listening_ip_address_version_6' => true,
-				'listening_ip_address_version_6_node_id' => true,
+				'destination_ip_address_version_4' => true,
+				'destination_ip_address_version_4_node_id' => true,
+				'destination_ip_address_version_6' => true,
+				'destination_ip_address_version_6_node_id' => true,
 				'node_id' => true,
 				'node_node_id' => true,
 				'node_process_type' => true,
