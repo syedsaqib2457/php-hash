@@ -143,10 +143,10 @@
 			return $response;
 		}
 
-		exec('sudo ' . $parameters['binary_files']['curl'] . ' -s --form "data=@/usr/local/ghostcompute/node_resource_usage_logs.json" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $response);
-		$response = current($response);
-		$response = json_decode($response, true);
-		return $response;
+		exec('sudo ' . $parameters['binary_files']['curl'] . ' -s --form "data=@/usr/local/ghostcompute/node_resource_usage_logs.json" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeResourceUsageLogsResponse);
+		$processNodeResourceUsageLogsResponse = current($processNodeResourceUsageLogsResponse);
+		$processNodeResourceUsageLogsResponse = json_decode($processNodeResourceUsageLogsResponse, true);
+		return $processNodeResourceUsageLogsResponse;
 	}
 
 	function _processProcessUsagePercentages($parameters, $nodeResourceUsageLogProcessType) {
