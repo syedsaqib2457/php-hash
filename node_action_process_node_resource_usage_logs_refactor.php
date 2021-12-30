@@ -150,9 +150,10 @@
 		foreach ($processProcessIds as $processProcessId) {
 			$nodeResourceUsageLogCpuTimeProcess = $nodeResourceUsageLogCpuTimeProcessStart = microtime(true);
 			exec('sudo bash -c "sudo cat /proc/' . $processProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\' 2>&1', $nodeResourceUsageLogCpuTimeProcess);
+			$nodeResourceUsageLogCpuTimeProcess = current($nodeResourceUsageLogCpuTimeProcess);
 
 			$parameters['data']['cpu_time_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId] = array(
-				'cpu_time' => _calculateCpuTime(current($nodeResourceUsageLogCpuTimeProcess)),
+				'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTimeProcess),
 				'timestamp' => $nodeResourceUsageLogCpuTimeProcessStart
 			);
 
