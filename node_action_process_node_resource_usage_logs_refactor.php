@@ -78,7 +78,7 @@
 				}
 
 				foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
-					_processProcessUsagePercentages($nodeResourceUsageLogProcessType);
+					$parameters = _processProcessUsagePercentages($parameters, $nodeResourceUsageLogProcessType);
 				}
 
 				exec('df -m / | tail -1 | awk \'{print $4}\'  2>&1', $nodeResourceUsageLogStorageCapacityMegabytes);
@@ -135,7 +135,7 @@
 		return $response;
 	}
 
-	function _processProcessUsagePercentages() {
+	function _processProcessUsagePercentages($parameters, $nodeResourceUsageLogProcessType) {
 		// todo
 	}
 
