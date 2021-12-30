@@ -132,6 +132,20 @@
 			return $response;
 		}
 
+		$systemParameters = array(
+			'action' => 'process_node_resource_usage_logs',
+			'node_authentication_token' => $parameters['node_authentication_token']
+		);
+		$encodedSystemParameters = json_encode($systemParameters);
+
+		if ($encodedSystemParameters === false) {
+			$response['message'] = 'Error processing node resource usage logs, please try again.' . "\n";
+			return $response;
+		}
+
+		exec('sudo ' . $parameters['binary_files']['curl'] . ' -s --form "data=@/usr/local/ghostcompute/node_resource_usage_logs.json" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $response);
+		$response = current($response);
+		$response = json_decode($response, true);
 		return $response;
 	}
 
