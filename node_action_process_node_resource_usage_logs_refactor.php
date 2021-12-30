@@ -81,7 +81,7 @@
 			}
 
 			$parameters['node_resource_usage_log_process_interval_index']++;
-			sleep(mt_rand(4, 10));
+			sleep(10);
 		}
 
 		$nodeResourceUsageLogProcessStart = date('Y-m-d H:i', $nodeResourceUsageLogProcessStart);
