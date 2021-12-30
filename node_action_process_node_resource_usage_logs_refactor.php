@@ -75,9 +75,9 @@
 				}
 
 				exec('df -m / | tail -1 | awk \'{print $4}\'  2>&1', $nodeResourceUsageLogStorageCapacityMegabytes);
-				exec('df / | tail -1 | awk \'{print $5}\' 2>&1', $nodeResourceUsageLogStoragePercentage);
 				$parameters['data']['storage_capacity_megabytes'] = current($nodeResourceUsageLogStorageCapacityMegabytes);
-				$parameters['data']['storage_percentage'] = intval(current($nodeResourceUsageLogStoragePercentage));
+				exec('df / | tail -1 | awk \'{print $5}\' 2>&1', $nodeResourceUsageLogStoragePercentage);
+				$parameters['data']['storage_percentage'] = current($nodeResourceUsageLogStoragePercentage);
 			}
 
 			$parameters['node_resource_usage_log_process_interval_index']++;
