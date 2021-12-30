@@ -115,7 +115,10 @@
 			}
 		}
 
-		$systemData = $parameters['data']; // todo
+		$systemData = array_intersect_key($parameters['data'], array(
+			'node_process_resource_usage_logs' => true,
+			'node_resource_usage_log' => true
+		));
 		$systemData = json_encode($systemData);
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_resource_usage_logs.json', $systemData);
 
