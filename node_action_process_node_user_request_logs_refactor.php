@@ -46,8 +46,10 @@
 
 						if (empty($response['data']['most_recent_node_process_user_request_log']) === false) {
 							$mostRecentNodeProcessUserRequestLog = $response['data']['most_recent_node_process_user_request_log'];
+							$mostRecentNodeProcessUserRequestLogLength = strlen($mostRecentNodeProcessUserRequestLog);
 							$nodeProcessUserRequestLogs = file_get_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile);
-							$updatedNodeProcessUserRequestLogs = substr($nodeProcessUserRequestLogs, strpos($nodeProcessUserRequestLogs, $mostRecentNodeProcessUserRequestLog) + strlen($mostRecentNodeProcessUserRequestLog));
+							$mostRecentNodeProcessUserRequestLogPosition = strpos($nodeProcessUserRequestLogs, $mostRecentNodeProcessUserRequestLog);
+							$updatedNodeProcessUserRequestLogs = substr($nodeProcessUserRequestLogs, $mostRecentNodeProcessUserRequestLogPosition + $mostRecentNodeProcessUserRequestLogLength);
 							$updatedNodeProcessUserRequestLogs = trim($updatedNodeProcessUserRequestLogs);
 							file_put_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile, $updatedNodeProcessUserRequestLogs);
 						}
