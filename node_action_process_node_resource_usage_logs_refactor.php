@@ -14,6 +14,12 @@
 			'4',
 			'6'
 		);
+		$parameters['node_resource_usage_log_process_types'] = array(
+			'http_proxy',
+			'recursive_dns',
+			'socks_proxy',
+			'system'
+		);
 	}
 
 	if (($parameters['action'] === 'process_node_resource_usage_logs') === true) {
