@@ -86,16 +86,14 @@
 
 		$nodeResourceUsageLogProcessStart = date('Y-m-d H:i', $nodeResourceUsageLogProcessStart);
 		$nodeResourceUsageLogCreated = substr($nodeResourceUsageLogProcessStart, 0, 15) . '0:00';
-		$nodeResourceUsageLogData = array(
-			'node_process_resource_usage_logs' => array(),
-			'node_resource_usage_log' => array(
-				'cpu_percentage' => max($parameters['data']['cpu_percentage']),
-				'created' => $nodeResourceUsageLogCreated
-			)
+		$parameters['data']['node_process_resource_usage_logs'] = array();
+		$parameters['data']['node_resource_usage_log'] = array(
+			'cpu_percentage' => max($parameters['data']['cpu_percentage']),
+			'created' => $nodeResourceUsageLogCreated
 		);
 
 		foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
-			$nodeResourceUsageLogData['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType] = array(
+			$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType] = array(
 				'created' => $nodeResourceUsageLogCreated,
 				'node_process_type' => $nodeResourceUsageLogProcessType
 			);
@@ -108,10 +106,10 @@
 			}
 
 			if (
-				(isset($nodeResourceUsageLogData['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
+				(isset($parameters['data']['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
 				(isset($parameters['data']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
 			) {
-				$nodeResourceUsageLogData['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['memory_percentage'] = max($parameters['data']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
+				$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['memory_percentage'] = max($parameters['data']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
 			}
 		}
 
