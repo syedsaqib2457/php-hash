@@ -36,7 +36,8 @@
 						$nodeProcessNodeId = $nodeProcessUserRequestLogFileParts[0];
 						$nodeProcessNodeUserId = $nodeProcessUserRequestLogFileParts[1];
 						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $response);
-						$response = json_decode(current($response), true);
+						$response = current($response);
+						$response = json_decode($response, true);
 
 						if (empty($response['data']['most_recent_node_process_user_request_log']) === false) {
 							$mostRecentNodeProcessUserRequestLog = $response['data']['most_recent_node_process_user_request_log'];
