@@ -115,7 +115,19 @@
 			}
 		}
 
-		// todo
+		$systemData = $parameters['data']; // todo
+
+		if (
+			(
+				(file_exists('/usr/local/ghostcompute/node_resource_usage_logs.json') === false) ||
+				(unlink('/usr/local/ghostcompute/node_resource_usage_logs.json') === true)
+			) &&
+			(file_put_contents('/usr/local/ghostcompute/node_resource_usage_logs.json', json_encode($systemData)) === true)
+		) {
+			// todo: store interval data if system_url fails and retry
+		}
+
+		return $response;
 	}
 
 	function _processProcessUsagePercentages() {
