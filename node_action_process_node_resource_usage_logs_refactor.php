@@ -52,8 +52,9 @@
 				}
 			} else {
 				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu " | awk \'{print ""$2"+"$3"+"$4"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeResourceUsageLogCpuTime);
+				$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
 				$parameters['data']['cpu_time'][$parameters['node_resource_usage_log_process_interval_index']] = array(
-					'cpu_time' => _calculateCpuTime(current($nodeResourceUsageLogCpuTime)),
+					'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTime),
 					'timestamp' => $nodeResourceUsageLogCpuTimeStart
 				);
 
