@@ -25,6 +25,7 @@
 			'system'
 		);
 		$nodeResourceUsageLogProcessStart = time();
+
 		while ((($nodeResourceUsageLogProcessStart + 540) > time()) === true) {
 			if (empty($parameters['node_resource_usage_log_process_interval_index']) === true) {
 				$parameters['node_resource_usage_log_process_interval_index'] = 0;
