@@ -128,7 +128,7 @@
 		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_resource_usage_logs.json', $systemData);
 
 		if (empty($filePutContentsResponse) === true) {
-			$response['message'] = 'Error adding node resource usage logs, please try again.' . "\n";
+			$response['message'] = 'Error adding node resource usage log data, please try again.' . "\n";
 			return $response;
 		}
 
