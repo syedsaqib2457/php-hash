@@ -44,6 +44,8 @@
 							return $response;
 						}
 
+						$response['message'] = $processNodeUserRequestLogsResponse['message'];
+
 						if (empty($response['data']['most_recent_node_process_user_request_log']) === false) {
 							$mostRecentNodeProcessUserRequestLog = $response['data']['most_recent_node_process_user_request_log'];
 							$mostRecentNodeProcessUserRequestLogLength = strlen($mostRecentNodeProcessUserRequestLog);
@@ -63,6 +65,7 @@
 			}
 		}
 
+		$response['valid_status'] = '1';
 		return $response;
 	}
 
