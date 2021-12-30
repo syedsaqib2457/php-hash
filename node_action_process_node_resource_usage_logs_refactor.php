@@ -20,6 +20,11 @@
 			'socks_proxy',
 			'system'
 		);
+		$nodeResourceUsageLogProcessStart = time();
+
+		while ((($nodeResourceUsageLogProcessStart + 540) > time()) === true) {
+			// todo
+		}
 	}
 
 	if (($parameters['action'] === 'process_node_resource_usage_logs') === true) {
