@@ -1,11 +1,5 @@
 <?php
 	function processNodeUserRequestLogs($parameters, $response) {
-		$nodeProcessTypes = array(
-			'http_proxy',
-			'recursive_dns',
-			'socks_proxy'
-		);
-
 		$systemParameters = array(
 			'action' => 'process_node_user_request_logs',
 			'node_authentication_token' => $parameters['node_authentication_token']
@@ -16,6 +10,12 @@
 			$response['message'] = 'Error processing node user request logs, please try again.' . "\n";
 			return $response;
 		}
+
+		$nodeProcessTypes = array(
+			'http_proxy',
+			'recursive_dns',
+			'socks_proxy'
+		);
 
 		foreach ($nodeProcessTypes as $nodeProcessType) {
 			$nodeProcessUserRequestLogFiles = scandir('/var/log/' . $nodeProcessType);
