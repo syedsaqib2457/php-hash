@@ -1,6 +1,13 @@
 <?php
-	function _calculateCpuTime() {
-		// todo
+	function _calculateCpuTime($nodeResourceUsageLogCpuTimeString) {
+		$nodeResourceUsageLogCpuTime = 0;
+		$nodeResourceUsageLogCpuTimeValues = explode('+', $nodeResourceUsageLogCpuTimeString);
+
+		foreach ($nodeResourceUsageLogCpuTimeValues as $nodeResourceUsageLogCpuTimeValue) {
+			$nodeResourceUsageLogCpuTime += substr($nodeResourceUsageLogCpuTimeValue, -15);
+		}
+
+		return $nodeResourceUsageLogCpuTime;
 	}
 
 	function _processNodeResourceUsageLogs($parameters, $response) {
