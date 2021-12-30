@@ -35,15 +35,21 @@
 					) {
 						$nodeProcessNodeId = $nodeProcessUserRequestLogFileParts[0];
 						$nodeProcessNodeUserId = $nodeProcessUserRequestLogFileParts[1];
-						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $response);
-						$response = current($response);
-						$response = json_decode($response, true);
+						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeUserRequestLogsResponse);
+						$processNodeUserRequestLogsResponse = current($processNodeUserRequestLogsResponse);
+						$processNodeUserRequestLogsResponse = json_decode($processNodeUserRequestLogsResponse, true);
+
+						if (empty($processNodeUserRequestLogsResponse['valid_status']) === true) {
+							$response['message'] = 'Error processing node user request logs, please try again.' . "\n";
+							return $response;
+						}
 
 						if (empty($response['data']['most_recent_node_process_user_request_log']) === false) {
 							$mostRecentNodeProcessUserRequestLog = $response['data']['most_recent_node_process_user_request_log'];
-							$nodeProcessUserRequestLogFileContents = file_get_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile);
-							$updatedNodeProcessUserRequestLogs = substr($nodeProcessUserRequestLogFileContents, strpos($nodeProcessUserRequestLogFileContents, $mostRecentNodeProcessUserRequestLog) + strlen($mostRecentNodeProcessUserRequestLog));
-							file_put_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile, trim($updatedNodeProcessUserRequestLogs));
+							$nodeProcessUserRequestLogs = file_get_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile);
+							$updatedNodeProcessUserRequestLogs = substr($nodeProcessUserRequestLogFileContents, strpos($nodeProcessUserRequestLogs, $mostRecentNodeProcessUserRequestLog) + strlen($mostRecentNodeProcessUserRequestLog));
+							$updatedNodeProcessUserRequestLogs = trim($updatedNodeProcessUserRequestLogs);
+							file_put_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile, $updatedNodeProcessUserRequestLogs);
 						}
 					}
 				}
