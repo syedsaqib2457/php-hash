@@ -55,7 +55,7 @@
 		}
 
 		if (
-			(empty($parameters['node_authentication_token']) === true) ||
+			(empty($parameters['node_authentication_token']) === false) &&
 			(ctype_alnum($parameters['node_authentication_token']) === false)
 		) {
 			$response['message'] = 'Invalid system endpoint request node authentication token, please try again.';
@@ -63,7 +63,7 @@
 		}
 
 		if (
-			(empty($parameters['system_user_authentication_token']) === true) ||
+			(empty($parameters['system_user_authentication_token']) === false) &&
 			(ctype_alnum($parameters['system_user_authentication_token']) === false)
 		) {
 			$response['message'] = 'Invalid system endpoint request system user authentication token, please try again.';
