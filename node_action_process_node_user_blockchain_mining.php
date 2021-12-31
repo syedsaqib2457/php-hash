@@ -16,7 +16,7 @@
 			// start indexed mining processes
 		}
 	} else {
-		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_index] [leading_zero_string] [process_index]
+		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_string] [process_index]
 			// mine indexed section for pseudo-threading
 			// write static repeating hash functions within loop for better CPU efficiency
 
@@ -29,18 +29,13 @@
 					$_0 = hash('sha256', hash_hmac('sha256', $_2, $_3));
 
 					if (
-						($_0[$_5] === '0') && // todo: use empty() for groups of characters from start of string for efficient leading 0 string verification
-						($_0[0] === '0')
-					) {
-						$_0[($_5 + 1)] = '.';
-
-						if (intval(floor(1 . $_0)) === intval('1' . $_6)) {
-							$_7 = substr($_0, 0, ($_5 + 1));
-
-							if ($_7 === $_6) {
-								$_0 = hash('sha256', hash_hmac('sha256', $_2, $_3));
-								break;
-							}
+						($_0[16] === '0') &&
+						(empty($_0[0] . $_0[1] . $_0[2] . $_0[3] . $_0[4] . $_0[5]) === true) &&
+						(empty($_0[6] . $_0[7] . $_0[8] . $_0[9] . $_0[10]) === true) &&
+						(empty($_0[11] . $_0[12] . $_0[13] . $_0[14] . $_0[15]) === true)
+					) {						
+						if (($_0 < $_5) === true) {
+							break;
 						}
 					}
 
