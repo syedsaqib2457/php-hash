@@ -30,9 +30,10 @@
 		}
 
 		require_once('/var/www/ghostcompute/system_databases.php');
+		$systemAction = str_replace('_', '', $parameters['action']);
 
 		if (
-			(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||
+			(ctype_alnum($systemAction) === false) ||
 			(file_exists('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid system endpoint request action, please try again.';
@@ -87,7 +88,7 @@
 
 			$parameters['node'] = $node;
 
-			if (in_array(strval($parameters['action']), array(
+			if (in_array($parameters['action'], array(
 				'add_node_process_node_user_request_logs'
 			)) === false) {
 				$response['message'] = 'Invalid system endpoint request node authentication token scope, please try again.';
@@ -131,7 +132,7 @@
 				'ip_address_version_number' => '4'
 			);
 
-			if (is_int(strpos($parameters['source']['ip_address'], ':')) === true) {
+			if ((strpos($parameters['source']['ip_address'], ':') === false) === false) {
 				$parameters['source']['ip_address_version_number'] = '6';
 			}
 
