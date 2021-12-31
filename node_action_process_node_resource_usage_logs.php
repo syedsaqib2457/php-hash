@@ -120,15 +120,14 @@
 			}
 		}
 
-		$systemData = array_intersect_key($parameters['data'], array(
+		$nodeResourceUsageLogs = array_intersect_key($parameters['data'], array(
 			'node_process_resource_usage_logs' => true,
 			'node_resource_usage_log' => true
 		));
-		$systemData = json_encode($systemData);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_resource_usage_logs.json', $systemData);
+		$nodeResourceUsageLogs = json_encode($nodeResourceUsageLogs);
 
-		if (empty($filePutContentsResponse) === true) {
-			$response['message'] = 'Error adding node resource usage log data, please try again.' . "\n";
+		if (file_put_contents('/usr/local/ghostcompute/node_resource_usage_logs.json', $nodeResourceUsageLogs) === false) {
+			$response['message'] = 'Error adding node resource usage logs, please try again.' . "\n";
 			return $response;
 		}
 
