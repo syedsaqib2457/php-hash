@@ -18,7 +18,7 @@
 	$response = array(
 		'authenticated_status' => '0',
 		'data' => array(),
-		'message' => 'Invalid endpoint request, please try again.',
+		'message' => 'Invalid system endpoint request, please try again.',
 		'valid_status' => '0'
 	);
 
@@ -35,7 +35,7 @@
 			(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||
 			(file_exists('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php') === false)
 		) {
-			$response['message'] = 'Invalid endpoint request action, please try again.';
+			$response['message'] = 'Invalid system endpoint request action, please try again.';
 			_output($response);
 		}
 
@@ -43,7 +43,7 @@
 			(empty($parameters['node_authentication_token']) === true) &&
 			(empty($parameters['system_user_authentication_token']) === true)
 		) {
-			$response['message'] = 'Endpoint request must have either a node or system user authentication token, please try again.';
+			$response['message'] = 'System endpoint request must have either a node or system user authentication token, please try again.';
 			_output($response);
 		}
 
@@ -51,7 +51,7 @@
 			(empty($parameters['node_authentication_token']) === true) ||
 			(ctype_alnum($parameters['node_authentication_token']) === false)
 		) {
-			$response['message'] = 'Invalid endpoint request node authentication token, please try again.';
+			$response['message'] = 'Invalid system endpoint request node authentication token, please try again.';
 			_output($response);
 		}
 
@@ -59,7 +59,7 @@
 			(empty($parameters['system_user_authentication_token']) === true) ||
 			(ctype_alnum($parameters['system_user_authentication_token']) === false)
 		) {
-			$response['message'] = 'Invalid endpoint request system user authentication token, please try again.';
+			$response['message'] = 'Invalid system endpoint request system user authentication token, please try again.';
 			_output($response);
 		}
 
@@ -81,7 +81,7 @@
 			$node = current($node);
 
 			if (empty($node) === true) {
-				$response['message'] = 'Invalid endpoint node authentication token, please try again.';
+				$response['message'] = 'Invalid system endpoint node authentication token, please try again.';
 				_output($response);
 			}
 
@@ -90,7 +90,7 @@
 			if (in_array(strval($parameters['action']), array(
 				'add_node_process_node_user_request_logs'
 			)) === false) {
-				$response['message'] = 'Invalid endpoint node authentication token scope, please try again.';
+				$response['message'] = 'Invalid system endpoint request node authentication token scope, please try again.';
 				_output($response);
 			}
 		} else {
@@ -107,7 +107,7 @@
 			$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 
 			if (empty($systemUserAuthenticationToken) === true) {
-				$response['message'] = 'Invalid endpoint system user authentication token, please try again.';
+				$response['message'] = 'Invalid system endpoint request system user authentication token, please try again.';
 				_output($response);
 			}
 
@@ -121,7 +121,7 @@
 			), $response);
 
 			if (($systemUserAuthenticationTokenScopeCount <= 0) === true) {
-				$response['message'] = 'Invalid endpoint system user authentication token scope, please try again.';
+				$response['message'] = 'Invalid system endpoint request system user authentication token scope, please try again.';
 				_output($response);
 			}
 
@@ -138,7 +138,7 @@
 			$parameters['source']['ip_address'] = _validateIpAddressVersionNumber($parameters['source']['ip_address'], $parameters['source']['ip_address_version_number']);
 
 			if ($parameters['source']['ip_address'] === false) {
-				$response['message'] = 'Invalid source IP address, please try again.';
+				$response['message'] = 'Invalid system endpoint request source IP address, please try again.';
 				_output($response);
 			}
 
@@ -159,7 +159,7 @@
 				$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
 				if (($systemUserAuthenticationTokenSourceCount <= 0) === true) {
-					$response['message'] = 'Invalid endpoint system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
+					$response['message'] = 'Invalid system endpoint request system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
 					_output($response);
 				}
 			}
