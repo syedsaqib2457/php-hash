@@ -13,9 +13,8 @@
 		$commands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$commands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$commands = implode("\n", $commands);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands) === false) {
 			echo 'Error adding kill process ID commands, please try again.' . "\n";
 			exit;
 		}
@@ -92,9 +91,8 @@
 	}
 
 	$packageSources = implode("\n", $packageSources[$imageDetails['id']][$imageDetails['version_id']]);
-	$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
 
-	if (empty($filePutContentsResponse) === true) {
+	if (file_put_contents('/etc/apt/sources.list', $packageSources) === false) {
 		echo 'Error adding package sources, please try again.' . "\n";
 		exit;
 	}
@@ -198,9 +196,8 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commands = implode("\n", $commands);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands) === false) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
@@ -284,9 +281,8 @@
 
 	// todo: add interface IPs in JSON file with node_action_process_node_network_interface_ip_addresses.php file executed in crontab every 5 minutes because binary path listing may fail on @reboot
 	$nodeActionProcessNetworkInterfaceIpAddresses = implode('\'); shell_exec(\'', $nodeActionProcessNetworkInterfaceIpAddresses);
-	$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_process_network_interface_ip_addresses.php', '<?php shell_exec(\'' . $nodeActionProcessNetworkInterfaceIpAddresses . '\'); ?>');
 
-	if (empty($filePutContentsResponse) === true) {
+	if (file_put_contents('/usr/local/ghostcompute/node_action_process_network_interface_ip_addresses.php', '<?php shell_exec(\'' . $nodeActionProcessNetworkInterfaceIpAddresses . '\'); ?>') === false) {
 		echo 'Error processing network interface IP addresses, please try again.' . "\n";
 		exit;
 	}
@@ -372,9 +368,8 @@
 		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_network_interface_ip_addresses ghostcompute_default'
 	);
 	$crontabCommands = implode("\n", $crontabCommands);
-	$filePutContentsResponse = file_put_contents('/etc/crontab', $crontabCommands);
 
-	if (empty($filePutContentsResponse) === true) {
+	if (file_put_contents('/etc/crontab', $crontabCommands) === false) {
 		echo 'Error adding crontab commands, please try again.' . "\n";
 		exit;
 	}
@@ -386,7 +381,8 @@
 		exit;
 	}
 
-	$systemActionDeployNodeResponse = json_decode(file_get_contents('/usr/local/ghostcompute/system_action_deploy_node_response.json'), true);
+	$systemActionDeployNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_deploy_node_response.json');
+	$systemActionDeployNodeResponse = json_decode($systemActionDeployNodeResponse, true);
 
 	if (empty($systemActionDeployNodeResponse['message']) === true) {
 		echo 'Error deploying node, please try again.' . "\n";
@@ -402,9 +398,8 @@
 			'system_version_number' => '1'
 		);
 		$nodeData = json_encode($nodeData);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_data.json', $nodeData);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/usr/local/ghostcompute/node_data.json', $nodeData) === false) {
 			echo 'Error adding node data, please try again.' . "\n";
 			exit;
 		}
