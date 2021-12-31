@@ -7,7 +7,7 @@
 		  nodeExternalIpAddressVersion4=127.0.0.2
 		  nodeInternalIpAddressVersion4=127.0.0.3
 		  systemUserAuthenticationToken=1234
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node","data":{"external_ip_address_version_4":"$nodeExternalIpAddressVersion4","internal_ip_address_version_4":"$nodeInternalIpAddressVersion4"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
+		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data '{"action":"add_node","data":{"external_ip_address_version_4":"$nodeExternalIpAddressVersion4","internal_ip_address_version_4":"$nodeInternalIpAddressVersion4"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 		  sudo cat /tmp/debug.php for node ID
 		  nodeId="1"
 		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id"="$nodeId","port_number":"1080","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
