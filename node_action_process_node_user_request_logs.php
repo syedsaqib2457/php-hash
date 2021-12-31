@@ -53,9 +53,8 @@
 							$mostRecentNodeProcessUserRequestLogPosition = strpos($nodeProcessUserRequestLogs, $mostRecentNodeProcessUserRequestLog);
 							$updatedNodeProcessUserRequestLogs = substr($nodeProcessUserRequestLogs, $mostRecentNodeProcessUserRequestLogPosition + $mostRecentNodeProcessUserRequestLogLength);
 							$updatedNodeProcessUserRequestLogs = trim($updatedNodeProcessUserRequestLogs);
-							$filePutContentsResponse = file_put_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile, $updatedNodeProcessUserRequestLogs);
 
-							if (empty($filePutContentsResponse) === true) {
+							if (file_put_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile, $updatedNodeProcessUserRequestLogs) === false) {
 								$response['message'] = 'Error processing node user request logs, please try again.' . "\n";
 								return $response;
 							}
