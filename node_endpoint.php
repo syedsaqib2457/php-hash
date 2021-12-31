@@ -1,5 +1,5 @@
 <?php
-	function _killProcessIds($binaryFiles, $processIds, $response) {
+	function _killProcessIds($binaryFiles, $nodeAction, $processIds, $response) {
 		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
@@ -13,10 +13,10 @@
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
-		file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_kill_process_commands.sh', $killProcessCommands);
-		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $parameters['action'] . '_kill_process_commands.sh');
-		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_kill_process_commands.sh');
-		unlink('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_kill_process_commands.sh');
+		file_put_contents('/usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands.sh', $killProcessCommands);
+		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands.sh');
+		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $nodeAction . '_kill_process_commands.sh');
+		unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands.sh');
 		return;
 	}
 
@@ -149,6 +149,7 @@
 			'package' => 'wget'
 		)
 	);
+	$nodeAction = strval($parameters['action']);
 
 	foreach ($binaries as $binary) {
 		$binaryFileListCommands = array(
@@ -157,13 +158,13 @@
 		);
 		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
 		
-		if (file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
+		if (file_put_contents('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_binary_file_list_commands.sh', 0755);
-		exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $parameters['action'] . '_binary_file_list_commands.sh', $binaryFile);
+		chmod('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh', 0755);
+		exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -176,10 +177,10 @@
 		$parameters['binary_files'][$binary['name']] = $binaryFile;
 	}
 
-	unlink('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_binary_file_list_commands.sh');
+	unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh');
 	// todo: prevent running duplicate node processes
 
-	if (in_array(strval($parameters['action']), array(
+	if (in_array($nodeAction, array(
 		'process_node_processes',
 		'process_node_resource_usage_logs',
 		'process_node_user_blockchain_mining',
@@ -224,13 +225,13 @@
 	}
 
 	if (
-		(ctype_alnum(str_replace('_', '', $parameters['action'])) === false) ||
-		(file_exists('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '.php') === false)
+		(ctype_alnum(str_replace('_', '', $nodeAction)) === false) ||
+		(file_exists('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php') === false)
 	) {
 		$response['message'] = 'Invalid node endpoint request action, please try again.';
 		_output($response);
 	}
 
-	require_once('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '.php');
+	require_once('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php');
 	_output($response);
 ?>
