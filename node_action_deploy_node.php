@@ -300,7 +300,8 @@
 	shell_exec('sudo rm -rf /usr/src/3proxy/ && sudo mkdir -p /usr/src/3proxy/');
 	shell_exec('cd /usr/src/3proxy/ && sudo ' . $binaryFiles['wget'] . ' -O 3proxy.tar.gz --no-dns-cache --timeout=60 https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
 	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
-	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux && sudo make -f Makefile.Linux install');
+	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux');
+	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux install');
 	shell_exec('sudo mkdir -p /var/log/3proxy/');
 	$nodeFiles = array(
 		'node_endpoint.php',
