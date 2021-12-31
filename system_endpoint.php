@@ -30,6 +30,12 @@
 		}
 
 		require_once('/var/www/ghostcompute/system_databases.php');
+
+		if (empty($parameters['action']) === true) {
+			$response['message'] = 'System endpoint request must have an action, please try again.';
+			_output($response);
+		}
+
 		$systemAction = str_replace('_', '', $parameters['action']);
 
 		if (
