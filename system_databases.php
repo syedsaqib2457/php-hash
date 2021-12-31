@@ -31,7 +31,7 @@
 				)
 			);
 
-			if (is_int(strpos($systemDatabase, '__')) === true) {
+			if ((strpos($systemDatabase, '__') === false) === false) {
 				$systemDatabaseParts = explode('__', $systemDatabase);
 
 				if (
@@ -230,8 +230,9 @@
 					if (($whereConditionKey === 'either') === true) {
 						$whereConditionValueValueCondition = 'IN';
 
-						if (is_int(strpos($whereConditionValueKey, ' !=')) === true) {
-							$whereConditionValueKey = substr($whereConditionValueKey, 0, strpos($whereConditionValueKey, ' '));
+						if ((strpos($whereConditionValueKey, ' !=') === false) === false) {
+							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
+							$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
 							$whereConditionValueValueCondition = 'NOT ' . $whereConditionValueValueCondition;
 						}
 
@@ -241,16 +242,18 @@
 
 				if (empty($whereConditionValueConditions) === true) {
 					if (
-						(is_int(strpos($whereConditionKey, ' >')) === true) ||
-						(is_int(strpos($whereConditionKey, ' <')) === true)
+						((strpos($whereConditionKey, ' >') === false) === false) ||
+						((strpos($whereConditionKey, ' <') === false) === false)
 					) {
-						$whereConditionValueConditions[] = $whereConditionKey . ' ' . str_replace("'", "\'", current($whereConditionValue));
+						$whereConditionValue = current($whereConditionValue);
+						$whereConditionValueConditions[] = $whereConditionKey . ' ' . str_replace("'", "\'", $whereConditionValue);
 					} else {
 						$whereConditionValueCondition = 'IN';
 						$whereConditionValueKey = $whereConditionKey;
 
-						if (is_int(strpos($whereConditionValueKey, ' !=')) === true) {
-							$whereConditionValueKey = substr($whereConditionValueKey, 0, strpos($whereConditionValueKey, ' '));
+						if ((strpos($whereConditionValueKey, ' !=') === false) === false) {
+							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
+							$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
 							$whereConditionValueCondition = 'NOT ' . $whereConditionValueCondition;
 						}
 
@@ -267,7 +270,9 @@
 
 	function _save($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			if (is_numeric(key($parameters['data'])) === false) {
+			$dataKey = key($parameters['data']);
+
+			if (is_numeric($dataKey) === false) {
 				$parameters['data'] = array(
 					$parameters['data']
 				);
@@ -279,7 +284,8 @@
 				$dataInsertValues = $dataKeys = $dataUpdateValues = '';
 
 				foreach ($data as $dataKey => $dataValue) {
-					$dataInsertValue = str_replace("'", "\'", str_replace('\\', '\\\\', $dataValue));
+					$dataInsertValue = str_replace('\\', '\\\\', $dataValue);
+					$dataInsertValue = str_replace("'", "\'", $dataInsertValue);
 					$dataInsertValues .= "','" . $dataInsertValue;
 					$dataKeys .= ',' . $dataKey;
 					$dataUpdateValues .= "," . $dataKey . "='" . $dataInsertValue . "'";
@@ -298,9 +304,8 @@
 				}
 
 				$dataUpdateValues = ' ON DUPLICATE KEY UPDATE ' . substr($dataUpdateValues, 1);
-				$commandResponse = mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues);
 
-				if ($commandResponse === false) {
+				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues) === false) {
 					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 					_output($response);
 				}
