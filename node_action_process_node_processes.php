@@ -651,7 +651,7 @@
 						$recursiveDnsNodeProcessProcessIds = _listProcessIds('recursive_dns_' . $recursiveDnsNodeProcessId . ' ', 'recursive_dns_' . $recursiveDnsNodeProcessId . '/');
 
 						if (empty($recursiveDnsNodeProcessProcessIds) === false) {
-							_killProcessIds($parameters['binary_files'], $recursiveDnsNodeProcessProcessIds, $response);
+							_killProcessIds($parameters['binary_files'], $parameters['action'], $recursiveDnsNodeProcessProcessIds, $response);
 						}
 					}
 
@@ -927,7 +927,7 @@
 								$proxyNodeProcessProcessIds = _listProcessIds($proxyNodeProcessType . '_' . $proxyNodeProcessId . ' ', '/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg');
 
 								if (empty($proxyNodeProcessProcessIds) === false) {
-									_killProcessIds($parameters['binary_files'], $proxyNodeProcessProcessIds, $response);
+									_killProcessIds($parameters['binary_files'], $parameters['action'], $proxyNodeProcessProcessIds, $response);
 								}
 							}
 
@@ -1044,7 +1044,7 @@
 
 			if (empty($nodeProcessProcessIds) === false) {
 				$nodeProcessProcessIds = array_filter($nodeProcessProcessIds);
-				_killProcessIds($parameters['binary_files'], $nodeProcessProcessIds, $response);
+				_killProcessIds($parameters['binary_files'], $parameters['action'], $nodeProcessProcessIds, $response);
 			}
 		}
 
