@@ -29,7 +29,7 @@
 					$_0 = hash('sha256', hash_hmac('sha256', $_2, $_3));
 
 					if (
-						($_0[$_5] === '0') &&
+						($_0[$_5] === '0') && // todo: use empty() for groups of characters from start of string for efficient leading 0 string verification
 						($_0[0] === '0')
 					) {
 						$_0[($_5 + 1)] = '.';
