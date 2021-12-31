@@ -47,8 +47,14 @@
 		}
 
 		if (
-			(empty($parameters['node_authentication_token']) === true) &&
-			(empty($parameters['system_user_authentication_token']) === true)
+			(
+				(empty($parameters['node_authentication_token']) === true) &&
+				(empty($parameters['system_user_authentication_token']) === true)
+			) ||
+			(
+				(empty($parameters['node_authentication_token']) === false) &&
+				(empty($parameters['system_user_authentication_token']) === false)
+			)
 		) {
 			$response['message'] = 'System endpoint request must have either a node or system user authentication token, please try again.';
 			_output($response);
