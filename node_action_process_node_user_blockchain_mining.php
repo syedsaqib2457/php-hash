@@ -18,18 +18,17 @@
 	} else {
 		// php node_action_process_node_user_blockchain_mining.php [type] [block_header] [min_nonce] [max_nonce] [leading_zero_string] [process_index]
 			// mine indexed section for pseudo-threading
-			// write static repeating hash functions within loop for better CPU efficiency
 
 		$_3 = intval($_3);
 		$_4 = intval($_4);
 
 		switch ($_1) {
 			case 'bitcoin':
-				for ($_3; $_3 < $_4; $_3++) {
+				for ($_3; $_3 < $_4; $_3 += 2) {
 					$_0 = hash('sha256', hash_hmac('sha256', $_2, $_3));
 
 					if (
-						($_0[16] === '0') &&
+						(($_0[16] === '0') === true) &&
 						(empty($_0[0] . $_0[1] . $_0[2] . $_0[3] . $_0[4] . $_0[5]) === true) &&
 						(empty($_0[6] . $_0[7] . $_0[8] . $_0[9] . $_0[10]) === true) &&
 						(empty($_0[11] . $_0[12] . $_0[13] . $_0[14] . $_0[15]) === true)
@@ -39,7 +38,20 @@
 						}
 					}
 
-					// todo: add usleep(1), usleep (2), etc for lower-spec devices
+					$_0 = hash('sha256', hash_hmac('sha256', $_2, ($_3 + 1)));
+
+					if (
+						(($_0[16] === '0') === true) &&
+						(empty($_0[0] . $_0[1] . $_0[2] . $_0[3] . $_0[4] . $_0[5]) === true) &&
+						(empty($_0[6] . $_0[7] . $_0[8] . $_0[9] . $_0[10]) === true) &&
+						(empty($_0[11] . $_0[12] . $_0[13] . $_0[14] . $_0[15]) === true)
+					) {						
+						if (($_0 < $_5) === true) {
+							break;
+						}
+					}
+
+					usleep(10);
 				}
 
 				echo 'Hash attempts: ' . $_3 . "\n";
