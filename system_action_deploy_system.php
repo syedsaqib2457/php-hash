@@ -667,28 +667,26 @@
 			sleep(1);
 		}
 	} else {
-		$databaseConnection = mysqli_connect('localhost', 'root', 'password');
+		$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password');
 
-		if ($databaseConnection === false) {
+		if ($systemDatabaseConnection === false) {
 			echo 'Error connecting to system database, please try again.';
 			exit;
 		}
 
-		$mysqliQueryResponse = mysqli_query($databaseConnection, 'CREATE DATABASE IF NOT EXISTS `ghostcompute` CHARSET UTF8');
-
-		if ($mysqliQueryResponse === false) {
+		if (mysqli_query($systemDatabaseConnection, 'CREATE DATABASE IF NOT EXISTS `ghostcompute` CHARSET UTF8') === false) {
 			echo 'Error creating system database, please try again.';
 			exit;
 		}
 
-		$databaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
+		$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
 
-		if ($databaseConnection === false) {
+		if ($systemDatabaseConnection === false) {
 			echo 'Error connecting to system database, please try again.';
 			exit;
 		}
 
-		$databases = array(
+		$systemDatabases = array(
 			'node_process_forwarding_destinations' => array(
 				'created_timestamp',
 				'hostname_version_4',
@@ -1050,84 +1048,85 @@
 				'system_user_id'
 			)
 		);
-		$databaseCommands = array();
+		$systemDatabaseCommands = array();
 
-		foreach ($databases as $databaseTableName => $databaseColumnNames) {
-			$databaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $databaseTableName . '` (`created_timestamp` VARCHAR(10) NULL DEFAULT NULL);';
+		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
+			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableName . '` (`created_timestamp` VARCHAR(10) NULL DEFAULT NULL);';
 
-			foreach ($databaseColumnNames as $databaseColumnName) {
-				if (($databaseColumnName === 'created_timestamp') === true) {
+			foreach ($systemDatabaseColumnNames as $systemDatabaseColumnName) {
+				if (($systemDatabaseColumnName === 'created_timestamp') === true) {
 					continue;
 				}
 
-				$databaseColumnType = 'text';
+				$systemDatabaseColumnType = 'text';
 
 				if (
-					(($databaseColumnName === 'id') === true) ||
-					((substr($databaseColumnName, -3) === '_id') === true)
+					(($systemDatabaseColumnName === 'id') === true) ||
+					((substr($systemDatabaseColumnName, -3) === '_id') === true)
 				) {
-					$databaseColumnType = 'VARCHAR(30)';
+					$systemDatabaseColumnType = 'VARCHAR(30)';
 				}
 
-				if ((substr($databaseColumnName, -11) === '_percentage') === true) {
-					$databaseColumnType = 'VARCHAR(3)';
+				if ((substr($systemDatabaseColumnName, -11) === '_percentage') === true) {
+					$systemDatabaseColumnType = 'VARCHAR(3)';
 				}
 
-				if ((substr($databaseColumnName, -7) === '_status') === true) {
-					$databaseColumnType = 'VARCHAR(1)';
+				if ((substr($systemDatabaseColumnName, -7) === '_status') === true) {
+					$systemDatabaseColumnType = 'VARCHAR(1)';
 				}
 
-				if ((substr($databaseColumnName, -10) === '_timestamp') === true) {
-					$databaseColumnType = 'VARCHAR(10)';
+				if ((substr($systemDatabaseColumnName, -10) === '_timestamp') === true) {
+					$systemDatabaseColumnType = 'VARCHAR(10)';
 				}
 
-				$databaseCommandActions = array(
-					'add' => 'ADD `' . $databaseColumnName . '`',
-					'change' => 'CHANGE `' . $databaseColumnName . '` `' . $databaseColumnName . '`'
+				$systemDatabaseCommandActions = array(
+					'add' => 'ADD `' . $systemDatabaseColumnName . '`',
+					'change' => 'CHANGE `' . $systemDatabaseColumnName . '` `' . $systemDatabaseColumnName . '`'
 				);
-				$databaseCommand = 'ALTER TABLE `' . $databaseTableName . '` ' . $databaseCommandActions['change'] . ' ' . $databaseColumnType . ' NULL DEFAULT NULL';
+				$systemDatabaseCommand = 'ALTER TABLE `' . $systemDatabaseTableName . '` ' . $systemDatabaseCommandActions['change'] . ' ' . $systemDatabaseColumnType . ' NULL DEFAULT NULL';
 
-				if (mysqli_query($databaseConnection, $databaseCommand) === false) {
-					$databaseCommands[] = str_replace($databaseCommandActions['change'], $databaseCommandActions['add'], $databaseCommand);
+				if (mysqli_query($systemDatabaseConnection, $systemDatabaseCommand) === false) {
+					$systemDatabaseCommands[] = str_replace($systemDatabaseCommandActions['change'], $systemDatabaseCommandActions['add'], $systemDatabaseCommand);
 				}
 
-				if (($databaseColumnName === 'id') === true) {
-					$databaseCommands[$databaseColumnName . '__' . $databaseTableName] = 'ALTER TABLE `' . $databaseTableName . '` ADD PRIMARY KEY (`' . $databaseColumnName . '`)';
+				if (($systemDatabaseColumnName === 'id') === true) {
+					$systemDatabaseCommands[$systemDatabaseColumnName . '__' . $systemDatabaseTableName] = 'ALTER TABLE `' . $systemDatabaseTableName . '` ADD PRIMARY KEY (`' . $systemDatabaseColumnName . '`)';
 				}
 			}
 		}
 
-		foreach ($databaseCommands as $databaseCommandKey => $databaseCommand) {
+		foreach ($systemDatabaseCommands as $systemDatabaseCommandKey => $systemDatabaseCommand) {
 			if (
-				(is_numeric($databaseCommandKey) === false) &&
-				(is_int(strpos($databaseCommand, 'ADD PRIMARY KEY')) === true)
+				(is_numeric($systemDatabaseCommandKey) === false) &&
+				(is_int(strpos($systemDatabaseCommand, 'ADD PRIMARY KEY')) === true)
 			) {
-				$databaseCommandKey = explode('__', $databaseCommandKey);
+				$systemDatabaseCommandKey = explode('__', $systemDatabaseCommandKey);
+				$systemDatabaseKeys = mysqli_query($systemDatabaseConnection, 'SHOW KEYS FROM `' . $systemDatabaseCommandKey[1] . '` WHERE Column_name=\'' . $systemDatabaseCommandKey[0] . '\'')->num_rows;
 
-				if (empty(mysqli_query($databaseConnection, 'SHOW KEYS FROM `' . $databaseCommandKey[1] . '` WHERE Column_name=\'' . $databaseCommandKey[0] . '\'')->num_rows) === false) {
+				if (empty($systemDatabaseKeys) === false) {
 					continue;
 				}
 			}
 
-			mysqli_query($databaseConnection, $databaseCommand);
+			mysqli_query($systemDatabaseConnection, $systemDatabaseCommand);
 		}
 
-		foreach ($databases as $databaseTableName => $databaseColumnNames) {
-			$databaseCommandResponse = mysqli_query($databaseConnection, 'SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = \'' . $databaseTableName . '\'');
+		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
+			$systemDatabaseCommandResponse = mysqli_query($systemDatabaseConnection, 'SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = \'' . $systemDatabaseTableName . '\'');
 
-			if (empty($databaseCommandResponse->num_rows) === true) {
-				echo 'Error executing database commands, please try again.';
+			if (empty($systemDatabaseCommandResponse->num_rows) === true) {
+				echo 'Error executing system database commands, please try again.';
 				exit;
 			}
 
-			$databaseCommandResponse = mysqli_fetch_assoc($databaseCommandResponse);
-			$databaseCommandResponse = current($databaseCommandResponse);
-			$databaseCommandResponse = intval($databaseCommandResponse);
-			end($databaseColumnNames);
-			$databaseColumnNameCount = (key($databaseColumnNames) + 1);
+			$systemDatabaseCommandResponse = mysqli_fetch_assoc($systemDatabaseCommandResponse);
+			$systemDatabaseCommandResponse = current($systemDatabaseCommandResponse);
+			$systemDatabaseCommandResponse = intval($systemDatabaseCommandResponse);
+			end($systemDatabaseColumnNames);
+			$systemDatabaseColumnNameCount = (key($systemDatabaseColumnNames) + 1);
 
-			if (($databaseCommandResponse === $databaseColumnNameCount) === false) {
-				echo 'Error executing database commands, please try again.';
+			if (($systemDatabaseCommandResponse === $systemDatabaseColumnNameCount) === false) {
+				echo 'Error executing system database commands, please try again.';
 				exit;
 			}
                 }
@@ -1136,7 +1135,7 @@
 		$systemUserAuthenticationTokenId = _createUniqueId();
 		$systemUserAuthenticationTokenString = _createUniqueId();
 		$systemUserId = _createUniqueId();
-		$databaseData = array(
+		$systemDatabaseData = array(
 			'system_settings' => array(
 				array(
 					'created_timestamp' => $timestamp,
@@ -1171,23 +1170,23 @@
 			)
 		);
 
-		foreach ($databases as $databaseTableName => $databaseColumnNames) {
+		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
 			$systemDatabaseId = _createUniqueId();
-			$databaseData['system_databases'][] = array(
+			$systemDatabaseData['system_databases'][] = array(
 				'authentication_credential_hostname' => 'localhost',
 				'authentication_credential_password' => 'password',
 				'created_timestamp' => $timestamp,
 				'id' => $systemDatabaseId,
 				'modified_timestamp' => $timestamp,
-				'table_name' => $databaseTableName
+				'table_name' => $systemDatabaseTableName
 			);
 
-			foreach ($databaseColumnNames as $databaseColumnName) {
-				$databaseData['system_database_columns'][] = array(
+			foreach ($systemDatabaseColumnNames as $systemDatabaseColumnName) {
+				$systemDatabaseData['system_database_columns'][] = array(
 					'created_timestamp' => $timestamp,
 					'id' => _createUniqueId(),
 					'modified_timestamp' => $timestamp,
-					'name' => $databaseColumnName,
+					'name' => $systemDatabaseColumnName,
 					'system_database_id' => $systemDatabaseId
 				);
 			}
@@ -1199,7 +1198,7 @@
 			if ((substr($systemFile, 0, 13) === 'system_action') === true) {
 				$systemAction = substr($systemFile, 14);
 				$systemAction = substr($systemAction, 0, -4);
-				$databaseData['system_user_authentication_token_scopes'][] = array(
+				$systemDatabaseData['system_user_authentication_token_scopes'][] = array(
 					'created_timestamp' => $timestamp,
 					'id' => _createUniqueId(),
 					'modified_timestamp' => $timestamp,
@@ -1210,12 +1209,12 @@
 			}
 		}
 
-		foreach ($databaseData as $databaseTableName => $databaseRows) {
-			foreach ($databaseRows as $databaseRow) {
-				$mysqliQueryResponse = mysqli_query($databaseConnection, 'INSERT IGNORE INTO `' . $databaseTableName . '` (`' . implode('`, `', array_keys($databaseRow)) . '`) VALUES (\'' . implode('\', \'', array_values($databaseRow)) . '\')');
+		foreach ($systemDatabaseData as $systemDatabaseTableName => $systemDatabaseRows) {
+			foreach ($systemDatabaseRows as $systemDatabaseRow) {
+				$mysqliQueryResponse = mysqli_query($systemDatabaseConnection, 'INSERT IGNORE INTO `' . $systemDatabaseTableName . '` (`' . implode('`, `', array_keys($systemDatabaseRow)) . '`) VALUES (\'' . implode('\', \'', array_values($systemDatabaseRow)) . '\')');
 
 				if ($mysqliQueryResponse === false) {
-					echo 'Error executing database commands, please try again.';
+					echo 'Error executing system database commands, please try again.';
 					exit;
 				}
 			}
