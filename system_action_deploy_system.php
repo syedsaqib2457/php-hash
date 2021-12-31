@@ -1211,16 +1211,19 @@
 
 		foreach ($systemDatabaseData as $systemDatabaseTableName => $systemDatabaseRows) {
 			foreach ($systemDatabaseRows as $systemDatabaseRow) {
-				$mysqliQueryResponse = mysqli_query($systemDatabaseConnection, 'INSERT IGNORE INTO `' . $systemDatabaseTableName . '` (`' . implode('`, `', array_keys($systemDatabaseRow)) . '`) VALUES (\'' . implode('\', \'', array_values($systemDatabaseRow)) . '\')');
+				$systemDatabaseRowColumnNames = array_keys($systemDatabaseRow);
+				$systemDatabaseRowColumnNames = implode('`, `', $systemDatabaseRowColumnNames);
+				$systemDatabaseRowColumnValues = array_values($systemDatabaseRow);
+				$systemDatabaseRowColumnValues = implode('\', \'', $systemDatabaseRowColumnValues);
 
-				if ($mysqliQueryResponse === false) {
-					echo 'Error executing system database commands, please try again.';
+				if (mysqli_query($systemDatabaseConnection, 'INSERT IGNORE INTO `' . $systemDatabaseTableName . '` (`' . $systemDatabaseRowColumnNames . '`) VALUES (\'' . implode('\', \'', $systemDatabaseRowColumnValues . '\')') === false) {
+					echo 'Error adding system database data, please try again.';
 					exit;
 				}
 			}
 		}
 
-		echo 'Main system user authentication token is ' . $systemUserAuthenticationTokenString . "\n";
+		echo 'System user authentication token is ' . $systemUserAuthenticationTokenString . "\n";
 		echo 'System deployed successfully.' . "\n";
 		exit;
 	}
