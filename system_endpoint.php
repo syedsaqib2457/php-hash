@@ -73,7 +73,7 @@
 					'internal_ip_address_version_6',
 					'node_id'
 				),
-				'in' => $parameters['databases']['nodes'],
+				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'authentication_token' => $parameters['node_authentication_token']
 				)
@@ -99,7 +99,7 @@
 					'id',
 					'system_user_id'
 				),
-				'in' => $parameters['databases']['system_user_authentication_tokens'],
+				'in' => $parameters['system_databases']['system_user_authentication_tokens'],
 				'where' => array(
 					'string' => $parameters['system_user_authentication_token']
 				)
@@ -113,7 +113,7 @@
 
 			$parameters['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 			$systemUserAuthenticationTokenScopeCount = _count(array(
-				'in' => $parameters['databases']['system_user_authentication_token_scopes'],
+				'in' => $parameters['system_databases']['system_user_authentication_token_scopes'],
 				'where' => array(
 					'system_action' => $parameters['action'],
 					'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
@@ -143,7 +143,7 @@
 			}
 
 			$systemUserAuthenticationTokenSourceCountParameters = array(
-				'in' => $parameters['databases']['system_user_authentication_token_sources'],
+				'in' => $parameters['system_databases']['system_user_authentication_token_sources'],
 				'where' => array(
 					'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
 				)
