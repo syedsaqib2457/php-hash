@@ -412,9 +412,8 @@
 			'vm.swappiness = 0'
 		);
 		$kernelOptions = implode("\n", $kernelOptions);
-		$filePutContentsResponse = file_put_contents('/etc/sysctl.conf', $kernelOptions);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/etc/sysctl.conf', $kernelOptions) === false) {
 			$response['message'] = 'Error adding kernel options, please try again.' . "\n";
 			return $response;
 		}
@@ -466,9 +465,8 @@
 
 		array_unshift($nodeInterfaces, '<?php');
 		$nodeInterfaces = implode("\n", $nodeInterfaces);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_interfaces.php', $nodeInterfaces);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/usr/local/ghostcompute/node_interfaces.php', $nodeInterfaces) === false) {
 			$response['message'] = 'Error adding node interfaces, please try again.' . "\n";
 			return $response;
 		}
