@@ -731,7 +731,12 @@
 		}
 
 		$nodeRecursiveDnsDestinations = implode("\n", $nodeRecursiveDnsDestinations);
-		file_put_contents('/usr/local/ghostcompute/resolv.conf', $nodeRecursiveDnsDestinations);
+
+		if (file_put_contents('/usr/local/ghostcompute/resolv.conf', $nodeRecursiveDnsDestinations) === false) {
+			$response['message'] = 'Error adding node recursive DNS destinations, please try again.' . "\n";
+			return $response;
+		}
+
 		$parameters['node_process_type_process_part_data_keys']['recursive_dns'] = array(
 			'next',
 			'next'
