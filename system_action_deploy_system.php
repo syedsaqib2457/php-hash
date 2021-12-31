@@ -11,6 +11,8 @@
 		  nodeId="1"
 		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id"="$nodeId","port_number":"1080","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id"="$nodeId","port_number":"1081","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
+		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id"="$nodeId","port_number":"53","type":"recursive_dns"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
+		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id"="$nodeId","port_number":"54","type":"recursive_dns"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 		  todo: API calls for adding a node with proxy + recursive DNS processes before debugging node_action_deploy_node.php
 	*/
 
