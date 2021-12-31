@@ -156,12 +156,8 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-		$filePutContentsResponse = file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_binary_file_list_commands.sh', $binaryFileListCommands);
 		
-		if (
-			($binaryFileListCommands === false) ||
-			(empty($filePutContentsResponse) === true)
-		) {
+		if (file_put_contents('/usr/local/ghostcompute/node_action_' . $parameters['action'] . '_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
