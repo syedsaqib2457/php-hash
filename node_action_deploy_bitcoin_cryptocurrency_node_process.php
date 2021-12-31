@@ -7,7 +7,7 @@
 	shell_exec('cd /usr/src/bitcoin/ && sudo ' . $binaryFiles['wget'] . ' -O bitcoin.tar.gz --no-dns-cache --timeout=60 https://github.com/bitcoin/bitcoin/archive/refs/tags/v22.0.tar.gz');
 	shell_exec('cd /usr/src/bitcoin/ && sudo tar -xvzf bitcoin.tar.gz');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo ./autogen.sh');
-	shell_exec('cd /usr/src/bitcoin/*/ && sudo ./configure --disable-bench --disable-hardening --disable-miniupnpc --disable-natpnp --with-utils --without-gui --without-qrencode');
+	shell_exec('cd /usr/src/bitcoin/*/ && sudo ./configure --disable-bench --disable-hardening --disable-miniupnpc --disable-natpnp --with-utils --without-bdb --without-gui --without-qrencode');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make install');
 	// todo: compile with defaults, add configure options for low memory usage
