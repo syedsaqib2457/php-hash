@@ -10,5 +10,8 @@
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo ./configure --disable-bench --disable-hardening --disable-miniupnpc --disable-natpnp --with-utils --without-bdb --without-gui --without-qrencode');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make install');
+	// todo: add full path to Bitcoin daemon
+	// todo: add bitcoind parameter values based on system resources
+	shell_exec('sudo bitcoind');
 	// todo: compile with defaults, add configure options for low memory usage
 ?>
