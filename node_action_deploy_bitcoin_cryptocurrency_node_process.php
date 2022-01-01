@@ -12,6 +12,6 @@
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make install');
 	// todo: add full path to Bitcoin daemon
 	// todo: add bitcoind parameter values based on system resources
-	shell_exec('sudo bitcoind');
+	shell_exec('sudo bitcoind -daemon -maxuploadtarget=1024');
 	// todo: compile with defaults, add configure options for low memory usage
 ?>
