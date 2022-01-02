@@ -15,7 +15,7 @@
 	// todo: par=<n> should be (((total number of cores) - 1) * percentage of resources value to use for mining)
 	$maximumConnections = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) / 50);
 	$maximumTransactionMemoryPoolMegabytes = ceil(($parameters['memory_capacity_bytes'] * 0.30);
-	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.0000000001 -daemon -datacarriersize=1000000 -dbcache=10 -keypool=1 -maxconnections=' . $maximumConnections . ' -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.0000000001 -persistmempool=0 -timeout=10000');
+	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon -datacarriersize=1000000 -dbcache=10 -keypool=1 -maxconnections=' . $maximumConnections . ' -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -timeout=10000');
 	// todo: try -blocksonly=1 and -blocksonly since default value is 0 but manpage doesn't have blocksonly=<value>
 	// todo: compile with defaults, add configure options for low memory usage
 ?>
