@@ -16,7 +16,14 @@
 	$maximumConnections = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) / 50);
 	$maximumTransactionMemoryPoolMegabytes = ceil(($parameters['memory_capacity_bytes'] * 0.30);
 	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -blocksonly -daemon -datacarriersize=1000000 -dbcache=10 -keypool=1 -maxconnections=' . $maximumConnections . ' -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -timeout=10000');
-	$bitcoinSettings = array();
+	$bitcoinPassword = mt_rand(30, 40);
+	$bitcoinPassword = random_bytes($bitcoinPassword);
+	$bitcoinPassword = bin2hex($bitcoinPassword);
+	$bitcoinPassword = uniqid() . $bitcoinPassword;
+	$bitcoinSettings = array(
+		'rpcuser' => 'ghostcompute',
+		'rpcpassword' => $bitcoinPassword
+	);
 	$bitcoinSettings = implode("\n", $bitcoinSettings);
 
 	if (file_put_contents('~/.bitcoin/bitcoin.conf', $bitcoinSettings) === false) {
