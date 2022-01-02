@@ -11,7 +11,7 @@
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make install');
 	// todo: add full path to Bitcoin daemon
-	// todo: add bitcoind parameter values based on system resources
+	// todo: dynamic parameter percentage should be based on framework system value in case other node processes / cryptocurrencies are used on the same node
 	$maximumConnections = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) / 50);
 	$maximumTransactionMemoryPoolMegabytes = ceil(($parameters['memory_capacity_bytes'] * 0.10);
 	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.0000000001 -daemon -datacarriersize=1000000 -keypool=1 -maxconnection=' . $maximumConnections . ' -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.0000000001 -persistmempool=0 -timeout=10000');
