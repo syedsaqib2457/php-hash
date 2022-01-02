@@ -13,9 +13,11 @@
 	// todo: add full path to Bitcoin daemon
 	// todo: dynamic parameter percentage should be based on framework system value in case other node processes / cryptocurrencies are used on the same node
 	// todo: par=<n> should be (((total number of cores) - 1) * percentage of resources value to use for mining)
-	$maximumConnections = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) / 50);
+	$maximumDatabaseBatchSize = ((16777216 * 8) + 1000);
+	// Listening is disabled during IBD with (default dbbatchsize * maximum peers)
+	// todo: restart daemon after IBD with listening + $maximumConnections = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) / 50);
 	$maximumTransactionMemoryPoolMegabytes = ceil(($parameters['memory_capacity_bytes'] * 0.30);
-	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -dbcache=10 -keypool=1 -maxconnections=' . $maximumConnections . ' -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -timeout=10000 whitelistrelay=0');
+	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -timeout=10000 whitelistrelay=0');
 	$bitcoinPassword = mt_rand(30, 40);
 	$bitcoinPassword = random_bytes($bitcoinPassword);
 	$bitcoinPassword = bin2hex($bitcoinPassword);
