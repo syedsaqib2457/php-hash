@@ -12,7 +12,9 @@
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make install');
 	// todo: add full path to Bitcoin daemon
 	// todo: add bitcoind parameter values based on system resources
-	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.0000000001 -daemon -datacarriersize=1000000 -keypool=1 -maxmempool=100 -maxtimeadjustment=10000 -maxuploadtarget=1024 -minrelaytxfee=0.0000000001 -timeout=10000');
+	$maximumTransactionMemoryPoolMegabytes = ($parameters['memory_capacity_bytes'] * 0.10);
+	$maximumTransactionMemoryPoolMegabytes = ceil($maximumTransactionMemoryPoolMegabytes);
+	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.0000000001 -daemon -datacarriersize=1000000 -keypool=1 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxtimeadjustment=10000 -maxuploadtarget=1024 -minrelaytxfee=0.0000000001 -timeout=10000');
 	// todo: try -blocksonly=1 and -blocksonly since default value is 0 but manpage doesn't have blocksonly=<value>
 	// todo: compile with defaults, add configure options for low memory usage
 ?>
