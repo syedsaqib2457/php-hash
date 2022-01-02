@@ -21,8 +21,8 @@
 	$bitcoinPassword = bin2hex($bitcoinPassword);
 	$bitcoinPassword = uniqid() . $bitcoinPassword;
 	$bitcoinSettings = array(
-		'rpcuser' => 'ghostcompute',
-		'rpcpassword' => $bitcoinPassword
+		'rpcuser=ghostcompute',
+		'rpcpassword=' . $bitcoinPassword
 	);
 	$bitcoinSettings = implode("\n", $bitcoinSettings);
 
