@@ -2,6 +2,7 @@
 	// todo: manage crontab execution without node endpoint from process_node_processes
 	// todo: figure out all the confusing block creation RPC shit from the BIP documentation without an existing PHP library
 	// todo: use different timestamps for each node process process instead of index
+	// todo: span entire nonce range in maximum 5 seconds with staggered sleep() instead of costly x < y in for loop
 
 	if (empty($_SERVER['argv'][1]) === true) {
 		exit;
@@ -12,13 +13,16 @@
 		$$variable = $value;
 	}
 
-	// php node_action_process_node_user_blockchain_mining.php [block_header] [min_nonce] [max_nonce] [leading_zero_string] [process_index]
+	sleep($_4);
+	set_time_limit(5);
+
+	// php node_action_process_node_process_bitcoin_cryptocurrency_mining.php [block_header] [min_nonce] [max_nonce] [target_string] [sleep_interval]
 		// mine indexed section for pseudo-threading
 
 	$_2 = intval($_2);
 	$_3 = intval($_3);
 
-	for ($_2; $_2 < $_3; $_2 += 2) {
+	for ($_2; true; $_2 += 2) {
 		$_0 = hash('sha256', hash_hmac('sha256', $_1, $_2));
 
 		if (
@@ -44,11 +48,8 @@
 				break;
 			}
 		}
-
-		usleep(10); // todo: change value depending on system resources 
 	}
 
-	echo 'Hash attempts: ' . $_2 . "\n";
 	echo 'Block mined successfully: ' . $_0 . "\n";
 	// todo: save hash to /tmp file for processing
 ?>
