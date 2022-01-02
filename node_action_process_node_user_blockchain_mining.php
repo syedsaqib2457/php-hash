@@ -1,4 +1,6 @@
 <?php
+	// todo: figure out all the confusing block creation RPC shit from the BIP documentation without an existing PHP library
+
 	if (empty($_SERVER['argv'][1]) === true) {
 		exit;
 	}
