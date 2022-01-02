@@ -90,9 +90,8 @@
 		}
 
 		$packageSources = implode("\n", $packageSources[$imageDetails['id']][$imageDetails['version_id']]);
-		$filePutContentsResponse = file_put_contents('/etc/apt/sources.list', $packageSources);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/etc/apt/sources.list', $packageSources) === false) {
 			echo 'Error adding package sources, please try again.' . "\n";
 			exit;
 		}
@@ -182,9 +181,8 @@
 				'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-			$filePutContentsResponse = file_put_contents('/var/www/ghostcompute/system_action_deploy_system_binary_file_list_commands.sh', $binaryFileListCommands);
 
-			if (empty($filePutContentsResponse) === true) {
+			if (file_put_contents('/var/www/ghostcompute/system_action_deploy_system_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
 				echo 'Error adding binary file list commands, please try again.' . "\n";
 				exit;
 			}
@@ -298,9 +296,8 @@
 			'vm.swappiness = 0'
 		);
 		$kernelSettings = implode("\n", $kernelSettings);
-		$filePutContentsResponse = file_put_contents('/etc/sysctl.conf', $kernelSettings);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/etc/sysctl.conf', $kernelSettings) === false) {
 			echo 'Error adding kernel settings, please try again.' . "\n";
 			exit;
 		}
@@ -371,9 +368,8 @@
 			'socket = /var/run/mysqld/mysqld.sock'
 		);
 		$mysqlSettings = implode("\n", $mysqlSettings);
-		$filePutContentsResponse = file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $mysqlSettings);
 
-		if ($filePutContentsResponse === false) {
+		if (file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $mysqlSettings) === false) {
 			echo 'Error adding MySQL settings, please try again.' . "\n";
 			exit;
 		}
@@ -397,9 +393,8 @@
 			'</VirtualHost>'
 		);
 		$apacheSettings = implode("\n", $apacheSettings);
-		$filePutContentsResponse = file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $apacheSettings);
 
-		if ($filePutContentsResponse === false) {
+		if (file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $apacheSettings) === false) {
 			echo 'Error adding Apache settings, please try again.' . "\n";
 			exit;
 		}
@@ -447,9 +442,8 @@
 			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab'
 		);
 		$crontabCommands = implode("\n", $crontabCommands);
-		$filePutContentsResponse = file_put_contents('/etc/crontab', $crontabCommands);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/etc/crontab', $crontabCommands) === false) {
 			echo 'Error adding crontab commands, please try again.' . "\n";
 			exit;
 		}
@@ -609,9 +603,8 @@
 			'whereis gcloud | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r gcloudBinaryFile; do echo $((sudo $gcloudBinaryFile "-_-") 2>&1) | grep -c "unrecognized" && echo $gcloudBinaryFile && break; done | tail -1'
 		);
 		$gcloudBinaryFileListCommands = implode("\n", $gcloudBinaryFileListCommands);
-		$filePutContentsResponse = file_put_contents('/var/www/ghostcompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFileListCommands);
 
-		if (empty($filePutContentsResponse) === true) {
+		if (file_put_contents('/var/www/ghostcompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFileListCommands) === false) {
 			echo 'Error adding gcloud binary file list commands, please try again.' . "\n";
 			exit;
 		}
