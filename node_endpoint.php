@@ -224,8 +224,10 @@
 		// todo: update system_endpoint_destination_address if changed
 	}
 
+	$nodeAction = str_replace('_', '', $nodeAction);
+
 	if (
-		(ctype_alnum(str_replace('_', '', $nodeAction)) === false) ||
+		(ctype_alnum($nodeAction) === false) ||
 		(file_exists('/usr/local/ghostcompute/node_action_' . $nodeAction . '.php') === false)
 	) {
 		$response['message'] = 'Invalid node endpoint request action, please try again.';
