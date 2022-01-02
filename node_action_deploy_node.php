@@ -1,20 +1,20 @@
 <?php
 	function _killProcessIds($binaryFiles, $processIds) {
-		$commands = array(
+		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
 		$processIdParts = array_chunk($processIds, 10);
 
 		foreach ($processIdParts as $processIdPart) {
 			$processIdPart = implode(' ', $processIdPart);
-			$commands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
+			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
 		}
 
-		$commands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
-		$commands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
-		$commands = implode("\n", $commands);
+		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
+		$killProcessCommands = implode("\n", $killProcessCommands);
 
-		if (file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands) === false) {
+		if (file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $killProcessCommands) === false) {
 			echo 'Error adding kill process ID commands, please try again.' . "\n";
 			exit;
 		}
