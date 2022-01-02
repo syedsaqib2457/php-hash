@@ -51,7 +51,7 @@
 						}
 					}
 
-					usleep(10);
+					usleep(10); // todo: change value depending on system resources 
 				}
 
 				echo 'Hash attempts: ' . $_3 . "\n";
