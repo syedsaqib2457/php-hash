@@ -286,19 +286,18 @@
 
 		if (empty($parameters['data']['next']['nodes']) === false) {
 			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
-				if (
-					(empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) &&
-					(_verifyNodeProcess($parameters['binary_files'], false, false, false, $cryptocurrencyNodeProcessType) === false)
-				) {
-					// todo: crypto CLI installation for optimized mining + transactions
-					require_once('/usr/local/ghostcompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
-				}
+				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) {
+					if (_verifyNodeProcess($parameters['binary_files'], false, false, false, $cryptocurrencyNodeProcessType) === false) {
+						// todo: crypto CLI installation for optimized mining + transactions
+						require_once('/usr/local/ghostcompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
+					}
 
-				foreach ($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType] as $cryptocurrencyNodeProcessNodeParts) {
-					foreach ($cryptocurrencyNodeProcessNodeParts as $cryptocurrencyNodeProcessNodePart) {
-						foreach ($cryptocurrencyNodeProcessNodePart as $cryptocurrencyNodeProcessNodeId => $cryptocurrencyNodeProcessPortNumbers) {
-							foreach ($cryptocurrencyNodeProcessPortNumbers as $cryptocurrencyNodeProcessId => $cryptocurrencyNodeProcessPortNumber) {
-								$parameters['data']['cryptocurrency_firewall_rules'][] = '-A PREROUTING ! -i lo -d 127.0.0.1 --dport ' . $cryptocurrencyNodeProcessPortNumber . ' -j DROP';
+					foreach ($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType] as $cryptocurrencyNodeProcessNodeParts) {
+						foreach ($cryptocurrencyNodeProcessNodeParts as $cryptocurrencyNodeProcessNodePart) {
+							foreach ($cryptocurrencyNodeProcessNodePart as $cryptocurrencyNodeProcessNodeId => $cryptocurrencyNodeProcessPortNumbers) {
+								foreach ($cryptocurrencyNodeProcessPortNumbers as $cryptocurrencyNodeProcessId => $cryptocurrencyNodeProcessPortNumber) {
+									$parameters['data']['cryptocurrency_firewall_rules'][] = '-A PREROUTING ! -i lo -d 127.0.0.1 --dport ' . $cryptocurrencyNodeProcessPortNumber . ' -j DROP';
+								}
 							}
 						}
 					}
