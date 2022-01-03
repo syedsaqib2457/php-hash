@@ -294,7 +294,7 @@
 					foreach ($cryptocurrencyNodeProcessNodeParts as $cryptocurrencyNodeProcessNodePart) {
 						foreach ($cryptocurrencyNodeProcessNodePart as $cryptocurrencyNodeProcessNodeId => $cryptocurrencyNodeProcessPortNumbers) {
 							foreach ($cryptocurrencyNodeProcessPortNumbers as $cryptocurrencyNodeProcessId => $cryptocurrencyNodeProcessPortNumber) {
-								$parameters['data']['cryptocurrency_firewall_rules'][] = ''; // todo
+								$parameters['data']['cryptocurrency_firewall_rules'][] = '-A PREROUTING ! -i lo -d 127.0.0.1 --dport ' . $cryptocurrencyNodeProcessPortNumber . ' -j DROP';
 							}
 						}
 					}
