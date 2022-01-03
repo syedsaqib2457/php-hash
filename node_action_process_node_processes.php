@@ -126,7 +126,11 @@
 				}
 			}
 
-			// todo: block link-local source IP addresses to crypto RPC ip:port destinations since user:pass auth will be deprecated
+			if (empty($parameters['data']['cryptocurrency_firewall_rules']) === false) {
+				foreach ($parameters['data']['cryptocurrency_firewall_rules'] as $cryptocurrencyFirewallRule) {
+					$firewallRules[] = $cryptocurrencyFirewallRule;
+				}
+			}
 
 			foreach ($parameters['data']['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
 				$firewallRules[] = '-A PREROUTING -p tcp --dport ' . $nodeSshPortNumber . ' -j ACCEPT';
