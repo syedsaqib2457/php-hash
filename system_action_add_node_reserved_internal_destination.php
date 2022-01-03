@@ -4,6 +4,7 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
+		'node_process_cryptocurrency_destinations',
 		'node_reserved_internal_destinations'
 	), $parameters['system_databases'], $response);
 
