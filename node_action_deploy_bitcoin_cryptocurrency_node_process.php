@@ -17,7 +17,7 @@
 	$maximumDatabaseBatchSize = ((16777216 * 8) + 1000);
 	// todo: restart daemon after IBD with listening + $maximumConnections = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) / 50);
 	$maximumTransactionMemoryPoolMegabytes = ceil($parameters['memory_capacity_bytes'] * 0.30);
-	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -timeout=10000 -whitelistrelay=0');
+	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/ghostcompute/bitcoin/ -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -timeout=10000 -whitelistrelay=0');
 	$bitcoinPassword = mt_rand(30, 40);
 	$bitcoinPassword = random_bytes($bitcoinPassword);
 	$bitcoinPassword = bin2hex($bitcoinPassword);
@@ -28,7 +28,7 @@
 	);
 	$bitcoinSettings = implode("\n", $bitcoinSettings);
 
-	if (file_put_contents('~/.bitcoin/bitcoin.conf', $bitcoinSettings) === false) {
+	if (file_put_contents('/usr/local/ghostcompute/bitcoin/bitcoin.conf', $bitcoinSettings) === false) {
 		$response['message'] = 'Error adding Bitcoin settings, please try again.';
 		return $response;
 	}
