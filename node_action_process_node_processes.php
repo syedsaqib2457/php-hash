@@ -290,6 +290,16 @@
 					require_once('/usr/local/ghostcompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
 				}
 
+				foreach ($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType] as $cryptocurrencyNodeProcessNodeParts) {
+					foreach ($cryptocurrencyNodeProcessNodeParts as $cryptocurrencyNodeProcessNodePart) {
+						foreach ($cryptocurrencyNodeProcessNodePart as $cryptocurrencyNodeProcessNodeId => $cryptocurrencyNodeProcessPortNumbers) {
+							foreach ($cryptocurrencyNodeProcessPortNumbers as $cryptocurrencyNodeProcessId => $cryptocurrencyNodeProcessPortNumber) {
+								$parameters['data']['cryptocurrency_firewall_rules'][] = ''; // todo
+							}
+						}
+					}
+				}
+
 				// todo: add crontab commands for spawning mining processes
 			}
 		} else {
