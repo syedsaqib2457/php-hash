@@ -56,13 +56,17 @@
 			while (($existingNodeReservedInternalDestination['added_status'] === '0') === true) {
 				switch ($nodeIpAddressVersion) {
 					case '4':
-						$nodeReservedInternalDestinationIpAddress = long2ip(ip2long($nodeReservedInternalDestinationIpAddress) + 1);
+						$nodeReservedInternalDestinationIpAddress = ip2long($nodeReservedInternalDestinationIpAddress);
+						$nodeReservedInternalDestinationIpAddress = long2ip($nodeReservedInternalDestinationIpAddress + 1);
 						break;
 					case '6':
 						$nodeReservedInternalDestinationIpAddressBlock = substr($nodeReservedInternalDestinationIpAddress, -29);
-						$nodeReservedInternalDestinationIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalDestinationIpAddressBlock));
+						$nodeReservedInternalDestinationIpAddressBlockInteger = str_replace(':', '', $nodeReservedInternalDestinationIpAddressBlock);
+						$nodeReservedInternalDestinationIpAddressBlockInteger = intval($nodeReservedInternalDestinationIpAddressBlockInteger);
 						$nodeReservedInternalDestinationIpAddressBlockIntegerIncrement = ($nodeReservedInternalDestinationIpAddressBlockInteger + 1);
-						$nodeReservedInternalDestinationIpAddress = 'fc10:0000:' . implode(':', str_split(str_pad($nodeReservedInternalDestinationIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT), 4));
+						$nodeReservedInternalDestinationIpAddress = str_pad($nodeReservedInternalDestinationIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT);
+						$nodeReservedInternalDestinationIpAddress = str_split($nodeReservedInternalDestinationIpAddress, 4);
+						$nodeReservedInternalDestinationIpAddress = 'fc10:0000:' . implode(':', $nodeReservedInternalDestinationIpAddress, 4);
 						break;
 				}
 
