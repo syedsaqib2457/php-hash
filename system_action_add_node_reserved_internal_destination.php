@@ -113,9 +113,12 @@
 					break;
 				case '6':
 					$nodeReservedInternalDestinationIpAddressBlock = substr($nodeReservedInternalDestinationIpAddress, -29);
-					$nodeReservedInternalDestinationIpAddressBlockInteger = intval(str_replace(':', '', $nodeReservedInternalDestinationIpAddressBlock));
+					$nodeReservedInternalDestinationIpAddressBlockInteger = str_replace(':', '', $nodeReservedInternalDestinationIpAddressBlock);
+					$nodeReservedInternalDestinationIpAddressBlockInteger = intval($nodeReservedInternalDestinationIpAddressBlock);
 					$nodeReservedInternalDestinationIpAddressBlockIntegerIncrement = ($nodeReservedInternalDestinationIpAddressBlockInteger + 1);
-					$nodeReservedInternalDestinationIpAddress = 'fc10:0000:' . implode(':', str_split(str_pad($nodeReservedInternalDestinationIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT), 4));
+					$nodeReservedInternalDestinationIpAddress = str_pad($nodeReservedInternalDestinationIpAddressBlockIntegerIncrement, 24, '0', STR_PAD_LEFT);
+					$nodeReservedInternalDestinationIpAddress = str_split($nodeReservedInternalDestinationIpAddress, 4);
+					$nodeReservedInternalDestinationIpAddress = 'fc10:0000:' . implode(':', $nodeReservedInternalDestinationIpAddress);
 					break;
 			}
 
