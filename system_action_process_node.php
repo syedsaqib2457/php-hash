@@ -300,11 +300,15 @@
 				}
 			}
 
-			$nodeProcessPartKey = 0;
+			$nodeProcessPartKeys = array();
+
+			foreach ($parameters['data']['node_process_types'] as $nodeProcessType) {
+				$nodeProcessPartKeys[$nodeProcessType] = 0;
+			}
 
 			foreach ($nodeProcesses as $nodeProcess) {
-				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKey][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
-				$nodeProcessPartKey = abs($nodeProcessPartKey + -1);
+				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKeys[$nodeProcess['type']]][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
+				$nodeProcessPartKeys[$nodeProcess['type']] = abs($nodeProcessPartKeys[$nodeProcess['type']] + -1);
 			}
 
 			foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestination) {
