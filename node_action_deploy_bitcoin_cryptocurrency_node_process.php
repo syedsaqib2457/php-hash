@@ -19,8 +19,10 @@
 	$maximumTransactionMemoryPoolMegabytes = ceil($parameters['memory_capacity_bytes'] * 0.30);
 	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/ghostcompute/bitcoin/ -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -timeout=10000 -whitelistrelay=0');
 	$bitcoinSettings = array(
+		'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cryptocurrency']['ip_address'],
 		'rpcuser=ghostcompute',
-		'rpcpassword=ghostcompute'
+		'rpcpassword=ghostcompute',
+		'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cryptocurrency'][0])
 	);
 	$bitcoinSettings = implode("\n", $bitcoinSettings);
 
@@ -29,5 +31,5 @@
 		return $response;
 	}
 
-	// todo: verify CLI function with bitcoin.conf 
+	// todo: verify CLI function with bitcoin.conf (add user + pass parameters from bitcoin.conf)
 ?>
