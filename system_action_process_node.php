@@ -124,6 +124,20 @@
 					)
 				)
 			), $response);
+			$nodeProcessCryptocurrencyDestinations = _list(array(
+				'data' => array(
+					'ip_address',
+					'ip_address_version_number',
+					'node_process_type'
+				),
+				'in' => $parameters['system_databases']['node_process_cryptocurrency_destinations'],
+				'where' => array(
+					'either' => array(
+						'node_id' => $nodeNodeId,
+						'node_node_id' => $nodeNodeId
+					)
+				)
+			), $response);
 			$nodeProcessForwardingDestinations = _list(array(
 				'data' => array(
 					'address_version_4',
@@ -309,6 +323,11 @@
 			foreach ($nodeProcesses as $nodeProcess) {
 				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKeys[$nodeProcess['type']]][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
 				$nodeProcessPartKeys[$nodeProcess['type']] = abs($nodeProcessPartKeys[$nodeProcess['type']] + -1);
+			}
+
+			foreach ($nodeProcessCryptocurrencyDestinations as $nodeProcessCryptocurrencyDestination) {
+				$response['data']['node_process_cryptocurrency_destinations'][$nodeProcessCryptocurrencyDestination['node_process_type']] = $nodeProcessCryptocurrencyDestination;
+				unset($response['data']['node_process_cryptocurrency_destinations'][$nodeProcessCryptocurrencyDestination['node_process_type']]['node_process_type']);
 			}
 
 			foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestination) {
