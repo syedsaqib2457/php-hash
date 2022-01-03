@@ -59,6 +59,7 @@
 			return $response;
 		}
 
+		// todo: only allow 1 cryptocurrency process per type per node
 		$parameters['data']['node_node_id'] = $node['node_id'];
 		$existingNodeProcessCount = _count(array(
 			'in' => $parameters['databases']['node_processes'],
