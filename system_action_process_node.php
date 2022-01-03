@@ -4,6 +4,7 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
+		'node_process_cryptocurrency_destinations',
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
 		'node_process_node_user_authentication_sources',
