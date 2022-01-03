@@ -682,9 +682,9 @@
 		$systemDatabases = array(
 			'node_process_cryptocurrency_destinations' => array(
 				'created_timestamp',
-				'destination_ip_address',
-				'destination_ip_address_version_number',
 				'id',
+				'ip_address',
+				'ip_address_version_number',
 				'modified_timestamp',
 				'node_id',
 				'node_node_id',
