@@ -10,6 +10,7 @@
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo ./configure --disable-bench --disable-hardening --disable-miniupnpc --disable-natpnp --disable-tests --disable-util-wallet --with-utils --without-bdb --without-gui --without-qrencode --without-sqlite');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make install');
+	shell_exec('sudo mkdir /usr/local/ghostcompute/bitcoin/');
 	// todo: add full path to Bitcoin daemon
 	// todo: dynamic parameter percentage should be based on framework system value in case other node processes / cryptocurrencies are used on the same node
 	// todo: par=<n> should be (((total number of cores) - 1) * percentage of resources value to use for mining)
