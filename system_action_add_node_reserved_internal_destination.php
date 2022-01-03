@@ -89,8 +89,21 @@
 						)
 					)
 				), $response);
+				$existingNodeProcessCryptocurrencyDestinationCount = _count(array(
+					'in' => $parameters['system_databases']['node_process_cryptocurrency_destinations'],
+					'where' => array(
+						'either' => array(
+							'id' => $parameters['node'][$nodeIpAddressVersionNumber],
+							'node_id' => $parameters['node'][$nodeIpAddressVersionNumber]
+						),
+						'ip_address' => $nodeReservedInternalDestinationIpAddress
+					)
+				), $response);
 
-				if (($existingNodeCount > 0) === false) {
+				if (
+					(($existingNodeCount > 0) === false) &&
+					(($existingNodeProcessCryptocurrencyDestinationCount > 0) === false)
+				) {
 					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 					$existingNodeReservedInternalDestination['added_status'] = '1';
 				}
@@ -142,8 +155,21 @@
 					)
 				)
 			), $response);
+			$existingNodeProcessCryptocurrencyDestinationCount = _count(array(
+				'in' => $parameters['system_databases']['node_process_cryptocurrency_destinations'],
+				'where' => array(
+					'either' => array(
+						'id' => $parameters['node'][$nodeIpAddressVersionNumber],
+						'node_id' => $parameters['node'][$nodeIpAddressVersionNumber]
+					),
+					'ip_address' => $nodeReservedInternalDestinationIpAddress
+				)
+			), $response);
 
-			if (($existingNodeCount > 0) === false) {
+			if (
+				(($existingNodeCount > 0) === false) &&
+				(($existingNodeProcessCryptocurrencyDestinationCount > 0) === false)
+			) {
 				$existingNodeReservedInternalDestinationData[1]['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 			}
 		}
