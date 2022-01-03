@@ -8,7 +8,7 @@
 	), $parameters['system_databases'], $response);
 
 	function _addNodeReservedInternalDestination($parameters, $response) {
-		$nodeIpAddressVersion = key($parameters['node']);
+		$nodeIpAddressVersionNumber = key($parameters['node']);
 		$existingNodeReservedInternalDestination = _list(array(
 			'data' => array(
 				'added_status',
@@ -23,10 +23,10 @@
 			'where' => array(
 				'added_status' => '0'
 				'either' => array(
-					'node_id' => $parameters['node'][$nodeIpAddressVersion],
-					'node_node_id' => $parameters['node'][$nodeIpAddressVersion]
+					'node_id' => $parameters['node'][$nodeIpAddressVersionNumber],
+					'node_node_id' => $parameters['node'][$nodeIpAddressVersionNumber]
 				),
-				'ip_address_version' => $nodeIpAddressVersion,
+				'ip_address_version_number' => $nodeIpAddressVersionNumber,
 				'processed_status' => '1'
 			)
 		), $response);
@@ -36,13 +36,13 @@
 			$existingNodeReservedInternalDestination = array(
 				'added_status' => '0',
 				'id' => $existingNodeReservedInternalDestination['id'],
-				'ip_address_version' => $nodeIpAddressVersion,
-				'node_id' => $parameters['node'][$nodeIpAddressVersion]['id'],
-				'node_node_id' => $parameters['node'][$nodeIpAddressVersion]['node_id'],
+				'ip_address_version_number' => $nodeIpAddressVersionNumber,
+				'node_id' => $parameters['node'][$nodeIpAddressVersionNumber]['id'],
+				'node_node_id' => $parameters['node'][$nodeIpAddressVersionNumber]['node_id'],
 				'processed_status' => '1'
 			);
 
-			switch ($nodeIpAddressVersion) {
+			switch ($nodeIpAddressVersionNumber) {
 				case '4':
 					$existingNodeReservedInternalDestination['ip_address'] = '10.0.0.0';
 					break;
@@ -54,7 +54,7 @@
 			$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
 			while (($existingNodeReservedInternalDestination['added_status'] === '0') === true) {
-				switch ($nodeIpAddressVersion) {
+				switch ($nodeIpAddressVersionNumber) {
 					case '4':
 						$nodeReservedInternalDestinationIpAddress = ip2long($nodeReservedInternalDestinationIpAddress);
 						$nodeReservedInternalDestinationIpAddress = long2ip($nodeReservedInternalDestinationIpAddress + 1);
@@ -76,14 +76,14 @@
 						'either' => array(
 							array(
 								'either' => array(
-									'id' => $parameters['node'][$nodeIpAddressVersion],
-									'node_id' => $parameters['node'][$nodeIpAddressVersion]
+									'id' => $parameters['node'][$nodeIpAddressVersionNumber],
+									'node_id' => $parameters['node'][$nodeIpAddressVersionNumber]
 								),
-								'internal_ip_address_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress
+								'internal_ip_address_version_' . $nodeIpAddressVersionNumber => $nodeReservedInternalDestinationIpAddress
 							),
 							array(
-								'external_ip_address_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
-								'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
+								'external_ip_address_version_' . $nodeIpAddressVersionNumber => $nodeReservedInternalDestinationIpAddress,
+								'external_ip_address_version_' . $nodeIpAddressVersionNumber . '_type !=' => 'public_network'
 							)
 						)
 					)
@@ -107,7 +107,7 @@
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
 		while (($existingNodeReservedInternalDestinationData[0]['ip_address'] === $existingNodeReservedInternalDestinationData[1]['ip_address']) === true) {
-			switch ($nodeIpAddressVersion) {
+			switch ($nodeIpAddressVersionNumber) {
 				case '4':
 					$nodeReservedInternalDestinationIpAddress = ip2long($nodeReservedInternalDestinationIpAddress);
 					$nodeReservedInternalDestinationIpAddress = long2ip($nodeReservedInternalDestinationIpAddress + 1);
@@ -129,14 +129,14 @@
 					'either' => array(
 						array(
 							'either' => array(
-								'id' => $parameters['node'][$nodeIpAddressVersion],
-								'node_id' => $parameters['node'][$nodeIpAddressVersion]
+								'id' => $parameters['node'][$nodeIpAddressVersionNumber],
+								'node_id' => $parameters['node'][$nodeIpAddressVersionNumber]
 							),
-							'internal_ip_address_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress
+							'internal_ip_address_version_' . $nodeIpAddressVersionNumber => $nodeReservedInternalDestinationIpAddress
 						),
 						array(
-							'external_ip_address_version_' . $nodeIpAddressVersion => $nodeReservedInternalDestinationIpAddress,
-							'external_ip_address_version_' . $nodeIpAddressVersion . '_type !=' => 'public_network'
+							'external_ip_address_version_' . $nodeIpAddressVersionNumber => $nodeReservedInternalDestinationIpAddress,
+							'external_ip_address_version_' . $nodeIpAddressVersionNumber . '_type !=' => 'public_network'
 						)
 					)
 				)
