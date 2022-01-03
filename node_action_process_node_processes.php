@@ -287,9 +287,12 @@
 					// todo: crypto CLI installation for optimized mining + transactions
 					require_once('/usr/local/ghostcompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
 				}
+
+				// todo: add crontab commands for spawning mining processes
 			}
 		} else {
 			if (empty($parameters['data']['current']) === false) {
+				// todo: save crypto block template data to file
 				// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
 
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
