@@ -11,12 +11,8 @@
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make');
 	shell_exec('cd /usr/src/bitcoin/*/ && sudo make install');
 	shell_exec('sudo mkdir /usr/local/ghostcompute/bitcoin/');
-	// todo: add full path to Bitcoin daemon
 	// todo: dynamic parameter percentage should be based on framework system value in case other node processes / cryptocurrencies are used on the same node
 	// todo: par=<n> should be (((total number of cores) - 1) * percentage of resources value to use for mining)
-	$maximumDatabaseBatchSize = ((16777216 * 8) + 1000);
-	// todo: restart daemon after IBD with listening + $maximumConnections = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) / 50);
-	$maximumTransactionMemoryPoolMegabytes = ceil($parameters['memory_capacity_bytes'] * 0.30);
 	$bitcoinSettings = array(
 		'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cryptocurrency']['ip_address'],
 		'rpcuser=ghostcompute',
@@ -30,6 +26,9 @@
 		return $response;
 	}
 
+	$maximumDatabaseBatchSize = ((16777216 * 8) + 1000);
+	$maximumTransactionMemoryPoolMegabytes = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) * 0.30);
+	// todo: add binary full paths
 	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/ghostcompute/bitcoin/ -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -rpcthreads=2 -timeout=10000 -whitelistrelay=0');
 	exec('sudo bitcoin-cli -rpcuser=ghostcompute -rpcpassword=ghostcompute getblockchaininfo 2>&1', $bitcoinDetails);
 	$bitcoinDetails = implode('', $bitcoinDetails);
@@ -43,6 +42,4 @@
 	// todo: try bitcoind settings until IBD surpasses 0.05% progress without exceeding 90% capacity)
 		// dbbatchsize is a hidden parameter that should still follow memory limit parameters
 		// try par=<n> with low static value
-		// try adding all optimization parameters to bitcoin.conf in case some are ignored
-		// try blocksonly although it seems to be the same as disabling listen + whitelistrelay
 ?>
