@@ -1071,7 +1071,7 @@
 			'node_ssh_port_numbers' => true
 		));
 		$parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'] = $parameters['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
-		// todo: encode all --post-data parameters with $callbackParameters + json_encode
+		// todo: encode all required --post-data parameters for process_node action
 		$systemParameters['data'] = array(
 			'processing_status' => '0'
 		);
