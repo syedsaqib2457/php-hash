@@ -40,6 +40,5 @@
 	}
 
 	// todo: try bitcoind settings until IBD surpasses 0.05% progress without exceeding 90% capacity)
-		// dbbatchsize is a hidden parameter that should still follow memory limit parameters
 		// try par=<n> with low static value
 ?>
