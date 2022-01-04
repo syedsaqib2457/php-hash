@@ -31,5 +31,12 @@
 	}
 
 	shell_exec('sudo bitcoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/ghostcompute/bitcoin/ -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -timeout=10000 -whitelistrelay=0');
-	// todo: verify CLI function with bitcoin.conf (add user + pass parameters from bitcoin.conf)
+	exec('sudo bitcoin-cli -rpcuser=ghostcompute -rpcpassword=ghostcompute getblockchaininfo 2>&1', $bitcoinDetails);
+	$bitcoinDetails = implode('', $bitcoinDetails);
+	$bitcoinDetails = json_decode($bitcoinDetails, true);
+
+	if (isset($bitcoinDetails['chain']) === false) {
+		$response['message'] = 'Error listing Bitcoin details, please try again.';
+		return $response;
+	}
 ?>
