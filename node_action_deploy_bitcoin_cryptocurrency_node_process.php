@@ -38,4 +38,6 @@
 		$response['message'] = 'Error listing Bitcoin details, please try again.';
 		return $response;
 	}
+
+	// todo: make sure verificationprogress=1 before opening maxconnections and listening IP:port for P2P
 ?>
