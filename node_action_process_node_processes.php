@@ -230,7 +230,7 @@
 			'processing_completed'
 		);
 		end($parameters['processing_progress_checkpoints']);
-		$parameters['processing_progress_checkpoint_count'] = key($parameters['processing_progress_checkpoints']);
+		$parameters['processing_progress_checkpoint_count'] = (key($parameters['processing_progress_checkpoints']) + 1);
 		reset($parameters['processing_progress_checkpoints']);
 		$systemActionProcessNodeParameters = array(
 			'action' => 'process_node',
