@@ -15,7 +15,8 @@
 
 		$node = _list(array(
 			'data' => array(
-				'id'
+				'id',
+				'node_id'
 			),
 			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
@@ -29,15 +30,23 @@
 			return $response;
 		}
 
+		$nodeNodeId = $node['id'];
+
+		if (empty($node['node_id']) === false) {
+			$nodeNodeId = $node['node_id'];
+		}
+
 		_update(array(
 			'data' => array(
 				'processed_status' => '0',
 				'processing_progress_checkpoint' => 'processing_queued'
-
 			),
 			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
-				'id' => $node['id']
+				'either' => array(
+					'id' => $nodeNodeId,
+					'node_id' => $nodeNodeId
+				)
 			)
 		), $response);
 		$response['message'] = 'Node updated successfully.';
