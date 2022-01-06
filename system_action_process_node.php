@@ -72,18 +72,17 @@
 		}
 
 		if (
-			(isset($parameters['data']['processed_status']) === true) &&
 			(isset($parameters['data']['processing_status']) === true) &&
 			(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
 			(isset($parameters['data']['processing_progress_percentage']) === true)
 		) {
 			_update(array(
-				'data' => array(
-					'processed_status' => $parameters['data']['processed_status'],
-					'processing_status' => $parameters['data']['processing_status'],
-					'processing_progress_checkpoint' => $parameters['data']['processing_progress_checkpoint'],
-					'processing_progress_percentage' => $parameters['data']['processing_progress_percentage']
-				),
+				'data' => array_intersect_key($parameters['data'], array(
+					'processed_status' => true,
+					'processing_status' => true,
+					'processing_progress_checkpoint' => true,
+					'processing_progress_percentage' => true
+				)),
 				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
