@@ -321,17 +321,28 @@
 		unset($systemActionProcessNodeParameterData);
 
 		if (empty($parameters['data']['next']['nodes']) === false) {
+			$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+
 			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
 				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) {
 					if (_verifyNodeProcess($parameters['binary_files'], false, false, false, $cryptocurrencyNodeProcessType) === false) {
 						// todo: crypto CLI installation for optimized mining + transactions
+						if (empty($parameters['processing_progress_checkpoints'][3]) === false) {
+							$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+						}
+
 						require_once('/usr/local/ghostcompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
 					}
 				}
 
 				// todo: add crontab commands for spawning mining processes
 			}
+
+			unset($parameters['processing_progress_checkpoints'][3]);
 		} else {
+			unset($parameters['processing_progress_checkpoints'][2]);
+			unset($parameters['processing_progress_checkpoints'][3]);
+
 			if (empty($parameters['data']['current']) === false) {
 				// todo: save crypto block template data to file
 				// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
