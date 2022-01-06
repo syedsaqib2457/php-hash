@@ -229,6 +229,9 @@
 		exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
 		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
 		$parameters['node_process_type_firewall_rule_set_index'] = 0;
+		$parameters['processing_progress_checkpoints'] = array(
+			// todo: progress checkpoint keywords to track where processing script hangs
+		);
 
 		if (file_exists('/etc/ssh/sshd_config') === true) {
 			exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
