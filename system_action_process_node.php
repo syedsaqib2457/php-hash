@@ -50,7 +50,8 @@
 		$node = _list(array(
 			'data' => array(
 				'id',
-				'node_id'
+				'node_id',
+				'processing_status'
 			),
 			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
@@ -76,21 +77,26 @@
 			(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
 			(isset($parameters['data']['processing_progress_percentage']) === true)
 		) {
-			_update(array(
-				'data' => array_intersect_key($parameters['data'], array(
-					'processed_status' => true,
-					'processing_status' => true,
-					'processing_progress_checkpoint' => true,
-					'processing_progress_percentage' => true
-				)),
-				'in' => $parameters['system_databases']['nodes'],
-				'where' => array(
-					'either' => array(
-						'id' => $nodeNodeId,
-						'node_id' => $nodeNodeId
+			if (
+				(($node['processing_status'] === '1') === true) ||
+				(($parameters['data']['processing_progress_checkpoint'] === 'listing_node_parameters') === true)
+			) {
+				_update(array(
+					'data' => array_intersect_key($parameters['data'], array(
+						'processed_status' => true,
+						'processing_progress_checkpoint' => true,
+						'processing_progress_percentage' => true,
+						'processing_status' => true
+					)),
+					'in' => $parameters['system_databases']['nodes'],
+					'where' => array(
+						'either' => array(
+							'id' => $nodeNodeId,
+							'node_id' => $nodeNodeId
+						)
 					)
-				)
-			), $response);
+				), $response);
+			}
 		} else {
 			$nodeCount = _count(array(
 				'in' => $parameters['system_databases']['nodes'],
