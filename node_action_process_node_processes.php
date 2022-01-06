@@ -238,9 +238,10 @@
 				'processed_status' => '0',
 				'processing_status' => '1'
 			),
-			'node_authentication_token' => $parameters['node_authentication_token']
+			'node_authentication_token' => $parameters['node_authentication_token'],
+			'system_endpoint_destination_address' => $parameters['system_endpoint_destination_address']
 		);
-		// $parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
 		$parameters['ip_address_versions'] = array(
