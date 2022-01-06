@@ -240,7 +240,7 @@
 			),
 			'node_authentication_token' => $parameters['node_authentication_token']
 		);
-		// $parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints']);
+		// $parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
 		$parameters['ip_address_versions'] = array(
@@ -1136,8 +1136,11 @@
 		return $response;
 	}
 
-	function _updateNodeProcessingProgress($wgetBinaryFile, $systemActionProcessNodeParameters, $processingProgressCheckpoints) {
-		// todo
+	function _updateNodeProcessingProgress($wgetBinaryFile, $systemActionProcessNodeParameters, $processingProgressCheckpoints, $processingProgressCheckpointCount) {
+		$systemActionProcessNodeParameters['data'] += array(
+			'processing_progress_checkpoint' => current($processingProgressCheckpoints),
+			'processing_progress_percentage' => ((key($processingProgressCheckpoints) + 1) / $processingProgressCheckpointCount)
+		);
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
