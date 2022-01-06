@@ -1120,6 +1120,10 @@
 		return $response;
 	}
 
+	function _updateNodeProcessingProgress() {
+		// todo
+	}
+
 	function _verifyNodeProcess($binaryFiles, $nodeProcessNodeIpAddress, $nodeProcessNodeIpAddressVersionNumber, $nodeProcessPortNumber, $nodeProcessType) {
 		$response = false;
 
