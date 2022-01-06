@@ -232,6 +232,12 @@
 		end($parameters['processing_progress_checkpoints']);
 		$parameters['processing_progress_checkpoint_count'] = key($parameters['processing_progress_checkpoints']);
 		reset($parameters['processing_progress_checkpoints']);
+		$systemActionProcessNodeParameters = array(
+			'action' => 'process_node',
+			'data' => array(),
+			'node_authentication_token' => $parameters['node_authentication_token']
+		);
+		// _updateNodeProcessingProgress($parameters['binary_files'], $systemActionProcessNodeParameters);
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
 		$parameters['ip_address_versions'] = array(
