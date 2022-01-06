@@ -226,6 +226,7 @@
 			'processing_next_recursive_dns_node_processes',
 			'processing_next_proxy_node_processes',
 			'processing_firewall',
+			'deleting_previous_node_processes',
 			'processing_current_node_processes',
 			'processing_completed'
 		);
@@ -1057,6 +1058,7 @@
 			);
 		}
 
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		$parameters = _processFirewall($parameters);
 
 		foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSetToDestroy) {
@@ -1076,6 +1078,8 @@
 				}
 			}
 		}
+
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 
 		foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessIds) {
 			$nodeProcessProcessIds = array();
@@ -1113,6 +1117,7 @@
 			}
 		}
 
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		$parameters['data']['current'] = array_intersect_key($parameters['data']['next'], array(
 			'node_processes' => true,
 			'node_process_type_firewall_rule_set_reserved_internal_destinations' => true,
@@ -1124,38 +1129,19 @@
 			'node_ssh_port_numbers' => true
 		));
 		$parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'] = $parameters['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
-		// todo: encode all required --post-data parameters for process_node action
-		$systemParameters['data'] = array(
-			'processing_status' => '0'
-		);
+		$encodedSystemActionProcessNodeResponse = json_encode($parameters['data']['current']);
 
-		if (isset($parameters['data']['processed_status']) === false) {
-			$systemParameters['data']['processed_status'] = '1';
-		}
-
-		$encodedSystemParameters = json_encode($systemParameters);
-
-		if ($encodedSystemParameters === false) {
-			$response['message'] = 'Error processing node, please try again.' . "\n";
+		if (
+			($encodedSystemActionProcessNodeResponse === false) ||
+			(file_put_contents('/usr/local/ghostcompute/system_action_process_node_current_response.json', $encodedSystemActionProcessNodeResponse) === false)
+		) {
+			$response['message'] = 'Error processing node, please try again.';
 			return $response;
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=60 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
-
-		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
-			$response['message'] = 'Error processing node, please try again.' . "\n";
-			return $response;
-		}
-
-		$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_next_response.json');
-		$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
+		_updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'])
 		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
-
-		if ($systemActionProcessNodeResponse === false) {
-			$response['message'] = 'Error processing node, please try again.' . "\n";
-			return $response;
-		}
-
+		unset($systemActionProcessNodeResponse['data']);
 		$response = $systemActionProcessNodeResponse;
 		return $response;
 	}
