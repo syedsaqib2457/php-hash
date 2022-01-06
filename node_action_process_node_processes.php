@@ -230,6 +230,10 @@
 		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
 		$parameters['node_process_type_firewall_rule_set_index'] = 0;
 		$parameters['processing_progress_checkpoints'] = array(
+			'listing_node_image_details',
+			'listing_system_action_process_node_data',
+			'verifying_cryptocurrency_node_processes',
+			'deploying_cryptocurrency_node_processes',
 			// todo: progress checkpoint keywords to track where processing script hangs
 		);
 
