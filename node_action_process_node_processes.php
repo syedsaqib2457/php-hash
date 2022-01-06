@@ -1139,6 +1139,7 @@
 			return $response;
 		}
 
+		// todo: update processed_status=1 (or 0 if reprocessing is required in rare cases)
 		_updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'])
 		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
 		unset($systemActionProcessNodeResponse['data']);
