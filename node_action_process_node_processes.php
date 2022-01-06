@@ -212,23 +212,6 @@
 	}
 
 	function _processNodeProcesses($parameters, $response) {
-		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
-		$parameters['interface_name'] = current($interfaceName);
-		$parameters['ip_address_versions'] = array(
-			'4' => array(
-				'interface_type' => 'inet',
-				'network_mask' => '32'
-			),
-			'6' => array(
-				'interface_type' => 'inet6',
-				'network_mask' => '128'
-			)
-		);
-		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-		$parameters['kernel_page_size'] = current($kernelPageSize);
-		exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
-		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
-		$parameters['node_process_type_firewall_rule_set_index'] = 0;
 		$parameters['processing_progress_checkpoints'] = array(
 			'listing_node_parameters',
 			'listing_next_node_processes',
@@ -249,6 +232,23 @@
 		end($parameters['processing_progress_checkpoints']);
 		$parameters['processing_progress_checkpoint_count'] = key($parameters['processing_progress_checkpoints']);
 		reset($parameters['processing_progress_checkpoints']);
+		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
+		$parameters['interface_name'] = current($interfaceName);
+		$parameters['ip_address_versions'] = array(
+			'4' => array(
+				'interface_type' => 'inet',
+				'network_mask' => '32'
+			),
+			'6' => array(
+				'interface_type' => 'inet6',
+				'network_mask' => '128'
+			)
+		);
+		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
+		$parameters['kernel_page_size'] = current($kernelPageSize);
+		exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
+		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
+		$parameters['node_process_type_firewall_rule_set_index'] = 0;
 
 		if (file_exists('/etc/ssh/sshd_config') === true) {
 			exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
