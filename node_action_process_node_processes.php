@@ -283,18 +283,17 @@
 			}
 		}
 
-		$systemParameters = array(
-			'action' => 'process_node',
-			'node_authentication_token' => $parameters['node_authentication_token']
-		);
-		$encodedSystemParameters = json_encode($systemParameters);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$systemActionProcessNodeParameterData = $systemActionProcessNodeParameters['data'];
+		unset($systemActionProcessNodeParameters['data']);
+		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
-		if ($encodedSystemParameters === false) {
+		if ($encodedSystemActionProcessNodeParameters === false) {
 			$response['message'] = 'Error processing node, please try again.' . "\n";
 			return $response;
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=600 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=600 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
 			$response['message'] = 'Error processing node, please try again.' . "\n";
@@ -317,6 +316,9 @@
 				$parameters['data']['current'] = $parameters['data']['next'];
 			}
 		}
+
+		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
+		unset($systemActionProcessNodeParameterData);
 
 		if (empty($parameters['data']['next']['nodes']) === false) {
 			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
