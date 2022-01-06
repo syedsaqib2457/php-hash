@@ -1124,8 +1124,14 @@
 		return $response;
 	}
 
-	function _updateNodeProcessingProgress() {
-		// todo
+	function _updateNodeProcessingProgress($binaryFiles, $systemActionProcessNodeParameters) {
+		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
+
+		if (empty($encodedSystemActionProcessNodeParameters) === false) {
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemActionProcessNodeParameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		}
+
+		return true;
 	}
 
 	function _verifyNodeProcess($binaryFiles, $nodeProcessNodeIpAddress, $nodeProcessNodeIpAddressVersionNumber, $nodeProcessPortNumber, $nodeProcessType) {
