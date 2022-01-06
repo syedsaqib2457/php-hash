@@ -321,6 +321,8 @@
 				$nodeProcessPartKeys[$nodeProcessType] = 0;
 			}
 
+			$parameters['data']['node_process_types'] = array_diff($parameters['data']['node_process_types'], $parameters['data']['cryptocurrency_node_process_types']);
+
 			foreach ($nodeProcesses as $nodeProcess) {
 				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKeys[$nodeProcess['type']]][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
 				$nodeProcessPartKeys[$nodeProcess['type']] = abs($nodeProcessPartKeys[$nodeProcess['type']] + -1);
