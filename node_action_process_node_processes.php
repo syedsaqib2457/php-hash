@@ -240,6 +240,8 @@
 			'verifying_current_socks_proxy_node_processes',
 			'updating_node_kernel_options',
 			'updating_node_interfaces',
+			'updating_recursive_dns_node_processes',
+			'updating_proxy_node_processes',
 			// todo: progress checkpoint keywords to track where processing script hangs
 		);
 
