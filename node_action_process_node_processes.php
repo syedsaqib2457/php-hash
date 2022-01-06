@@ -234,7 +234,10 @@
 		reset($parameters['processing_progress_checkpoints']);
 		$systemActionProcessNodeParameters = array(
 			'action' => 'process_node',
-			'data' => array(),
+			'data' => array(
+				'processed_status' => '0',
+				'processing_status' => '1'
+			),
 			'node_authentication_token' => $parameters['node_authentication_token']
 		);
 		// _updateNodeProcessingProgress($parameters['binary_files'], $systemActionProcessNodeParameters);
