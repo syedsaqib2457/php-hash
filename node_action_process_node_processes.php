@@ -378,6 +378,7 @@
 		unset($parameters['processing_progress_checkpoints'][5]);
 		unset($parameters['processing_progress_checkpoints'][6]);
 		unset($parameters['processing_progress_checkpoints'][7]);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		$kernelOptions = array(
 			'fs.aio-max-nr = 1000000000',
 			'fs.file-max = 1000000000',
@@ -502,6 +503,7 @@
 			shell_exec('sudo ' . $parameters['binary_files']['sysctl'] . ' -w ' . $kernelOptionKey . '="' . $kernelOptionValue . '"');
 		}
 
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		$nodeInterfaces = $nodeIpAddressesToDelete = array();
 
 		foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
@@ -530,6 +532,8 @@
 			$response['message'] = 'Error adding node interfaces, please try again.' . "\n";
 			return $response;
 		}
+
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 
 		if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
 			$recursiveDnsNodeProcessDefaultServiceName = 'named';
@@ -797,6 +801,7 @@
 			return $response;
 		}
 
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		$parameters['node_process_type_process_part_data_keys']['recursive_dns'] = array(
 			'next',
 			'next'
