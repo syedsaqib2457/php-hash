@@ -246,6 +246,9 @@
 			'processing_current_node_processes',
 			'processing_completed'
 		);
+		end($parameters['processing_progress_checkpoints']);
+		$parameters['processing_progress_checkpoint_count'] = key($parameters['processing_progress_checkpoints']);
+		reset($parameters['processing_progress_checkpoints']);
 
 		if (file_exists('/etc/ssh/sshd_config') === true) {
 			exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
