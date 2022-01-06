@@ -235,7 +235,6 @@
 		$systemActionProcessNodeParameters = array(
 			'action' => 'process_node',
 			'data' => array(
-				'processed_status' => '0',
 				'processing_status' => '1'
 			),
 			'node_authentication_token' => $parameters['node_authentication_token'],
@@ -348,6 +347,8 @@
 				// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
 
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
+					$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+
 					foreach (array(0, 1) as $nodeProcessPartKey) {
 						$nodeIpAddressVersion = key($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
 
@@ -373,6 +374,10 @@
 			return $response;
 		}
 
+		unset($parameters['processing_progress_checkpoints'][4]);
+		unset($parameters['processing_progress_checkpoints'][5]);
+		unset($parameters['processing_progress_checkpoints'][6]);
+		unset($parameters['processing_progress_checkpoints'][7]);
 		$kernelOptions = array(
 			'fs.aio-max-nr = 1000000000',
 			'fs.file-max = 1000000000',
