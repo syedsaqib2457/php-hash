@@ -231,18 +231,20 @@
 		$parameters['node_process_type_firewall_rule_set_index'] = 0;
 		$parameters['processing_progress_checkpoints'] = array(
 			'listing_node_parameters',
-			'listing_node_process_data',
+			'listing_next_node_processes',
 			'verifying_current_cryptocurrency_node_processes',
 			'deploying_next_cryptocurrency_node_processes',
 			'verifying_current_http_proxy_node_processes',
 			'verifying_current_load_balancer_node_processes',
 			'verifying_current_recursive_dns_node_processes',
 			'verifying_current_socks_proxy_node_processes',
-			'updating_node_kernel_options',
-			'updating_node_interfaces',
-			'updating_recursive_dns_node_processes',
-			'updating_proxy_node_processes',
-			// todo: progress checkpoint keywords to track where processing script hangs
+			'processing_next_node_kernel_options',
+			'processing_next_node_interfaces',
+			'processing_next_recursive_dns_node_processes',
+			'processing_next_proxy_node_processes',
+			'processing_firewall',
+			'processing_current_node_processes',
+			'processing_completed'
 		);
 
 		if (file_exists('/etc/ssh/sshd_config') === true) {
