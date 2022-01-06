@@ -31,7 +31,9 @@
 
 		_update(array(
 			'data' => array(
-				'processed_status' => '0'
+				'processed_status' => '0',
+				'processing_progress_checkpoint' => 'processing_queued'
+
 			),
 			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
