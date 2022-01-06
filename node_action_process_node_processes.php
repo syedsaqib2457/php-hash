@@ -768,7 +768,7 @@
 							sleep(1);
 						}
 					} else {
-						$parameters['data']['processed_status'] = '0';
+						$systemActionProcessNodeParameters['data']['processed_status'] = '0';
 					}
 
 					if (file_exists('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid') === true) {
@@ -1029,7 +1029,7 @@
 									sleep(1);
 								}
 							} else {
-								$parameters['data']['processed_status'] = '0';
+								$systemActionProcessNodeParameters['data']['processed_status'] = '0';
 							}
 
 							if (file_exists('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid') === true) {
@@ -1139,7 +1139,11 @@
 			return $response;
 		}
 
-		// todo: update processed_status=1 (or 0 if reprocessing is required in rare cases)
+		if (isset($systemActionProcessNodeParameters['data']['processed_status']) === false) {
+			$systemActionProcessNodeParameters['data']['processed_status'] = '1';
+		}
+
+		// todo: prevent process stacking by verifying processing_status
 		_updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'])
 		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
 		unset($systemActionProcessNodeResponse['data']);
