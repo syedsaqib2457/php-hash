@@ -240,7 +240,7 @@
 			),
 			'node_authentication_token' => $parameters['node_authentication_token']
 		);
-		// _updateNodeProcessingProgress($parameters['binary_files'], $systemActionProcessNodeParameters);
+		// $parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints']);
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
 		$parameters['ip_address_versions'] = array(
@@ -1136,14 +1136,15 @@
 		return $response;
 	}
 
-	function _updateNodeProcessingProgress($binaryFiles, $systemActionProcessNodeParameters) {
+	function _updateNodeProcessingProgress($wgetBinaryFile, $systemActionProcessNodeParameters, $processingProgressCheckpoints) {
+		// todo
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemActionProcessNodeParameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+			shell_exec('sudo ' . $wgetBinaryFile . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemActionProcessNodeParameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 		}
 
-		return true;
+		return $processingProgressCheckpoints;
 	}
 
 	function _verifyNodeProcess($binaryFiles, $nodeProcessNodeIpAddress, $nodeProcessNodeIpAddressVersionNumber, $nodeProcessPortNumber, $nodeProcessType) {
