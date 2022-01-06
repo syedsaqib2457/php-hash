@@ -1137,10 +1137,12 @@
 	}
 
 	function _updateNodeProcessingProgress($wgetBinaryFile, $systemActionProcessNodeParameters, $processingProgressCheckpoints, $processingProgressCheckpointCount) {
+		$processingProgressCheckpointIndex = key($processingProgressCheckpoints);
 		$systemActionProcessNodeParameters['data'] += array(
-			'processing_progress_checkpoint' => current($processingProgressCheckpoints),
-			'processing_progress_percentage' => ((key($processingProgressCheckpoints) + 1) / $processingProgressCheckpointCount)
+			'processing_progress_checkpoint' => $processingProgressCheckpoints[$processingProgressCheckpointIndex],
+			'processing_progress_percentage' => ceil((($processingProgressCheckpointIndex + 1) / $processingProgressCheckpointCount) * 100)
 		);
+		unset($processingProgressCheckpoints[$processingProgressCheckpointIndex]);
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
