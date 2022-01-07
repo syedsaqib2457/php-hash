@@ -371,6 +371,7 @@
 				}
 			}
 
+			// todo: add progress percentage with processed_status=1
 			$response = $systemActionProcessNodeResponse;
 			return $response;
 		}
