@@ -374,7 +374,13 @@
 				}
 			}
 
-			// todo: add progress percentage with processed_status=1
+			$systemActionProcessNodeParameters['data'] = array(
+				'processed_status' => '1',
+				'processing_progress_checkpoint' => 'processing_completed',
+				'processing_progress_percentage' => '100',
+				'processing_status' => '0'
+			);
+			_updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 			$response = $systemActionProcessNodeResponse;
 			return $response;
 		}
