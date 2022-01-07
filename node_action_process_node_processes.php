@@ -1144,7 +1144,6 @@
 		}
 
 		$systemActionProcessNodeParameters['data']['processing_status'] = '0';
-		// todo: prevent process stacking by verifying processing_status
 		_updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
 		unset($systemActionProcessNodeResponse['data']);
