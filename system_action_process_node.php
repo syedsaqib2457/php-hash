@@ -87,7 +87,6 @@
 				)
 			) {
 				$response['data']['processing_progress_override_status'] = $node['processing_progress_override_status'];
-				// todo: return value for preventing errors from duplicate processing
 			}
 
 			_update(array(
