@@ -1153,6 +1153,18 @@
 	}
 
 	function _updateNodeProcessingProgress($binaryFiles, $processId, $processingProgressCheckpoints, $processingProgressCheckpointCount, $systemActionProcessNodeParameters, $systemEndpointDestinationAddress) {
+		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_node_processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
+
+		if (
+			(empty($nodeProcessProcessIds[2]) === false) &&
+			((current($processingProgressCheckpoints) === 'listing_node_parameters') === true)
+		) {
+			$nodeProcessProcessIds = array(
+				$processId
+			);
+			_killProcessIds($binaryFiles, 'process_node_processes', $processId, $nodeProcessProcessIds);
+		}
+
 		$processingProgressCheckpointIndex = key($processingProgressCheckpoints);
 		$systemActionProcessNodeParameters['data'] += array(
 			'processing_progress_checkpoint' => $processingProgressCheckpoints[$processingProgressCheckpointIndex],
@@ -1175,7 +1187,6 @@
 			}
 		}
 
-		// todo: prevent more than 2 simultaneous processes for all node process actions
 		return $processingProgressCheckpoints;
 	}
 
