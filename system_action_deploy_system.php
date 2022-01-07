@@ -955,6 +955,7 @@
 				'node_id',
 				'processed_status',
 				'processing_progress_checkpoint',
+				'processing_progress_override_status',
 				'processing_progress_percentage',
 				'processing_status',
 				'storage_capacity_megabytes'
