@@ -51,7 +51,7 @@
 			'data' => array(
 				'id',
 				'node_id',
-				'processing_status'
+				'processing_progress_override_status'
 			),
 			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
@@ -77,26 +77,35 @@
 			(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
 			(isset($parameters['data']['processing_progress_percentage']) === true)
 		) {
+			$parameters['data']['processing_progress_override_status'] = '0';
+
 			if (
-				(($node['processing_status'] === '1') === true) ||
-				(($parameters['data']['processing_progress_checkpoint'] === 'listing_node_parameters') === true)
+				(($node['processing_progress_override_status'] === '0') === true) ||
+				(
+					(($node['processing_progress_override_status'] === '1') === true) &&
+					(($parameters['data']['processing_progress_checkpoint'] === 'listing_node_parameters') === true)
+				)
 			) {
-				_update(array(
-					'data' => array_intersect_key($parameters['data'], array(
-						'processed_status' => true,
-						'processing_progress_checkpoint' => true,
-						'processing_progress_percentage' => true,
-						'processing_status' => true
-					)),
-					'in' => $parameters['system_databases']['nodes'],
-					'where' => array(
-						'either' => array(
-							'id' => $nodeNodeId,
-							'node_id' => $nodeNodeId
-						)
-					)
-				), $response);
+				$response['data']['processing_progress_override_status'] = $node['processing_progress_override_status'];
+				// todo: return value for preventing errors from duplicate processing
 			}
+
+			_update(array(
+				'data' => array_intersect_key($parameters['data'], array(
+					'processed_status' => true,
+					'processing_progress_checkpoint' => true,
+					'processing_progress_override_status' => true,
+					'processing_progress_percentage' => true,
+					'processing_status' => true
+				)),
+				'in' => $parameters['system_databases']['nodes'],
+				'where' => array(
+					'either' => array(
+						'id' => $nodeNodeId,
+						'node_id' => $nodeNodeId
+					)
+				)
+			), $response);
 		} else {
 			$nodeCount = _count(array(
 				'in' => $parameters['system_databases']['nodes'],
