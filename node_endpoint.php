@@ -1,5 +1,5 @@
 <?php
-	function _killProcessIds($binaryFiles, $nodeAction, $processIds) {
+	function _killProcessIds($binaryFiles, $nodeAction, $processId, $processIds) {
 		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
@@ -13,10 +13,10 @@
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
-		file_put_contents('/usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands.sh', $killProcessCommands);
-		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands.sh');
-		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $nodeAction . '_kill_process_commands.sh');
-		unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands.sh');
+		file_put_contents('/usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh', $killProcessCommands);
+		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
+		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
+		unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
 		return;
 	}
 
