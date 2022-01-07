@@ -293,10 +293,9 @@
 			), $response);
 		}
 
-		$parameters['data']['processing_status'] = '0';
+		$parameters['data']['processed_status'] = $parameters['data']['processing_progress_override_status'] = $parameters['data']['processing_progress_percentage'] = $parameters['data']['processing_status'] = '0';
 		$parameters['data']['processing_progress_checkpoint'] = 'processing_queued';
-		// todo: node processing default data
-
+		// todo: node processing default data + updating processing status for all nodes on node_id
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'activated_status' => true,
@@ -312,8 +311,11 @@
 				'internal_ip_address_version_6' => true,
 				'internal_ip_address_version_6_type' => true,
 				'node_id' => true,
-				'processing_status' => true,
-				'processing_progress_checkpoint' => true
+				'processed_status' => true,
+				'processing_progress_checkpoint' => true,
+				'processing_progress_override_status' => true,
+				'processing_progress_percentage' => true,
+				'processing_status' => true
 			)),
 			'in' => $parameters['databases']['nodes']
 		), $response);
