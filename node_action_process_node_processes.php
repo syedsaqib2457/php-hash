@@ -214,7 +214,7 @@
 	function _processNodeProcesses($parameters, $response) {
 		$parameters['processing_progress_checkpoints'] = array(
 			'listing_node_parameters',
-			'listing_next_node_processes',
+			'processing_next_node_processes',
 			'verifying_current_cryptocurrency_node_processes',
 			'deploying_next_cryptocurrency_node_processes',
 			'verifying_current_http_proxy_node_processes',
@@ -236,7 +236,7 @@
 		$systemActionProcessNodeParameters = array(
 			'action' => 'process_node',
 			'data' => array(
-				'processing_status' => '1'
+				'processing_status' => '0'
 			),
 			'node_authentication_token' => $parameters['node_authentication_token'],
 			'system_endpoint_destination_address' => $parameters['system_endpoint_destination_address']
@@ -285,6 +285,7 @@
 
 		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		$systemActionProcessNodeParameterData = $systemActionProcessNodeParameters['data'];
+		$systemActionProcessNodeParameterData['processing_status'] = '1';
 		unset($systemActionProcessNodeParameters['data']);
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
