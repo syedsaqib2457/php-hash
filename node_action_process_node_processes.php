@@ -1165,7 +1165,16 @@
 			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_processing_status_' . $processId . '_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 		}
 
-		// todo: end current processes if processing override status = 1
+		if (file_exists('/usr/local/ghostcompute/system_action_process_node_processing_status_' . $processId . '_response.json') === true) {
+			$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_processing_status_' . $processId . '_response.json');
+			$systemActionProcessNodeProcessingStatusResponse = json_decode($systemActionProcessNodeResponse, true);
+
+			if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
+				// todo: end current processes
+			}
+		}
+
+		// todo: prevent more than 2 simultaneous processes for all node process actions
 		return $processingProgressCheckpoints;
 	}
 
