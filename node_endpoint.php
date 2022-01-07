@@ -71,7 +71,7 @@
 	);
 
 	if ($parameters['process_id'] === false) {
-		$response['message'] = 'Error listing process ID, please try again.' . "\n";
+		$response['message'] = 'Error listing process ID, please try again.';
 		_output($response);
 	}
 
@@ -166,8 +166,8 @@
 		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
 		
 		if (file_put_contents('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
-			echo 'Error adding binary file list commands, please try again.' . "\n";
-			exit;
+			$response['message'] = 'Error adding binary file list commands, please try again.';
+			_output($response);
 		}
 
 		chmod('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh', 0755);
@@ -177,8 +177,8 @@
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
 			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
-			echo 'Error listing ' . $binary['name'] . ' binary file from the ' . $binary['package'] . ' package, please try again.' . "\n";
-			exit;
+			$response['message'] = 'Error listing ' . $binary['name'] . ' binary file from the ' . $binary['package'] . ' package, please try again.';
+			_output($response);
 		}
 
 		$parameters['binary_files'][$binary['name']] = $binaryFile;
@@ -200,8 +200,8 @@
 		$encodedSystemParameters = json_encode($systemParameters);
 
 		if ($encodedSystemParameters === false) {
-			$response['message'] = 'Error listing system settings, please try again.' . "\n";
-			return $response;
+			$response['message'] = 'Error listing system settings, please try again.';
+			_output($response);
 		}
 
 		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_list_system_settings_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=60 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
