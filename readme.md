@@ -12,7 +12,7 @@ Develop secure applications using a backend API framework built with excessive s
 
 Use built-in API actions to automate deployment, monitoring and scaling for sensitive network infrastructure in containerless Linux environments without sacrificing performance, privacy or security. 
 
-GhostCompute is a backend API framework for cloud applications as well as a standalone automation system for controlling cloud network infrastructure and mining cryptocurrency from the same API.
+GhostCompute is a backend API framework for cloud applications as well as a standalone automation system for controlling cloud network infrastructure from the same API.
 
 ### Make Clean API Requests to a Single Endpoint in JSON Format
 
