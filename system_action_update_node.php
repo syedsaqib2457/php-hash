@@ -40,6 +40,7 @@
 			'data' => array(
 				'processed_status' => '0',
 				'processing_progress_checkpoint' => 'processing_queued',
+				'processing_progress_override_status' => '1',
 				'processing_progress_percentage' => '0',
 				'processing_status' => '0'
 			),
