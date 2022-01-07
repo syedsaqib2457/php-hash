@@ -238,10 +238,9 @@
 			'data' => array(
 				'processing_status' => '1'
 			),
-			'node_authentication_token' => $parameters['node_authentication_token'],
-			'system_endpoint_destination_address' => $parameters['system_endpoint_destination_address']
+			'node_authentication_token' => $parameters['node_authentication_token']
 		);
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
 		$parameters['interface_name'] = current($interfaceName);
 		$parameters['ip_address_versions'] = array(
@@ -283,7 +282,7 @@
 			}
 		}
 
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$systemActionProcessNodeParameterData = $systemActionProcessNodeParameters['data'];
 		unset($systemActionProcessNodeParameters['data']);
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
@@ -321,7 +320,7 @@
 		unset($systemActionProcessNodeParameterData);
 
 		if (empty($parameters['data']['next']['nodes']) === false) {
-			$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+			$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
 			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
 				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) {
@@ -348,7 +347,7 @@
 				// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
 
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
-					$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+					$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
 					foreach (array(0, 1) as $nodeProcessPartKey) {
 						$nodeIpAddressVersion = key($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
@@ -380,7 +379,7 @@
 		unset($parameters['processing_progress_checkpoints'][5]);
 		unset($parameters['processing_progress_checkpoints'][6]);
 		unset($parameters['processing_progress_checkpoints'][7]);
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$kernelOptions = array(
 			'fs.aio-max-nr = 1000000000',
 			'fs.file-max = 1000000000',
@@ -505,7 +504,7 @@
 			shell_exec('sudo ' . $parameters['binary_files']['sysctl'] . ' -w ' . $kernelOptionKey . '="' . $kernelOptionValue . '"');
 		}
 
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$nodeInterfaces = $nodeIpAddressesToDelete = array();
 
 		foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
@@ -535,7 +534,7 @@
 			return $response;
 		}
 
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
 		if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
 			$recursiveDnsNodeProcessDefaultServiceName = 'named';
@@ -803,7 +802,7 @@
 			return $response;
 		}
 
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$parameters['node_process_type_process_part_data_keys']['recursive_dns'] = array(
 			'next',
 			'next'
@@ -1059,7 +1058,7 @@
 			);
 		}
 
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$parameters = _processFirewall($parameters);
 
 		foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSetToDestroy) {
@@ -1080,7 +1079,7 @@
 			}
 		}
 
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
 		foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessIds) {
 			$nodeProcessProcessIds = array();
@@ -1118,7 +1117,7 @@
 			}
 		}
 
-		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$parameters['data']['current'] = array_intersect_key($parameters['data']['next'], array(
 			'node_processes' => true,
 			'node_process_type_firewall_rule_set_reserved_internal_destinations' => true,
@@ -1146,14 +1145,14 @@
 
 		$systemActionProcessNodeParameters['data']['processing_status'] = '0';
 		// todo: prevent process stacking by verifying processing_status
-		_updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'])
+		_updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
 		unset($systemActionProcessNodeResponse['data']);
 		$response = $systemActionProcessNodeResponse;
 		return $response;
 	}
 
-	function _updateNodeProcessingProgress($wgetBinaryFile, $systemActionProcessNodeParameters, $processingProgressCheckpoints, $processingProgressCheckpointCount) {
+	function _updateNodeProcessingProgress($binaryFiles, $processId, $processingProgressCheckpoints, $processingProgressCheckpointCount, $systemActionProcessNodeParameters, $systemEndpointDestinationAddress) {
 		$processingProgressCheckpointIndex = key($processingProgressCheckpoints);
 		$systemActionProcessNodeParameters['data'] += array(
 			'processing_progress_checkpoint' => $processingProgressCheckpoints[$processingProgressCheckpointIndex],
@@ -1163,9 +1162,10 @@
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
-			shell_exec('sudo ' . $wgetBinaryFile . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemActionProcessNodeParameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_processing_status_' . $processId . '_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 		}
 
+		// todo: end current processes if processing override status = 1
 		return $processingProgressCheckpoints;
 	}
 
