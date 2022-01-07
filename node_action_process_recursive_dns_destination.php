@@ -2,7 +2,7 @@
 	function _processRecursiveDnsDestination($parameters, $response) {
 		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_recursive_dns_destination" | awk \'{print $1}\'', $recursiveDnsDestinationProcessIds);
 		$recursiveDnsDestinationProcessIds = array_diff($recursiveDnsDestinationProcessIds, array(
-			getmypid()
+			$parameters['process_id']
 		));
 
 		if (empty($recursiveDnsDestinationProcessIds) === false) {
