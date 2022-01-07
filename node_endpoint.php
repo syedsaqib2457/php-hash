@@ -1,5 +1,5 @@
 <?php
-	function _killProcessIds($binaryFiles, $nodeAction, $processIds, $response) {
+	function _killProcessIds($binaryFiles, $nodeAction, $processIds) {
 		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
