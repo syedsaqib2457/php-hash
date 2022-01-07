@@ -1168,10 +1168,7 @@
 			(empty($nodeProcessProcessIds[2]) === false) &&
 			((current($processingProgressCheckpoints) === 'listing_node_parameters') === true)
 		) {
-			$nodeProcessProcessIds = array(
-				$processId
-			);
-			_killProcessIds($binaryFiles, 'process_node_processes', $processId, $nodeProcessProcessIds);
+			exit;
 		}
 
 		$processingProgressCheckpointIndex = key($processingProgressCheckpoints);
@@ -1193,14 +1190,12 @@
 			if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
 				exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_node_processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
 				_killProcessIds($binaryFiles, 'process_node_processes', $processId, $nodeProcessProcessIds);
+				exit;
 			} elseif (
 				(empty($nodeProcessProcessIds[1]) === false) &&
 				((current($processingProgressCheckpoints) === 'listing_node_parameters') === true)
 			) {
-				$nodeProcessProcessIds = array(
-					$processId
-				);
-				_killProcessIds($binaryFiles, 'process_node_processes', $processId, $nodeProcessProcessIds);
+				exit;
 			}
 		}
 
