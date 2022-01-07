@@ -236,7 +236,7 @@
 		$systemActionProcessNodeParameters = array(
 			'action' => 'process_node',
 			'data' => array(
-				'processing_status' => '0'
+				'processing_status' => '1'
 			),
 			'node_authentication_token' => $parameters['node_authentication_token'],
 			'system_endpoint_destination_address' => $parameters['system_endpoint_destination_address']
@@ -283,7 +283,6 @@
 			}
 		}
 
-		$systemActionProcessNodeParameters['data']['processing_status'] = '1';
 		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		$systemActionProcessNodeParameterData = $systemActionProcessNodeParameters['data'];
 		unset($systemActionProcessNodeParameters['data']);
