@@ -293,6 +293,9 @@
 			), $response);
 		}
 
+		$parameters['data']['processing_status'] = '0';
+		// todo: node processing default data
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'activated_status' => true,
@@ -307,7 +310,8 @@
 				'internal_ip_address_version_4_type' => true,
 				'internal_ip_address_version_6' => true,
 				'internal_ip_address_version_6_type' => true,
-				'node_id' => true
+				'node_id' => true,
+				'processing_status' => true
 			)),
 			'in' => $parameters['databases']['nodes']
 		), $response);
