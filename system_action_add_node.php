@@ -294,6 +294,7 @@
 		}
 
 		$parameters['data']['processing_status'] = '0';
+		$parameters['data']['processing_progress_checkpoint'] = 'processing_queued';
 		// todo: node processing default data
 
 		_save(array(
@@ -311,7 +312,8 @@
 				'internal_ip_address_version_6' => true,
 				'internal_ip_address_version_6_type' => true,
 				'node_id' => true,
-				'processing_status' => true
+				'processing_status' => true,
+				'processing_progress_checkpoint' => true
 			)),
 			'in' => $parameters['databases']['nodes']
 		), $response);
