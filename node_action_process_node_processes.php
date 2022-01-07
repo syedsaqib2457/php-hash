@@ -716,7 +716,7 @@
 						$recursiveDnsNodeProcessProcessIds = _listProcessIds('recursive_dns_' . $recursiveDnsNodeProcessId . ' ', 'recursive_dns_' . $recursiveDnsNodeProcessId . '/');
 
 						if (empty($recursiveDnsNodeProcessProcessIds) === false) {
-							_killProcessIds($parameters['binary_files'], $parameters['action'], $recursiveDnsNodeProcessProcessIds);
+							_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $recursiveDnsNodeProcessProcessIds);
 						}
 					}
 
@@ -993,7 +993,7 @@
 								$proxyNodeProcessProcessIds = _listProcessIds($proxyNodeProcessType . '_' . $proxyNodeProcessId . ' ', '/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg');
 
 								if (empty($proxyNodeProcessProcessIds) === false) {
-									_killProcessIds($parameters['binary_files'], $parameters['action'], $proxyNodeProcessProcessIds);
+									_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $proxyNodeProcessProcessIds);
 								}
 							}
 
@@ -1113,7 +1113,7 @@
 
 			if (empty($nodeProcessProcessIds) === false) {
 				$nodeProcessProcessIds = array_filter($nodeProcessProcessIds);
-				_killProcessIds($parameters['binary_files'], $parameters['action'], $nodeProcessProcessIds);
+				_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessProcessIds);
 			}
 		}
 
@@ -1171,7 +1171,7 @@
 
 			if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
 				exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_node_processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
-				_killProcessIds($binaryFiles, 'process_node_processes', $nodeProcessProcessIds);
+				_killProcessIds($binaryFiles, 'process_node_processes', $processId, $nodeProcessProcessIds);
 			}
 		}
 
