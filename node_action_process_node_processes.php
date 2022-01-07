@@ -283,9 +283,9 @@
 			}
 		}
 
+		$systemActionProcessNodeParameters['data']['processing_status'] = '1';
 		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 		$systemActionProcessNodeParameterData = $systemActionProcessNodeParameters['data'];
-		$systemActionProcessNodeParameterData['processing_status'] = '1';
 		unset($systemActionProcessNodeParameters['data']);
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
