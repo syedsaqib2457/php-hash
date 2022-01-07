@@ -344,7 +344,6 @@
 
 			if (empty($parameters['data']['current']) === false) {
 				// todo: save crypto block template data to file
-				// todo: ping api periodically for new nodes to process during current process port verification to speed up reconfiguration time
 
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
 					$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
@@ -364,13 +363,8 @@
 											'processing_progress_percentage' => '0',
 											'processing_status' => '0'
 										);
-										$parameters['processing_progress_checkpoint_count'] = 1;
-										$parameters['processing_progress_checkpoints'] = array(
-											'processing_queued'
-										);
 										_updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-										// $systemActionProcessNodeResponse = array();
-										// exec('sudo ' . $parameters['binary_files']['curl'] . ' --connect-timeout 60 --form-string "json={\"action\":\"process_node\",\"data\":{\"processed_status\":\"0\"},\"node_authentication_token\":\"' . $parameters['node_authentication_token'] . '\"}" --max-time 60 --silent ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $systemActionProcessNodeResponse);
+										$response['message'] = 'Queueing node processing after node process verification error on destination address ' . $nodeReservedInternalDestination['ip_address'] . ':' . $nodeProcessPortNumber . '.';
 										return $response;
 									}
 								}
