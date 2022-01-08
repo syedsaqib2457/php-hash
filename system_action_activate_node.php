@@ -51,7 +51,8 @@
 					'name' => 'system_endpoint_destination_address'
 				)
 			), $response);
-			$systemEndpointDestinationAddress = current(current($systemEndpointDestinationAddress));
+			$systemEndpointDestinationAddress = current($systemEndpointDestinationAddress);
+			$systemEndpointDestinationAddress = current($systemEndpointDestinationAddress);
 
 			if (empty($systemEndpointDestinationAddress) === true) {
 				$response['message'] = 'Error listing system endpoint destination address, please try again.';
