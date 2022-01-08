@@ -96,41 +96,28 @@
 	}
 
 	function _count($parameters, $response) {
-		$command = 'SELECT COUNT(id) FROM ' . $parameters['in']['structure']['table_name'];
+		$systemDatabaseCountCommand = 'SELECT COUNT(id) FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$systemDatabaseCountCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 		}
 
-		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
+		$systemDatabaseCountRows = mysqli_query($parameters['in']['connection'], $command);
 
-		if ($commandResponse === false) {
+		if ($systemDatabaseCountRows === false) {
 			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
-		$commandResponse = mysqli_fetch_assoc($commandResponse);
-
-		if ($commandResponse === false) {
-			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-			_output($response);
-		}
-
-		$commandResponse = current($commandResponse);
-
-		if (is_int($commandResponse) === false) {
-			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-			_output($response);
-		}
-
-		return $commandResponse;
+		$response['data'] = current($systemDatabaseCountRows);
+		return intval($response['data']);
 	}
 
 	function _delete($parameters, $response) {
 		$command = 'DELETE FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$command .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 		}
 
 		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
@@ -153,7 +140,7 @@
 		$listDatabaseCommand = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$listDatabaseCommand .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$listDatabaseCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 		}
 
 		if (empty($parameters['sort']) === false) {
@@ -192,7 +179,7 @@
 		return $response['data'];
 	}
 
-	function _parseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
+	function _parseSystemDatabaseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
 		foreach ($whereConditions as $whereConditionKey => $whereConditionValue) {
 			if ($whereConditionKey === 'either') {
 				$whereConditionConjunction = 'OR';
@@ -203,7 +190,7 @@
 				((count($whereConditionValue) === count($whereConditionValue, true)) === false)
 			) {
 				$recursiveWhereConditions = $whereConditionValue;
-				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseCommandWhereConditions($recursiveWhereConditions, $conjunction)) . ')';
+				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseSystemDatabaseCommandWhereConditions($recursiveWhereConditions, $conjunction)) . ')';
 			} else {
 				if (is_array($whereConditionValue) === false) {
 					$whereConditionValue = array(
@@ -324,7 +311,7 @@
 				$command .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
 			}
 
-			$command = rtrim($command, ',') . ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$command = rtrim($command, ',') . ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 			$commandResponse = mysqli_query($parameters['in']['connection'], $command);
 
 			if ($commandResponse === false) {
