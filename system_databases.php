@@ -137,43 +137,44 @@
 			);
 		}
 
-		$listDatabaseCommand = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['table_name'];
+		$systemDatabaseListCommand = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$listDatabaseCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
+			$systemDatabaseListCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 		}
 
 		if (empty($parameters['sort']) === false) {
-			$listDatabaseCommand .= ' ORDER BY ';
+			$systemDatabaseListCommand .= ' ORDER BY ';
 
 			if ($parameters['sort'] === 'random') {
-				$listDatabaseCommand .= 'RAND()';
+				$systemDatabaseListCommand .= 'RAND()';
 			} else {
-				foreach ($parameters['sort'] as $listDatabaseSortColumnName => $listDatabaseSortOrder) {
-					$listDatabaseCommand .= $listDatabaseSortColumnName . ' ' . strtoupper(str_replace('ending', '', $listDatabaseSortOrder)) . ',';
+				foreach ($parameters['sort'] as $systemDatabaseListSortColumnName => $systemDatabaseListSortOrder) {
+					$systemDatabaseListSortOrder = str_replace('ending', '', $systemDatabaseListSortOrder);
+					$systemDatabaseListCommand .= $systemDatabaseListSortColumnName . ' ' . strtoupper($systemDatabaseListSortOrder) . ',';
 				}
 
-				$listDatabaseCommand = rtrim($listDatabaseCommand, ',');
+				$systemDatabaseListCommand = rtrim($systemDatabaseListCommand, ',');
 			}
 		}
 
 		if (empty($parameters['limit']) === false) {
-			$listDatabaseCommand .= ' LIMIT ' . $parameters['limit'];
+			$systemDatabaseListCommand .= ' LIMIT ' . $parameters['limit'];
 		}
 
 		if (empty($parameters['offset']) === false) {
-			$listDatabaseCommand .= ' OFFSET ' . $parameters['offset'];
+			$systemDatabaseListCommand .= ' OFFSET ' . $parameters['offset'];
 		}
 
-		$listDatabaseRows = mysqli_query($parameters['in']['connection'], $listDatabaseCommand);
+		$systemDatabaseListRows = mysqli_query($parameters['in']['connection'], $systemDatabaseListCommand);
 
-		if ($listDatabaseRows === false) {
+		if ($systemDatabaseListRows === false) {
 			$response['message'] = 'Error listing data rows in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
-		foreach ($listDatabaseRows as $listDatabaseRow) {
-			$response['data'][] = $listDatabaseRow;
+		foreach ($systemDatabaseListRows as $systemDatabaseListRow) {
+			$response['data'][] = $systemDatabaseListRow;
 		}
 
 		return $response['data'];
