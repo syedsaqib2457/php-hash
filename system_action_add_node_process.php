@@ -25,12 +25,15 @@
 			return $response;
 		}
 
-		if (empty($parameters['data']['type']) === true) {
+		if (
+			(empty($parameters['data']['type']) === true) ||
+			(is_string($parameters['data']['type']) === false)
+		) {
 			$response['message'] = 'Node process must have a type, please try again.';
 			return $response;
 		}
 
-		if (in_array(strval($parameters['data']['type']), array(
+		if (in_array($parameters['data']['type'], array(
 			'bitcoin_cryptocurrency',
 			'http_proxy',
 			'load_balancer',
