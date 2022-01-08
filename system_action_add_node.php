@@ -295,7 +295,6 @@
 
 		$parameters['data']['processed_status'] = $parameters['data']['processing_progress_override_status'] = $parameters['data']['processing_progress_percentage'] = $parameters['data']['processing_status'] = '0';
 		$parameters['data']['processing_progress_checkpoint'] = 'processing_queued';
-		// todo: node processing default data + updating processing status for all nodes on node_id
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'activated_status' => true,
