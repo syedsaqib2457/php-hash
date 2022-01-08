@@ -1221,7 +1221,7 @@
 				$systemDatabaseRowColumnValues = array_values($systemDatabaseRow);
 				$systemDatabaseRowColumnValues = implode('\', \'', $systemDatabaseRowColumnValues);
 
-				if (mysqli_query($systemDatabaseConnection, 'INSERT IGNORE INTO `' . $systemDatabaseTableName . '` (`' . $systemDatabaseRowColumnNames . '`) VALUES (\'' . implode('\', \'', $systemDatabaseRowColumnValues . '\')') === false) {
+				if (mysqli_query($systemDatabaseConnection, 'INSERT IGNORE INTO `' . $systemDatabaseTableName . '` (`' . $systemDatabaseRowColumnNames . '`) VALUES (\'' . $systemDatabaseRowColumnValues . '\')') === false) {
 					echo 'Error adding system database data, please try again.';
 					exit;
 				}
