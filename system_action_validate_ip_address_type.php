@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	function _validateIpAddressType($ipAddress, $ipAddressVersion) {
+	function _validateIpAddressType($ipAddress, $ipAddressVersionNumber) {
 		$response = 'public_network';
 		$reservedIpAddressVersions = array(
 			'4' => array(
@@ -89,7 +89,7 @@
 			)
 		);
 
-		foreach ($reservedIpAddressVersions[$ipAddressVersion] as $reservedIpAddressType => $reservedIpAddressRanges) {
+		foreach ($reservedIpAddressVersions[$ipAddressVersionNumber] as $reservedIpAddressType => $reservedIpAddressRanges) {
 			foreach ($reservedIpAddressRanges as $reservedIpAddressRange) {
 				if (
 					(($ipAddress <= $reservedIpAddressRange['stop']) === true) &&
