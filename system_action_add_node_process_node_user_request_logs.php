@@ -14,17 +14,15 @@
 			return $response;	
 		}
 
-		if (empty($parameters['data']['node_process_type']) === true) {
+		if (
+			(empty($parameters['data']['node_process_type']) === true) ||
+			(is_string($parameters['data']['node_process_type']) === false)
+		) {
 			$response['message'] = 'Node process node user request logs must have a node process type, please try again.';
 			return $response;
 		}
 
-		if (empty($parameters['data']['node_user_id']) === true) {
-			$response['message'] = 'Node process node user request logs must have a node user ID, please try again.';
-			return $response;
-		}
-
-		if (in_array(strval($parameters['data']['node_process_type']), array(
+		if (in_array($parameters['data']['node_process_type'], array(
 			'http_proxy',
 			'load_balancer',
 			'recursive_dns',
@@ -34,16 +32,23 @@
 			return $response;
 		}
 
-		$nodeIds = array(
-			$parameters['node']['id'],
-			$parameters['node']['node_id']
-		);
+		if (empty($parameters['data']['node_user_id']) === true) {
+			$response['message'] = 'Node process node user request logs must have a node user ID, please try again.';
+			return $response;
+		}
+
+		$nodeNodeId = $parameters['node']['id'];
+
+		if (empty($parameters['node']['node_id']) === false) {
+			$nodeNodeId = $parameters['node']['node_id'];
+		}
+
 		$nodeProcessNodeUserCount = _count(array(
 			'in' => $parameters['databases']['node_process_node_users'],
 			'where' => array(
 				'either' => array(
-					'node_id' => $nodeIds,
-					'node_node_id' => $nodeIds
+					'node_id' => $nodeNodeId,
+					'node_node_id' => $nodeNodeId
 				),
 				'node_process_type' => $parameters['data']['node_process_type']
 			)
