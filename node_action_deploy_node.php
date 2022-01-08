@@ -362,9 +362,9 @@
 
 	$crontabCommands += array(
 		'# ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_process_node_user_request_logs ghostcompute_default',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_processes ghostcompute_default',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_resource_usage_logs ghostcompute_default',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_user_request_logs ghostcompute_default',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_recursive_dns_destination ghostcompute_default',
 		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_network_interface_ip_addresses ghostcompute_default'
 	);
