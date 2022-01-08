@@ -1,7 +1,7 @@
 <?php
 	function processNodeUserRequestLogs($parameters, $response) {
 		$systemParameters = array(
-			'action' => 'process_node_user_request_logs',
+			'action' => 'add_node_process_node_user_request_logs',
 			'node_authentication_token' => $parameters['node_authentication_token']
 		);
 		$encodedSystemParameters = json_encode($systemParameters);
