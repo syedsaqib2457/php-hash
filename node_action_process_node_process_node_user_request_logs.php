@@ -12,6 +12,7 @@
 
 		foreach ($nodeProcessTypes as $nodeProcessType) {
 			$nodeProcessNodeUserRequestLogFiles = scandir('/var/log/' . $nodeProcessType);
+			$systemParameters['data']['node_process_type'] = $nodeProcessType;
 
 			if (empty($nodeProcessNodeUserRequestLogFiles) === false) {
 				unset($nodeProcessNodeUserRequestLogFiles[0]);
@@ -24,7 +25,8 @@
 						(empty($nodeProcessNodeUserRequestLogFileParts[1]) === false) &&
 						(empty($nodeProcessNodeUserRequestLogFileParts[2]) === true)
 					) {
-						// todo: add id data to $systemParameters
+						$systemParameters['data']['node_id'] = $nodeProcessNodeUserRequestLogFileParts[0];
+						$systemParameters['data']['node_user_id'] = $nodeProcessNodeUserRequestLogFileParts[1];
 						$encodedSystemParameters = json_encode($systemParameters);
 
 						if ($encodedSystemParameters === false) {
@@ -32,8 +34,6 @@
 							return $response;
 						}
 
-						$nodeProcessNodeId = $nodeProcessNodeUserRequestLogFileParts[0];
-						$nodeProcessNodeUserId = $nodeProcessNodeUserRequestLogFileParts[1];
 						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeProcessNodeUserRequestLogsResponse);
 						$processNodeProcessNodeUserRequestLogsResponse = current($processNodeProcessNodeUserRequestLogsResponse);
 						$processNodeProcessNodeUserRequestLogsResponse = json_decode($processNodeProcessNodeUserRequestLogsResponse, true);
