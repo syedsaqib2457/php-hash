@@ -31,6 +31,7 @@
 						(empty($nodeProcessNodeUserRequestLogFileParts[1]) === false) &&
 						(empty($nodeProcessNodeUserRequestLogFileParts[2]) === true)
 					) {
+						// todo: add id data to $systemParameters
 						$nodeProcessNodeId = $nodeProcessNodeUserRequestLogFileParts[0];
 						$nodeProcessNodeUserId = $nodeProcessNodeUserRequestLogFileParts[1];
 						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeProcessNodeUserRequestLogsResponse);
