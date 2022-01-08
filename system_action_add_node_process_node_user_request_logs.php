@@ -42,6 +42,8 @@
 			return $response;
 		}
 
+		// todo: validate node authentication_token with $parameters['data']['node_id']
+
 		$nodeNodeId = $parameters['node']['id'];
 
 		if (empty($parameters['node']['node_id']) === false) {
