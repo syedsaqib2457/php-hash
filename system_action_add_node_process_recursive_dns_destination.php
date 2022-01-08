@@ -18,12 +18,15 @@
 			return $response;
 		}
 
-		if (empty($parameters['data']['node_process_type']) === true) {
+		if (
+			(empty($parameters['data']['node_process_type']) === true) ||
+			(is_string($parameters['data']['node_process_type']) === false)
+		) {
 			$response['message'] = 'Node process recursive DNS destination must have a node process type, please try again.';
 			return $response;
 		}
 
-		if (in_array(strval($parameters['data']['node_process_type']), array(
+		if (in_array($parameters['data']['node_process_type'], array(
 			'http_proxy',
 			'socks_proxy'
 		)) === false) {
