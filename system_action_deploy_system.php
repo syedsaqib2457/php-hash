@@ -15,6 +15,7 @@
 		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id":"$nodeId","port_number":"53","type":"recursive_dns"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id":"$nodeId","port_number":"54","type":"recursive_dns"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process_recursive_dns_destination","data":{"destination_ip_address_version_4":"$nodeExternalIpAddressVersion4","node_id":"$nodeId","port_number":"53","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
+		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"activate_node","data":{"id":"$nodeId","system_user_authentication_token":"$systemUserAuthenticationToken"}}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
 	*/
 
 	function _createUniqueId() {
