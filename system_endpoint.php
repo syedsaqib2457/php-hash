@@ -22,7 +22,7 @@
 		'valid_status' => '0'
 	);
 
-	if (empty($_POST['json']]) === false) {
+	if (empty($_POST['json']) === false) {
 		$parameters = json_decode($_POST['json'], true);
 
 		if (empty($parameters) === true) {
