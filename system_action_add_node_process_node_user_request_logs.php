@@ -59,7 +59,8 @@
 			return $response;
 		}
 
-		$nodeProcessNodeUserRequestLogs = explode("\n", file_get_contents($_FILES['data']['tmp_name']));
+		$nodeProcessNodeUserRequestLogs = file_get_contents($_FILES['data']['tmp_name']);
+		$nodeProcessNodeUserRequestLogs = explode("\n", $nodeProcessNodeUserRequestLogs);
 
 		if (empty($nodeProcessNodeUserRequestLogs) === true) {
 			$response['message'] = 'Invalid node process node user request log data, please try again.';
@@ -79,7 +80,7 @@
 						'bytes_received' => $nodeProcessNodeUserRequestLog[0],
 						'bytes_sent' => $nodeProcessNodeUserRequestLog[1],
 						'created' => $nodeProcessNodeUserRequestLog[2],
-						'destination_hostname' => '$nodeProcessNodeUserRequestLog[3]',
+						'destination_hostname' => $nodeProcessNodeUserRequestLog[3],
 						'destination_ip_address' => $nodeProcessNodeUserRequestLog[4],
 						'id' => _createUniqueId(),
 						'node_id' => $parameters['data']['node_id'],
