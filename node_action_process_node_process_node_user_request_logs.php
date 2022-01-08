@@ -29,9 +29,7 @@
 
 					if (
 						(empty($nodeProcessUserRequestLogFileParts[1]) === false) &&
-						(empty($nodeProcessUserRequestLogFileParts[2]) === true) &&
-						(is_numeric($nodeProcessUserRequestLogFileParts[0]) === true) &&
-						(is_numeric($nodeProcessUserRequestLogFileParts[1]) === true)
+						(empty($nodeProcessUserRequestLogFileParts[2]) === true)
 					) {
 						$nodeProcessNodeId = $nodeProcessUserRequestLogFileParts[0];
 						$nodeProcessNodeUserId = $nodeProcessUserRequestLogFileParts[1];
