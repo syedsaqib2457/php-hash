@@ -50,7 +50,6 @@
 			return $response;
 		}
 
-
 		$nodeNodeId = $node['id'];
 
 		if (empty($node['node_id']) === false) {
