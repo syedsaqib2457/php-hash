@@ -150,49 +150,46 @@
 			);
 		}
 
-		$command = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['table_name'];
+		$listDatabaseCommand = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
+			$listDatabaseCommand .= ' WHERE ' . implode(' AND ', _parseCommandWhereConditions($parameters['where']));
 		}
 
 		if (empty($parameters['sort']) === false) {
-			$command .= ' ORDER BY ';
+			$listDatabaseCommand .= ' ORDER BY ';
 
 			if ($parameters['sort'] === 'random') {
-				$command .= 'RAND()';
+				$listDatabaseCommand .= 'RAND()';
 			} else {
-				foreach ($parameters['sort'] as $sortColumnName => $sortOrder) {
-					$command .= $sortColumnName . ' ' . strtoupper(str_replace('ending', '', $sortOrder)) . ',';
+				foreach ($parameters['sort'] as $listDatabaseSortColumnName => $listDatabaseSortOrder) {
+					$listDatabaseCommand .= $listDatabaseSortColumnName . ' ' . strtoupper(str_replace('ending', '', $listDatabaseSortOrder)) . ',';
 				}
 
-				$command = rtrim($command, ',');
+				$listDatabaseCommand = rtrim($listDatabaseCommand, ',');
 			}
 		}
 
 		if (empty($parameters['limit']) === false) {
-			$command .= ' LIMIT ' . $parameters['limit'];
+			$listDatabaseCommand .= ' LIMIT ' . $parameters['limit'];
 		}
 
 		if (empty($parameters['offset']) === false) {
-			$command .= ' OFFSET ' . $parameters['offset'];
+			$listDatabaseCommand .= ' OFFSET ' . $parameters['offset'];
 		}
 
-		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
+		$listDatabaseRows = mysqli_query($parameters['in']['connection'], $listDatabaseCommand);
 
-		if ($commandResponse === false) {
-			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
+		if ($listDatabaseRows === false) {
+			$response['message'] = 'Error listing data rows in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
 
-		$commandResponse = mysqli_fetch_assoc($commandResponse);
-
-		if ($commandResponse === false) {
-			$response['message'] = 'Error listing data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-			_output($response);
+		foreach ($listDatabaseRows as $listDatabaseRow) {
+			$response['data'][] = $listDatabaseRow;
 		}
 
-		return $commandResponse;
+		return $response['data'];
 	}
 
 	function _parseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
