@@ -88,7 +88,8 @@
 				),
 				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
-					'authentication_token' => $parameters['node_authentication_token']
+					'authentication_token' => $parameters['node_authentication_token'],
+					'node_id' => null
 				)
 			), $response);
 			$node = current($node);
