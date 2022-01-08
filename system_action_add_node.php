@@ -16,6 +16,7 @@
 		if (empty($parameters['data']['node_id']) === false) {
 			$nodeNode = _list(array(
 				'data' => array(
+					'authentication_token',
 					'deployed_status',
 					'id',
 					'node_id'
@@ -32,6 +33,7 @@
 				return $response;
 			}
 
+			$parameters['data']['authentication_token'] = $nodeNode['authentication_token'];
 			$parameters['data']['deployed_status'] = $nodeNode['deployed_status'];
 			$parameters['data']['node_id'] = $nodeNode['id'];
 		} else {
