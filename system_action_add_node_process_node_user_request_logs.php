@@ -42,20 +42,25 @@
 			return $response;
 		}
 
-		// todo: validate node authentication_token with $parameters['data']['node_id']
+		$nodeCount = _count(array(
+			'in' => $parameters['databases']['nodes'],
+			'where' => array(
+				'authentication_token' => $parameters['node_authentication_token'],
+				'id' => $parameters['data']['node_id']
+			)
+		), $response);
 
-		$nodeNodeId = $parameters['node']['id'];
-
-		if (empty($parameters['node']['node_id']) === false) {
-			$nodeNodeId = $parameters['node']['node_id'];
+		if ($nodeCount < 1) === true) {
+			$response['message'] = 'Invalid node process node user request log node ID, please try again.';
+			return $response;
 		}
 
 		$nodeProcessNodeUserCount = _count(array(
 			'in' => $parameters['databases']['node_process_node_users'],
 			'where' => array(
 				'either' => array(
-					'node_id' => $nodeNodeId,
-					'node_node_id' => $nodeNodeId
+					'node_id' => $parameters['node']['id'],
+					'node_node_id' => $parameters['node']['id']
 				),
 				'node_process_type' => $parameters['data']['node_process_type']
 			)
