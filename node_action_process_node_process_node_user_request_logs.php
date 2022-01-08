@@ -1,5 +1,5 @@
 <?php
-	function processNodeUserRequestLogs($parameters, $response) {
+	function processNodeProcessNodeUserRequestLogs($parameters, $response) {
 		$systemParameters = array(
 			'action' => 'add_node_process_node_user_request_logs',
 			'node_authentication_token' => $parameters['node_authentication_token']
@@ -7,7 +7,7 @@
 		$encodedSystemParameters = json_encode($systemParameters);
 
 		if ($encodedSystemParameters === false) {
-			$response['message'] = 'Error processing node user request logs, please try again.' . "\n";
+			$response['message'] = 'Error processing node process node user request logs, please try again.';
 			return $response;
 		}
 
@@ -18,42 +18,42 @@
 		);
 
 		foreach ($nodeProcessTypes as $nodeProcessType) {
-			$nodeProcessUserRequestLogFiles = scandir('/var/log/' . $nodeProcessType);
+			$nodeProcessNodeUserRequestLogFiles = scandir('/var/log/' . $nodeProcessType);
 
-			if (empty($nodeProcessUserRequestLogFiles) === false) {
-				unset($nodeProcessUserRequestLogFiles[0]);
-				unset($nodeProcessUserRequestLogFiles[1]);
+			if (empty($nodeProcessNodeUserRequestLogFiles) === false) {
+				unset($nodeProcessNodeUserRequestLogFiles[0]);
+				unset($nodeProcessNodeUserRequestLogFiles[1]);
 
-				foreach ($nodeProcessUserRequestLogFiles as $nodeProcessUserRequestLogFile) {
-					$nodeProcessUserRequestLogFileParts = explode('_', $nodeProcessUserRequestLogFile);
+				foreach ($nodeProcessNodeUserRequestLogFiles as $nodeProcessNodeUserRequestLogFile) {
+					$nodeProcessNodeUserRequestLogFileParts = explode('_', $nodeProcessNodeUserRequestLogFile);
 
 					if (
-						(empty($nodeProcessUserRequestLogFileParts[1]) === false) &&
-						(empty($nodeProcessUserRequestLogFileParts[2]) === true)
+						(empty($nodeProcessNodeUserRequestLogFileParts[1]) === false) &&
+						(empty($nodeProcessNodeUserRequestLogFileParts[2]) === true)
 					) {
-						$nodeProcessNodeId = $nodeProcessUserRequestLogFileParts[0];
-						$nodeProcessNodeUserId = $nodeProcessUserRequestLogFileParts[1];
-						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeUserRequestLogsResponse);
-						$processNodeUserRequestLogsResponse = current($processNodeUserRequestLogsResponse);
-						$processNodeUserRequestLogsResponse = json_decode($processNodeUserRequestLogsResponse, true);
+						$nodeProcessNodeId = $nodeProcessNodeUserRequestLogFileParts[0];
+						$nodeProcessNodeUserId = $nodeProcessNodeUserRequestLogFileParts[1];
+						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeProcessNodeUserRequestLogsResponse);
+						$processNodeProcessNodeUserRequestLogsResponse = current($processNodeProcessNodeUserRequestLogsResponse);
+						$processNodeProcessNodeUserRequestLogsResponse = json_decode($processNodeProcessNodeUserRequestLogsResponse, true);
 
-						if (empty($processNodeUserRequestLogsResponse['valid_status']) === true) {
-							$response['message'] = 'Error processing node user request logs, please try again.' . "\n";
+						if (empty($processNodeProcessNodeUserRequestLogsResponse['valid_status']) === true) {
+							$response['message'] = 'Error processing node process node user request logs, please try again.';
 							return $response;
 						}
 
-						$response['message'] = $processNodeUserRequestLogsResponse['message'];
+						$response['message'] = $processNodeProcessNodeUserRequestLogsResponse['message'];
 
-						if (empty($response['data']['most_recent_node_process_user_request_log']) === false) {
-							$mostRecentNodeProcessUserRequestLog = $response['data']['most_recent_node_process_user_request_log'];
-							$mostRecentNodeProcessUserRequestLogLength = strlen($mostRecentNodeProcessUserRequestLog);
-							$nodeProcessUserRequestLogs = file_get_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile);
-							$mostRecentNodeProcessUserRequestLogPosition = strpos($nodeProcessUserRequestLogs, $mostRecentNodeProcessUserRequestLog);
-							$updatedNodeProcessUserRequestLogs = substr($nodeProcessUserRequestLogs, $mostRecentNodeProcessUserRequestLogPosition + $mostRecentNodeProcessUserRequestLogLength);
-							$updatedNodeProcessUserRequestLogs = trim($updatedNodeProcessUserRequestLogs);
+						if (empty($response['data']['most_recent_node_process_node_user_request_log']) === false) {
+							$mostRecentNodeProcessNodeUserRequestLog = $response['data']['most_recent_node_process_node_user_request_log'];
+							$mostRecentNodeProcessNodeUserRequestLogLength = strlen($mostRecentNodeProcessNodeUserRequestLog);
+							$nodeProcessNodeUserRequestLogs = file_get_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile);
+							$mostRecentNodeProcessNodeUserRequestLogPosition = strpos($nodeProcessNodeUserRequestLogs, $mostRecentNodeProcessNodeUserRequestLog);
+							$updatedNodeProcessNodeUserRequestLogs = substr($nodeProcessNodeUserRequestLogs, $mostRecentNodeProcessNodeUserRequestLogPosition + $mostRecentNodeProcessNodeUserRequestLogLength);
+							$updatedNodeProcessNodeUserRequestLogs = trim($updatedNodeProcessNodeUserRequestLogs);
 
-							if (file_put_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessUserRequestLogFile, $updatedNodeProcessUserRequestLogs) === false) {
-								$response['message'] = 'Error processing node user request logs, please try again.' . "\n";
+							if (file_put_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile, $updatedNodeProcessNodeUserRequestLogs) === false) {
+								$response['message'] = 'Error processing node process node user request logs, please try again.';
 								return $response;
 							}
 						}
@@ -66,8 +66,8 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'process_node_user_request_logs') === true) {
-		$response = _processNodeUserRequestLogs($parameters, $response);
+	if (($parameters['action'] === 'process_node_process_node_user_request_logs') === true) {
+		$response = _processNodeProcessNodeUserRequestLogs($parameters, $response);
 		_output($response);
 	}
 ?>
