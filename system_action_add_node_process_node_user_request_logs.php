@@ -55,22 +55,6 @@
 			return $response;
 		}
 
-		$nodeProcessNodeUserCount = _count(array(
-			'in' => $parameters['databases']['node_process_node_users'],
-			'where' => array(
-				'either' => array(
-					'node_id' => $parameters['node']['id'],
-					'node_node_id' => $parameters['node']['id']
-				),
-				'node_process_type' => $parameters['data']['node_process_type']
-			)
-		), $response);
-
-		if (($nodeProcessNodeUserCount < 1) === true) {
-			$response['message'] = 'Invalid node process node user request log node process node user, please try again.';
-			return $response;
-		}
-
 		$nodeProcessNodeUserRequestLogs = file_get_contents($_FILES['data']['tmp_name']);
 		$nodeProcessNodeUserRequestLogs = explode("\n", $nodeProcessNodeUserRequestLogs);
 
