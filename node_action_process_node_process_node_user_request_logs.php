@@ -1,20 +1,13 @@
 <?php
 	function processNodeProcessNodeUserRequestLogs($parameters, $response) {
-		$systemParameters = array(
-			'action' => 'add_node_process_node_user_request_logs',
-			'node_authentication_token' => $parameters['node_authentication_token']
-		);
-		$encodedSystemParameters = json_encode($systemParameters);
-
-		if ($encodedSystemParameters === false) {
-			$response['message'] = 'Error processing node process node user request logs, please try again.';
-			return $response;
-		}
-
 		$nodeProcessTypes = array(
 			'http_proxy',
 			'recursive_dns',
 			'socks_proxy'
+		);
+		$systemParameters = array(
+			'action' => 'add_node_process_node_user_request_logs',
+			'node_authentication_token' => $parameters['node_authentication_token']
 		);
 
 		foreach ($nodeProcessTypes as $nodeProcessType) {
@@ -32,6 +25,13 @@
 						(empty($nodeProcessNodeUserRequestLogFileParts[2]) === true)
 					) {
 						// todo: add id data to $systemParameters
+						$encodedSystemParameters = json_encode($systemParameters);
+
+						if ($encodedSystemParameters === false) {
+							$response['message'] = 'Error processing node process node user request logs, please try again.';
+							return $response;
+						}
+
 						$nodeProcessNodeId = $nodeProcessNodeUserRequestLogFileParts[0];
 						$nodeProcessNodeUserId = $nodeProcessNodeUserRequestLogFileParts[1];
 						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeProcessNodeUserRequestLogsResponse);
