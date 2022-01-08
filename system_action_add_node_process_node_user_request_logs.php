@@ -14,6 +14,11 @@
 			return $response;	
 		}
 
+		if (empty($parameters['data']['node_id']) === true) {
+			$response['message'] = 'Node process node user request logs must have a node ID, please try again.';
+			return $response;
+		}
+
 		if (
 			(empty($parameters['data']['node_process_type']) === true) ||
 			(is_string($parameters['data']['node_process_type']) === false)
