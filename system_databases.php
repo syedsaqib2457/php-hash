@@ -191,7 +191,7 @@
 				((count($whereConditionValue) === count($whereConditionValue, true)) === false)
 			) {
 				$recursiveWhereConditions = $whereConditionValue;
-				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $conjunction . ' (', _parseSystemDatabaseCommandWhereConditions($recursiveWhereConditions, $conjunction)) . ')';
+				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $whereConditionConjunction . ' (', _parseSystemDatabaseCommandWhereConditions($recursiveWhereConditions, $whereConditionConjunction)) . ')';
 			} else {
 				if (is_array($whereConditionValue) === false) {
 					$whereConditionValue = array(
