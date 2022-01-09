@@ -21,7 +21,7 @@
 					'id',
 					'node_id'
 				),
-				'in' => $parameters['databases']['nodes'],
+				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'id' => $parameters['data']['node_id']
 				)
@@ -95,7 +95,7 @@
 				'internal_ip_address_version_4',
 				'internal_ip_address_version_6'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'either' => $nodeExternalIpAddresses
 			)
@@ -291,7 +291,7 @@
 
 			_save(array(
 				'data' => $nodeReservedInternalSourceData,
-				'in' => $parameters['databases']['node_reserved_internal_sources']
+				'in' => $parameters['system_databases']['node_reserved_internal_sources']
 			), $response);
 		}
 
@@ -318,10 +318,10 @@
 				'processing_progress_percentage' => true,
 				'processing_status' => true
 			)),
-			'in' => $parameters['databases']['nodes']
+			'in' => $parameters['system_databases']['nodes']
 		), $response);
 		$node = _list(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => $nodeIpAddresses
 		), $response);
 		$node = current($node);
