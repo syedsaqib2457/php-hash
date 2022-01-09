@@ -899,7 +899,7 @@
 									if (empty($proxyNodeProcessNodeUser['node_request_logs_allowed_status']) === false) {
 										$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessNodeUserId;
 										$proxyNodeProcessConfigurationIndexes['c']++;
-										$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C _ %U"';
+										$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C"';
 										$proxyNodeProcessConfigurationIndexes['c']++;
 									}
 
