@@ -179,6 +179,7 @@
 			}
 		}
 
+		$parameters['process_id'] = getmypid();
 		$response['authenticated_status'] = '1';
 		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
 	}
