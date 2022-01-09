@@ -775,7 +775,7 @@
 				'node_request_destination_id',
 				'node_user_id',
 				'processed_status',
-				'processing_status',
+				'processing_process_id',
 				'response_code',
 				'source_ip_address'
 			),
