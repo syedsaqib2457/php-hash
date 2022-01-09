@@ -134,7 +134,7 @@
 				)
 			), $response);
 
-			if (($systemUserAuthenticationTokenScopeCount <= 0) === true) {
+			if (($systemUserAuthenticationTokenScopeCount < 1) === true) {
 				$response['message'] = 'Invalid system endpoint request system user authentication token scope, please try again.';
 				_output($response);
 			}
@@ -172,7 +172,7 @@
 				);
 				$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
-				if (($systemUserAuthenticationTokenSourceCount <= 0) === true) {
+				if (($systemUserAuthenticationTokenSourceCount < 1) === true) {
 					$response['message'] = 'Invalid system endpoint request system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
 					_output($response);
 				}
