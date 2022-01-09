@@ -22,7 +22,7 @@
 				'ip_address' => 'ascending'
 			),
 			'where' => array(
-				'added_status' => '0'
+				'added_status' => '0',
 				'either' => array(
 					'node_id' => $parameters['node'][$nodeIpAddressVersionNumber],
 					'node_node_id' => $parameters['node'][$nodeIpAddressVersionNumber]
