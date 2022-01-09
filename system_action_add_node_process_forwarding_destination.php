@@ -16,12 +16,15 @@
 			return $response;
 		}
 
-		if (empty($parameters['data']['node_process_type']) === true) {
+		if (
+			(empty($parameters['data']['node_process_type']) === true) ||
+			(is_string($parameters['data']['node_process_type']) === false)
+		) {
 			$response['message'] = 'Node process forwarding destination must have a node process type, please try again.';
 			return $response;
 		}
 
-		if (in_array(strval($parameters['data']['node_process_type']), array(
+		if (in_array($parameters['data']['node_process_type'], array(
 			'http_proxy',
 			'socks_proxy'
 		)) === false) {
@@ -34,7 +37,7 @@
 				'id',
 				'node_id'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'id' => $parameters['data']['node_id']
 			)
@@ -77,7 +80,7 @@
 
 		$parameters['data']['node_node_id'] = $node['node_id'];
 		$existingNodeProcessForwardingDestinationCount = _count(array(
-			'in' => $parameters['databases']['node_process_recursive_dns_destinations'],
+			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 			'where' => array_intersect_key($parameters['data'], array(
 				'node_id' => true,
 				'node_process_type' => true
@@ -101,10 +104,10 @@
 				'port_number_version_4' => true,
 				'port_number_version_6' => true
 			)),
-			'in' => $parameters['databases']['node_process_forwarding_destinations']
+			'in' => $parameters['system_databases']['node_process_forwarding_destinations']
 		), $response);
 		$nodeProcessForwardingDestination = _list(array(
-			'in' => $parameters['databases']['node_process_forwarding_destinations'],
+			'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
