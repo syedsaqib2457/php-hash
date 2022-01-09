@@ -50,7 +50,7 @@
 				'id',
 				'node_id'
 			),
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'id' => $parameters['data']['node_id']
 			)
@@ -64,7 +64,7 @@
 
 		$parameters['data']['node_node_id'] = $node['node_id'];
 		$existingNodeProcessCountParameters = array(
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array_intersect_key($parameters['data'], array(
 				'node_id' => true,
 				'port_number' => true
@@ -92,10 +92,10 @@
 				'port_number' => true,
 				'type' => true
 			)),
-			'in' => $parameters['databases']['node_processes']
+			'in' => $parameters['system_databases']['node_processes']
 		), $response);
 		$nodeProcess = _list(array(
-			'in' => $parameters['databases']['node_processes'],
+			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
