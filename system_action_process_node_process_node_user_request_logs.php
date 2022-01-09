@@ -9,6 +9,14 @@
 	), $parameters['system_databases'], $response);
 
 	function _processNodeProcessNodeUserRequestLogs($parameters, $response) {
+		$nodeProcessNodeUserRequestLogParameters = array(
+			'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
+			'limit' => 10000,
+			'where' => array(
+				// todo
+			)
+		);
+
 		/* todo: previous code to refactor
 			$nodeProcessNodeUserRequestLogData = array();
 			$response = array(
