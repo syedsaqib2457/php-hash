@@ -22,6 +22,11 @@
 		);
 		_update($nodeProcessNodeUserRequestLogParameters, $response);
 		$nodeProcessNodeUserRequestLogIndex = 1;
+		$nodeProcessNodeUserRequestLogParameters['data'] = array(
+			'destination_hostname',
+			'destination_ip_address',
+			'id'
+		);
 		$nodeProcessNodeUserRequestLogParameters['where']['processing_process_id'] = $parameters['process_id'];
 		$nodeProcessNodeUserRequestLogs = _list($nodeProcessNodeUserRequestLogParameters, $response);
 
