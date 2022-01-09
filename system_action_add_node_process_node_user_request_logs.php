@@ -43,7 +43,7 @@
 		}
 
 		$nodeCount = _count(array(
-			'in' => $parameters['databases']['nodes'],
+			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'authentication_token' => $parameters['node_authentication_token'],
 				'id' => $parameters['data']['node_id']
@@ -98,7 +98,7 @@
 
 		_save(array(
 			'data' => $nodeProcessNodeUserRequestLogData,
-			'in' => $parameters['databases']['node_process_node_user_request_logs']
+			'in' => $parameters['system_databases']['node_process_node_user_request_logs']
 		), $response);
 		$response['message'] = 'Node process node user request logs added successfully.';
 		$response['valid_status'] = '1';
