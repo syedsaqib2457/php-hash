@@ -109,8 +109,10 @@
 			_output($response);
 		}
 
-		$response['data'] = current($systemDatabaseCountRows);
-		return intval($response['data']);
+		foreach ($systemDatabaseCountRows as $systemDatabaseCountRow) {
+			$systemDatabaseCountRow = current($systemDatabaseCountRow);
+			return intval($systemDatabaseCountRow);
+		}
 	}
 
 	function _delete($parameters, $response) {
