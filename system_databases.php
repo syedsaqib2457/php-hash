@@ -114,15 +114,15 @@
 	}
 
 	function _delete($parameters, $response) {
-		$command = 'DELETE FROM ' . $parameters['in']['structure']['table_name'];
+		$systemDatabaseDeleteCommand = 'DELETE FROM ' . $parameters['in']['structure']['table_name'];
 
 		if (empty($parameters['where']) === false) {
-			$command .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
+			$systemDatabaseDeleteCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 		}
 
-		$commandResponse = mysqli_query($parameters['in']['connection'], $command);
+		$systemDatabaseDeleteCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseDeleteCommand);
 
-		if ($commandResponse === false) {
+		if ($systemDatabaseDeleteCommandResponse === false) {
 			$response['message'] = 'Error deleting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
@@ -255,9 +255,9 @@
 
 	function _save($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			$dataKey = key($parameters['data']);
+			$systemDatabaseRowIndex = key($parameters['data']);
 
-			if (is_numeric($dataKey) === false) {
+			if (is_numeric($systemDatabaseRowIndex) === false) {
 				$parameters['data'] = array(
 					$parameters['data']
 				);
@@ -265,32 +265,32 @@
 
 			$timestamp = time();
 
-			foreach ($parameters['data'] as $data) {
-				$dataInsertValues = $dataKeys = $dataUpdateValues = '';
+			foreach ($parameters['data'] as $systemDatabaseColumns) {
+				$systemDatabaseInsertColumnValues = $systemDatabaseInsertColumnNames = $systemDatabaseUpdateColumnValues = '';
 
-				foreach ($data as $dataKey => $dataValue) {
-					$dataInsertValue = str_replace('\\', '\\\\', $dataValue);
-					$dataInsertValue = str_replace("'", "\'", $dataInsertValue);
-					$dataInsertValues .= "','" . $dataInsertValue;
-					$dataKeys .= ',' . $dataKey;
-					$dataUpdateValues .= "," . $dataKey . "='" . $dataInsertValue . "'";
+				foreach ($systemDatabaseColumns as $systemDatabaseColumnName => $systemDatabaseColumnValue) {
+					$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseColumnValue);
+					$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
+					$systemDatabaseInsertColumnValues .= "','" . $systemDatabaseInsertColumnValue;
+					$systemDatabaseInsertColumnNames .= ',' . $systemDatabaseColumnName;
+					$systemDatabaseUpdateColumnValues .= "," . $systemDatabaseColumnName . "='" . $systemDatabaseInsertColumnValue . "'";
 				}
 
-				if (empty($data['created_timestamp']) === true) {
-					$dataInsertValues .= "','" . $timestamp;
-					$dataKeys .= ',created_timestamp';
-					$dataUpdateValues .= ",created_timestamp='" . $timestamp . "'";
+				if (empty($systemDatabaseColumns['created_timestamp']) === true) {
+					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
+					$systemDatabaseInsertColumnNames .= ',created_timestamp';
+					$systemDatabaseUpdateColumnValues .= ",created_timestamp='" . $timestamp . "'";
 				}
 
-				if (empty($data['modified_timestamp']) === true) {
-					$dataInsertValues .= "','" . $timestamp;
-					$dataKeys .= ',modified_timestamp';
-					$dataUpdateValues .= ",modified_timestamp='" . $timestamp . "'";
+				if (empty($systemDatabaseColumns['modified_timestamp']) === true) {
+					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
+					$systemDatabaseInsertColumnNames .= ',modified_timestamp';
+					$systemDatabaseUpdateColumnValues .= ",modified_timestamp='" . $timestamp . "'";
 				}
 
-				$dataUpdateValues = ' ON DUPLICATE KEY UPDATE ' . substr($dataUpdateValues, 1);
+				$systemDatabaseUpdateColumnValues = ' ON DUPLICATE KEY UPDATE ' . substr($systemDatabaseUpdateColumnValues, 1);
 
-				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . substr($dataKeys, 1) . ") values (" . substr($dataInsertValues, 2) . "')" . $dataUpdateValues) === false) {
+				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . substr($systemDatabaseInsertColumnNames, 1) . ") values (" . substr($systemDatabaseInsertColumnValues, 2) . "')" . $systemDatabaseUpdateColumnValues) === false) {
 					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 					_output($response);
 				}
@@ -302,20 +302,20 @@
 
 	function _update($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			$command = 'UPDATE ' . $parameters['in']['table_name'] . ' SET ';
+			$systemDatabaseUpdateCommand = 'UPDATE ' . $parameters['in']['table_name'] . ' SET ';
 
 			if (isset($parameters['data']['modified']) === false) {
 				$parameters['data']['modified'] = time();
 			}
 
 			foreach ($parameters['data'] as $updateValueKey => $updateValue) {
-				$command .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
+				$systemDatabaseUpdateCommand .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
 			}
 
-			$command = rtrim($command, ',') . ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
-			$commandResponse = mysqli_query($parameters['in']['connection'], $command);
+			$systemDatabaseUpdateCommand = rtrim($systemDatabaseUpdateCommand, ',') . ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
+			$systemDatabaseUpdateCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseUpdateCommand);
 
-			if ($commandResponse === false) {
+			if ($systemDatabaseUpdateCommandResponse === false) {
 				$response['message'] = 'Error updating data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 				_output($response);
 			}
