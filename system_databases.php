@@ -264,31 +264,33 @@
 			$timestamp = time();
 
 			foreach ($parameters['data'] as $systemDatabaseColumns) {
-				$systemDatabaseInsertColumnValues = $systemDatabaseInsertColumnNames = $systemDatabaseUpdateColumnValues = '';
+				$systemDatabaseInsertColumnNames = $systemDatabaseInsertColumnValues = $systemDatabaseUpdateColumnValues = '';
 
 				foreach ($systemDatabaseColumns as $systemDatabaseColumnName => $systemDatabaseColumnValue) {
+					$systemDatabaseInsertColumnNames .= ',' . $systemDatabaseColumnName;
 					$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseColumnValue);
 					$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
 					$systemDatabaseInsertColumnValues .= "','" . $systemDatabaseInsertColumnValue;
-					$systemDatabaseInsertColumnNames .= ',' . $systemDatabaseColumnName;
 					$systemDatabaseUpdateColumnValues .= "," . $systemDatabaseColumnName . "='" . $systemDatabaseInsertColumnValue . "'";
 				}
 
 				if (empty($systemDatabaseColumns['created_timestamp']) === true) {
-					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
 					$systemDatabaseInsertColumnNames .= ',created_timestamp';
+					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
 					$systemDatabaseUpdateColumnValues .= ",created_timestamp='" . $timestamp . "'";
 				}
 
 				if (empty($systemDatabaseColumns['modified_timestamp']) === true) {
-					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
 					$systemDatabaseInsertColumnNames .= ',modified_timestamp';
+					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
 					$systemDatabaseUpdateColumnValues .= ",modified_timestamp='" . $timestamp . "'";
 				}
 
+				$systemDatabaseInsertColumnNames = substr($systemDatabaseInsertColumnNames, 1);
+				$systemDatabaseInsertColumnValues = substr($systemDatabaseInsertColumnValues, 2);
 				$systemDatabaseUpdateColumnValues = ' ON DUPLICATE KEY UPDATE ' . substr($systemDatabaseUpdateColumnValues, 1);
 
-				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . substr($systemDatabaseInsertColumnNames, 1) . ") values (" . substr($systemDatabaseInsertColumnValues, 2) . "')" . $systemDatabaseUpdateColumnValues) === false) {
+				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . $systemDatabaseInsertColumnNames . ") values (" . $systemDatabaseInsertColumnValues . "')" . $systemDatabaseUpdateColumnValues) === false) {
 					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 					_output($response);
 				}
