@@ -82,6 +82,8 @@
 						'node_id' => $parameters['data']['node_id'],
 						'node_process_type' => $parameters['data']['node_process_type'],
 						'node_user_id' => $parameters['data']['node_user_id'],
+						'processed_status' => '0',
+						'processing_status' => '0',
 						'response_code' => $nodeProcessNodeUserRequestLog[5],
 						'source_ip_address' => $nodeProcessNodeUserRequestLog[6]
 					);
