@@ -315,6 +315,11 @@
 			}
 
 			$systemDatabaseUpdateCommand = rtrim($systemDatabaseUpdateCommand, ',') . ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
+
+			if (empty($parameters['limit']) === false) {
+				$systemDatabaseUpdateCommand .= ' LIMIT ' . $parameters['limit'];
+			}
+
 			$systemDatabaseUpdateCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseUpdateCommand);
 
 			if ($systemDatabaseUpdateCommandResponse === false) {
