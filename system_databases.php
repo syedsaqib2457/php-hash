@@ -120,9 +120,7 @@
 			$systemDatabaseDeleteCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 		}
 
-		$systemDatabaseDeleteCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseDeleteCommand);
-
-		if ($systemDatabaseDeleteCommandResponse === false) {
+		if (mysqli_query($parameters['in']['connection'], $systemDatabaseDeleteCommand) === false) {
 			$response['message'] = 'Error deleting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
 			_output($response);
 		}
