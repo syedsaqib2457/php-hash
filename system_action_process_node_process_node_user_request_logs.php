@@ -21,6 +21,9 @@
 			)
 		);
 		_update($nodeProcessNodeUserRequestLogParameters, $response);
+		$nodeProcessNodeUserRequestLogIndex = 1;
+		$nodeProcessNodeUserRequestLogParameters['where']['processing_process_id'] = $parameters['process_id'];
+		$nodeProcessNodeUserRequestLogs = _list($nodeProcessNodeUserRequestLogParameters, $response);
 
 		/* todo: previous code to refactor
 			$nodeProcessNodeUserRequestLogData = array();
