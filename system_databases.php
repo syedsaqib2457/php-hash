@@ -102,7 +102,7 @@
 			$systemDatabaseCountCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 		}
 
-		$systemDatabaseCountRows = mysqli_query($parameters['in']['connection'], $command);
+		$systemDatabaseCountRows = mysqli_query($parameters['in']['connection'], $systemDatabaseCountCommand);
 
 		if ($systemDatabaseCountRows === false) {
 			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
