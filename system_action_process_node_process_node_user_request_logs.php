@@ -74,7 +74,7 @@
 			),
 			'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
 			'where' => array(
-				'modified_timestamp <' => strtotime('-10 minutes', time()),
+				'modified_timestamp <' => strtotime('-10 minutes'),
 				'processed_status' => '0'
 			)
 		), $response);
