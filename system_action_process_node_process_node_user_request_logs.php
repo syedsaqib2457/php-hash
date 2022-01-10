@@ -9,17 +9,6 @@
 	), $parameters['system_databases'], $response);
 
 	function _processNodeProcessNodeUserRequestLogs($parameters, $response) {
-		$nodeProcessNodeUserRequestLogParameters = array(
-			'data' => array(
-				'processing_process_id' => $parameters['process_id']
-			),
-			'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
-			'limit' => 10000,
-			'where' => array(
-				'processed_status' => '0',
-				'processing_process_id' => null
-			)
-		);
 		_update(array(
 			'data' => array(
 				'processing_process_id' => $parameters['process_id']
