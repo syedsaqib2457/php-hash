@@ -44,7 +44,7 @@
 						'data' => array(
 							'id'
 						),
-						'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
+						'in' => $parameters['system_databases']['node_request_destinations'],
 						'where' => array(
 							'hostname' => $nodeProcessNodeUserRequestLog['destination_hostname']
 						)
@@ -57,10 +57,12 @@
 					'id' => $nodeProcessNodeUserRequestLog['id'],
 					'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname']]
 				);
-
-				// todo: update node_request_destination_id
 			}
 
+			_save(array(
+				'data' => $nodeProcessNodeUserRequestLogData,
+				'in' => $parameters['system_databases']['node_process_node_user_request_logs']
+			), $response);
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
