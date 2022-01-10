@@ -1,4 +1,60 @@
 <?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
+	$parameters['system_databases'] += _connect(array(
+		'node_resource_usage_logs'
+	), $parameters['system_databases'], $response);
+
+	function _addNodeResourceUsageLogs($parameters, $response) {
+		if (empty($_FILES['data']['tmp_name']) === true) {
+			$response['message'] = 'Node resource usage logs must have a data file, please try again.';
+			return $response;	
+		}
+
+		if (empty($parameters['data']['node_id']) === true) {
+			$response['message'] = 'Node resource usage logs must have a node ID, please try again.';
+			return $response;
+		}
+
+		$nodeCount = _count(array(
+			'in' => $parameters['system_databases']['nodes'],
+			'where' => array(
+				'authentication_token' => $parameters['node_authentication_token'],
+				'id' => $parameters['data']['node_id']
+			)
+		), $response);
+
+		if ($nodeCount < 1) === true) {
+			$response['message'] = 'Invalid node resource usage log node ID, please try again.';
+			return $response;
+		}
+
+		$nodeResourceUsageLogs = file_get_contents($_FILES['data']['tmp_name']);
+		$nodeResourceUsageLogs = explode("\n", $nodeResourceUsageLogs);
+
+		if (empty($nodeResourceUsageLogs) === true) {
+			$response['message'] = 'Invalid node resource usage log data, please try again.';
+			return $response;	
+		}
+
+		$nodeResourceUsageLogData = array();
+		// todo
+		_save(array(
+			'data' => $nodeResourceUsageLogData,
+			'in' => $parameters['system_databases']['node_resource_usage_logs']
+		), $response);
+		$response['message'] = 'Node resource usage logs added successfully.';
+		$response['valid_status'] = '1';
+		return $response;
+	}
+
+	if (($parameters['action'] === 'add_node_resource_usage_logs') === true) {
+		$response = _addNodeResourceUsageLogs($parameters, $response);
+		_output($response);
+	}
+
 	/*
 		todo: previous code to refactor
 			$response = array(
