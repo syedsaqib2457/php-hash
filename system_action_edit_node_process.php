@@ -24,14 +24,17 @@
 
 		if (
 			(empty($parameters['data']['type']) === false) &&
-			(in_array(strval($parameters['data']['type']), array(
-				'bitcoin_cryptocurrency',
-				'http_proxy',
-				'load_balancer',
-				'monero_cryptocurrency',
-				'recursive_dns',
-				'socks_proxy'
-			)) === false)
+			(
+				(is_string($parameters['data']['type']) === false) ||
+				(in_array($parameters['data']['type'], array(
+					'bitcoin_cryptocurrency',
+					'http_proxy',
+					'load_balancer',
+					'monero_cryptocurrency',
+					'recursive_dns',
+					'socks_proxy'
+				)) === false)
+			)
 		) {
 			$response['message'] = 'Invalid node process type, please try again.';
 			return $response;
