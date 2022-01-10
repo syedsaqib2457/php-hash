@@ -68,7 +68,16 @@
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
-		// todo: update records with processing_process_id != null and modified > 10 mins ago
+		_update(array(
+			'data' => array(
+				'processing_process_id' => null
+			),
+			'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
+			'where' => array(
+				'modified_timestamp <' => strtotime('-10 minutes', time()),
+				'processed_status' => '0'
+			)
+		), $response);
 		$response['message'] = 'Node process node user request logs processed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
