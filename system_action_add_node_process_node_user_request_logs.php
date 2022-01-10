@@ -5,7 +5,7 @@
 
 	$parameters['system_databases'] += _connect(array(
 		'node_process_node_user_request_logs',
-		'node_process_node_users'
+		'nodes'
 	), $parameters['system_databases'], $response);
 
 	function _addNodeProcessNodeUserRequestLogs($parameters, $response) {
