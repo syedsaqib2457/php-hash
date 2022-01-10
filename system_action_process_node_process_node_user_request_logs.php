@@ -55,7 +55,9 @@
 
 				$nodeProcessNodeUserRequestLogData[] = array(
 					'id' => $nodeProcessNodeUserRequestLog['id'],
-					'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname']]
+					'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname']],
+					'processed_status' => '1',
+					'processing_process_id' => null
 				);
 			}
 
