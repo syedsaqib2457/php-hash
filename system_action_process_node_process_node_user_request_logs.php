@@ -26,7 +26,6 @@
 			$nodeProcessNodeUserRequestLogs = _list(array(
 				'data' => array(
 					'destination_hostname',
-					'destination_ip_address',
 					'id'
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
@@ -36,7 +35,21 @@
 					'processing_process_id' => $parameters['process_id']
 				)
 			), $response);
-			// todo: update node_request_destination_id
+			$nodeRequestDestinations = array();
+
+			foreach ($nodeProcessNodeUserRequestLogs as $nodeProcessNodeUserRequestLog) {
+				$nodeRequestDestination = _list(array(
+					'data' => array(
+						'id'
+					),
+					'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
+					'where' => array(
+						'hostname' => $nodeProcessNodeUserRequestLog['destination_hostname']
+					)
+				), $response);
+				// todo: update node_request_destination_id
+			}
+
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
