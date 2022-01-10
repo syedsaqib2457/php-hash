@@ -23,6 +23,7 @@
 		$nodeProcessNodeUserRequestLogPartIndex = 0;
 
 		while (($nodeProcessNodeUserRequestLogPartIndex === 9) === false) {
+			$nodeProcessNodeUserRequestLogData = array();
 			$nodeProcessNodeUserRequestLogs = _list(array(
 				'data' => array(
 					'destination_hostname',
@@ -51,6 +52,11 @@
 					$nodeRequestDestination = current($nodeRequestDestination);
 					$nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname']] = $nodeRequestDestination['id'];
 				}
+
+				$nodeProcessNodeUserRequestLogData[] = array(
+					'id' => $nodeProcessNodeUserRequestLog['id'],
+					'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname']]
+				);
 
 				// todo: update node_request_destination_id
 			}
