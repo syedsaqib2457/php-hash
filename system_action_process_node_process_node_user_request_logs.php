@@ -51,6 +51,8 @@
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
+		// todo: update records with processing_process_id != null and modified > 10 mins ago
+
 		/* todo: previous code to refactor
 			$nodeProcessNodeUserRequestLogData = array();
 			$response = array(
