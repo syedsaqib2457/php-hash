@@ -100,6 +100,7 @@
 			'storage_capacity_megabytes' => $parameters['data']['storage_capacity_megabytes'],
 			'storage_percentage' => $parameters['data']['storage_percentage']
 		);
+		// todo: 2 separate API requests for node resource usage logs and node process resource usage logs
 
 		foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
 			$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType] = array(
