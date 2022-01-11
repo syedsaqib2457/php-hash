@@ -80,9 +80,9 @@
 				}
 
 				exec('df -m / | tail -1 | awk \'{print $4}\'  2>&1', $nodeResourceUsageLogStorageCapacityMegabytes);
-				$parameters['data']['storage_capacity_megabytes'] = current($nodeResourceUsageLogStorageCapacityMegabytes);
+				$parameters['data']['node_resource_usage_log']['storage_capacity_megabytes'] = current($nodeResourceUsageLogStorageCapacityMegabytes);
 				exec('df / | tail -1 | awk \'{print $5}\' 2>&1', $nodeResourceUsageLogStoragePercentage);
-				$parameters['data']['storage_percentage'] = current($nodeResourceUsageLogStoragePercentage);
+				$parameters['data']['node_resource_usage_log']['storage_percentage'] = current($nodeResourceUsageLogStoragePercentage);
 			}
 
 			$parameters['node_resource_usage_log_process_interval_index']++;
@@ -95,9 +95,7 @@
 		$parameters['data']['node_resource_usage_log'] += array(
 			'cpu_capacity_cores' => $parameters['data']['cpu_capacity_cores'],
 			'cpu_percentage' => max($parameters['data']['cpu_percentage']),
-			'created_timestamp' => strtotime($nodeResourceUsageLogCreated),
-			'storage_capacity_megabytes' => $parameters['data']['storage_capacity_megabytes'],
-			'storage_percentage' => $parameters['data']['storage_percentage']
+			'created_timestamp' => strtotime($nodeResourceUsageLogCreated)
 		);
 		// todo: 2 separate API requests for node resource usage logs and node process resource usage logs
 
