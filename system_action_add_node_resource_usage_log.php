@@ -8,12 +8,7 @@
 		'nodes'
 	), $parameters['system_databases'], $response);
 
-	function _addNodeResourceUsageLogs($parameters, $response) {
-		if (empty($_FILES['data']['tmp_name']) === true) {
-			$response['message'] = 'Node resource usage logs must have a data file, please try again.';
-			return $response;	
-		}
-
+	function _addNodeResourceUsageLog($parameters, $response) {
 		if (empty($parameters['data']['node_id']) === true) {
 			$response['message'] = 'Node resource usage logs must have a node ID, please try again.';
 			return $response;
@@ -32,27 +27,21 @@
 			return $response;
 		}
 
-		$nodeResourceUsageLogs = file_get_contents($_FILES['data']['tmp_name']);
-		$nodeResourceUsageLogs = explode("\n", $nodeResourceUsageLogs);
-
-		if (empty($nodeResourceUsageLogs) === true) {
-			$response['message'] = 'Invalid node resource usage log data, please try again.';
-			return $response;	
-		}
-
 		$nodeResourceUsageLogData = array();
-		// todo
+		// todo: validate required usage log parameters with either request_count logs or cpu/memory/storage logs
+		// todo: update request_count parameters when processing request logs using this method
+		// todo: validate 10 minute timestamp doesn't exist for resource usage log when updating cpu/memory/storage
 		_save(array(
 			'data' => $nodeResourceUsageLogData,
 			'in' => $parameters['system_databases']['node_resource_usage_logs']
 		), $response);
-		$response['message'] = 'Node resource usage logs added successfully.';
+		$response['message'] = 'Node resource usage log added successfully.';
 		$response['valid_status'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_node_resource_usage_logs') === true) {
-		$response = _addNodeResourceUsageLogs($parameters, $response);
+	if (($parameters['action'] === 'add_node_resource_usage_log') === true) {
+		$response = _addNodeResourceUsageLog($parameters, $response);
 		_output($response);
 	}
 
