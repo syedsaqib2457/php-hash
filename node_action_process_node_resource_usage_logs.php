@@ -21,10 +21,6 @@
 		$nodeResourceUsageLogMemoryUsage = explode('_', $nodeResourceUsageLogMemoryUsage);
 		$parameters['memory_capacity_megabytes'] = $nodeResourceUsageLogMemoryUsage[0];
 		$parameters['memory_percentage'] = ceil($nodeResourceUsageLogMemoryUsage[1] / $nodeResourceUsageLogMemoryUsage[0]);
-		$parameters['node_resource_usage_log_ip_address_versions'] = array(
-			'4',
-			'6'
-		);
 		$parameters['node_resource_usage_log_process_types'] = array(
 			'http_proxy',
 			'recursive_dns',
