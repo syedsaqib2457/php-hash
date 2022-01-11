@@ -93,6 +93,8 @@
 		$parameters['data']['node_resource_usage_log'] = array(
 			'cpu_percentage' => max($parameters['data']['cpu_percentage']),
 			'created_timestamp' => $nodeResourceUsageLogCreated,
+			'memory_capacity_megabytes' => $parameters['memory_capacity_megabytes'],
+			'memory_percentage' => $parameters['memory_percentage'],
 			'storage_capacity_megabytes' => $parameters['data']['storage_capacity_megabytes'],
 			'storage_percentage' => $parameters['data']['storage_percentage']
 		);
