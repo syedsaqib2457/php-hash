@@ -96,7 +96,9 @@
 		$parameters['data']['node_process_resource_usage_logs'] = array();
 		$parameters['data']['node_resource_usage_log'] = array(
 			'cpu_percentage' => max($parameters['data']['cpu_percentage']),
-			'created' => $nodeResourceUsageLogCreated
+			'created_timestamp' => $nodeResourceUsageLogCreated,
+			'storage_capacity_megabytes' => $parameters['data']['storage_capacity_megabytes'],
+			'storage_percentage' => $parameters['data']['storage_percentage']
 		);
 
 		foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
