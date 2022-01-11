@@ -13,14 +13,16 @@
 	function _processNodeResourceUsageLogs($parameters, $response) {
 		exec('sudo bash -c "sudo cat /proc/cpuinfo" | grep "cpu MHz" | awk \'{print $4\'} | head -1 2>&1', $nodeResourceUsageLogCpuCapacityMegahertz);
 		$nodeResourceUsageLogCpuCapacityMegahertz = current($nodeResourceUsageLogCpuCapacityMegahertz);
-		$parameters['cpu_capacity_megahertz'] = ceil($nodeResourceUsageLogCpuCapacityMegahertz);
-		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-		$parameters['kernel_page_size'] = current($kernelPageSize);
 		exec('free -m | grep "Mem:" | grep -v free | awk \'{print $2"_"$3}\'', $nodeResourceUsageLogMemoryUsage);
 		$nodeResourceUsageLogMemoryUsage = current($nodeResourceUsageLogMemoryUsage);
 		$nodeResourceUsageLogMemoryUsage = explode('_', $nodeResourceUsageLogMemoryUsage);
-		$parameters['memory_capacity_megabytes'] = $nodeResourceUsageLogMemoryUsage[0];
-		$parameters['memory_percentage'] = ceil($nodeResourceUsageLogMemoryUsage[1] / $nodeResourceUsageLogMemoryUsage[0]);
+		$parameters['data']['node_resource_usage_log'] = array(
+			'cpu_capacity_megahertz' => ceil($nodeResourceUsageLogCpuCapacityMegahertz),
+			'memory_capacity_megabytes' => $nodeResourceUsageLogMemoryUsage[0],
+			'memory_percentage' => ceil($nodeResourceUsageLogMemoryUsage[1] / $nodeResourceUsageLogMemoryUsage[0])
+		);
+		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
+		$parameters['kernel_page_size'] = current($kernelPageSize);
 		$parameters['node_resource_usage_log_process_types'] = array(
 			'http_proxy',
 			'recursive_dns',
@@ -90,13 +92,10 @@
 		$nodeResourceUsageLogProcessStart = date('Y-m-d H:i', $nodeResourceUsageLogProcessStart);
 		$nodeResourceUsageLogCreated = substr($nodeResourceUsageLogProcessStart, 0, 15) . '0:00';
 		$parameters['data']['node_process_resource_usage_logs'] = array();
-		$parameters['data']['node_resource_usage_log'] = array(
+		$parameters['data']['node_resource_usage_log'] += array(
 			'cpu_capacity_cores' => $parameters['data']['cpu_capacity_cores'],
-			'cpu_capacity_megahertz' => $parameters['cpu_capacity_megahertz'],
 			'cpu_percentage' => max($parameters['data']['cpu_percentage']),
 			'created_timestamp' => strtotime($nodeResourceUsageLogCreated),
-			'memory_capacity_megabytes' => $parameters['memory_capacity_megabytes'],
-			'memory_percentage' => $parameters['memory_percentage'],
 			'storage_capacity_megabytes' => $parameters['data']['storage_capacity_megabytes'],
 			'storage_percentage' => $parameters['data']['storage_percentage']
 		);
