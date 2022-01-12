@@ -9,16 +9,6 @@
 	), $parameters['system_databases'], $response);
 
 	function _addNodeProcessResourceUsageLogs($parameters, $response) {
-		if (empty($_FILES['data']['tmp_name']) === true) {
-			$response['message'] = 'Node process resource usage logs must have a data file, please try again.';
-			return $response;	
-		}
-
-		if (empty($parameters['data']['node_id']) === true) {
-			$response['message'] = 'Node process resource usage logs must have a node ID, please try again.';
-			return $response;
-		}
-
 		$nodeProcessResourceUsageLogData = array();
 		// todo
 		_save(array(
