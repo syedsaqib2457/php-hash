@@ -18,6 +18,7 @@
 	}
 
 	$dogecoinCryptocurrencyBlockHeader = array(
+		'previous_block' => $dogecoinCryptocurrencyBlockTemplate['previousblockhash'],
 		'timestamp' => $dogecoinCryptocurrencyBlockTemplate['curtime'],
 		'version' => $dogecoinCryptocurrencyBlockTemplate['version']
 	);
