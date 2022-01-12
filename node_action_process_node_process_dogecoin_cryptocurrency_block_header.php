@@ -9,6 +9,11 @@
 	*/
 
 	$dogecoinCryptocurrencyBlockTemplateParameters = array(
+		'capabilities' => array(
+			'coinbasetxn',
+			'proposal'
+		),
+		'mode' => 'proposal',
 		'rules' => array(
 			'segwit'
 		)
