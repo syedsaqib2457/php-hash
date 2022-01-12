@@ -16,4 +16,11 @@
 		$response['message'] = 'Error listing Dogecoin cryptocurrency block template, please try again.';
 		return $response;
 	}
+
+	$dogecoinCryptocurrencyBlockHeader = array(
+		'timestamp' => $dogecoinCryptocurrencyBlockTemplate['curtime'],
+		'version' => $dogecoinCryptocurrencyBlockTemplate['version']
+	);
+
+	// todo
 ?>
