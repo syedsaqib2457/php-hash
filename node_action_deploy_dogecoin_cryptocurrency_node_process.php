@@ -5,7 +5,7 @@
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libevent-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev');
 	shell_exec('sudo rm -rf /usr/src/dogecoin/');
 	shell_exec('sudo mkdir -p /usr/src/dogecoin/');
-	shell_exec('cd /usr/src/dogecoin/ && sudo ' . $parameters['binary_files']['wget'] . ' -O dogecoin.tar.gz --no-dns-cache --timeout=60 https://github.com/dogecoin/dogecoin/archive/refs/tags/v22.0.tar.gz');
+	shell_exec('cd /usr/src/dogecoin/ && sudo ' . $parameters['binary_files']['wget'] . ' -O dogecoin.tar.gz --no-dns-cache --timeout=60 https://github.com/dogecoin/dogecoin/archive/refs/tags/v1.14.5.tar.gz');
 	shell_exec('cd /usr/src/dogecoin/ && sudo tar -xvzf dogecoin.tar.gz');
 	shell_exec('cd /usr/src/dogecoin/*/ && sudo ./autogen.sh');
 	shell_exec('cd /usr/src/dogecoin/*/ && sudo ./configure --disable-bench --disable-hardening --disable-miniupnpc --disable-natpnp --disable-tests --disable-util-wallet --with-utils --without-bdb --without-gui --without-qrencode --without-sqlite');
