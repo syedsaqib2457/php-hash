@@ -26,12 +26,15 @@
 	);
 	$dogecoinCryptocurrencyTransactions = array();
 
-	foreach ($dogecoinCryptocurrencyBlockTemplate['transactions'] as $dogecoinCryptocurrencyBlockTemplateTransaction) {
+	foreach ($dogecoinCryptocurrencyBlockTemplate['transactions'] as $dogecoinCryptocurrencyBlockTemplateTransactionIndex => $dogecoinCryptocurrencyBlockTemplateTransaction) {
 		$dogecoinCryptocurrencyTransactionId = hex2bin($dogecoinCryptocurrencyBlockTemplateTransaction['txid']);
 
-		if (($dogecoinCryptocurrencyTransactionId === false) === false) {
-			$dogecoinCryptocurrencyTransactionIds[] = $dogecoinCryptocurrencyTransactionId;
+		if ($dogecoinCryptocurrencyTransactionId === false) {
+			$response['message'] = 'Error listing Dogecoin cryptocurrency block template transactions, please try again.';
+			return $response;
 		}
+
+		$dogecoinCryptocurrencyTransactionIds[] = $dogecoinCryptocurrencyTransactionId;
 	}
 
 	if (empty($dogecoinCryptocurrencyTransactionIds[1]) === true) {
@@ -39,10 +42,13 @@
 		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'], true);
 		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = strrev($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
 		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = bin2hex($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
+	} elseif (((($dogecoinCryptocurrencyBlockTemplateTransactionIndex + 1) % 2) === 0) === true) {
+		$dogecoinCryptocurrencyTransactionIds[($dogecoinCryptocurrencyBlockTemplateTransactionIndex + 1)] = $dogecoinCryptocurrencyTransactionIds[$dogecoinCryptocurrencyBlockTemplateTransactionIndex];
 	}
 
 	while (empty($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']) === true) {
 		$dogecoinCryptocurrencyTransactionIndex = 0;
+
 
 		// todo
 	}
