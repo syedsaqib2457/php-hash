@@ -58,6 +58,9 @@
 			unset($dogecoinCryptocurrencyTransactionIds[($dogecoinCryptocurrencyTransactionIndex + 1)]);
 		}
 
+		if (($dogecoinCryptocurrencyTransactionIndex === 0) === true) {
+		}
+
 		// todo
 	}
 
