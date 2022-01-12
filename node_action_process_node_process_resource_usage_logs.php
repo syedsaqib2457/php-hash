@@ -66,9 +66,9 @@
 							);
 						}
 
-						$nodeResourceUsageLogMemoryPercentageProcessProcess = 0;
-						exec('ps -h -p ' . $processProcessId . ' -o %mem', $nodeResourceUsageLogMemoryPercentageProcessProcess);
-						$parameters['data'][$nodeProcessResourceUsageLogProcessType]['memory_percentage'][$parameters['node_process_resource_usage_log_process_interval_index']] += current($nodeResourceUsageLogMemoryPercentageProcessProcess);
+						$nodeProcessResourceUsageLogProcessTypeProcessMemoryPercentage = 0;
+						exec('ps -h -p ' . $processProcessId . ' -o %mem', $nodeProcessResourceUsageLogProcessTypeProcessMemoryPercentage);
+						$parameters['data'][$nodeProcessResourceUsageLogProcessType]['memory_percentage'][$parameters['node_process_resource_usage_log_process_interval_index']] += current($nodeProcessResourceUsageLogProcessTypeProcessMemoryPercentage);
 					}
 
 					if (empty($parameters['data'][$nodeProcessResourceUsageLogProcessType]['cpu_percentage'][$parameters['node_process_resource_usage_log_process_interval_index']]) === false) {
