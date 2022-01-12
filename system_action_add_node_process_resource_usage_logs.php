@@ -9,10 +9,12 @@
 	), $parameters['system_databases'], $response);
 
 	function _addNodeProcessResourceUsageLogs($parameters, $response) {
-		$nodeProcessResourceUsageLogData = array();
-		// todo
+		foreach ($parameters['data'] as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLog) {
+			// todo
+		}
+ 
 		_save(array(
-			'data' => $nodeProcessResourceUsageLogData,
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_process_resource_usage_logs']
 		), $response);
 		$response['message'] = 'Node process resource usage logs added successfully.';
