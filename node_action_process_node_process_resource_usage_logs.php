@@ -24,22 +24,22 @@
 				$parameters['node_resource_usage_log_process_interval_index'] = 0;
 			}
 
-			if (empty($parameters['data']['cpu_capacity_time']['interval']) === true) {
+			if (empty($parameters['cpu_capacity_time']['interval']) === true) {
 				$nodeResourceUsageLogCpuTime = false;
 				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu" 2>&1', $nodeResourceUsageLogCpuTime);
 				end($nodeResourceUsageLogCpuTime);
 				$nodeResourceUsageLogCpuTime = array_shift($nodeResourceUsageLogCpuTime);
 				exec('echo ' . $nodeResourceUsageLogCpuTime . ' | awk \'{print ""$2"+"$3"+"$4"+"$5"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeResourceUsageLogCpuTime);
 				$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
-				$parameters['data']['cpu_capacity_time'][] = array(
+				$parameters['cpu_capacity_time'][] = array(
 					'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTime),
 					'timestamp' => microtime(true)
 				);
 
-				if (empty($parameters['data']['cpu_capacity_time'][1]) === false) {
-					$parameters['data']['cpu_capacity_time'] = array(
-						'cpu_time' => $parameters['data']['cpu_capacity_time'][1]['cpu_time'] - $parameters['data']['cpu_capacity_time'][0]['cpu_time'],
-						'interval' => $parameters['data']['cpu_capacity_time'][1]['timestamp'] - $parameters['data']['cpu_capacity_time'][0]['timestamp']
+				if (empty($parameters['cpu_capacity_time'][1]) === false) {
+					$parameters['cpu_capacity_time'] = array(
+						'cpu_time' => $parameters['cpu_capacity_time'][1]['cpu_time'] - $parameters['cpu_capacity_time'][0]['cpu_time'],
+						'interval' => $parameters['cpu_capacity_time'][1]['timestamp'] - $parameters['cpu_capacity_time'][0]['timestamp']
 					);
 				}
 			} else {
@@ -81,8 +81,8 @@
 						$nodeResourceUsageLogCpuPercentageProcess = 0;
 
 						foreach ($parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']] as $processProcessId => $nodeResourceUsageLogCpuPercentageProcessProcess) {
-							$parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId]['cpu_time'] += ($parameters['data']['cpu_capacity_time']['interval'] - $nodeResourceUsageLogCpuPercentageProcessProcess['interval']) * ($nodeResourceUsageLogCpuPercentageProcessProcess['cpu_time'] / $nodeResourceUsageLogCpuPercentageProcessProcess['interval']);
-							$nodeResourceUsageLogCpuPercentageProcess += ($parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId]['cpu_time'] / $parameters['data']['cpu_capacity_time']['interval']);
+							$parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId]['cpu_time'] += ($parameters['cpu_capacity_time']['interval'] - $nodeResourceUsageLogCpuPercentageProcessProcess['interval']) * ($nodeResourceUsageLogCpuPercentageProcessProcess['cpu_time'] / $nodeResourceUsageLogCpuPercentageProcessProcess['interval']);
+							$nodeResourceUsageLogCpuPercentageProcess += ($parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId]['cpu_time'] / $parameters['cpu_capacity_time']['interval']);
 						}
 
 						$parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']] = $nodeResourceUsageLogCpuPercentageProcess;
