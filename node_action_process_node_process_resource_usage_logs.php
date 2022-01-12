@@ -110,11 +110,24 @@
 		$encodedSystemParameters = json_encode($systemParameters);
 
 		if ($encodedSystemParameters === false) {
-			$response['message'] = 'Error processing node process resource usage logs, please try again.' . "\n";
+			$response['message'] = 'Error processing node process resource usage logs, please try again.';
 			return $response;
 		}
 
-		// todo
+		if (empty($encodedSystemParameters) === false) {
+			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_add_node_process_resource_usage_logs_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		}
+
+		if (file_exists('/usr/local/ghostcompute/system_action_add_node_process_resource_usage_logs_response.json') === true) {
+			$systemActionProcessNodeProcessResourceUsageLogResponse = file_get_contents('/usr/local/ghostcompute/system_action_add_node_process_resource_usage_logs_response.json');
+			$systemActionProcessNodeProcessResourceUsageLogResponse = json_decode($systemActionProcessNodeResponse, true);
+
+			if (empty($systemActionProcessNodeProcessResourceUsageLogResponse) === false) {
+				$response = $systemActionProcessNodeProcessResourceUsageLogResponse;
+			}
+		}
+
+		return $response;
 	}
 
 	if (($parameters['action'] === 'process_node_process_resource_usage_logs') === true) {
