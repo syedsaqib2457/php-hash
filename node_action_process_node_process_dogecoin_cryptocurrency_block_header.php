@@ -11,6 +11,7 @@
 	$dogecoinCryptocurrencyBlockTemplateParameters = array(
 		'capabilities' => array(
 			'coinbasetxn',
+			'coinbasevalue',
 			'proposal'
 		),
 		'mode' => 'proposal',
