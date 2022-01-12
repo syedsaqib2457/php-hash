@@ -122,8 +122,7 @@
 		}
 
 		$nodeResourceUsageLogs = array_intersect_key($parameters['data'], array(
-			'node_process_resource_usage_logs' => true,
-			'node_resource_usage_log' => true
+			'node_process_resource_usage_logs' => true
 		));
 		$nodeResourceUsageLogs = json_encode($nodeResourceUsageLogs);
 
