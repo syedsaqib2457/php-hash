@@ -24,7 +24,9 @@
 		'timestamp' => $dogecoinCryptocurrencyBlockTemplate['curtime'],
 		'version' => $dogecoinCryptocurrencyBlockTemplate['version']
 	);
-	$dogecoinCryptocurrencyTransactions = array();
+	$dogecoinCryptocurrencyTransactions = array(
+		// todo: coinbase tx
+	);
 
 	foreach ($dogecoinCryptocurrencyBlockTemplate['transactions'] as $dogecoinCryptocurrencyBlockTemplateTransactionIndex => $dogecoinCryptocurrencyBlockTemplateTransaction) {
 		$dogecoinCryptocurrencyTransactionId = hex2bin($dogecoinCryptocurrencyBlockTemplateTransaction['txid']);
@@ -59,7 +61,8 @@
 		}
 
 		if (($dogecoinCryptocurrencyTransactionIndex === 0) === true) {
-			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = $dogecoinCryptocurrencyTransactionIds[$dogecoinCryptocurrencyTransactionIndex];
+			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = strrev($dogecoinCryptocurrencyTransactionIds[$dogecoinCryptocurrencyTransactionIndex]);
+			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = bin2hex($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
 		} else {
 			$dogecoinCryptocurrencyTransactionIds = array_values($dogecoinCryptocurrencyTransactionIds);
 		}
