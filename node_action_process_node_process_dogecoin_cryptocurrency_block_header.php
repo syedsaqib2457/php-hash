@@ -24,6 +24,15 @@
 		'timestamp' => $dogecoinCryptocurrencyBlockTemplate['curtime'],
 		'version' => $dogecoinCryptocurrencyBlockTemplate['version']
 	);
+	$dogecoinCryptocurrencyTransactions = array();
+
+	foreach ($dogecoinCryptocurrencyBlockTemplate['transactions'] as $dogecoinCryptocurrencyBlockTemplateTransaction) {
+		$dogecoinCryptocurrencyTransaction = hex2bin($dogecoinCryptocurrencyBlockTemplateTransaction);
+
+		if (($dogecoinCryptocurrencyTransaction === false) === false) {
+			$dogecoinCryptocurrencyTransactions[] = $dogecoinCryptocurrencyTransaction;
+		}
+	}
 
 	// todo
 ?>
