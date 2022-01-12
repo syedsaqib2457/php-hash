@@ -11,15 +11,15 @@
 	}
 
 	function _processNodeProcessResourceUsageLogs($parameters, $response) {
-		$parameters['node_resource_usage_log_process_types'] = array(
+		$parameters['node_process_resource_usage_log_process_types'] = array(
 			'http_proxy',
 			'php',
 			'recursive_dns',
 			'socks_proxy'
 		);
-		$nodeResourceUsageLogProcessTimestamp = time();
+		$nodeProcessResourceUsageLogTimestamp = time();
 
-		while ((($nodeResourceUsageLogProcessTimestamp + 540) > time()) === true) {
+		while ((($nodeProcessResourceUsageLogTimestamp + 540) > time()) === true) {
 			if (empty($parameters['node_resource_usage_log_process_interval_index']) === true) {
 				$parameters['node_resource_usage_log_process_interval_index'] = 0;
 			}
@@ -43,7 +43,7 @@
 					);
 				}
 			} else {
-				foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
+				foreach ($parameters['node_process_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
 					$parameters['data'][$nodeResourceUsageLogProcessType]['memory_percentage'][$parameters['node_resource_usage_log_process_interval_index']] = 0;
 					$processProcessIdCommand = 'pgrep ' . $nodeResourceUsageLogProcessType;
 					$processProcessIds = false;
@@ -88,14 +88,14 @@
 			sleep(10);
 		}
 
-		$nodeResourceUsageLogProcessTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogProcessTimestamp);
-		$nodeResourceUsageLogProcessTimestamp = substr($nodeResourceUsageLogProcessTimestamp, 0, 15) . '0:00';
-		$nodeResourceUsageLogProcessTimestamp = strtotime($nodeResourceUsageLogProcessTimestamp);
+		$nodeProcessResourceUsageLogTimestamp = date('Y-m-d H:i', $nodeProcessResourceUsageLogTimestamp);
+		$nodeProcessResourceUsageLogTimestamp = substr($nodeProcessResourceUsageLogTimestamp, 0, 15) . '0:00';
+		$nodeProcessResourceUsageLogTimestamp = strtotime($nodeProcessResourceUsageLogTimestamp);
 
 		foreach ($parameters['data'] as $nodeProcessResourceUsageLogProcessType => $nodeProcessResourceUsageLogData) {
 			$parameters['data'][] = array(
 				'cpu_percentage' = max($nodeProcessResourceUsageLogData['cpu_percentage']),
-				'created_timestamp' => $nodeResourceUsageLogProcessTimestamp,
+				'created_timestamp' => $nodeProcessResourceUsageLogTimestamp,
 				'memory_percentage' = max($nodeProcessResourceUsageLogData['memory_percentage']),
 				'node_process_type' => $nodeProcessResourceUsageLogProcessType
 			);
