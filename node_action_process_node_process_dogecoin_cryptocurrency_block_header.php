@@ -19,7 +19,8 @@
 
 	// todo: convert values to little endian if getblocktemplate doesn't already
 	$dogecoinCryptocurrencyBlockHeader = array(
-		'previous_block' => $dogecoinCryptocurrencyBlockTemplate['previousblockhash'],
+		'previous_block_hash' => $dogecoinCryptocurrencyBlockTemplate['previousblockhash'],
+		'target_hash_bits' => $dogecoinCryptocurrencyBlockTemplate['bits'],
 		'timestamp' => $dogecoinCryptocurrencyBlockTemplate['curtime'],
 		'version' => $dogecoinCryptocurrencyBlockTemplate['version']
 	);
