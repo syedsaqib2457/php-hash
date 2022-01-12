@@ -47,8 +47,13 @@
 	}
 
 	while (empty($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']) === true) {
-		$dogecoinCryptocurrencyTransactionIndex = 0;
+		end($dogecoinCryptocurrencyTransactionIds);
+		$dogecoinCryptocurrencyTransactionIndex = (key($dogecoinCryptocurrencyTransactionIds) - 1);
+		$dogecoinCryptocurrencyTransactionIndexes = range(0, $dogecoinCryptocurrencyTransactionIndex, 2);
 
+		foreach ($dogecoinCryptocurrencyTransactionIndexes as $dogecoinCryptocurrencyTransactionIndex) {
+			
+		}
 
 		// todo
 	}
