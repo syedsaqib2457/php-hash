@@ -29,7 +29,6 @@
 			if (empty($parameters['data']['cpu_capacity_time']['interval']) === true) {
 				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu" 2>&1', $nodeResourceUsageLogCpuTime);
 				end($nodeResourceUsageLogCpuTime);
-				$parameters['data']['cpu_capacity_cores'] = key($nodeResourceUsageLogCpuTime);
 				$nodeResourceUsageLogCpuTime = array_shift($nodeResourceUsageLogCpuTime);
 				exec('echo ' . $nodeResourceUsageLogCpuTime . ' | awk \'{print ""$2"+"$3"+"$4"+"$5"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeResourceUsageLogCpuTime);
 				$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
