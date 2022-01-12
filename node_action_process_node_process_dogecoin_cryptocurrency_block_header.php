@@ -27,15 +27,15 @@
 	$dogecoinCryptocurrencyTransactions = array();
 
 	foreach ($dogecoinCryptocurrencyBlockTemplate['transactions'] as $dogecoinCryptocurrencyBlockTemplateTransaction) {
-		$dogecoinCryptocurrencyTransaction = hex2bin($dogecoinCryptocurrencyBlockTemplateTransaction);
+		$dogecoinCryptocurrencyTransactionId = hex2bin($dogecoinCryptocurrencyBlockTemplateTransaction['txid']);
 
-		if (($dogecoinCryptocurrencyTransaction === false) === false) {
-			$dogecoinCryptocurrencyTransactions[] = $dogecoinCryptocurrencyTransaction;
+		if (($dogecoinCryptocurrencyTransactionId === false) === false) {
+			$dogecoinCryptocurrencyTransactionIds[] = $dogecoinCryptocurrencyTransactionId;
 		}
 	}
 
-	if (empty($dogecoinCryptocurrencyTransactions[1]) === true) {
-		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyTransactions[0], true);
+	if (empty($dogecoinCryptocurrencyTransactionIds[1]) === true) {
+		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0], true);
 		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'], true);
 		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = strrev($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
 		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = bin2hex($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
