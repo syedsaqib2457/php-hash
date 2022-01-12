@@ -11,6 +11,7 @@
 	}
 
 	function _processNodeProcessResourceUsageLogs($parameters, $response) {
+		// todo: add cryptocurrency process types
 		$parameters['node_process_resource_usage_log_process_types'] = array(
 			'http_proxy',
 			'php',
