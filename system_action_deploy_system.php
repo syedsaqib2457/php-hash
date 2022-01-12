@@ -828,7 +828,6 @@
 				'memory_percentage',
 				'modified_timestamp',
 				'node_id',
-				'node_node_id',
 				'node_process_type',
 				'request_count'
 			),
