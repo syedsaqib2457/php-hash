@@ -14,11 +14,17 @@
 		)
 	);
 	$dogecoinCryptocurrencyBlockTemplateParameters = json_encode($dogecoinCryptocurrencyBlockTemplateParameters);
+
+	if ($dogecoinCryptocurrencyBlockTemplateParameters === false) {
+		$response['message'] = 'Error listing node process Dogecoin cryptocurrency block template parameters, please try again.';
+		return $response;
+	}
+
 	exec('sudo dogecoin-cli -rpcuser=ghostcompute -rpcpassword=ghostcompute getblocktemplate \'' . $dogecoinCryptocurrencyBlockTemplateParameters . '\' 2>&1', $dogecoinCryptocurrencyBlockTemplate);
 	$dogecoinCryptocurrencyBlockTemplate = json_decode($dogecoinCryptocurrencyBlockTemplate, true);
 
 	if (isset($dogecoinCryptocurrencyBlockTemplate['version']) === false) {
-		$response['message'] = 'Error listing Dogecoin cryptocurrency block template, please try again.';
+		$response['message'] = 'Error processing node process Dogecoin cryptocurrency block header, please try again.';
 		return $response;
 	}
 
@@ -37,7 +43,7 @@
 		$dogecoinCryptocurrencyTransactionId = hex2bin($dogecoinCryptocurrencyBlockTemplateTransaction['txid']);
 
 		if ($dogecoinCryptocurrencyTransactionId === false) {
-			$response['message'] = 'Error listing Dogecoin cryptocurrency block template transactions, please try again.';
+			$response['message'] = 'Error listing node process Dogecoin cryptocurrency block template transactions, please try again.';
 			return $response;
 		}
 
