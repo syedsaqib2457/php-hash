@@ -25,14 +25,14 @@
 			}
 
 			if (empty($parameters['cpu_capacity_time']['interval']) === true) {
-				$nodeResourceUsageLogCpuTime = false;
-				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu" 2>&1', $nodeResourceUsageLogCpuTime);
-				end($nodeResourceUsageLogCpuTime);
-				$nodeResourceUsageLogCpuTime = array_shift($nodeResourceUsageLogCpuTime);
-				exec('echo ' . $nodeResourceUsageLogCpuTime . ' | awk \'{print ""$2"+"$3"+"$4"+"$5"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeResourceUsageLogCpuTime);
-				$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
+				$nodeProcessResourceUsageLogCpuTime = false;
+				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu" 2>&1', $nodeProcessResourceUsageLogCpuTime);
+				end($nodeProcessResourceUsageLogCpuTime);
+				$nodeProcessResourceUsageLogCpuTime = array_shift($nodeProcessResourceUsageLogCpuTime);
+				exec('echo ' . $nodeProcessResourceUsageLogCpuTime . ' | awk \'{print ""$2"+"$3"+"$4"+"$5"+"$6"+"$7"+"$8"+"$9"+"$10"+"$11""}\' 2>&1', $nodeProcessResourceUsageLogCpuTime);
+				$nodeProcessResourceUsageLogCpuTime = current($nodeProcessResourceUsageLogCpuTime);
 				$parameters['cpu_capacity_time'][] = array(
-					'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTime),
+					'cpu_time' => _calculateCpuTime($nodeProcessResourceUsageLogCpuTime),
 					'timestamp' => microtime(true)
 				);
 
@@ -50,12 +50,12 @@
 					exec($processProcessIdCommand, $processProcessIds);
 
 					foreach ($processProcessIds as $processProcessId) {
-						$nodeResourceUsageLogCpuTimeProcess = false;
-						exec('sudo bash -c "sudo cat /proc/' . $processProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\' 2>&1', $nodeResourceUsageLogCpuTimeProcess);
-						$nodeResourceUsageLogCpuTimeProcess = current($nodeResourceUsageLogCpuTimeProcess);
+						$nodeProcessResourceUsageLogCpuTimeProcess = false;
+						exec('sudo bash -c "sudo cat /proc/' . $processProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\' 2>&1', $nodeProcessResourceUsageLogCpuTimeProcess);
+						$nodeProcessResourceUsageLogCpuTimeProcess = current($nodeProcessResourceUsageLogCpuTimeProcess);
 
 						$parameters[$nodeResourceUsageLogProcessType]['cpu_time'][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId] = array(
-							'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTimeProcess),
+							'cpu_time' => _calculateCpuTime($nodeProcessResourceUsageLogCpuTimeProcess),
 							'timestamp' => microtime(true)
 						);
 
