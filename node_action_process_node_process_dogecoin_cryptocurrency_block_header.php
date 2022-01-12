@@ -59,9 +59,10 @@
 		}
 
 		if (($dogecoinCryptocurrencyTransactionIndex === 0) === true) {
+			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = $dogecoinCryptocurrencyTransactionIds[$dogecoinCryptocurrencyTransactionIndex];
+		} else {
+			$dogecoinCryptocurrencyTransactionIds = array_values($dogecoinCryptocurrencyTransactionIds);
 		}
-
-		// todo
 	}
 
 	// todo
