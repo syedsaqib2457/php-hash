@@ -41,12 +41,6 @@
 				'socks' => 'socks_proxy'
 			)
 		);
-
-		if (empty($parameters['node_authentication_token']) === true) {
-			$response['message'] = 'Node authentication token is required, please try again.';
-			return $response;
-		}
-
 		$node = _list(array(
 			'data' => array(
 				'id',
@@ -61,8 +55,8 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
-			$response['message'] = 'Invalid node authentication token or ID, please try again.';
-			// todo: log as unauthorized request request
+			$response['message'] = 'Invalid node authentication token, please try again.';
+			// todo: log as unauthorized request
 			return $response;
 		}
 
