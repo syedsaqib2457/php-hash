@@ -94,9 +94,9 @@
 
 		foreach ($parameters['data'] as $nodeProcessResourceUsageLogProcessType => $nodeProcessResourceUsageLogData) {
 			$parameters['data'][] = array(
-				'cpu_percentage' = max($nodeProcessResourceUsageLogData['cpu_percentage']),
+				'cpu_percentage' => max($nodeProcessResourceUsageLogData['cpu_percentage']),
 				'created_timestamp' => $nodeProcessResourceUsageLogTimestamp,
-				'memory_percentage' = max($nodeProcessResourceUsageLogData['memory_percentage']),
+				'memory_percentage' => max($nodeProcessResourceUsageLogData['memory_percentage']),
 				'node_process_type' => $nodeProcessResourceUsageLogProcessType
 			);
 			unset($parameters['data'][$nodeProcessResourceUsageLogProcessType]);
