@@ -7,7 +7,14 @@
 		create block header hash
 		save block header hash to file for mining with multiple processes
 	*/
-	exec('sudo dogecoin-cli -rpcuser=ghostcompute -rpcpassword=ghostcompute getblocktemplate 2>&1', $dogecoinCryptocurrencyBlockTemplate);
+
+	$dogecoinCryptocurrencyBlockTemplateParameters = array(
+		'rules' => array(
+			'segwit'
+		)
+	);
+	$dogecoinCryptocurrencyBlockTemplateParameters = json_encode($dogecoinCryptocurrencyBlockTemplateParameters);
+	exec('sudo dogecoin-cli -rpcuser=ghostcompute -rpcpassword=ghostcompute getblocktemplate \'' . $dogecoinCryptocurrencyBlockTemplateParameters . '\' 2>&1', $dogecoinCryptocurrencyBlockTemplate);
 	$dogecoinCryptocurrencyBlockTemplate = json_decode($dogecoinCryptocurrencyBlockTemplate, true);
 
 	if (isset($dogecoinCryptocurrencyBlockTemplate['version']) === false) {
