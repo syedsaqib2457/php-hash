@@ -91,54 +91,30 @@
 		$nodeResourceUsageLogProcessTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogProcessTimestamp);
 		$nodeResourceUsageLogProcessTimestamp = substr($nodeResourceUsageLogProcessTimestamp, 0, 15) . '0:00';
 		$nodeResourceUsageLogProcessTimestamp = strtotime($nodeResourceUsageLogProcessTimestamp);
-		$parameters['data']['node_process_resource_usage_logs'] = array();
 
-		foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
-			$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType] = array(
-				'created' => $nodeResourceUsageLogCreated,
-				'node_process_type' => $nodeResourceUsageLogProcessType
+		foreach ($parameters['data'] as $nodeProcessResourceUsageLogProcessType => $nodeProcessResourceUsageLogData) {
+			$parameters['data'][] = array(
+				'cpu_percentage' = max($nodeProcessResourceUsageLogData['cpu_percentage']),
+				'created_timestamp' => $nodeResourceUsageLogProcessTimestamp,
+				'memory_percentage' = max($nodeProcessResourceUsageLogData['memory_percentage']),
+				'node_process_type' => $nodeProcessResourceUsageLogProcessType
 			);
-
-			if (
-				(isset($parameters['data']['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
-				(isset($parameters['data']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
-			) {
-				$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['cpu_percentage'] = max($parameters['data']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
-			}
-
-			if (
-				(isset($parameters['data']['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
-				(isset($parameters['data']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
-			) {
-				$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['memory_percentage'] = max($parameters['data']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
-			}
-		}
-
-		$nodeResourceUsageLogs = array_intersect_key($parameters['data'], array(
-			'node_process_resource_usage_logs' => true
-		));
-		$nodeResourceUsageLogs = json_encode($nodeResourceUsageLogs);
-
-		if (file_put_contents('/usr/local/ghostcompute/node_resource_usage_logs.json', $nodeResourceUsageLogs) === false) {
-			$response['message'] = 'Error adding node resource usage logs, please try again.' . "\n";
-			return $response;
+			unset($parameters['data'][$nodeProcessResourceUsageLogProcessType]);
 		}
 
 		$systemParameters = array(
-			'action' => 'add_node_resource_usage_logs',
+			'action' => 'add_node_process_resource_usage_logs',
+			'data' => $parameters['data'],
 			'node_authentication_token' => $parameters['node_authentication_token']
 		);
 		$encodedSystemParameters = json_encode($systemParameters);
 
 		if ($encodedSystemParameters === false) {
-			$response['message'] = 'Error processing node resource usage logs, please try again.' . "\n";
+			$response['message'] = 'Error processing node process resource usage logs, please try again.' . "\n";
 			return $response;
 		}
 
-		exec('sudo ' . $parameters['binary_files']['curl'] . ' -s --form "data=@/usr/local/ghostcompute/node_resource_usage_logs.json" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeResourceUsageLogsResponse);
-		$processNodeResourceUsageLogsResponse = current($processNodeResourceUsageLogsResponse);
-		$processNodeResourceUsageLogsResponse = json_decode($processNodeResourceUsageLogsResponse, true);
-		return $processNodeResourceUsageLogsResponse;
+		// todo
 	}
 
 	if (($parameters['action'] === 'process_node_process_resource_usage_logs') === true) {
