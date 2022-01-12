@@ -34,5 +34,18 @@
 		}
 	}
 
+	if (empty($dogecoinCryptocurrencyTransactions[1]) === true) {
+		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyTransactions[0], true);
+		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'], true);
+		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = strrev($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
+		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = bin2hex($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
+	}
+
+	while (empty($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']) === true) {
+		$dogecoinCryptocurrencyTransactionIndex = 0;
+
+		// todo
+	}
+
 	// todo
 ?>
