@@ -1,13 +1,13 @@
 <?php
-	function _calculateCpuTime($nodeResourceUsageLogCpuTimeString) {
-		$nodeResourceUsageLogCpuTime = 0;
-		$nodeResourceUsageLogCpuTimeValues = explode('+', $nodeResourceUsageLogCpuTimeString);
+	function _calculateCpuTime($cpuTimeString) {
+		$cpuTime = 0;
+		$cpuTimeValues = explode('+', $cpuTimeString);
 
-		foreach ($nodeResourceUsageLogCpuTimeValues as $nodeResourceUsageLogCpuTimeValue) {
-			$nodeResourceUsageLogCpuTime += substr($nodeResourceUsageLogCpuTimeValue, -15);
+		foreach ($cpuTimeValues as $cpuTimeValue) {
+			$cpuTime += substr($cpuTimeValue, -15);
 		}
 
-		return $nodeResourceUsageLogCpuTime;
+		return $cpuTime;
 	}
 
 	function _processNodeProcessResourceUsageLogs($parameters, $response) {
@@ -17,16 +17,15 @@
 			'socks_proxy',
 			'system'
 		);
-		$nodeResourceUsageLogProcessStart = time();
+		$nodeResourceUsageLogProcessTimestamp = time();
 
-		while ((($nodeResourceUsageLogProcessStart + 540) > time()) === true) {
+		while ((($nodeResourceUsageLogProcessTimestamp + 540) > time()) === true) {
 			if (empty($parameters['node_resource_usage_log_process_interval_index']) === true) {
 				$parameters['node_resource_usage_log_process_interval_index'] = 0;
 			}
 
-			$nodeResourceUsageLogCpuTime = $nodeResourceUsageLogCpuTimeStart = microtime(true);
-
 			if (empty($parameters['data']['cpu_capacity_time']['interval']) === true) {
+				$nodeResourceUsageLogCpuTime = false;
 				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu" 2>&1', $nodeResourceUsageLogCpuTime);
 				end($nodeResourceUsageLogCpuTime);
 				$nodeResourceUsageLogCpuTime = array_shift($nodeResourceUsageLogCpuTime);
@@ -34,7 +33,7 @@
 				$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
 				$parameters['data']['cpu_capacity_time'][] = array(
 					'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTime),
-					'timestamp' => $nodeResourceUsageLogCpuTimeStart
+					'timestamp' => microtime(true)
 				);
 
 				if (empty($parameters['data']['cpu_capacity_time'][1]) === false) {
@@ -57,13 +56,13 @@
 					exec($processProcessIdCommand, $processProcessIds);
 
 					foreach ($processProcessIds as $processProcessId) {
-						$nodeResourceUsageLogCpuTimeProcess = $nodeResourceUsageLogCpuTimeProcessStart = microtime(true);
+						$nodeResourceUsageLogCpuTimeProcess = false;
 						exec('sudo bash -c "sudo cat /proc/' . $processProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\' 2>&1', $nodeResourceUsageLogCpuTimeProcess);
 						$nodeResourceUsageLogCpuTimeProcess = current($nodeResourceUsageLogCpuTimeProcess);
 
 						$parameters['data']['cpu_time_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId] = array(
 							'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTimeProcess),
-							'timestamp' => $nodeResourceUsageLogCpuTimeProcessStart
+							'timestamp' => microtime(true)
 						);
 
 						if (empty($parameters['data']['cpu_time_process_' . $processType][($parameters['node_resource_usage_log_process_interval_index'] - 1)][$processProcessId]) === false) {
@@ -95,8 +94,9 @@
 			sleep(10);
 		}
 
-		$nodeResourceUsageLogProcessStart = date('Y-m-d H:i', $nodeResourceUsageLogProcessStart);
-		$nodeResourceUsageLogCreated = substr($nodeResourceUsageLogProcessStart, 0, 15) . '0:00';
+		$nodeResourceUsageLogProcessTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogProcessTimestamp);
+		$nodeResourceUsageLogProcessTimestamp = substr($nodeResourceUsageLogProcessTimestamp, 0, 15) . '0:00';
+		$nodeResourceUsageLogProcessTimestamp = strtotime($nodeResourceUsageLogProcessTimestamp);
 		$parameters['data']['node_process_resource_usage_logs'] = array();
 
 		foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
