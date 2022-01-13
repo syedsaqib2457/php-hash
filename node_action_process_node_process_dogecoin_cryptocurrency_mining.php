@@ -22,7 +22,7 @@
 	$_3 = intval($_3);
 
 	for ($_2; true; $_2 += 2) {
-		$_0 = hash('sha256', hash_hmac('sha256', $_1, $_2));
+		$_0 = hash('sha256', hash('sha256', $_1 . $_2));
 
 		if (
 			(($_0[16] === '0') === true) &&
@@ -35,7 +35,7 @@
 			}
 		}
 
-		$_0 = hash('sha256', hash_hmac('sha256', $_1, ($_2 + 1)));
+		$_0 = hash('sha256', hash('sha256', $_1 . ($_2 + 1)));
 
 		if (
 			(($_0[16] === '0') === true) &&
@@ -49,6 +49,7 @@
 		}
 	}
 
+	// todo: validate maximum nonce ($_3)
 	echo 'Block mined successfully: ' . $_0 . "\n";
 	// todo: save hash to /tmp file for processing
 ?>
