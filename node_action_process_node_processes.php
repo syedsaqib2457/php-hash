@@ -288,14 +288,14 @@
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
 		if ($encodedSystemActionProcessNodeParameters === false) {
-			$response['message'] = 'Error processing node, please try again.' . "\n";
+			$response['message'] = 'Error processing node, please try again.';
 			return $response;
 		}
 
 		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=600 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
-			$response['message'] = 'Error processing node, please try again.' . "\n";
+			$response['message'] = 'Error processing node, please try again.';
 			return $response;
 		}
 
@@ -304,7 +304,7 @@
 		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
 
 		if ($systemActionProcessNodeResponse === false) {
-			$response['message'] = 'Error processing node, please try again.' . "\n";
+			$response['message'] = 'Error processing node, please try again.';
 			return $response;
 		}
 
@@ -486,7 +486,7 @@
 		$kernelOptions = implode("\n", $kernelOptions);
 
 		if (file_put_contents('/etc/sysctl.conf', $kernelOptions) === false) {
-			$response['message'] = 'Error adding kernel options, please try again.' . "\n";
+			$response['message'] = 'Error adding kernel options, please try again.';
 			return $response;
 		}
 
@@ -540,7 +540,7 @@
 		$nodeInterfaces = implode("\n", $nodeInterfaces);
 
 		if (file_put_contents('/usr/local/ghostcompute/node_interfaces.php', $nodeInterfaces) === false) {
-			$response['message'] = 'Error adding node interfaces, please try again.' . "\n";
+			$response['message'] = 'Error adding node interfaces, please try again.';
 			return $response;
 		}
 
@@ -808,7 +808,7 @@
 		$nodeRecursiveDnsDestinations = implode("\n", $nodeRecursiveDnsDestinations);
 
 		if (file_put_contents('/usr/local/ghostcompute/resolv.conf', $nodeRecursiveDnsDestinations) === false) {
-			$response['message'] = 'Error adding node recursive DNS destinations, please try again.' . "\n";
+			$response['message'] = 'Error adding node recursive DNS destinations, please try again.';
 			return $response;
 		}
 
