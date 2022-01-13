@@ -8,6 +8,12 @@
 		save block header hash to file for mining with multiple processes
 	*/
 
+	function _createLittleEndian($hexidecimalString) {
+		$binaryString = hex2bin($hexidecimalString);
+		$binaryString = strrev($binaryString);
+		return bin2hex($binaryStringReversed);
+	}
+
 	$dogecoinCryptocurrencyBlockTemplateParameters = array(
 		'capabilities' => array(
 			'coinbasetxn',
@@ -39,11 +45,9 @@
 		'previous_block_hash' => $dogecoinCryptocurrencyBlockTemplate['previousblockhash'],
 		'target_hash_bits' => $dogecoinCryptocurrencyBlockTemplate['bits'],
 		'timestamp' => dechex($dogecoinCryptocurrencyBlockTemplate['curtime']),
-		'version' => $dogecoinCryptocurrencyBlockTemplate['version']
+		'version' => str_pad($dogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 	);
-	$dogecoinCryptocurrencyBlockHeader['timestamp'] = hex2bin($dogecoinCryptocurrencyBlockHeader['timestamp']);
-	$dogecoinCryptocurrencyBlockHeader['timestamp'] = strrev($dogecoinCryptocurrencyBlockHeader['timestamp']);
-	$dogecoinCryptocurrencyBlockHeader['timestamp'] = bin2hex($dogecoinCryptocurrencyBlockHeader['timestamp']);
+	$dogecoinCryptocurrencyBlockHeader['timestamp'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp']);
 	$dogecoinCryptocurrencyTransactions = array(
 		// todo: coinbase tx
 	);
@@ -61,9 +65,8 @@
 
 	if (empty($dogecoinCryptocurrencyTransactionIds[1]) === true) {
 		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0], true);
-		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'], true);
-		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = strrev($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
-		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = bin2hex($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
+		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
+		$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
 	} elseif (((($dogecoinCryptocurrencyBlockTemplateTransactionIndex + 1) % 2) === 0) === true) {
 		$dogecoinCryptocurrencyTransactionIds[($dogecoinCryptocurrencyBlockTemplateTransactionIndex + 1)] = $dogecoinCryptocurrencyTransactionIds[$dogecoinCryptocurrencyBlockTemplateTransactionIndex];
 	}
