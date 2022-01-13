@@ -63,10 +63,11 @@
 		'ffffffff',
 		'01',
 		_createLittleEndian($dogecoinCryptocurrencyBlockHeader['coinbase_output_value']),
-		'', // output script length
-		'', // output script
+		false,
+		'', // todo: create pubKey script and verify string format as-is
 		'00000000'
 	);
+	// todo: create API functions for simplifying wallet pubKey creation
 	$dogecoinCryptocurrencyTransactions[4] = hex2bin($dogecoinCryptocurrencyTransactions[5]);
 	$dogecoinCryptocurrencyTransactions[4] = strlen($dogecoinCryptocurrencyTransactions[4]);
 	$dogecoinCryptocurrencyTransactions[4] = dechex($dogecoinCryptocurrencyTransactions[4]);
