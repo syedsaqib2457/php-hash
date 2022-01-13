@@ -64,14 +64,23 @@
 		'01',
 		_createLittleEndian($dogecoinCryptocurrencyBlockHeader['coinbase_output_value']),
 		false,
-		'', // todo: create pubKey script and verify string format as-is
+		'mining_reward_public_key_goes_here', // todo: create pubKey script and verify string format as-is
 		'00000000'
 	);
 	// todo: create API functions for simplifying wallet pubKey creation
-	$dogecoinCryptocurrencyTransactions[4] = hex2bin($dogecoinCryptocurrencyTransactions[5]);
-	$dogecoinCryptocurrencyTransactions[4] = strlen($dogecoinCryptocurrencyTransactions[4]);
-	$dogecoinCryptocurrencyTransactions[4] = dechex($dogecoinCryptocurrencyTransactions[4]);
-	$dogecoinCryptocurrencyTransactions[4] = str_pad($dogecoinCryptocurrencyTransactions[4], 2, '0', STR_PAD_LEFT);
+
+	$dogecoinCryptocurrencyTransactionParameterLengthKeys = array(
+		4,
+		9
+	);
+
+	foreach ($dogecoinCryptocurrencyTransactionParameterLengthKeys as $dogecoinCryptocurrencyTransactionParameterLengthKey) {
+		$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = hex2bin($dogecoinCryptocurrencyTransactions[($dogecoinCryptocurrencyTransactionParameterLengthKey + 1)]);
+		$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = strlen($dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey]);
+		$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = dechex($dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey]);
+		$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = str_pad($dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
+	}
+
 	$dogecoinCryptocurrencyTransactions = array(
 		implode('', $dogecoinCryptocurrencyTransactions)
 	);
