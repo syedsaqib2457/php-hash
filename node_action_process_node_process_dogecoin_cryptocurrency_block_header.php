@@ -41,6 +41,7 @@
 	}
 
 	$dogecoinCryptocurrencyBlockHeader = array(
+		'coinbase_output_value' => dechex($dogecoinCryptocurrencyBlockTemplate['coinbasevalue']),
 		'nonce_range' => $dogecoinCryptocurrencyBlockTemplate['noncerange'],
 		'previous_block_hash' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['previousblockhash']),
 		'target_hash_bits' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['bits']),
@@ -58,7 +59,7 @@
 		'67686f7374636f6d70757465',
 		'ffffffff',
 		'01',
-		'', // output value
+		_createLittleEndian($dogecoinCryptocurrencyBlockHeader['coinbase_output_value']),
 		'', // output script length
 		'', // output script
 		'00000000'
