@@ -40,7 +40,6 @@
 		return $response;
 	}
 
-	// todo: convert values to little endian if getblocktemplate doesn't already
 	$dogecoinCryptocurrencyBlockHeader = array(
 		'previous_block_hash' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['previousblockhash']),
 		'target_hash_bits' => $dogecoinCryptocurrencyBlockTemplate['bits'],
