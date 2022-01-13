@@ -8,7 +8,7 @@
 	shell_exec('cd /usr/src/dogecoin/ && sudo ' . $parameters['binary_files']['wget'] . ' -O dogecoin.tar.gz --no-dns-cache --timeout=60 https://github.com/dogecoin/dogecoin/archive/refs/tags/v1.14.5.tar.gz');
 	shell_exec('cd /usr/src/dogecoin/ && sudo tar -xvzf dogecoin.tar.gz');
 	shell_exec('cd /usr/src/dogecoin/*/ && sudo ./autogen.sh');
-	shell_exec('cd /usr/src/dogecoin/*/ && sudo ./configure --disable-bench --disable-hardening --disable-miniupnpc --disable-natpnp --disable-tests --disable-util-wallet --with-utils --without-bdb --without-gui --without-qrencode --without-sqlite');
+	shell_exec('cd /usr/src/dogecoin/*/ && sudo ./configure --disable-bench --disable-hardening --disable-miniupnpc --disable-natpnp --disable-tests --with-utils --without-bdb --without-gui --without-qrencode --without-sqlite');
 	shell_exec('cd /usr/src/dogecoin/*/ && sudo make');
 	shell_exec('cd /usr/src/dogecoin/*/ && sudo make install');
 	shell_exec('sudo mkdir /usr/local/ghostcompute/dogecoin/');
