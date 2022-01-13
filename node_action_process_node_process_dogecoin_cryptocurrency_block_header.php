@@ -50,7 +50,14 @@
 	$dogecoinCryptocurrencyBlockHeader['timestamp'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp']);
 	$dogecoinCryptocurrencyBlockHeader['version'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['version']);
 	$dogecoinCryptocurrencyTransactions = array(
-		$dogecoinCryptocurrencyBlockHeader['version'] . '010000000000000000000000000000000000000000000000000000000000000000ffffffff' // todo: coinbase tx
+		$dogecoinCryptocurrencyBlockHeader['version'],
+		'01',
+		'0000000000000000000000000000000000000000000000000000000000000000',
+		'ffffffff',
+		'', // height + script bytes
+	); // todo: coinbase tx
+	$dogecoinCryptocurrencyTransactions = array(
+		implode('', $dogecoinCryptocurrencyTransactions)
 	);
 
 	foreach ($dogecoinCryptocurrencyBlockTemplate['transactions'] as $dogecoinCryptocurrencyBlockTemplateTransactionIndex => $dogecoinCryptocurrencyBlockTemplateTransaction) {
