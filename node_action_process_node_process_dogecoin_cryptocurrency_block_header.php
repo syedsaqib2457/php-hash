@@ -96,7 +96,14 @@
 		}
 	}
 
-	$dogecoinCryptocurrencyBlockHeaderString = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . $dogecoinCryptocurrencyBlockHeader['timestamp'] . $dogecoinCryptocurrencyBlockHeader['bits'];
+	$dogecoinCryptocurrencyBlockHeader = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . $dogecoinCryptocurrencyBlockHeader['timestamp'] . $dogecoinCryptocurrencyBlockHeader['bits'];
+
+	// todo: .json file with valid nonce range
+	if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_block_header.txt', $dogecoinCryptocurrencyBlockHeader) === false) {
+		$response['message'] = 'Error adding node process Dogecoin cryptocurrency block header, please try again.';
+		return $response;
+	}
+
 	// todo: add incremented nonce in mining process
 	// todo: create block submission process that's always verifying (similar to recursive DNS resolv.conf override process) if a successful block is mined (since each mining process terminates in 5 seconds)
 ?>
