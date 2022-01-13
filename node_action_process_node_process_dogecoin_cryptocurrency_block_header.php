@@ -54,7 +54,9 @@
 		'01',
 		'0000000000000000000000000000000000000000000000000000000000000000',
 		'ffffffff',
-		'', // height + script bytes
+		'', // input script length
+		'', // input script
+		'ffffffff'
 	); // todo: coinbase tx
 	$dogecoinCryptocurrencyTransactions = array(
 		implode('', $dogecoinCryptocurrencyTransactions)
