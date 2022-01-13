@@ -38,7 +38,7 @@
 	$dogecoinCryptocurrencyBlockHeader = array(
 		'previous_block_hash' => $dogecoinCryptocurrencyBlockTemplate['previousblockhash'],
 		'target_hash_bits' => $dogecoinCryptocurrencyBlockTemplate['bits'],
-		'timestamp' => $dogecoinCryptocurrencyBlockTemplate['curtime'],
+		'timestamp' => dechex($dogecoinCryptocurrencyBlockTemplate['curtime']),
 		'version' => $dogecoinCryptocurrencyBlockTemplate['version']
 	);
 	$dogecoinCryptocurrencyTransactions = array(
