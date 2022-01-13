@@ -69,7 +69,7 @@
 	$dogecoinCryptocurrencyTransactions[4] = hex2bin($dogecoinCryptocurrencyTransactions[5]);
 	$dogecoinCryptocurrencyTransactions[4] = strlen($dogecoinCryptocurrencyTransactions[4]);
 	$dogecoinCryptocurrencyTransactions[4] = dechex($dogecoinCryptocurrencyTransactions[4]);
-	$dogecoinCryptocurrencyTransactions[4] = _createLittleEndian($dogecoinCryptocurrencyTransactions[4]);
+	$dogecoinCryptocurrencyTransactions[4] = str_pad($dogecoinCryptocurrencyTransactions[4], 2, '0', STR_PAD_LEFT);
 	$dogecoinCryptocurrencyTransactions = array(
 		implode('', $dogecoinCryptocurrencyTransactions)
 	);
