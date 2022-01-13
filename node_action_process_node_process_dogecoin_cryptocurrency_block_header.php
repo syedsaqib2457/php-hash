@@ -51,7 +51,7 @@
 	$dogecoinCryptocurrencyBlockHeader['version'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['version']);
 	$dogecoinCryptocurrencyTransactions = array(
 		$dogecoinCryptocurrencyBlockHeader['version'],
-		'01',
+		'01', // todo: add differences between v1 and v2 from BIP34 spec
 		'0000000000000000000000000000000000000000000000000000000000000000',
 		'ffffffff',
 		'', // input script length
