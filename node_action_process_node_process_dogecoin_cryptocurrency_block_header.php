@@ -54,7 +54,7 @@
 		'01', // todo: add differences between v1 and v2 from BIP34 spec
 		'0000000000000000000000000000000000000000000000000000000000000000',
 		'ffffffff',
-		_createLittleEndian('12'),
+		'12',
 		'67686f7374636f6d70757465',
 		'ffffffff',
 		'01',
