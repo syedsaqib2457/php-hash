@@ -42,11 +42,12 @@
 
 	$dogecoinCryptocurrencyBlockHeader = array(
 		'previous_block_hash' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['previousblockhash']),
-		'target_hash_bits' => $dogecoinCryptocurrencyBlockTemplate['bits'],
+		'target_hash_bits' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['bits']),
 		'timestamp' => dechex($dogecoinCryptocurrencyBlockTemplate['curtime']),
 		'version' => str_pad($dogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 	);
 	$dogecoinCryptocurrencyBlockHeader['timestamp'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp']);
+	$dogecoinCryptocurrencyBlockHeader['version'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['version']);
 	$dogecoinCryptocurrencyTransactions = array(
 		// todo: coinbase tx
 	);
