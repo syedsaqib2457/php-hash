@@ -57,8 +57,12 @@
 		'', // input script length
 		'', // input script
 		'ffffffff',
-		'01'
-	); // todo: coinbase tx
+		'01',
+		'', // output value
+		'', // output script length
+		'', // output script
+		'00000000'
+	);
 	$dogecoinCryptocurrencyTransactions = array(
 		implode('', $dogecoinCryptocurrencyTransactions)
 	);
