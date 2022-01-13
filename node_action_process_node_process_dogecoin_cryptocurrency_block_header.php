@@ -90,5 +90,6 @@
 		}
 	}
 
+	$dogecoinCryptocurrencyBlockHeaderString = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . $dogecoinCryptocurrencyBlockHeader['timestamp'] . $dogecoinCryptocurrencyBlockHeader['bits'];
 	// todo
 ?>
