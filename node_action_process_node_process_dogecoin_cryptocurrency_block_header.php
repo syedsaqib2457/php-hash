@@ -66,6 +66,10 @@
 		'', // output script
 		'00000000'
 	);
+	$dogecoinCryptocurrencyTransactions[4] = hex2bin($dogecoinCryptocurrencyTransactions[5]);
+	$dogecoinCryptocurrencyTransactions[4] = strlen($dogecoinCryptocurrencyTransactions[4]);
+	$dogecoinCryptocurrencyTransactions[4] = dechex($dogecoinCryptocurrencyTransactions[4]);
+	$dogecoinCryptocurrencyTransactions[4] = _createLittleEndian($dogecoinCryptocurrencyTransactions[4]);
 	$dogecoinCryptocurrencyTransactions = array(
 		implode('', $dogecoinCryptocurrencyTransactions)
 	);
