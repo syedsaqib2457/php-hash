@@ -1,13 +1,4 @@
 <?php
-	/*
-		construct block based on Bitcoin documentation before testing
-		create coinbase transaction with user input
-		append coinbase transaction to list of transactions
-		list previous block header, version, diff, etc
-		create block header hash
-		save block header hash to file for mining with multiple processes
-	*/
-
 	function _createLittleEndian($hexidecimalString) {
 		$binaryString = hex2bin($hexidecimalString);
 		$binaryString = strrev($binaryString);
