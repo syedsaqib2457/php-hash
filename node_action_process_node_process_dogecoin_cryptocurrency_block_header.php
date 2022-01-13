@@ -41,6 +41,9 @@
 		'timestamp' => dechex($dogecoinCryptocurrencyBlockTemplate['curtime']),
 		'version' => $dogecoinCryptocurrencyBlockTemplate['version']
 	);
+	$dogecoinCryptocurrencyBlockHeader['timestamp'] = hex2bin($dogecoinCryptocurrencyBlockHeader['timestamp']);
+	$dogecoinCryptocurrencyBlockHeader['timestamp'] = strrev($dogecoinCryptocurrencyBlockHeader['timestamp']);
+	$dogecoinCryptocurrencyBlockHeader['timestamp'] = bin2hex($dogecoinCryptocurrencyBlockHeader['timestamp']);
 	$dogecoinCryptocurrencyTransactions = array(
 		// todo: coinbase tx
 	);
