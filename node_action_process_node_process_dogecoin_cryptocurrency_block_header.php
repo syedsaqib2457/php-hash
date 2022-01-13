@@ -43,13 +43,14 @@
 	$dogecoinCryptocurrencyBlockHeader = array(
 		'coinbase_output_value' => dechex($dogecoinCryptocurrencyBlockTemplate['coinbasevalue']),
 		'next_block_height' => $dogecoinCryptocurrencyBlockTemplate['height'],
-		'next_block_height_binary_string' => hex2bin($dogecoinCryptocurrencyBlockTemplate['height']),
+		'next_block_height_binary_string' => dechex($dogecoinCryptocurrencyBlockTemplate['height']),
 		'nonce_range' => $dogecoinCryptocurrencyBlockTemplate['noncerange'],
 		'previous_block_hash' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['previousblockhash']),
 		'target_hash_bits' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['bits']),
 		'timestamp' => dechex($dogecoinCryptocurrencyBlockTemplate['curtime']),
 		'version' => str_pad($dogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 	);
+	$dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string'] = hex2bin($dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string']);
 	$dogecoinCryptocurrencyBlockHeader['timestamp'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp']);
 	$dogecoinCryptocurrencyBlockHeader['version'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['version']);
 	$dogecoinCryptocurrencyTransactions = array(
