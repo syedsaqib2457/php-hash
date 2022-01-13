@@ -97,10 +97,16 @@
 		}
 	}
 
-	$dogecoinCryptocurrencyBlockHeader = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . $dogecoinCryptocurrencyBlockHeader['timestamp'] . $dogecoinCryptocurrencyBlockHeader['bits'];
+	$dogecoinCryptocurrencyBlockHeader = array(
+		'nonce_range' => $dogecoinCryptocurrencyBlockHeader['nonce_range'],
+		'string' => $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . $dogecoinCryptocurrencyBlockHeader['timestamp'] . $dogecoinCryptocurrencyBlockHeader['bits']
+	);
+	$dogecoinCryptocurrencyBlockHeader = json_encode($dogecoinCryptocurrencyBlockHeader);
 
-	// todo: .json file with valid nonce range
-	if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_block_header.txt', $dogecoinCryptocurrencyBlockHeader) === false) {
+	if (
+		($dogecoinCryptocurrencyBlockHeader === false) ||
+		(file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_block_header.json', $dogecoinCryptocurrencyBlockHeader) === false)
+	) {
 		$response['message'] = 'Error adding node process Dogecoin cryptocurrency block header, please try again.';
 		return $response;
 	}
