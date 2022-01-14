@@ -5,7 +5,7 @@
 		return bin2hex($binaryStringReversed);
 	}
 
-	function processNodeProcessDogecoinCryptocurrencyBlockHeader($parameters, $response) {
+	function _processNodeProcessDogecoinCryptocurrencyBlockHeader($parameters, $response) {
 		$dogecoinCryptocurrencyBlockTemplateParameters = array(
 			'capabilities' => array(
 				'coinbase/append',
