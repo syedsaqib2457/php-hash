@@ -12,7 +12,10 @@
 		$parameters['data']['node_id'] = $parameters['node']]['id'];
 		$existingNodeResourceUsageLog = _list(array(
 			'data' => array(
-				'id'
+				'bytes_received',
+				'bytes_sent',
+				'id',
+				'request_count'
 			),
 			'in' => $parameters['system_databases']['node_resource_usage_logs'],
 			'where' => array(
@@ -22,7 +25,11 @@
 		$existingNodeResourceUsageLog = current($existingNodeResourceUsageLog);
 
 		if (empty($existingNodeResourceUsageLog) === false) {
-			$parameters['data']['id'] = $existingNodeResourceUsageLog['id']
+			$parameters['data']['id'] = $existingNodeResourceUsageLog['id'];
+
+			if (empty($existingNodeResourceUsageLog['request_count']) === false) {
+				// todo: increment existing values
+			}
 		}
 
 		_save(array(
