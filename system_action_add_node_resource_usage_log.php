@@ -10,7 +10,21 @@
 	function _addNodeResourceUsageLog($parameters, $response) {
 		$parameters['data']['id'] = _createUniqueId();
 		$parameters['data']['node_id'] = $parameters['node']]['id'];
-		// todo: validate 10 minute timestamp doesn't exist for resource usage log when updating cpu/memory/storage
+		$existingNodeResourceUsageLog = _list(array(
+			'data' => array(
+				'id'
+			),
+			'in' => $parameters['system_databases']['node_resource_usage_logs'],
+			'where' => array(
+				'created_timestamp' => $parameters['data']['created_timestamp'],
+			)
+		), $response);
+		$existingNodeResourceUsageLog = current($existingNodeResourceUsageLog);
+
+		if (empty($existingNodeResourceUsageLog) === false) {
+			$parameters['data']['id'] = $existingNodeResourceUsageLog['id']
+		}
+
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'cpu_capacity_cores' => true,
