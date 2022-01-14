@@ -119,6 +119,7 @@
 		}
 
 		$dogecoinCryptocurrencyBlockHeader = array(
+			'next_block_height' => $dogecoinCryptocurrencyBlockTemplate['height'],
 			'nonce_range' => $dogecoinCryptocurrencyBlockHeader['nonce_range'],
 			'string' => $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . $dogecoinCryptocurrencyBlockHeader['timestamp'] . $dogecoinCryptocurrencyBlockHeader['bits']
 		);
