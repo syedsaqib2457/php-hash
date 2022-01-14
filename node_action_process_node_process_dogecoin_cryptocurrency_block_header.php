@@ -53,7 +53,7 @@
 			'0000000000000000000000000000000000000000000000000000000000000000',
 			'ffffffff',
 			false,
-			'0' . strlen($dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string']) . _createLittleEndian($dogecoinCryptocurrencyBlockHeader['next_block_height']) . '67686f7374636f6d70757465',
+			'0' . strlen($dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string']) . _createLittleEndian($dogecoinCryptocurrencyBlockHeader['next_block_height']) . '67686f7374636f6d70757465', // todo: append extranonce based on user-input defined number of block headers to create
 			'ffffffff',
 			'01',
 			_createLittleEndian($dogecoinCryptocurrencyBlockHeader['coinbase_output_value']),
