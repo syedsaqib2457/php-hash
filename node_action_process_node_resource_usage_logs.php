@@ -28,8 +28,6 @@
 				$parameters['node_resource_usage_log_process_interval_index'] = 0;
 			}
 
-			$nodeResourceUsageLogCpuTimeStart = microtime(true);
-
 			if (empty($parameters['data']['cpu_capacity_time']['interval']) === true) {
 				$nodeResourceUsageLogCpuTime = false;
 				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu" 2>&1', $nodeResourceUsageLogCpuTime);
@@ -40,7 +38,7 @@
 				$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
 				$parameters['data']['cpu_capacity_time'][] = array(
 					'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTime),
-					'timestamp' => $nodeResourceUsageLogCpuTimeStart
+					'timestamp' => microtime(true)
 				);
 
 				if (empty($parameters['data']['cpu_capacity_time'][1]) === false) {
@@ -54,7 +52,7 @@
 				$nodeResourceUsageLogCpuTime = current($nodeResourceUsageLogCpuTime);
 				$parameters['data']['cpu_time'][$parameters['node_resource_usage_log_process_interval_index']] = array(
 					'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTime),
-					'timestamp' => $nodeResourceUsageLogCpuTimeStart
+					'timestamp' => microtime(true)
 				);
 
 				if (empty($parameters['data']['cpu_time'][($parameters['node_resource_usage_log_process_interval_index'] - 1)]) === false) {
