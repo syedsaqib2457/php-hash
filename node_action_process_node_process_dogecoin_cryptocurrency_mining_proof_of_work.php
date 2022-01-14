@@ -1,8 +1,4 @@
 <?php
-	// todo: manage crontab execution without node endpoint from process_node_processes
-	// todo: use different timestamps for each node process process instead of index
-	// todo: span entire nonce range in maximum 5 seconds with staggered sleep() instead of costly x < y in for loop
-
 	if (empty($_SERVER['argv'][1]) === true) {
 		exit;
 	}
@@ -12,11 +8,10 @@
 		$$variable = $value;
 	}
 
-	sleep($_4);
-	set_time_limit(5);
-
-	// php node_action_process_node_process_dogecoin_cryptocurrency_mining.php [block_header] [min_nonce] [max_nonce] [target_string] [sleep_interval]
-		// mine indexed section for pseudo-threading
+	// todo: manage process execution by block height with another process to bypass PHP.ini restrictions
+	// php node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php [block_height] [arbitrary random string to allow duplicate processes]
+	// todo: list mining block data from file
+	// todo: random 4-byte nonce if nonce range is 00000000ffffffff
 
 	$_2 = intval($_2);
 	$_3 = intval($_3);
@@ -31,25 +26,9 @@
 			(empty($_0[11] . $_0[12] . $_0[13] . $_0[14] . $_0[15]) === true)
 		) {
 			if (($_0 < $_4) === true) {
-				break;
-			}
-		}
-
-		$_0 = hash('sha256', hash('sha256', $_1 . ($_2 + 1)));
-
-		if (
-			(($_0[16] === '0') === true) &&
-			(empty($_0[0] . $_0[1] . $_0[2] . $_0[3] . $_0[4] . $_0[5]) === true) &&
-			(empty($_0[6] . $_0[7] . $_0[8] . $_0[9] . $_0[10]) === true) &&
-			(empty($_0[11] . $_0[12] . $_0[13] . $_0[14] . $_0[15]) === true)
-		) {
-			if (($_0 < $_4) === true) {
-				break;
+				// todo: save valid block header with concatenated nonce + bits to a file for submitblock
+				exit;
 			}
 		}
 	}
-
-	// todo: validate maximum nonce ($_3)
-	echo 'Block mined successfully: ' . $_0 . "\n";
-	// todo: save hash to /tmp file for processing
 ?>
