@@ -30,7 +30,7 @@
 	$maximumDatabaseBatchSize = (16777216 * 8);
 	$maximumTransactionMemoryPoolMegabytes = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) * 0.30);
 	// todo: add binary full paths
-	shell_exec('sudo dogecoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/ghostcompute/dogecoin/ -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -rpcthreads=2 -timeout=10000 -whitelistrelay=0');
+	shell_exec('sudo dogecoind -blockmaxweight=100000000 -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/ghostcompute/dogecoin/ -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -prune=2222 -rpcthreads=2 -timeout=10000 -whitelistrelay=0');
 	exec('sudo dogecoin-cli -rpcuser=ghostcompute -rpcpassword=ghostcompute getblockchaininfo 2>&1', $dogecoinDetails);
 	$dogecoinDetails = implode('', $dogecoinDetails);
 	$dogecoinDetails = json_decode($dogecoinDetails, true);
