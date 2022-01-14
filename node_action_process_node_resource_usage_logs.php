@@ -89,27 +89,6 @@
 		);
 		// todo: 2 separate API requests for node resource usage logs and node process resource usage logs
 
-		foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
-			$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType] = array(
-				'created' => $nodeResourceUsageLogCreated,
-				'node_process_type' => $nodeResourceUsageLogProcessType
-			);
-
-			if (
-				(isset($parameters['data']['node_process_resource_usage_logs']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
-				(isset($parameters['data']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
-			) {
-				$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['cpu_percentage'] = max($parameters['data']['cpu_percentage_process_' . $nodeResourceUsageLogProcessType]);
-			}
-
-			if (
-				(isset($parameters['data']['node_process_resource_usage_logs']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === false) &&
-				(isset($parameters['data']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]) === true)
-			) {
-				$parameters['data']['node_process_resource_usage_logs'][$nodeResourceUsageLogProcessType]['memory_percentage'] = max($parameters['data']['memory_percentage_process_' . $nodeResourceUsageLogProcessType]);
-			}
-		}
-
 		$nodeResourceUsageLogs = array_intersect_key($parameters['data'], array(
 			'node_process_resource_usage_logs' => true,
 			'node_resource_usage_log' => true
