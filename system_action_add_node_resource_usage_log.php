@@ -9,24 +9,7 @@
 	), $parameters['system_databases'], $response);
 
 	function _addNodeResourceUsageLog($parameters, $response) {
-		if (empty($parameters['data']['node_id']) === true) {
-			$response['message'] = 'Node resource usage logs must have a node ID, please try again.';
-			return $response;
-		}
-
-		$nodeCount = _count(array(
-			'in' => $parameters['system_databases']['nodes'],
-			'where' => array(
-				'authentication_token' => $parameters['node_authentication_token'],
-				'id' => $parameters['data']['node_id']
-			)
-		), $response);
-
-		if ($nodeCount < 1) === true) {
-			$response['message'] = 'Invalid node resource usage log node ID, please try again.';
-			return $response;
-		}
-
+		$parameters['data']['node_id'] = $parameters['node']]['id'];
 		$nodeResourceUsageLogData = array();
 		// todo: validate required usage log parameters with either request_count logs or cpu/memory/storage logs
 		// todo: update request_count parameters when processing request logs using this method
