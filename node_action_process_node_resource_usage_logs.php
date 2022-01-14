@@ -1,13 +1,13 @@
 <?php
-	function _calculateCpuTime($nodeResourceUsageLogCpuTimeString) {
-		$nodeResourceUsageLogCpuTime = 0;
-		$nodeResourceUsageLogCpuTimeValues = explode('+', $nodeResourceUsageLogCpuTimeString);
+	function _calculateCpuTime($cpuTimeString) {
+		$cpuTime = 0;
+		$cpuTimeValues = explode('+', $cpuTimeString);
 
-		foreach ($nodeResourceUsageLogCpuTimeValues as $nodeResourceUsageLogCpuTimeValue) {
-			$nodeResourceUsageLogCpuTime += substr($nodeResourceUsageLogCpuTimeValue, -15);
+		foreach ($cpuTimeValues as $cpuTimeValue) {
+			$cpuTime += substr($cpuTimeValue, -15);
 		}
 
-		return $nodeResourceUsageLogCpuTime;
+		return $cpuTime;
 	}
 
 	function _processNodeResourceUsageLogs($parameters, $response) {
@@ -23,12 +23,6 @@
 		);
 		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
 		$parameters['kernel_page_size'] = current($kernelPageSize);
-		$parameters['node_resource_usage_log_process_types'] = array(
-			'http_proxy',
-			'recursive_dns',
-			'socks_proxy',
-			'system'
-		);
 		$nodeResourceUsageLogProcessStart = time();
 
 		while ((($nodeResourceUsageLogProcessStart + 540) > time()) === true) {
@@ -73,10 +67,6 @@
 
 				if (empty($parameters['data']['cpu_percentage'][$parameters['node_resource_usage_log_process_interval_index']]) === false) {
 					$parameters['data']['cpu_percentage'][$parameters['node_resource_usage_log_process_interval_index']] = ($parameters['data']['cpu_percentage'][$parameters['node_resource_usage_log_process_interval_index']]['cpu_time'] + ($parameters['data']['cpu_capacity_time']['interval'] - $parameters['data']['cpu_percentage'][$parameters['node_resource_usage_log_process_interval_index']]['interval']) * ($parameters['data']['cpu_percentage'][$parameters['node_resource_usage_log_process_interval_index']]['cpu_time'] / $parameters['data']['cpu_percentage'][$parameters['node_resource_usage_log_process_interval_index']]['interval'])) / $parameters['data']['cpu_capacity_time']['interval'];
-				}
-
-				foreach ($parameters['node_resource_usage_log_process_types'] as $nodeResourceUsageLogProcessType) {
-					$parameters = _processProcessUsagePercentages($parameters, $nodeResourceUsageLogProcessType);
 				}
 
 				exec('df -m / | tail -1 | awk \'{print $4}\'  2>&1', $nodeResourceUsageLogStorageCapacityMegabytes);
