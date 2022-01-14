@@ -5,7 +5,7 @@
 		return bin2hex($binaryStringReversed);
 	}
 
-	function _processNodeProcessDogecoinCryptocurrencyBlockHeader($parameters, $response) {
+	function _processNodeProcessDogecoinCryptocurrencyMiningBlockData($parameters, $response) {
 		$dogecoinCryptocurrencyBlockTemplateParameters = array(
 			'capabilities' => array(
 				'coinbase/append',
@@ -117,38 +117,37 @@
 			}
 		}
 
-		$dogecoinCryptocurrencyBlockMiningData = array(
+		$dogecoinCryptocurrencyMiningBlockData = array(
 			'next_block_height' => $dogecoinCryptocurrencyBlockTemplate['height'],
 			'nonce_range' => $dogecoinCryptocurrencyBlockHeader['nonce_range']
 		);
 		$dogecoinCryptocurrencyBlockHeaderTimestampIncrements = range(0, 40);
 
 		foreach ($dogecoinCryptocurrencyBlockHeaderTimestampIncrements as $dogecoinCryptocurrencyBlockHeaderTimestampIncrement) {
-			$dogecoinCryptocurrencyBlockMiningData['strings'][] = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp'] + $dogecoinCryptocurrencyBlockHeaderTimestampIncrement) . $dogecoinCryptocurrencyBlockHeader['bits']
+			$dogecoinCryptocurrencyMiningBlockData['strings'][] = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp'] + $dogecoinCryptocurrencyBlockHeaderTimestampIncrement) . $dogecoinCryptocurrencyBlockHeader['bits']
 		}
 
-		$dogecoinCryptocurrencyBlockMiningData = json_encode($dogecoinCryptocurrencyBlockMiningData);
+		$dogecoinCryptocurrencyMiningBlockData = json_encode($dogecoinCryptocurrencyMiningBlockData);
 
 		if (
-			($dogecoinCryptocurrencyBlockMiningData === false) ||
-			(file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_block_mining_data.json', $dogecoinCryptocurrencyBlockMiningData) === false)
+			($dogecoinCryptocurrencyMiningBlockData === false) ||
+			(file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_data.json', $dogecoinCryptocurrencyMiningBlockData) === false)
 		) {
-			$response['message'] = 'Error adding node process Dogecoin cryptocurrency block mining data, please try again.';
+			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block data, please try again.';
 			return $response;
 		}
 
-		$response['message'] = 'Node process Dogecoin cryptocurrency block mining data processed successfully.';
+		$response['message'] = 'Node process Dogecoin cryptocurrency mining block data processed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'process_node_process_dogecoin_cryptocurrency_block_mining_data') === true) {
-		$response = _processNodeProcessDogecoinCryptocurrencyBlockMiningData($parameters, $response);
+	if (($parameters['action'] === 'process_node_process_dogecoin_cryptocurrency_mining_block_data') === true) {
+		$response = _processNodeProcessDogecoinCryptocurrencyMiningBlockData($parameters, $response);
 		_output($response);
 	}
 
 	// todo: save block template to system API for GhostCompute nodes without dogecoin-cli installed
-	// todo: add extra nonce in coinbase transaction
 	// todo: add incremented nonce in mining process
 	// todo: add crontab commands with static parameters
 ?>
