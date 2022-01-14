@@ -8,10 +8,8 @@
 	), $parameters['system_databases'], $response);
 
 	function _addNodeResourceUsageLog($parameters, $response) {
+		$parameters['data']['id'] = _createUniqueId();
 		$parameters['data']['node_id'] = $parameters['node']]['id'];
-		$nodeResourceUsageLogData = array();
-		// todo: validate required usage log parameters with either request_count logs or cpu/memory/storage logs
-		// todo: update request_count parameters when processing request logs using this method
 		// todo: validate 10 minute timestamp doesn't exist for resource usage log when updating cpu/memory/storage
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
