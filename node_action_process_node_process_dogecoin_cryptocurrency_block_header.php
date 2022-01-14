@@ -131,6 +131,7 @@
 		return $response;
 	}
 
+	// todo: add extra nonce in coinbase transaction
 	// todo: add incremented nonce in mining process
-	// todo: create block submission process that's always verifying (similar to recursive DNS resolv.conf override process) if a successful block is mined (since each mining process terminates in 5 seconds)
+	// todo: add crontab commands with static parameters
 ?>
