@@ -325,7 +325,6 @@
 			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
 				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) {
 					if (_verifyNodeProcess($parameters['binary_files'], false, false, false, $cryptocurrencyNodeProcessType) === false) {
-						// todo: crypto CLI installation for optimized mining + transactions
 						if (empty($parameters['processing_progress_checkpoints'][3]) === false) {
 							$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 						}
@@ -334,7 +333,7 @@
 					}
 				}
 
-				// todo: add crontab commands for spawning mining processes
+				// todo: add crontab commands for updating mining block template data
 			}
 
 			unset($parameters['processing_progress_checkpoints'][3]);
@@ -343,8 +342,6 @@
 			unset($parameters['processing_progress_checkpoints'][3]);
 
 			if (empty($parameters['data']['current']) === false) {
-				// todo: save crypto block template data to file
-
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
 					$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
