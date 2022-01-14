@@ -91,12 +91,11 @@
 
 		$nodeProcessResourceUsageLogTimestamp = date('Y-m-d H:i', $nodeProcessResourceUsageLogTimestamp);
 		$nodeProcessResourceUsageLogTimestamp = substr($nodeProcessResourceUsageLogTimestamp, 0, 15) . '0:00';
-		$nodeProcessResourceUsageLogTimestamp = strtotime($nodeProcessResourceUsageLogTimestamp);
 
 		foreach ($parameters['data'] as $nodeProcessResourceUsageLogProcessType => $nodeProcessResourceUsageLogData) {
 			$parameters['data'][] = array(
 				'cpu_percentage' => max($nodeProcessResourceUsageLogData['cpu_percentage']),
-				'created_timestamp' => $nodeProcessResourceUsageLogTimestamp,
+				'created_timestamp' => strtotime($nodeProcessResourceUsageLogTimestamp),
 				'memory_percentage' => max($nodeProcessResourceUsageLogData['memory_percentage']),
 				'node_process_type' => $nodeProcessResourceUsageLogProcessType
 			);
