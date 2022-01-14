@@ -28,7 +28,7 @@
 				$parameters['node_resource_usage_log_process_interval_index'] = 0;
 			}
 
-			if (empty($parameters['data']['cpu_capacity_time']['interval']) === true) {
+			if (empty($parameters['cpu_capacity_time']['interval']) === true) {
 				$nodeResourceUsageLogCpuTime = false;
 				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu" 2>&1', $nodeResourceUsageLogCpuTime);
 				end($nodeResourceUsageLogCpuTime);
@@ -78,7 +78,6 @@
 
 		/* $nodeResourceUsageLogTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogTimestamp);
 		$nodeResourceUsageLogCreated = substr($nodeResourceUsageLogTimestamp, 0, 15) . '0:00';
-		$parameters['data']['node_process_resource_usage_logs'] = array();
 		$parameters['data']['node_resource_usage_log'] += array(
 			'cpu_capacity_cores' => $parameters['data']['cpu_capacity_cores'],
 			'cpu_percentage' => max($parameters['data']['cpu_percentage']),
