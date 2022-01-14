@@ -131,6 +131,10 @@
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency block header, please try again.';
 			return $response;
 		}
+
+		$response['message'] = 'Node process Dogecoin cryptocurrency block header processed successfully.';
+		$response['valid_status'] = '1';
+		return $response;
 	}
 
 	if (($parameters['action'] === 'process_node_process_dogecoin_cryptocurrency_block_header') === true) {
