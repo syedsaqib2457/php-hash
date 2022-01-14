@@ -16,7 +16,7 @@
 		exec('free -m | grep "Mem:" | grep -v free | awk \'{print $2"_"$3}\'', $nodeResourceUsageLogMemoryUsage);
 		$nodeResourceUsageLogMemoryUsage = current($nodeResourceUsageLogMemoryUsage);
 		$nodeResourceUsageLogMemoryUsage = explode('_', $nodeResourceUsageLogMemoryUsage);
-		$parameters['data']['node_resource_usage_log'] = array(
+		$parameters['data'] = array(
 			'cpu_capacity_megahertz' => ceil($nodeResourceUsageLogCpuCapacityMegahertz),
 			'memory_capacity_megabytes' => $nodeResourceUsageLogMemoryUsage[0],
 			'memory_percentage' => ceil($nodeResourceUsageLogMemoryUsage[1] / $nodeResourceUsageLogMemoryUsage[0])
@@ -77,42 +77,35 @@
 			sleep(10);
 		}
 
-		$nodeResourceUsageLogTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogTimestamp);
+		/* $nodeResourceUsageLogTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogTimestamp);
 		$nodeResourceUsageLogCreated = substr($nodeResourceUsageLogTimestamp, 0, 15) . '0:00';
 		$parameters['data']['node_process_resource_usage_logs'] = array();
 		$parameters['data']['node_resource_usage_log'] += array(
 			'cpu_capacity_cores' => $parameters['data']['cpu_capacity_cores'],
 			'cpu_percentage' => max($parameters['data']['cpu_percentage']),
 			'created_timestamp' => strtotime($nodeResourceUsageLogCreated)
-		);
-		// todo: 2 separate API requests for node resource usage logs and node process resource usage logs
-
-		$nodeResourceUsageLogs = array_intersect_key($parameters['data'], array(
-			'node_process_resource_usage_logs' => true,
-			'node_resource_usage_log' => true
-		));
-		$nodeResourceUsageLogs = json_encode($nodeResourceUsageLogs);
-
-		if (file_put_contents('/usr/local/ghostcompute/node_resource_usage_logs.json', $nodeResourceUsageLogs) === false) {
-			$response['message'] = 'Error adding node resource usage logs, please try again.' . "\n";
-			return $response;
-		}
-
+		); */
 		$systemParameters = array(
 			'action' => 'add_node_resource_usage_logs',
+			'data' => $parameters['data'],
 			'node_authentication_token' => $parameters['node_authentication_token']
 		);
 		$encodedSystemParameters = json_encode($systemParameters);
 
-		if ($encodedSystemParameters === false) {
-			$response['message'] = 'Error processing node resource usage logs, please try again.' . "\n";
-			return $response;
+		if (empty($encodedSystemParameters) === false) {
+			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_add_node_resource_usage_logs_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+
+			if (file_exists('/usr/local/ghostcompute/system_action_add_node_resource_usage_logs_response.json') === true) {
+				$systemActionProcessNodeResourceUsageLogResponse = file_get_contents('/usr/local/ghostcompute/system_action_add_node_resource_usage_logs_response.json');
+				$systemActionProcessNodeResourceUsageLogResponse = json_decode($systemActionProcessNodeResourceUsageLogResponse, true);
+
+				if (empty($systemActionProcessNodeResourceUsageLogResponse) === false) {
+					$response = $systemActionProcessNodeResourceUsageLogResponse;
+				}
+			}
 		}
 
-		exec('sudo ' . $parameters['binary_files']['curl'] . ' -s --form "data=@/usr/local/ghostcompute/node_resource_usage_logs.json" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeResourceUsageLogsResponse);
-		$processNodeResourceUsageLogsResponse = current($processNodeResourceUsageLogsResponse);
-		$processNodeResourceUsageLogsResponse = json_decode($processNodeResourceUsageLogsResponse, true);
-		return $processNodeResourceUsageLogsResponse;
+		return $response;
 	}
 
 	if (($parameters['action'] === 'process_node_resource_usage_logs') === true) {
