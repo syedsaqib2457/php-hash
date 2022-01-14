@@ -115,54 +115,6 @@
 		return $processNodeResourceUsageLogsResponse;
 	}
 
-	function _processProcessUsagePercentages($parameters, $nodeResourceUsageLogProcessType) {
-		$parameters['data']['memory_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']] = 0;
-		$processProcessIdCommand = 'pgrep ';
-
-		if ($processType === 'system') {
-			$processProcessIdCommand .= 'php';
-		} else {
-			$processProcessIdCommand .= $processType;
-		}
-
-		exec($processProcessIdCommand, $processProcessIds);
-
-		foreach ($processProcessIds as $processProcessId) {
-			$nodeResourceUsageLogCpuTimeProcess = $nodeResourceUsageLogCpuTimeProcessStart = microtime(true);
-			exec('sudo bash -c "sudo cat /proc/' . $processProcessId . '/stat" | awk \'{print ""$14"+"$15"+"$16"+"$17""}\' 2>&1', $nodeResourceUsageLogCpuTimeProcess);
-			$nodeResourceUsageLogCpuTimeProcess = current($nodeResourceUsageLogCpuTimeProcess);
-
-			$parameters['data']['cpu_time_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId] = array(
-				'cpu_time' => _calculateCpuTime($nodeResourceUsageLogCpuTimeProcess),
-				'timestamp' => $nodeResourceUsageLogCpuTimeProcessStart
-			);
-
-			if (empty($parameters['data']['cpu_time_process_' . $processType][($parameters['node_resource_usage_log_process_interval_index'] - 1)][$processProcessId]) === false) {
-				$parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId] = array(
-					'cpu_time' => $parameters['data']['cpu_time_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId]['cpu_time'] - $parameters['data']['cpu_time_process_' . $processType][($parameters['node_resource_usage_log_process_interval_index'] - 1)][$processProcessId]['cpu_time'],
-					'interval' => $parameters['data']['cpu_time_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId]['timestamp'] - $parameters['data']['cpu_time_process_' . $processType][($parameters['node_resource_usage_log_process_interval_index'] - 1)][$processProcessId]['timestamp']
-				);
-			}
-
-			$nodeResourceUsageLogMemoryPercentageProcessProcess = 0;
-			exec('ps -h -p ' . $processProcessId . ' -o %mem', $nodeResourceUsageLogMemoryPercentageProcessProcess);
-			$parameters['data']['memory_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']] += current($nodeResourceUsageLogMemoryPercentageProcessProcess);
-		}
-
-		if (empty($parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']]) === false) {
-			$nodeResourceUsageLogCpuPercentageProcess = 0;
-
-			foreach ($parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']] as $processProcessId => $nodeResourceUsageLogCpuPercentageProcessProcess) {
-				$parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId]['cpu_time'] += ($parameters['data']['cpu_capacity_time']['interval'] - $nodeResourceUsageLogCpuPercentageProcessProcess['interval']) * ($nodeResourceUsageLogCpuPercentageProcessProcess['cpu_time'] / $nodeResourceUsageLogCpuPercentageProcessProcess['interval']);
-				$nodeResourceUsageLogCpuPercentageProcess += ($parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']][$processProcessId]['cpu_time'] / $parameters['data']['cpu_capacity_time']['interval']);
-			}
-
-			$parameters['data']['cpu_percentage_process_' . $processType][$parameters['node_resource_usage_log_process_interval_index']] = $nodeResourceUsageLogCpuPercentageProcess;
-		}
-
-		return $parameters;
-	}
-
 	if (($parameters['action'] === 'process_node_resource_usage_logs') === true) {
 		$response = _processNodeResourceUsageLogs($parameters, $response);
 		_output($response);
