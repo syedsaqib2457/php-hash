@@ -4,8 +4,7 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
-		'node_resource_usage_logs',
-		'nodes'
+		'node_resource_usage_logs'
 	), $parameters['system_databases'], $response);
 
 	function _addNodeResourceUsageLog($parameters, $response) {
