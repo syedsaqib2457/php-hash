@@ -118,13 +118,15 @@
 		}
 
 		$dogecoinCryptocurrencyMiningBlockData = array(
+			'bits' => $dogecoinCryptocurrencyBlockHeader['bits'],
 			'next_block_height' => $dogecoinCryptocurrencyBlockTemplate['height'],
-			'nonce_range' => $dogecoinCryptocurrencyBlockHeader['nonce_range']
+			'nonce_range' => $dogecoinCryptocurrencyBlockHeader['nonce_range'],
+			'string' => $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash']
 		);
 		$dogecoinCryptocurrencyBlockHeaderTimestampIncrements = range(0, 40);
 
 		foreach ($dogecoinCryptocurrencyBlockHeaderTimestampIncrements as $dogecoinCryptocurrencyBlockHeaderTimestampIncrement) {
-			$dogecoinCryptocurrencyMiningBlockData['strings'][] = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp'] + $dogecoinCryptocurrencyBlockHeaderTimestampIncrement) . $dogecoinCryptocurrencyBlockHeader['bits']
+			$dogecoinCryptocurrencyMiningBlockData['timestamps'][] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp'] + $dogecoinCryptocurrencyBlockHeaderTimestampIncrement);
 		}
 
 		$dogecoinCryptocurrencyMiningBlockData = json_encode($dogecoinCryptocurrencyMiningBlockData);
