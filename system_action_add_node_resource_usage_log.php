@@ -27,6 +27,8 @@
 
 		_save(array(
 			'data' => array_intersect_key($parameters['data'], array(
+				'bytes_received' => true,
+				'bytes_sent' => true,
 				'cpu_capacity_cores' => true,
 				'cpu_capacity_megahertz' => true,
 				'cpu_percentage' => true,
@@ -35,6 +37,7 @@
 				'memory_capacity_megabytes' => true,
 				'memory_percentage' => true,
 				'node_id' => true,
+				'request_count' => true,
 				'storage_capacity_megabytes' => true,
 				'storage_percentage' => true
 			)),
