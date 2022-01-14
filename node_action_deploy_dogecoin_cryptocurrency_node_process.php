@@ -2,7 +2,7 @@
 	// todo: pruned local installation to verify mining functionality
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3');
-	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libevent-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libevent-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libdb-dev libdb++-dev');
 	shell_exec('sudo rm -rf /usr/src/dogecoin/');
 	shell_exec('sudo mkdir -p /usr/src/dogecoin/');
 	shell_exec('cd /usr/src/dogecoin/ && sudo ' . $parameters['binary_files']['wget'] . ' -O dogecoin.tar.gz --no-dns-cache --timeout=60 https://github.com/dogecoin/dogecoin/archive/refs/tags/v1.14.5.tar.gz');
