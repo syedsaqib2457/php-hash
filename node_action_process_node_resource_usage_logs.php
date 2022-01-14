@@ -21,8 +21,6 @@
 			'memory_capacity_megabytes' => $nodeResourceUsageLogMemoryUsage[0],
 			'memory_percentage' => ceil($nodeResourceUsageLogMemoryUsage[1] / $nodeResourceUsageLogMemoryUsage[0])
 		);
-		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-		$parameters['kernel_page_size'] = current($kernelPageSize);
 		$nodeResourceUsageLogProcessStart = time();
 
 		while ((($nodeResourceUsageLogProcessStart + 540) > time()) === true) {
