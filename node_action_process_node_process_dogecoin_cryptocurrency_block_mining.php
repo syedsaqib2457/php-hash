@@ -45,7 +45,6 @@
 			'version' => str_pad($dogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
 		$dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string'] = hex2bin($dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string']);
-		$dogecoinCryptocurrencyBlockHeader['timestamp'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp']);
 		$dogecoinCryptocurrencyBlockHeader['version'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['version']);
 		$dogecoinCryptocurrencyTransactions = array(
 			$dogecoinCryptocurrencyBlockHeader['version'],
@@ -125,7 +124,7 @@
 		$dogecoinCryptocurrencyBlockHeaderTimestampIncrements = range(0, 40);
 
 		foreach ($dogecoinCryptocurrencyBlockHeaderTimestampIncrements as $dogecoinCryptocurrencyBlockHeaderTimestampIncrement) {
-			$dogecoinCryptocurrencyBlockMiningData['strings'][] = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . $dogecoinCryptocurrencyBlockHeader['timestamp'] . $dogecoinCryptocurrencyBlockHeader['bits']
+			$dogecoinCryptocurrencyBlockMiningData['strings'][] = $dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] . _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp'] + $dogecoinCryptocurrencyBlockHeaderTimestampIncrement) . $dogecoinCryptocurrencyBlockHeader['bits']
 		}
 
 		$dogecoinCryptocurrencyBlockMiningData = json_encode($dogecoinCryptocurrencyBlockMiningData);
