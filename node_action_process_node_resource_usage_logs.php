@@ -76,13 +76,10 @@
 			sleep(10);
 		}
 
-		/* $nodeResourceUsageLogTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogTimestamp);
-		$nodeResourceUsageLogCreated = substr($nodeResourceUsageLogTimestamp, 0, 15) . '0:00';
-		$parameters['data']['node_resource_usage_log'] += array(
-			'cpu_capacity_cores' => $parameters['data']['cpu_capacity_cores'],
-			'cpu_percentage' => max($parameters['data']['cpu_percentage']),
-			'created_timestamp' => strtotime($nodeResourceUsageLogCreated)
-		); */
+		$nodeResourceUsageLogTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogTimestamp);
+		$nodeResourceUsageLogTimestamp = substr($nodeResourceUsageLogTimestamp, 0, 15) . '0:00';
+		$parameters['data']['cpu_percentage'] = max($parameters['data']['cpu_percentage']);
+		$parameters['data']['created_timestamp'] = strtotime($nodeResourceUsageLogTimestamp);
 		$systemParameters = array(
 			'action' => 'add_node_resource_usage_logs',
 			'data' => $parameters['data'],
