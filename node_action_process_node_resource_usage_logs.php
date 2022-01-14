@@ -28,9 +28,10 @@
 				$parameters['node_resource_usage_log_process_interval_index'] = 0;
 			}
 
-			$nodeResourceUsageLogCpuTime = $nodeResourceUsageLogCpuTimeStart = microtime(true);
+			$nodeResourceUsageLogCpuTimeStart = microtime(true);
 
 			if (empty($parameters['data']['cpu_capacity_time']['interval']) === true) {
+				$nodeResourceUsageLogCpuTime = false;
 				exec('sudo bash -c "sudo cat /proc/stat" | grep "cpu" 2>&1', $nodeResourceUsageLogCpuTime);
 				end($nodeResourceUsageLogCpuTime);
 				$parameters['data']['cpu_capacity_cores'] = key($nodeResourceUsageLogCpuTime);
