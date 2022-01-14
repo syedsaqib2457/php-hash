@@ -21,9 +21,9 @@
 			'memory_capacity_megabytes' => $nodeResourceUsageLogMemoryUsage[0],
 			'memory_percentage' => ceil($nodeResourceUsageLogMemoryUsage[1] / $nodeResourceUsageLogMemoryUsage[0])
 		);
-		$nodeResourceUsageLogProcessStart = time();
+		$nodeResourceUsageLogTimestamp = time();
 
-		while ((($nodeResourceUsageLogProcessStart + 540) > time()) === true) {
+		while ((($nodeResourceUsageLogTimestamp + 540) > time()) === true) {
 			if (empty($parameters['node_resource_usage_log_process_interval_index']) === true) {
 				$parameters['node_resource_usage_log_process_interval_index'] = 0;
 			}
@@ -77,8 +77,8 @@
 			sleep(10);
 		}
 
-		$nodeResourceUsageLogProcessStart = date('Y-m-d H:i', $nodeResourceUsageLogProcessStart);
-		$nodeResourceUsageLogCreated = substr($nodeResourceUsageLogProcessStart, 0, 15) . '0:00';
+		$nodeResourceUsageLogTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogTimestamp);
+		$nodeResourceUsageLogCreated = substr($nodeResourceUsageLogTimestamp, 0, 15) . '0:00';
 		$parameters['data']['node_process_resource_usage_logs'] = array();
 		$parameters['data']['node_resource_usage_log'] += array(
 			'cpu_capacity_cores' => $parameters['data']['cpu_capacity_cores'],
