@@ -39,7 +39,7 @@
 			$nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds = false;
 			exec('ps -h -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php | grep -v grep | grep -v _' . $nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight . ' | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds);
 
-			if (empty($nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight . ' | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds) === false) {
+			if (empty($nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds) === false) {
 				_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds);
 			}
 
