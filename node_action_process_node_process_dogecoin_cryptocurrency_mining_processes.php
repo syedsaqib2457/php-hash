@@ -54,7 +54,10 @@
 				}
 			}
 
-			_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds);
+			if (empty($nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds) === false) {
+				_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds);
+			}
+
 			sleep(1);
 		}
 	}
