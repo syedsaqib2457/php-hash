@@ -1,17 +1,19 @@
 <?php
-	/* foreach ($_SERVER['argv'] as $key => $value) {
-		$variable = '_' . $key;
-		$$variable = $value;
-	} */
-
 	// todo: manage process execution by block height with another process to bypass PHP.ini restrictions (set_time_limit doesn't always work)
 	// php node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php [block_height] [arbitrary random string to allow duplicate processes]
 	// todo: list mining block data from file
 	// todo: random 4-byte nonce if nonce range is 00000000ffffffff
 	// todo: numeric indexes for mining block data to optimize duplicate processes
 
+	$_0 = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_data.json');
+	$_0 = json_decode($_0, true);
+
+	if ($_0 === false) {
+		exit;
+	}
+
 	while (true) {
-		$_0 = hash('sha256', hash('sha256', $_1 . $_2)); // concatenate timestamps
+		/* $_0 = hash('sha256', hash('sha256', $_1 . $_2)); // concatenate timestamps
 
 		if (
 			(($_0[16] === '0') === true) &&
@@ -23,6 +25,6 @@
 				// todo: save valid block header with concatenated nonce + bits to a file for submitblock
 				exit;
 			}
-		}
+		} */
 	}
 ?>
