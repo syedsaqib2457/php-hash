@@ -6,6 +6,9 @@
 	}
 
 	function _processNodeProcessDogecoinCryptocurrencyMiningBlockData($parameters, $response) {
+		$nodeProcessDogecoinCryptocurrencyProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
+		$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("/n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
+		$nodeProcessDogecoinCryptocurrencyProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyProcessParameters);
 		$dogecoinCryptocurrencyBlockTemplateParameters = array(
 			'capabilities' => array(
 				'coinbase/append',
@@ -26,7 +29,7 @@
 			return $response;
 		}
 
-		exec('sudo dogecoin-cli -rpcuser=ghostcompute -rpcpassword=ghostcompute getblocktemplate \'' . $dogecoinCryptocurrencyBlockTemplateParameters . '\' 2>&1', $dogecoinCryptocurrencyBlockTemplate);
+		exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyProcessParameters . ' getblocktemplate \'' . $dogecoinCryptocurrencyBlockTemplateParameters . '\' 2>&1', $dogecoinCryptocurrencyBlockTemplate);
 		$dogecoinCryptocurrencyBlockTemplate = json_decode($dogecoinCryptocurrencyBlockTemplate, true);
 
 		if (isset($dogecoinCryptocurrencyBlockTemplate['version']) === false) {
