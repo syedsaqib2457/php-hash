@@ -1,7 +1,8 @@
 <?php
-	exec('ps -h -o pid -o cmd $(pgrep php) | grep "process_node_process_dogecoin_cryptocurrency_mining_processes" | grep -v "grep" | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningProcessIds);
+	exec('ps -h -o pid -o cmd $(pgrep php) | grep "process_node_process_dogecoin_cryptocurrency_mining_processes" | grep -v "grep" | awk \'{print $1"_"$4}\'', $nodeProcessDogecoinCryptocurrencyMiningProcesses);
 
-	if (empty($nodeProcessDogecoinCryptocurrencyMiningProcessIds[1]) === false) {
+	if (empty($nodeProcessDogecoinCryptocurrencyMiningProcesses[1]) === false) {
+		// terminate current process if PoW interval changes
 		exit;
 	}
 
