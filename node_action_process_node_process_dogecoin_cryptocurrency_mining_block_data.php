@@ -34,10 +34,14 @@
 			return $response;
 		}
 
+		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_height.txt', $dogecoinCryptocurrencyBlockTemplate['height']) === false) {
+			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block height, please try again.';
+			return $response;
+		}
+
 		$dogecoinCryptocurrencyBlockHeader = array(
 			'coinbase_output_value' => dechex($dogecoinCryptocurrencyBlockTemplate['coinbasevalue']),
-			'next_block_height' => $dogecoinCryptocurrencyBlockTemplate['height'],
-			'next_block_height_binary_string' => dechex($dogecoinCryptocurrencyBlockTemplate['height']),
+			'next_block_height' => dechex($dogecoinCryptocurrencyBlockTemplate['height']),
 			'nonce_range' => str_split($dogecoinCryptocurrencyBlockTemplate['noncerange'], 8),
 			'previous_block_hash' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['previousblockhash']),
 			'target_hash' => $dogecoinCryptocurrencyBlockTemplate['target'],
@@ -45,7 +49,7 @@
 			'timestamp' => (dechex($dogecoinCryptocurrencyBlockTemplate['curtime']) - 19),
 			'version' => str_pad($dogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
-		$dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string'] = hex2bin($dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string']);
+		$dogecoinCryptocurrencyBlockHeader['next_block_height'] = hex2bin($dogecoinCryptocurrencyBlockHeader['next_block_height']);
 		$dogecoinCryptocurrencyBlockHeader['version'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['version']);
 		$dogecoinCryptocurrencyTransactions = array(
 			$dogecoinCryptocurrencyBlockHeader['version'],
@@ -53,7 +57,7 @@
 			'0000000000000000000000000000000000000000000000000000000000000000',
 			'ffffffff',
 			false,
-			'0' . strlen($dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string']) . _createLittleEndian($dogecoinCryptocurrencyBlockHeader['next_block_height']) . '67686f7374636f6d70757465', // todo: append extranonce based on user-input defined number of block headers to create
+			'0' . strlen($dogecoinCryptocurrencyBlockHeader['next_block_height']) . _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['height']) . '67686f7374636f6d70757465',
 			'ffffffff',
 			'01',
 			_createLittleEndian($dogecoinCryptocurrencyBlockHeader['coinbase_output_value']),
@@ -175,7 +179,7 @@
 
 		foreach ($crontabCommandIndexes as $crontabCommandIndex) {
 			foreach ($crontabCommandDelayIndexes as $crontabCommandDelayIndex) {
-				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php ' . $dogecoinCryptocurrencyBlockHeader['next_block_height'] . ' ' . $crontabCommandIndex . '_' . $crontabCommandDelayIndex . ' ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work';
+				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php ' . $dogecoinCryptocurrencyBlockTemplate . ' ' . $crontabCommandIndex . '_' . $crontabCommandDelayIndex . ' ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work';
 			}
 		}
 
