@@ -186,6 +186,7 @@
 			exit;
 		}
 
+		shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 		$response['message'] = 'Node process Dogecoin cryptocurrency mining block data processed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
