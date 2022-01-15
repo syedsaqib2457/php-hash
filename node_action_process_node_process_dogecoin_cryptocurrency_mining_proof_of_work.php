@@ -17,7 +17,8 @@
 
 	while (true) {
 		$_2 = mt_rand(0, $_1);
-		$_3 = hash('sha256', hash('sha256', $_0[3] . $_0[4][$_2] . $_0[2])); // add random bits nonce
+		$_3 = hash('sha256', $_0[3] . $_0[4][$_2] . $_0[2]);
+		$_3 = hash('sha256', $_3); // add random bytes nonce
 
 		if (
 			(($_3[16] === '0') === true) &&
