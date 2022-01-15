@@ -168,7 +168,7 @@
 
 		$crontabCommands += array(
 			'# ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work',
-			// '* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/.php ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work'
+			// '* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php [block_height] [random_string] ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work'
 			// todo: add persistent process execution process
 			// todo: add duplicate processes based on user input / system resource capacity
 		);
