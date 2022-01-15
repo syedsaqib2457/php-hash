@@ -25,7 +25,7 @@
 			(empty($_4[11] . $_4[12] . $_4[13] . $_4[14] . $_4[15]) === true)
 		) {
 			if (($_4 < $_0[1]) === true) {
-				// todo: save valid block header with concatenated nonce + bits to a file for submitblock
+				file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.txt', $_0[3] . $_0[4][$_2] . $_0[2] . $_3);
 				exit;
 			}
 		}
