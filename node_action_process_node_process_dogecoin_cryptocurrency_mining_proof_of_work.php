@@ -26,7 +26,17 @@
 				$_3 = hex2bin($_3);
 				$_3 = strrev($_3);
 				$_3 = bin2hex($_3);
-				file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.txt', $_0[3] . $_0[4][$_2] . $_0[2] . $_3);
+				$_5 = array(
+					'string' => $_0[3] . $_0[4][$_2] . $_0[2] . $_3,
+					'work_id' => false // todo: add work_id if not 0 from mining block data
+				);
+				$_5 = json_encode($_5);
+
+				if (empty($_5) === false) {
+					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.json', $_5);
+					// todo: terminate mining processes to allow resources for RPC
+				}
+
 				exit;
 			}
 		}
