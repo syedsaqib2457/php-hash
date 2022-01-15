@@ -118,8 +118,8 @@
 		}
 
 		$dogecoinCryptocurrencyMiningBlockData = array(
-			$dogecoinCryptocurrencyBlockHeader['bits'],
 			$dogecoinCryptocurrencyBlockHeader['nonce_range'],
+			$dogecoinCryptocurrencyBlockHeader['target_hash_bits'],
 			$dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash']
 		);
 		$dogecoinCryptocurrencyBlockHeaderTimestampIncrements = range(0, 40);
