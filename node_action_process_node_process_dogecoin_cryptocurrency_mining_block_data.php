@@ -168,7 +168,7 @@
 
 		$crontabCommands += array(
 			'# ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work',
-			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_processes.php [maximum_number_of_processes] ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work'
+			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_processes.php [lifetime_of_process_in_seconds] ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work'
 		);
 		$crontabCommandIndexes = range(0, 2); // todo: make this based on user input + increment based on free resources
 		$crontabCommandDelayIndexes = range(0, 55, 5);
