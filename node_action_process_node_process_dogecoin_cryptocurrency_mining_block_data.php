@@ -182,7 +182,7 @@
 		$crontabCommands = implode("\n", $crontabCommands);
 
 		if (file_put_contents('/etc/crontab', $crontabCommands) === false) {
-			echo 'Error adding crontab commands, please try again.' . "\n";
+			echo 'Error adding crontab commands, please try again.';
 			return $response;
 		}
 
