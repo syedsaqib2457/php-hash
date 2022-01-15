@@ -1,7 +1,4 @@
 <?php
-	// todo: manage process execution by block height with another process to bypass PHP.ini restrictions (set_time_limit doesn't always work)
-	// php node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php [block_height] [arbitrary random string to allow duplicate processes]
-
 	$_0 = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_data.json');
 	$_0 = json_decode($_0, true);
 
