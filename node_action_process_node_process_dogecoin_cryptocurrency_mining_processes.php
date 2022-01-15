@@ -6,7 +6,7 @@
 	}
 
 	while (true) {
-		exec('ps -h -o etime $(pgrep php) | grep "node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php" | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds);
+		exec('ps -h -o etime -o pid $(pgrep php) | grep "node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php" | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses);
 		// todo
 		sleep(1);
 	}
