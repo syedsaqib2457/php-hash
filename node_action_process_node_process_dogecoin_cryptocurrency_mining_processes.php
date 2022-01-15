@@ -27,8 +27,13 @@
 		}
 
 		while (true) {
-			exec('ps -h -o etime -o pid $(pgrep php) | grep node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php | grep -v grep | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses);
-			// todo
+			exec('ps -h -o etime -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php | grep -v grep | awk \'{print $1"_"$4"_"$6}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses);
+
+			foreach ($nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses as $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcess) {
+				$nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcess = explode('_', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcess);
+				// todo: terminate proof of work processes exceeding interval
+			}
+
 			sleep(1);
 		}
 	}
