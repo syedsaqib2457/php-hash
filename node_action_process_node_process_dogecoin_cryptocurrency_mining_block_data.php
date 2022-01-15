@@ -140,6 +140,45 @@
 			return $response;
 		}
 
+		if (file_exists('/etc/crontab') === false) {
+			$response['message'] = 'Error listing crontab commands, please try again.';
+			exit;
+		}
+
+		$crontabCommands = file_get_contents('/etc/crontab');
+
+		if (empty($crontabCommands) === true) {
+			$response['message'] = 'Error listing crontab commands, please try again.';
+			exit;
+		}
+
+		$crontabCommands = explode("\n", $crontabCommands);
+		$crontabCommandIndex = array_search('# ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work', $crontabCommands);
+
+		if (is_int($crontabCommandIndex) === true) {
+			while (is_int($crontabCommandIndex) === true) {
+				unset($crontabCommands[$crontabCommandIndex]);
+				$crontabCommandIndex++;
+
+				if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work') === false) {
+					$crontabCommandIndex = false;
+				}
+			}
+		}
+
+		$crontabCommands += array(
+			'# ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work',
+			// '* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/.php ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work'
+			// todo: add persistent process execution process
+			// todo: add duplicate processes based on user input / system resource capacity
+		);
+		$crontabCommands = implode("\n", $crontabCommands);
+
+		if (file_put_contents('/etc/crontab', $crontabCommands) === false) {
+			echo 'Error adding crontab commands, please try again.' . "\n";
+			exit;
+		}
+
 		$response['message'] = 'Node process Dogecoin cryptocurrency mining block data processed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
