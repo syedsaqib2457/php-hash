@@ -23,6 +23,9 @@
 			(empty($_4[11] . $_4[12] . $_4[13] . $_4[14] . $_4[15]) === true)
 		) {
 			if (($_4 < $_0[1]) === true) {
+				$_3 = hex2bin($_3);
+				$_3 = strrev($_3);
+				$_3 = bin2hex($_3);
 				file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.txt', $_0[3] . $_0[4][$_2] . $_0[2] . $_3);
 				exit;
 			}
