@@ -12,6 +12,9 @@
 		exit;
 	}
 
+	end($_0[4]);
+	$_1 = key($_0[4]);
+
 	while (true) {
 		/* $_0 = hash('sha256', hash('sha256', $_1 . $_2)); // concatenate timestamps
 
