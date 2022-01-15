@@ -34,8 +34,8 @@
 			return $response;
 		}
 
-		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_height.txt', $dogecoinCryptocurrencyBlockTemplate['height']) === false) {
-			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block height, please try again.';
+		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_next_block_height.txt', $dogecoinCryptocurrencyBlockTemplate['height']) === false) {
+			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining next block height, please try again.';
 			return $response;
 		}
 
