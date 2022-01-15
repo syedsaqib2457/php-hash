@@ -1,6 +1,10 @@
 <?php
 	function _processNodeProcessDogecoinCryptocurrencyMiningBlockSubmission($parameters, $response) {
-		// todo: manage duplicate processes
+		exec('ps -h -o pid -o cmd $(pgrep php) | grep process_node_process_dogecoin_cryptocurrency_mining_block_submission | grep -v grep | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionProcessIds);
+
+		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionProcessIds[1]) === false) {
+			return $response;
+		}
 
 		while (true) {
 			if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.json') === true) {
