@@ -6,6 +6,9 @@
 				$nodeProcessDogecoinCryptocurrencyMiningBlock = json_decode($nodeProcessDogecoinCryptocurrencyMiningBlock, true);
 
 				if (empty($nodeProcessDogecoinCryptocurrencyMiningBlock) === false) {
+					$nodeProcessDogecoinCryptocurrencyProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
+					$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("/n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
+					$nodeProcessDogecoinCryptocurrencyProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyProcessParameters);
 					// todo: submit block with RPC
 					unlink('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.json');
 				}
