@@ -27,10 +27,18 @@
 		}
 
 		while (true) {
+			$nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_next_block_height.txt');
+
+			if ($nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight === false) {
+				$response['message'] = 'Error listing node process Dogecoin cryptocurrency mining block height, please try again.';
+				return $response;
+			}
+
 			exec('ps -h -o etime -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php | grep -v grep | awk \'{print $1"_"$2"_"$5}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses);
 
 			foreach ($nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses as $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcess) {
 				$nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcess = explode('_', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcess);
+
 				// todo: terminate proof of work processes exceeding interval
 			}
 
