@@ -157,29 +157,29 @@
 		}
 
 		$crontabCommands = explode("\n", $crontabCommands);
-		$crontabCommandIndex = array_search('# ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work', $crontabCommands);
+		$crontabCommandIndex = array_search('# ghostcompute_dogecoin_cryptocurrency_mining', $crontabCommands);
 
 		if (is_int($crontabCommandIndex) === true) {
 			while (is_int($crontabCommandIndex) === true) {
 				unset($crontabCommands[$crontabCommandIndex]);
 				$crontabCommandIndex++;
 
-				if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work') === false) {
+				if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_dogecoin_cryptocurrency_mining') === false) {
 					$crontabCommandIndex = false;
 				}
 			}
 		}
 
 		$crontabCommands += array(
-			'# ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work',
-			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_processes.php 5 ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work'
+			'# ghostcompute_dogecoin_cryptocurrency_mining',
+			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_processes.php 5 ghostcompute_dogecoin_cryptocurrency_mining'
 		);
 		$crontabCommandIndexes = range(0, 2); // todo: make this based on user input + increment based on free resources
 		$crontabCommandDelayIndexes = range(0, 55, 5);
 
 		foreach ($crontabCommandIndexes as $crontabCommandIndex) {
 			foreach ($crontabCommandDelayIndexes as $crontabCommandDelayIndex) {
-				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php ' . $dogecoinCryptocurrencyBlockTemplate . ' ' . $crontabCommandIndex . '_' . $crontabCommandDelayIndex . ' ghostcompute_dogecoin_cryptocurrency_mining_proof_of_work';
+				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php ' . $dogecoinCryptocurrencyBlockTemplate . ' ' . $crontabCommandIndex . '_' . $crontabCommandDelayIndex . ' ghostcompute_dogecoin_cryptocurrency_mining';
 			}
 		}
 
