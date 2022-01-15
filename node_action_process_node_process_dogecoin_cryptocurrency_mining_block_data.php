@@ -198,6 +198,4 @@
 	}
 
 	// todo: save block template to system API for GhostCompute nodes without dogecoin-cli installed
-	// todo: add incremented nonce in mining process
-	// todo: add crontab commands with static parameters
 ?>
