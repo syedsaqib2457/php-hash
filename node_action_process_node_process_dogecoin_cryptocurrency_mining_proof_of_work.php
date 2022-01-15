@@ -17,18 +17,18 @@
 
 	while (true) {
 		$_2 = mt_rand(0, $_1);
-		$_3 = hash('sha256', hash('sha256', $_0[3] . $_0[4][$_2] . $_0[2]));
+		$_3 = hash('sha256', hash('sha256', $_0[3] . $_0[4][$_2] . $_0[2])); // add random bits nonce
 
 		if (
-			(($_0[16] === '0') === true) &&
-			(empty($_0[0] . $_0[1] . $_0[2] . $_0[3] . $_0[4] . $_0[5]) === true) &&
-			(empty($_0[6] . $_0[7] . $_0[8] . $_0[9] . $_0[10]) === true) &&
-			(empty($_0[11] . $_0[12] . $_0[13] . $_0[14] . $_0[15]) === true)
+			(($_3[16] === '0') === true) &&
+			(empty($_3[0] . $_3[1] . $_3[2] . $_3[3] . $_3[4] . $_3[5]) === true) &&
+			(empty($_3[6] . $_3[7] . $_3[8] . $_3[9] . $_3[10]) === true) &&
+			(empty($_3[11] . $_3[12] . $_3[13] . $_3[14] . $_3[15]) === true)
 		) {
-			if (($_0 < $_4) === true) { // $_4 is target hash
+			if (($_3 < $_0[1]) === true) {
 				// todo: save valid block header with concatenated nonce + bits to a file for submitblock
 				exit;
 			}
-		} */
+		}
 	}
 ?>
