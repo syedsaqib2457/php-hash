@@ -11,6 +11,13 @@
 				$nodeProcessDogecoinCryptocurrencyMiningProcessIds[] = $nodeProcessDogecoinCryptocurrencyMiningProcess[0];
 			}
 
+			if (
+				(empty($nodeProcessDogecoinCryptocurrencyMiningProcessInterval) === false) &&
+				(($nodeProcessDogecoinCryptocurrencyMiningProcessInterval === $nodeProcessDogecoinCryptocurrencyMiningProcess[1]) === false) {
+			) {
+				// terminate process IDs with old interval + exit
+			}
+
 			$nodeProcessDogecoinCryptocurrencyMiningProcessInterval = $nodeProcessDogecoinCryptocurrencyMiningProcess[1];
 		}
 
