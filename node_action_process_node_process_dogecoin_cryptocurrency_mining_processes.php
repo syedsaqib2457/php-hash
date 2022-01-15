@@ -17,12 +17,14 @@
 					(($nodeProcessDogecoinCryptocurrencyMiningProcessInterval === $nodeProcessDogecoinCryptocurrencyMiningProcess[1]) === false) {
 				) {
 					_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessDogecoinCryptocurrencyMiningProcessIds);
+					$response['message'] = 'Node process Dogecoin cryptocurrency mining processes processed successfully.';
 					return $response;
 				}
 
 				$nodeProcessDogecoinCryptocurrencyMiningProcessInterval = $nodeProcessDogecoinCryptocurrencyMiningProcess[1];
 			}
 
+			$response['message'] = 'Node process Dogecoin cryptocurrency mining processes processed successfully.';
 			return $response;
 		}
 
