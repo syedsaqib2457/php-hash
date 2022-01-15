@@ -40,6 +40,7 @@
 			'next_block_height_binary_string' => dechex($dogecoinCryptocurrencyBlockTemplate['height']),
 			'nonce_range' => str_split($dogecoinCryptocurrencyBlockTemplate['noncerange'], 8),
 			'previous_block_hash' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['previousblockhash']),
+			'target_hash' => $dogecoinCryptocurrencyBlockTemplate['target'],
 			'target_hash_bits' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['bits']),
 			'timestamp' => (dechex($dogecoinCryptocurrencyBlockTemplate['curtime']) - 19),
 			'version' => str_pad($dogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
@@ -119,6 +120,7 @@
 
 		$dogecoinCryptocurrencyMiningBlockData = array(
 			$dogecoinCryptocurrencyBlockHeader['nonce_range'],
+			$dogecoinCryptocurrencyBlockHeader['target_hash'],
 			$dogecoinCryptocurrencyBlockHeader['target_hash_bits'],
 			$dogecoinCryptocurrencyBlockHeader['version'] . $dogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $dogecoinCryptocurrencyBlockHeader['merkle_root_hash']
 		);
