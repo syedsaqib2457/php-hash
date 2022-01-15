@@ -142,14 +142,14 @@
 
 		if (file_exists('/etc/crontab') === false) {
 			$response['message'] = 'Error listing crontab commands, please try again.';
-			exit;
+			return $response;
 		}
 
 		$crontabCommands = file_get_contents('/etc/crontab');
 
 		if (empty($crontabCommands) === true) {
 			$response['message'] = 'Error listing crontab commands, please try again.';
-			exit;
+			return $response;
 		}
 
 		$crontabCommands = explode("\n", $crontabCommands);
@@ -183,7 +183,7 @@
 
 		if (file_put_contents('/etc/crontab', $crontabCommands) === false) {
 			echo 'Error adding crontab commands, please try again.' . "\n";
-			exit;
+			return $response;
 		}
 
 		shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
