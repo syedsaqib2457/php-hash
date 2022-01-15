@@ -13,7 +13,7 @@
 		$_2 = mt_rand(0, $_1);
 		$_3 = random_bytes(4);
 		$_3 = bin2hex($_3);
-		$_4 = hash('sha256', $_0[3] . $_0[4][$_2] . $_0[2] . $_3);
+		$_4 = hash('sha256', ($_0[3] . $_0[4][$_2] . $_0[2] . $_3));
 		$_4 = hash('sha256', $_4);
 
 		if (
@@ -27,7 +27,7 @@
 				$_3 = strrev($_3);
 				$_3 = bin2hex($_3);
 				$_5 = array(
-					'string' => $_0[3] . $_0[4][$_2] . $_0[2] . $_3,
+					'string' => ($_0[3] . $_0[4][$_2] . $_0[2] . $_3),
 					'work_id' => false // todo: add work_id if not 0 from mining block data
 				);
 				$_5 = json_encode($_5);
