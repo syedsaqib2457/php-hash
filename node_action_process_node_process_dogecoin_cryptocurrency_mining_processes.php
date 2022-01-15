@@ -15,13 +15,13 @@
 				(empty($nodeProcessDogecoinCryptocurrencyMiningProcessInterval) === false) &&
 				(($nodeProcessDogecoinCryptocurrencyMiningProcessInterval === $nodeProcessDogecoinCryptocurrencyMiningProcess[1]) === false) {
 			) {
-				// terminate process IDs with old interval + exit
+				_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessDogecoinCryptocurrencyMiningProcessIds);
+				return $response;
 			}
 
 			$nodeProcessDogecoinCryptocurrencyMiningProcessInterval = $nodeProcessDogecoinCryptocurrencyMiningProcess[1];
 		}
 
-		// terminate current process if PoW interval changes
 		return $response;
 	}
 
@@ -30,6 +30,4 @@
 		// todo
 		sleep(1);
 	}
-
-	// todo
 ?>
