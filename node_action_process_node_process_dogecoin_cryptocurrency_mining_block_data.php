@@ -2,7 +2,7 @@
 	function _createLittleEndian($hexidecimalString) {
 		$binaryString = hex2bin($hexidecimalString);
 		$binaryString = strrev($binaryString);
-		return bin2hex($binaryStringReversed);
+		return bin2hex($binaryString);
 	}
 
 	function _processNodeProcessDogecoinCryptocurrencyMiningBlockData($parameters, $response) {
