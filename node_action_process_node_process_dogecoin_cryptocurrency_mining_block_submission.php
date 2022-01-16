@@ -7,15 +7,15 @@
 		}
 
 		while (true) {
-			if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.json') === true) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlock = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.json');
-				$nodeProcessDogecoinCryptocurrencyMiningBlock = json_decode($nodeProcessDogecoinCryptocurrencyMiningBlock, true);
+			if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt') === true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlock = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt');
 
 				if (empty($nodeProcessDogecoinCryptocurrencyMiningBlock) === false) {
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyProcessParameters);
-					exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyProcessParameters . ' submitblock 2>&1', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse); // todo: add secondary parameters if required by block template 
+					// todo: append block header transaction count + raw transation data
+					exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyProcessParameters . ' submitblock 2>&1', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse); 
 					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse);
 					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = json_decode($nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse, true);
 
