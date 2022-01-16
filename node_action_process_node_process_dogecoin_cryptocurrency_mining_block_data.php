@@ -68,7 +68,7 @@
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
-			// todo: process transactions until 0.95mb is reached
+			// todo: process transactions until either 0.95mb is reached or 200 transactions
 
 			if (
 				(empty($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['hash']) === true) ||
