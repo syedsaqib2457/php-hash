@@ -7,7 +7,7 @@
 
 	function _processNodeProcessDogecoinCryptocurrencyMiningBlockData($parameters, $response) {
 		$nodeProcessDogecoinCryptocurrencyProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
-		$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("/n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
+		$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
 		$nodeProcessDogecoinCryptocurrencyProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyProcessParameters);
 		$dogecoinCryptocurrencyBlockTemplateParameters = array(
 			'capabilities' => array(
