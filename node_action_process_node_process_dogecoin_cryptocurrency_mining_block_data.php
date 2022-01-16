@@ -6,128 +6,139 @@
 	}
 
 	function _processNodeProcessDogecoinCryptocurrencyMiningBlockData($parameters, $response) {
-		$nodeProcessDogecoinCryptocurrencyProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
-		$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
-		$nodeProcessDogecoinCryptocurrencyProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyProcessParameters);
-		exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyProcessParameters . ' getblocktemplate 2>&1', $nodeProcessDogecoinCryptocurrencyBlockTemplate);
-		$nodeProcessDogecoinCryptocurrencyBlockTemplate = implode('', $nodeProcessDogecoinCryptocurrencyBlockTemplate);
-		$nodeProcessDogecoinCryptocurrencyBlockTemplate = json_decode($nodeProcessDogecoinCryptocurrencyBlockTemplate, true);
+		$nodeProcessDogecoinCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
+		$nodeProcessDogecoinCryptocurrencyMiningProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyMiningProcessParameters);
+		$nodeProcessDogecoinCryptocurrencyMiningProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyMiningProcessParameters);
+		exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyMiningProcessParameters . ' getblocktemplate 2>&1', $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTemplate = implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTemplate = json_decode($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate, true);
 
-		if (isset($nodeProcessDogecoinCryptocurrencyBlockTemplate['version']) === false) {
+		if (isset($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version']) === false) {
 			$response['message'] = 'Error processing node process Dogecoin cryptocurrency mining block template, please try again.';
 			return $response;
 		}
 
-		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_next_block_height.txt', $nodeProcessDogecoinCryptocurrencyBlockTemplate['height']) === false) {
+		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_next_block_height.txt', $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['height']) === false) {
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block template next block height, please try again.';
 			return $response;
 		}
 
-		$nodeProcessDogecoinCryptocurrencyBlockHeader = array(
-			'coinbase_output_value' => dechex($nodeProcessDogecoinCryptocurrencyBlockTemplate['coinbasevalue']),
-			'next_block_height' => dechex($nodeProcessDogecoinCryptocurrencyBlockTemplate['height']),
-			'nonce_range' => str_split($nodeProcessDogecoinCryptocurrencyBlockTemplate['noncerange'], 8),
-			'previous_block_hash' => _createLittleEndian($nodeProcessDogecoinCryptocurrencyBlockTemplate['previousblockhash']),
-			'target_hash' => $nodeProcessDogecoinCryptocurrencyBlockTemplate['target'],
-			'target_hash_bits' => _createLittleEndian($nodeProcessDogecoinCryptocurrencyBlockTemplate['bits']),
-			'timestamp' => ($nodeProcessDogecoinCryptocurrencyBlockTemplate['curtime'] - 19),
-			'version' => str_pad($nodeProcessDogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = array(
+			'coinbase_output_value' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['coinbasevalue']),
+			'next_block_height' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['height']),
+			'nonce_range' => str_split($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['noncerange'], 8),
+			'previous_block_hash' => _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['previousblockhash']),
+			'target_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['target'],
+			'target_hash_bits' => _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['bits']),
+			'timestamp' => ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['curtime'] - 19),
+			'version' => str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
-		$nodeProcessDogecoinCryptocurrencyBlockHeader['next_block_height_binary_string'] = hex2bin($nodeProcessDogecoinCryptocurrencyBlockHeader['next_block_height']);
-		$nodeProcessDogecoinCryptocurrencyBlockHeader['version'] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyBlockHeader['version']);
-		$nodeProcessDogecoinCryptocurrencyTransactions = array(
-			$nodeProcessDogecoinCryptocurrencyBlockHeader['version'],
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string'] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = array(
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'],
 			'01',
 			'0000000000000000000000000000000000000000000000000000000000000000',
 			'ffffffff',
 			false,
-			'0' . strlen($nodeProcessDogecoinCryptocurrencyBlockHeader['next_block_height_binary_string']) . _createLittleEndian($nodeProcessDogecoinCryptocurrencyBlockHeader['next_block_height']) . '67686f7374636f6d70757465',
+			'0' . strlen($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string']) . _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']) . '67686f7374636f6d70757465',
 			'ffffffff',
 			'01',
-			_createLittleEndian($nodeProcessDogecoinCryptocurrencyBlockHeader['coinbase_output_value']),
+			_createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['coinbase_output_value']),
 			false,
 			'mining_reward_public_key_goes_here', // todo: create pubKey script and verify string format as-is
 			'00000000'
 		);
 		// todo: create API functions for simplifying wallet pubKey creation
 
-		foreach (array(4, 9) as $nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey) {
-			$nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey] = decbin($nodeProcessDogecoinCryptocurrencyTransactions[($nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey + 1)]);
-			$nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey] = strlen($nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey]);
-			$nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey] = dechex($nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey]);
-			$nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey] = str_pad($nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
+		foreach (array(4, 9) as $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = decbin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey + 1)]);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey]);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey]);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
 		}
 
-		$nodeProcessDogecoinCryptocurrencyTransactionCoinbase = implode('', $nodeProcessDogecoinCryptocurrencyTransactions);
-		$nodeProcessDogecoinCryptocurrencyTransactionIds = array(
-			$nodeProcessDogecoinCryptocurrencyTransactionCoinbase
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds = array();
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = array(
+			implode('', $nodeProcessDogecoinCryptocurrencyTransactions)
 		);
-		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyTransactionIds[0], true);
-		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyTransactionIds[0]);
-		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyTransactionIds[0]);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[0]);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0], true);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
 
-		foreach ($nodeProcessDogecoinCryptocurrencyBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyBlockTemplateTransaction) {
-			$nodeProcessDogecoinCryptocurrencyTransactionId = hex2bin($nodeProcessDogecoinCryptocurrencyBlockTemplateTransaction['txid']);
+		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
+			// todo: process transactions until 0.95mb is reached
 
-			if ($nodeProcessDogecoinCryptocurrencyTransactionId === false) {
+			if (
+				(empty($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['hash']) === true) ||
+				(($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['hash'] === $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['txid']) === false)
+			) {
+				continue;
+			}
+			
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['txid']);
+
+			if ($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId === false) {
 				$response['message'] = 'Error listing node process Dogecoin cryptocurrency mining block template transactions, please try again.';
 				return $response;
 			}
 
-			$nodeProcessDogecoinCryptocurrencyTransactionIds[] = $nodeProcessDogecoinCryptocurrencyTransactionId;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
 		}
 
-		if (empty($nodeProcessDogecoinCryptocurrencyTransactionIds[1]) === true) {
-			$nodeProcessDogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = $nodeProcessDogecoinCryptocurrencyTransactionIds[0];
-		} elseif (((($nodeProcessDogecoinCryptocurrencyBlockTemplateTransactionIndex + 1) % 2) === 0) === true) {
-			$nodeProcessDogecoinCryptocurrencyTransactionIds[($nodeProcessDogecoinCryptocurrencyBlockTemplateTransactionIndex + 1)] = $nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyBlockTemplateTransactionIndex];
+		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[1]) === true) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0];
+		} elseif (((($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex + 1) % 2) === 0) === true) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex + 1)] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex];
 		}
 
-		while (empty($nodeProcessDogecoinCryptocurrencyBlockHeader['merkle_root_hash']) === true) {
-			end($nodeProcessDogecoinCryptocurrencyTransactionIds);
-			$nodeProcessDogecoinCryptocurrencyTransactionIndex = (key($nodeProcessDogecoinCryptocurrencyTransactionIds) - 1);
-			$nodeProcessDogecoinCryptocurrencyTransactionIndexes = range(0, $nodeProcessDogecoinCryptocurrencyTransactionIndex, 2);
-			$nodeProcessDogecoinCryptocurrencyTransactionMerkleRootHashIndex = 0;
+		while (empty($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']) === true) {
+			end($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex = (key($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds) - 1);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes = range(0, $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex, 2);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex = 0;
 
-			foreach ($nodeProcessDogecoinCryptocurrencyTransactionIndexes as $nodeProcessDogecoinCryptocurrencyTransactionIndex) {
-				$nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex] .= $nodeProcessDogecoinCryptocurrencyTransactionIds[($nodeProcessDogecoinCryptocurrencyTransactionIndex + 1)];
-				$nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex] = hash('sha256', $nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex], true);
-				$nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionMerkleRootHashIndex] = hash('sha256', $nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex], true);
+			foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes as $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex] .= $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex + 1)];
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex], true);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex], true);
 
-				if (($nodeProcessDogecoinCryptocurrencyTransactionMerkleRootHashIndex === 0) === false) {
-					unset($nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex]);
+				if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex === 0) === false) {
+					unset($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex]);
 				}
 
-				unset($nodeProcessDogecoinCryptocurrencyTransactionIds[($nodeProcessDogecoinCryptocurrencyTransactionIndex + 1)]);
-				$nodeProcessDogecoinCryptocurrencyTransactionMerkleRootHashIndex++;
+				unset($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex + 1)]);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex++;
 			}
 
-			if (($nodeProcessDogecoinCryptocurrencyTransactionIndex === 0) === true) {
-				$nodeProcessDogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = strrev($nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex]);
-				$nodeProcessDogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessDogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
+			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex === 0) === true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = strrev($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex]);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']);
 			}
 		}
 
-		$nodeProcessDogecoinCryptocurrencyBlockHeaderTimestamp = time();
-		$nodeProcessDogecoinCryptocurrencyBlockHeaderTimestampIncrements = range(0, 40);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestamp = $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['timestamp'];
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrements = range(0, 40);
 
-		$nodeProcessDogecoinCryptocurrencyMiningBlockData = array(
-			$nodeProcessDogecoinCryptocurrencyBlockHeader['nonce_range'],
-			$nodeProcessDogecoinCryptocurrencyBlockHeader['target_hash'],
-			$nodeProcessDogecoinCryptocurrencyBlockHeader['target_hash_bits'],
-			$nodeProcessDogecoinCryptocurrencyBlockHeader['version'] . $nodeProcessDogecoinCryptocurrencyBlockHeader['previous_block_hash'] . $nodeProcessDogecoinCryptocurrencyBlockHeader['merkle_root_hash']
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = array(
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['nonce_range'],
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['target_hash'],
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['target_hash_bits'],
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['previous_block_hash'] . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']
 		);
 
-		foreach ($nodeProcessDogecoinCryptocurrencyBlockHeaderTimestampIncrements as $nodeProcessDogecoinCryptocurrencyBlockHeaderTimestampIncrement) {
-			$nodeProcessDogecoinCryptocurrencyBlockHeaderTimestamp = dechex($nodeProcessDogecoinCryptocurrencyBlockHeader['timestamp'] + $nodeProcessDogecoinCryptocurrencyBlockHeaderTimestampIncrement);
-			$nodeProcessDogecoinCryptocurrencyMiningBlockData[4][] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyBlockHeaderTimestamp);
+		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrements as $nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader[4][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement] = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestamp + $nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader[4][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockHeader[4][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement]);
 		}
 
-		$nodeProcessDogecoinCryptocurrencyMiningBlockData = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockData);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader);
 
 		if (
-			($nodeProcessDogecoinCryptocurrencyMiningBlockData === false) ||
-			(file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.json', $nodeProcessDogecoinCryptocurrencyMiningBlockData) === false)
+			($nodeProcessDogecoinCryptocurrencyMiningBlockHeader === false) ||
+			(file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.json', $nodeProcessDogecoinCryptocurrencyMiningBlockHeader) === false)
 		) {
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block header, please try again.';
 			return $response;
@@ -146,14 +157,14 @@
 		}
 
 		$crontabCommands = explode("\n", $crontabCommands);
-		$crontabCommandIndex = array_search('# ghostcompute_dogecoin_cryptocurrency_mining', $crontabCommands);
+		$crontabCommandIndex = array_search('# ghostcompute_node_process_dogecoin_cryptocurrency_mining', $crontabCommands);
 
 		if (is_int($crontabCommandIndex) === true) {
 			while (is_int($crontabCommandIndex) === true) {
 				unset($crontabCommands[$crontabCommandIndex]);
 				$crontabCommandIndex++;
 
-				if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_dogecoin_cryptocurrency_mining') === false) {
+				if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_node_process_dogecoin_cryptocurrency_mining') === false) {
 					$crontabCommandIndex = false;
 				}
 			}
@@ -168,7 +179,7 @@
 
 		foreach ($crontabCommandIndexes as $crontabCommandIndex) {
 			foreach ($crontabCommandDelayIndexes as $crontabCommandDelayIndex) {
-				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php _' . $nodeProcessDogecoinCryptocurrencyBlockTemplate['height'] . ' ' . $crontabCommandIndex . '_' . $crontabCommandDelayIndex . ' ghostcompute_node_process_dogecoin_cryptocurrency_mining';
+				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php _' . $nodeProcessDogecoinCryptocurrencyBlockTemplate['height'] . ' ghostcompute_node_process_dogecoin_cryptocurrency_mining';
 			}
 		}
 
