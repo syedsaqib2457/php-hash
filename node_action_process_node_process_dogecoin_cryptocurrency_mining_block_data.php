@@ -135,6 +135,10 @@
 		}
 
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader);
+		end($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = (key($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) + 1);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount . implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
 
 		if (
 			($nodeProcessDogecoinCryptocurrencyMiningBlockHeader === false) ||
@@ -143,11 +147,6 @@
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block header, please try again.';
 			return $response;
 		}
-
-		end($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = (key($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) + 1);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount . implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
 
 		if (
 			($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions === false) ||
