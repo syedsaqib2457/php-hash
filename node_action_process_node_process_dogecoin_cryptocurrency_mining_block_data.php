@@ -97,7 +97,13 @@
 		while (empty($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']) === true) {
 			end($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex = (key($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds) - 1);
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes = range(0, $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex, 2);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexIncrement = 2;
+
+			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex === 0) === true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexIncrement = 1;
+			}
+
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes = range(0, $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex, $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexIncrement);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex = 0;
 
 			foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes as $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex) {
