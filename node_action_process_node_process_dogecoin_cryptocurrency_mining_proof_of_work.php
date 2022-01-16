@@ -1,4 +1,8 @@
 <?php
+	if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.json') === true) {
+		exit;
+	}
+
 	$_0 = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_data.json');
 	$_0 = json_decode($_0, true);
 
