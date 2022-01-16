@@ -78,9 +78,13 @@
 			$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = str_pad($dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
 		}
 
+		$dogecoinCryptocurrencyTransactionCoinbase = implode('', $dogecoinCryptocurrencyTransactions);
 		$dogecoinCryptocurrencyTransactionIds = array(
-			implode('', $dogecoinCryptocurrencyTransactions)
+			$dogecoinCryptocurrencyTransactionCoinbase
 		);
+		$dogecoinCryptocurrencyTransactionIds[0] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0], true);
+		$dogecoinCryptocurrencyTransactionIds[0] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0]);
+		$dogecoinCryptocurrencyTransactionIds[0] = _createLittleEndian($dogecoinCryptocurrencyTransactionIds[0]);
 
 		foreach ($dogecoinCryptocurrencyBlockTemplate['transactions'] as $dogecoinCryptocurrencyBlockTemplateTransactionIndex => $dogecoinCryptocurrencyBlockTemplateTransaction) {
 			$dogecoinCryptocurrencyTransactionId = hex2bin($dogecoinCryptocurrencyBlockTemplateTransaction['txid']);
@@ -94,9 +98,7 @@
 		}
 
 		if (empty($dogecoinCryptocurrencyTransactionIds[1]) === true) {
-			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0], true);
-			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
-			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['merkle_root_hash']);
+			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0];
 		} elseif (((($dogecoinCryptocurrencyBlockTemplateTransactionIndex + 1) % 2) === 0) === true) {
 			$dogecoinCryptocurrencyTransactionIds[($dogecoinCryptocurrencyBlockTemplateTransactionIndex + 1)] = $dogecoinCryptocurrencyTransactionIds[$dogecoinCryptocurrencyBlockTemplateTransactionIndex];
 		}
