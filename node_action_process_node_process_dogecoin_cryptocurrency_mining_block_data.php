@@ -148,10 +148,7 @@
 			return $response;
 		}
 
-		if (
-			($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions === false) ||
-			(file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.txt', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) === false)
-		) {
+		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.txt', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) === false) {
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block transactions, please try again.';
 			return $response;
 		}
