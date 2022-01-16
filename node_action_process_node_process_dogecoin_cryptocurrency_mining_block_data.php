@@ -144,7 +144,7 @@
 		end($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = (key($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) + 1);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount . implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount, 2, '0', STR_PAD_LEFT) . implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
 
 		if (
 			($nodeProcessDogecoinCryptocurrencyMiningBlockHeader === false) ||
