@@ -9,8 +9,12 @@
 		while (true) {
 			if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt') === true) {
 				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt');
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.txt');
 
-				if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockHeader) === false) {
+				if (
+					(empty($nodeProcessDogecoinCryptocurrencyMiningBlockHeader) === false) &&
+					(empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) === false)
+				) {
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyProcessParameters);
