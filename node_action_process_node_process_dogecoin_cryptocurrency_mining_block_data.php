@@ -72,7 +72,7 @@
 		// todo: create API functions for simplifying wallet pubKey creation
 
 		foreach (array(4, 9) as $dogecoinCryptocurrencyTransactionParameterLengthKey) {
-			$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = hex2bin($dogecoinCryptocurrencyTransactions[($dogecoinCryptocurrencyTransactionParameterLengthKey + 1)]);
+			$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = decbin($dogecoinCryptocurrencyTransactions[($dogecoinCryptocurrencyTransactionParameterLengthKey + 1)]);
 			$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = strlen($dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey]);
 			$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = dechex($dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey]);
 			$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = str_pad($dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
