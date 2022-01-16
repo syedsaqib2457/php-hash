@@ -58,13 +58,13 @@
 			$nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey] = str_pad($nodeProcessDogecoinCryptocurrencyTransactions[$nodeProcessDogecoinCryptocurrencyTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
 		}
 
-		$nodeProcessDogecoinCryptocurrencyTransactionCoinbase = implode('', $dogecoinCryptocurrencyTransactions);
+		$nodeProcessDogecoinCryptocurrencyTransactionCoinbase = implode('', $nodeProcessDogecoinCryptocurrencyTransactions);
 		$nodeProcessDogecoinCryptocurrencyTransactionIds = array(
 			$nodeProcessDogecoinCryptocurrencyTransactionCoinbase
 		);
-		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0], true);
-		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0]);
-		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = _createLittleEndian($dogecoinCryptocurrencyTransactionIds[0]);
+		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyTransactionIds[0], true);
+		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyTransactionIds[0]);
+		$nodeProcessDogecoinCryptocurrencyTransactionIds[0] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyTransactionIds[0]);
 
 		foreach ($nodeProcessDogecoinCryptocurrencyBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyBlockTemplateTransaction) {
 			$nodeProcessDogecoinCryptocurrencyTransactionId = hex2bin($nodeProcessDogecoinCryptocurrencyBlockTemplateTransaction['txid']);
@@ -89,7 +89,7 @@
 			$nodeProcessDogecoinCryptocurrencyTransactionIndexes = range(0, $nodeProcessDogecoinCryptocurrencyTransactionIndex, 2);
 			$nodeProcessDogecoinCryptocurrencyTransactionMerkleRootHashIndex = 0;
 
-			foreach ($nodeProcessDogecoinCryptocurrencyTransactionIndexes as $dogecoinCryptocurrencyTransactionIndex) {
+			foreach ($nodeProcessDogecoinCryptocurrencyTransactionIndexes as $nodeProcessDogecoinCryptocurrencyTransactionIndex) {
 				$nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex] .= $nodeProcessDogecoinCryptocurrencyTransactionIds[($nodeProcessDogecoinCryptocurrencyTransactionIndex + 1)];
 				$nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex] = hash('sha256', $nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex], true);
 				$nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionMerkleRootHashIndex] = hash('sha256', $nodeProcessDogecoinCryptocurrencyTransactionIds[$nodeProcessDogecoinCryptocurrencyTransactionIndex], true);
@@ -123,7 +123,7 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockData[4][] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyBlockHeaderTimestamp);
 		}
 
-		$nodeProcessDogecoinCryptocurrencyMiningBlockData = json_encode($dogecoinCryptocurrencyMiningBlockData);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockData = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockData);
 
 		if (
 			($nodeProcessDogecoinCryptocurrencyMiningBlockData === false) ||
@@ -168,7 +168,7 @@
 
 		foreach ($crontabCommandIndexes as $crontabCommandIndex) {
 			foreach ($crontabCommandDelayIndexes as $crontabCommandDelayIndex) {
-				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php _' . $dogecoinCryptocurrencyBlockTemplate['height'] . ' ' . $crontabCommandIndex . '_' . $crontabCommandDelayIndex . ' ghostcompute_node_process_dogecoin_cryptocurrency_mining';
+				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php _' . $nodeProcessDogecoinCryptocurrencyBlockTemplate['height'] . ' ' . $crontabCommandIndex . '_' . $crontabCommandDelayIndex . ' ghostcompute_node_process_dogecoin_cryptocurrency_mining';
 			}
 		}
 
