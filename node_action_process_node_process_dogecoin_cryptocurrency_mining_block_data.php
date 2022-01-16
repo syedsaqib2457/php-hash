@@ -49,6 +49,7 @@
 			'mining_reward_public_key_goes_here', // todo: create pubKey script and verify string format as-is
 			'00000000'
 		);
+		// todo: make sure block passes "Block encoding failed" error for submitblock RPC + test internal byte order for block header values
 		// todo: create API functions for simplifying wallet pubKey creation
 
 		foreach (array(4, 9) as $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey) {
