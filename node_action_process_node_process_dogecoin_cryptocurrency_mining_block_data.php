@@ -135,7 +135,8 @@
 		$dogecoinCryptocurrencyBlockHeaderTimestampIncrements = range(0, 40);
 
 		foreach ($dogecoinCryptocurrencyBlockHeaderTimestampIncrements as $dogecoinCryptocurrencyBlockHeaderTimestampIncrement) {
-			$dogecoinCryptocurrencyMiningBlockData[4][] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['timestamp'] + $dogecoinCryptocurrencyBlockHeaderTimestampIncrement);
+			$dogecoinCryptocurrencyBlockHeaderTimestamp = dechex($dogecoinCryptocurrencyBlockHeader['timestamp'] + $dogecoinCryptocurrencyBlockHeaderTimestampIncrement);
+			$dogecoinCryptocurrencyMiningBlockData[4][] = _createLittleEndian($dogecoinCryptocurrencyBlockHeaderTimestamp);
 		}
 
 		$dogecoinCryptocurrencyMiningBlockData = json_encode($dogecoinCryptocurrencyMiningBlockData);
