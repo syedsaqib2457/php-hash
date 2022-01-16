@@ -16,6 +16,7 @@
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyProcessParameters);
 					exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyProcessParameters . ' submitblock \'' . $dogecoinCryptocurrencyBlockTemplateParameters . '\' 2>&1', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse); // todo: add secondary parameters if required by block template 
+					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse);
 					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = json_decode($dogecoinCryptocurrencyBlockTemplate, true);
 
 					if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse) === true) {
