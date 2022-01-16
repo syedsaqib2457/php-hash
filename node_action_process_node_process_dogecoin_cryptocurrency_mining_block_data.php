@@ -53,7 +53,7 @@
 			'timestamp' => (dechex($dogecoinCryptocurrencyBlockTemplate['curtime']) - 19),
 			'version' => str_pad($dogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
-		$dogecoinCryptocurrencyBlockHeader['next_block_height'] = hex2bin($dogecoinCryptocurrencyBlockHeader['next_block_height']);
+		$dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string'] = hex2bin($dogecoinCryptocurrencyBlockHeader['next_block_height']);
 		$dogecoinCryptocurrencyBlockHeader['version'] = _createLittleEndian($dogecoinCryptocurrencyBlockHeader['version']);
 		$dogecoinCryptocurrencyTransactions = array(
 			$dogecoinCryptocurrencyBlockHeader['version'],
@@ -61,7 +61,7 @@
 			'0000000000000000000000000000000000000000000000000000000000000000',
 			'ffffffff',
 			false,
-			'0' . strlen($dogecoinCryptocurrencyBlockHeader['next_block_height']) . _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['height']) . '67686f7374636f6d70757465',
+			'0' . strlen($dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string']) . _createLittleEndian($dogecoinCryptocurrencyBlockHeader['next_block_height']) . '67686f7374636f6d70757465',
 			'ffffffff',
 			'01',
 			_createLittleEndian($dogecoinCryptocurrencyBlockHeader['coinbase_output_value']),
