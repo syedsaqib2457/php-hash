@@ -144,6 +144,19 @@
 			return $response;
 		}
 
+		end($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = (key($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) + 1);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount . implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
+
+		if (
+			($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions === false) ||
+			(file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.txt', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) === false)
+		) {
+			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block transactions, please try again.';
+			return $response;
+		}
+
 		if (file_exists('/etc/crontab') === false) {
 			$response['message'] = 'Error listing crontab commands, please try again.';
 			return $response;
