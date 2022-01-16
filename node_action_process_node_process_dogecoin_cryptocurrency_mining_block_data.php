@@ -99,7 +99,7 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex = (key($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds) - 1);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexIncrement = 2;
 
-			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex === 0) === true) {
+			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex === 1) === true) {
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexIncrement = 1;
 			}
 
