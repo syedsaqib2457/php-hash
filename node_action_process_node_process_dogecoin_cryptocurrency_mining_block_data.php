@@ -30,6 +30,7 @@
 		}
 
 		exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyProcessParameters . ' getblocktemplate \'' . $dogecoinCryptocurrencyBlockTemplateParameters . '\' 2>&1', $dogecoinCryptocurrencyBlockTemplate);
+		$dogecoinCryptocurrencyBlockTemplate = implode('', $dogecoinCryptocurrencyBlockTemplate);
 		$dogecoinCryptocurrencyBlockTemplate = json_decode($dogecoinCryptocurrencyBlockTemplate, true);
 
 		if (isset($dogecoinCryptocurrencyBlockTemplate['version']) === false) {
