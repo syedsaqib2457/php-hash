@@ -34,7 +34,6 @@
 
 				if (empty($_5) === false) {
 					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block.json', $_5);
-					// todo: terminate mining processes to allow resources for RPC
 				}
 
 				exit;
