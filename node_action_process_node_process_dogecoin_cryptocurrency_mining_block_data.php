@@ -49,6 +49,7 @@
 			'mining_reward_public_key_goes_here', // todo: create pubKey script and verify string format as-is
 			'00000000'
 		);
+		// todo: validate block from blk.dat file to verify whether magic bytes are prepended automatically by RPC submitblock
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC + test internal byte order for block header values
 		// todo: create API functions for simplifying wallet pubKey creation
 
