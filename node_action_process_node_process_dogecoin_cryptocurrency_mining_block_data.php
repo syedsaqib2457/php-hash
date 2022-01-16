@@ -50,7 +50,7 @@
 			'previous_block_hash' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['previousblockhash']),
 			'target_hash' => $dogecoinCryptocurrencyBlockTemplate['target'],
 			'target_hash_bits' => _createLittleEndian($dogecoinCryptocurrencyBlockTemplate['bits']),
-			'timestamp' => (dechex($dogecoinCryptocurrencyBlockTemplate['curtime']) - 19),
+			'timestamp' => ($dogecoinCryptocurrencyBlockTemplate['curtime'] - 19),
 			'version' => str_pad($dogecoinCryptocurrencyBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
 		$dogecoinCryptocurrencyBlockHeader['next_block_height_binary_string'] = hex2bin($dogecoinCryptocurrencyBlockHeader['next_block_height']);
