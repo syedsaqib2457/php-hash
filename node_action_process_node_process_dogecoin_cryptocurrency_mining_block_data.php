@@ -213,6 +213,5 @@
 		_output($response);
 	}
 
-	// todo: save transaction data for block serialization
 	// todo: save block template to system API for GhostCompute nodes without dogecoin-cli installed
 ?>
