@@ -15,9 +15,9 @@
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyProcessParameters);
 					$nodeProcessDogecoinCryptocurrencyProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyProcessParameters);
-					exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyProcessParameters . ' submitblock \'' . $dogecoinCryptocurrencyBlockTemplateParameters . '\' 2>&1', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse); // todo: add secondary parameters if required by block template 
+					exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyProcessParameters . ' submitblock 2>&1', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse); // todo: add secondary parameters if required by block template 
 					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse);
-					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = json_decode($dogecoinCryptocurrencyBlockTemplate, true);
+					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = json_decode($nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse, true);
 
 					if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse) === true) {
 						$response['message'] = 'Node process Dogecoin cryptocurrency mining block submission processed successfully.';
