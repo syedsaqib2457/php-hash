@@ -98,7 +98,7 @@
 		}
 
 		if (empty($dogecoinCryptocurrencyTransactionIds[1]) === true) {
-			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = hash('sha256', $dogecoinCryptocurrencyTransactionIds[0];
+			$dogecoinCryptocurrencyBlockHeader['merkle_root_hash'] = $dogecoinCryptocurrencyTransactionIds[0];
 		} elseif (((($dogecoinCryptocurrencyBlockTemplateTransactionIndex + 1) % 2) === 0) === true) {
 			$dogecoinCryptocurrencyTransactionIds[($dogecoinCryptocurrencyBlockTemplateTransactionIndex + 1)] = $dogecoinCryptocurrencyTransactionIds[$dogecoinCryptocurrencyBlockTemplateTransactionIndex];
 		}
