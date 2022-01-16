@@ -78,7 +78,7 @@
 			$dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey] = str_pad($dogecoinCryptocurrencyTransactions[$dogecoinCryptocurrencyTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
 		}
 
-		$dogecoinCryptocurrencyTransactions = array(
+		$dogecoinCryptocurrencyTransactionIds = array(
 			implode('', $dogecoinCryptocurrencyTransactions)
 		);
 
