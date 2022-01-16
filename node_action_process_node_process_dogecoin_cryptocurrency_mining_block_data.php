@@ -76,7 +76,7 @@
 			) {
 				continue;
 			}
-			
+
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['txid']);
 
 			if ($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId === false) {
