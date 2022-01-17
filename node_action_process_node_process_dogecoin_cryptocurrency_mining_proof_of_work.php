@@ -17,7 +17,8 @@
 		$_2 = mt_rand(0, $_1);
 		$_3 = random_bytes(4);
 		$_3 = bin2hex($_3);
-		$_4 = hash('sha256', ($_0[3] . $_0[4][$_2] . $_0[2] . $_3), true);
+		$_5 = hex2bin($_0[3] . $_0[4][$_2] . $_0[2] . $_3);
+		$_4 = hash('sha256', $5, true);
 		$_4 = hash('sha256', $_4);
 		// todo: create function to increment timestamp + nonce hex strings instead of using random bytes or converting to decimal
 		// todo: recreate block header more frequently for extranonce
