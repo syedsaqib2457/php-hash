@@ -78,7 +78,7 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
 		}
 		
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthPrefixes = array(
+		$compactSizeUnsignedIntegerHexidecimalPrefixes = array(
 			4 => 'fd',
 			6 => 'fe',
 			8 => 'fe',
@@ -120,7 +120,7 @@
 
 			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength < 253) === false) {
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength);
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthLength] . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength;
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthLength] . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength;
 			}
 
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength . $nodeProcessDogecoinCryptocurrencyMiningBlockTransaction;
@@ -185,7 +185,17 @@
 		end($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = (key($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) + 1);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount, 2, '0', STR_PAD_LEFT) . implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
+
+		if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount % 2) === 1) === true) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount;
+		}
+
+		if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount < 253) === false) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCountLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCountLength] . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount;
+		}
+
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount . implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
 
 		if (
 			($nodeProcessDogecoinCryptocurrencyMiningBlockHeader === false) ||
