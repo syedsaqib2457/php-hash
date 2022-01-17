@@ -1,10 +1,4 @@
 <?php
-	function _reverseByteOrder($hexidecimalString) {
-		$binaryString = hex2bin($hexidecimalString);
-		$binaryString = strrev($binaryString);
-		return bin2hex($binaryString);
-	}
-
 	function _processNodeProcessDogecoinCryptocurrencyMiningBlockData($parameters, $response) {
 		$nodeProcessDogecoinCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
 		$nodeProcessDogecoinCryptocurrencyMiningProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyMiningProcessParameters);
@@ -212,6 +206,12 @@
 		$response['message'] = 'Node process Dogecoin cryptocurrency mining block data processed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
+	}
+
+	function _reverseByteOrder($hexidecimalString) {
+		$binaryString = hex2bin($hexidecimalString);
+		$binaryString = strrev($binaryString);
+		return bin2hex($binaryString);
 	}
 
 	if (($parameters['action'] === 'process_node_process_dogecoin_cryptocurrency_mining_block_data') === true) {
