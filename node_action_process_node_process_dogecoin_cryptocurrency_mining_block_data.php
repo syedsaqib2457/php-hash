@@ -1,9 +1,4 @@
 <?php
-	function _createCompactSizeUnsignedIntegerHexidecimalString($decimalString) {
-		// todo
-		return $decimalString;
-	}
-
 	function _createReverseByteOrderHexidecimalString($hexidecimalString) {
 		$binaryString = hex2bin($hexidecimalString);
 		$binaryString = strrev($binaryString);
@@ -105,8 +100,21 @@
 			}
 
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransaction = $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransaction);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength);
+
+			if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength % 2) === 1) === true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength;
+			}
+
 			// todo: concatenate raw transactions with compactSize integer https://btcinformation.org/en/developer-reference#raw-transaction-format
+			/*$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthFormats = array(
+				253 => '',
+				65535 => '',
+				4294967295 => ''
+			);*/
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransaction;
 		}
 
 		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[1]) === true) {
