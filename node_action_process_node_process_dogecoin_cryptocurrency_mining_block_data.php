@@ -69,7 +69,10 @@
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[0]);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0], true);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
+
+		if (($internalByteOrder === 'little') === true) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
+		}
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
 			// todo: process transactions until either 0.95mb is reached or 200 transactions
