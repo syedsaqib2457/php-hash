@@ -87,9 +87,16 @@
 			14 => 'ff',
 			16 => 'ff'
 		);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = 0;
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
-			// todo: process transactions until 0.95mb is reached
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data']);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize += $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize;
+
+			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize > 950000) === true) {
+				break;
+			}
 
 			if (
 				(empty($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['hash']) === true) ||
