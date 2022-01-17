@@ -1,5 +1,5 @@
 <?php
-	function _createLittleEndian($hexidecimalString) {
+	function _reverseByteOrder($hexidecimalString) {
 		$binaryString = hex2bin($hexidecimalString);
 		$binaryString = strrev($binaryString);
 		return bin2hex($binaryString);
@@ -29,22 +29,22 @@
 			'nonce_range' => str_split($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['noncerange'], 8),
 			'current_block_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['previousblockhash'],
 			'target_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['target'],
-			'target_hash_bits' => _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['bits']),
+			'target_hash_bits' => _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['bits']),
 			'timestamp' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['mintime'],
 			'version' => str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string'] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = array(
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'],
 			'01',
 			'0000000000000000000000000000000000000000000000000000000000000000',
 			'ffffffff',
 			false,
-			'0' . strlen($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string']) . _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']) . '67686f7374636f6d70757465',
+			'0' . strlen($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string']) . _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']) . '67686f7374636f6d70757465',
 			'ffffffff',
 			'01',
-			_createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['coinbase_output_value']),
+			_reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['coinbase_output_value']),
 			false,
 			'mining_reward_public_key_goes_here', // todo: create pubKey script and verify string format as-is
 			'00000000'
@@ -68,7 +68,7 @@
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[0]);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0], true);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
 			// todo: process transactions until either 0.95mb is reached or 200 transactions
@@ -140,7 +140,7 @@
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrements as $nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader[4][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement] = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestamp + $nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement);
-			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader[4][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement] = _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockHeader[4][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement]);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader[4][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement] = _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader[4][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement]);
 		}
 
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader);
