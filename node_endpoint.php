@@ -114,6 +114,12 @@
 			'package' => 'procps'
 		),
 		array(
+			'command' => $uniqueId,
+			'name' => 'lscpu',
+			'output' => 'bad usage',
+			'package' => 'util-linux'
+		),
+		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'netstat',
 			'output' => 'invalid option',
