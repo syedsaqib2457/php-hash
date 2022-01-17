@@ -50,6 +50,7 @@
 			'00000000'
 		);
 		// todo: validate block from blk.dat file to verify whether magic bytes are prepended automatically by RPC submitblock
+		// block delimiting bytes are c0c0c0c0
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC + test internal byte order for block header values
 		// todo: create API functions for simplifying wallet pubKey creation
 
