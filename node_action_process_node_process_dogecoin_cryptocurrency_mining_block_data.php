@@ -42,7 +42,7 @@
 			'0000000000000000000000000000000000000000000000000000000000000000',
 			'ffffffff',
 			false,
-			'0' . strlen($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string']) . _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']) . '67686f7374636f6d70757465',
+			'0' . strlen($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string']) . _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']) . '67686f7374636f6d70757465' . random_bytes(4),
 			'ffffffff',
 			'01',
 			_reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['coinbase_output_value']),
