@@ -89,7 +89,7 @@
 		);
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
-			// todo: process transactions until either 0.95mb is reached or 200 transactions
+			// todo: process transactions until 0.95mb is reached
 
 			if (
 				(empty($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['hash']) === true) ||
