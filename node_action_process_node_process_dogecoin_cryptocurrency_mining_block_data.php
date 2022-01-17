@@ -108,6 +108,10 @@
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength;
 			}
 
+			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength < 253) === false) {
+				
+			}
+
 			// todo: concatenate raw transactions with compactSize integer https://btcinformation.org/en/developer-reference#raw-transaction-format
 			/*$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthFormats = array(
 				253 => '',
