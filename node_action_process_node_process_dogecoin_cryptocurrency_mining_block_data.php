@@ -84,7 +84,11 @@
 
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['txid']);
 
-			if ($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId === false) {
+			if (($internalByteOrder === 'big') === true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = strrev($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId);
+			}
+
+			if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId) === true) {
 				$response['message'] = 'Error listing node process Dogecoin cryptocurrency mining block template transactions, please try again.';
 				return $response;
 			}
