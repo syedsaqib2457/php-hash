@@ -77,6 +77,16 @@
 		if (($internalByteOrder === 'little') === true) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
 		}
+		
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthPrefixes = array(
+			4 => 'fd',
+			6 => 'fe',
+			8 => 'fe',
+			10 => 'ff',
+			12 => 'ff',
+			14 => 'ff',
+			16 => 'ff'
+		);
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
 			// todo: process transactions until either 0.95mb is reached or 200 transactions
@@ -109,7 +119,8 @@
 			}
 
 			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength < 253) === false) {
-				
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthLength] . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength;
 			}
 
 			// todo: concatenate raw transactions with compactSize integer https://btcinformation.org/en/developer-reference#raw-transaction-format
