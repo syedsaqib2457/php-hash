@@ -89,6 +89,7 @@
 
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
+			// todo: concatenate raw transactions with compactSize integer https://btcinformation.org/en/developer-reference#raw-transaction-format
 		}
 
 		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[1]) === true) {
