@@ -123,13 +123,7 @@
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthLength] . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength;
 			}
 
-			// todo: concatenate raw transactions with compactSize integer https://btcinformation.org/en/developer-reference#raw-transaction-format
-			/*$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthFormats = array(
-				253 => '',
-				65535 => '',
-				4294967295 => ''
-			);*/
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransaction;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength . $nodeProcessDogecoinCryptocurrencyMiningBlockTransaction;
 		}
 
 		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[1]) === true) {
