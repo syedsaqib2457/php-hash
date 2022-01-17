@@ -16,7 +16,9 @@
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block template next block height, please try again.';
 			return $response;
 		}
-
+		
+		$internalByteOrder = exec($parameters['binary_files']['lscpu'] . ' | grep Endian | awk \'{print $3}\'', $internalByteOrder);
+		$internalByteOrder = strtolower($internalByteOrder[0]);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = array(
 			'coinbase_output_value' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['coinbasevalue']),
 			'next_block_height' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['height']),
@@ -27,6 +29,11 @@
 			'timestamp' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['mintime'],
 			'version' => str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
+
+		if (($internalByteOrder === 'little') === true) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['current_block_hash'] = _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['current_block_hash']);
+		}
+
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string'] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = array(
@@ -118,8 +125,13 @@
 			}
 
 			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex === 0) === true) {
-				// verify Merkel root hash + current block hash is in internal byte order instead of little endian according to btcinformation.org
-				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex]);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex];
+
+				if (($internalByteOrder === 'little') === true) {
+					$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = strrev($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']);
+				}
+
+				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']);
 			}
 		}
 
