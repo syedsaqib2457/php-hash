@@ -30,7 +30,7 @@
 			'previous_block_hash' => _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['previousblockhash']),
 			'target_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['target'],
 			'target_hash_bits' => _createLittleEndian($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['bits']),
-			'timestamp' => ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['curtime'] - 19),
+			'timestamp' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['mintime'],
 			'version' => str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string'] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']);
