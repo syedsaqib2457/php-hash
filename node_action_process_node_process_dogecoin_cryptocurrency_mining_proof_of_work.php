@@ -19,6 +19,9 @@
 		$_3 = bin2hex($_3);
 		$_4 = hash('sha256', ($_0[3] . $_0[4][$_2] . $_0[2] . $_3), true);
 		$_4 = hash('sha256', $_4);
+		// todo: validate hash data formatting using real .dat blocks (hex or dec)
+		// todo: create 1 process for each CPU core with incremented timestamps instead of random timestamps from an array
+		// todo: recreate block header more frequently for extranonce
 
 		if (
 			(($_4[12] === '0') === true) &&
