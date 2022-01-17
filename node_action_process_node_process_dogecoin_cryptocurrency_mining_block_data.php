@@ -50,8 +50,6 @@
 			'mining_reward_public_key_goes_here', // todo: create pubKey script and verify string format as-is
 			'00000000'
 		);
-		// todo: validate block from blk.dat file to verify whether magic bytes are prepended automatically by RPC submitblock
-		// block delimiting bytes are c0c0c0c0
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC + test internal byte order for block header values
 		// todo: create API functions for simplifying wallet pubKey creation
 
@@ -119,6 +117,10 @@
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex], true);
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex], true);
 
+				if (($internalByteOrder === 'little') === true) {
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex] = _reverseByteOrder($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex]);
+				}
+
 				if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex === 0) === false) {
 					unset($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex]);
 				}
@@ -129,11 +131,6 @@
 
 			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex === 0) === true) {
 				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex];
-
-				if (($internalByteOrder === 'little') === true) {
-					$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = strrev($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']);
-				}
-
 				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']);
 			}
 		}
