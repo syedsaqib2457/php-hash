@@ -130,7 +130,6 @@
 
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestamp = $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['timestamp'];
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrements = range(0, 40);
-
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = array(
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['nonce_range'],
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['target_hash'],
