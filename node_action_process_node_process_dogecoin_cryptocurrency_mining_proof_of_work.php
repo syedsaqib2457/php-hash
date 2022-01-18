@@ -11,8 +11,8 @@
 	}
 
 	while (true) {
-		$_3 = random_bytes(4);
-		$_3 = bin2hex($_3);
+		$_3 = hrtime(true);
+		$_3 = substr($_3, 6, 8);
 		$_4 = (timestamp() - $_0[2]);
 		$_5 = hex2bin($_0[3] . $_4 . $_0[1] . $_3);
 		$_6 = hash('sha256', $5, true);
