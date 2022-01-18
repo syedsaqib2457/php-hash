@@ -11,7 +11,6 @@
 	}
 
 	while (true) {
-		// todo: add [0+[a-f]] to $_1 for when while() processes faster than microtime
 		$_1 = hrtime(true);
 		$_1 = substr($_1, 6, 8);
 		$_2 = (timestamp() - $_0[2]);
