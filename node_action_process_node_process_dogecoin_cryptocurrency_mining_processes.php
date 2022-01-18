@@ -29,7 +29,7 @@
 		}
 
 		while (true) {
-			$nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_next_block_height.txt');
+			$nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_next_block_height.dat');
 
 			if ($nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight === false) {
 				$response['message'] = 'Error listing node process Dogecoin cryptocurrency mining block height, please try again.';
