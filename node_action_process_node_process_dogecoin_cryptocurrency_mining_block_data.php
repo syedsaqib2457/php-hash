@@ -194,13 +194,14 @@
 
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader);
 
-		if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount % 2) === 1) === true) {
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount;
-		}
-
 		if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount < 253) === false) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCountSize = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
+
+			if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount % 2) === 1) === true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount;
+			}
+
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCountSize] . _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
 		}
 
