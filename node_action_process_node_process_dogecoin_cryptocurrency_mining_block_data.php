@@ -31,7 +31,7 @@
 			'current_block_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['previousblockhash'],
 			'target_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['target'],
 			'target_hash_bits' => _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['bits']),
-			'timestamp' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['mintime'],
+			'timestamp_difference' => ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['curtime'] - $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['mintime']),
 			'version' => str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
 		);
 
@@ -173,10 +173,10 @@
 			}
 		}
 
-		$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestamp = $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['timestamp'];
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = array(
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['target_hash'],
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['target_hash_bits'],
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['timestamp_difference'],
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['current_block_hash'] . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']
 		);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader);
