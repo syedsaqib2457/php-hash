@@ -28,7 +28,7 @@
 			((($_5[0] . $_5[1] . $_5[2] . $_5[3] . $_5[4] . $_5[5]) === '000000') === true) &&
 			((($_5[6] . $_5[7] . $_5[8] . $_5[9] . $_5[10] . $_5[11]) === '000000') === true)
 		) {
-			if (($_5 < $_0[1]) === true) {
+			if (($_5 < $_0[0]) === true) {
 				file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt', ($_0[3] . $_0[4][$_2] . $_0[2] . $_3));
 				exit;
 			}
