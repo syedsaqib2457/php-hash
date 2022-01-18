@@ -1,18 +1,18 @@
-## GhostCompute Framework
+## GhostCompute
 
 Currently in a pre-release development phase.
 
-API documentation and usage tutorials are in the [documentation subdirectory](https://github.com/ghostcompute/framework/tree/main/documentation).
+API documentation and usage tutorials are in the [documentation subdirectory](https://github.com/ghostcompute/ghostcompute/tree/main/documentation).
 
-### An Essential API Framework for Cloud Privacy and Security
+### An Essential API for Cloud Privacy and Security
 
-Develop secure applications using a backend API framework built with excessive simplicity.
+Develop secure applications using a backend API built with excessive simplicity.
 
 ### Build and Orchestrate Powerful Cloud Applications the Right Way
 
-Use built-in API actions to automate deployment, monitoring and scaling for sensitive network infrastructure in containerless Linux environments without sacrificing performance, privacy or security. 
+Use built-in API actions to automate deployment, monitoring and scaling for sensitive network infrastructure in containerless Linux environments without sacrificing performance, privacy or security.
 
-GhostCompute is a backend API framework for cloud applications as well as a standalone automation system for controlling cloud network infrastructure from the same API.
+GhostCompute is a backend API framework for developing cloud applications as well as a standalone automation system for controlling cloud network infrastructure and cryptocurrency nodes from the same API.
 
 ### Make Clean API Requests to a Single Endpoint in JSON Format
 
@@ -71,9 +71,9 @@ GhostCompute is a backend API framework for cloud applications as well as a stan
 
 Remove complexity from these server-side components while adding valuable functionality with API automation.
 
-#### Blockchain
+#### Cryptocurrency
 
-Blockchain features are in development.
+Cryptocurrency features are in development.
 
 #### Databases
 
