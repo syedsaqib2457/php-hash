@@ -193,7 +193,7 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader[3][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement] = strrev($nodeProcessDogecoinCryptocurrencyMiningBlockHeader[3][$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderTimestampIncrement]);
 		}
 
-		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader); // todo: json doesn't support binary values
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader);
 
 		if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount < 253) === false) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
