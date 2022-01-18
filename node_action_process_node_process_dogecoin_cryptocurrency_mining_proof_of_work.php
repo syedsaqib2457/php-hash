@@ -13,7 +13,7 @@
 	while (true) {
 		$_1 = hrtime(true);
 		$_1 = substr($_1, 5, 8);
-		$_2 = (timestamp() - $_0[2]); // encode to hex
+		$_2 = (time() - $_0[2]); // encode to hex
 		$_3 = hex2bin($_0[3] . $_1 . $_0[1] . $_2);
 		$_4 = hash('sha256', $_3, true);
 		$_4 = hash('sha256', $_4);
