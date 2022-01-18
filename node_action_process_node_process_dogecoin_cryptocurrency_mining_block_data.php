@@ -90,7 +90,7 @@
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data']);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
-			$nodeProcessDogecoinCryptocurrencyMiningBlockSize += $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockSize += $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize;
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 
 			if (($nodeProcessDogecoinCryptocurrencyMiningBlockSize > 950000) === true) {
