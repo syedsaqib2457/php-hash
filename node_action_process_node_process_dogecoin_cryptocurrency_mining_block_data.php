@@ -78,11 +78,17 @@
 
 		$compactSizeUnsignedIntegerHexidecimalPrefixes = array(
 			4 => 'fd',
+			5 => 'fe',
 			6 => 'fe',
+			7 => 'fe',
 			8 => 'fe',
+			9 => 'ff',
 			10 => 'ff',
+			11 => 'ff',
 			12 => 'ff',
+			13 => 'ff',
 			14 => 'ff',
+			15 => 'ff',
 			16 => 'ff'
 		);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockSize = 0;
