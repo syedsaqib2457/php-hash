@@ -85,7 +85,7 @@
 			14 => 'ff',
 			16 => 'ff'
 		);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = 0;
+		$nodeProcessDogecoinCryptocurrencyMiningBlockSize = 0;
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data']);
