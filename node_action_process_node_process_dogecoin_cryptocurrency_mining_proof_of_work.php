@@ -1,5 +1,5 @@
 <?php
-	if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt') === true) {
+	if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat') === true) {
 		exit;
 	}
 
@@ -25,7 +25,7 @@
 				((($_4[6] . $_4[7] . $_4[8] . $_4[9] . $_4[10] . $_4[11]) === '000000') === true)
 			) {
 				if (($_4 < $_0[0]) === true) {
-					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt', ($_0[3] . $_2 . $_0[1] . $_1));
+					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat', ($_0[3] . $_2 . $_0[1] . $_1));
 					exit;
 				}
 			}
