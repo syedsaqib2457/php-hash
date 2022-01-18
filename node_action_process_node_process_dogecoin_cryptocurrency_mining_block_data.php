@@ -18,7 +18,7 @@
 			return $response;
 		}
 
-		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_next_block_height.txt', $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['height']) === false) {
+		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_next_block_height.dat', $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['height']) === false) {
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block template next block height, please try again.';
 			return $response;
 		}
@@ -209,7 +209,7 @@
 			return $response;
 		}
 
-		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.txt', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) === false) {
+		if (file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.dat', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions) === false) {
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block transactions, please try again.';
 			return $response;
 		}
