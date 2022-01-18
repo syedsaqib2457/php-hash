@@ -60,7 +60,7 @@
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC + test internal byte order for block header values
 
 		foreach (array(4, 9) as $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey) {
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = decbin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey + 1)]);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey + 1)]);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey]);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey]);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
