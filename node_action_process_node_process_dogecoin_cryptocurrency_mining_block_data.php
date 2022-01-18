@@ -22,7 +22,7 @@
 			$response['message'] = 'Error adding node process Dogecoin cryptocurrency mining block template next block height, please try again.';
 			return $response;
 		}
-		
+
 		$internalByteOrder = exec($parameters['binary_files']['lscpu'] . ' | grep Endian | awk \'{print $3}\'', $internalByteOrder);
 		$internalByteOrder = strtolower($internalByteOrder[0]);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = array(
@@ -67,7 +67,6 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey], 2, '0', STR_PAD_LEFT);
 		}
 
-		
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds = array();
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
@@ -77,7 +76,7 @@
 		if (($internalByteOrder === 'little') === true) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
 		}
-		
+
 		$compactSizeUnsignedIntegerHexidecimalPrefixes = array(
 			4 => 'fd',
 			6 => 'fe',
