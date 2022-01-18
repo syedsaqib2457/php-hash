@@ -56,6 +56,7 @@
 			'mining_reward_public_key_goes_here', // todo: create pubKey script and verify string format as-is
 			'00000000'
 		);
+		// todo: create multiple merkle roots for extra nonce (number_of_instances * number_of_mining_pow_processes)
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC + test internal byte order for block header values
 		// todo: create API functions for simplifying wallet pubKey creation
 
