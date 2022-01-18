@@ -6,9 +6,9 @@ GhostCompute is currently in a pre-release development phase.
 
 #### Deploy a Cloud or Self-Hosted Server
 
-GhostCompute is an isolated and self-hosted framework, meaning it requires a server instance.
+GhostCompute code is isolated and self-hosted.
 
-Here are guides for deploying cloud server instances.
+Here are guides for deploying GhostCompute on cloud server instances.
 
 - Alibaba Cloud
 - Amazon EC2
@@ -25,9 +25,9 @@ Here are guides for deploying cloud server instances.
 
 Self-hosting instructions are in development.
 
-#### Deploy GhostCompute Framework
+#### Deploy GhostCompute
 
-#### Deploy GhostCompute Nodes
+#### Deploy Connected Nodes
 
 ### API Documentation
 
