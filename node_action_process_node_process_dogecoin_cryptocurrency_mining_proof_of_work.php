@@ -10,6 +10,9 @@
 		exit;
 	}
 
+	$_0[1] = hex2bin($_0[1]);
+	$_0[2] = hex2bin($_0[2]);
+
 	while (true) {
 		$_1 = hrtime(true);
 		$_1 = substr($_1, 5, 8);
@@ -29,7 +32,8 @@
 				$_3 = bin2hex($_3);
 
 				if (($_3 < $_0[0]) === true) {
-					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat', ($_0[2] . $_2 . $_0[1] . $_1));
+					$_3 = bin2hex($_0[2] . $_2 . $_0[1] . $_1);
+					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat', $_3);
 					exit;
 				}
 			}
