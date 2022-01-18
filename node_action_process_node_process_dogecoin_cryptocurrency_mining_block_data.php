@@ -88,11 +88,12 @@
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = 0;
 
 		foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['transactions'] as $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionIndex => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction) {
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data']);
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize);
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize += $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data']);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockSize += $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransactionSize;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 
-			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize > 950000) === true) {
+			if (($nodeProcessDogecoinCryptocurrencyMiningBlockSize > 950000) === true) {
 				break;
 			}
 
@@ -115,21 +116,18 @@
 			}
 
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransaction = $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransaction);
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength);
 
-			if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength % 2) === 1) === true) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength;
+			if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize % 2) === 1) === true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize;
 			}
 
-			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength < 253) === false) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength);
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLengthLength] . _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength);
+			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize < 253) === false) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeSize = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeSize] . _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 			}
 
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount++;
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions .= $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionLength . $nodeProcessDogecoinCryptocurrencyMiningBlockTransaction;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions .= $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize . $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
 		}
 
 		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[1]) === true) {
