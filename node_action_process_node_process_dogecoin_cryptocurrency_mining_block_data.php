@@ -49,16 +49,15 @@
 			'ffffffff',
 			false,
 			'0' . strlen($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string']) . _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']) . '67686f7374636f6d70757465' . random_bytes(4),
-			'ffffffff',
+			'00000000',
 			'01',
 			_createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['coinbase_output_value']),
 			false,
-			'mining_reward_public_key_goes_here', // todo: create pubKey script and verify string format as-is
+			'mining_reward_scriptPubKey_goes_here', // todo: create API functions for simplifying wallet pubKey creation
 			'00000000'
 		);
 		// todo: create multiple merkle roots for extra nonce (number_of_instances * number_of_mining_pow_processes)
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC + test internal byte order for block header values
-		// todo: create API functions for simplifying wallet pubKey creation
 
 		foreach (array(4, 9) as $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey] = decbin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionParameterLengthKey + 1)]);
