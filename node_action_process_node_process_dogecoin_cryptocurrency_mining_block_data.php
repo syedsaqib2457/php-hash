@@ -124,13 +124,13 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
 
 			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize < 253) === false) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 
 				if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize % 2) === 1) === true) {
 					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize;
 				}
 
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeLength] . _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 			}
 
@@ -195,14 +195,14 @@
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader);
 
 		if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount < 253) === false) {
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCountSize = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
 
 			if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount % 2) === 1) === true) {
 				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount;
 			}
 
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCountSize] . _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCountLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCountLength] . _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount);
 		}
 
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions;
