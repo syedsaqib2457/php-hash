@@ -69,7 +69,7 @@
 		
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds = array();
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions[0]);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTransactions);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0], true);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0]);
 
