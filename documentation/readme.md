@@ -1,3 +1,5 @@
+## GhostCompute Documentation
+
 GhostCompute is currently in a pre-release development phase.
 
 ### Activation and Deployment Instructions
