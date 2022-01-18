@@ -7,9 +7,9 @@
 		}
 
 		while (true) {
-			if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt') === true) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt');
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.txt');
+			if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat') === true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat');
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.dat');
 
 				if (
 					(empty($nodeProcessDogecoinCryptocurrencyMiningBlockHeader) === false) &&
@@ -29,8 +29,8 @@
 						// todo: log specific error code
 					}
 
-					unlink('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt');
-					unlink('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.txt');
+					unlink('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat');
+					unlink('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_transactions.dat');
 					return $response;
 				}
 			}
