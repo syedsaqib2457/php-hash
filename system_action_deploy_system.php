@@ -3,7 +3,7 @@
 		for debugging
 		todo: condense into one line for easy deployment from readme instructions
 		  systemEndpointDestinationAddress=127.0.0.1
- 		  cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system_action_deploy_system.php ; sudo wget -O system_action_deploy_system.php --no-dns-cache --retry-connrefused --timeout=10 --tries=2 "https://raw.githubusercontent.com/ghostcompute/framework/main/system_action_deploy_system.php?$RANDOM" && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress 1;
+ 		  cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system_action_deploy_system.php ; sudo wget -O system_action_deploy_system.php --no-dns-cache --retry-connrefused --timeout=10 --tries=2 "https://raw.githubusercontent.com/ghostcompute/ghostcompute/main/system_action_deploy_system.php?$RANDOM" && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress 1;
 		  nodeExternalIpAddressVersion4=127.0.0.2
 		  nodeInternalIpAddressVersion4=127.0.0.3
 		  systemUserAuthenticationToken=1234
@@ -404,7 +404,7 @@
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
-		shell_exec('cd /var/www/ghostcompute/ && sudo git clone https://github.com/ghostcompute/framework .');
+		shell_exec('cd /var/www/ghostcompute/ && sudo git clone https://github.com/ghostcompute/ghostcompute .');
 
 		if (file_exists('/var/www/ghostcompute/readme.md') === false) {
 			echo 'Error downloading system files, please try again.' . "\n";
