@@ -15,7 +15,7 @@
 		$_1 = substr($_1, 5, 8);
 
 		foreach ($_0[4] as $_2) {
-			$_3 = hex2bin($_0[3] . $_1 . $_0[1] . $_2);
+			$_3 = hex2bin($_0[3] . $_2 . $_0[1] . $_1);
 			$_4 = hash('sha256', $_3, true);
 			$_4 = hash('sha256', $_4);
 
@@ -25,7 +25,7 @@
 				((($_4[6] . $_4[7] . $_4[8] . $_4[9] . $_4[10] . $_4[11]) === '000000') === true)
 			) {
 				if (($_4 < $_0[0]) === true) {
-					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt', ($_0[3] . $_1 . $_0[1] . $_2));
+					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.txt', ($_0[3] . $_2 . $_0[1] . $_1));
 					exit;
 				}
 			}
