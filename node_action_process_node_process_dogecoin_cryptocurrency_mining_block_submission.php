@@ -18,7 +18,12 @@
 					$nodeProcessDogecoinCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/ghostcompute/dogecoin/dogecoin.conf');
 					$nodeProcessDogecoinCryptocurrencyMiningProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyMiningProcessParameters);
 					$nodeProcessDogecoinCryptocurrencyMiningProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyMiningProcessParameters);
-					exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyMiningProcessParameters . ' submitblock \'' . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions . '\' 2>&1', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse); 
+					exec('sudo dogecoin-cli ' . $nodeProcessDogecoinCryptocurrencyMiningProcessParameters . ' submitblock \'' . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactions . '\' 2>&1', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse);
+
+					/*
+						todo: modify Dogecoin source to find reason for Block decode failed error (passes ctype_xdigit())
+					*/
+
 					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = implode('', $nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse);
 					$nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse = json_decode($nodeProcessDogecoinCryptocurrencyMiningBlockSubmissionResponse, true);
 
