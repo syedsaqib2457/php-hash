@@ -24,6 +24,7 @@
 		}
 
 		$internalByteOrder = exec($parameters['binary_files']['lscpu'] . ' | grep Endian | awk \'{print $3}\'', $internalByteOrder);
+		// todo: decentralized block validation should work on both big and little endian systems, so use static internal byte order
 		$internalByteOrder = strtolower($internalByteOrder[0]);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = array(
 			'coinbase_output_value' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['coinbasevalue']),
