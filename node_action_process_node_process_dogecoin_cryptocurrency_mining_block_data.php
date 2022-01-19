@@ -85,7 +85,6 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data']);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 			$nodeProcessDogecoinCryptocurrencyMiningBlockSize += $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize;
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
 
 			if (($nodeProcessDogecoinCryptocurrencyMiningBlockSize > 950000) === true) {
 				break;
@@ -106,22 +105,9 @@
 				return $response;
 			}
 
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
-
-			if (($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize < 253) === false) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeLength = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
-
-				if ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeLength % 2) === 1) === true) {
-					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = '0' . $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize;
-					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeLength++;
-				}
-
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSizeLength] . _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize);
-			}
-
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount++;
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions .= $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize . $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions .= $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
 		}
 
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount;
