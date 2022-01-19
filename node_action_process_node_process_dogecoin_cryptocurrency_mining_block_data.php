@@ -30,13 +30,13 @@
 			'target_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['target'],
 			'target_hash_bits' => _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['bits']),
 			'timestamp' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['mintime'],
-			'version' => str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version'], 8, '0', STR_PAD_LEFT)
+			'version' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version'])
 		);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string'] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'], 8, '0', STR_PAD_LEFT);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = 1;
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = array(
-			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'],
+			_createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']),
 			'01',
 			'0000000000000000000000000000000000000000000000000000000000000000',
 			'ffffffff',
