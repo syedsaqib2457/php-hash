@@ -34,9 +34,10 @@
 		);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_binary_string'] = hex2bin($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'], 8, '0', STR_PAD_LEFT);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = 1;
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions = array(
-			_createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']),
+			'01000000',
 			'01',
 			'0000000000000000000000000000000000000000000000000000000000000000',
 			'ffffffff',
