@@ -37,13 +37,13 @@
 			}
 
 			$nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds = false;
-			exec('ps -h -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php | grep -v grep | grep -v _' . $nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight . ' | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds);
+			exec('ps -h -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_dogecoin_cryptocurrency_mining_block_header.php | grep -v grep | grep -v _' . $nodeProcessDogecoinCryptocurrencyMiningNextBlockHeight . ' | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds);
 
 			if (empty($nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds) === false) {
 				_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds);
 			}
 
-			exec('ps -h -o etimes -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_dogecoin_cryptocurrency_mining_proof_of_work.php | grep -v grep | awk \'{print $1"_"$2}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses);
+			exec('ps -h -o etimes -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_dogecoin_cryptocurrency_mining_block_header.php | grep -v grep | awk \'{print $1"_"$2}\'', $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses);
 			$nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcessIds = array();
 
 			foreach ($nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcesses as $nodeProcessDogecoinCryptocurrencyMiningProofOfWorkProcess) {
