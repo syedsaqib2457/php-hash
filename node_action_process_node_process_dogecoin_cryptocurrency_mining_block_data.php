@@ -128,6 +128,7 @@
 		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[1]) === true) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0];
 		} elseif ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount % 2) === 1) === true) {
+			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount++;
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
 		}
 
