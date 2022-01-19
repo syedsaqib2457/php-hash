@@ -24,15 +24,14 @@
 		}
 
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = array(
-			'coinbase_output_value' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['coinbasevalue']),
 			'current_block_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['previousblockhash'],
 			'next_block_height' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['height']),
+			'next_block_reward_amount' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['coinbasevalue']),
 			'target_hash' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['target'],
 			'target_hash_bits' => _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['bits']),
 			'timestamp' => $nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['mintime'],
 			'version' => dechex($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['version'])
 		);
-		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['coinbase_output_value'] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['coinbase_output_value']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_size'] = strlen($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']);
 
 		if ((($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_size'] % 2) === 1) === true) {
@@ -42,6 +41,8 @@
 
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height'] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_size'] = ($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_size'] / 2);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_reward_amount'] = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_reward_amount'], 8, '0', STR_PAD_LEFT);
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_reward_amount'] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_reward_amount']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = str_pad($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'], 8, '0', STR_PAD_LEFT);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version']);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount = 1;
@@ -55,7 +56,7 @@
 			'0' . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height_size'] . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_height'] . '67686f7374636f6d70757465', // todo: append extranonce as bin2hex('_' . $i),
 			'ffffffff',
 			'01',
-			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['coinbase_output_value'],
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['next_block_reward_amount'],
 			false,
 			'[mining_reward_scriptPubKey_goes_here]', // todo: create API functions for simplifying wallet pubKey creation
 			'00000000'
