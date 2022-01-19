@@ -125,14 +125,14 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactions .= $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionSize . $nodeProcessDogecoinCryptocurrencyMiningBlockTemplateTransaction['data'];
 		}
 
+		$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount;
+
 		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[1]) === true) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[0];
 		} elseif ((($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount % 2) === 1) === true) {
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount++;
+			$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount++;
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
 		}
-
-		$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionCount;
 
 		if (($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount === 2) === true) {
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes = array(
