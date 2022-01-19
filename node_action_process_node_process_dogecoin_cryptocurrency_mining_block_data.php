@@ -141,35 +141,38 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes = range(0, ($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount - 1), 2);
 		}
 
-		while (empty($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']) === true) {
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex = 0;
+		if (empty($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']) === true) {
+			while (true) {
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex = 0;
 
-			foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes as $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex] .= $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex + 1)];
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex], true);
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId);
-				// todo: verify merkleroot transactions are concatenated as hex with valid data
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId);
-				unset($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex]);
-				unset($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex + 1)]);
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex++;
-			}
+				foreach ($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes as $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex) {
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex] .= $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex + 1)];
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex], true);
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = hash('sha256', $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId);
+					// todo: verify merkleroot transactions are concatenated as hex with valid data
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId = _createReverseByteOrderHexidecimalString($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId);
+					unset($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex]);
+					unset($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex + 1)]);
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex++;
+				}
 
-			$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount = ($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount / 2);
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexLength = ($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount / 2);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount = ($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount / 2);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexLength = ($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount / 2);
 
-			if ((($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount % 2) === 1) === true) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount++;
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
-				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexLength++;
-			}
+				if (($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount === 1) === true) {
+					$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex];
+					$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']);
+					break;
+				}
 
-			$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes = array_slice($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes, 0, $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexLength, true);
+				if ((($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount % 2) === 1) === true) {
+					$nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount++;
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionMerkleRootHashIndex] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionId;
+					$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexLength++;
+				}
 
-			if (($nodeProcessDogecoinCryptocurrencyMiningBlockHeaderMerkleRootNodeCount === 1) === true) {
-				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIds[$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndex];
-				$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']);
+				$nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes = array_slice($nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexes, 0, $nodeProcessDogecoinCryptocurrencyMiningBlockTransactionIndexLength, true);
 			}
 		}
 
