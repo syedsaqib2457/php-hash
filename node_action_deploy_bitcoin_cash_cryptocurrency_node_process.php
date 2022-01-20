@@ -6,10 +6,9 @@
 	shell_exec('sudo mkdir -p /usr/src/bitcoin_cash/');
 	shell_exec('cd /usr/src/bitcoin_cash/ && sudo ' . $parameters['binary_files']['wget'] . ' -O bitcoin_cash.tar.gz --no-dns-cache --timeout=60 https://github.com/bitcoin-cash-node/bitcoin-cash-node/archive/refs/tags/v24.0.0.tar.gz');
 	shell_exec('cd /usr/src/bitcoin_cash/ && sudo tar -xvzf bitcoin_cash.tar.gz');
-	shell_exec('cd /usr/src/bitcoin_cash/*/ && sudo ./autogen.sh');
-	shell_exec('cd /usr/src/bitcoin_cash/*/ && sudo ./configure --disable-bench --disable-hardening --disable-miniupnpc --disable-natpnp --disable-tests --with-utils --without-bdb --without-gui --without-qrencode --without-sqlite');
-	shell_exec('cd /usr/src/bitcoin_cash/*/ && sudo make');
-	shell_exec('cd /usr/src/bitcoin_cash/*/ && sudo make install');
+	shell_exec('cd /usr/src/bitcoin_cash/*/ && sudo mkdir build');
+	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF');
+	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja');
 	shell_exec('sudo mkdir /usr/local/ghostcompute/bitcoin_cash/');
 	// todo: dynamic parameter percentage should be based on framework system value in case other node processes / cryptocurrencies are used on the same node
 	// todo: par=<n> should be (((total number of cores) - 1) * percentage of resources value to use for mining)
