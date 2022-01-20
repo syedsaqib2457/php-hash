@@ -1,8 +1,7 @@
 <?php
 	// todo: pruned local installation to verify mining functionality
 	shell_exec('sudo apt-get update');
-	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3');
-	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libevent-dev libboost-dev libboost-all-dev libdb-dev libdb++-dev libssl-dev');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential cmake libboost-all-dev libdb-dev libdb++-dev libevent-dev libssl-dev ninja-build python3');
 	shell_exec('sudo rm -rf /usr/src/bitcoin_cash/');
 	shell_exec('sudo mkdir -p /usr/src/bitcoin_cash/');
 	shell_exec('cd /usr/src/bitcoin_cash/ && sudo ' . $parameters['binary_files']['wget'] . ' -O bitcoin_cash.tar.gz --no-dns-cache --timeout=60 https://github.com/bitcoin-cash-node/bitcoin-cash-node/archive/refs/tags/v24.0.0.tar.gz');
