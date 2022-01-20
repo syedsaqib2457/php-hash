@@ -19,6 +19,5 @@
 
 	if (($parameters['action'] === 'download_node_file_contents') === true) {
 		$response = _downloadNodeFileContents($parameters, $response);
-		_output($response);
 	}
 ?>
