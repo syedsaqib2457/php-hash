@@ -109,6 +109,5 @@
 
 	if (($parameters['action'] === 'add_node_process') === true) {
 		$response = _addNodeProcess($parameters, $response);
-		_output($response);
 	}
 ?>
