@@ -45,28 +45,22 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'] = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'], 8, '0', STR_PAD_LEFT);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version']);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionCount = 1;
-		// todo: concatenate coinbase transaction + create multiple transactions for extranonce
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = array(
-			'01000000',
-			'01',
-			'0000000000000000000000000000000000000000000000000000000000000000',
-			'ffffffff',
-			false,
-			'0' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height'] . '67686f7374636f6d70757465', // todo: append extranonce as bin2hex('_' . $i),
-			'ffffffff',
-			'01',
-			$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'],
-			false,
-			'[mining_reward_scriptPubKey_goes_here]', // todo: create API functions for simplifying wallet pubKey creation
-			'00000000'
-		);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height'] . '67686f7374636f6d70757465';
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript + 1]) / 2);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize, 2, '0', STR_PAD_LEFT);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript = '[mining_reward_scriptPubKey_goes_here]';
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript + 1]) / 2);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize, 2, '0', STR_PAD_LEFT);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript . '00000000';
 		// todo: create multiple merkle roots for extra nonce (number_of_instances * number_of_mining_pow_processes)
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC
 
 		foreach (array(4, 9) as $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionParameterSizeKey) {
-			$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions[$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionParameterSizeKey] = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions[$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionParameterSizeKey + 1]) / 2);
-			$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions[$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionParameterSizeKey] = dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions[$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionParameterSizeKey]);
-			$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions[$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionParameterSizeKey] = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions[$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionParameterSizeKey], 2, '0', STR_PAD_LEFT);
+			$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript + 1]) / 2);
+			$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize);
+			$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize, 2, '0', STR_PAD_LEFT);
 		}
 
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds = array();
