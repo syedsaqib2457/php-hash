@@ -42,6 +42,5 @@
 
 	if (($parameters['action'] === 'node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_submission') === true) {
 		$response = _processNodeProcessBitcoinCashCryptocurrencyMiningBlockSubmission($parameters, $response);
-		_output($response);
 	}
 ?>
