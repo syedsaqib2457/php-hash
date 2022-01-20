@@ -59,6 +59,5 @@
 
 	if (($parameters['action'] === 'update_node') === true) {
 		$response = _updateNode($parameters, $response);
-		_output($response);
 	}
 ?>
