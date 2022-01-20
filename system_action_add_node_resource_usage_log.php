@@ -59,6 +59,5 @@
 
 	if (($parameters['action'] === 'add_node_resource_usage_log') === true) {
 		$response = _addNodeResourceUsageLog($parameters, $response);
-		_output($response);
 	}
 ?>
