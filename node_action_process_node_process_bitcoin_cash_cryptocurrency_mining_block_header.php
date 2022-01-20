@@ -1,11 +1,9 @@
 <?php
-	// todo: add auxpow / scrypt to PoW if required
-
-	if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat') === true) {
+	if (file_exists('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat') === true) {
 		exit;
 	}
 
-	$_0 = file_get_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.json');
+	$_0 = file_get_contents('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.json');
 	$_0 = json_decode($_0, true);
 
 	if ($_0 === false) {
@@ -43,7 +41,7 @@
 
 				if (($_4 < $_0[0]) === true) {
 					$_4 = bin2hex($_0[4] . $_3 . $_0[1] . $_2);
-					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat', $_4);
+					file_put_contents('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat', $_4);
 					exit;
 				}
 			}
