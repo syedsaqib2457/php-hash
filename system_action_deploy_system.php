@@ -439,7 +439,7 @@
 
 		$crontabCommands += array(
 			'# ghostcompute_default',
-			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/ghostcompute/system_action_process_node_request_logs.php 1',
+			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/ghostcompute/system_action_process_system_action.php process_node_request_logs',
 			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab'
 		);
 		$crontabCommands = implode("\n", $crontabCommands);
