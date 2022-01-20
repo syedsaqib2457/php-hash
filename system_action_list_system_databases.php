@@ -65,6 +65,5 @@
 
 	if (($parameters['action'] === 'list_system_databases') === true) {
 		$response = _listSystemDatabases($parameters, $response);
-		_output($response);
 	}
 ?>
