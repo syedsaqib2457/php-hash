@@ -425,6 +425,5 @@
 
 	if (($parameters['action'] === 'process_node') === true) {
 		$response = _processNode($parameters, $response);
-		_output($response);
 	}
 ?>
