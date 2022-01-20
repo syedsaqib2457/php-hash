@@ -246,7 +246,6 @@
 
 	if (($parameters['action'] === 'process_node_process_bitcoin_cash_cryptocurrency_mining_block_data') === true) {
 		$response = _processNodeProcessBitcoinCashCryptocurrencyMiningBlockData($parameters, $response);
-		_output($response);
 	}
 
 	// todo: save block template to system API for GhostCompute nodes without bitcoin-cli installed
