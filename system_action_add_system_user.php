@@ -71,6 +71,5 @@
 
 	if (($parameters['action'] === 'add_system_user') === true) {
 		$response = _addSystemUser($parameters, $response);
-		_output($response);
 	}
 ?>
