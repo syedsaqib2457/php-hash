@@ -22,12 +22,12 @@
 	}
 
 	while (true) {
-		$_3 = hrtime(true);
-		$_3 = substr($_3, 4, 8);
-		$_3 = hex2bin($_3);
+		$_2 = hrtime(true);
+		$_2 = substr($_2, 4, 8);
+		$_2 = hex2bin($_2);
 
-		foreach ($_1 as $_2) {
-			$_4 = hash('sha256', ($_0[4] . $_2 . $_0[1] . $_3), true);
+		foreach ($_1 as $_3) {
+			$_4 = hash('sha256', ($_0[4] . $_3 . $_0[1] . $_2), true);
 			$_4 = hash('sha256', $_4);
 
 			if (
@@ -40,7 +40,7 @@
 				$_4 = bin2hex($_4);
 
 				if (($_4 < $_0[0]) === true) {
-					$_4 = bin2hex($_0[4] . $_2 . $_0[1] . $_4);
+					$_4 = bin2hex($_0[4] . $_3 . $_0[1] . $_2);
 					file_put_contents('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat', $_4);
 					exit;
 				}
