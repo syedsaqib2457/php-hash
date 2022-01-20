@@ -14,9 +14,9 @@
 	exit; // todo: verify bitcoin cash names for conf file + daemon
 	$bitcoinCashSettings = array(
 		'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
-		'rpcuser=ghostcompute',
 		'rpcpassword=ghostcompute',
-		'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency'][0])
+		'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency'][0]),
+		'rpcuser=ghostcompute'
 	);
 	$bitcoinCashSettings = implode("\n", $bitcoinCashSettings);
 
