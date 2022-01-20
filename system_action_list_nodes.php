@@ -65,6 +65,5 @@
 
 	if (($parameters['action'] === 'list_nodes') === true) {
 		$response = _listNodes($parameters, $response);
-		_output($response);
 	}
 ?>
