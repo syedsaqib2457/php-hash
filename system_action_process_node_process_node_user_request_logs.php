@@ -79,7 +79,8 @@
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
-		// todo: save all $nodeResourceUsageLogData
+		$parameters['data'] = $nodeProcessNodeUserRequestLogData;
+		$response = _processNodeProcessNodeUserRequestLog($parameters, $response);
 		_update(array(
 			'data' => array(
 				'processing_process_id' => null
