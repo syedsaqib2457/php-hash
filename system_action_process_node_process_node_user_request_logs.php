@@ -22,11 +22,18 @@
 			)
 		), $response);
 		$nodeProcessNodeUserRequestLogPartIndex = 0;
+		$nodeResourceUsageLogData = array(
+			'bytes_received' => 0,
+			'bytes_sent' => 0,
+			'request_count' => 0
+		);
 
 		while (($nodeProcessNodeUserRequestLogPartIndex === 9) === false) {
 			$nodeProcessNodeUserRequestLogData = array();
 			$nodeProcessNodeUserRequestLogs = _list(array(
 				'data' => array(
+					'bytes_received',
+					'bytes_sent',
 					'destination_hostname',
 					'id'
 				),
@@ -60,6 +67,9 @@
 					'processed_status' => '1',
 					'processing_process_id' => null
 				);
+				$nodeResourceUsageLogData['bytes_received'] += $nodeProcessNodeUserRequestLog['bytes_received'];
+				$nodeResourceUsageLogData['bytes_sent'] += $nodeProcessNodeUserRequestLog['bytes_sent'];
+				$nodeResourceUsageLogData['request_count']++;
 			}
 
 			_save(array(
@@ -69,6 +79,7 @@
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
+		// todo: save all $nodeResourceUsageLogData
 		_update(array(
 			'data' => array(
 				'processing_process_id' => null
