@@ -80,6 +80,7 @@
 						'destination_ip_address' => $nodeProcessNodeUserRequestLog[4],
 						'id' => _createUniqueId(),
 						'node_id' => $parameters['data']['node_id'],
+						'node_node_id' => $parameters['node']['id'],
 						'node_process_type' => $parameters['data']['node_process_type'],
 						'node_user_id' => $parameters['data']['node_user_id'],
 						'processed_status' => '0',
