@@ -80,6 +80,5 @@
 
 	if (($parameters['action'] === 'activate_node') === true) {
 		$response = _activateNode($parameters, $response);
-		_output($response);
 	}
 ?>
