@@ -65,6 +65,5 @@
 
 	if (($parameters['action'] === 'list_node_processes') === true) {
 		$response = _listNodeProcesses($parameters, $response);
-		_output($response);
 	}
 ?>
