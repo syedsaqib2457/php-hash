@@ -109,6 +109,5 @@
 
 	if (($parameters['action'] === 'add_node_process_node_user_request_logs') === true) {
 		$response = _addNodeProcessNodeUserRequestLogs($parameters, $response);
-		_output($response);
 	}
 ?>
