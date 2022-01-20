@@ -15,9 +15,9 @@
 	// todo: par=<n> should be (((total number of cores) - 1) * percentage of resources value to use for mining)
 	$bitcoinSettings = array(
 		'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cryptocurrency']['ip_address'],
-		'rpcuser=ghostcompute',
 		'rpcpassword=ghostcompute',
-		'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cryptocurrency'][0])
+		'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cryptocurrency'][0]),
+		'rpcuser=ghostcompute'
 	);
 	$bitcoinSettings = implode("\n", $bitcoinSettings);
 
