@@ -173,7 +173,7 @@
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['target_hash'],
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['target_hash_bits'],
 			$nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['mintime'],
-			($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['curtime'] + 3000),
+			($nodeProcessDogecoinCryptocurrencyMiningBlockTemplate['curtime'] + 6000),
 			$nodeProcessDogecoinCryptocurrencyMiningBlockHeader['version'] . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['current_block_hash'] . $nodeProcessDogecoinCryptocurrencyMiningBlockHeader['merkle_root_hash']
 		);
 		$nodeProcessDogecoinCryptocurrencyMiningBlockHeader = json_encode($nodeProcessDogecoinCryptocurrencyMiningBlockHeader);
