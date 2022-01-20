@@ -20,6 +20,7 @@
 			'in' => $parameters['system_databases']['node_resource_usage_logs'],
 			'where' => array(
 				'created_timestamp' => $parameters['data']['created_timestamp'],
+				'node_id' => $parameters['data']['node_id']
 			)
 		), $response);
 		$existingNodeResourceUsageLog = current($existingNodeResourceUsageLog);
