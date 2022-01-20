@@ -19,7 +19,7 @@
 	);
 	$bitcoinCashSettings = implode("\n", $bitcoinCashSettings);
 
-	if (file_put_contents('/usr/local/ghostcompute/bitcoin_cash/bitcoin_cash.conf', $bitcoinCashSettings) === false) {
+	if (file_put_contents('/usr/local/ghostcompute/bitcoin_cash/bitcoin.conf', $bitcoinCashSettings) === false) {
 		$response['message'] = 'Error adding Bitcoin Cash settings, please try again.';
 		return $response;
 	}
