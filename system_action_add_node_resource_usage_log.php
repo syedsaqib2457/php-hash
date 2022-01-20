@@ -28,7 +28,9 @@
 			$parameters['data']['id'] = $existingNodeResourceUsageLog['id'];
 
 			if (empty($existingNodeResourceUsageLog['request_count']) === false) {
-				// todo: increment existing values
+				$parameters['data']['bytes_received'] += $existingNodeResourceUsageLog['bytes_received'];
+				$parameters['data']['bytes_sent'] += $existingNodeResourceUsageLog['bytes_sent'];
+				$parameters['data']['request_count'] += $existingNodeResourceUsageLog['request_count'];
 			}
 		}
 
