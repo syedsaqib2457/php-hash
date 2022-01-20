@@ -9,6 +9,7 @@
 	shell_exec('cd /usr/src/bitcoin_cash/*/ && sudo mkdir build');
 	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF -DBUILD_BITCOIN_ZMQ=OFF -DENABLE_MAN=OFF -DENABLE_UPNP=OFF');
 	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja');
+	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja install');
 	shell_exec('sudo mkdir /usr/local/ghostcompute/bitcoin_cash/');
 	exit; // todo: verify bitcoin cash names for conf file + daemon
 	$bitcoinCashSettings = array(
