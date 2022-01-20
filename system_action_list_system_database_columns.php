@@ -65,6 +65,5 @@
 
 	if (($parameters['action'] === 'list_system_database_columns') === true) {
 		$response = _listSystemDatabaseColumns($parameters, $response);
-		_output($response);
 	}
 ?>
