@@ -87,6 +87,5 @@
 
 	if (($parameters['action'] === 'delete_node_process') === true) {
 		$response = _deleteNodeProcess($parameters, $response);
-		_output($response);
 	}
 ?>
