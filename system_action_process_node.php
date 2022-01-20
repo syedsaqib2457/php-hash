@@ -22,7 +22,7 @@
 		$response['data'] = array(
 			'cryptocurrency_node_process_types' => array(
 				'bitcoin_cryptocurrency',
-				'monero_cryptocurrency'
+				'bitcoin_cash_cryptocurrency'
 			),
 			'node_ip_address_version_numbers' => array(
 				'32' => '4',
@@ -30,9 +30,9 @@
 			),
 			'node_process_types' => array(
 				'bitcoin_cryptocurrency',
+				'bitcoin_cash_cryptocurrency',
 				'http_proxy',
 				'load_balancer',
-				'monero_cryptocurrency',
 				'recursive_dns',
 				'socks_proxy'
 			),
