@@ -46,6 +46,5 @@
 
 	if (($parameters['action'] === 'deactivate_node') === true) {
 		$response = _deactivateNode($parameters, $response);
-		_output($response);
 	}
 ?>
