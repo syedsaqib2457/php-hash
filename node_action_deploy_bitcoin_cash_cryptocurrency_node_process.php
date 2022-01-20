@@ -10,8 +10,6 @@
 	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF');
 	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja');
 	shell_exec('sudo mkdir /usr/local/ghostcompute/bitcoin_cash/');
-	// todo: dynamic parameter percentage should be based on framework system value in case other node processes / cryptocurrencies are used on the same node
-	// todo: par=<n> should be (((total number of cores) - 1) * percentage of resources value to use for mining)
 	exit; // todo: verify bitcoin cash names for conf file + daemon
 	$bitcoinCashSettings = array(
 		'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
