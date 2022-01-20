@@ -331,6 +331,5 @@
 
 	if (($parameters['action'] === 'add_node') === true) {
 		$response = _addNode($parameters, $response);
-		_output($response);
 	}
 ?>
