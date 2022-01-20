@@ -84,6 +84,5 @@
 
 	if (($parameters['action'] === 'add_node_request_limit_rule') === true) {
 		$response = _addNodeRequestLimitRule($parameters, $response);
-		_output($response);
 	}
 ?>
