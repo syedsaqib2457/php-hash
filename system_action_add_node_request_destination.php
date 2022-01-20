@@ -54,6 +54,5 @@
 
 	if (($parameters['action'] === 'add_node_request_destination') === true) {
 		$response = _addNodeRequestDestination($parameters, $response);
-		_output($response);
 	}
 ?>
