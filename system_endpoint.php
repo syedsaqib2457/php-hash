@@ -1,8 +1,7 @@
 <?php
 	function _createUniqueId() {
-		$uniqueId = random_bytes(17);
+		$uniqueId = random_bytes(17) . hrtime(true);
 		$uniqueId = bin2hex($uniqueId);
-		$uniqueId = uniqid() . $uniqueId;
 		return $uniqueId;
 	}
 
