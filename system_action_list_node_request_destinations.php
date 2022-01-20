@@ -65,6 +65,5 @@
 
 	if (($parameters['action'] === 'list_node_request_destinations') === true) {
 		$response = _listNodeRequestDestinations($parameters, $response);
-		_output($response);
 	}
 ?>
