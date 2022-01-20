@@ -97,6 +97,5 @@
 
 	if (($parameters['action'] === 'add_system_user_authentication_token_scopes') === true) {
 		$response = _addSystemUserAuthenticationTokenScope($parameters, $response);
-		_output($response);
 	}
 ?>
