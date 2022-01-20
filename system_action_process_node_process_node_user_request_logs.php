@@ -80,7 +80,7 @@
 		}
 
 		$parameters['data'] = $nodeProcessNodeUserRequestLogData;
-		// todo: $parameters['node']
+		// todo: $parameters['node']['id'] as node_node_id grouped by created_timestamp
 		$response = _processNodeProcessNodeUserRequestLog($parameters, $response);
 		_update(array(
 			'data' => array(
