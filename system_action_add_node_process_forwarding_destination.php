@@ -121,6 +121,5 @@
 
 	if (($parameters['action'] === 'add_node_process_forwarding_destination') === true) {
 		$response = _addNodeProcessForwardingDestination($parameters, $response);
-		_output($response);
 	}
 ?>
