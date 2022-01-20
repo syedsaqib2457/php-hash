@@ -58,6 +58,5 @@
 
 	if (($parameters['action'] === 'deploy_node') === true) {
 		$response = _deployNode($parameters, $response);
-		_output($response);
 	}
 ?>
