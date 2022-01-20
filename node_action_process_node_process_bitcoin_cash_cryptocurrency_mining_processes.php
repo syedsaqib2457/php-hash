@@ -9,7 +9,7 @@
 				$nodeProcessBitcoinCashCryptocurrencyMiningProcess = explode('_', $nodeProcessBitcoinCashCryptocurrencyMiningProcess);
 
 				if (($nodeProcessBitcoinCashCryptocurrencyMiningProcess[0] === $parameters['process_id']) === false) {
-					$nodeProcessBitcoinCashCryptocurrencyMiningProcessIds[] = $nodeProcessDogecoinCryptocurrencyMiningProcess[0];
+					$nodeProcessBitcoinCashCryptocurrencyMiningProcessIds[] = $nodeProcessBitcoinCashCryptocurrencyMiningProcess[0];
 				}
 
 				if (
@@ -37,13 +37,13 @@
 			}
 
 			$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeaderProcessIds = false;
-			exec('ps -h -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php | grep -v grep | grep -v _' . $nodeProcessBitcoinCashCryptocurrencyMiningNextBlockHeight . ' | awk \'{print $1}\'', $nodeProcessDogecoinCryptocurrencyMiningBlockHeaderProcessIds);
+			exec('ps -h -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php | grep -v grep | grep -v _' . $nodeProcessBitcoinCashCryptocurrencyMiningNextBlockHeight . ' | awk \'{print $1}\'', $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeaderProcessIds);
 
 			if (empty($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeaderProcessIds) === false) {
 				_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeaderProcessIds);
 			}
 
-			exec('ps -h -o etimes -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php | grep -v grep | awk \'{print $1"_"$2}\'', $nodeProcessDogecoinCryptocurrencyMiningBlockHeaderProcesses);
+			exec('ps -h -o etimes -o pid -o cmd $(pgrep php) | grep node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php | grep -v grep | awk \'{print $1"_"$2}\'', $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeaderProcesses);
 			$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeaderProcessIds = array();
 
 			foreach ($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeaderProcesses as $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeaderProcess) {
