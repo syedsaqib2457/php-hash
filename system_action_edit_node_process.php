@@ -88,6 +88,5 @@
 
 	if (($parameters['action'] === 'edit_node_process') === true) {
 		$response = _editNodeProcess($parameters, $response);
-		_output($response);
 	}
 ?>
