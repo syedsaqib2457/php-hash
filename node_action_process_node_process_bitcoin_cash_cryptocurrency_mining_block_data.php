@@ -56,15 +56,7 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript . '00000000';
 		// todo: create multiple merkle roots for extra nonce (number_of_instances * number_of_mining_pow_processes)
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC
-
-		foreach (array(4, 9) as $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionParameterSizeKey) {
-			$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript + 1]) / 2);
-			$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize);
-			$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize, 2, '0', STR_PAD_LEFT);
-		}
-
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds = array();
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = implode('', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0], true);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0], true);
