@@ -17,9 +17,9 @@
 	// todo: par=<n> should be (((total number of cores) - 1) * percentage of resources value to use for mining)
 	$dogecoinSettings = array(
 		'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['dogecoin_cryptocurrency']['ip_address'],
-		'rpcuser=ghostcompute',
 		'rpcpassword=ghostcompute',
-		'rpcport=' . current($parameters['data']['next']['node_processes']['dogecoin_cryptocurrency'][0])
+		'rpcport=' . current($parameters['data']['next']['node_processes']['dogecoin_cryptocurrency'][0]),
+		'rpcuser=ghostcompute'
 	);
 	$dogecoinSettings = implode("\n", $dogecoinSettings);
 
