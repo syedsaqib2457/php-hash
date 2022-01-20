@@ -80,6 +80,7 @@
 		}
 
 		$parameters['data'] = $nodeProcessNodeUserRequestLogData;
+		// todo: $parameters['node']
 		$response = _processNodeProcessNodeUserRequestLog($parameters, $response);
 		_update(array(
 			'data' => array(
@@ -97,5 +98,4 @@
 	}
 
 	$response = _processNodeProcessNodeUserRequestLogs($parameters, $response);
-	_output($response);
 ?>
