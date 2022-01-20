@@ -11,7 +11,6 @@
 	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja');
 	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja install');
 	shell_exec('sudo mkdir /usr/local/ghostcompute/bitcoin_cash/');
-	exit; // todo: verify bitcoin cash names for conf file + daemon
 	$bitcoinCashSettings = array(
 		'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
 		'rpcpassword=ghostcompute',
