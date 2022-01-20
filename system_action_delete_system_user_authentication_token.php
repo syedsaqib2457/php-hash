@@ -79,6 +79,5 @@
 
 	if (($parameters['action'] === 'delete_system_user_authentication_token') === true) {
 		$response = _deleteSystemUserAuthenticationToken($parameters, $response);
-		_output($response);
 	}
 ?>
