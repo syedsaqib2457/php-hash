@@ -1,4 +1,6 @@
 <?php
+	// todo: add auxpow / scrypt to PoW if required
+
 	if (file_exists('/usr/local/ghostcompute/node_process_dogecoin_cryptocurrency_mining_block_header.dat') === true) {
 		exit;
 	}
