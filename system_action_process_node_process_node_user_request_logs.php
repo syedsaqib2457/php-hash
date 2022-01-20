@@ -96,5 +96,6 @@
 		return $response;
 	}
 
-	_processNodeProcessNodeUserRequestLogs($parameters, $response);
+	$response = _processNodeProcessNodeUserRequestLogs($parameters, $response);
+	_output($response);
 ?>
