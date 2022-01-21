@@ -105,6 +105,5 @@
 
 	if (($parameters['action'] === 'process_node_resource_usage_logs') === true) {
 		$response = _processNodeResourceUsageLogs($parameters, $response);
-		_output($response);
 	}
 ?>
