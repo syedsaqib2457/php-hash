@@ -404,7 +404,7 @@
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
-		shell_exec('cd /var/www/ghostcompute/ && sudo git clone https://github.com/nodecompute/nodecompute .');
+		shell_exec('cd /var/www/ghostcompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/nodecompute/nodecompute .');
 
 		if (file_exists('/var/www/ghostcompute/readme.md') === false) {
 			echo 'Error downloading system files, please try again.' . "\n";
