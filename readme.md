@@ -1,8 +1,8 @@
-## GhostCompute
+## NodeCompute
 
 Currently in a pre-release development phase.
 
-API documentation and usage tutorials are in the [documentation subdirectory](https://github.com/ghostcompute/ghostcompute/tree/main/documentation).
+API documentation and usage tutorials are in the [documentation subdirectory](https://github.com/nodecompute/nodecompute/tree/main/documentation).
 
 ### An Essential API for Cloud Privacy and Security
 
@@ -12,7 +12,7 @@ Develop secure applications using a backend API built with excessive simplicity.
 
 Use built-in API actions to automate deployment, monitoring and scaling for sensitive network infrastructure in containerless Linux environments without sacrificing performance, privacy or security.
 
-GhostCompute is a backend API framework for developing cloud applications as well as a standalone automation system for controlling cloud network infrastructure and cryptocurrency nodes from the same API.
+NodeCompute is a backend API framework for developing cloud applications as well as a standalone automation system for controlling cloud network infrastructure and cryptocurrency nodes from the same API.
 
 ### Make Clean API Requests to a Single Endpoint in JSON Format
 
@@ -147,13 +147,13 @@ VPN features are in development.
 
 ### Understand the Benefits of an Automated Cloud Infrastructure API
 
-Use GhostCompute API automation with these built-in benefits for deployed nodes.
+Use NodeCompute API automation with these built-in benefits for deployed nodes.
 
 #### Deployment
 
 Simply transform dedicated servers and virtual machines with IPv4 and IPv6 addresses into powerfully-automated nodes.
 
-Learning how to use GhostCompute is much easier than deploying, monitoring, securing and scaling network components manually.
+Learning how to use NodeCompute is much easier than deploying, monitoring, securing and scaling network components manually.
 
 Securely connect each node with one line of code that automatically downloads standalone open-source scripts for automation to add, edit and delete nodes and node security rules.
 
@@ -221,27 +221,27 @@ Extensive validation is processed when nodes send monitoring data to make sure a
 
 ### Write Better Backend Code for Cloud Applications
 
-GhostCompute is a minimal yet powerful framework designed to enhance performance, privacy and security for cloud applications with these concepts.
+NodeCompute is a minimal yet powerful framework designed to enhance performance, privacy and security for cloud applications with these concepts.
 
 #### Isolated Containerless Environments
 
 Containerization is essential for cloud applications, but not for all aspects.
 
-GhostCompute deploys critical networking components such as recursive DNS in native, containerless Linux environments to avoid performance and security issues from emulated containers.
+NodeCompute deploys critical networking components such as recursive DNS in native, containerless Linux environments to avoid performance and security issues from emulated containers.
 
 This simplifies firewall security and system optimization while enabling full control from a self-hosted API for authentication, logging, monitoring, rate limiting and specific component actions.
 
-GhostCompute can be deployed in containers if required for scaling API requests.
+NodeCompute can be deployed in containers if required for scaling API requests.
 
 #### Minimized Dependence on External Services
 
-Custom actions are built into GhostCompute for managing databases, monitoring performance and validating data.
+Custom actions are built into NodeCompute for managing databases, monitoring performance and validating data.
 
 Decreasing the usage of external services wherever possible for application monitoring, container hosting, load balancers, managed cloud databases, proxies and package management increases privacy and security for cloud applications.
 
 #### Redefined Coding Standards for Simplicity
 
-GhostCompute is built using native PHP with a consistent procedural style and clean modular design.
+NodeCompute is built using native PHP with a consistent procedural style and clean modular design.
 
 Complexity with secure code structure is solved by avoiding fundamentals such as classes, controllers, namespaces, object-oriented design, routing and view templates.
 
