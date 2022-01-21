@@ -35,7 +35,9 @@
 					'bytes_received',
 					'bytes_sent',
 					'destination_hostname',
-					'id'
+					'id',
+					'node_node_id',
+					'node_process_type'
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
 				'limit' => 1000,
@@ -67,9 +69,21 @@
 					'processed_status' => '1',
 					'processing_process_id' => null
 				);
-				$nodeResourceUsageLogData['bytes_received'] += $nodeProcessNodeUserRequestLog['bytes_received'];
-				$nodeResourceUsageLogData['bytes_sent'] += $nodeProcessNodeUserRequestLog['bytes_sent'];
-				$nodeResourceUsageLogData['request_count']++;
+				$nodeResourceUsageLogCreatedTimestamp = date('Y-m-d H:i', $nodeResourceUsageLogCreatedTimestamp);
+				$nodeResourceUsageLogCreatedTimestamp = substr($nodeResourceUsageLogCreatedTimestamp, 0, 15) . '0:00';
+				$nodeResourceUsageLogCreatedTimestamp = strtotime($nodeResourceUsageLogCreatedTimestamp);
+
+				if (empty($nodeResourceUsageLogData[$nodeResourceUsageLogCreatedTimestamp][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_node_id']]) === true) {
+					$nodeResourceUsageLogData[$nodeResourceUsageLogCreatedTimestamp][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_node_id']] = array(
+						'bytes_received' => 0,
+						'bytes_sent' => 0,
+						'request_count' => 0
+					);
+				}
+
+				$nodeResourceUsageLogData[$nodeResourceUsageLogCreatedTimestamp][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_node_id']]['bytes_received'] += $nodeProcessNodeUserRequestLog['bytes_received'];
+				$nodeResourceUsageLogData[$nodeResourceUsageLogCreatedTimestamp][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_node_id']]['bytes_sent'] += $nodeProcessNodeUserRequestLog['bytes_sent'];
+				$nodeResourceUsageLogData[$nodeResourceUsageLogCreatedTimestamp][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_node_id']]['request_count']++;
 			}
 
 			_save(array(
@@ -79,8 +93,8 @@
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
-		$parameters['data'] = $nodeProcessNodeUserRequestLogData;
 		// todo: $parameters['node']['id'] as node_node_id grouped by created_timestamp
+		$parameters['data'] = $nodeProcessNodeUserRequestLogData;
 		$response = _addNodeResourceUsageLog($parameters, $response);
 		_update(array(
 			'data' => array(
