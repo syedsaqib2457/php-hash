@@ -81,7 +81,7 @@
 
 		$parameters['data'] = $nodeProcessNodeUserRequestLogData;
 		// todo: $parameters['node']['id'] as node_node_id grouped by created_timestamp
-		$response = _processNodeProcessNodeUserRequestLog($parameters, $response);
+		$response = _addNodeResourceUsageLog($parameters, $response);
 		_update(array(
 			'data' => array(
 				'processing_process_id' => null
