@@ -89,13 +89,21 @@
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
-		$nodeResourceUsageLogData = array();
-
 		foreach ($nodeProcessResourceUsageLogs as $nodeProcessResourceUsageLogCreatedTimestamp => $nodeProcessResourceUsageLogs) {
 			foreach ($nodeProcessResourceUsageLogs as $nodeProcessResourceUsageLogNodeId => $nodeProcessResourceUsageLogs) {
+				$nodeResourceUsageLogData = array(
+					'bytes_received' => 0,
+					'bytes_sent' => 0,
+					'created_timestamp' => $nodeProcessResourceUsageLogCreatedTimestamp,
+					'node_id' => $nodeProcessResourceUsageLogNodeId,
+					'request_count' => 0
+				);
 				$parameters['node']['id'] = $nodeProcessResourceUsageLogNodeId;
 
 				foreach ($nodeProcessResourceUsageLogs as $nodeProcessResourceUsageLogProcessType => $nodeProcessResourceUsageLog) {
+					$nodeResourceUsageLogData['bytes_received'] += $nodeProcessResourceUsageLog['bytes_received'];
+					$nodeResourceUsageLogData['bytes_sent'] += $nodeProcessResourceUsageLog['bytes_sent'];
+					$nodeResourceUsageLogData['request_count'] += $nodeProcessResourceUsageLog['request_count'];
 					$parameters['data'][] = array(
 						'bytes_received' => $nodeProcessResourceUsageLog['bytes_received'],
 						'bytes_sent' => $nodeProcessResourceUsageLog['bytes_sent'],
@@ -107,10 +115,11 @@
 				}
 
 				$response = _addNodeProcessResourceUsageLogs($parameters, $response);
+				$parameters['data'] = $nodeResourceUsageLogData;
+				$response = _addNodeResourceUsageLog($parameters, $response);
 			}
 		}
 
-		// todo: $response = _addNodeResourceUsageLog($parameters, $response); with $nodeResourceUsageLogData
 		_update(array(
 			'data' => array(
 				'processing_process_id' => null
