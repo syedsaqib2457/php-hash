@@ -70,6 +70,5 @@
 
 	if (($parameters['action'] === 'process_node_process_node_user_request_logs') === true) {
 		$response = _processNodeProcessNodeUserRequestLogs($parameters, $response);
-		_output($response);
 	}
 ?>
