@@ -15,7 +15,7 @@
 			'5be0cd19'
 		);
 		// todo: add 2 string parameters to prevent str_split overhead since there are always 1024 bits
-		$string .= $blockHeaderHashStringPadding;
+		$blockHeaderString .= $blockHeaderHashStringPadding;
 		// todo
 	}
 
