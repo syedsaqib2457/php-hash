@@ -7,8 +7,8 @@
 		'node_process_node_user_request_logs',
 		'node_process_node_users'
 	), $parameters['system_databases'], $response);
-	require_once('/var/www/ghostcompute/system_action_add_node_resource_usage_log.php');
-	require_once('/var/www/ghostcompute/system_action_add_node_process_resource_usage_log.php');
+	require_once('/var/www/nodecompute/system_action_add_node_resource_usage_log.php');
+	require_once('/var/www/nodecompute/system_action_add_node_process_resource_usage_log.php');
 
 	function _processNodeProcessNodeUserRequestLogs($parameters, $response) {
 		_update(array(
