@@ -6,7 +6,7 @@
 	$parameters['system_databases'] += _connect(array(
 		'node_request_destinations'
 	), $parameters['system_databases'], $response);
-	require_once('/var/www/ghostcompute/system_action_validate_hostname.php');
+	require_once('/var/www/nodecompute/system_action_validate_hostname.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
 		if (empty($parameters['data']['hostname']) === true) {
