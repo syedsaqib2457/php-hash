@@ -6,7 +6,7 @@
 	$parameters['system_databases'] += _connect(array(
 		'node_processes'
 	), $parameters['system_databases'], $response);
-	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
+	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
 
 	function _editNodeProcess($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
@@ -28,9 +28,9 @@
 				(is_string($parameters['data']['type']) === false) ||
 				(in_array($parameters['data']['type'], array(
 					'bitcoin_cryptocurrency',
+					'bitcoin_cash_cryptocurrency',
 					'http_proxy',
 					'load_balancer',
-					'monero_cryptocurrency',
 					'recursive_dns',
 					'socks_proxy'
 				)) === false)
