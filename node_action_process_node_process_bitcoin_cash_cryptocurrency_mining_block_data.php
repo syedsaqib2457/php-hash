@@ -8,6 +8,7 @@
 	function _createHashString($hexidecimalString, $convertInputToBinary = false, $convertOutputToBinary = false) {
 		// todo: read PHP source to encode raw binary data as a string value for the same output as hash('sha256', raw_binary_data)
 		// todo: optimize sha256 specifically for bitcoin hashing (e.g. splitting into 512 blocks isn't required)
+		// bit counts are static 640 for block header + 512 for concatenated merkle root hashes
 		$hexidecimalBinaryValues = array(
 			'0' => '0000',
 			'1' => '0001',
