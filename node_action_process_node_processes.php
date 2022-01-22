@@ -152,11 +152,11 @@
 
 			foreach ($firewallRuleParts as $firewallRulePart) {
 				$firewallRulePart = implode("\n", $firewallRulePart);
-				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
+				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
 			}
 
-			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
-			unlink('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
+			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
+			unlink('/usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
 			sleep(1);
 		}
 
@@ -273,8 +273,8 @@
 			}
 		}
 
-		if (file_exists('/usr/local/ghostcompute/system_action_process_node_current_response.json') === true) {
-			$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_current_response.json');
+		if (file_exists('/usr/local/nodecompute/system_action_process_node_current_response.json') === true) {
+			$systemActionProcessNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_current_response.json');
 			$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 			if (empty($systemActionProcessNodeResponse) === false) {
@@ -292,16 +292,16 @@
 			return $response;
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=600 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=600 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
-		if (file_exists('/usr/local/ghostcompute/system_action_process_node_next_response.json') === false) {
+		if (file_exists('/usr/local/nodecompute/system_action_process_node_next_response.json') === false) {
 			$response['message'] = 'Error processing node, please try again.';
 			return $response;
 		}
 
-		$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_next_response.json');
+		$systemActionProcessNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_next_response.json');
 		$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
-		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
+		unlink('/usr/local/nodecompute/system_action_process_node_next_response.json');
 
 		if ($systemActionProcessNodeResponse === false) {
 			$response['message'] = 'Error processing node, please try again.';
@@ -329,7 +329,7 @@
 							$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 						}
 
-						require_once('/usr/local/ghostcompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
+						require_once('/usr/local/nodecompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
 					}
 				}
 
