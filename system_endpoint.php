@@ -28,7 +28,7 @@
 			_output($response);
 		}
 
-		require_once('/var/www/ghostcompute/system_databases.php');
+		require_once('/var/www/nodecompute/system_databases.php');
 
 		if (empty($parameters['action']) === true) {
 			$response['message'] = 'System endpoint request must have an action, please try again.';
@@ -39,7 +39,7 @@
 
 		if (
 			(ctype_alnum($systemAction) === false) ||
-			(file_exists('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php') === false)
+			(file_exists('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid system endpoint request action, please try again.';
 			_output($response);
@@ -138,7 +138,7 @@
 				_output($response);
 			}
 
-			require_once('/var/www/ghostcompute/system_action_validate_ip_address_version_number.php');
+			require_once('/var/www/nodecompute/system_action_validate_ip_address_version_number.php');
 			$parameters['source'] = array(
 				'ip_address' => $_SERVER['REMOTE_ADDR'],
 				'ip_address_version_number' => '4'
@@ -180,7 +180,7 @@
 
 		$parameters['process_id'] = getmypid();
 		$response['authenticated_status'] = '1';
-		require_once('/var/www/ghostcompute/system_action_' . $parameters['action'] . '.php');
+		require_once('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php');
 	}
 
 	_output($response);
