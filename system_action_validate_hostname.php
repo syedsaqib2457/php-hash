@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	require_once('/var/www/ghostcompute/system_action_validate_ip_address_version_number.php');
+	require_once('/var/www/nodecompute/system_action_validate_ip_address_version_number.php');
 
 	function _validateHostname($hostname, $allowIpAddress = false) {
 		$response = false;
