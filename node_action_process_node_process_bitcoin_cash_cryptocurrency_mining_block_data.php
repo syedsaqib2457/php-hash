@@ -45,7 +45,7 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'] = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'], 8, '0', STR_PAD_LEFT);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version']);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionCount = 1;
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height'] . '67686f7374636f6d70757465';
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height'] . '6e6f6465636f6d70757465';
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript + 1]) / 2);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize, 2, '0', STR_PAD_LEFT);
