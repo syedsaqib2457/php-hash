@@ -7,7 +7,7 @@
 		'node_processes',
 		'nodes'
 	), $parameters['system_databases'], $response);
-	require_once('/var/www/ghostcompute/system_action_validate_port_number.php');
+	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
 
 	function _addNodeProcess($parameters, $response) {
 		if (empty($parameters['data']['node_id']) === true) {
