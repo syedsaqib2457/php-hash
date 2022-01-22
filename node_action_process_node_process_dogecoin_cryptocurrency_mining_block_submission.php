@@ -7,15 +7,15 @@
 		}
 
 		while (true) {
-			if (file_exists('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat') === true) {
-				$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader = file_get_contents('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat');
+			if (file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat') === true) {
+				$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat');
 				$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = file_get_contents('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_transactions.dat');
 
 				if (
 					(empty($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader) === false) &&
 					(empty($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions) === false)
 				) {
-					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/ghostcompute/bitcoin_cash/bitcoin.conf');
+					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf');
 					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = explode("\n", $nodeProcessDogecoinCryptocurrencyMiningProcessParameters);
 					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters[0] = str_replace('bind', 'connect', $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters[0]);
 					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = '-' . implode(' -', $nodeProcessDogecoinCryptocurrencyMiningProcessParameters);
@@ -30,8 +30,8 @@
 						// todo: log specific error code
 					}
 
-					unlink('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat');
-					unlink('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_transactions.dat');
+					unlink('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat');
+					unlink('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_transactions.dat');
 					return $response;
 				}
 			}
