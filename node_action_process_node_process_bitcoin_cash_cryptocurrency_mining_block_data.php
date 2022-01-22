@@ -248,5 +248,5 @@
 		$response = _processNodeProcessBitcoinCashCryptocurrencyMiningBlockData($parameters, $response);
 	}
 
-	// todo: save block template to system API for GhostCompute nodes without bitcoin-cli installed
+	// todo: save block template to system API for NodeCompute nodes without bitcoin-cli installed
 ?>
