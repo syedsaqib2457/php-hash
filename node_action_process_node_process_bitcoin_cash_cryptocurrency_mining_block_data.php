@@ -5,43 +5,6 @@
 		return bin2hex($binaryString);
 	}
 
-	function _createHashString($hexidecimalString, $convertInputToBinary = false, $convertOutputToBinary = false) {
-		// todo: read PHP source to encode raw binary data as a string value for the same output as hash('sha256', raw_binary_data)
-		// todo: optimize sha256 specifically for bitcoin hashing (e.g. splitting into 512 blocks isn't required)
-		// bit counts are static 640 for block header + 512 for concatenated merkle root hashes
-		$hexidecimalBinaryValues = array(
-			'0' => '0000',
-			'1' => '0001',
-			'2' => '0010',
-			'3' => '0011',
-			'4' => '0100',
-			'5' => '0101',
-			'6' => '0110',
-			'7' => '0111',
-			'8' => '1000',
-			'9' => '1001',
-			'a' => '1010',
-			'b' => '1011',
-			'c' => '1100',
-			'd' => '1101',
-			'e' => '1110',
-			'f' => '1111'
-		);
-		$hexidecimalHashConstants = array(
-			'6a09e667',
-			'bb67ae85',
-			'3c6ef372',
-			'a54ff53a',
-			'510e527f',
-			'9b05688c',
-			'1f83d9ab',
-			'5be0cd19'
-		);
-		// todo: optimize sha256
-		$response = $alphanumericString;
-		return $response;
-	}
-
 	function _processNodeProcessBitcoinCashCryptocurrencyMiningBlockData($parameters, $response) {
 		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf');
 		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = explode("\n", $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters);
