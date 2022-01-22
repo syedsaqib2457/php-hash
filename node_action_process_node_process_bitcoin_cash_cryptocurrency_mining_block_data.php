@@ -6,7 +6,7 @@
 	}
 
 	function _processNodeProcessBitcoinCashCryptocurrencyMiningBlockData($parameters, $response) {
-		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/ghostcompute/bitcoin_cash/bitcoin.conf');
+		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf');
 		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = explode("\n", $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters);
 		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = '-' . implode(' -', $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters);
 		exec('sudo bitcoin-cli ' . $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters . ' getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
@@ -18,7 +18,7 @@
 			return $response;
 		}
 
-		if (file_put_contents('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_next_block_height.dat', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['height']) === false) {
+		if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_next_block_height.dat', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['height']) === false) {
 			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency mining block template next block height, please try again.';
 			return $response;
 		}
@@ -181,13 +181,13 @@
 
 		if (
 			($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader === false) ||
-			(file_put_contents('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.json', $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader) === false)
+			(file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.json', $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader) === false)
 		) {
 			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency mining block header, please try again.';
 			return $response;
 		}
 
-		if (file_put_contents('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_block_transactions.dat', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions) === false) {
+		if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_transactions.dat', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions) === false) {
 			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency mining block transactions, please try again.';
 			return $response;
 		}
@@ -205,29 +205,29 @@
 		}
 
 		$crontabCommands = explode("\n", $crontabCommands);
-		$crontabCommandIndex = array_search('# ghostcompute_node_process_bitcoin_cash_cryptocurrency_mining', $crontabCommands);
+		$crontabCommandIndex = array_search('# nodecompute_node_process_bitcoin_cash_cryptocurrency_mining', $crontabCommands);
 
 		if (is_int($crontabCommandIndex) === true) {
 			while (is_int($crontabCommandIndex) === true) {
 				unset($crontabCommands[$crontabCommandIndex]);
 				$crontabCommandIndex++;
 
-				if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_node_process_bitcoin_cash_cryptocurrency_mining') === false) {
+				if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_node_process_bitcoin_cash_cryptocurrency_mining') === false) {
 					$crontabCommandIndex = false;
 				}
 			}
 		}
 
 		$crontabCommands += array(
-			'# ghostcompute_node_process_bitcoin_cash_cryptocurrency_mining',
-			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_mining_processes 5 ghostcompute_node_process_bitcoin_cash_cryptocurrency_mining'
+			'# nodecompute_node_process_bitcoin_cash_cryptocurrency_mining',
+			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_mining_processes 5 nodecompute_node_process_bitcoin_cash_cryptocurrency_mining'
 		);
 		$crontabCommandIndexes = range(0, 2); // todo: make this based on user input + increment based on free resources
 		$crontabCommandDelayIndexes = range(0, 55, 5);
 
 		foreach ($crontabCommandIndexes as $crontabCommandIndex) {
 			foreach ($crontabCommandDelayIndexes as $crontabCommandDelayIndex) {
-				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/ghostcompute/node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php _' . $nodeProcessBitcoinCashCryptocurrencyBlockTemplate['height'] . ' ghostcompute_node_process_bitcoin_cash_cryptocurrency_mining';
+				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php _' . $nodeProcessBitcoinCashCryptocurrencyBlockTemplate['height'] . ' nodecompute_node_process_bitcoin_cash_cryptocurrency_mining';
 			}
 		}
 
