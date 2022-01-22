@@ -101,9 +101,9 @@
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils cron curl git iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
-		shell_exec('sudo rm -rf /var/www/ghostcompute/');
-		mkdir('/var/www/ghostcompute/');
-		chmod('/var/www/ghostcompute/', 0755);
+		shell_exec('sudo rm -rf /var/www/nodecompute/');
+		mkdir('/var/www/nodecompute/');
+		chmod('/var/www/nodecompute/', 0755);
 		$uniqueId = '_' . uniqid();
 		$binaries = array(
 			array(
@@ -182,13 +182,13 @@
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
 
-			if (file_put_contents('/var/www/ghostcompute/system_action_deploy_system_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
+			if (file_put_contents('/var/www/nodecompute/system_action_deploy_system_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
 				echo 'Error adding binary file list commands, please try again.' . "\n";
 				exit;
 			}
 
-			chmod('/var/www/ghostcompute/system_action_deploy_system_binary_file_list_commands.sh', 0755);
-			exec('cd /var/www/ghostcompute/ && sudo ./system_action_deploy_system_binary_file_list_commands.sh', $binaryFile);
+			chmod('/var/www/nodecompute/system_action_deploy_system_binary_file_list_commands.sh', 0755);
+			exec('cd /var/www/nodecompute/ && sudo ./system_action_deploy_system_binary_file_list_commands.sh', $binaryFile);
 			$binaryFile = current($binaryFile);
 
 			if (empty($binaryFile) === true) {
@@ -201,7 +201,7 @@
 			$binaryFiles[$binary['name']] = $binaryFile;
 		}
 
-		unlink('/var/www/ghostcompute/system_action_deploy_system_binary_file_list_commands.sh');
+		unlink('/var/www/nodecompute/system_action_deploy_system_binary_file_list_commands.sh');
 		$kernelSettings = array(
 			'fs.aio-max-nr = 1000000000',
 			'fs.file-max = 1000000000',
@@ -339,15 +339,15 @@
 		shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
-		shell_exec('cd /var/www/ghostcompute/ && sudo wget -O mysql_apt_config.deb --no-dns-cache --retry-connrefused --timeout=60 --tries=2 https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
+		shell_exec('cd /var/www/nodecompute/ && sudo wget -O mysql_apt_config.deb --no-dns-cache --retry-connrefused --timeout=60 --tries=2 https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
 
-		if (file_exists('/var/www/ghostcompute/mysql_apt_config.deb') === false) {
+		if (file_exists('/var/www/nodecompute/mysql_apt_config.deb') === false) {
 			echo 'Error downloading MySQL, please try again.' . "\n";
 			exit;
 		}
 
-		shell_exec('cd /var/www/ghostcompute/ && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql_apt_config.deb');
-		unlink('/var/www/ghostcompute/mysql_apt_config.deb');
+		shell_exec('cd /var/www/nodecompute/ && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql_apt_config.deb');
+		unlink('/var/www/nodecompute/mysql_apt_config.deb');
 		shell_exec('sudo add-apt-repository -y universe');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libmecab2');
@@ -384,8 +384,8 @@
 			'<VirtualHost *:80>',
 			'ServerAlias ' . $_SERVER['argv'][1],
 			'ServerName ' . $_SERVER['argv'][1],
-			'DocumentRoot /var/www/ghostcompute/',
-			'<Directory /var/www/ghostcompute/>',
+			'DocumentRoot /var/www/nodecompute/',
+			'<Directory /var/www/nodecompute/>',
 			'Allow from all',
 			'Options FollowSymLinks',
 			'AllowOverride All',
@@ -403,9 +403,9 @@
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
-		shell_exec('cd /var/www/ghostcompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/nodecompute/nodecompute .');
+		shell_exec('cd /var/www/nodecompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/nodecompute/nodecompute .');
 
-		if (file_exists('/var/www/ghostcompute/readme.md') === false) {
+		if (file_exists('/var/www/nodecompute/readme.md') === false) {
 			echo 'Error downloading system files, please try again.' . "\n";
 			exit;
 		}
@@ -423,22 +423,22 @@
 		}
 
 		$crontabCommands = explode("\n", $crontabCommands);
-		$crontabCommandIndex = array_search('# ghostcompute_default', $crontabCommands);
+		$crontabCommandIndex = array_search('# nodecompute_default', $crontabCommands);
 
 		if (is_int($crontabCommandIndex) === true) {
 			while (is_int($crontabCommandIndex) === true) {
 				unset($crontabCommands[$crontabCommandIndex]);
 				$crontabCommandIndex++;
 
-				if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_default') === false) {
+				if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_default') === false) {
 					$crontabCommandIndex = false;
 				}
 			}
 		}
 
 		$crontabCommands += array(
-			'# ghostcompute_default',
-			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/ghostcompute/system_action_process_system_action.php process_node_request_logs',
+			'# nodecompute_default',
+			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_system_action.php process_node_request_logs',
 			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab'
 		);
 		$crontabCommands = implode("\n", $crontabCommands);
@@ -604,13 +604,13 @@
 		);
 		$gcloudBinaryFileListCommands = implode("\n", $gcloudBinaryFileListCommands);
 
-		if (file_put_contents('/var/www/ghostcompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFileListCommands) === false) {
+		if (file_put_contents('/var/www/nodecompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFileListCommands) === false) {
 			echo 'Error adding gcloud binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/var/www/ghostcompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', 0755);
-		exec('cd /var/www/ghostcompute/ && sudo ./system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFile);
+		chmod('/var/www/nodecompute/system_action_deploy_system_gcloud_binary_file_list_commands.sh', 0755);
+		exec('cd /var/www/nodecompute/ && sudo ./system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFile);
 		$gcloudBinaryFile = current($gcloudBinaryFile);
 
 		if (empty($gcloudBinaryFile) === false) {
@@ -646,36 +646,36 @@
 			}
 
 			$firewallRules[] = 'COMMIT';
-			unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
-			touch('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+			unlink('/var/www/nodecompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+			touch('/var/www/nodecompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 			$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 			foreach ($firewallRuleParts as $firewallRulePart) {
 				$firewallRulePart = implode("\n", $firewallRulePart);
-				shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+				shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/nodecompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 			}
 
-			shell_exec('sudo ' . $firewallBinaryFiles[$ipAddressVersionNumber] . ' < /var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
-			unlink('/var/www/ghostcompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+			shell_exec('sudo ' . $firewallBinaryFiles[$ipAddressVersionNumber] . ' < /var/www/nodecompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+			unlink('/var/www/nodecompute/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
 			sleep(1);
 		}
 	} else {
 		$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password');
 
 		if ($systemDatabaseConnection === false) {
-			echo 'Error connecting to system database, please try again.';
+			echo 'Error connecting to system database, please try again.' . "\n";
 			exit;
 		}
 
-		if (mysqli_query($systemDatabaseConnection, 'CREATE DATABASE IF NOT EXISTS `ghostcompute` CHARSET UTF8') === false) {
-			echo 'Error creating system database, please try again.';
+		if (mysqli_query($systemDatabaseConnection, 'CREATE DATABASE IF NOT EXISTS `nodecompute` CHARSET UTF8') === false) {
+			echo 'Error creating system database, please try again.' . "\n";
 			exit;
 		}
 
-		$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'ghostcompute');
+		$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'nodecompute');
 
 		if ($systemDatabaseConnection === false) {
-			echo 'Error connecting to system database, please try again.';
+			echo 'Error connecting to system database, please try again.' . "\n";
 			exit;
 		}
 
@@ -1118,7 +1118,7 @@
 			$systemDatabaseCommandResponse = mysqli_query($systemDatabaseConnection, 'SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = \'' . $systemDatabaseTableName . '\'');
 
 			if (empty($systemDatabaseCommandResponse->num_rows) === true) {
-				echo 'Error executing system database commands, please try again.';
+				echo 'Error executing system database commands, please try again.' . "\n";
 				exit;
 			}
 
@@ -1129,7 +1129,7 @@
 			$systemDatabaseColumnNameCount = (key($systemDatabaseColumnNames) + 1);
 
 			if (($systemDatabaseCommandResponse === $systemDatabaseColumnNameCount) === false) {
-				echo 'Error executing system database commands, please try again.';
+				echo 'Error executing system database commands, please try again.' . "\n";
 				exit;
 			}
                 }
@@ -1195,7 +1195,7 @@
 			}
 		}
 
-		$systemFiles = scandir('/var/www/ghostcompute/');
+		$systemFiles = scandir('/var/www/nodecompute/');
 
 		foreach ($systemFiles as $systemFile) {
 			if ((substr($systemFile, 0, 13) === 'system_action') === true) {
@@ -1220,7 +1220,7 @@
 				$systemDatabaseRowColumnValues = implode('\', \'', $systemDatabaseRowColumnValues);
 
 				if (mysqli_query($systemDatabaseConnection, 'INSERT IGNORE INTO `' . $systemDatabaseTableName . '` (`' . $systemDatabaseRowColumnNames . '`) VALUES (\'' . $systemDatabaseRowColumnValues . '\')') === false) {
-					echo 'Error adding system database data, please try again.';
+					echo 'Error adding system database data, please try again.' . "\n";
 					exit;
 				}
 			}
