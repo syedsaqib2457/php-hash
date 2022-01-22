@@ -14,13 +14,13 @@
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
 
-		if (file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $killProcessCommands) === false) {
+		if (file_put_contents('/usr/local/nodecompute/node_action_deploy_node_commands.sh', $killProcessCommands) === false) {
 			echo 'Error adding kill process ID commands, please try again.' . "\n";
 			exit;
 		}
 
-		shell_exec('sudo chmod +x /usr/local/ghostcompute/node_action_deploy_node_commands.sh');
-		shell_exec('cd /usr/local/ghostcompute/ && sudo ./node_action_deploy_node_commands.sh');
+		shell_exec('sudo chmod +x /usr/local/nodecompute/node_action_deploy_node_commands.sh');
+		shell_exec('cd /usr/local/nodecompute/ && sudo ./node_action_deploy_node_commands.sh');
 		return;
 	}
 
@@ -97,10 +97,10 @@
 		exit;
 	}
 
-	mkdir('/usr/local/ghostcompute/');
-	chmod('/usr/local/ghostcompute/', 0755);
+	mkdir('/usr/local/nodecompute/');
+	chmod('/usr/local/nodecompute/', 0755);
 
-	if (is_dir('/usr/local/ghostcompute/') === false) {
+	if (is_dir('/usr/local/nodecompute/') === false) {
 		echo 'Error adding root directory, please try again.' . "\n";
 		exit;
 	}
@@ -197,13 +197,13 @@
 		);
 		$commands = implode("\n", $commands);
 
-		if (file_put_contents('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', $commands) === false) {
+		if (file_put_contents('/usr/local/nodecompute/node_action_deploy_node_commands.sh', $commands) === false) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/usr/local/ghostcompute/node_action_deploy_node_commands.sh', 0755);
-		exec('cd /usr/local/ghostcompute/ && sudo ./node_action_deploy_node_commands.sh', $binaryFile);
+		chmod('/usr/local/nodecompute/node_action_deploy_node_commands.sh', 0755);
+		exec('cd /usr/local/nodecompute/ && sudo ./node_action_deploy_node_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -217,14 +217,14 @@
 	}
 
 	shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w vm.overcommit_memory=0');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_activate_node_response.json --no-dns-cache --post-data "json={\"action\":\"activate_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --retry-connrefused --timeout=60 --tries=2 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
-	if (file_exists('/usr/local/ghostcompute/system_action_activate_node_response.json') === false) {
+	if (file_exists('/usr/local/nodecompute/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionActivateNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_activate_node_response.json');
+	$systemActionActivateNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_activate_node_response.json');
 	$systemActionActivateNodeResponse = json_decode($systemActionActivateNodeResponse, true);
 
 	if (empty($systemActionActivateNodeResponse['message']) === true) {
@@ -238,14 +238,14 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_response.json --no-dns-cache --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=600 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_response.json --no-dns-cache --post-data "json={\"action\":\"process_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=600 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
-	if (file_exists('/usr/local/ghostcompute/system_action_process_node_response.json') === false) {
+	if (file_exists('/usr/local/nodecompute/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionProcessNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_response.json');
+	$systemActionProcessNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_response.json');
 	$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 	if (empty($systemActionProcessNodeResponse['message']) === true) {
