@@ -146,8 +146,8 @@
 
 			$firewallRules[] = '-A PREROUTING -i ' . $parameters['interface_name'] . ' -m set ! --match-set _ dst,src -j DROP';
 			$firewallRules[] = 'COMMIT';
-			unlink('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
-			touch('/usr/local/ghostcompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
+			unlink('/usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
+			touch('/usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.txt');
 			$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 			foreach ($firewallRuleParts as $firewallRulePart) {
@@ -536,7 +536,7 @@
 		array_unshift($nodeInterfaces, '<?php');
 		$nodeInterfaces = implode("\n", $nodeInterfaces);
 
-		if (file_put_contents('/usr/local/ghostcompute/node_interfaces.php', $nodeInterfaces) === false) {
+		if (file_put_contents('/usr/local/nodecompute/node_interfaces.php', $nodeInterfaces) === false) {
 			$response['message'] = 'Error adding node interfaces, please try again.';
 			return $response;
 		}
@@ -804,7 +804,7 @@
 
 		$nodeRecursiveDnsDestinations = implode("\n", $nodeRecursiveDnsDestinations);
 
-		if (file_put_contents('/usr/local/ghostcompute/resolv.conf', $nodeRecursiveDnsDestinations) === false) {
+		if (file_put_contents('/usr/local/nodecompute/resolv.conf', $nodeRecursiveDnsDestinations) === false) {
 			$response['message'] = 'Error adding node recursive DNS destinations, please try again.';
 			return $response;
 		}
@@ -1140,7 +1140,7 @@
 
 		if (
 			($encodedSystemActionProcessNodeResponse === false) ||
-			(file_put_contents('/usr/local/ghostcompute/system_action_process_node_current_response.json', $encodedSystemActionProcessNodeResponse) === false)
+			(file_put_contents('/usr/local/nodecompute/system_action_process_node_current_response.json', $encodedSystemActionProcessNodeResponse) === false)
 		) {
 			$response['message'] = 'Error processing node, please try again.';
 			return $response;
@@ -1152,7 +1152,7 @@
 
 		$systemActionProcessNodeParameters['data']['processing_status'] = '0';
 		_updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-		unlink('/usr/local/ghostcompute/system_action_process_node_next_response.json');
+		unlink('/usr/local/nodecompute/system_action_process_node_next_response.json');
 		unset($systemActionProcessNodeResponse['data']);
 		$response = $systemActionProcessNodeResponse;
 		return $response;
@@ -1177,11 +1177,11 @@
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_process_node_processing_status_' . $processId . '_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 		}
 
-		if (file_exists('/usr/local/ghostcompute/system_action_process_node_processing_status_' . $processId . '_response.json') === true) {
-			$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/ghostcompute/system_action_process_node_processing_status_' . $processId . '_response.json');
+		if (file_exists('/usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json') === true) {
+			$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json');
 			$systemActionProcessNodeProcessingStatusResponse = json_decode($systemActionProcessNodeResponse, true);
 
 			if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
@@ -1211,14 +1211,14 @@
 					'http_proxy' => '-x',
 					'socks_proxy' => '--socks5-hostname'
 				);
-				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://ghostcompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://nodecompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 				$response = (empty($proxyNodeProcessResponse) === true);
 				break;
 			case 'monero_cryptocurrency':
 				break;
 			case 'recursive_dns':
 				// todo: add dig to $parameters['binary_files']
-				exec('dig -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 ghostcompute @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+				exec('dig -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 nodecompute @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 				$response = (empty($recursiveDnsNodeProcessResponse) === false);
 				break;
 		}
