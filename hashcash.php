@@ -3,6 +3,7 @@
 	// todo: remove this file and place code in https://github.com/nodecompute/nodecompute/blob/main/node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php in compressed format
 
 	function hashcash($string) {
+		$string .= "\x80";
 		// todo
 	}
 
