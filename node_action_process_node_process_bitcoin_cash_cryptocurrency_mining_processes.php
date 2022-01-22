@@ -29,7 +29,7 @@
 		}
 
 		while (true) {
-			$nodeProcessBitcoinCashCryptocurrencyMiningNextBlockHeight = file_get_contents('/usr/local/ghostcompute/node_process_bitcoin_cash_cryptocurrency_mining_next_block_height.dat');
+			$nodeProcessBitcoinCashCryptocurrencyMiningNextBlockHeight = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_next_block_height.dat');
 
 			if ($nodeProcessBitcoinCashCryptocurrencyMiningNextBlockHeight === false) {
 				$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency mining block height, please try again.';
