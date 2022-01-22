@@ -17,7 +17,7 @@
 
 		if (
 			(ctype_alnum(str_replace('_', '', $parameters['data']['system_action'])) === false) ||
-			(file_exists('/var/www/ghostcompute/system_action_' . $parameters['data']['system_action'] . '.php') === false)
+			(file_exists('/var/www/nodecompute/system_action_' . $parameters['data']['system_action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid system user authentication token scope system action, please try again.';
 			return $response;
