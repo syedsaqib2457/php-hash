@@ -110,10 +110,10 @@
 		$encodedSystemParameters = json_encode($systemParameters);
 
 		if (empty($encodedSystemParameters) === false) {
-			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/ghostcompute/system_action_add_node_process_resource_usage_logs_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_add_node_process_resource_usage_logs_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
-			if (file_exists('/usr/local/ghostcompute/system_action_add_node_process_resource_usage_logs_response.json') === true) {
-				$systemActionProcessNodeProcessResourceUsageLogResponse = file_get_contents('/usr/local/ghostcompute/system_action_add_node_process_resource_usage_logs_response.json');
+			if (file_exists('/usr/local/nodecompute/system_action_add_node_process_resource_usage_logs_response.json') === true) {
+				$systemActionProcessNodeProcessResourceUsageLogResponse = file_get_contents('/usr/local/nodecompute/system_action_add_node_process_resource_usage_logs_response.json');
 				$systemActionProcessNodeProcessResourceUsageLogResponse = json_decode($systemActionProcessNodeProcessResourceUsageLogResponse, true);
 
 				if (empty($systemActionProcessNodeProcessResourceUsageLogResponse) === false) {
