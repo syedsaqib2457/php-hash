@@ -282,12 +282,12 @@
 	// todo: add interface IPs in JSON file with node_action_process_node_network_interface_ip_addresses.php file executed in crontab every 5 minutes because binary path listing may fail on @reboot
 	$nodeActionProcessNetworkInterfaceIpAddresses = implode('\'); shell_exec(\'', $nodeActionProcessNetworkInterfaceIpAddresses);
 
-	if (file_put_contents('/usr/local/ghostcompute/node_action_process_network_interface_ip_addresses.php', '<?php shell_exec(\'' . $nodeActionProcessNetworkInterfaceIpAddresses . '\'); ?>') === false) {
+	if (file_put_contents('/usr/local/nodecompute/node_action_process_network_interface_ip_addresses.php', '<?php shell_exec(\'' . $nodeActionProcessNetworkInterfaceIpAddresses . '\'); ?>') === false) {
 		echo 'Error processing network interface IP addresses, please try again.' . "\n";
 		exit;
 	}
 
-	shell_exec('sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_action_process_network_interface_ip_addresses.php');
+	shell_exec('sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_action_process_network_interface_ip_addresses.php');
 	$recursiveDnsNodeProcessDefaultServiceName = 'named';
 
 	if (is_dir('/etc/default/bind9/') === true) {
@@ -312,9 +312,9 @@
 	);
 
 	foreach ($nodeFiles as $nodeFile) {
-		shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/' . $nodeFile . ' --no-dns-cache --post-data "json={\"action\":\"download_node_file_contents\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\",\"where\":{\"node_file\":\"' . $nodeFile . '\"}}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+		shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --no-dns-cache --post-data "json={\"action\":\"download_node_file_contents\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\",\"where\":{\"node_file\":\"' . $nodeFile . '\"}}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
-		if (file_exists('/usr/local/ghostcompute/' . $nodeFile) === false) {
+		if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
 			echo 'Error downloading node file contents, please try again.' . "\n";
 			exit;
 		}
@@ -347,27 +347,27 @@
 	}
 
 	$crontabCommands = explode("\n", $crontabCommands);
-	$crontabCommandIndex = array_search('# ghostcompute_default', $crontabCommands);
+	$crontabCommandIndex = array_search('# nodecompute_default', $crontabCommands);
 
 	if (is_int($crontabCommandIndex) === true) {
 		while (is_int($crontabCommandIndex) === true) {
 			unset($crontabCommands[$crontabCommandIndex]);
 			$crontabCommandIndex++;
 
-			if (strpos($crontabCommands[$crontabCommandIndex], ' ghostcompute_default') === false) {
+			if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_default') === false) {
 				$crontabCommandIndex = false;
 			}
 		}
 	}
 
 	$crontabCommands += array(
-		'# ghostcompute_default',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_process_node_user_request_logs ghostcompute_default',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_process_resource_usage_logs ghostcompute_default',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_processes ghostcompute_default',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_node_resource_usage_logs ghostcompute_default',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_recursive_dns_destination ghostcompute_default',
-		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/ghostcompute/node_endpoint.php process_network_interface_ip_addresses ghostcompute_default'
+		'# nodecompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_node_user_request_logs ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_resource_usage_logs ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_processes ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_resource_usage_logs ghostcompute_default',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_recursive_dns_destination ghostcompute_default',
+		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_network_interface_ip_addresses ghostcompute_default'
 	);
 	$crontabCommands = implode("\n", $crontabCommands);
 
@@ -376,14 +376,14 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/ghostcompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
-	if (file_exists('/usr/local/ghostcompute/system_action_deploy_node_response.json') === false) {
+	if (file_exists('/usr/local/nodecompute/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionDeployNodeResponse = file_get_contents('/usr/local/ghostcompute/system_action_deploy_node_response.json');
+	$systemActionDeployNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_deploy_node_response.json');
 	$systemActionDeployNodeResponse = json_decode($systemActionDeployNodeResponse, true);
 
 	if (empty($systemActionDeployNodeResponse['message']) === true) {
@@ -401,7 +401,7 @@
 		);
 		$nodeData = json_encode($nodeData);
 
-		if (file_put_contents('/usr/local/ghostcompute/node_data.json', $nodeData) === false) {
+		if (file_put_contents('/usr/local/nodecompute/node_data.json', $nodeData) === false) {
 			echo 'Error adding node data, please try again.' . "\n";
 			exit;
 		}
