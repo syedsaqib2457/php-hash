@@ -34,6 +34,16 @@
 			'y' => '01111001',
 			'z' => '01111010'
 		);
+		$hexidecimalHashConstants = array(
+			'6a09e667',
+			'bb67ae85',
+			'3c6ef372',
+			'a54ff53a',
+			'510e527f',
+			'9b05688c',
+			'1f83d9ab',
+			'5be0cd19'
+		);
 		// todo: optimize sha256
 		$response = $alphanumericString;
 		return $response;
