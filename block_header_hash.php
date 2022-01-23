@@ -45,6 +45,10 @@
 		}
 	}
 
+	function _4($_1) {
+		return ($_2($_1, 6) ^ $_2($_1, 11) ^ $_2($_1, 25));
+	}
+
 	$_0 = hex2bin('010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // version + current block header hash + merkle root hash
 	$_0 = str_split($_0, 64);
 	$_1 = "\x80\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\x80";
