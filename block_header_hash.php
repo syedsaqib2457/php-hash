@@ -9,6 +9,7 @@
 			for ($_5 = 0; $_5 < 16; $_5 += 4) {
 				$_6 = (ord($_3[$_5]) << 24) + (ord($_3[($_5 + 1)]) << 16) + (ord($_3[($_5 + 2)]) << 8) + (ord($_3[($_5 + 3)]));
 				$_7 = _3($_4[7], $_4[4]);
+				$_7 = _3($_7, _5($_4[4], $_4[5], $_4[6]));
 				// todo
 			}
 		}
@@ -47,6 +48,10 @@
 
 	function _4($_1) {
 		return ($_2($_1, 6) ^ $_2($_1, 11) ^ $_2($_1, 25));
+	}
+
+	function _5($_1, $_2, $_3) {
+		return (($_1 & $_2) ^ ((~$_1) & $_3));
 	}
 
 	$_0 = hex2bin('010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // version + current block header hash + merkle root hash
