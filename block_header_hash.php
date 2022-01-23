@@ -88,6 +88,10 @@
 		return (_2($_1, 7) ^ _2($_1, 18) ^ _3($_1, 3));
 	}
 
+	function _9($_1) {
+		return (_2($_1, 17) ^ _2($_1, 19) ^ _3($_1, 10));
+	}
+
 	$_0 = hex2bin('010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // version + current block header hash + merkle root hash
 	$_0 = str_split($_0, 64);
 	$_1 = "\x80\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\x80";
