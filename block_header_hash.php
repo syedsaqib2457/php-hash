@@ -17,7 +17,11 @@
 	}
 
 	function _1($_0, $_1) {
-		return ($_0 << (32 - $_1)) & 4294967295);
+		return (_2($_0, $_1) | $_0 << (32 - $_1)) & 4294967295);
+	}
+
+	function _2($_0, $_1) {
+		// todo
 	}
 
 	$_0 = hex2bin('010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // version + current block header hash + merkle root hash
