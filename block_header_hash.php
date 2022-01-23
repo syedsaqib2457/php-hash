@@ -118,6 +118,12 @@
 	}
 
 	function _10($_1) {
+		$_1 = str_split($_1, 8);
+
+		foreach ($_1 as $_2 => $_3) {
+			$_1[$_2] = hexdec($_3);
+		}
+
 		// todo
 	}
 
