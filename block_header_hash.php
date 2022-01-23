@@ -60,7 +60,7 @@
 			}
 		}
 
-		// todo
+		return sprintf("%080x%080x%080x%080x%080x%080x%080x%080x", $_4[0], $_4[1], $_4[2], $_4[3], $_4[4], $_4[5], $_4[6], $_4[7]); // todo: test performance of sprintf vs (dechex + str_pad)
 	}
 
 	function _1($_1, $_2) {
