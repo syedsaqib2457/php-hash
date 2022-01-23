@@ -117,6 +117,10 @@
 		return (_2($_1, 17) ^ _2($_1, 19) ^ _3($_1, 10));
 	}
 
+	function _10($_1) {
+		// todo
+	}
+
 	$_0 = hex2bin('010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // version + current block header hash + merkle root hash
 	$_0 = str_split($_0, 64);
 	$_1 = "\x80\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\x80";
@@ -197,9 +201,8 @@
 		3329325298
 	);
 
-	while (true) { // file execution time is limited instead of wasting resources checking conditions on each loop iteration
-		$_0[1] .= '111111112222222233333333'; // timestamp + bits + nonce placeholders
-		$_0[1] .= $_1; // fast 512-bit padding for each iteration
-		$_4 = _0($_0, $_2, $_3);
-	}
+	$_0[1] .= '111111112222222233333333'; // timestamp + bits + nonce placeholders
+	$_0[1] .= $_1;
+	$_4 = _0($_0, $_2, $_3);
+	// $_5 = _10($_4);
 ?>
