@@ -5,14 +5,14 @@
 	function blockHeaderHash($blockHeaderString, $blockHeaderHashStringPadding) {
 		// bit counts are static 640 for block header + 512 for concatenated merkle root hashes
 		$hexidecimalHashConstants = array(
-			'6a09e667',
-			'bb67ae85',
-			'3c6ef372',
-			'a54ff53a',
-			'510e527f',
-			'9b05688c',
-			'1f83d9ab',
-			'5be0cd19'
+			1779033703,
+			3144134277
+			1013904242,
+			2773480762,
+			1359893119,
+			2600822924,
+			528734635,
+			1541459225
 		);
 		// todo: add 2 string parameters to prevent str_split overhead since there are always 1024 bits
 		$blockHeaderString .= $blockHeaderHashStringPadding;
