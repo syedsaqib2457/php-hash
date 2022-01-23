@@ -8,11 +8,16 @@
 
 			for ($_5 = 0; $_5 < 16; $_5 += 4) {
 				$_6 = (ord($_3[$_5]) << 24) + (ord($_3[($_5 + 1)]) << 16) + (ord($_3[($_5 + 2)]) << 8) + (ord($_3[($_5 + 3)]));
+				
 				// todo
 			}
 		}
 
 		// todo
+	}
+
+	function _1($_0, $_1) {
+		return ($_0 << (32 - $_1)) & 4294967295);
 	}
 
 	$_0 = hex2bin('010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // version + current block header hash + merkle root hash
