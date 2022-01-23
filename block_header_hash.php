@@ -50,11 +50,15 @@
 	}
 
 	function _4($_1) {
-		return ($_2($_1, 6) ^ $_2($_1, 11) ^ $_2($_1, 25));
+		return (_2($_1, 6) ^ _2($_1, 11) ^ _2($_1, 25));
 	}
 
 	function _5($_1, $_2, $_3) {
 		return (($_1 & $_2) ^ ((~$_1) & $_3));
+	}
+
+	function _6($_1) {
+		return (_2($_1, 2) ^ _2($_1, 13) ^ _2($_1, 22));
 	}
 
 	$_0 = hex2bin('010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // version + current block header hash + merkle root hash
