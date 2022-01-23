@@ -6,7 +6,7 @@
 		// bit counts are static 640 for block header + 512 for concatenated merkle root hashes
 		$_2 = array(
 			1779033703,
-			3144134277
+			3144134277,
 			1013904242,
 			2773480762,
 			1359893119,
