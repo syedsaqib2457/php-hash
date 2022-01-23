@@ -1,5 +1,5 @@
 <?php
-	// todo: remove this file and place code in https://github.com/nodecompute/nodecompute/blob/main/node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php in compressed format with no comments
+	// todo: this is slower than PHP's built-in hash, so it's used as reference for improving mining speed
 
 	function _0($_0, $_1, $_2) {
 		foreach ($_0 as $_3) {
