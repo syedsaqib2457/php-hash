@@ -3,6 +3,13 @@
 	// todo: remove this file and place code in https://github.com/nodecompute/nodecompute/blob/main/node_action_process_node_process_bitcoin_cash_cryptocurrency_mining_block_header.php in compressed format with no comments
 
 	function _0($_0) {
+		foreach ($_0 as $_1) {
+			for ($_2 = 0; $_2 < 16; $_2++) {
+				$_3 = (ord($_1[$_2]) << 24) + (ord($_1[($_2 + 1)]) << 16) + (ord($_1[($_2 + 2)]) << 8) + (ord($_1[($_2 + 3)]));
+				// todo
+			}
+		}
+
 		// todo
 	}
 
