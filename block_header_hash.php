@@ -21,7 +21,10 @@
 	}
 
 	function _2($_0, $_1) {
-		// todo
+		if (($_0 < 0) === true) {
+			$_0 &= 2147483647;
+			return ($_0 << $_1 | (1073741824 >> ($_1 - 1)));
+		}
 	}
 
 	$_0 = hex2bin('010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // version + current block header hash + merkle root hash
