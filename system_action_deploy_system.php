@@ -690,6 +690,26 @@
 				'node_node_id',
 				'node_process_id'
 			),
+			'node_process_cryptocurrency_socks_proxy_destinations' => array(
+			),
+			'node_process_cryptocurrency_mining_block_headers' => array(
+				// todo: each block header represents a unique mining process on a node with extra nonce in merkle root
+					// node_node_id is the "full node" that creates block header data while node_id is the node with the mining process (doesn't require a full node)
+			),
+			'node_process_cryptocurrency_mining_block_submission_logs' => array(
+			),
+			'node_process_cryptocurrency_mining_limit_rules' => array(
+				// mining limits by system CPU resource percentage and/or mining process count (node_process_cryptocurrency_mining_block_headers)
+			),
+			'node_process_cryptocurrency_wallet_payment_requests' => array(
+				// new addresses from the wallet are automatically created here for each payment request with a user-set time limit
+				// partial payments are stored in node_process_cryptocurrency_wallet_transaction_logs
+			),
+			'node_process_cryptocurrency_wallet_transaction_logs' => array(
+				// logs all "sent" transactions + "received" transactions (in the case of multiple transactions received for 1 payment request) from wallets
+			),
+			'node_process_cryptocurrency_wallets' => array(
+			),
 			'node_process_forwarding_destinations' => array(
 				'created_timestamp',
 				'hostname_version_4',
