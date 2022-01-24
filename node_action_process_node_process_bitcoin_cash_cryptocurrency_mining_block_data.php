@@ -26,10 +26,10 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader = array(
 			'current_block_hash' => $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['previousblockhash'],
 			'next_block_height' => dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['height']),
-			'next_block_reward_amount' => dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['coinbasevalue']),
+			'next_block_reward_amount' => sprintf('%08x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['coinbasevalue']),
 			'target_hash' => $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['target'],
 			'target_hash_bits' => _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['bits']),
-			'version' => dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['version'])
+			'version' => sprintf('%08x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['version'])
 		);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] = strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height']);
 
@@ -40,19 +40,15 @@
 
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height']);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] = ($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] / 2);
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'] = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'], 8, '0', STR_PAD_LEFT);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount']);
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'] = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'], 8, '0', STR_PAD_LEFT);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version']);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionCount = 1;
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height'] . '6e6f6465636f6d70757465';
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript + 1]) / 2);
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize);
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize, 2, '0', STR_PAD_LEFT);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript = '[mining_reward_scriptPubKey_goes_here]';
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript + 1]) / 2);
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize);
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = str_pad($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize, 2, '0', STR_PAD_LEFT);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript . '00000000';
 		// todo: create multiple merkle roots for extra nonce (number_of_instances * number_of_mining_pow_processes)
 		// todo: make sure block passes "Block encoding failed" error for submitblock RPC
