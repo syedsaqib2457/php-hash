@@ -15,8 +15,7 @@
 	$_1 = range($_0[2], $_0[3]);
 
 	foreach ($_1 as $_2 => $_3) {
-		$_3 = dechex($_3);
-		$_3 = str_pad($_3, 8, '0', STR_PAD_LEFT);
+		$_3 = sprintf('%08x', $_3);
 		$_3 = hex2bin($_3);
 		$_1[$_2] = strrev($_3);
 	}
