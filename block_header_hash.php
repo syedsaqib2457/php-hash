@@ -209,5 +209,6 @@
 	$_0[1] .= hex2bin('111111112222222233333333'); // timestamp + bits + nonce placeholders
 	$_0[1] .= $_1;
 	$_4 = _0($_0, $_2, $_3);
+	echo $_4; // the correct sha256 hash for hex to binary input 010000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff111111112222222233333333
 	// $_5 = _10($_4);
 ?>
