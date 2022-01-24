@@ -56,7 +56,6 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0], true);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0], true);
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = strrev($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0]);
 		$compactSizeUnsignedIntegerHexidecimalPrefixes = array(
 			0 => '',
 			1 => '',
