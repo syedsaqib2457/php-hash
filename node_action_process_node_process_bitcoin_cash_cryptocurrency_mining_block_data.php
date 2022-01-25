@@ -44,10 +44,10 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['version']);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionCount = 1;
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height'] . '6e6f6465636f6d70757465';
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript + 1]) / 2);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript) / 2);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript = '[mining_reward_scriptPubKey_goes_here]';
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript + 1]) / 2);
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript) / 2);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript . '00000000';
 		// todo: create multiple merkle roots for extra nonce (number_of_instances * number_of_mining_pow_processes)
