@@ -6,10 +6,7 @@
 	}
 
 	function _processNodeProcessBitcoinCashCryptocurrencyMiningBlockData($parameters, $response) {
-		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf');
-		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = explode("\n", $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters);
-		$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = '-' . implode(' -', $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters);
-		exec('sudo bitcoin-cli ' . $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters . ' getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
+		exec('sudo bitcoin-cli -rpcuser=nodecompute -rpcpassword=nodecompute getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate = implode('', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate = json_decode($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate, true);
 
