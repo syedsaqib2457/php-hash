@@ -23,7 +23,7 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader = array(
 			'current_block_hash' => _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['previousblockhash']),
 			'next_block_height' => dechex($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['height']),
-			'next_block_reward_amount' => sprintf('%08x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['coinbasevalue']),
+			'next_block_reward_amount' => sprintf('%016x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['coinbasevalue']),
 			'target_hash' => $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['target'],
 			'target_hash_bits' => _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['bits']),
 			'version' => sprintf('%08x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate['version'])
