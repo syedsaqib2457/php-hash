@@ -15,11 +15,7 @@
 					(empty($nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader) === false) &&
 					(empty($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions) === false)
 				) {
-					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = file_get_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf');
-					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = explode("\n", $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters);
-					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters[0] = str_replace('bind', 'connect', $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters[0]);
-					$nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters = '-' . implode(' -', $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters);
-					exec('sudo bitcoin-cli ' . $nodeProcessBitcoinCashCryptocurrencyMiningProcessParameters . ' submitblock \'' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader . $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions . '\' 2>&1', $nodeProcessBitcoinCashCryptocurrencyMiningBlockSubmissionResponse);
+					exec('sudo bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf submitblock \'' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader . $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions . '\' 2>&1', $nodeProcessBitcoinCashCryptocurrencyMiningBlockSubmissionResponse);
 					$nodeProcessBitcoinCashCryptocurrencyMiningBlockSubmissionResponse = implode('', $nodeProcessBitcoinCashCryptocurrencyMiningBlockSubmissionResponse);
 					$nodeProcessBitcoinCashCryptocurrencyMiningBlockSubmissionResponse = json_decode($nodeProcessBitcoinCashCryptocurrencyMiningBlockSubmissionResponse, true);
 
