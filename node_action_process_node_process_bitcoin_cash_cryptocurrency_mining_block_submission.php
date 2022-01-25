@@ -22,13 +22,12 @@
 					if (empty($nodeProcessBitcoinCashCryptocurrencyMiningBlockSubmissionResponse) === true) {
 						$response['message'] = 'Node process Bitcoin Cash cryptocurrency mining block submission processed successfully.';
 					} else {
+						// todo: return success message response if duplicate error is received
 						$response['message'] = 'Error processing node process Bitcoin Cash cryptocurrency mining block submission, please try again.';
-						// todo: log specific error code
+						unlink('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat');
+						unlink('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_transactions.dat');
+						return $response;
 					}
-
-					unlink('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat');
-					unlink('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_transactions.dat');
-					return $response;
 				}
 			}
 
