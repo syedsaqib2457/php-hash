@@ -54,23 +54,11 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0], true);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0], true);
 		$compactSizeUnsignedIntegerHexidecimalPrefixes = array(
-			0 => '',
-			1 => '',
 			2 => '',
-			3 => '',
 			4 => 'fd',
-			5 => 'fe',
 			6 => 'fe',
-			7 => 'fe',
 			8 => 'fe',
-			9 => 'ff',
-			10 => 'ff',
-			11 => 'ff',
-			12 => 'ff',
-			13 => 'ff',
-			14 => 'ff',
-			15 => 'ff',
-			16 => 'ff'
+			10 => 'ff'
 		);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockSize = 0;
 
