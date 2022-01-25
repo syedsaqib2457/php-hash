@@ -6,7 +6,7 @@
 	}
 
 	function _processNodeProcessBitcoinCashCryptocurrencyMiningBlockData($parameters, $response) {
-		exec('sudo bitcoin-cli -rpcuser=nodecompute -rpcpassword=nodecompute getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
+		exec('sudo bitcoin-cli -rpcpassword=nodecompute -rpcuser=nodecompute getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate = implode('', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate = json_decode($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate, true);
 
