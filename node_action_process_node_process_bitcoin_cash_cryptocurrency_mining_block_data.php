@@ -43,12 +43,11 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_height'] . '6e6f6465636f6d70757465';
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript) / 2);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize);
-		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript = '[mining_reward_scriptPubKey_goes_here]'; // todo: add full pubKey script instead of just the scriptPubKey as mentioned in https://developer.bitcoin.org/reference/transactions.html#txout-a-transaction-output
+		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript = '[mining_reward_scriptPubKey_goes_here]';
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript) / 2);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript . '00000000';
 		// todo: create multiple merkle roots for extra nonce (number_of_instances * number_of_mining_pow_processes)
-		// todo: make sure block passes "Block encoding failed" error for submitblock RPC
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds = array();
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0], true);
@@ -67,7 +66,10 @@
 			$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionSize = strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionSize);
 			$nodeProcessBitcoinCashCryptocurrencyMiningBlockSize += $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionSize;
 
-			if (($nodeProcessBitcoinCashCryptocurrencyMiningBlockSize > 950000) === true) {
+			if (
+				(($nodeProcessBitcoinCashCryptocurrencyMiningBlockSize > 950000) === true) ||
+				(($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionCount === 100) === true)
+			) {
 				break;
 			}
 
