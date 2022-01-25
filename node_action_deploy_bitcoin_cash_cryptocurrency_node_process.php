@@ -28,7 +28,7 @@
 	$maximumTransactionMemoryPoolMegabytes = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) * 0.30);
 	// todo: add binary full paths
 	shell_exec('sudo bitcoind -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/nodecompute/bitcoin_cash/ -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -prune=11111 -rpcthreads=2 -timeout=10000 -whitelistrelay=0');
-	exec('sudo bitcoin-cli -rpcpassword=nodecompute -rpcuser=nodecompute getblockchaininfo 2>&1', $bitcoinCashDetails);
+	exec('sudo bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblockchaininfo 2>&1', $bitcoinCashDetails);
 	$bitcoinCashDetails = implode('', $bitcoinCashDetails);
 	$bitcoinCashDetails = json_decode($bitcoinCashDetails, true);
 
