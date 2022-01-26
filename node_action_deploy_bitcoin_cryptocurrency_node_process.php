@@ -1,4 +1,8 @@
 <?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libevent-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev');
