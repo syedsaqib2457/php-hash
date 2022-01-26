@@ -13,13 +13,7 @@
 		$parameters['data']['node_request_destinations_only_allowed_status'] = strval(intval(empty($parameters['data']['node_request_destinations_only_allowed_status']) === false));
 		$parameters['data']['node_request_logs_allowed_status'] = strval(intval(empty($parameters['data']['node_request_logs_allowed_status']) === false));
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'authentication_strict_only_allowed_status' => true,
-				'id' => true,
-				'node_request_destinations_only_allowed_status' => true,
-				'node_request_logs_allowed_status' => true,
-				'tag' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_users']
 		), $response);
 		$nodeUser = _list(array(
