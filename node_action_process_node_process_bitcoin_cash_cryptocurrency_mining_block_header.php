@@ -1,5 +1,8 @@
 <?php
-	if (file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat') === true) {
+	if (
+		(empty($_SERVER['argv'][1]) === true) ||
+		(file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat') === true)
+	) {
 		exit;
 	}
 
