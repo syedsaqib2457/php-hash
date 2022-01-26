@@ -296,26 +296,7 @@
 		$parameters['data']['processed_status'] = $parameters['data']['processing_progress_override_status'] = $parameters['data']['processing_progress_percentage'] = $parameters['data']['processing_status'] = '0';
 		$parameters['data']['processing_progress_checkpoint'] = 'processing_queued';
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'activated_status' => true,
-				'authentication_token' => true,
-				'deployed_status' => true,
-				'external_ip_address_version_4' => true,
-				'external_ip_address_version_4_type' => true,
-				'external_ip_address_version_6' => true,
-				'external_ip_address_version_6_type' => true,
-				'id' => true,
-				'internal_ip_address_version_4' => true,
-				'internal_ip_address_version_4_type' => true,
-				'internal_ip_address_version_6' => true,
-				'internal_ip_address_version_6_type' => true,
-				'node_id' => true,
-				'processed_status' => true,
-				'processing_progress_checkpoint' => true,
-				'processing_progress_override_status' => true,
-				'processing_progress_percentage' => true,
-				'processing_status' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['nodes']
 		), $response);
 		$node = _list(array(
