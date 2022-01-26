@@ -695,8 +695,8 @@
 			'node_process_cryptocurrency_mining_block_headers' => array(
 				'current_block_hash_string',
 				'id',
-				'next_block_maximum_timestamp',
 				'next_block_height',
+				'next_block_maximum_timestamp',
 				'next_block_merkle_root_hash_string',
 				'next_block_minimum_timestamp',
 				'next_block_target_hash_bits',
