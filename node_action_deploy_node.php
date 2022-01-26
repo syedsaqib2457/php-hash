@@ -1,4 +1,9 @@
 <?php
+	if (empty($_SERVER['argv'][2]) === true) {
+		echo 'Error deploying node, please try again.' . "\n";
+		exit;
+	}
+
 	function _killProcessIds($binaryFiles, $processIds) {
 		$killProcessCommands = array(
 			'#!/bin/bash'
@@ -25,12 +30,6 @@
 	}
 
 	// todo: modify php.ini settings
-
-	if (empty($_SERVER['argv'][2]) === true) {
-		echo 'Error deploying node, please try again.' . "\n";
-		exit;
-	}
-
 	$packageSources = array(
 		'debian' => array(
 			'9' => array(
