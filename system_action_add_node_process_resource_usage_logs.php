@@ -10,9 +10,34 @@
 
 	function _addNodeProcessResourceUsageLogs($parameters, $response) {
 		foreach ($parameters['data'] as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLog) {
-			// todo
+			$parameters['data'][$nodeProcessResourceUsageLogKey]['id'] = _createUniqueId();
+			$parameters['data'][$nodeProcessResourceUsageLogKey]['node_id'] = $parameters['node']]['id'];
+			$existingNodeProcessResourceUsageLog = _list(array(
+				'data' => array(
+					'bytes_received',
+					'bytes_sent',
+					'id',
+					'request_count'
+				),
+				'in' => $parameters['system_databases']['node_process_resource_usage_logs'],
+				'where' => array(
+					'created_timestamp' => $parameters['data'][$nodeProcessResourceUsageLogKey]['created_timestamp'],
+					'node_id' => $parameters['data'][$nodeProcessResourceUsageLogKey]['node_id']
+				)
+			), $response);
+			$existingNodeProcessResourceUsageLog = current($existingNodeProcessResourceUsageLog);
+
+			if (empty($existingNodeProcessResourceUsageLog) === false) {
+				$parameters['data'][$nodeProcessResourceUsageLogKey]['id'] = $existingNodeProcessResourceUsageLog['id'];
+
+				if (empty($existingNodeProcessResourceUsageLog['request_count']) === false) {
+					$parameters['data'][$nodeProcessResourceUsageLogKey]['bytes_received'] += $existingNodeProcessResourceUsageLog['bytes_received'];
+					$parameters['data'][$nodeProcessResourceUsageLogKey]['bytes_sent'] += $existingNodeProcessResourceUsageLog['bytes_sent'];
+					$parameters['data'][$nodeProcessResourceUsageLogKey]['request_count'] += $existingNodeProcessResourceUsageLog['request_count'];
+				}
+			}
 		}
- 
+
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_process_resource_usage_logs']
