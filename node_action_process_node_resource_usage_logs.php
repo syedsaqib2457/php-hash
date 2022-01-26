@@ -1,4 +1,8 @@
 <?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
 	function _calculateCpuTime($cpuTimeString) {
 		$cpuTime = 0;
 		$cpuTimeValues = explode('+', $cpuTimeString);
