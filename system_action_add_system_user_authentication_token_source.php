@@ -99,14 +99,7 @@
 
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true,
-				'ip_address_range_start' => true,
-				'ip_address_range_stop' => true,
-				'ip_address_range_version_number' => true,
-				'system_user_authentication_token_id' => true,
-				'system_user_id' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['system_user_authentication_token_sources']
 		), $response);
 		$systemUserAuthenticationTokenSource = _list(array(
