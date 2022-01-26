@@ -45,11 +45,7 @@
 		$parameters['data']['id'] = _createUniqueId();
 		$parameters['data']['string'] = _createUniqueId();
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true,
-				'string' => true,
-				'system_user_id' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['system_user_authentication_tokens']
 		), $response);
 		$systemUserAuthenticationToken = _list(array(
