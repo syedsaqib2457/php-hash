@@ -3,6 +3,8 @@
 		exit;
 	}
 
+	// todo: use timeout command with crontab instead of managing process timeout based on passed parameter
+
 	_processNodeProcessBitcoinCashCryptocurrencyMiningProcesses($parameters, $response) {
 		exec('ps -h -o pid -o cmd $(pgrep php) | grep process_node_process_bitcoin_cash_cryptocurrency_mining_processes | grep -v grep | awk \'{print $1"_"$4}\'', $nodeProcessBitcoinCashCryptocurrencyMiningProcesses);
 
