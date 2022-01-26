@@ -206,7 +206,7 @@
 
 		$crontabCommands += array(
 			'# nodecompute_node_process_bitcoin_cash_cryptocurrency_mining',
-			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_mining_processes 5 nodecompute_node_process_bitcoin_cash_cryptocurrency_mining'
+			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_mining_processes nodecompute_node_process_bitcoin_cash_cryptocurrency_mining'
 		);
 		$crontabCommandIndexes = range(0, 2); // todo: make this based on user input + increment based on free resources
 		$crontabCommandDelayIndexes = range(0, 55, 5);
