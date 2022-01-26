@@ -177,20 +177,7 @@
 		}
 
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true,
-				'destination_ip_address_version_4' => true,
-				'destination_ip_address_version_4_node_id' => true,
-				'destination_ip_address_version_6' => true,
-				'destination_ip_address_version_6_node_id' => true,
-				'node_id' => true,
-				'node_node_id' => true,
-				'node_process_type' => true,
-				'port_number_version_4' => true,
-				'port_number_version_6' => true,
-				'source_ip_address_version_4' => true,
-				'source_ip_address_version_6' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations']
 		), $response);
 		$nodeProcessRecursiveDnsDestination = _list(array(
