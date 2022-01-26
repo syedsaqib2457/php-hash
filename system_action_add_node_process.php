@@ -85,13 +85,7 @@
 
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true,
-				'node_id' => true,
-				'node_node_id' => true,
-				'port_number' => true,
-				'type' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_processes']
 		), $response);
 		$nodeProcess = _list(array(
