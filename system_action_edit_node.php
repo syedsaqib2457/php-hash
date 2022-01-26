@@ -165,17 +165,7 @@
 		}
 
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'external_ip_address_version_4' => true,
-				'external_ip_address_version_4_type' => true,
-				'external_ip_address_version_6' => true,
-				'external_ip_address_version_6_type' => true,
-				'id' => true,
-				'internal_ip_address_version_4' => true,
-				'internal_ip_address_version_4_type' => true,
-				'internal_ip_address_version_6' => true,
-				'internal_ip_address_version_6_type' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['nodes']
 		), $response);
 		$node = _list(array(
