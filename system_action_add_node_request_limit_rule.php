@@ -61,12 +61,7 @@
 
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'id' => true,
-				'interval_minutes' => true,
-				'request_count' => true,
-				'request_count_interval_minutes' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_request_limit_rules']
 		), $response);
 		$nodeRequestLimitRule = _list(array(
