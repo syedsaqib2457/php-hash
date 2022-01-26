@@ -1,4 +1,8 @@
 <?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
 	function processNodeProcessNodeUserRequestLogs($parameters, $response) {
 		$nodeProcessTypes = array(
 			'http_proxy',
