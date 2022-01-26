@@ -1,4 +1,8 @@
 <?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
 	function _listProcessIds($processName, $processFile = false) {
 		$response = array();
 		exec('ps -h -o pid -o cmd $(pgrep -f "' . $processName . '") | grep "' . $processName . '" | grep -v grep 2>&1', $processes);
