@@ -1,4 +1,8 @@
 <?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
 	_processNodeProcessBitcoinCashCryptocurrencyMiningProcesses($parameters, $response) {
 		exec('ps -h -o pid -o cmd $(pgrep php) | grep process_node_process_bitcoin_cash_cryptocurrency_mining_processes | grep -v grep | awk \'{print $1"_"$4}\'', $nodeProcessBitcoinCashCryptocurrencyMiningProcesses);
 
