@@ -94,16 +94,7 @@
 
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'hostname_version_4' => true,
-				'hostname_version_6' => true,
-				'id' => true,
-				'node_id' => true,
-				'node_node_id' => true,
-				'node_process_type' => true,
-				'port_number_version_4' => true,
-				'port_number_version_6' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_process_forwarding_destinations']
 		), $response);
 		$nodeProcessForwardingDestination = _list(array(
