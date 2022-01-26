@@ -1,4 +1,8 @@
 <?php
+	if (empty($parameters) === true) {
+		exit;
+	}
+
 	function _createReverseByteOrderHexidecimalString($hexidecimalString) {
 		$binaryString = hex2bin($hexidecimalString);
 		$binaryString = strrev($binaryString);
