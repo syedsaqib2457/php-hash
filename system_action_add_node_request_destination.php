@@ -33,10 +33,7 @@
 
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'hostname' => true,
-				'id' => true
-			)),
+			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_request_destinations']
 		), $response);
 		$nodeRequestDestination = _list(array(
