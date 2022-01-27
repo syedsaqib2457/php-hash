@@ -691,6 +691,12 @@
 				'node_process_id'
 			),
 			'node_process_cryptocurrency_socks_proxy_destinations' => array(
+				'created_timestamp',
+				'id',
+				'ip_address',
+				'ip_address_version_number',
+				'modified_timestamp',
+				'port_number'
 			),
 			'node_process_cryptocurrency_mining_block_headers' => array(
 				'current_block_hash_string',
