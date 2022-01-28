@@ -352,26 +352,29 @@
 			if (empty($parameters['data']['current']) === false) {
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
 					// todo: update cryptocurrency node block download progress if node_process_cryptocurrency_destinations address exists for process
-					$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
-					foreach (array(0, 1) as $nodeProcessPartKey) {
-						$nodeIpAddressVersion = key($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
+					if (empty($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType]) === false) {
+						$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
-						foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
-							foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
-								foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-									$verifyNodeProcessResponse = _verifyNodeProcess($parameters['binary_files'], $nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
+						foreach (array(0, 1) as $nodeProcessPartKey) {
+							$nodeIpAddressVersionNumber = key($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
 
-									if ($verifyNodeProcessResponse === false) {
-										$systemActionProcessNodeParameters['data'] = array(
-											'processed_status' => '0',
-											'processing_progress_checkpoint' => 'processing_queued',
-											'processing_progress_percentage' => '0',
-											'processing_status' => '0'
-										);
-										_updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-										$response['message'] = 'Queueing node processing after node process verification error on destination address ' . $nodeReservedInternalDestination['ip_address'] . ':' . $nodeProcessPortNumber . '.';
-										return $response;
+							foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
+								foreach ($parameters['data']['current']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
+									foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
+										$verifyNodeProcessResponse = _verifyNodeProcess($parameters['binary_files'], $nodeReservedInternalDestination['ip_address'], $nodeReservedInternalDestination['ip_address_version'], $nodeProcessPortNumber, $nodeProcessType) === false) {
+
+										if ($verifyNodeProcessResponse === false) {
+											$systemActionProcessNodeParameters['data'] = array(
+												'processed_status' => '0',
+												'processing_progress_checkpoint' => 'processing_queued',
+												'processing_progress_percentage' => '0',
+												'processing_status' => '0'
+											);
+											_updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
+											$response['message'] = 'Queueing node processing after node process verification error on destination address ' . $nodeReservedInternalDestination['ip_address'] . ':' . $nodeProcessPortNumber . '.';
+											return $response;
+										}
 									}
 								}
 							}
