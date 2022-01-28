@@ -1192,7 +1192,6 @@
 
 		$timestamp = time();
 		$systemUserAuthenticationTokenId = _createUniqueId();
-		$systemUserAuthenticationTokenString = _createUniqueId();
 		$systemUserId = _createUniqueId();
 		$systemDatabaseData = array(
 			'system_settings' => array(
@@ -1216,7 +1215,6 @@
 					'created_timestamp' => $timestamp,
 					'id' => $systemUserAuthenticationTokenId,
 					'modified_timestamp' => $timestamp,
-					'string' => $systemUserAuthenticationTokenString,
 					'system_user_id' => $systemUserId
 				)
 			),
@@ -1282,7 +1280,7 @@
 			}
 		}
 
-		echo 'System user authentication token is ' . $systemUserAuthenticationTokenString . "\n";
+		echo 'System user authentication token is ' . $systemUserAuthenticationTokenId . "\n";
 		echo 'System deployed successfully.' . "\n";
 		exit;
 	}
