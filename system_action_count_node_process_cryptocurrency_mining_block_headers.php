@@ -9,11 +9,10 @@
 
 	function _countNodeProcessCryptocurrencyMiningBlockHeaders($parameters, $response) {
 		$parameters['where']['node_node_id'] = $parameters['node']['id'];
-		$countNodeProcessCryptocurrencyMiningBlockHeaders = _count(array(
+		$response['data'] = _count(array(
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_mining_block_headers'],
 			'where' => $parameters['where']
 		), $response);
-		$response['data'] = current($countNodeProcessCryptocurrencyMiningBlockHeaders);
 		$response['message'] = 'Node processes cryptocurrency mining block headers counted successfully.';
 		$response['valid_status'] = '1';
 		return $response;
