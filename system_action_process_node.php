@@ -67,9 +67,9 @@
 		}
 
 		if (
-			(isset($parameters['data']['processing_status']) === true) &&
 			(isset($parameters['data']['processing_progress_checkpoint']) === true) &&
-			(isset($parameters['data']['processing_progress_percentage']) === true)
+			(isset($parameters['data']['processing_progress_percentage']) === true) &&
+			(isset($parameters['data']['processing_status']) === true)
 		) {
 			$parameters['data']['processing_progress_override_status'] = '0';
 
