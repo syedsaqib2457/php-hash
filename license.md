@@ -14,4 +14,4 @@ Permission to sell these files is strictly forbidden with exemption for the crea
 
 Permission to sublicense these files is strictly forbidden with exemption for the creator of these files.
 
-Permission to use copies of these files is strictly forbidden with exemption for the creator of these files.
+Permission to use these files is strictly forbidden with exemption for the creator of these files.
