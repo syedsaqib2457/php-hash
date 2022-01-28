@@ -190,7 +190,6 @@
 	if (in_array($nodeAction, array(
 		'process_node_processes',
 		'process_node_resource_usage_logs',
-		'process_node_user_blockchain_mining',
 		'process_node_user_request_logs'
 	)) === true) {
 		$systemParameters = array(
