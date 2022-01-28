@@ -700,15 +700,15 @@
 			),
 			'node_process_cryptocurrency_mining_block_headers' => array(
 				'created_timestamp',
-				'current_block_hash_string',
+				'current_block_hash',
 				'id',
 				'modified_timestamp',
 				'next_block_height',
 				'next_block_maximum_timestamp',
-				'next_block_merkle_root_hash_string',
+				'next_block_merkle_root_hash',
 				'next_block_minimum_timestamp',
+				'next_block_target_hash',
 				'next_block_target_hash_bits',
-				'next_block_target_hash_string',
 				'next_block_version',
 				'node_id',
 				'node_node_id',
@@ -717,9 +717,9 @@
 					// node_node_id is the "full node" that creates block header data while node_id is the node with the mining process (doesn't require a full node)
 			),
 			'node_process_cryptocurrency_mining_block_submission_logs' => array(
-				'block_hash_string',
+				'block',
+				'block_hash',
 				'block_height',
-				'block_raw_string',
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
@@ -1075,7 +1075,6 @@
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
-				'string',
 				'system_user_id'
 			),
 			'system_user_request_logs' => array(
