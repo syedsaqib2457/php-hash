@@ -10,6 +10,24 @@
 	}
 
 	function _processNodeProcessBitcoinCashCryptocurrencyMiningBlockData($parameters, $response) {
+		$systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersParameters = array(
+			'action' => 'count_node_process_cryptocurrency_mining_block_headers',
+			'node_authentication_token' => $parameters['node_authentication_token'],
+			'where' => array(
+				'process_type' => 'bitcoin_cash'
+			)
+		);
+		$encodedSystemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersParameters = json_encode($systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersParameters);
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_count_node_process_bitcoin_cash_cryptocurrency_mining_block_headers_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		$systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse = file_get_contents('/usr/local/nodecompute/system_action_count_node_process_bitcoin_cash_cryptocurrency_mining_block_headers_response.json');
+		$systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse = json_decode($systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse, true);
+
+		if (empty($systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse) === true) {
+			$response['message'] = 'Error counting node process Bitcoin Cash cryptocurrency mining block headers, please try again.';
+			return $response;
+		}
+
+		// todo: create multiple merkle roots for extra nonce based on system_action_count_node_process_cryptocurrency_mining_block_headers_response
 		exec('sudo bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate = implode('', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate = json_decode($nodeProcessBitcoinCashCryptocurrencyMiningBlockTemplate, true);
@@ -51,7 +69,6 @@
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript) / 2);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyMiningBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyMiningBlockRewardPublicKeyScript . '00000000';
-		// todo: create multiple merkle roots for extra nonce (number_of_instances * number_of_mining_pow_processes) based on node_process_cryptocurrency_mining_block_headers database
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds = array();
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hex2bin($nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactions);
 		$nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyMiningBlockTransactionIds[0], true);
