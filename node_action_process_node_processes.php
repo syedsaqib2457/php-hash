@@ -328,6 +328,9 @@
 
 			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
 				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) {
+					// todo: send start signal to crypto daemon if file exists
+					// todo: differentiate crypto daemon process verification from mining process verification using node_node_id
+
 					if (_verifyNodeProcess($parameters['binary_files'], false, false, false, $cryptocurrencyNodeProcessType) === false) {
 						if (empty($parameters['processing_progress_checkpoints'][3]) === false) {
 							$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
@@ -335,9 +338,10 @@
 
 						require_once('/usr/local/nodecompute/node_action_deploy_' . $cryptocurrencyNodeProcessType . '_node_process.php');
 					}
-				}
 
-				// todo: add crontab commands for updating mining block template data
+					// todo: add crontab commands for updating mining block template data if crypto daemon exists
+					// todo: add crontab commands for mining block headers if crypto daemon doesn't exist
+				}
 			}
 
 			unset($parameters['processing_progress_checkpoints'][3]);
@@ -347,6 +351,7 @@
 
 			if (empty($parameters['data']['current']) === false) {
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
+					// todo: update cryptocurrency node block download progress if node_process_cryptocurrency_destinations address exists for process
 					$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
 					foreach (array(0, 1) as $nodeProcessPartKey) {
