@@ -114,7 +114,7 @@
 				),
 				'in' => $parameters['system_databases']['system_user_authentication_tokens'],
 				'where' => array(
-					'string' => $parameters['system_user_authentication_token']
+					'id' => $parameters['system_user_authentication_token']
 				)
 			), $response);
 			$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
