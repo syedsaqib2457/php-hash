@@ -3,7 +3,11 @@
 		exit;
 	}
 
-	// todo: pruned local installation to verify mining functionality
+	if (empty($parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']) === true) {
+		$response['message'] = 'Error listing Bitcoin Cash cryptocurrency destination, please try again.';
+		return $response;
+	}
+
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential cmake libboost-all-dev libdb-dev libdb++-dev libevent-dev libssl-dev ninja-build python3');
 	shell_exec('sudo rm -rf /usr/src/bitcoin_cash/');
@@ -33,14 +37,5 @@
 	// todo: add binary full paths
 	// todo: add 1 default block header row to system database
 	shell_exec('sudo bitcoind -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/nodecompute/bitcoin_cash/ -dbbatchsize=' . $maximumDatabaseBatchSize . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $maximumTransactionMemoryPoolMegabytes . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -prune=11111 -rpcthreads=2 -timeout=10000 -whitelistrelay=0');
-	exec('sudo bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblockchaininfo 2>&1', $bitcoinCashDetails);
-	$bitcoinCashDetails = implode('', $bitcoinCashDetails);
-	$bitcoinCashDetails = json_decode($bitcoinCashDetails, true);
-
-	if (isset($bitcoinCashDetails['chain']) === false) {
-		$response['message'] = 'Error listing Bitcoin Cash details, please try again.';
-		return $response;
-	}
-
 	// todo: make sure verificationprogress=1 before opening maxconnections and listening IP:port for P2P
 ?>
