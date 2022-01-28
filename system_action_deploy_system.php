@@ -712,23 +712,29 @@
 				'next_block_version',
 				'node_id',
 				'node_node_id',
-				'process_type'
+				'node_process_id' // todo: add node processes for each mining process + full node
 				// todo: each block header represents a unique mining process on a node with extra nonce in merkle root
 					// node_node_id is the "full node" that creates block header data while node_id is the node with the mining process (doesn't require a full node)
 			),
 			'node_process_cryptocurrency_mining_block_submission_logs' => array(
-				'block_string',
 				'block_hash_string',
 				'block_height',
+				'block_raw_string',
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
 				'node_id',
 				'node_node_id',
-				'process_type',
+				'node_process_type',
 				'response_code'
 			),
 			'node_process_cryptocurrency_mining_limit_rules' => array(
+				'block_storage_capacity_megabytes',
+				'cpu_percentage_capacity',
+				'id',
+				'node_id',
+				'node_process_id', // todo: add node processes for each mining process + full node
+				'memory_percentage'
 				// mining limits by system CPU resource percentage and/or mining process count (node_process_cryptocurrency_mining_block_headers)
 			),
 			'node_process_cryptocurrency_wallet_payment_requests' => array(
