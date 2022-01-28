@@ -43,7 +43,6 @@
 		}
 
 		$parameters['data']['id'] = _createUniqueId();
-		$parameters['data']['string'] = _createUniqueId();
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['system_user_authentication_tokens']
