@@ -22,7 +22,7 @@
 		$systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse = file_get_contents('/usr/local/nodecompute/system_action_count_node_process_bitcoin_cash_cryptocurrency_mining_block_headers_response.json');
 		$systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse = json_decode($systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse, true);
 
-		if (empty($systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse) === true) {
+		if (empty($systemActionCountNodeProcessBitcoinCashCryptocurrencyMiningBlockHeadersResponse['data']) === true) {
 			$response['message'] = 'Error counting node process Bitcoin Cash cryptocurrency mining block headers, please try again.';
 			return $response;
 		}
