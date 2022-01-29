@@ -81,14 +81,14 @@
 		$parameters['data']['node_node_id'] = $node['node_id'];
 		$existingNodeProcessForwardingDestinationCount = _count(array(
 			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
-			'where' => array_intersect_key($parameters['data'], array(
-				'node_id' => true,
-				'node_process_type' => true
-			))
+			'where' => array(
+				'node_id' => $parameters['data']['node_id'],
+				'node_process_type' => $parameters['data']['node_process_type']
+			)
 		), $response);
 
 		if (($existingNodeProcessForwardingDestinationCount > 0) === true) {
-			$response['message'] = 'Node process forwarding destination already exists, please try again.';
+			$response['message'] = 'Node process forwarding destination already exists with the same node process type ' . $parameters['data']['node_process_type'] . ', please try again.';
 			return $response;
 		}
 
