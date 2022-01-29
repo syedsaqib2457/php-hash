@@ -41,7 +41,7 @@
 		), $response);
 
 		if (($existingNodeProcessCryptocurrencyDestinationCount > 0) === true) {
-			$response['message'] = 'Node process cryptocurrency destination already exists with the same IP address, please try again.';
+			$response['message'] = 'Node process cryptocurrency destination already exists with the same IP address ' . $parameters['data']['ip_address'] . ', please try again.';
 			return $response;
 		}
 
