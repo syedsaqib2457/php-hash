@@ -66,10 +66,10 @@
 		$parameters['data']['node_node_id'] = $node['node_id'];
 		$existingNodeProcessCountParameters = array(
 			'in' => $parameters['system_databases']['node_processes'],
-			'where' => array_intersect_key($parameters['data'], array(
-				'node_id' => true,
-				'port_number' => true
-			))
+			'where' => array(
+				'node_id' => $parameters['data']['node_id'],
+				'port_number' => $parameters['data']['port_number']
+			)
 		);
 
 		if ((strpos($parameters['data']['type'], 'cryptocurrency') === false) === false) {
@@ -80,7 +80,7 @@
 		$existingNodeProcessCount = _count($existingNodeProcessCountParameters, $response);
 
 		if (($existingNodeProcessCount > 0) === true) {
-			$response['message'] = 'Node process already exists, please try again.';
+			$response['message'] = 'Node process already exists with the same port number ' . $parameters['data']['port_number'] . ', please try again.';
 			return $response;
 		}
 
