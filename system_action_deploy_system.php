@@ -718,7 +718,7 @@
 				'modified_timestamp',
 				'node_id',
 				'node_node_id',
-				'node_process_id'
+				'node_process_type'
 			),
 			'node_process_cryptocurrency_resource_usage_limit_rules' => array(
 				'cpu_percentage_capacity',
