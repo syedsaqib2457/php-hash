@@ -34,8 +34,9 @@
 		}
 
 		if (in_array($parameters['data']['type'], array(
-			'bitcoin_cryptocurrency',
-			'bitcoin_cash_cryptocurrency',
+			'bitcoin_cash_cryptocurrency_interface',
+			'bitcoin_cash_cryptocurrency_miner',
+			'bitcoin_cash_cryptocurrency_peer',
 			'http_proxy',
 			'load_balancer',
 			'recursive_dns',
