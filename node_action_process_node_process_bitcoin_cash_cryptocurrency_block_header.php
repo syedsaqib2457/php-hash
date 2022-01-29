@@ -45,7 +45,7 @@
 
 				if (($_4 < $_0[0]) === true) {
 					$_4 = bin2hex($_0[4] . $_3 . $_0[1] . $_2);
-					file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat', $_4);
+					file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.dat', $_4);
 					exit;
 				}
 			}
