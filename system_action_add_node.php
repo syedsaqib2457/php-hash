@@ -37,7 +37,7 @@
 			$parameters['data']['deployed_status'] = $nodeNode['deployed_status'];
 			$parameters['data']['node_id'] = $nodeNode['id'];
 		} else {
-			$parameters['data']['authentication_token'] = substr(time() . str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyz01234567890123456789', 10)), 0, rand(90, 100));
+			$parameters['data']['authentication_token'] = _createUniqueId();
 			$parameters['data']['node_id'] = null;
 		}
 
@@ -120,7 +120,7 @@
 
 			foreach ($existingNodeIpAddresses as $existingNodeIpAddress) {
 				if (in_array($existingNodeIpAddress, $nodeIpAddresses) === true) {
-					$response['message'] = 'Node IP address ' . $existingNodeIpAddress . ' already exists, please try again.';
+					$response['message'] = 'Node already exists with the same IP address ' . $existingNodeIpAddress . ', please try again.';
 					return $response;
 				}
 			}
