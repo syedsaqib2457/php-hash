@@ -1,13 +1,14 @@
 <?php
 	if (
 		(empty($_SERVER['argv'][1]) === true) ||
-		(file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.dat') === true)
+		(file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.dat') === true)
 	) {
 		exit;
 	}
 
-	$_0 = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_mining_block_header.json');
+	$_0 = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.json');
 	$_0 = json_decode($_0, true);
+	// todo: add multiple block headers per process
 
 	if ($_0 === false) {
 		exit;
