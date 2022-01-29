@@ -680,25 +680,7 @@
 		}
 
 		$systemDatabases = array(
-			'node_process_cryptocurrency_destinations' => array(
-				'created_timestamp',
-				'id',
-				'ip_address',
-				'ip_address_version_number',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_id'
-			),
-			'node_process_cryptocurrency_socks_proxy_destinations' => array(
-				'created_timestamp',
-				'id',
-				'ip_address',
-				'ip_address_version_number',
-				'modified_timestamp',
-				'port_number'
-			),
-			'node_process_cryptocurrency_mining_block_headers' => array(
+			'node_process_cryptocurrency_block_headers' => array(
 				'created_timestamp',
 				'current_block_hash',
 				'id',
@@ -716,7 +698,7 @@
 				// todo: each block header represents a unique mining process on a node with extra nonce in merkle root
 					// node_node_id is the "full node" that creates block header data while node_id is the node with the mining process (doesn't require a full node)
 			),
-			'node_process_cryptocurrency_mining_block_submission_logs' => array(
+			'node_process_cryptocurrency_block_submission_logs' => array(
 				'block',
 				'block_hash',
 				'block_height',
@@ -728,14 +710,32 @@
 				'node_process_type',
 				'response_code'
 			),
-			'node_process_cryptocurrency_mining_limit_rules' => array(
-				'block_storage_capacity_megabytes',
+			'node_process_cryptocurrency_destinations' => array(
+				'created_timestamp',
+				'id',
+				'ip_address',
+				'ip_address_version_number',
+				'modified_timestamp',
+				'node_id',
+				'node_node_id',
+				'node_process_id'
+			),
+			'node_process_cryptocurrency_resource_usage_limit_rules' => array(
 				'cpu_percentage_capacity',
 				'id',
+				'memory_percentage',
 				'node_id',
 				'node_process_id', // todo: add node processes for each mining process + full node
-				'memory_percentage'
-				// mining limits by system CPU resource percentage and/or mining process count (node_process_cryptocurrency_mining_block_headers)
+				'storage_capacity_megabytes'
+				// limits by system CPU resource percentage and/or mining process count (node_process_cryptocurrency_mining_block_headers)
+			),
+			'node_process_cryptocurrency_socks_proxy_destinations' => array(
+				'created_timestamp',
+				'id',
+				'ip_address',
+				'ip_address_version_number',
+				'modified_timestamp',
+				'port_number'
 			),
 			'node_process_cryptocurrency_wallet_payment_requests' => array(
 				// new addresses from the wallet are automatically created here for each payment request with a user-set time limit
