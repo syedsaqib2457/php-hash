@@ -710,17 +710,6 @@
 				'node_process_type',
 				'response_code'
 			),
-			'node_process_cryptocurrency_destinations' => array(
-				'created_timestamp',
-				'id',
-				'ip_address',
-				'ip_address_version_number',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_node_external_ip_address_type'
-			),
 			'node_process_cryptocurrency_resource_usage_limit_rules' => array(
 				'cpu_percentage_capacity',
 				'id',
