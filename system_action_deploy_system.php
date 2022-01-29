@@ -680,7 +680,7 @@
 		}
 
 		$systemDatabases = array(
-			'node_process_cryptocurrency_block_headers' => array(
+			'node_process_cryptocurrency_worker_block_headers' => array(
 				'created_timestamp',
 				'current_block_hash',
 				'id',
@@ -694,9 +694,7 @@
 				'next_block_version',
 				'node_id',
 				'node_node_id',
-				'node_process_id' // todo: add node processes for each mining process + full node
-				// todo: each block header represents a unique mining process on a node with extra nonce in merkle root
-					// node_node_id is the "full node" that creates block header data while node_id is the node with the mining process (doesn't require a full node)
+				'node_process_id'
 			),
 			'node_process_cryptocurrency_block_submission_logs' => array(
 				'block',
@@ -710,14 +708,16 @@
 				'node_process_type',
 				'response_code'
 			),
-			'node_process_cryptocurrency_resource_usage_limit_rules' => array(
-				'cpu_percentage_capacity',
+			'node_process_cryptocurrency_blockchains' => array(
+				'cpu_maximum_percentage',
+				'created_timestamp',
 				'id',
-				'memory_percentage',
+				'memory_maximum_percentage',
+				'modified_timestamp',
 				'node_id',
-				'node_process_id', // todo: add node processes for each mining process + full node
-				'storage_capacity_megabytes'
-				// limits by system CPU resource percentage and/or mining process count (node_process_cryptocurrency_mining_block_headers)
+				'node_node_id',
+				'node_process_type',
+				'storage_capacity_maximum_megabytes'
 			),
 			'node_process_cryptocurrency_socks_proxy_destinations' => array(
 				'created_timestamp',
