@@ -139,8 +139,8 @@
 					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex] .= $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex + 1)];
 					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex], true);
 					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId, true);
-					unset($nodeProcessBitcoinCashCryptocurrencyBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex]);
-					unset($nodeProcessBitcoinCashCryptocurrencyBlockTransactionIds[($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex + 1)]);
+					unset($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex]);
+					unset($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex + 1)]);
 					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
 					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex++;
 				}
