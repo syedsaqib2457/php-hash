@@ -10,21 +10,21 @@
 	}
 
 	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData($parameters, $response) {
-		// todo: list worker block header data with id + scriptpubkey
-		$systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters = array(
-			'action' => 'count_node_process_cryptocurrency_blockchain_worker_block_headers',
+		// todo: add a _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData process with a (1000 * x) index for every 1000 worker block header processes on the same node_node_id
+		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters = array(
+			'action' => 'list_node_process_cryptocurrency_blockchain_worker_block_headers',
 			'node_authentication_token' => $parameters['node_authentication_token'],
 			'where' => array(
 				'process_type' => 'bitcoin_cash'
 			)
 		);
-		$encodedSystemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters = json_encode($systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersParameters);
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_count_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
-		$systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse = file_get_contents('/usr/local/nodecompute/system_action_count_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_response.json');
-		$systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse = json_decode($systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse, true);
+		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters = json_encode($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters);
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_list_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_response.json --no-dns-cache --post-data \'json=' . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse = file_get_contents('/usr/local/nodecompute/system_action_list_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_response.json');
+		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse = json_decode($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse, true);
 
-		if (empty($systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data']) === true) {
-			$response['message'] = 'Error counting node process Bitcoin Cash cryptocurrency blockchain worker block headers, please try again.';
+		if (empty($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data']) === true) {
+			$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain worker block headers, please try again.';
 			return $response;
 		}
 
@@ -69,7 +69,7 @@
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions .= $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['data'];
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['transactions'][$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIndex] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['hash'];
 		}
-		
+
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = dechex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength = strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
 
@@ -98,13 +98,14 @@
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] = ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] / 2);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount']);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version']);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData = array();
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerIndexes = range(1, $systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data']);
 
-		foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerIndexes as $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerIndex) {
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d707574655f' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerIndex . hrtime(true);
+		foreach ($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $nodeProcessBitcoinCashCryptocurrencyBlockchainWorker) {
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d707574655f' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorker['modified_timestamp'] . hrtime(true);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript) / 2);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize);
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript = '[block_reward_scriptPubKey_goes_here]';
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript = $nodeProcessBitcoinCashCryptocurrencyBlockchainWorker['public_key_script'];
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript) / 2);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript . '00000000';
@@ -181,6 +182,22 @@
 				}
 			}
 
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData[] = array(
+				'created_timestamp' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'],
+				'current_block_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'],
+				'id' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorker['id'],
+				'modified_timestamp' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'],
+				'next_block_height' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'],
+				'next_block_maximum_timestamp' => ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'] + 6000),
+				'next_block_merkle_root_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash'],
+				'next_block_minimum_timestamp' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['mintime'],
+				'next_block_target_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
+				'next_block_target_hash_bits' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
+				'next_block_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction,
+				'next_block_version' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version']
+			);
+			/*
+			fast parsing format for node_action_process_node_process_bitcoin_cash_cryptocurrency_block_header
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = array(
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
@@ -189,8 +206,9 @@
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash']
 			);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader);
-			// todo: add block header transaction to data
-			// todo: send blockchain worker block header data
+			todo: add block header transaction to data
+			todo: send blockchain worker block header data
+			*/
 		}
 
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = array(
