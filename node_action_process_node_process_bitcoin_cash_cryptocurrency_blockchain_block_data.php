@@ -11,17 +11,17 @@
 
 	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData($parameters, $response) {
 		// todo: add a _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData process with a (1000 * x) index for every 1000 worker block header processes on the same node_node_id
-		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters = array(
+		$systemParameters = array(
 			'action' => 'list_node_process_cryptocurrency_blockchain_worker_block_headers',
 			'node_authentication_token' => $parameters['node_authentication_token'],
 			'where' => array(
-				'process_type' => 'bitcoin_cash'
+				'node_process_type' => 'bitcoin_cash_cryptocurrency_worker'
 			)
 		);
-		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters = json_encode($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters);
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_list_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_response.json --no-dns-cache --post-data \'json=' . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
-		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse = file_get_contents('/usr/local/nodecompute/system_action_list_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_response.json');
-		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse = json_decode($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderResponse, true);
+		$encodedSystemParameters = json_encode($systemParameters);
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_list_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse = file_get_contents('/usr/local/nodecompute/system_action_list_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_response.json');
+		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse = json_decode($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse, true);
 
 		if (empty($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data']) === true) {
 			$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain worker block headers, please try again.';
@@ -194,7 +194,8 @@
 				'next_block_target_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
 				'next_block_target_hash_bits' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
 				'next_block_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction,
-				'next_block_version' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version']
+				'next_block_version' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'],
+				'node_process_type' => 'bitcoin_cash_cryptocurrency_worker'
 			);
 			/*
 			fast parsing format for node_action_process_node_process_bitcoin_cash_cryptocurrency_block_header
@@ -209,6 +210,24 @@
 			todo: add block header transaction to data
 			todo: send blockchain worker block header data
 			*/
+		}
+
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData);
+
+		if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data.json', $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData) === true) {
+			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain worker block headers, please try again.';
+			return $response;
+		}
+
+		$systemParameters['action'] = 'edit_node_process_cryptocurrency_blockchain_worker_block_headers';
+		$encodedSystemParameters = json_encode($systemParameters);
+		exec('sudo curl -s --form "data=@/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data.json" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkersResponse);
+		$systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse = current($systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse);
+		$systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse = json_decode($systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse, true);
+
+		if (empty($systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['valid_status']) === true) {
+			$response['message'] = 'Error editing node process Bitcoin Cash cryptocurrency blockchain worker block headers, please try again.';
+			return $response;
 		}
 
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = array(
