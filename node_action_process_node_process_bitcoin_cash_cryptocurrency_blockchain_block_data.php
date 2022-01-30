@@ -27,7 +27,6 @@
 			return $response;
 		}
 
-		// todo: create multiple merkle roots for extra nonce based on system_action_count_node_process_cryptocurrency_block_headers_response
 		exec('sudo bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate, true);
@@ -42,6 +41,43 @@
 			return $response;
 		}
 
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize = 0;
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = 1;
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = '';
+
+		foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['transactions'] as $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIndex => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction) {
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['data']);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize = strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize += $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize;
+
+			if (
+				(($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize > 100000) === true) ||
+				(($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount === 100) === true)
+			) {
+				break;
+			}
+
+			if (
+				(empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['hash']) === true) ||
+				(($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['hash'] === $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['txid']) === false)
+			) {
+				continue;
+			}
+
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount++;
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions .= $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['data'];
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['transactions'][$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIndex] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['hash'];
+		}
+		
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = dechex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength = strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
+
+		if ((($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength % 2) === 1) === true) {
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount;
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength++;
+		}
+
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength] . _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = array(
 			'current_block_hash' => _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['previousblockhash']),
 			'next_block_height' => dechex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['height']),
@@ -61,125 +97,98 @@
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] = ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] / 2);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount']);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version']);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = 1;
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d70757465';
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript) / 2);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript = '[block_reward_scriptPubKey_goes_here]';
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript) / 2);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript . '00000000';
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds = array();
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0], true);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0], true);
-		$compactSizeUnsignedIntegerHexidecimalPrefixes = array(
-			2 => '',
-			4 => 'fd',
-			6 => 'fe',
-			8 => 'fe',
-			10 => 'ff'
-		);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize = 0;
 
-		foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['transactions'] as $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIndex => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction) {
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['data']);
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize = strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize);
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize += $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize;
-
-			if (
-				(($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize > 950000) === true) ||
-				(($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount === 100) === true)
-			) {
-				break;
-			}
-
-			if (
-				(empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['hash']) === true) ||
-				(($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['hash'] === $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['txid']) === false)
-			) {
-				continue;
-			}
-
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['txid']);
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = strrev($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId);
-
-			if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId) === true) {
-				$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain block template transactions, please try again.';
-				return $response;
-			}
-
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount++;
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions .= $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['data'];
-		}
-
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount;
-
-		if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[1]) === true) {
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0]);
-		} elseif ((($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount % 2) === 1) === true) {
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount++;
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
-		}
-
-		if (($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount === 2) === true) {
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes = array(
-				0
+		foreach () { // todo
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d707574655f' . $extranoncehere;
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript) / 2);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript = '[block_reward_scriptPubKey_goes_here]';
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript) / 2);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript . '00000000';
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds = array();
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransactions);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0], true);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0], true);
+			$compactSizeUnsignedIntegerHexidecimalPrefixes = array(
+				2 => '',
+				4 => 'fd',
+				6 => 'fe',
+				8 => 'fe',
+				10 => 'ff'
 			);
-		} else {
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes = range(0, ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount - 1), 2);
-		}
 
-		if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash']) === true) {
-			while (true) {
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex = 0;
+			foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['transactions'] as $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction) {
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction);
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = strrev($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId);
 
-				foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes as $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex) {
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex] .= $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex + 1)];
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex], true);
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId, true);
-					unset($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex]);
-					unset($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex + 1)]);
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex++;
+				if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId) === true) {
+					$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain block template transactions, please try again.';
+					return $response;
 				}
 
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount = ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount / 2);
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexLength = ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount / 2);
-
-				if (($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount === 1) === true) {
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId);
-					break;
-				}
-
-				if ((($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount % 2) === 1) === true) {
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount++;
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexLength++;
-				}
-
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes = array_slice($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes, 0, $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexLength, true);
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
 			}
+
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount;
+
+			if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[1]) === true) {
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0]);
+			} elseif ((($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount % 2) === 1) === true) {
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount++;
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
+			}
+
+			if (($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount === 2) === true) {
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes = array(
+					0
+				);
+			} else {
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes = range(0, ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount - 1), 2);
+			}
+
+			if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash']) === true) {
+				while (true) {
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex = 0;
+
+					foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes as $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex) {
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex] .= $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex + 1)];
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex], true);
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId, true);
+						unset($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex]);
+						unset($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndex + 1)]);
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex++;
+					}
+
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount = ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount / 2);
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexLength = ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount / 2);
+
+					if (($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount === 1) === true) {
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash'] = bin2hex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId);
+						break;
+					}
+
+					if ((($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount % 2) === 1) === true) {
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderMerkleRootNodeCount++;
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionMerkleRootHashIndex] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId;
+						$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexLength++;
+					}
+
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes = array_slice($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexes, 0, $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIndexLength, true);
+				}
+			}
+
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = array(
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['mintime'],
+				($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'] + 6000),
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash']
+			);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader);
 		}
 
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = array(
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['mintime'],
-			($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'] + 6000),
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash']
-		);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = dechex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength = strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
-
-		if ((($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength % 2) === 1) === true) {
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount;
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength++;
-		}
-
-		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength] . _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions;
 
 		if (
