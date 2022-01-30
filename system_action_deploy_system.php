@@ -680,33 +680,6 @@
 		}
 
 		$systemDatabases = array(
-			'node_process_cryptocurrency_worker_block_headers' => array(
-				'created_timestamp',
-				'current_block_hash',
-				'id',
-				'modified_timestamp',
-				'next_block_height',
-				'next_block_maximum_timestamp',
-				'next_block_merkle_root_hash',
-				'next_block_minimum_timestamp',
-				'next_block_target_hash',
-				'next_block_target_hash_bits',
-				'next_block_version',
-				'node_id',
-				'node_node_id',
-				'node_process_id'
-			),
-			'node_process_cryptocurrency_blockchains' => array(
-				'cpu_maximum_percentage',
-				'created_timestamp',
-				'id',
-				'memory_maximum_percentage',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'storage_capacity_maximum_megabytes'
-			),
 			'node_process_cryptocurrency_blockchain_block_submission_logs' => array(
 				'block',
 				'block_hash',
@@ -719,7 +692,7 @@
 				'node_process_type',
 				'response_code'
 			),
-			'node_process_cryptocurrency_socks_proxy_destinations' => array(
+			'node_process_cryptocurrency_blockchain_socks_proxy_destinations' => array(
 				'created_timestamp',
 				'id',
 				'ip_address',
@@ -727,14 +700,52 @@
 				'modified_timestamp',
 				'port_number'
 			),
-			'node_process_cryptocurrency_wallet_payment_requests' => array(
+			'node_process_cryptocurrency_blockchain_wallet_payment_requests' => array(
 				// new addresses from the wallet are automatically created here for each payment request with a user-set time limit
 				// partial payments are stored in node_process_cryptocurrency_wallet_transaction_logs
 			),
-			'node_process_cryptocurrency_wallet_transaction_logs' => array(
+			'node_process_cryptocurrency_blockchain_wallet_transaction_logs' => array(
 				// logs all "sent" transactions + "received" transactions (in the case of multiple transactions received for 1 payment request) from wallets
 			),
-			'node_process_cryptocurrency_wallets' => array(
+			'node_process_cryptocurrency_blockchain_wallets' => array(
+				'id',
+				'node_id',
+				'node_node_id',
+				'node_process_type',
+				'public_key',
+				'public_key_hash',
+				'public_key_script'
+			),
+			'node_process_cryptocurrency_blockchains' => array(
+				'block_download_progress_percentage',
+				'cpu_usage_maximum_percentage',
+				'created_timestamp',
+				'id',
+				'memory_usage_maximum_percentage',
+				'modified_timestamp',
+				'node_id',
+				'node_node_id',
+				'node_process_type',
+				'simultaneous_received_connection_maximum_count',
+				'simultaneous_sent_connection_maximum_count',
+				'storage_usage_maximum_megabytes'
+			),
+			'node_process_cryptocurrency_worker_block_headers' => array(
+				'created_timestamp',
+				'current_block_hash',
+				'id',
+				'modified_timestamp',
+				'next_block_height',
+				'next_block_maximum_timestamp',
+				'next_block_merkle_root_hash',
+				'next_block_minimum_timestamp',
+				'next_block_reward_public_key_script',
+				'next_block_target_hash',
+				'next_block_target_hash_bits',
+				'next_block_version',
+				'node_id',
+				'node_node_id',
+				'node_process_id'
 			),
 			'node_process_forwarding_destinations' => array(
 				'created_timestamp',
