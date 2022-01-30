@@ -12,6 +12,7 @@
 		$response['data'] = _list(array(
 			'data' => array(
 				'id',
+				'modified_timestamp',
 				'public_key_script'
 			),
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
