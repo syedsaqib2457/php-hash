@@ -733,7 +733,7 @@
 				'node_node_id',
 				'node_process_cryptocurrency_blockchain_id',
 				'node_process_cryptocurrency_blockchain_wallet_id',
-				'node_process_id'
+				'node_process_type'
 			),
 			'node_process_cryptocurrency_blockchains' => array(
 				'block_download_progress_percentage',
