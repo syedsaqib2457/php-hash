@@ -747,6 +747,14 @@
 				'simultaneous_sent_connection_maximum_count',
 				'storage_usage_maximum_megabytes'
 			),
+			'node_process_cryptocurrency_worker_logs' => array(
+				'created_timestamp',
+				'id',
+				'hashes_per_second',
+				'modified_timestamp',
+				'node_id',
+				'node_process_type'
+			),
 			'node_process_cryptocurrency_workers' => array(
 				'cpu_usage_maximum_percentage',
 				'created_timestamp',
