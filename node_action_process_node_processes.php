@@ -350,10 +350,6 @@
 			unset($parameters['processing_progress_checkpoints'][3]);
 
 			if (empty($parameters['data']['current']) === false) {
-				foreach ($parameters['data']['current']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
-					// todo: update cryptocurrency node block download progress if node_process_cryptocurrency_destinations address exists for process
-				}
-
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
 					if (empty($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType]) === false) {
 						$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
