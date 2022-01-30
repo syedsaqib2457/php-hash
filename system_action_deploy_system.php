@@ -747,6 +747,17 @@
 				'node_node_id',
 				'node_process_id'
 			),
+			'node_process_cryptocurrency_workers' => array(
+				'cpu_usage_maximum_percentage',
+				'created_timestamp',
+				'current_block_hash',
+				'id',
+				'memory_usage_maximum_percentage',
+				'modified_timestamp',
+				'node_id',
+				'node_node_id',
+				'node_process_type'
+			),
 			'node_process_forwarding_destinations' => array(
 				'created_timestamp',
 				'hostname_version_4',
