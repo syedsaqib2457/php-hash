@@ -11,7 +11,7 @@
 	function _addNodeProcessNodeUserRequestLogs($parameters, $response) {
 		if (empty($_FILES['data']['tmp_name']) === true) {
 			$response['message'] = 'Node process node user request logs must have a data file, please try again.';
-			return $response;	
+			return $response;
 		}
 
 		if (empty($parameters['data']['node_id']) === true) {
