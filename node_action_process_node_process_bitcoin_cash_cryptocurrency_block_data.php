@@ -10,6 +10,7 @@
 	}
 
 	function _processNodeProcessBitcoinCashCryptocurrencyBlockData($parameters, $response) {
+		// todo: rename functions + variables to match database structure
 		$systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockHeadersParameters = array(
 			'action' => 'count_node_process_cryptocurrency_block_headers',
 			'node_authentication_token' => $parameters['node_authentication_token'],
