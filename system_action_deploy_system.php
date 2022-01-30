@@ -696,18 +696,6 @@
 				'node_node_id',
 				'node_process_id'
 			),
-			'node_process_cryptocurrency_block_submission_logs' => array(
-				'block',
-				'block_hash',
-				'block_height',
-				'created_timestamp',
-				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'response_code'
-			),
 			'node_process_cryptocurrency_blockchains' => array(
 				'cpu_maximum_percentage',
 				'created_timestamp',
@@ -718,6 +706,18 @@
 				'node_node_id',
 				'node_process_type',
 				'storage_capacity_maximum_megabytes'
+			),
+			'node_process_cryptocurrency_blockchain_block_submission_logs' => array(
+				'block',
+				'block_hash',
+				'block_height',
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'node_id',
+				'node_node_id',
+				'node_process_type',
+				'response_code'
 			),
 			'node_process_cryptocurrency_socks_proxy_destinations' => array(
 				'created_timestamp',
