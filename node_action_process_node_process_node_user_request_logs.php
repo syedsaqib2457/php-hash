@@ -38,16 +38,16 @@
 							return $response;
 						}
 
-						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $processNodeProcessNodeUserRequestLogsResponse);
-						$processNodeProcessNodeUserRequestLogsResponse = current($processNodeProcessNodeUserRequestLogsResponse);
-						$processNodeProcessNodeUserRequestLogsResponse = json_decode($processNodeProcessNodeUserRequestLogsResponse, true);
+						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $systemActionProcessNodeProcessNodeUserRequestLogsResponse);
+						$systemActionProcessNodeProcessNodeUserRequestLogsResponse = current($systemActionProcessNodeProcessNodeUserRequestLogsResponse);
+						$systemActionProcessNodeProcessNodeUserRequestLogsResponse = json_decode($systemActionProcessNodeProcessNodeUserRequestLogsResponse, true);
 
-						if (empty($processNodeProcessNodeUserRequestLogsResponse['valid_status']) === true) {
+						if (empty($systemActionProcessNodeProcessNodeUserRequestLogsResponse['valid_status']) === true) {
 							$response['message'] = 'Error processing node process node user request logs, please try again.';
 							return $response;
 						}
 
-						$response['message'] = $processNodeProcessNodeUserRequestLogsResponse['message'];
+						$response['message'] = $systemActionProcessNodeProcessNodeUserRequestLogsResponse['message'];
 
 						if (empty($response['data']['most_recent_node_process_node_user_request_log']) === false) {
 							$mostRecentNodeProcessNodeUserRequestLog = $response['data']['most_recent_node_process_node_user_request_log'];
