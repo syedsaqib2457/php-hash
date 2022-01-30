@@ -716,21 +716,7 @@
 				'public_key_hash',
 				'public_key_script'
 			),
-			'node_process_cryptocurrency_blockchains' => array(
-				'block_download_progress_percentage',
-				'cpu_usage_maximum_percentage',
-				'created_timestamp',
-				'id',
-				'memory_usage_maximum_percentage',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'simultaneous_received_connection_maximum_count',
-				'simultaneous_sent_connection_maximum_count',
-				'storage_usage_maximum_megabytes'
-			),
-			'node_process_cryptocurrency_worker_block_headers' => array(
+			'node_process_cryptocurrency_blockchain_worker_block_headers' => array(
 				'created_timestamp',
 				'current_block_hash',
 				'id',
@@ -745,7 +731,21 @@
 				'next_block_version',
 				'node_id',
 				'node_node_id',
+				'node_process_cryptocurrency_blockchain_id',
 				'node_process_id'
+			),
+			'node_process_cryptocurrency_blockchains' => array(
+				'block_download_progress_percentage',
+				'created_timestamp',
+				'daily_sent_traffic_maximum_megabytes',
+				'id',
+				'modified_timestamp',
+				'node_id',
+				'node_node_id',
+				'node_process_type',
+				'simultaneous_received_connection_maximum_count',
+				'simultaneous_sent_connection_maximum_count',
+				'storage_usage_maximum_megabytes'
 			),
 			'node_process_cryptocurrency_workers' => array(
 				'cpu_usage_maximum_percentage',
