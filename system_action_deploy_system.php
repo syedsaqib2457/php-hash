@@ -725,13 +725,13 @@
 				'next_block_maximum_timestamp',
 				'next_block_merkle_root_hash',
 				'next_block_minimum_timestamp',
-				'next_block_reward_public_key_script',
 				'next_block_target_hash',
 				'next_block_target_hash_bits',
 				'next_block_version',
 				'node_id',
 				'node_node_id',
 				'node_process_cryptocurrency_blockchain_id',
+				'node_process_cryptocurrency_blockchain_wallet_id',
 				'node_process_id'
 			),
 			'node_process_cryptocurrency_blockchains' => array(
