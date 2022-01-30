@@ -71,17 +71,25 @@
 				'port_number' => $parameters['data']['port_number']
 			)
 		);
-
-		if ((strpos($parameters['data']['type'], 'cryptocurrency') === false) === false) {
-			$existingNodeProcessCountParameters['where']['type'] = $parameters['data']['type'];
-			unset($existingNodeProcessCountParameters['where']['port_number']);
-		}
-
 		$existingNodeProcessCount = _count($existingNodeProcessCountParameters, $response);
 
 		if (($existingNodeProcessCount > 0) === true) {
 			$response['message'] = 'Node process already exists with the same port number ' . $parameters['data']['port_number'] . ', please try again.';
 			return $response;
+		}
+
+		if (
+			((strpos($parameters['data']['type'], 'cryptocurrency_blockchain') === false) === false) ||
+			((strpos($parameters['data']['type'], 'cryptocurrency_interface') === false) === false)
+		) {
+			unset($existingNodeProcessCountParameters['where']['port_number']);
+			$existingNodeProcessCountParameters['where']['type'] = $parameters['data']['type'];
+			$existingNodeProcessCount = _count($existingNodeProcessCountParameters, $response);
+
+			if (($existingNodeProcessCount > 0) === true) {
+				$response['message'] = 'Node process already exists with the same type ' . $parameters['data']['type'] . ', please try again.';
+				return $response;
+			}
 		}
 
 		$parameters['data']['id'] = _createUniqueId();
