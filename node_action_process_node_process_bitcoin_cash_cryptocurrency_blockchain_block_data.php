@@ -197,19 +197,6 @@
 				'next_block_version' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'],
 				'node_process_type' => 'bitcoin_cash_cryptocurrency_worker'
 			);
-			/*
-			fast parsing format for node_action_process_node_process_bitcoin_cash_cryptocurrency_block_header
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = array(
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['mintime'],
-				($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'] + 6000),
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash']
-			);
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader);
-			todo: add block header transaction to data
-			todo: send blockchain worker block header data
-			*/
 		}
 
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData);
@@ -232,7 +219,6 @@
 
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = array(
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount,
-			// block header transaction is added here before block submission
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions
 		);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions);
@@ -242,53 +228,6 @@
 			return $response;
 		}
 
-		/* if (file_exists('/etc/crontab') === false) {
-			$response['message'] = 'Error listing crontab commands, please try again.';
-			return $response;
-		}
-
-		$crontabCommands = file_get_contents('/etc/crontab');
-
-		if (empty($crontabCommands) === true) {
-			$response['message'] = 'Error listing crontab commands, please try again.';
-			return $response;
-		}
-
-		$crontabCommands = explode("\n", $crontabCommands);
-		$crontabCommandIndex = array_search('# nodecompute_node_process_bitcoin_cash_cryptocurrency', $crontabCommands);
-
-		if (is_int($crontabCommandIndex) === true) {
-			while (is_int($crontabCommandIndex) === true) {
-				unset($crontabCommands[$crontabCommandIndex]);
-				$crontabCommandIndex++;
-
-				if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_node_process_bitcoin_cash_cryptocurrency') === false) {
-					$crontabCommandIndex = false;
-				}
-			}
-		}
-
-		$crontabCommands += array(
-			'# nodecompute_node_process_bitcoin_cash_cryptocurrency',
-			'* * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_processes nodecompute_node_process_bitcoin_cash_cryptocurrency'
-		);
-		$crontabCommandIndexes = range(0, 2); // todo: make this based on user input + increment based on free resources
-		$crontabCommandDelayIndexes = range(0, 55, 5);
-
-		foreach ($crontabCommandIndexes as $crontabCommandIndex) {
-			foreach ($crontabCommandDelayIndexes as $crontabCommandDelayIndex) {
-				$crontabCommands[] = '* * * * * root sleep ' . $crontabCommandDelayIndex . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header.php _' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['height'] . ' nodecompute_node_process_bitcoin_cash_cryptocurrency';
-			}
-		}
-
-		$crontabCommands = implode("\n", $crontabCommands);
-
-		if (file_put_contents('/etc/crontab', $crontabCommands) === false) {
-			echo 'Error adding crontab commands, please try again.';
-			return $response;
-		}
-
-		shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab'); */
 		$response['message'] = 'Node process Bitcoin Cash cryptocurrency blockchain block data processed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
