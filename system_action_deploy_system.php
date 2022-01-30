@@ -727,6 +727,7 @@
 				'next_block_minimum_timestamp',
 				'next_block_target_hash',
 				'next_block_target_hash_bits',
+				'next_block_transaction',
 				'next_block_version',
 				'node_id',
 				'node_node_id',
