@@ -27,8 +27,8 @@
 			(
 				(is_string($parameters['data']['type']) === false) ||
 				(in_array($parameters['data']['type'], array(
-					'bitcoin_cryptocurrency',
-					'bitcoin_cash_cryptocurrency',
+					'bitcoin_cryptocurrency_blockchain',
+					'bitcoin_cash_cryptocurrency_blockchain',
 					'http_proxy',
 					'load_balancer',
 					'recursive_dns',
@@ -63,7 +63,7 @@
 			return $response;
 		}
 
-		_update(array(
+		_edit(array(
 			'data' => array_intersect_key($parameters['data'], array(
 				'port_number' => true,
 				'type' => true
