@@ -70,6 +70,10 @@
 						break;
 				}
 
+				if ((_validateIpAddressType($nodeReservedInternalDestinationIpAddress, $nodeIpAddressVersionNumber) === 'public_network') === true) {
+					continue;
+				}
+
 				$existingNodeCount = _count(array(
 					'in' => $parameters['system_databases']['nodes'],
 					'where' => array(
@@ -121,6 +125,10 @@
 					$nodeReservedInternalDestinationIpAddress = str_split($nodeReservedInternalDestinationIpAddress, 4);
 					$nodeReservedInternalDestinationIpAddress = 'fc10:0000:' . implode(':', $nodeReservedInternalDestinationIpAddress);
 					break;
+			}
+
+			if ((_validateIpAddressType($nodeReservedInternalDestinationIpAddress, $nodeIpAddressVersionNumber) === 'public_network') === true) {
+				continue;
 			}
 
 			$existingNodeCount = _count(array(
