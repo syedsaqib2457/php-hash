@@ -331,35 +331,6 @@
 		return true;
 	}
 
-	function _update($parameters, $response) {
-		if (empty($parameters['data']) === false) {
-			$systemDatabaseUpdateCommand = 'UPDATE ' . $parameters['in']['table_name'] . ' SET ';
-
-			if (isset($parameters['data']['modified']) === false) {
-				$parameters['data']['modified'] = time();
-			}
-
-			foreach ($parameters['data'] as $updateValueKey => $updateValue) {
-				$systemDatabaseUpdateCommand .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
-			}
-
-			$systemDatabaseUpdateCommand = rtrim($systemDatabaseUpdateCommand, ',') . ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
-
-			if (empty($parameters['limit']) === false) {
-				$systemDatabaseUpdateCommand .= ' LIMIT ' . $parameters['limit'];
-			}
-
-			$systemDatabaseUpdateCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseUpdateCommand);
-
-			if ($systemDatabaseUpdateCommandResponse === false) {
-				$response['message'] = 'Error updating data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-				_output($response);
-			}
-		}
-
-		return true;
-	}
-
 	$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'nodecompute');
 	$parameters['system_databases'] = array(
 		'system_database_columns' => array(
