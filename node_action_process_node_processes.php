@@ -327,6 +327,8 @@
 		if (empty($parameters['data'][$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains']]['node_process_cryptocurrency_blockchains']) === false) {
 			foreach ($parameters['data'][$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains']]['node_process_cryptocurrency_blockchains'] as $nodeProcessCryptocurrencyBlockchainNodeProcessType => $nodeProcessCryptocurrencyBlockchain) {
 				if (empty($parameters['data'][$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]) === false) {
+					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($parameters['data'][$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]);
+					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($nodeProcessCryptocurrencyBlockchain['port_number'][$nodeProcessCryptocurrencyBlockchain['node_id']]);
 					require_once('/usr/local/nodecompute/node_action_process_node_process_' . $nodeProcessCryptocurrencyBlockchainNodeProcessType . '.php');
 					// todo: add crontab commands for updating mining block template data if crypto daemon exists
 					// todo: add crontab commands for mining block headers if crypto daemon doesn't exist
