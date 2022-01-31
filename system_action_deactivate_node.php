@@ -38,7 +38,7 @@
 		$nodeParameters['data'] = array(
 			'activated_status' => '0'
 		);
-		_update($nodeParameters, $response);
+		_edit($nodeParameters, $response);
 		$response['message'] = 'Node deactivated successfully.';
 		$response['valid_status'] = '1';
 		return $response;
