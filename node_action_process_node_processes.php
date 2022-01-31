@@ -328,16 +328,11 @@
 
 			foreach ($parameters['data']['next']['cryptocurrency_blockchain_node_process_types'] as $cryptocurrencyBlockchainNodeProcessType) {
 				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyBlockchainNodeProcessType]) === false) {
-					// todo: send start signal to crypto daemon if file exists
-
-					if (_verifyNodeProcess($parameters['binary_files'], false, false, false, $cryptocurrencyBlockchainNodeProcessType) === false) {
-						if (empty($parameters['processing_progress_checkpoints'][3]) === false) {
-							$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
-						}
-
-						require_once('/usr/local/nodecompute/node_action_deploy_node_process_' . $cryptocurrencyBlockchainNodeProcessType . '.php');
+					if (empty($parameters['processing_progress_checkpoints'][3]) === false) {
+						$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 					}
 
+					require_once('/usr/local/nodecompute/node_action_deploy_node_process_' . $cryptocurrencyBlockchainNodeProcessType . '.php');
 					// todo: add crontab commands for updating mining block template data if crypto daemon exists
 					// todo: add crontab commands for mining block headers if crypto daemon doesn't exist
 				}
