@@ -94,7 +94,6 @@
 		), $response);
 
 		if ($nodeCount === 0) {
-			// reset added_status instead of deleting node_reserved_internal_destinations
 			$databases[] = 'node_reserved_internal_destinations';
 		}
 
