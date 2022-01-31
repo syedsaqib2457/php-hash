@@ -219,9 +219,9 @@
 		$parameters['processing_progress_checkpoints'] = array(
 			'listing_node_parameters',
 			'processing_next_node_processes',
-			'processing_next_node_kernel_options',
-			'processing_next_node_interfaces',
-			'processing_current_cryptocurrency_blockchain_node_processes',
+			'processing_node_kernel_options',
+			'processing_node_interfaces',
+			'processing_cryptocurrency_blockchain_node_processes',
 			'verifying_current_http_proxy_node_processes',
 			'verifying_current_load_balancer_node_processes',
 			'verifying_current_recursive_dns_node_processes',
@@ -482,6 +482,8 @@
 		if (empty($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchains']) === false) {
 			foreach ($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchains'] as $nodeProcessCryptocurrencyBlockchainNodeProcessType => $nodeProcessCryptocurrencyBlockchain) {
 				if (empty($parameters['data'][$parameters['node_process_data_key']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]) === false) {
+					$nodeProcessCryptocurrencyBlockchain['ip_address'] = current($parameters['data'][$parameters['node_process_data_key']]['node_reserved_internal_destinations']);
+					$nodeProcessCryptocurrencyBlockchain['ip_address'] = current($nodeProcessCryptocurrencyBlockchain['ip_address']);
 					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($parameters['data'][$parameters['node_process_data_key']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]);
 					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($nodeProcessCryptocurrencyBlockchain['port_number'][$nodeProcessCryptocurrencyBlockchain['node_id']]);
 					require_once('/usr/local/nodecompute/node_action_process_node_process_' . $nodeProcessCryptocurrencyBlockchainNodeProcessType . '.php');
