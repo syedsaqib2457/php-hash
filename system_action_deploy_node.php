@@ -50,7 +50,7 @@
 				'node_id' => $nodeIds
 			)
 		);
-		_update($nodeParameters, $response);
+		_edit($nodeParameters, $response);
 		$response['message'] = 'Node deployed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
