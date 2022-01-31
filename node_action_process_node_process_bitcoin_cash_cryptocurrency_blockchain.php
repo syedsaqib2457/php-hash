@@ -73,6 +73,10 @@
 	if (($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] > 95) === true) {
 		// todo: end current process if parameters are different from download progress
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['listen'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['whitelistrelay'] = '1';
+
+		if (empty($nodeProcessCryptocurrencyBlockchain['simultaneous_sent_connection_maximum_count']) === false) {
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['maxconnections'] += min(8, $nodeProcessCryptocurrencyBlockchain['simultaneous_sent_connection_maximum_count']);
+		}
 	}
 
 	foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainParameters as $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey => $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter) {
