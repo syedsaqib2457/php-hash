@@ -21,7 +21,7 @@
 		}
 
 		shell_exec('sudo mkdir /usr/local/bin/bitcoin_cash/');
-		shell_exec('sudo mv /usr/local/bin/bitcoin* /usr/local/bin/bitcoin_cash/');
+		shell_exec('sudo mv /usr/local/bin/bitcoind /usr/local/bin/bitcoin-* /usr/local/bin/bitcoin_cash/');
 		shell_exec('sudo mkdir /usr/local/nodecompute/bitcoin_cash/');
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = array(
 			'rpcbind=' . $nodeProcessCryptocurrencyBlockchain['ip_address'],
