@@ -27,7 +27,7 @@
 			// 'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
 			// todo: add node external/internal IP address for rpcbind
 			'rpcpassword=nodecompute',
-			'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency_blockchain']),
+			'rpcport=' . $nodeProcessCryptocurrencyBlockchain['port_number'],
 			'rpcuser=nodecompute'
 		);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = implode("\n", $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings);
