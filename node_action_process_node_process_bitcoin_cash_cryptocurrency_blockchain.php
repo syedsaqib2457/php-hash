@@ -51,7 +51,7 @@
 		'listen' => '0',
 		'maxconnections' => '8',
 		'maxmempool' => $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_transaction_memory_pool_megabytes'],
-		'maxorphantx' => '1', 
+		'maxorphantx' => '1',
 		'maxreceivebuffer' => '250',
 		'maxsendbuffer' => '250',
 		'maxtimeadjustment' => '10000',
@@ -59,11 +59,15 @@
 		'mempoolexpiry' => '10',
 		'minrelaytxfee' => '0.00000001',
 		'persistmempool' => '0',
-		'prune' => '11111',
-		'rpcthreads' => '2',
+		//'prune' => '11111',
+		'rpcthreads' => '4',
 		'timeout' => '10000',
 		'whitelistrelay' => '0'
 	);
+
+	if (($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] > 95) === true) {
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['listen'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['whitelistrelay'] = '1';
+	}
 
 	foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainParameters as $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey => $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter) {
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters[$nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey] = '-' .  $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey . '=' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter;
