@@ -335,7 +335,7 @@
 							$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
 						}
 
-						require_once('/usr/local/nodecompute/node_action_deploy_' . $cryptocurrencyBlockchainNodeProcessType . '_node_process.php');
+						require_once('/usr/local/nodecompute/node_action_deploy_node_process_' . $cryptocurrencyBlockchainNodeProcessType . '.php');
 					}
 
 					// todo: add crontab commands for updating mining block template data if crypto daemon exists
