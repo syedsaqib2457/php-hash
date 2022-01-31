@@ -55,7 +55,7 @@
 		'maxreceivebuffer' => '250',
 		'maxsendbuffer' => '250',
 		'maxtimeadjustment' => '10000',
-		'maxuploadtarget' => '1024',
+		'maxuploadtarget' => $nodeProcessCryptocurrencyBlockchain['daily_sent_traffic_maximum_megabytes'],
 		'mempoolexpiry' => '10',
 		'minrelaytxfee' => '0.00000001',
 		'persistmempool' => '0',
@@ -64,6 +64,7 @@
 		'timeout' => '10000',
 		'whitelistrelay' => '0'
 	);
+	// todo: add socks proxy destination connection parameters
 
 	if (($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] > 95) === true) {
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['listen'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['whitelistrelay'] = '1';
