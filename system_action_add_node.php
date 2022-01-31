@@ -136,6 +136,11 @@
 						'node_id' => $parameters['data']['node_id']
 					)
 				);
+
+				if (empty($parameters['node'][$nodeIpAddressVersionNumber]['node_id']) === true) {
+					$parameters['node'][$nodeIpAddressVersionNumber]['node_id'] = $parameters['data']['id'];
+				}
+
 				_addNodeReservedInternalDestination($parameters, $response);
 			}
 		}
