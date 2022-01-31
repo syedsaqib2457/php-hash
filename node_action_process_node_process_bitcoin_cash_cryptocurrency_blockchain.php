@@ -40,7 +40,37 @@
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_database_batch_size_bytes'] = ceil((16777216 * 8) * 1.05);
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_transaction_memory_pool_megabytes'] = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) * 0.30);
 	// todo: add 1 default block header row to system database
-	shell_exec('sudo /usr/local/bin/bitcoin_cash/bitcoind -blockmintxfee=0.00000001 -daemon=1 -datacarriersize=1000000 -datadir=/usr/local/nodecompute/bitcoin_cash/ -dbbatchsize=' . $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_database_batch_size_bytes'] . ' -dbcache=10 -keypool=1 -listen=0 -maxconnections=8 -maxmempool=' . $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_transaction_memory_pool_megabytes'] . ' -maxorphantx=1 -maxreceivebuffer=250 -maxsendbuffer=250 -maxtimeadjustment=10000 -maxuploadtarget=1024 -mempoolexpiry=10 -minrelaytxfee=0.00000001 -persistmempool=0 -prune=11111 -rpcthreads=2 -timeout=10000 -whitelistrelay=0');
+	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters = array(
+		'blockmintxfee' => '0.00000001',
+		'daemon' => '1',
+		'datacarriersize' => '1000000',
+		'datadir' => '/usr/local/nodecompute/bitcoin_cash/',
+		'dbbatchsize' => $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_database_batch_size_bytes'],
+		'dbcache' => '10',
+		'keypool' => '1',
+		'listen' => '0',
+		'maxconnections' => '8',
+		'maxmempool' => $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_transaction_memory_pool_megabytes'],
+		'maxorphantx' => '1', 
+		'maxreceivebuffer' => '250',
+		'maxsendbuffer' => '250',
+		'maxtimeadjustment' => '10000',
+		'maxuploadtarget' => '1024',
+		'mempoolexpiry' => '10',
+		'minrelaytxfee' => '0.00000001',
+		'persistmempool' => '0',
+		'prune' => '11111',
+		'rpcthreads' => '2',
+		'timeout' => '10000',
+		'whitelistrelay' => '0'
+	);
+
+	foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainParameters as $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey => $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter) {
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters[$nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey] = '-' .  $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey . '=' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter;
+	}
+
+	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters = implode(' ', $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
+	shell_exec('sudo /usr/local/bin/bitcoin_cash/bitcoind ' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
 	// todo: make sure verificationprogress=1 before opening maxconnections and listening IP:port for P2P
 	// todo: add default wallet info (scriptPubKey, address, etc) to database after initialblockdownload=false for sending block rewards to external addresses with the API
 ?>
