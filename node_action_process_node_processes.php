@@ -311,32 +311,34 @@
 			return $response;
 		}
 
+		$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains'] = 'current';
+
 		if (empty($systemActionProcessNodeResponse['data']) === false) {
 			$parameters['data']['next'] = $systemActionProcessNodeResponse['data'];
+			$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains'] = 'next';
 
 			if (empty($parameters['data']['current']) === true) {
 				$parameters['data']['current'] = $parameters['data']['next'];
 			}
 		}
 
-		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
-		unset($systemActionProcessNodeParameterData);
 		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
-		if (empty($parameters['data']['next']['nodes']) === false) {
-			if (empty($parameters['data']['next']['node_process_cryptocurrency_blockchains']) === false) {
-				foreach ($parameters['data']['next']['node_process_cryptocurrency_blockchains'] as $nodeProcessCryptocurrencyBlockchainNodeProcessType => $nodeProcessCryptocurrencyBlockchain) {
-					if (empty($parameters['data']['next']['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]) === false) {
-						require_once('/usr/local/nodecompute/node_action_process_node_process_' . $nodeProcessCryptocurrencyBlockchainNodeProcessType . '.php');
-						// todo: add crontab commands for updating mining block template data if crypto daemon exists
-						// todo: add crontab commands for mining block headers if crypto daemon doesn't exist
-					}
+		if (empty($parameters['data'][$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains']]['node_process_cryptocurrency_blockchains']) === false) {
+			foreach ($parameters['data'][$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains']]['node_process_cryptocurrency_blockchains'] as $nodeProcessCryptocurrencyBlockchainNodeProcessType => $nodeProcessCryptocurrencyBlockchain) {
+				if (empty($parameters['data'][$parameters['node_process_type_process_part_data_keys']['cryptocurrency_blockchains']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]) === false) {
+					require_once('/usr/local/nodecompute/node_action_process_node_process_' . $nodeProcessCryptocurrencyBlockchainNodeProcessType . '.php');
+					// todo: add crontab commands for updating mining block template data if crypto daemon exists
+					// todo: add crontab commands for mining block headers if crypto daemon doesn't exist
 				}
 			}
-		} else {
-			if (empty($parameters['data']['current']) === false) {
-				// todo: process cryptocurrency block download progress
+		}
 
+		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
+		unset($systemActionProcessNodeParameterData);
+		
+		if (empty($parameters['data']['next']['nodes']) === true) {
+			if (empty($parameters['data']['current']) === false) {
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
 					if (empty($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType]) === false) {
 						$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
