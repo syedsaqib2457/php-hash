@@ -49,11 +49,12 @@
 			'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 			'where' => array(
 				'either' => array(
-					'node_id' => $parameters['node'][$nodeIpAddressVersion],
-					'node_node_id' => $parameters['node'][$nodeIpAddressVersion]
+					'node_id' => $parameters['where']['id'],
+					'node_node_id' => $parameters['where']['id']
 				)
 			)
 		), $response);
+		// todo: add blockchain databases to deletion after deleting node
 		$systemDatabaseNames = array(
 			'node_process_forwarding_destinations',
 			'node_process_node_user_authentication_credentials',
@@ -73,13 +74,14 @@
 			'in' => $parameters['system_databases']['nodes'],
 			'where' => array(
 				'either' => array(
-					'id' => $parameters['node'][$nodeIpAddressVersion],
-					'node_id' => $parameters['node'][$nodeIpAddressVersion]
+					'id' => $parameters['where']['id'],
+					'node_id' => $parameters['where']['id']
 				)
 			)
 		), $response);
 
 		if ($nodeCount === 0) {
+			// reset added_status instead of deleting node_reserved_internal_destinations
 			$databases[] = 'node_reserved_internal_destinations';
 		}
 
