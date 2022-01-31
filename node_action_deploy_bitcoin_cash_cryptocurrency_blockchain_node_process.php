@@ -3,11 +3,6 @@
 		exit;
 	}
 
-	if (empty($parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']) === true) {
-		$response['message'] = 'Error listing Bitcoin Cash cryptocurrency destination, please try again.';
-		return $response;
-	}
-
 	shell_exec('sudo apt-get update');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential cmake libboost-all-dev libdb-dev libdb++-dev libevent-dev libssl-dev ninja-build python3');
 	shell_exec('sudo rm -rf /usr/src/bitcoin_cash/');
@@ -19,16 +14,17 @@
 	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja');
 	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja install');
 	shell_exec('sudo mkdir /usr/local/nodecompute/bitcoin_cash/');
-	$bitcoinCashSettings = array(
-		'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
+	$bitcoinCashCryptocurrencyBlockchainSettings = array(
+		// 'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
+		// todo: add node external/internal IP address for rpcbind
 		'rpcpassword=nodecompute',
-		'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency'][0]),
+		'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency_blockchain'][0]),
 		'rpcuser=nodecompute'
 	);
-	$bitcoinCashSettings = implode("\n", $bitcoinCashSettings);
+	$bitcoinCashCryptocurrencyBlockchainSettings = implode("\n", $bitcoinCashCryptocurrencyBlockchainSettings);
 
-	if (file_put_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf', $bitcoinCashSettings) === false) {
-		$response['message'] = 'Error adding Bitcoin Cash settings, please try again.';
+	if (file_put_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf', $bitcoinCashCryptocurrencyBlockchainSettings) === false) {
+		$response['message'] = 'Error adding Bitcoin Cash cryptocurrency blockchain settings, please try again.';
 		return $response;
 	}
 
