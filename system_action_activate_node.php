@@ -72,7 +72,7 @@
 		$nodeParameters['data'] = array(
 			'activated_status' => '1'
 		);
-		_update($nodeParameters, $response);
+		_edit($nodeParameters, $response);
 		$response['message'] = 'Node activated successfully.';
 		$response['valid_status'] = '1';
 		return $response;
