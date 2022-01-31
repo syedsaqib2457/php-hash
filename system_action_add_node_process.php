@@ -35,8 +35,6 @@
 
 		if (in_array($parameters['data']['type'], array(
 			'bitcoin_cash_cryptocurrency_blockchain',
-			'bitcoin_cash_cryptocurrency_interface',
-			'bitcoin_cash_cryptocurrency_worker',
 			'http_proxy',
 			'load_balancer',
 			'recursive_dns',
@@ -78,10 +76,7 @@
 			return $response;
 		}
 
-		if (
-			((strpos($parameters['data']['type'], 'cryptocurrency_blockchain') === false) === false) ||
-			((strpos($parameters['data']['type'], 'cryptocurrency_interface') === false) === false)
-		) {
+		if ((strpos($parameters['data']['type'], 'cryptocurrency_blockchain') === false) === false) {
 			unset($existingNodeProcessCountParameters['where']['port_number']);
 			$existingNodeProcessCountParameters['where']['type'] = $parameters['data']['type'];
 			$existingNodeProcessCount = _count($existingNodeProcessCountParameters, $response);
