@@ -698,6 +698,9 @@
 				'ip_address',
 				'ip_address_version_number',
 				'modified_timestamp',
+				'node_id',
+				'node_node_id',
+				'node_process_type',
 				'port_number'
 			),
 			'node_process_cryptocurrency_blockchain_wallet_payment_requests' => array(
@@ -753,6 +756,7 @@
 				'hashes_per_second',
 				'modified_timestamp',
 				'node_id',
+				'node_node_id',
 				'node_process_type'
 			),
 			'node_process_cryptocurrency_workers' => array(
