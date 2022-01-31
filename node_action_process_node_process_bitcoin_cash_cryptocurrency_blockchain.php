@@ -24,8 +24,7 @@
 		shell_exec('sudo mv /usr/local/bin/bitcoin* /usr/local/bin/bitcoin_cash/');
 		shell_exec('sudo mkdir /usr/local/nodecompute/bitcoin_cash/');
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = array(
-			// 'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
-			// todo: add node external/internal IP address for rpcbind
+			'rpcbind=' . $nodeProcessCryptocurrencyBlockchain['ip_address'],
 			'rpcpassword=nodecompute',
 			'rpcport=' . $nodeProcessCryptocurrencyBlockchain['port_number'],
 			'rpcuser=nodecompute'
