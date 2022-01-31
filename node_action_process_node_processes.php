@@ -1212,8 +1212,6 @@
 		$response = false;
 
 		switch ($nodeProcessType) {
-			case 'bitcoin_cryptocurrency':
-				break;
 			case 'http_proxy':
 			case 'socks_proxy':
 				$nodeProcessTypeParameters = array(
@@ -1222,8 +1220,6 @@
 				);
 				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://nodecompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 				$response = (empty($proxyNodeProcessResponse) === true);
-				break;
-			case 'monero_cryptocurrency':
 				break;
 			case 'recursive_dns':
 				// todo: add dig to $parameters['binary_files']
