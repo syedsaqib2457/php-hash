@@ -4,6 +4,7 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
+		'node_process_cryptocurrency_blockchains',
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
 		'node_process_node_user_authentication_sources',
@@ -19,17 +20,17 @@
 
 	function _processNode($parameters, $response) {
 		$response['data'] = array(
-			'cryptocurrency_node_process_types' => array(
-				'bitcoin_cash_cryptocurrency',
-				'bitcoin_cryptocurrency'
+			'cryptocurrency_blockchain_node_process_types' => array(
+				'bitcoin_cash_cryptocurrency_blockchain',
+				'bitcoin_cryptocurrency_blockchain'
 			),
 			'node_ip_address_version_numbers' => array(
 				'32' => '4',
 				'128' => '6'
 			),
 			'node_process_types' => array(
-				'bitcoin_cash_cryptocurrency',
-				'bitcoin_cryptocurrency',
+				'bitcoin_cash_cryptocurrency_blockchain',
+				'bitcoin_cryptocurrency_blockchain',
 				'http_proxy',
 				'load_balancer',
 				'recursive_dns',
@@ -116,6 +117,23 @@
 				return $response;
 			}
 
+			$nodeProcessCryptocurrencyBlockchains = _list(array(
+				'data' => array(
+					'block_download_progress_percentage',
+					'daily_sent_traffic_maximum_megabytes',
+					'id',
+					'node_id',
+					'node_node_id',
+					'node_process_type',
+					'simultaneous_received_connection_maximum_count',
+					'simultaneous_sent_connection_maximum_count',
+					'storage_usage_maximum_megabytes'
+				),
+				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchains'],
+				'where' => array(
+					'node_node_id' => $nodeNodeId
+				)
+			), $response);
 			$nodeProcesses = _list(array(
 				'data' => array(
 					'id',
@@ -125,10 +143,7 @@
 				),
 				'in' => $parameters['system_databases']['node_processes'],
 				'where' => array(
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessForwardingDestinations = _list(array(
@@ -142,10 +157,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
 				'where' => array(
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUserAuthenticationCredentials = _list(array(
@@ -156,10 +168,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_authentication_credentials'],
 				'where' => array(
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUserAuthenticationSources = _list(array(
@@ -171,10 +180,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_authentication_sources'],
 				'where' => array(
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUserNodeRequestDestinations = _list(array(
@@ -185,10 +191,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_destinations'],
 				'where' => array(
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUserNodeRequestLimitRules = _list(array(
@@ -198,10 +201,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_limit_rules'],
 				'where' => array(
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUsers = _list(array(
@@ -215,10 +215,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_node_users'], 
 				'where' => array(
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessRecursiveDnsDestinations = _list(array(
@@ -236,10 +233,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 				'where' => array(
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeReservedInternalDestinations = _list(array(
@@ -250,10 +244,7 @@
 				'in' => $parameters['system_databases']['node_reserved_internal_destinations'],
 				'where' => array(
 					'assigned_status' => '1',
-					'either' => array(
-						'node_id' => $nodeNodeId,
-						'node_node_id' => $nodeNodeId
-					)
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeReservedInternalSources = _list(array(
