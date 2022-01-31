@@ -83,7 +83,7 @@
 				$response['data']['processing_progress_override_status'] = $node['processing_progress_override_status'];
 			}
 
-			_update(array(
+			_edit(array(
 				'data' => array_intersect_key($parameters['data'], array(
 					'processed_status' => true,
 					'processing_progress_checkpoint' => true,
