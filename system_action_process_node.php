@@ -121,9 +121,7 @@
 				'data' => array(
 					'block_download_progress_percentage',
 					'daily_sent_traffic_maximum_megabytes',
-					'id',
 					'node_id',
-					'node_node_id',
 					'node_process_type',
 					'simultaneous_received_connection_maximum_count',
 					'simultaneous_sent_connection_maximum_count',
@@ -275,6 +273,12 @@
 					)
 				)
 			), $response);
+
+			foreach ($nodeProcessCryptocurrencyBlockchains as $nodeProcessCryptocurrencyBlockchain) {
+				$response['data']['node_process_cryptocurrency_blockchains'][$nodeProcessCryptocurrencyBlockchain['node_process_type']] = $nodeProcessCryptocurrencyBlockchain;
+				unset($response['data']['node_process_cryptocurrency_blockchains'][$nodeProcessCryptocurrencyBlockchain['node_process_type']]['node_process_type']);
+			}
+
 			$nodeProcessPartKeys = array();
 
 			foreach ($parameters['data']['node_process_types'] as $nodeProcessType) {
