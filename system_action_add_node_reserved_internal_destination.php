@@ -4,7 +4,6 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
-		'node_process_cryptocurrency_destinations',
 		'node_reserved_internal_destinations'
 	), $parameters['system_databases'], $response);
 
@@ -89,23 +88,10 @@
 						)
 					)
 				), $response);
-				$existingNodeProcessCryptocurrencyDestinationCount = _count(array(
-					'in' => $parameters['system_databases']['node_process_cryptocurrency_destinations'],
-					'where' => array(
-						'either' => array(
-							'id' => $parameters['node'][$nodeIpAddressVersionNumber],
-							'node_id' => $parameters['node'][$nodeIpAddressVersionNumber]
-						),
-						'ip_address' => $nodeReservedInternalDestinationIpAddress
-					)
-				), $response);
 
-				if (
-					(($existingNodeCount > 0) === false) &&
-					(($existingNodeProcessCryptocurrencyDestinationCount > 0) === false)
-				) {
-					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
+				if (($existingNodeCount > 0) === false) {
 					$existingNodeReservedInternalDestination['added_status'] = '1';
+					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 				}
 			}
 		} else {
@@ -116,8 +102,8 @@
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
-		$existingNodeReservedInternalDestinationData[1]['added_status'] = '0';
 		unset($existingNodeReservedInternalDestinationData[1]['id']);
+		$existingNodeReservedInternalDestinationData[1]['added_status'] = '0';
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
 		while (($existingNodeReservedInternalDestinationData[0]['ip_address'] === $existingNodeReservedInternalDestinationData[1]['ip_address']) === true) {
@@ -155,21 +141,8 @@
 					)
 				)
 			), $response);
-			$existingNodeProcessCryptocurrencyDestinationCount = _count(array(
-				'in' => $parameters['system_databases']['node_process_cryptocurrency_destinations'],
-				'where' => array(
-					'either' => array(
-						'id' => $parameters['node'][$nodeIpAddressVersionNumber],
-						'node_id' => $parameters['node'][$nodeIpAddressVersionNumber]
-					),
-					'ip_address' => $nodeReservedInternalDestinationIpAddress
-				)
-			), $response);
 
-			if (
-				(($existingNodeCount > 0) === false) &&
-				(($existingNodeProcessCryptocurrencyDestinationCount > 0) === false)
-			) {
+			if (($existingNodeCount > 0) === false) {
 				$existingNodeReservedInternalDestinationData[1]['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 			}
 		}
