@@ -16,7 +16,7 @@
 		shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja install');
 
 		if (file_exists('/usr/local/bin/bitcoind') === false) {
-			$response['message'] = 'Error deploying node process Bitcoin Cash cryptocurrency blockchain, please try again.';
+			$response['message'] = 'Error processing node process Bitcoin Cash cryptocurrency blockchain, please try again.';
 			return $response;
 		}
 
@@ -27,7 +27,7 @@
 			// 'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
 			// todo: add node external/internal IP address for rpcbind
 			'rpcpassword=nodecompute',
-			'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency_blockchain'][0]),
+			'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency_blockchain']),
 			'rpcuser=nodecompute'
 		);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = implode("\n", $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings);
