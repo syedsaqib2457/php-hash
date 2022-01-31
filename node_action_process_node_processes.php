@@ -219,8 +219,7 @@
 		$parameters['processing_progress_checkpoints'] = array(
 			'listing_node_parameters',
 			'processing_next_node_processes',
-			'verifying_current_cryptocurrency_node_processes',
-			'deploying_next_cryptocurrency_node_processes',
+			'processing_current_cryptocurrency_blockchain_node_processes',
 			'verifying_current_http_proxy_node_processes',
 			'verifying_current_load_balancer_node_processes',
 			'verifying_current_recursive_dns_node_processes',
@@ -322,28 +321,22 @@
 
 		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
 		unset($systemActionProcessNodeParameterData);
+		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
 		if (empty($parameters['data']['next']['nodes']) === false) {
-			$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-
-			foreach ($parameters['data']['next']['cryptocurrency_blockchain_node_process_types'] as $cryptocurrencyBlockchainNodeProcessType) {
-				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyBlockchainNodeProcessType]) === false) {
-					if (empty($parameters['processing_progress_checkpoints'][3]) === false) {
-						$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files']['wget'], $systemActionProcessNodeParameters, $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count']);
+			if (empty($parameters['data']['next']['node_process_cryptocurrency_blockchains']) === false) {
+				foreach ($parameters['data']['next']['node_process_cryptocurrency_blockchains'] as $nodeProcessCryptocurrencyBlockchainNodeProcessType => $nodeProcessCryptocurrencyBlockchain) {
+					if (empty($parameters['data']['next']['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]) === false) {
+						require_once('/usr/local/nodecompute/node_action_process_node_process_' . $nodeProcessCryptocurrencyBlockchainNodeProcessType . '.php');
+						// todo: add crontab commands for updating mining block template data if crypto daemon exists
+						// todo: add crontab commands for mining block headers if crypto daemon doesn't exist
 					}
-
-					require_once('/usr/local/nodecompute/node_action_deploy_node_process_' . $cryptocurrencyBlockchainNodeProcessType . '.php');
-					// todo: add crontab commands for updating mining block template data if crypto daemon exists
-					// todo: add crontab commands for mining block headers if crypto daemon doesn't exist
 				}
 			}
-
-			unset($parameters['processing_progress_checkpoints'][3]);
 		} else {
-			unset($parameters['processing_progress_checkpoints'][2]);
-			unset($parameters['processing_progress_checkpoints'][3]);
-
 			if (empty($parameters['data']['current']) === false) {
+				// todo: process cryptocurrency block download progress
+
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
 					if (empty($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType]) === false) {
 						$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
@@ -386,10 +379,10 @@
 			return $response;
 		}
 
+		unset($parameters['processing_progress_checkpoints'][3]);
 		unset($parameters['processing_progress_checkpoints'][4]);
 		unset($parameters['processing_progress_checkpoints'][5]);
 		unset($parameters['processing_progress_checkpoints'][6]);
-		unset($parameters['processing_progress_checkpoints'][7]);
 		$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$kernelOptions = array(
 			'fs.aio-max-nr = 1000000000',
