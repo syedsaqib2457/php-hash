@@ -48,7 +48,7 @@
 				)
 			)
 		), $response);
-		_update(array(
+		_edit(array(
 			'data' => array(
 				'added_status' => '0',
 				'processed_status' => '0'
