@@ -236,6 +236,4 @@
 	if (($parameters['action'] === 'process_node_process_bitcoin_cash_cryptocurrency_blockchain_block_data') === true) {
 		$response = _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData($parameters, $response);
 	}
-
-	// todo: save block template to system API for NodeCompute nodes without bitcoin-cli installed
 ?>
