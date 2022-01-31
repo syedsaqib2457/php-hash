@@ -36,7 +36,7 @@
 			$nodeNodeId = $node['node_id'];
 		}
 
-		_update(array(
+		_edit(array(
 			'data' => array(
 				'processed_status' => '0',
 				'processing_progress_checkpoint' => 'processing_queued',
