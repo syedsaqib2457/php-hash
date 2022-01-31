@@ -3,37 +3,39 @@
 		exit;
 	}
 
-	shell_exec('sudo apt-get update');
-	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential cmake libboost-all-dev libdb-dev libdb++-dev libevent-dev libssl-dev ninja-build python3');
-	shell_exec('sudo rm -rf /usr/src/bitcoin_cash/');
-	shell_exec('sudo mkdir -p /usr/src/bitcoin_cash/');
-	shell_exec('cd /usr/src/bitcoin_cash/ && sudo ' . $parameters['binary_files']['wget'] . ' -O bitcoin_cash.tar.gz --no-dns-cache --timeout=60 https://github.com/bitcoin-cash-node/bitcoin-cash-node/archive/refs/tags/v24.0.0.tar.gz');
-	shell_exec('cd /usr/src/bitcoin_cash/ && sudo tar -xvzf bitcoin_cash.tar.gz');
-	shell_exec('cd /usr/src/bitcoin_cash/*/ && sudo mkdir build');
-	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF -DBUILD_BITCOIN_ZMQ=OFF -DENABLE_MAN=OFF -DENABLE_UPNP=OFF');
-	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja');
-	shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja install');
+	if (file_exists('/usr/local/bin/bitcoin_cash/bitcoind') === false) {
+		shell_exec('sudo apt-get update');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential cmake libboost-all-dev libdb-dev libdb++-dev libevent-dev libssl-dev ninja-build python3');
+		shell_exec('sudo rm -rf /usr/src/bitcoin_cash/');
+		shell_exec('sudo mkdir -p /usr/src/bitcoin_cash/');
+		shell_exec('cd /usr/src/bitcoin_cash/ && sudo ' . $parameters['binary_files']['wget'] . ' -O bitcoin_cash.tar.gz --no-dns-cache --timeout=60 https://github.com/bitcoin-cash-node/bitcoin-cash-node/archive/refs/tags/v24.0.0.tar.gz');
+		shell_exec('cd /usr/src/bitcoin_cash/ && sudo tar -xvzf bitcoin_cash.tar.gz');
+		shell_exec('cd /usr/src/bitcoin_cash/*/ && sudo mkdir build');
+		shell_exec('cd /usr/src/bitcoin_cash/*/build/ && cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF -DBUILD_BITCOIN_ZMQ=OFF -DENABLE_MAN=OFF -DENABLE_UPNP=OFF');
+		shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja');
+		shell_exec('cd /usr/src/bitcoin_cash/*/build/ && sudo ninja install');
 
-	if (file_exists('/usr/local/bin/bitcoind') === false) {
-		$response['message'] = 'Error deploying node process Bitcoin Cash cryptocurrency blockchain, please try again.';
-		return $response;
-	}
+		if (file_exists('/usr/local/bin/bitcoind') === false) {
+			$response['message'] = 'Error deploying node process Bitcoin Cash cryptocurrency blockchain, please try again.';
+			return $response;
+		}
 
-	shell_exec('sudo mkdir /usr/local/bin/bitcoin_cash/');
-	shell_exec('sudo mv /usr/local/bin/bitcoin* /usr/local/bin/bitcoin_cash/');
-	shell_exec('sudo mkdir /usr/local/nodecompute/bitcoin_cash/');
-	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = array(
-		// 'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
-		// todo: add node external/internal IP address for rpcbind
-		'rpcpassword=nodecompute',
-		'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency_blockchain'][0]),
-		'rpcuser=nodecompute'
-	);
-	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = implode("\n", $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings);
+		shell_exec('sudo mkdir /usr/local/bin/bitcoin_cash/');
+		shell_exec('sudo mv /usr/local/bin/bitcoin* /usr/local/bin/bitcoin_cash/');
+		shell_exec('sudo mkdir /usr/local/nodecompute/bitcoin_cash/');
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = array(
+			// 'rpcbind=' . $parameters['data']['next']['node_process_cryptocurrency_destinations']['bitcoin_cash_cryptocurrency']['ip_address'],
+			// todo: add node external/internal IP address for rpcbind
+			'rpcpassword=nodecompute',
+			'rpcport=' . current($parameters['data']['next']['node_processes']['bitcoin_cash_cryptocurrency_blockchain'][0]),
+			'rpcuser=nodecompute'
+		);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = implode("\n", $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings);
 
-	if (file_put_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf', $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings) === false) {
-		$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain settings, please try again.';
-		return $response;
+		if (file_put_contents('/usr/local/nodecompute/bitcoin_cash/bitcoin.conf', $nodeProcessBitcoinCashCryptocurrencyBlockchainSettings) === false) {
+			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain settings, please try again.';
+			return $response;
+		}
 	}
 
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_database_batch_size_bytes'] = ceil((16777216 * 8) * 1.05);
