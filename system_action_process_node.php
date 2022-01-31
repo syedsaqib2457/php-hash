@@ -275,29 +275,6 @@
 					)
 				)
 			), $response);
-
-			foreach ($nodes as $node) {
-				$response['data']['nodes'][$node['id']] = $node;
-				unset($response['data']['nodes'][$node['id']]['id']);
-
-				foreach ($response['data']['node_ip_address_version_numbers'] as $nodeIpAddressVersionNumber) {
-					$nodeIpAddresses = array(
-						$node['external_ip_address_version_' . $nodeIpAddressVersionNumber],
-						$node['internal_ip_address_version_' . $nodeIpAddressVersionNumber]
-					);
-
-					foreach (array_filter($nodeIpAddresses) as $nodeIpAddress) {
-						$response['data']['node_ip_addresses'][$nodeIpAddressVersionNumber][$nodeIpAddress] = $nodeIpAddress;
-					}
-				}
-			}
-
-			foreach (array_values($response['data']['node_ip_address_versions']) as $nodeIpAddressVersionNumberKey => $nodeIpAddressVersionNumber) {
-				if (empty($response['data']['node_ip_addresses'][$nodeIpAddressVersionNumber]) === true) {
-					unset($response['data']['node_ip_address_version_numbers'][(128 / 4) + (96 * $nodeIpAddressVersionNumberKey)]);
-				}
-			}
-
 			$nodeProcessPartKeys = array();
 
 			foreach ($parameters['data']['node_process_types'] as $nodeProcessType) {
@@ -356,6 +333,28 @@
 							}
 						}
 					}
+				}
+			}
+
+			foreach ($nodes as $node) {
+				$response['data']['nodes'][$node['id']] = $node;
+				unset($response['data']['nodes'][$node['id']]['id']);
+
+				foreach ($response['data']['node_ip_address_version_numbers'] as $nodeIpAddressVersionNumber) {
+					$nodeIpAddresses = array(
+						$node['external_ip_address_version_' . $nodeIpAddressVersionNumber],
+						$node['internal_ip_address_version_' . $nodeIpAddressVersionNumber]
+					);
+
+					foreach (array_filter($nodeIpAddresses) as $nodeIpAddress) {
+						$response['data']['node_ip_addresses'][$nodeIpAddressVersionNumber][$nodeIpAddress] = $nodeIpAddress;
+					}
+				}
+			}
+
+			foreach (array_values($response['data']['node_ip_address_versions']) as $nodeIpAddressVersionNumberKey => $nodeIpAddressVersionNumber) {
+				if (empty($response['data']['node_ip_addresses'][$nodeIpAddressVersionNumber]) === true) {
+					unset($response['data']['node_ip_address_version_numbers'][(128 / 4) + (96 * $nodeIpAddressVersionNumberKey)]);
 				}
 			}
 
