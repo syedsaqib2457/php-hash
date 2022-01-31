@@ -66,7 +66,12 @@
 	);
 	// todo: add socks proxy destination connection parameters
 
+	if (empty($nodeProcessCryptocurrencyBlockchain['simultaneous_received_connection_maximum_count']) === false) {
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['maxconnections'] = min(8, $nodeProcessCryptocurrencyBlockchain['simultaneous_received_connection_maximum_count']);
+	}
+
 	if (($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] > 95) === true) {
+		// todo: end current process if parameters are different from download progress
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['listen'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['whitelistrelay'] = '1';
 	}
 
