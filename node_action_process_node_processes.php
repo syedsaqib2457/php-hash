@@ -327,9 +327,8 @@
 			$parameters['processing_progress_checkpoints'] = _updateNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
 			foreach ($parameters['data']['next']['cryptocurrency_node_process_types'] as $cryptocurrencyNodeProcessType) {
-				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType]) === false) {
+				if (empty($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType . '_blockchain']) === false) {
 					// todo: send start signal to crypto daemon if file exists
-					// todo: differentiate crypto daemon process verification from mining process verification using node_node_id
 
 					if (_verifyNodeProcess($parameters['binary_files'], false, false, false, $cryptocurrencyNodeProcessType) === false) {
 						if (empty($parameters['processing_progress_checkpoints'][3]) === false) {
