@@ -193,7 +193,11 @@
 		'process_node_user_request_logs'
 	)) === true) {
 		if (($nodeAction === 'process_node_processes') === false) {
-			// prevent duplicate logging processes
+			exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_' . $nodeAction . '" | awk \'{print $1}\'', $nodeActionProcessIds);
+
+			if (empty($nodeActionProcessIds[1]) === false) {
+				exit;
+			}
 		}
 
 		$systemParameters = array(
