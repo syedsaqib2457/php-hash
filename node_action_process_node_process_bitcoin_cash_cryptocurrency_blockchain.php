@@ -88,5 +88,6 @@
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters = implode(' ', $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
 	shell_exec('sudo /usr/local/bin/bitcoin_cash/bitcoind ' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
 	// todo: make sure verificationprogress=1 before opening maxconnections and listening IP:port for P2P
+	// todo: update node_process_cryptocurrency_blockchains status
 	// todo: add default wallet info (scriptPubKey, address, etc) to database after initialblockdownload=false for sending block rewards to external addresses with the API
 ?>
