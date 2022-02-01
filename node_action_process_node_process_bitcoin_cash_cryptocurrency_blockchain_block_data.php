@@ -28,7 +28,7 @@
 			return $response;
 		}
 
-		exec('sudo bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate);
+		exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate);
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate, true);
 
