@@ -1230,8 +1230,7 @@
 				$response = (empty($proxyNodeProcessResponse) === true);
 				break;
 			case 'recursive_dns':
-				// todo: add dig to $parameters['binary_files']
-				exec('dig -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 nodecompute @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+				exec($binaryFiles['dig'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 nodecompute @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 				$response = (empty($recursiveDnsNodeProcessResponse) === false);
 				break;
 		}
