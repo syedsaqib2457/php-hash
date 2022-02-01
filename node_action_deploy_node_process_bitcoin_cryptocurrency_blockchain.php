@@ -1,4 +1,6 @@
 <?php
+	// todo: refactor to match https://github.com/nodecompute/nodecompute/blob/main/node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain.php
+
 	if (empty($parameters) === true) {
 		exit;
 	}
