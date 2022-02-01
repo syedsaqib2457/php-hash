@@ -60,7 +60,7 @@
 		'minrelaytxfee' => '0.00000001',
 		'persistmempool' => '0',
 		'rpcthreads' => '4',
-		'timeout' => '10000',
+		'timeout' => '2000',
 		'whitelistrelay' => '0'
 	);
 	// todo: add socks proxy destination connection parameters
@@ -78,8 +78,14 @@
 		}
 	}
 
-	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] = max(1000, $nodeProcessCryptocurrencyBlockchain['storage_usage_maximum_megabytes']);
-	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] = ceil($nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] * 0.96);
+	if (empty($nodeProcessCryptocurrencyBlockchain['socks_proxy_destination_address']) === false) {
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['proxy'] = $nodeProcessCryptocurrencyBlockchain['socks_proxy_destination_address'];
+	}
+
+	if (empty($nodeProcessCryptocurrencyBlockchain['storage_usage_maximum_megabytes']) === false) {
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] = max(1000, $nodeProcessCryptocurrencyBlockchain['storage_usage_maximum_megabytes']);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] = ceil($nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] * 0.96);
+	}
 
 	foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainParameters as $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey => $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter) {
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters[$nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey] = '-' .  $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey . '=' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter;
