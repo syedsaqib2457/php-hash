@@ -36,6 +36,19 @@
 		}
 	}
 
+	exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblockchaininfo 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
+	$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
+	$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails, true);
+
+	if (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload']) === false) {
+		$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain details, please try again.';
+		return $response;
+	}
+
+	if (($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === ($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] === '100')) === false) {
+		// todo: end current process if parameters are different from download progress
+	}
+
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_database_batch_size_bytes'] = ceil((16777216 * 8) * 1.05);
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_transaction_memory_pool_megabytes'] = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) * 0.30);
 	// todo: add 1 default block header row to system database
@@ -91,7 +104,6 @@
 
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters = implode(' ', $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
 	shell_exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoind ' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
-	// todo: make sure verificationprogress=1 before opening maxconnections and listening IP:port for P2P
 	// todo: set node_process_cryptocurrency_blockchains block_download_progress_percentage to 100 if initialblockdownload === false
 	// todo: add default wallet info (scriptPubKey, address, etc) to database after initialblockdownload=false for sending block rewards to external addresses with the API
 ?>
