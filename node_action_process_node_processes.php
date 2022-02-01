@@ -483,6 +483,11 @@
 			foreach ($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchains'] as $nodeProcessCryptocurrencyBlockchainNodeProcessType => $nodeProcessCryptocurrencyBlockchain) {
 				if (empty($parameters['data'][$parameters['node_process_data_key']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]) === false) {
 					$nodeProcessCryptocurrencyBlockchain['ip_address'] = current($parameters['data'][$parameters['node_process_data_key']]['node_reserved_internal_destinations']);
+
+					if (empty($nodeProcessCryptocurrencyBlockchain['socks_proxy_destination_addresses'][$nodeProcessCryptocurrencyBlockchain['ip_address']['ip_address_version_number']]) === false) {
+						$nodeProcessCryptocurrencyBlockchain['socks_proxy_destination_address'] = $nodeProcessCryptocurrencyBlockchain['socks_proxy_destination_addresses'][$nodeProcessCryptocurrencyBlockchain['ip_address']['ip_address_version_number']];
+					}
+
 					$nodeProcessCryptocurrencyBlockchain['ip_address'] = current($nodeProcessCryptocurrencyBlockchain['ip_address']);
 					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($parameters['data'][$parameters['node_process_data_key']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]);
 					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($nodeProcessCryptocurrencyBlockchain['port_number'][$nodeProcessCryptocurrencyBlockchain['node_id']]);
