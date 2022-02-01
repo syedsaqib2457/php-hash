@@ -59,7 +59,6 @@
 		'mempoolexpiry' => '10',
 		'minrelaytxfee' => '0.00000001',
 		'persistmempool' => '0',
-		//'prune' => '11111',
 		'rpcthreads' => '4',
 		'timeout' => '10000',
 		'whitelistrelay' => '0'
@@ -78,6 +77,9 @@
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['maxconnections'] += min(8, $nodeProcessCryptocurrencyBlockchain['simultaneous_sent_connection_maximum_count']);
 		}
 	}
+
+	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] = max(1000, $nodeProcessCryptocurrencyBlockchain['storage_usage_maximum_megabytes']);
+	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] = ceil($nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['prune'] * 0.96);
 
 	foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainParameters as $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey => $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter) {
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters[$nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey] = '-' .  $nodeProcessBitcoinCashCryptocurrencyBlockchainParameterKey . '=' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameter;
