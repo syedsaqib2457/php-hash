@@ -680,7 +680,7 @@
 		}
 
 		$systemDatabases = array(
-			'node_process_cryptocurrency_blockchain_block_submission_logs' => array(
+			'node_process_cryptocurrency_blockchain_block_processing_logs' => array(
 				'block',
 				'block_hash',
 				'block_height',
@@ -690,6 +690,7 @@
 				'node_id',
 				'node_node_id',
 				'node_process_type',
+				'processed_status',
 				'response_code'
 			),
 			'node_process_cryptocurrency_blockchain_socks_proxy_destinations' => array(
