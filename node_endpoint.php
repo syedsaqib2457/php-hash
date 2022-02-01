@@ -102,6 +102,12 @@
 			'package' => 'curl'
 		),
 		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'dig',
+			'output' => 'dig -h',
+			'package' => 'dnsutils'
+		),
+		array(
 			'command' => $uniqueId,
 			'name' => 'ifconfig',
 			'output' => 'interface',
@@ -171,6 +177,7 @@
 		}
 
 		chmod('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh', 0755);
+		unset($binaryFile);
 		exec('cd /usr/local/ghostcompute/ && sudo ./node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
