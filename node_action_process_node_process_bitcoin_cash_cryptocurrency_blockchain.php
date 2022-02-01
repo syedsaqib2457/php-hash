@@ -62,7 +62,6 @@
 		'timeout' => '2000',
 		'whitelistrelay' => '0'
 	);
-	// todo: add socks proxy destination connection parameters
 
 	if (empty($nodeProcessCryptocurrencyBlockchain['simultaneous_received_connection_maximum_count']) === false) {
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['maxconnections'] = min(8, $nodeProcessCryptocurrencyBlockchain['simultaneous_received_connection_maximum_count']);
