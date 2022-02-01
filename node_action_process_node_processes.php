@@ -1188,7 +1188,7 @@
 		$processingProgressCheckpoint = current($processingProgressCheckpoints);
 
 		if (
-			(empty($encodedSystemActionProcessNodeParameters) === true) &&
+			($encodedSystemActionProcessNodeParameters === false) &&
 			(($processingProgressCheckpoint === 'listing_node_parameters') === true)
 		) {
 			exit;
