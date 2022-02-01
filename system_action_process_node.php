@@ -42,22 +42,43 @@
 				'socks' => 'socks_proxy'
 			)
 		);
-		$node = _list(array(
-			'data' => array(
-				'id',
-				'node_id',
-				'processing_progress_override_status'
-			),
-			'in' => $parameters['system_databases']['nodes'],
-			'where' => array(
-				'authentication_token' => $parameters['node_authentication_token']
-			)
-		), $response);
-		$node = current($node);
+
+		if (empty($parameters['node_authentication_token']) === false) {
+			$node = _list(array(
+				'data' => array(
+					'id',
+					'node_id',
+					'processing_progress_override_status'
+				),
+				'in' => $parameters['system_databases']['nodes'],
+				'where' => array(
+					'authentication_token' => $parameters['node_authentication_token']
+				)
+			), $response);
+			$node = current($node);
+		}
 
 		if (empty($node) === true) {
 			$response['message'] = 'Invalid node authentication token, please try again.';
 			// todo: log as unauthorized request
+
+			if (empty($parameters['where']['id']) === false) {
+				_edit(array(
+					'data' => array(
+						'processing_progress_override_status' => $parameters['data']['processing_progress_override_status']
+					),
+					'in' => $parameters['system_databases']['nodes'],
+					'where' => array(
+						'either' => array(
+							'id' => $parameters['where']['id'],
+							'node_id' => $parameters['where']['id']
+						)
+					)
+				), $response);
+				$response['message'] = 'Nodes processed successfully.';
+				$response['valid_status'] = '1';
+			}
+
 			return $response;
 		}
 
