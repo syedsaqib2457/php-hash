@@ -132,6 +132,11 @@
 		$nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] = floor($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress'] * 100);
 	}
 
+	$systemActionEditNodeProcessCryptocurrencyBlockchainParameters = array(
+		'action' => 'edit_node_process_cryptocurrency_blockchain',
+		'data' => array(),
+		'node_authentication_token' => $parameters['node_authentication_token']
+	);
 	// todo: $nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] system API update
 	// todo: add default wallet info (scriptPubKey, address, etc) to system API after initialblockdownload=false for sending block rewards to external addresses with the API
 	// todo: update block data process crontab
