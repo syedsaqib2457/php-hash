@@ -735,6 +735,7 @@
 				'next_block_version',
 				'node_id',
 				'node_node_id',
+				'node_process_cryptocurrency_blockchain_worker_block_header_id',
 				'node_process_type',
 				'public_key_script'
 			),
