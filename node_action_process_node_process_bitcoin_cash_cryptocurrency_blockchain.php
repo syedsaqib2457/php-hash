@@ -44,12 +44,15 @@
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails, true);
 
 		if (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload']) === false) {
-			$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain details, please try again.';
-			return $response;
+			unset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
 		}
 
-		if (($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === ($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] === '100')) === false) {
+		if (
+			(isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload']) === true) &&
+			(($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === ($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] === '100')) === false)
+		) {
 			_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessBitcoinCashCryptocurrencyBlockchainProcessIds);
+			unset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
 		}
 	}
 
@@ -84,8 +87,13 @@
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['maxconnections'] = min(8, $nodeProcessCryptocurrencyBlockchain['simultaneous_received_connection_maximum_count']);
 	}
 
-	if (($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] > 95) === true) {
-		// todo: end current process if parameters are different from download progress
+	if (
+		(($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] === '100') === true) ||
+		(
+			(isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload']) === true) &&
+			($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === false)
+		)
+	) {
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['listen'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters['whitelistrelay'] = '1';
 
 		if (empty($nodeProcessCryptocurrencyBlockchain['simultaneous_sent_connection_maximum_count']) === false) {
@@ -108,6 +116,26 @@
 
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters = implode(' ', $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
 	shell_exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoind ' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
-	// todo: set node_process_cryptocurrency_blockchains block_download_progress_percentage to 100 if initialblockdownload === false
-	// todo: add default wallet info (scriptPubKey, address, etc) to database after initialblockdownload=false for sending block rewards to external addresses with the API
+
+	if (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails) === false) {
+		exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblockchaininfo 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails, true);
+	}
+
+	if (
+		(isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload']) === true) &&
+		($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === false)
+	) {
+		$nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] = '100';
+	} elseif (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress']) === true) {
+		$nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] = floor($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress'] * 100);
+	}
+
+	// todo: $nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] system API update
+	// todo: add default wallet info (scriptPubKey, address, etc) to system API after initialblockdownload=false for sending block rewards to external addresses with the API
+	// todo: update block data process crontab
+	// todo: update block submission process crontab
+	// todo: update worker process crontab
+	// todo: update worker hashes per second log
 ?>
