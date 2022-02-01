@@ -36,17 +36,21 @@
 		}
 	}
 
-	exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblockchaininfo 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
-	$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
-	$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails, true);
+	$nodeProcessBitcoinCashCryptocurrencyBlockchainProcessIds = _listProcessIds('bitcoind', '/usr/local/nodecompute/bitcoin_cash/bin/bitcoind');
 
-	if (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload']) === false) {
-		$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain details, please try again.';
-		return $response;
-	}
+	if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainProcessIds) === false) {
+		exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblockchaininfo 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainDetails);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainDetails = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails, true);
 
-	if (($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === ($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] === '100')) === false) {
-		// todo: end current process if parameters are different from download progress
+		if (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload']) === false) {
+			$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain details, please try again.';
+			return $response;
+		}
+
+		if (($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === ($nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] === '100')) === false) {
+			_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessBitcoinCashCryptocurrencyBlockchainProcessIds);
+		}
 	}
 
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_database_batch_size_bytes'] = ceil((16777216 * 8) * 1.05);
