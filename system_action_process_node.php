@@ -346,7 +346,8 @@
 			}
 
 			foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader) {
-				// todo
+				$response['data']['node_process_cryptocurrency_blockchain_worker_block_headers'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader;
+				unset($response['data']['node_process_cryptocurrency_blockchain_worker_block_headers'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['node_process_type']);
 			}
 
 			$nodeProcessPartKeys = array();
