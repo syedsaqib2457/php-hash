@@ -65,7 +65,11 @@
 			if (empty($parameters['where']['id']) === false) {
 				_edit(array(
 					'data' => array(
-						'processing_progress_override_status' => $parameters['data']['processing_progress_override_status']
+						'processed_status' => '0',
+						'processing_progress_checkpoint' => 'processing_queued',
+						'processing_progress_override_status' => '1',
+						'processing_progress_percentage' => '0',
+						'processing_status' => '0'
 					),
 					'in' => $parameters['system_databases']['nodes'],
 					'where' => array(
