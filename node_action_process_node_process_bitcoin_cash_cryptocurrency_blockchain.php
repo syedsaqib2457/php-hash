@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	if (file_exists('/usr/local/bin/bitcoin_cash/bitcoind') === false) {
+	if (file_exists('/usr/local/nodecompute/bitcoin_cash/bin/bitcoind') === false) {
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential cmake libboost-all-dev libdb-dev libdb++-dev libevent-dev libssl-dev ninja-build python3');
 		shell_exec('sudo rm -rf /usr/src/bitcoin_cash/');
@@ -20,9 +20,8 @@
 			return $response;
 		}
 
-		shell_exec('sudo mkdir /usr/local/bin/bitcoin_cash/');
-		shell_exec('sudo mv /usr/local/bin/bitcoind /usr/local/bin/bitcoin-* /usr/local/bin/bitcoin_cash/');
-		shell_exec('sudo mkdir /usr/local/nodecompute/bitcoin_cash/');
+		shell_exec('sudo mkdir -p /usr/local/nodecompute/bitcoin_cash/bin/');
+		shell_exec('sudo mv /usr/local/bin/bitcoind /usr/local/bin/bitcoin-* /usr/local/nodecompute/bitcoin_cash/bin/');
 		$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings = array(
 			'rpcbind=' . $nodeProcessCryptocurrencyBlockchain['ip_address'],
 			'rpcpassword=nodecompute',
@@ -92,7 +91,7 @@
 	}
 
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters = implode(' ', $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
-	shell_exec('sudo /usr/local/bin/bitcoin_cash/bitcoind ' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
+	shell_exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoind ' . $nodeProcessBitcoinCashCryptocurrencyBlockchainParameters);
 	// todo: make sure verificationprogress=1 before opening maxconnections and listening IP:port for P2P
 	// todo: set node_process_cryptocurrency_blockchains block_download_progress_percentage to 100 if initialblockdownload === false
 	// todo: add default wallet info (scriptPubKey, address, etc) to database after initialblockdownload=false for sending block rewards to external addresses with the API
