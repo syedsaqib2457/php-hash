@@ -1183,25 +1183,33 @@
 			'processing_progress_checkpoint' => $processingProgressCheckpoints[$processingProgressCheckpointIndex],
 			'processing_progress_percentage' => ceil((($processingProgressCheckpointIndex + 1) / $processingProgressCheckpointCount) * 100)
 		);
-		unset($processingProgressCheckpoints[$processingProgressCheckpointIndex]);
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
+		unset($processingProgressCheckpoints[$processingProgressCheckpointIndex]);
+		$processingProgressCheckpoint = current($processingProgressCheckpoints);
+
+		if (
+			(empty($encodedSystemActionProcessNodeParameters) === true) &&
+			(($processingProgressCheckpoint === 'listing_node_parameters') === true)
+		) {
+			exit;
+		}
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
 			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
-		}
 
-		if (file_exists('/usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json') === true) {
-			$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json');
-			$systemActionProcessNodeProcessingStatusResponse = json_decode($systemActionProcessNodeResponse, true);
+			if (file_exists('/usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json') === true) {
+				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json');
+				$systemActionProcessNodeProcessingStatusResponse = json_decode($systemActionProcessNodeResponse, true);
 
-			if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
-				exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_node_processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
-				_killProcessIds($binaryFiles, 'process_node_processes', $processId, $nodeProcessProcessIds);
-			} elseif (
-				(empty($nodeProcessProcessIds[1]) === false) &&
-				((current($processingProgressCheckpoints) === 'listing_node_parameters') === true)
-			) {
-				exit;
+				if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
+					exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_node_processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
+					_killProcessIds($binaryFiles, 'process_node_processes', $processId, $nodeProcessProcessIds);
+				} elseif (
+					(empty($nodeProcessProcessIds[1]) === false) &&
+					(($processingProgressCheckpoint === 'listing_node_parameters') === true)
+				) {
+					exit;
+				}
 			}
 		}
 
