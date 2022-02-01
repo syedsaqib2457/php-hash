@@ -134,9 +134,19 @@
 
 	$systemActionEditNodeProcessCryptocurrencyBlockchainParameters = array(
 		'action' => 'edit_node_process_cryptocurrency_blockchain',
-		'data' => array(),
+		'data' => array(
+			'block_download_progress_percentage' => $nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'],
+			'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain'
+		),
 		'node_authentication_token' => $parameters['node_authentication_token']
 	);
+	$encodedSystemActionEditNodeProcessCryptocurrencyBlockchainParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainParameters);
+
+	if ($encodedSystemActionEditNodeProcessCryptocurrencyBlockchainParameters === false) {
+		$response['message'] = 'Error editing node process Bitcoin Cash cryptocurrency blockchain, please try again.';
+		return $response;
+	}
+
 	// todo: $nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] system API update
 	// todo: add default wallet info (scriptPubKey, address, etc) to system API after initialblockdownload=false for sending block rewards to external addresses with the API
 	// todo: update block data process crontab
