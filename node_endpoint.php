@@ -185,13 +185,17 @@
 	}
 
 	unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh');
-	// todo: prevent running duplicate node processes
 
 	if (in_array($nodeAction, array(
+		'process_node_process_resource_usage_logs',
 		'process_node_processes',
 		'process_node_resource_usage_logs',
 		'process_node_user_request_logs'
 	)) === true) {
+		if (($nodeAction === 'process_node_processes') === false) {
+			// prevent duplicate logging processes
+		}
+
 		$systemParameters = array(
 			'action' => 'list_system_settings',
 			'node_authentication_token' => $parameters['node_authentication_token']
