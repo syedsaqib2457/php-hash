@@ -640,7 +640,7 @@
 				}
 
 				if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
-					$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = 'logging {';
+					$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'logging {';
 					$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 
 					foreach ($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserId) {
@@ -650,24 +650,24 @@
 								$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 							}
 
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = 'channel ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'channel ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . '"';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . '"';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = 'print-time yes';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'print-time yes';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = '};';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = '};';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = 'category ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'category ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = 'queries_log;';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'queries_log;';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = '};';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = '};';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 						}
 					}
 
-					$recursiveDnsNodeProcessConfiguration['h' . str_pad($recursiveDnsNodeProcessConfigurationIndexes['h'], 6, '0', STR_PAD_LEFT)] = '};';
+					$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = '};';
 				}
 
 				$recursiveDnsNodeProcessesStart = true;
@@ -854,7 +854,7 @@
 						);
 
 						foreach ($parameters['data']['next']['node_process_node_users'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessNodeUserIds) {
-							$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'auth iponly strong';
+							$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'auth iponly strong';
 							$proxyNodeProcessConfigurationIndexes['c']++;
 
 							foreach ($proxyNodeProcessNodeUserIds as $proxyNodeProcessNodeUserId) {
@@ -902,9 +902,9 @@
 									}
 
 									if (empty($proxyNodeProcessNodeUser['node_request_logs_allowed_status']) === false) {
-										$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessNodeUserId;
+										$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessNodeUserId;
 										$proxyNodeProcessConfigurationIndexes['c']++;
-										$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C"';
+										$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C"';
 										$proxyNodeProcessConfigurationIndexes['c']++;
 									}
 
@@ -913,7 +913,7 @@
 										(empty($proxyNodeProcessNodeUserNodeRequestDestinationParts) === false)
 									) {
 										foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
-											$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'deny * * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
+											$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'deny * * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
 											$proxyNodeProcessConfigurationIndexes['c']++;
 										}
 									}
@@ -925,7 +925,7 @@
 										) {
 											foreach ($proxyNodeProcessNodeUserAuthenticationCredentialParts as $proxyNodeProcessNodeUserAuthenticationCredentialPart) {
 												foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
-													$proxyNodeProcessConfiguration['d' . str_pad($proxyNodeProcessConfigurationIndexes['d'], 10, '0', STR_PAD_LEFT)] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
+													$proxyNodeProcessConfiguration['d' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['d'])] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' * ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
 													$proxyNodeProcessConfigurationIndexes['d']++;
 												}
 											}
@@ -953,16 +953,16 @@
 										foreach ($proxyNodeProcessNodeUserAuthenticationCredentialParts as $proxyNodeProcessNodeUserAuthenticationCredentialPart) {
 											foreach ($proxyNodeProcessNodeUserAuthenticationSourceParts as $proxyNodeProcessNodeUserAuthenticationSourcePart) {
 												foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
-													$proxyNodeProcessConfiguration['c' . str_pad($proxyNodeProcessConfigurationIndexes['c'], 10, '0', STR_PAD_LEFT)] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' ' . $proxyNodeProcessNodeUserAuthenticationSourcePart . ' ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
+													$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'allow ' . $proxyNodeProcessNodeUserAuthenticationCredentialPart . ' ' . $proxyNodeProcessNodeUserAuthenticationSourcePart . ' ' . $proxyNodeProcessNodeUserNodeRequestDestinationPart;
 													$proxyNodeProcessConfigurationIndexes['c']++;
 												}
 											}
 										}
 									}
 
-									$proxyNodeProcessConfiguration['d' . str_pad($proxyNodeProcessConfigurationIndexes['d'], 10, '0', STR_PAD_LEFT)] = 'deny *';
+									$proxyNodeProcessConfiguration['d' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['d'])] = 'deny *';
 									$proxyNodeProcessConfigurationIndexes['d']++;
-									$proxyNodeProcessConfiguration['d' . str_pad($proxyNodeProcessConfigurationIndexes['d'], 10, '0', STR_PAD_LEFT)] = 'flush';
+									$proxyNodeProcessConfiguration['d' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['d'])] = 'flush';
 									$proxyNodeProcessConfigurationIndexes['d']++;
 								}
 							}
