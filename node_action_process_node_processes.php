@@ -492,10 +492,12 @@
 					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($parameters['data'][$parameters['node_process_data_key']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]);
 					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($nodeProcessCryptocurrencyBlockchain['port_number'][$nodeProcessCryptocurrencyBlockchain['node_id']]);
 					require_once('/usr/local/nodecompute/node_action_process_node_process_' . $nodeProcessCryptocurrencyBlockchainNodeProcessType . '.php');
-					// todo: add crontab commands for updating mining block template data if crypto daemon exists
-					// todo: add crontab commands for mining block headers if crypto daemon doesn't exist
 				}
 			}
+		}
+
+		if (empty($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchain_worker_block_headers']) === false) {
+			// todo: worker processes
 		}
 
 		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
