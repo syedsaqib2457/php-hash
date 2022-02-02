@@ -46,6 +46,8 @@
 			}
 		}
 
+		$response['message'] = 'Node process cryptocurrency blockchain workers processed successfully.';
+		$response['valid_status'] = '1';
 		return $response;
 	}
 
