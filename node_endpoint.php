@@ -194,6 +194,7 @@
 	unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh');
 
 	if (in_array($nodeAction, array(
+		'process_node_process_cryptocurrency_blockchain_worker_settings',
 		'process_node_process_resource_usage_logs',
 		'process_node_processes',
 		'process_node_resource_usage_logs',
