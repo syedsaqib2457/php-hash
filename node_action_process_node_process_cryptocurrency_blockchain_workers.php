@@ -6,23 +6,42 @@
 	}
 
 	function _processNodeProcessCryptocurrencyBlockchainWorkers($parameters, $response) {
-		$systemParameters = array(
+		$systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters = array(
 			'action' => 'list_node_process_cryptocurrency_blockchain_worker_block_headers',
-			'node_authentication_token' => $parameters['node_authentication_token'],
-			'where' => array()
+			'node_authentication_token' => $parameters['node_authentication_token']
 		);
-		$encodedSystemParameters = json_encode($systemParameters);
+		$encodedSystemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters = json_encode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters);
 
-		if (empty($encodedSystemParameters) === false) {
+		if (empty($encodedSystemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters) === false) {
 			unlink('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_block_headers_response.json');
-			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_block_headers_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_block_headers_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 			if (file_exists('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_block_headers_response.json') === false) {
 				$response['message'] = 'Error listing node process cryptocurrency blockchain worker block headers, please try again.';
 				return $response;
 			}
 
-			// todo
+			$systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse = file_get_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_block_headers_response.json');
+			$systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse = json_decode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse, true);
+
+			if ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse === false) {
+				$response['message'] = 'Error listing node process cryptocurrency blockchain worker block headers, please try again.';
+				return $response;
+			}
+
+			if (empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data']) === true) {
+				// todo: delete this file from /etc/crontab
+				$response['message'] = 'Node process cryptocurrency blockchain workers processed successfully.';
+				$response['valid_status'] = '1';
+				return $response;
+			}
+
+			$nodeProcessCryptocurrencyBlockchainWorkers = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'];
+
+			foreach ($nodeProcessCryptocurrencyBlockchainWorkers as $nodeProcessCryptocurrencyBlockchainWorkerIndex => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders) {
+				$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
+				file_put_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker' . $nodeProcessCryptocurrencyBlockchainWorkerIndex . '_block_headers.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
+			}
 		}
 
 		return $response;
