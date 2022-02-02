@@ -5,7 +5,6 @@
 
 	$parameters['system_databases'] += _connect(array(
 		'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
-		'node_process_cryptocurrency_blockchain_worker_settings',
 		'node_process_cryptocurrency_blockchains',
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
@@ -334,11 +333,6 @@
 
 			foreach ($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations as $nodeProcessCryptocurrencyBlockchainSocksProxyDestination) {
 				$response['data']['node_process_cryptocurrency_blockchains'][$nodeProcessCryptocurrencyBlockchainSocksProxyDestination['node_process_type']]['socks_proxy_destination_addresses'][$nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']] = $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address'] . ':' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['port_number'];
-			}
-
-			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
-				$response['data']['node_process_cryptocurrency_blockchain_worker_settings'][$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']] = $nodeProcessCryptocurrencyBlockchainWorkerSetting;
-				unset($response['data']['node_process_cryptocurrency_blockchain_worker_settings'][$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']]['node_process_type']);
 			}
 
 			$nodeProcessPartKeys = array();
