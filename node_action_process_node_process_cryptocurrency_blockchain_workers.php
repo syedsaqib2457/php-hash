@@ -1,6 +1,4 @@
 <?php
-	// todo: add this file to /etc/crontab if block headers exist on node
-
 	if (empty($parameters) === true) {
 		exit;
 	}
@@ -30,15 +28,19 @@
 			}
 
 			if (empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data']) === true) {
-				// todo: delete this file from /etc/crontab
 				$response['message'] = 'Node process cryptocurrency blockchain workers processed successfully.';
 				$response['valid_status'] = '1';
 				return $response;
 			}
 
 			$nodeProcessCryptocurrencyBlockchainWorkers = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'];
+			// todo: update crontab here with variable timeout settings based on resource usage + blockchain worker settings
 
 			foreach ($nodeProcessCryptocurrencyBlockchainWorkers as $nodeProcessCryptocurrencyBlockchainWorkerIndex => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders) {
+				if (file_exists('/usr/local/nodecompute/node_process_' . $cryptocurrencyBlockchainNodeProcessType . '_cryptocurrency_blockchain_worker_settings.json') === false) {
+					continue;
+				}
+
 				$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
 				file_put_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker' . $nodeProcessCryptocurrencyBlockchainWorkerIndex . '_block_headers.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
 			}
