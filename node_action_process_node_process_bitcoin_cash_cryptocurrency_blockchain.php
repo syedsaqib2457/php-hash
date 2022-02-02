@@ -58,7 +58,6 @@
 
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_database_batch_size_bytes'] = ceil((16777216 * 8) * 1.05);
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainSettings['maximum_transaction_memory_pool_megabytes'] = ceil((($parameters['memory_capacity_bytes'] / 1024) / 1024) * 0.30);
-	// todo: add 1 default block header row to system database
 	$nodeProcessBitcoinCashCryptocurrencyBlockchainParameters = array(
 		'blockmintxfee' => '0.00000001',
 		'daemon' => '1',
@@ -148,7 +147,4 @@
 		$response['message'] = 'Error editing node process Bitcoin Cash cryptocurrency blockchain, please try again.';
 		return $response;
 	}
-
-	// todo: add process to crontab for managing block header data + block processing + worker processes
-	// todo: add system action for adding worker processes to nodes without blockchain installed
 ?>
