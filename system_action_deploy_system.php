@@ -751,7 +751,6 @@
 				'block_headers_per_node_process_count',
 				'cpu_usage_maximum_percentage',
 				'created_timestamp',
-				'current_block_hash',
 				'gpu_usage_maximum_percentage',
 				'id',
 				'memory_usage_maximum_percentage',
