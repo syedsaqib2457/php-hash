@@ -171,19 +171,6 @@
 					'node_node_id' => $nodeNodeId
 				)
 			), $response);
-			$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
-				'data' => array(
-					'block_headers_per_node_process_count',
-					'cpu_usage_maximum_percentage',
-					'gpu_usage_maximum_percentage',
-					'memory_usage_maximum_percentage',
-					'node_process_type'
-				),
-				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
-				'where' => array(
-					'node_id' => $nodeNodeId
-				)
-			), $response);
 			$nodeProcesses = _list(array(
 				'data' => array(
 					'id',
