@@ -29,11 +29,11 @@
 
 			if (empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']) === false) {
 				// edit cryptocurrency crontab processes
-					// block header data processes (frequent parsing of block header data to files for each worker process)
-					// block header worker processes
-					// todo: add blockchain worker count + worker process timeout seconds to response
+					// node_action_process_node_process_cryptocurrency_blockchain_workers (frequent parsing of block header data to files for each worker process)
+					// node_action_process_node_process_cryptocurrency_blockchain_worker_block_headers
+						// todo: add blockchain worker count + worker process timeout seconds to $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse
 			} else {
-				// todo: delete cryptocurrency processes from crontab
+				// todo: delete cryptocurrency worker processes from crontab
 			}
 		}
 	}
