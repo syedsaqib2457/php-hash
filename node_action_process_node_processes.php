@@ -496,10 +496,6 @@
 			}
 		}
 
-		if (empty($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchain_worker_block_headers']) === false) {
-			// todo: worker processes
-		}
-
 		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
 		unset($systemActionProcessNodeParameterData);
 
