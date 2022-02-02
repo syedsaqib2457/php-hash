@@ -498,6 +498,18 @@
 			}
 		}
 
+		if (empty($parameters['data']['next']['node_process_cryptocurrency_blockchain_worker_settings']) === false) {
+			foreach ($parameters['data']['next']['cryptocurrency_blockchain_node_process_types'] as $cryptocurrencyBlockchainNodeProcessType) {
+				if (empty($parameters['data']['next']['node_process_cryptocurrency_blockchain_worker_settings'][$cryptocurrencyBlockchainNodeProcessType]) === false) {
+					$nodeProcessCryptocurrencyBlockchainWorkerSettings = $parameters['data']['next']['node_process_cryptocurrency_blockchain_worker_settings'];
+					$nodeProcessCryptocurrencyBlockchainWorkerSettings = json_encode($nodeProcessCryptocurrencyBlockchainWorkerSettings);
+					file_put_contents('/usr/local/nodecompute/node_process_' . $cryptocurrencyBlockchainNodeProcessType . '_cryptocurrency_blockchain_worker_settings.json', $nodeProcessCryptocurrencyBlockchainWorkerSettings);
+				} elseif (file_exists('/usr/local/nodecompute/node_process_' . $cryptocurrencyBlockchainNodeProcessType . '_cryptocurrency_blockchain_worker_settings.json') === true) {
+					unlink('/usr/local/nodecompute/node_process_' . $cryptocurrencyBlockchainNodeProcessType . '_cryptocurrency_blockchain_worker_settings.json');
+				}
+			}
+		}
+
 		if (empty($parameters['data']['next']['nodes']) === true) {
 			if (empty($parameters['data']['current']) === false) {
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
