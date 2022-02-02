@@ -128,6 +128,8 @@
 		($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === false)
 	) {
 		$nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] = '100';
+
+		// todo: add default wallet info (scriptPubKey, address, etc) to system API if wallet data is empty
 	} elseif (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress']) === true) {
 		$nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] = floor($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress'] * 100);
 	}
@@ -147,10 +149,6 @@
 		return $response;
 	}
 
-	// todo: $nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] system API update
-	// todo: add default wallet info (scriptPubKey, address, etc) to system API after initialblockdownload=false for sending block rewards to external addresses with the API
-	// todo: update block data process crontab
-	// todo: update block submission process crontab
-	// todo: update worker process crontab
-	// todo: update worker hashes per second log
+	// todo: add process to crontab for managing block header data + block processing + worker processes
+	// todo: add system action for adding worker processes to nodes without blockchain installed
 ?>
