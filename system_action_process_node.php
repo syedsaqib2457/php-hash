@@ -22,13 +22,13 @@
 
 	function _processNode($parameters, $response) {
 		$response['data'] = array(
-			'cryptocurrency_blockchain_node_process_types' => array(
-				'bitcoin_cash_cryptocurrency_blockchain',
-				'bitcoin_cryptocurrency_blockchain'
-			),
 			'node_ip_address_version_numbers' => array(
 				'32' => '4',
 				'128' => '6'
+			),
+			'node_process_cryptocurrency_blockchain_node_process_types' => array(
+				'bitcoin_cash_cryptocurrency_blockchain',
+				'bitcoin_cryptocurrency_blockchain'
 			),
 			'node_process_types' => array(
 				'bitcoin_cash_cryptocurrency_blockchain',
@@ -347,7 +347,7 @@
 				$nodeProcessPartKeys[$nodeProcessType] = 0;
 			}
 
-			$parameters['data']['node_process_types'] = array_diff($parameters['data']['node_process_types'], $parameters['data']['cryptocurrency_blockchain_node_process_types']);
+			$parameters['data']['node_process_types'] = array_diff($parameters['data']['node_process_types'], $parameters['data']['node_process_cryptocurrency_blockchain_node_process_types']);
 
 			foreach ($nodeProcesses as $nodeProcess) {
 				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKeys[$nodeProcess['type']]][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
