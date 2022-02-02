@@ -25,10 +25,7 @@
 			return $response;
 		}
 
-		if (
-			(empty($parameters['data']['type']) === true) ||
-			(is_string($parameters['data']['type']) === false)
-		) {
+		if (empty($parameters['data']['type']) === true) {
 			$response['message'] = 'Node process must have a type, please try again.';
 			return $response;
 		}
