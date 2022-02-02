@@ -5,6 +5,7 @@
 
 	$parameters['system_databases'] += _connect(array(
 		'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
+		'node_process_cryptocurrency_blockchain_worker_settings',
 		'node_process_cryptocurrency_blockchains',
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
@@ -110,13 +111,13 @@
 			}
 
 			_edit(array(
-				'data' => array_intersect_key($parameters['data'], array(
-					'processed_status' => true,
-					'processing_progress_checkpoint' => true,
-					'processing_progress_override_status' => true,
-					'processing_progress_percentage' => true,
-					'processing_status' => true
-				)),
+				'data' => array(
+					'processed_status' => $parameters['data']['processed_status'],
+					'processing_progress_checkpoint' => $parameters['data']['processing_progress_checkpoint'],
+					'processing_progress_override_status' => $parameters['data']['processing_progress_override_status'],
+					'processing_progress_percentage' => $parameters['data']['processing_progress_percentage'],
+					'processing_status' => $parameters['data']['processing_status']
+				),
 				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
 					'either' => array(
@@ -171,24 +172,15 @@
 					'node_node_id' => $nodeNodeId
 				)
 			), $response);
-			$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
+			$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 				'data' => array(
-					'current_block_hash',
-					'id',
-					'next_block_height',
-					'next_block_maximum_timestamp',
-					'next_block_merkle_root_hash',
-					'next_block_minimum_timestamp',
-					'next_block_target_hash',
-					'next_block_target_hash_bits',
-					'next_block_transaction',
-					'next_block_version',
-					'node_id',
-					'node_node_id',
-					'node_process_type',
-					'public_key_script'
+					'block_headers_per_node_process_count',
+					'cpu_usage_maximum_percentage',
+					'gpu_usage_maximum_percentage',
+					'memory_usage_maximum_percentage',
+					'node_process_type'
 				),
-				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
+				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
 				'where' => array(
 					'node_id' => $nodeNodeId
 				)
@@ -344,9 +336,9 @@
 				$response['data']['node_process_cryptocurrency_blockchains'][$nodeProcessCryptocurrencyBlockchainSocksProxyDestination['node_process_type']]['socks_proxy_destination_addresses'][$nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']] = $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address'] . ':' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['port_number'];
 			}
 
-			foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader) {
-				$response['data']['node_process_cryptocurrency_blockchain_worker_block_headers'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader;
-				unset($response['data']['node_process_cryptocurrency_blockchain_worker_block_headers'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['node_process_type']);
+			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
+				$response['data']['node_process_cryptocurrency_blockchain_worker_settings'][$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']] = $nodeProcessCryptocurrencyBlockchainWorkerSetting;
+				unset($response['data']['node_process_cryptocurrency_blockchain_worker_settings'][$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']]['node_process_type']);
 			}
 
 			$nodeProcessPartKeys = array();
