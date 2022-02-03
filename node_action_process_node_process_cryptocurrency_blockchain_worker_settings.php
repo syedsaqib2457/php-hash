@@ -46,17 +46,21 @@
 			$crontabCommands = explode("\n", $crontabCommands);
 
 			if (empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']) === false) {
-				$nodeProcessCryptocurrencyBlockchainWorkerSettings = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'];
+				$nodeProcessCryptocurrencyBlockchainWorkerSettings = json_encode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']);
 
-				foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
-					// todo: edit cryptocurrency crontab processes
-					// node_action_process_node_process_cryptocurrency_blockchain_workers (frequent parsing of block header data to files for each worker process)
-					// node_action_process_node_process_cryptocurrency_blockchain_worker_block_headers
-						// todo: add blockchain worker count + worker process timeout seconds to $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse
+				if (
+					(($nodeProcessCryptocurrencyBlockchainWorkerSettings === false) === false) &&
+					((file_put_contents('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json', $nodeProcessCryptocurrencyBlockchainWorkerSettings) === false) === false)
+				) {
+					$nodeProcessCryptocurrencyBlockchainWorkerSettings = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'];
+
+					foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
+						// todo: edit cryptocurrency crontab processes
+						// node_action_process_node_process_cryptocurrency_blockchain_workers (frequent parsing of block header data to files for each worker process)
+						// node_action_process_node_process_cryptocurrency_blockchain_worker_block_headers
+							// todo: add blockchain worker count + worker process timeout seconds to $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse
+					}
 				}
-
-				$nodeProcessCryptocurrencyBlockchainWorkerSettings = json_encode($nodeProcessCryptocurrencyBlockchainWorkerSettings);
-				file_put_contents('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json', $nodeProcessCryptocurrencyBlockchainWorkerSettings);
 			} else {
 				// todo: delete cryptocurrency worker processes from crontab
 				unlink('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json');
