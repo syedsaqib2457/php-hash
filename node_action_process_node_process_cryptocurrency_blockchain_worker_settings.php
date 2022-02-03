@@ -44,14 +44,14 @@
 			}
 
 			$crontabCommands = explode("\n", $crontabCommands);
-			$crontabCommandIndex = array_search('# nodecompute_node_process_cryptocurrency_blockchain_workers', $crontabCommands);
+			$crontabCommandIndex = array_search('# nodecompute_cryptocurrency_blockchain_worker_processes', $crontabCommands);
 
 			if (is_int($crontabCommandIndex) === true) {
 				while (is_int($crontabCommandIndex) === true) {
 					unset($crontabCommands[$crontabCommandIndex]);
 					$crontabCommandIndex++;
 
-					if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_node_process_cryptocurrency_blockchain_worker') === false) {
+					if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_cryptocurrency_blockchain_worker_processes') === false) {
 						$crontabCommandIndex = false;
 					}
 				}
@@ -64,21 +64,21 @@
 					(($nodeProcessCryptocurrencyBlockchainWorkerSettings === false) === false) &&
 					((file_put_contents('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json', $nodeProcessCryptocurrencyBlockchainWorkerSettings) === false) === false)
 				) {
-					$crontabCommands[] = '# nodecompute_node_process_cryptocurrency_blockchain_workers';
+					$crontabCommands[] = '# nodecompute_cryptocurrency_blockchain_worker_processes';
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelays = range(1, 56, 5);
 					$nodeProcessCryptocurrencyBlockchainWorkerDelays = range(1, 51, 10);
 					$nodeProcessCryptocurrencyBlockchainWorkerSettings = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'];
 
 					// todo: add sleep + timeout full binary paths
 					foreach ($nodeProcessCryptocurrencyBlockchainWorkerDelays as $nodeProcessCryptocurrencyBlockchainWorkerDelay) {
-						$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerDelay . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_workers nodecompute_node_process_cryptocurrency_blockchain_workers';
+						$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerDelay . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_workers nodecompute_cryptocurrency_blockchain_worker_processes';
 					}
 
 					foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
 						// todo
 
 						foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelays as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay) {
-							$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay . ' && sudo timeout ' . $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay . ' ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType . '_worker_block_headers nodecompute_node_process_cryptocurrency_blockchain_workers';
+							$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay . ' && sudo timeout ' . $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay . ' ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType . '_worker_block_headers nodecompute_cryptocurrency_blockchain_worker_processes';
 						}
 					}
 				}
