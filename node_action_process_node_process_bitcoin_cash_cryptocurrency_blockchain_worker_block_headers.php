@@ -6,9 +6,10 @@
 		exit;
 	}
 
-	$_0 = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.json');
+	$_0 = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_' . $_SERVER['argv'][1] . '_block_headers.json');
 	$_0 = json_decode($_0, true);
 	// todo: add multiple block headers per process
+	// todo: add increment count for hashes per second performance
 
 	if ($_0 === false) {
 		exit;
