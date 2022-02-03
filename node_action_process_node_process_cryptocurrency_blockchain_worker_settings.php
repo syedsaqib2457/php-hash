@@ -69,6 +69,7 @@
 					$nodeProcessCryptocurrencyBlockchainWorkerDelays = range(1, 51, 10);
 					$nodeProcessCryptocurrencyBlockchainWorkerSettings = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'];
 
+					// todo: add sleep full binary path
 					foreach ($nodeProcessCryptocurrencyBlockchainWorkerDelays as $nodeProcessCryptocurrencyBlockchainWorkerDelay) {
 						$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerDelay . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_workers nodecompute_node_process_cryptocurrency_blockchain_worker';
 					}
