@@ -74,11 +74,13 @@
 						$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerDelay . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_workers nodecompute_cryptocurrency_blockchain_worker_processes';
 					}
 
-					foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
-						// todo
+					foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerCount) {
+						$nodeProcessCryptocurrencyBlockchainWorkerIndexes = range(1, $nodeProcessCryptocurrencyBlockchainWorkerCount);
 
-						foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelays as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay) {
-							$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay . ' && sudo timeout ' . $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay . ' ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType . '_worker_block_headers nodecompute_cryptocurrency_blockchain_worker_processes';
+						foreach ($nodeProcessCryptocurrencyBlockchainWorkerIndexes as $nodeProcessCryptocurrencyBlockchainWorkerIndex) {
+							foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelays as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay) {
+								$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay . ' && sudo timeout ' . $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay . ' ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType . '_worker_block_headers ' . $nodeProcessCryptocurrencyBlockchainWorkerIndex . ' nodecompute_cryptocurrency_blockchain_worker_processes';
+							}
 						}
 					}
 				}
