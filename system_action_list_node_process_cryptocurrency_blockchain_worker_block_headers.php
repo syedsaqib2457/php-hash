@@ -13,8 +13,6 @@
 		$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
 			'data' => array(
 				'current_block_hash',
-				'id',
-				'modified_timestamp',
 				'next_block_height',
 				'next_block_maximum_timestamp',
 				'next_block_merkle_root_hash',
@@ -23,8 +21,7 @@
 				'next_block_target_hash_bits',
 				'next_block_transaction',
 				'next_block_version',
-				'node_process_type',
-				'public_key_script'
+				'node_process_type'
 			),
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
 			'where' => $parameters['where']
@@ -51,6 +48,8 @@
 				$nodeProcessCryptocurrencyBlockchainWorkerIndexes[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']] = 0;
 			}
 
+			$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_header_parts'][] = $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_version'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_merkle_root_hash'];
+
 			if (empty($response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_target_hash']) === true) {
 				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_target_hash'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_target_hash'];
 				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_target_hash_bits'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_target_hash_bits'];
@@ -62,9 +61,9 @@
 					$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey] = strrev($response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey]);
 					$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey] = bin2hex($response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey]);
 				}
-			}
 
-			$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_header_parts'][] = $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_version'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_merkle_root_hash'];
+				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_transaction'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['next_block_transaction'];
+			}
 		}
 
 		$response['message'] = 'Node process cryptocurrency blockchain worker block headers listed successfully.';
