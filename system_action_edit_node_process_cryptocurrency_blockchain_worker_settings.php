@@ -70,7 +70,7 @@
 
 		$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 			'data' => array(
-				'block_headers_per_node_process_count',
+				'block_header_part_count',
 				'id'
 			),
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
@@ -81,8 +81,8 @@
 		), $response);
 		$nodeProcessCryptocurrencyBlockchainWorkerSettings = current($nodeProcessCryptocurrencyBlockchainWorkerSettings);
 
-		if (empty($nodeProcessCryptocurrencyBlockchainWorkerSettings['block_headers_per_node_process_count']) === true) {
-			$parameters['data']['block_headers_per_node_process_count'] = '1';
+		if (empty($nodeProcessCryptocurrencyBlockchainWorkerSettings['block_header_part_count']) === true) {
+			$parameters['data']['block_header_part_count'] = '1';
 		}
 
 		$parameters['data']['id'] = _createUniqueId();
