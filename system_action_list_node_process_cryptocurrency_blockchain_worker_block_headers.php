@@ -17,9 +17,9 @@
 				'next_block_maximum_timestamp',
 				'next_block_merkle_root_hash',
 				'next_block_minimum_timestamp',
+				'next_block_reward_transaction',
 				'next_block_target_hash',
 				'next_block_target_hash_bits',
-				'next_block_transaction',
 				'next_block_version',
 				'node_process_type'
 			),
