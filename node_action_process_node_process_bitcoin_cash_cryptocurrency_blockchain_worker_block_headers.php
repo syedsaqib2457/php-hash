@@ -1,7 +1,7 @@
 <?php
 	if (
 		(empty($_SERVER['argv'][1]) === true) ||
-		(file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.dat') === true)
+		(file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_worker_block_header.dat') === true)
 	) {
 		exit;
 	}
@@ -24,7 +24,7 @@
 
 	while (true) {
 		$_1 = hrtime(true);
-		$_1 = substr($_1, 4, 8);
+		$_1 = substr($_1, 5, 9);
 		$_1 = hex2bin($_1);
 
 		foreach ($_0[0] as $_2) {
@@ -44,7 +44,7 @@
 
 					if (($_4 < $_0[1]) === true) {
 						$_4 = bin2hex($_2 . $_3 . $_0[2] . $_1);
-						file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.dat', $_4);
+						file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_worker_block_header.dat', $_4);
 						exit;
 					}
 				}
