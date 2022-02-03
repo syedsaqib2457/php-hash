@@ -36,10 +36,10 @@
 			foreach ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerData) {
 				foreach ($nodeProcessCryptocurrencyBlockchainWorkerData['next_block_header_parts'] as $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPartIndex => $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPart) {
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData = array(
-						'next_block_headers' => $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPart,
-						'next_block_target_hash' => $nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash'],
-						'next_block_target_hash_bits' => $nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash_bits'],
-						'next_block_timestamps' => $nodeProcessCryptocurrencyBlockchainWorkerData['next_block_timestamps']
+						$nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPart,
+						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash'],
+						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash_bits'],
+						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_timestamps']
 					);
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData);
 
