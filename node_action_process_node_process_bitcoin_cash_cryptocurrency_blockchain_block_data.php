@@ -191,9 +191,9 @@
 				'next_block_maximum_timestamp' => ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'] + 6000),
 				'next_block_merkle_root_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash'],
 				'next_block_minimum_timestamp' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['mintime'],
+				'next_block_reward_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction,
 				'next_block_target_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
 				'next_block_target_hash_bits' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
-				'next_block_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction,
 				'next_block_version' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'],
 				'node_process_type' => 'bitcoin_cash_cryptocurrency_worker'
 			);
