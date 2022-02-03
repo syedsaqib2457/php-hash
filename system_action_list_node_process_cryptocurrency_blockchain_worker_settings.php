@@ -12,7 +12,8 @@
 		$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 			'data' => array(
 				'block_headers_per_node_process_count',
-				'node_process_type'
+				'node_process_type',
+				'processing_interval_seconds'
 			),
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
 			'where' => $parameters['where']
