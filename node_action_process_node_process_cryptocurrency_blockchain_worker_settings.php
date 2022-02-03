@@ -44,6 +44,18 @@
 			}
 
 			$crontabCommands = explode("\n", $crontabCommands);
+			$crontabCommandIndex = array_search('# nodecompute_node_process_cryptocurrency_blockchain_workers', $crontabCommands);
+
+			if (is_int($crontabCommandIndex) === true) {
+				while (is_int($crontabCommandIndex) === true) {
+					unset($crontabCommands[$crontabCommandIndex]);
+					$crontabCommandIndex++;
+
+					if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_node_process_cryptocurrency_blockchain') === false) {
+						$crontabCommandIndex = false;
+					}
+				}
+			}
 
 			if (empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']) === false) {
 				$nodeProcessCryptocurrencyBlockchainWorkerSettings = json_encode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']);
