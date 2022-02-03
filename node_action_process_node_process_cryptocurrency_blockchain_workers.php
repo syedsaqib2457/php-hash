@@ -33,14 +33,12 @@
 				return $response;
 			}
 
-			$nodeProcessCryptocurrencyBlockchainWorkers = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'];
+			foreach ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorker) {
+				foreach ($nodeProcessCryptocurrencyBlockchainWorker['next_block_header_parts'] as $nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderPartIndex => $nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts) {
+					$nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts = json_encode($nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts);
 
-			foreach ($nodeProcessCryptocurrencyBlockchainWorkers as $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorker) {
-				foreach ($nodeProcessCryptocurrencyBlockchainWorker as $nodeProcessCryptocurrencyBlockchainWorkerIndex => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders) {
-					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
-
-					if (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders === false) === false) {
-						file_put_contents('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_' . $nodeProcessCryptocurrencyBlockchainWorkerIndex . '_block_headers.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
+					if (($nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts === false) === false) {
+						file_put_contents('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_' . $nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderPartIndex . '_block_headers.json', $nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts);
 					}
 				}
 			}
