@@ -66,7 +66,7 @@
 				) {
 					$crontabCommands[] = '# nodecompute_cryptocurrency_blockchain_worker_processes';
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelays = range(1, 56, 5);
-					$nodeProcessCryptocurrencyBlockchainWorkerDelays = range(1, 51, 10);
+					$nodeProcessCryptocurrencyBlockchainWorkerDelays = range(8, 58, 10);
 					$nodeProcessCryptocurrencyBlockchainWorkerSettings = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'];
 
 					foreach ($nodeProcessCryptocurrencyBlockchainWorkerDelays as $nodeProcessCryptocurrencyBlockchainWorkerDelay) {
