@@ -138,6 +138,12 @@
 			'package' => 'systemd'
 		),
 		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'sleep',
+			'output' => 'invalid option',
+			'package' => 'coreutils'
+		),
+		array(
 			'command' => $uniqueId,
 			'name' => 'sysctl',
 			'output' => 'cannot',
@@ -154,6 +160,12 @@
 			'name' => 'telinit',
 			'output' => 'single',
 			'package' => 'systemd'
+		),
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'timeout',
+			'output' => 'invalid option',
+			'package' => 'coreutils'
 		),
 		array(
 			'command' => '-' . $uniqueId,
