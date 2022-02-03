@@ -51,7 +51,7 @@
 					unset($crontabCommands[$crontabCommandIndex]);
 					$crontabCommandIndex++;
 
-					if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_node_process_cryptocurrency_blockchain') === false) {
+					if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_node_process_cryptocurrency_blockchain_worker') === false) {
 						$crontabCommandIndex = false;
 					}
 				}
@@ -64,17 +64,20 @@
 					(($nodeProcessCryptocurrencyBlockchainWorkerSettings === false) === false) &&
 					((file_put_contents('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json', $nodeProcessCryptocurrencyBlockchainWorkerSettings) === false) === false)
 				) {
+					$crontabCommands[] = '# nodecompute_node_process_cryptocurrency_blockchain_workers';
+					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelays = range(1, 56, 5);
+					$nodeProcessCryptocurrencyBlockchainWorkerDelays = range(1, 51, 10);
 					$nodeProcessCryptocurrencyBlockchainWorkerSettings = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'];
 
+					foreach ($nodeProcessCryptocurrencyBlockchainWorkerDelays as $nodeProcessCryptocurrencyBlockchainWorkerDelay) {
+						$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerDelay . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_workers nodecompute_node_process_cryptocurrency_blockchain_worker';
+					}
+
 					foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
-						// todo: edit cryptocurrency crontab processes
-						// node_action_process_node_process_cryptocurrency_blockchain_workers (frequent parsing of block header data to files for each worker process)
-						// node_action_process_node_process_cryptocurrency_blockchain_worker_block_headers
-							// todo: add blockchain worker count + worker process timeout seconds to $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse
+						
 					}
 				}
 			} else {
-				// todo: delete cryptocurrency worker processes from crontab
 				unlink('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json');
 			}
 
