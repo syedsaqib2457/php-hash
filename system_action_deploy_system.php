@@ -681,9 +681,10 @@
 
 		$systemDatabases = array(
 			'node_process_cryptocurrency_blockchain_block_processing_logs' => array(
-				'block',
+				'block', // todo: add serialized block header from worker nodes for blockchain node to process with full transactions
 				'block_hash',
 				'block_height',
+				'block_reward_transaction',
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
@@ -729,9 +730,9 @@
 				'next_block_maximum_timestamp',
 				'next_block_merkle_root_hash',
 				'next_block_minimum_timestamp',
+				'next_block_reward_transaction',
 				'next_block_target_hash',
 				'next_block_target_hash_bits',
-				'next_block_transaction',
 				'next_block_version',
 				'node_id',
 				'node_node_id',
