@@ -31,7 +31,7 @@
 		), $response);
 		$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 			'data' => array(
-				'block_headers_per_node_process_count',
+				'count',
 				'node_process_type'
 			),
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
@@ -45,12 +45,26 @@
 		}
 
 		foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader) {
-			if (empty($response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']][$nodeProcessCryptocurrencyBlockchainWorkerIndexes[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']][($nodeProcessCryptocurrencyBlockchainWorkerSettings[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['block_headers_per_node_process_count'] - 1)]) === false) {
-				$nodeProcessCryptocurrencyBlockchainWorkerIndexes[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]++;
+			$nodeProcessCryptocurrencyBlockchainWorkerIndexes[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]++;
+
+			if (($nodeProcessCryptocurrencyBlockchainWorkerIndexes[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']] === $nodeProcessCryptocurrencyBlockchainWorkerSettings['count']) === true) {
+				$nodeProcessCryptocurrencyBlockchainWorkerIndexes[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']] = 0;
 			}
 
+			/*
+				todo: parse for node_action_process_node_process_bitcoin_cash_cryptocurrency_block_header
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = array(
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['mintime'],
+					($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'] + 6000),
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash']
+				);
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader);
+			*/
+
 			$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']][$nodeProcessCryptocurrencyBlockchainWorkerIndexes[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']][] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader;
-			// todo: parse for node_action_process_node_process_bitcoin_cash_cryptocurrency_block_header
+			
 		}
 
 		$response['message'] = 'Node process cryptocurrency blockchain worker block headers listed successfully.';
