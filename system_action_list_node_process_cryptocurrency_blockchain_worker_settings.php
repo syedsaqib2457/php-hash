@@ -4,6 +4,7 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
+		'node_process_cryptocurrency_blockchain_worker_block_headers',
 		'node_process_cryptocurrency_blockchain_worker_settings'
 	), $parameters['system_databases'], $response);
 
@@ -11,6 +12,7 @@
 		$parameters['where']['node_id'] = $parameters['node']['id'];
 		$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 			'data' => array(
+				'block_headers_per_node_process_count',
 				'node_process_type',
 				'processing_interval_seconds'
 			),
@@ -19,7 +21,17 @@
 		), $response);
 
 		foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingKey => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
-			$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']] = $nodeProcessCryptocurrencyBlockchainWorkerSetting['processing_interval_seconds'];
+			$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_count'] = _count(array(
+				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
+				'where' => array(
+					'node_id' => $parameters['node']['id'],
+					'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
+				)
+			), $response);
+			$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']] = array(
+				'node_process_count' => ceil($nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_count'] / $nodeProcessCryptocurrencyBlockchainWorkerSetting['block_headers_per_node_process_count']),
+				'processing_interval_seconds' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['processing_interval_seconds']
+			);
 		}
 
 		$response['message'] = 'Node process cryptocurrency blockchain worker settings listed successfully.';
