@@ -74,8 +74,8 @@
 						$crontabCommands[] = '* * * * * root sudo sleep ' . $nodeProcessCryptocurrencyBlockchainWorkerDelay . ' && sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_workers nodecompute_cryptocurrency_blockchain_worker_processes';
 					}
 
-					foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerCount) {
-						$nodeProcessCryptocurrencyBlockchainWorkerIndexes = range(1, $nodeProcessCryptocurrencyBlockchainWorkerCount);
+					foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
+						$nodeProcessCryptocurrencyBlockchainWorkerIndexes = range(1, $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']);
 
 						foreach ($nodeProcessCryptocurrencyBlockchainWorkerIndexes as $nodeProcessCryptocurrencyBlockchainWorkerIndex) {
 							foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelays as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelay) {
