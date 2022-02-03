@@ -27,14 +27,34 @@
 				return $response;
 			}
 
+			$crontabCommands = file_get_contents('/etc/crontab');
+
+			if (empty($crontabCommands) === true) {
+				$response['message'] = 'Error listing crontab commands, please try again.';
+				return $response;
+			}
+
+			$crontabCommands = explode("\n", $crontabCommands);
+
 			if (empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']) === false) {
-				// edit cryptocurrency crontab processes
+				foreach ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'] as $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSetting) {
+					// todo: edit cryptocurrency crontab processes
 					// node_action_process_node_process_cryptocurrency_blockchain_workers (frequent parsing of block header data to files for each worker process)
 					// node_action_process_node_process_cryptocurrency_blockchain_worker_block_headers
 						// todo: add blockchain worker count + worker process timeout seconds to $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse
+				}
 			} else {
 				// todo: delete cryptocurrency worker processes from crontab
 			}
+
+			$crontabCommands = implode("\n", $crontabCommands);
+
+			if (file_put_contents('/etc/crontab', $crontabCommands) === false) {
+				echo 'Error adding crontab commands, please try again.';
+				return $response;
+			}
+
+			shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 		}
 	}
 
