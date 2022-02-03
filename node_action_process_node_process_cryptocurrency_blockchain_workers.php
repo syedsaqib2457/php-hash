@@ -42,7 +42,7 @@
 				}
 
 				$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
-				file_put_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker' . $nodeProcessCryptocurrencyBlockchainWorkerIndex . '_block_headers.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
+				file_put_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_' . $nodeProcessCryptocurrencyBlockchainWorkerIndex . '_block_headers.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
 			}
 		}
 
