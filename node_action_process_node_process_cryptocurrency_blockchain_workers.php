@@ -36,7 +36,7 @@
 			$nodeProcessCryptocurrencyBlockchainWorkers = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'];
 
 			foreach ($nodeProcessCryptocurrencyBlockchainWorkers as $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorker) {
-				foreach ($nodeProcessCryptocurrencyBlockchainWorker as $nodeProcessCryptocurrencyBlockchainWorkerIndex => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders)
+				foreach ($nodeProcessCryptocurrencyBlockchainWorker as $nodeProcessCryptocurrencyBlockchainWorkerIndex => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders) {
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders);
 
 					if (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders === false) === false) {
