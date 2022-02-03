@@ -11,7 +11,6 @@
 		$parameters['where']['node_id'] = $parameters['node']['id'];
 		$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 			'data' => array(
-				'block_headers_per_node_process_count',
 				'node_process_type',
 				'processing_interval_seconds'
 			),
@@ -19,8 +18,8 @@
 			'where' => $parameters['where']
 		), $response);
 
-		foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
-			$nodeProcessCryptocurrencyBlockchainWorkerSettings[$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']] = $nodeProcessCryptocurrencyBlockchainWorkerSetting;
+		foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingKey => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
+			$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']] = $nodeProcessCryptocurrencyBlockchainWorkerSetting['processing_interval_seconds'];
 		}
 
 		$response['message'] = 'Node process cryptocurrency blockchain worker settings listed successfully.';
