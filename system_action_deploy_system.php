@@ -748,7 +748,7 @@
 				'per_second_count'
 			),
 			'node_process_cryptocurrency_blockchain_worker_settings' => array(
-				'block_header_part_count',
+				'count',
 				'cpu_usage_maximum_percentage',
 				'created_timestamp',
 				'gpu_usage_maximum_percentage',
