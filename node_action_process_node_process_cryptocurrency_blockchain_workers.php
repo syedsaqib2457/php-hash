@@ -33,12 +33,18 @@
 				return $response;
 			}
 
-			foreach ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorker) {
-				foreach ($nodeProcessCryptocurrencyBlockchainWorker['next_block_header_parts'] as $nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderPartIndex => $nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts) {
-					$nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts = json_encode($nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts);
+			foreach ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerData) {
+				foreach ($nodeProcessCryptocurrencyBlockchainWorkerData['next_block_header_parts'] as $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPartIndex => $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPart) {
+					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData = array(
+						'next_block_headers' => $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPart,
+						'next_block_target_hash' => $nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash'],
+						'next_block_target_hash_bits' => $nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash_bits'],
+						'next_block_timestamps' => $nodeProcessCryptocurrencyBlockchainWorkerData['next_block_timestamps']
+					);
+					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData);
 
-					if (($nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts === false) === false) {
-						file_put_contents('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_' . $nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderPartIndex . '_block_headers.json', $nodeProcessCryptocurrencyBlockchainWorkerNextBlockHeaderParts);
+					if (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData === false) === false) {
+						file_put_contents('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_block_header_data_' . $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPartIndex . '.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData);
 					}
 				}
 			}
