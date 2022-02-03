@@ -12,7 +12,7 @@
 		$parameters['where']['node_id'] = $parameters['node']['id'];
 		$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 			'data' => array(
-				'block_headers_per_node_process_count',
+				'block_headers_per_worker_count',
 				'node_process_type',
 			),
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
