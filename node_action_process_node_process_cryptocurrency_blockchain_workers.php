@@ -34,7 +34,7 @@
 			}
 
 			$nodeProcessCryptocurrencyBlockchainWorkers = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'];
-			// todo: update crontab here with variable timeout settings based on resource usage + blockchain worker settings
+			// todo: update crontab here with variable timeout settings based on resource usage + blockchain worker settings in '/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json
 
 			foreach ($nodeProcessCryptocurrencyBlockchainWorkers as $nodeProcessCryptocurrencyBlockchainWorkerIndex => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders) {
 				if (file_exists('/usr/local/nodecompute/node_process_' . $cryptocurrencyBlockchainNodeProcessType . '_cryptocurrency_blockchain_worker_settings.json') === false) {
