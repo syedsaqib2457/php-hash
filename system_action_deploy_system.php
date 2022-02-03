@@ -757,8 +757,7 @@
 				'modified_timestamp',
 				'node_id',
 				'node_node_id',
-				'node_process_type',
-				'processing_interval_seconds'
+				'node_process_type'
 			),
 			'node_process_cryptocurrency_blockchains' => array(
 				'block_download_progress_percentage',
