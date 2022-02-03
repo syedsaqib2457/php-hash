@@ -19,11 +19,20 @@
 				return $response;
 			}
 
-			$systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse = file_get_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_settings_response.json');
-			$systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse = json_decode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse, true);
+			$encodedSystemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse = file_get_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_settings_response.json');
+			$systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse = json_decode($encodedSystemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse, true);
 
 			if ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse === false) {
 				$response['message'] = 'Error listing node process cryptocurrency blockchain worker settings, please try again.';
+				return $response;
+			}
+
+			if (
+				(empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']) === true) &&
+				(file_exists('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json') === false)
+			) {
+				$response['message'] = 'Node process cryptocurrency blockchain worker settings processed successfully.';
+				$response['valid_status'] = '1';
 				return $response;
 			}
 
@@ -37,14 +46,20 @@
 			$crontabCommands = explode("\n", $crontabCommands);
 
 			if (empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']) === false) {
-				foreach ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'] as $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSetting) {
+				$nodeProcessCryptocurrencyBlockchainWorkerSettings = $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data'];
+
+				foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
 					// todo: edit cryptocurrency crontab processes
 					// node_action_process_node_process_cryptocurrency_blockchain_workers (frequent parsing of block header data to files for each worker process)
 					// node_action_process_node_process_cryptocurrency_blockchain_worker_block_headers
 						// todo: add blockchain worker count + worker process timeout seconds to $systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse
 				}
+
+				$nodeProcessCryptocurrencyBlockchainWorkerSettings = json_encode($nodeProcessCryptocurrencyBlockchainWorkerSettings);
+				file_put_contents('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json', $nodeProcessCryptocurrencyBlockchainWorkerSettings);
 			} else {
 				// todo: delete cryptocurrency worker processes from crontab
+				unlink('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json');
 			}
 
 			$crontabCommands = implode("\n", $crontabCommands);
@@ -56,6 +71,10 @@
 
 			shell_exec('sudo ' . $parameters['binary_files']['crontab'] . ' /etc/crontab');
 		}
+
+		$response['message'] = 'Node process cryptocurrency blockchain worker settings processed successfully.';
+		$response['valid_status'] = '1';
+		return $response;
 	}
 
 	if (($parameters['action'] === 'process_node_process_cryptocurrency_blockchain_worker_settings') === true) {
