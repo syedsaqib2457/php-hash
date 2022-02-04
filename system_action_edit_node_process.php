@@ -76,10 +76,10 @@
 		}
 
 		_edit(array(
-			'data' => array_intersect_key($parameters['data'], array(
-				'port_number' => true,
-				'type' => true
-			)),
+			'data' => array(
+				'port_number' => $parameters['data']['port_number'],
+				'type' => $parameters['data']['type']
+			),
 			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
