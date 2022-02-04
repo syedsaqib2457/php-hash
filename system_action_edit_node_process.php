@@ -40,6 +40,18 @@
 			return $response;
 		}
 
+		$nodeProcessCount = _count(array(
+			'in' => $parameters['system_databases']['node_processes'],
+			'where' => array(
+				'id' => $parameters['where']['id']
+			)
+		), $response);
+
+		if (($nodeProcessCount === '0') === true) {
+			$response['message'] = 'Invalid node process ID, please try again.';
+			return $response;
+		}
+
 		$existingNodeProcessCountParameters = array(
 			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
