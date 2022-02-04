@@ -127,8 +127,40 @@
 		($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['initialblockdownload'] === false)
 	) {
 		$nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] = '100';
+		exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getaddressesbylabel "" 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainWallets);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainWallets = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainWallets);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainWallets = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainWallets, true);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainWalletPublicKeyHash = key($nodeProcessBitcoinCashCryptocurrencyBlockchainWallets);
+		exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getaddressinfo "' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWalletPublicKeyHash . '" 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainWallet);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainWallet = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainWallet);
+		$nodeProcessBitcoinCashCryptocurrencyBlockchainWallet = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainWallet, true);
+		$systemActionAddNodeProcessCryptocurrencyBlockchainWalletParameters = array(
+			'action' => 'add_node_process_cryptocurrency_blockchain_wallet',
+			'data' => array(
+				'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain',
+				'public_key' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWallet['pubkey'],
+				'public_key_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWallet['address'],
+				'public_key_script' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWallet['scriptPubKey']
+			),
+			'node_authentication_token' => $parameters['node_authentication_token']
+		);
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_add_node_process_bitcoin_cash_cryptocurrency_blockchain_wallet_response.json --no-dns-cache --post-data \'json=' . $systemActionAddNodeProcessCryptocurrencyBlockchainWalletParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
-		// todo: add default wallet info (scriptPubKey, address, etc) to system API if wallet data is empty
+		if (file_exists('/usr/local/nodecompute/system_action_add_node_process_bitcoin_cash_cryptocurrency_blockchain_wallet_response.json') === false) {
+			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain wallet, please try again.';
+			return $response;
+		}
+
+		$encodedSystemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse = file_get_contents('/usr/local/nodecompute/system_action_add_node_process_bitcoin_cash_cryptocurrency_blockchain_wallet_response.json');
+		$systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse = json_decode($encodedSystemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse, true);
+
+		if (
+			($systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse === false) ||
+			(($systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse['valid_status'] === '0') === true)
+		) {
+			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain wallet, please try again.';
+			return $response;
+		}		
 	} elseif (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress']) === true) {
 		$nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] = floor($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress'] * 100);
 	}
