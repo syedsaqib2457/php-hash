@@ -8,7 +8,7 @@
 	), $parameters['system_databases'], $response);
 
 	function _editNodeProcessCryptocurrencyBlockchainWorkerBlockHeaders($parameters, $response) {
-		if (isset($parameters['node_authentication_token']) === false) {
+		if (empty($parameters['node_authentication_token']) === true) {
 			return $response;
 		}
 
