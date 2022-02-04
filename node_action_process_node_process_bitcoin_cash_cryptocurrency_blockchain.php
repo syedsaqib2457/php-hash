@@ -181,7 +181,7 @@
 		),
 		'node_authentication_token' => $parameters['node_authentication_token'],
 		'where' => array(
-			'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain'
+			'id' => $nodeProcessCryptocurrencyBlockchain['id']
 		)
 	);
 	$systemActionEditNodeProcessCryptocurrencyBlockchainParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainParameters);
