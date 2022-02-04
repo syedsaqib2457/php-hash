@@ -106,6 +106,8 @@
 				$response['message'] = 'Invalid system endpoint request node authentication token scope, please try again.';
 				_output($response);
 			}
+
+			unset($parameters['system_user_authentication_token']);
 		} else {
 			$systemUserAuthenticationToken = _list(array(
 				'data' => array(
@@ -176,6 +178,8 @@
 					_output($response);
 				}
 			}
+
+			unset($parameters['node_authentication_token']);
 		}
 
 		$parameters['process_id'] = getmypid();
