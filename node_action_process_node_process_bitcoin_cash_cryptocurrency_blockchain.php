@@ -144,6 +144,13 @@
 			),
 			'node_authentication_token' => $parameters['node_authentication_token']
 		);
+		$systemActionAddNodeProcessCryptocurrencyBlockchainWalletParameters = json_encode($systemActionAddNodeProcessCryptocurrencyBlockchainWalletParameters);
+
+		if ($systemActionAddNodeProcessCryptocurrencyBlockchainWalletParameters === false) {
+			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain wallet, please try again.';
+			return $response;
+		}
+
 		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_add_node_process_bitcoin_cash_cryptocurrency_blockchain_wallet_response.json --no-dns-cache --post-data \'json=' . $systemActionAddNodeProcessCryptocurrencyBlockchainWalletParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/nodecompute/system_action_add_node_process_bitcoin_cash_cryptocurrency_blockchain_wallet_response.json') === false) {
@@ -151,16 +158,18 @@
 			return $response;
 		}
 
-		$encodedSystemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse = file_get_contents('/usr/local/nodecompute/system_action_add_node_process_bitcoin_cash_cryptocurrency_blockchain_wallet_response.json');
-		$systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse = json_decode($encodedSystemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse, true);
+		$systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse = file_get_contents('/usr/local/nodecompute/system_action_add_node_process_bitcoin_cash_cryptocurrency_blockchain_wallet_response.json');
+		$systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse = json_decode($systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse, true);
 
-		if (
-			($systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse === false) ||
-			(($systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse['valid_status'] === '0') === true)
-		) {
+		if ($systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse === false) {
 			$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain wallet, please try again.';
 			return $response;
-		}		
+		}
+
+		if (($systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse['valid_status'] === '0') === true) {
+			$response['message'] = $systemActionAddNodeProcessCryptocurrencyBlockchainWalletResponse['message'];
+			return $response;
+		}
 	} elseif (isset($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress']) === true) {
 		$nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'] = floor($nodeProcessBitcoinCashCryptocurrencyBlockchainDetails['verificationprogress'] * 100);
 	}
@@ -173,10 +182,30 @@
 		),
 		'node_authentication_token' => $parameters['node_authentication_token']
 	);
-	$encodedSystemActionEditNodeProcessCryptocurrencyBlockchainParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainParameters);
+	$systemActionEditNodeProcessCryptocurrencyBlockchainParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainParameters);
 
-	if ($encodedSystemActionEditNodeProcessCryptocurrencyBlockchainParameters === false) {
+	if ($systemActionEditNodeProcessCryptocurrencyBlockchainParameters === false) {
 		$response['message'] = 'Error editing node process Bitcoin Cash cryptocurrency blockchain, please try again.';
+		return $response;
+	}
+
+	shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_edit_node_process_bitcoin_cash_cryptocurrency_blockchain_response.json --no-dns-cache --post-data \'json=' . $systemActionEditNodeProcessCryptocurrencyBlockchainParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+
+	if (file_exists('/usr/local/nodecompute/system_action_edit_node_process_bitcoin_cash_cryptocurrency_blockchain_response.json') === false) {
+		$response['message'] = 'Error editing node process Bitcoin Cash cryptocurrency blockchain, please try again.';
+		return $response;
+	}
+
+	$systemActionEditNodeProcessCryptocurrencyBlockchainResponse = file_get_contents('/usr/local/nodecompute/system_action_edit_node_process_bitcoin_cash_cryptocurrency_blockchain_response.json');
+	$systemActionEditNodeProcessCryptocurrencyBlockchainResponse = json_decode($systemActionEditNodeProcessCryptocurrencyBlockchainResponse, true);
+
+	if ($systemActionEditNodeProcessCryptocurrencyBlockchainResponse === false) {
+		$response['message'] = 'Error editing node process Bitcoin Cash cryptocurrency blockchain, please try again.';
+		return $response;
+	}
+
+	if (($systemActionEditNodeProcessCryptocurrencyBlockchainResponse['valid_status'] === '0') === true) {
+		$response['message'] = $systemActionEditNodeProcessCryptocurrencyBlockchainResponse['message'];
 		return $response;
 	}
 ?>
