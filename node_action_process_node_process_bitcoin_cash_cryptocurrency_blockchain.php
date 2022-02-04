@@ -177,10 +177,12 @@
 	$systemActionEditNodeProcessCryptocurrencyBlockchainParameters = array(
 		'action' => 'edit_node_process_cryptocurrency_blockchain',
 		'data' => array(
-			'block_download_progress_percentage' => $nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage'],
-			'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain'
+			'block_download_progress_percentage' => $nodeProcessCryptocurrencyBlockchain['block_download_progress_percentage']
 		),
-		'node_authentication_token' => $parameters['node_authentication_token']
+		'node_authentication_token' => $parameters['node_authentication_token'],
+		'where' => array(
+			'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain'
+		)
 	);
 	$systemActionEditNodeProcessCryptocurrencyBlockchainParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainParameters);
 
