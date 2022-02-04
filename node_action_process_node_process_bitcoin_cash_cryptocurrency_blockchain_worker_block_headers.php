@@ -26,7 +26,7 @@
 
 	while (true) {
 		$_1 = hrtime(true);
-		$_1 = substr($_1, 5, 9);
+		$_1 = substr($_1, 5, 8);
 		$_1 = hex2bin($_1);
 
 		foreach ($_0[0] as $_2) {
