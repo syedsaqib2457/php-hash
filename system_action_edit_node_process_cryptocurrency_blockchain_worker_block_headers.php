@@ -8,6 +8,10 @@
 	), $parameters['system_databases'], $response);
 
 	function _editNodeProcessCryptocurrencyBlockchainWorkerBlockHeaders($parameters, $response) {
+		if (empty($parameters['node']) === true) {
+			return $response;
+		}
+
 		if (empty($_FILES['data']['tmp_name']) === true) {
 			$response['message'] = 'Node process node user request logs must have a data file, please try again.';
 			return $response;
