@@ -148,6 +148,7 @@
 				'data' => array(
 					'block_download_progress_percentage',
 					'daily_sent_traffic_maximum_megabytes',
+					'id',
 					'node_id',
 					'node_process_type',
 					'simultaneous_received_connection_maximum_count',
