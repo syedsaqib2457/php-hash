@@ -1,7 +1,7 @@
 <?php
 	if (
 		(empty($_SERVER['argv'][1]) === true) ||
-		(file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_worker_valid_block_header_data.json') === true)
+		(file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_data.json') === true)
 	) {
 		exit;
 	}
@@ -52,7 +52,8 @@
 							$_4,
 							$_0[1]
 						);
-						file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_worker_valid_block_header_data.json', $_4);
+						$_4 = json_encode($_4);
+						file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_data.json', $_4);
 						exit;
 					}
 				}
