@@ -28,7 +28,6 @@
 		}
 
 		while (true) {
-			sleep(3);
 			exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate, true);
@@ -231,6 +230,8 @@
 				$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain block transactions, please try again.';
 				return $response;
 			}
+
+			sleep(3);
 		}
 	}
 
