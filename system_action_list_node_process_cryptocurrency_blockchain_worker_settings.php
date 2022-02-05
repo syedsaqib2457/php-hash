@@ -21,7 +21,7 @@
 			'where' => $parameters['where']
 		), $response);
 
-		foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingKey => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
+		foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
 			$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']] = $nodeProcessCryptocurrencyBlockchainWorkerSetting;
 		}
 
