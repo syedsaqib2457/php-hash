@@ -14,7 +14,7 @@
 			'action' => 'list_node_process_cryptocurrency_blockchain_worker_block_headers',
 			'node_authentication_token' => $parameters['node_authentication_token'],
 			'where' => array(
-				'node_process_type' => 'bitcoin_cash_cryptocurrency_worker'
+				'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain'
 			)
 		);
 		$systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters = json_encode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters);
