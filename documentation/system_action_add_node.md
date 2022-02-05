@@ -1,12 +1,12 @@
-## Add Node
+# Add Node
 
-### Introduction
+## Introduction
 
-This API action adds IP address data from an instance to GhostCompute so it can be deployed as a connected node with API automation.
+This API action adds IP address data from an instance to NodeCompute so it can be deployed as a connected node with API automation.
 
 IP addresses must already be routed to a node instance by the hosting provider.
 
-### Request Example
+## Request Example
 
 This is an example `POST` request body made to the `/system_endpoint.php` path in `JSON` format.
 
@@ -26,29 +26,29 @@ All values are formatted as `string` types.
 }
 ```
 
-### Request Parameters
+## Request Parameters
 
 These are descriptions for each request parameter.
 
-#### action
+### action
 
 This is required for authenticating user scope and processing data for adding nodes.
 
 The value must be `add_node`.
 
-#### data[external_ip_address_version_4]
+### data[external_ip_address_version_4]
 
 This is required if the node has an IPv4 address routed to the instance.
 
 The value must be a `public or reserved IPv4 address`.
 
-#### data[external_ip_address_version_6]
+### data[external_ip_address_version_6]
 
 This is required if the node has an IPv6 address routed to the instance.
 
 The value must be a `public or reserved IPv6 address`.
 
-#### data[internal_ip_address_version_4]
+### data[internal_ip_address_version_4]
 
 This is required if the node has a private IPv4 address for internal routing to external IP addresses on the instance.
 
@@ -56,7 +56,7 @@ The value must be a `reserved IPv4 address`.
 
 An `external_ip_address_version_4` value must also be set.
 
-#### data[internal_ip_address_version_6]
+### data[internal_ip_address_version_6]
 
 This is required if the node has a private IPv6 address for internal routing to external IP addresses on the instance.
 
@@ -64,19 +64,19 @@ The value must be a `reserved IPv6 address`.
 
 An `external_ip_address_version_6` value must also be set.
 
-#### data[node_id]
+### data[node_id]
 
 This is required if the node is added as an additional node to an existing node.
 
 The value must be an `alphanumeric ID`.
 
-#### system_user_authentication_token
+### system_user_authentication_token
 
 This is required for authenticating system user access.
 
 The value must be a `string` in the `system_user_authentication_tokens` database.
 
-### Response Example
+## Response Example
 
 This is an example response body from the example request in `JSON` format.
 
@@ -114,11 +114,11 @@ All values are formatted as `string` types.
 }
 ```
 
-### Response Parameters
+## Response Parameters
 
 These are descriptions for each response parameter.
 
-#### authenticated_status
+### authenticated_status
 
 This is the authenticated status indicator for the request.
 
@@ -126,7 +126,7 @@ The value is either `1` if the request is authenticated or `0` if the request is
 
 The request must have a valid `system_user_authentication_token` to be authenticated.
 
-#### data[activated_status]
+### data[activated_status]
 
 This is the activated status indicator in the added node.
 
@@ -134,37 +134,37 @@ The value is either `1` if the added node is activated or `0` if the added node 
 
 The added node must be deployed before it can be activated.
 
-#### data[cpu_capacity_megahertz]
+### data[cpu_capacity_megahertz]
 
 This is the CPU clock speed for a single core detected in the added node instance.
 
 The value is either a `numeric count in MHz` if the node is added to a deployed node or `empty` if the node isn't deployed.
 
-#### data[cpu_core_count]
+### data[cpu_core_count]
 
 This is the count of CPU cores detected in the added node instance.
 
 The value is either a `numeric count` if the added node is added to a deployed node or `empty` if the added node isn't deployed.
 
-#### data[created_timestamp]
+### data[created_timestamp]
 
 This is the timestamp of when the node was added.
 
 The value is a `Unix timestamp in seconds`.
 
-#### data[deployed_status]
+### data[deployed_status]
 
 This is the deployed status indicator in the added node.
 
 The value is either `1` if the added node is deployed or `0` if the added node isn't deployed.
 
-#### data[external_ip_address_version_4]
+### data[external_ip_address_version_4]
 
 This is the added external IPv4 address in the added node.
 
 The value is either a `public or reserved IPv4 address` or `empty`.
 
-#### data[external_ip_address_version_4_type]
+### data[external_ip_address_version_4_type]
 
 This is the added external IPv4 address type in the added node.
 
@@ -178,7 +178,7 @@ This is the list of possible values.
 - public_network
 - [list_all_values]
 
-#### data [external_ip_address_version_6]
+### data [external_ip_address_version_6]
 
 This is the added external IPv6 address in the added node.
 
@@ -186,7 +186,7 @@ The value is either a `public or reserved IPv6 address` or `empty`.
 
 Abbreviated IPv6 address notation values are converted to full IPv6 address notation values.
 
-#### data [external_ip_address_version_6_type]
+### data [external_ip_address_version_6_type]
 
 This is the added external IPv6 address type in the added node.
 
@@ -200,19 +200,19 @@ This is the list of possible values.
 - public_network
 - [list_all_values]
 
-#### data[id]
+### data[id]
 
 This is the unique ID of the added node.
 
 The value is an `alphanumeric ID` with a string length of `30 characters`.
 
-#### data[internal_ip_address_version_4]
+### data[internal_ip_address_version_4]
 
 This is the added internal IPv4 address in the added node.
 
 The value is either a `reserved IPv4 address` or `empty`.
 
-#### data[internal_ip_address_version_4_type]
+### data[internal_ip_address_version_4_type]
 
 This is the added internal IPv4 address type in the added node.
 
@@ -225,7 +225,7 @@ This is the list of possible values.
 - private_network
 - [list_all_values]
 
-#### data[internal_ip_address_version_6]
+### data[internal_ip_address_version_6]
 
 This is the added internal IPv6 address in the added node.
 
@@ -233,7 +233,7 @@ The value is either a `reserved IPv6 address` or `empty`.
 
 Abbreviated IPv6 address notation values are converted to full IPv6 address notation values.
 
-#### data[internal_ip_address_version_6_type]
+### data[internal_ip_address_version_6_type]
 
 This is the added internal IPv6 address type in the added node.
 
@@ -246,13 +246,13 @@ This is the list of possible values.
 - private_network
 - [list_all_values]
 
-#### data[memory_capacity_megabytes]
+### data[memory_capacity_megabytes]
 
 This is the total RAM capacity detected in the added node instance.
 
 The value is either a `numeric count in MB` if the node is added to a deployed node or `empty` if the node isn't deployed.
 
-#### data[modified_timestamp]
+### data[modified_timestamp]
 
 This is the timestamp of when the node was added.
 
@@ -260,13 +260,13 @@ The value is a `Unix timestamp in seconds`.
 
 It changes to the current timestamp whenever a value is modified in the added node.
 
-#### data[node_id]
+### data[node_id]
 
 This is the unique ID of the main node in the added node.
 
 The value is either an `alphanumeric ID` with a string length of `30 characters` if the added node belongs to a main node or `empty` if the added node is a main node.
 
-#### data[processed_status]
+### data[processed_status]
 
 This is the processed status indicator in the added node.
 
@@ -274,7 +274,7 @@ The value is either `1` if the added node is processed or `0` if the added node 
 
 The added node must be deployed before it can be processed.
 
-#### data[processing_progress_checkpoint]
+### data[processing_progress_checkpoint]
 
 This is the current progress checkpoint for diagnosing performance issues while processing and updating an added node.
 
@@ -286,13 +286,13 @@ This is the list of possible values.
 
 [list_all_values]
 
-#### data[processing_progress_percentage]
+### data[processing_progress_percentage]
 
 This is the current progress percentage for processing and updating an added node.
 
 The value is a `numeric progress percentage`.
 
-#### data[processing_status]
+### data[processing_status]
 
 This is the processing status indicator in the added node.
 
@@ -300,22 +300,20 @@ The value is either `1` if the added node is processing or `0` if the added node
 
 The added node must be deployed before it can be processed.
 
-#### data[storage_capacity_megabytes]
+### data[storage_capacity_megabytes]
 
 This is the disk storage capacity detected in the added node instance.
 
 The value is either a `numeric count in MBs` if the node is added to a deployed node or `empty` if the node isn't deployed.
 
-#### message
+### message
 
 This is the message for debugging after processing the request.
 
 The value is a `string`.
 
-#### valid_status
+### valid_status
 
 This is the valid status indicator for the request.
 
 The value is either `1` if the request is valid or `0` if the request isn't valid.
-
-The request data must pass all validation to be valid.
