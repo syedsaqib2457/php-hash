@@ -78,7 +78,12 @@
 			}
 		}
 
-		$parameters['data']['node_node_id'] = $node['node_id'];
+		$parameters['data']['node_node_id'] = $node['id'];
+
+		if (empty($node['node_id']) === false) {
+			$parameters['data']['node_node_id'] = $node['node_id'];
+		}
+
 		$existingNodeProcessForwardingDestinationCount = _count(array(
 			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 			'where' => array(
