@@ -8,7 +8,7 @@
 		// todo: list un-submitted block headers in node_process_cryptocurrency_blockchain_block_processing_logs with node_process_type bitcoin_cash_cryptocurrency_blockchain
 
 		while (true) {
-			if (file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.dat') === true) {
+			/* if (file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.dat') === true) {
 				$nodeProcessBitcoinCashCryptocurrencyBlockHeader = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.dat');
 				$nodeProcessBitcoinCashCryptocurrencyBlockTransactions = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_transactions.dat');
 
@@ -30,7 +30,7 @@
 						return $response;
 					}
 				}
-			}
+			} */
 
 			sleep(1);
 		}
