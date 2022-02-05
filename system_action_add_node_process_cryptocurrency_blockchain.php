@@ -18,6 +18,15 @@
 			return $response;
 		}
 
+		if (in_array($parameters['data']['node_process_type'], array(
+			'bitcoin_cash_cryptocurrency_blockchain'
+			// 'bitcoin_cryptocurrency_blockchain'
+			// 'dogecoin_cryptocurrency_blockchain'
+		)) === false) {
+			$response['message'] = 'Invalid node process cryptocurrency blockchain node process type, please try again.';
+			return $response;
+		}
+
 		$node = _list(array(
 			'data' => array(
 				'id',
