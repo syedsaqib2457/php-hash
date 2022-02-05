@@ -37,6 +37,7 @@
 				foreach ($nodeProcessCryptocurrencyBlockchainWorkerData['next_block_header_parts'] as $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPartIndex => $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPart) {
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData = array(
 						$nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPart,
+						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_reward_transaction'],
 						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash'],
 						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash_bits'],
 						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_timestamps']
