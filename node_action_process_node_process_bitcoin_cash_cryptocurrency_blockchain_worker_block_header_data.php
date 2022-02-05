@@ -11,6 +11,7 @@
 
 	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData($parameters, $response) {
 		// todo: add a _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData process with a (1000 * x) index for every 1000 worker block header processes on the same node_node_id
+		// todo: add while(true) with crontab process every minute + 58 second timeout
 		$systemParameters = array(
 			'action' => 'list_node_process_cryptocurrency_blockchain_worker_block_headers',
 			'node_authentication_token' => $parameters['node_authentication_token'],
