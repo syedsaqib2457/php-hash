@@ -22,6 +22,7 @@
 		$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
 			'data' => array(
 				'current_block_hash',
+				'id',
 				'next_block_height',
 				'next_block_maximum_timestamp',
 				'next_block_merkle_root_hash',
@@ -30,11 +31,20 @@
 				'next_block_target_hash',
 				'next_block_target_hash_bits',
 				'next_block_version',
-				'node_process_type'
+				'node_process_type',
+				'public_key_script'
 			),
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
 			'where' => $parameters['where']
 		), $response);
+		$response['message'] = 'Node process cryptocurrency blockchain worker block headers listed successfully.';
+		$response['valid_status'] = '1';
+
+		if (empty($parameters['where']['node_process_type']) === false) {
+			$response['data'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders;
+			return $response;
+		}
+
 		$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 			'data' => array(
 				'count',
@@ -75,8 +85,6 @@
 			}
 		}
 
-		$response['message'] = 'Node process cryptocurrency blockchain worker block headers listed successfully.';
-		$response['valid_status'] = '1';
 		return $response;
 	}
 
