@@ -3,12 +3,9 @@
 		exit;
 	}
 
-	function _processNodeProcessBitcoinCashCryptocurrencyBlockSubmission($parameters, $response) {
-		exec('ps -h -o pid -o cmd $(pgrep php) | grep process_node_process_bitcoin_cash_cryptocurrency_block_submission | grep -v grep | awk \'{print $1}\'', $nodeProcessBitcoinCashCryptocurrencyBlockSubmissionProcessIds);
-
-		if (empty($nodeProcessBitcoinCashCryptocurrencyBlockSubmissionProcessIds[1]) === false) {
-			return $response;
-		}
+	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainValidBlockData($parameters, $response) {
+		// todo: add to crontab from worker_settings
+		// todo: list un-submitted block headers in node_process_cryptocurrency_blockchain_block_processing_logs with node_process_type bitcoin_cash_cryptocurrency_blockchain
 
 		while (true) {
 			if (file_exists('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_block_header.dat') === true) {
