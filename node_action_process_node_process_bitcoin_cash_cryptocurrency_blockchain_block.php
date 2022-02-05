@@ -4,7 +4,6 @@
 	}
 
 	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlock($parameters, $response) {
-		// todo: add to crontab from worker_settings
 		// todo: list un-submitted block headers in node_process_cryptocurrency_blockchain_block_processing_logs with node_process_type bitcoin_cash_cryptocurrency_blockchain
 
 		while (true) {
