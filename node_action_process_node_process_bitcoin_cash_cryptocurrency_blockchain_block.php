@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainValidBlockData($parameters, $response) {
+	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlock($parameters, $response) {
 		// todo: add to crontab from worker_settings
 		// todo: list un-submitted block headers in node_process_cryptocurrency_blockchain_block_processing_logs with node_process_type bitcoin_cash_cryptocurrency_blockchain
 
@@ -36,7 +36,7 @@
 		}
 	}
 
-	if (($parameters['action'] === 'node_action_process_node_process_bitcoin_cash_cryptocurrency_block_submission') === true) {
-		$response = _processNodeProcessBitcoinCashCryptocurrencyBlockSubmission($parameters, $response);
+	if (($parameters['action'] === 'process_node_process_bitcoin_cash_cryptocurrency_blockchain_block') === true) {
+		$response = _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlock($parameters, $response);
 	}
 ?>
