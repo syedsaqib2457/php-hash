@@ -742,12 +742,12 @@
 			),
 			'node_process_cryptocurrency_blockchain_worker_hash_speed_logs' => array(
 				'created_timestamp',
+				'estimated_per_second_count',
 				'id',
 				'modified_timestamp',
 				'node_id',
 				'node_node_id',
-				'node_process_type',
-				'per_second_count'
+				'node_process_type'
 			),
 			'node_process_cryptocurrency_blockchain_worker_settings' => array(
 				'count',
