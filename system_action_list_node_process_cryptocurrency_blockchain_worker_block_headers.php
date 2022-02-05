@@ -9,7 +9,16 @@
 	), $parameters['system_databases'], $response);
 
 	function _listNodeProcessCryptocurrencyBlockchainWorkerBlockHeaders($parameters, $response) {
-		$parameters['where']['node_id'] = $parameters['node']['id'];
+		if (empty($parameters['node_authentication_token']) === true) {
+			return $response;
+		}
+
+		if (empty($parameters['where']['node_process_type']) === true) {
+			$parameters['where']['node_id'] = $parameters['node']['id'];
+		} else {
+			$parameters['where']['node_node_id'] = $parameters['node']['id'];
+		}
+
 		$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
 			'data' => array(
 				'current_block_hash',
