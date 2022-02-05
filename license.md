@@ -6,12 +6,12 @@ Permission to download these files is granted.
 
 Permission to merge these files is granted.
 
-Permission to modify these files is strictly forbidden with exemption for the creator of these files.
+Permission to modify these files is granted.
 
 Permission to publish these files is granted.
 
-Permission to sell these files is strictly forbidden.
+Permission to sell these files is granted.
 
-Permission to sublicense these files is strictly forbidden.
+Permission to sublicense these files is granted.
 
 Permission to use these files is granted.
