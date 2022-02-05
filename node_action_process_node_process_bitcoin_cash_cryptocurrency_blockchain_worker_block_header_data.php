@@ -9,7 +9,7 @@
 		return bin2hex($binaryString);
 	}
 
-	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData($parameters, $response) {
+	function _processNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData($parameters, $response) {
 		// todo: add a _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData process with a (1000 * x) index for every 1000 worker block header processes on the same node_node_id
 		$systemParameters = array(
 			'action' => 'list_node_process_cryptocurrency_blockchain_worker_block_headers',
@@ -233,7 +233,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'process_node_process_bitcoin_cash_cryptocurrency_blockchain_block_data') === true) {
-		$response = _processNodeProcessBitcoinCashCryptocurrencyBlockchainBlockData($parameters, $response);
+	if (($parameters['action'] === 'process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data') === true) {
+		$response = _processNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData($parameters, $response);
 	}
 ?>
