@@ -62,7 +62,7 @@
 					$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey] = bin2hex($response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey]);
 				}
 
-				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_transaction'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['next_block_transaction'];
+				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_reward_transaction'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_transaction'];
 			}
 		}
 
