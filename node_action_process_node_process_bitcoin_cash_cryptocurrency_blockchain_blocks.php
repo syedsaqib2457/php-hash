@@ -32,7 +32,7 @@
 				}
 
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse = false;
-				exec('sudo bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf submitblock \'' . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block_reward_transaction'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions . '\' 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse);
+				exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf submitblock \'' . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block_reward_transaction'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions . '\' 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse, true);
 
