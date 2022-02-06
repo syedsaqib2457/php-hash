@@ -15,10 +15,9 @@
 	}
 
 	function _processNodeProcessResourceUsageLogs($parameters, $response) {
-		// todo: add cryptocurrency process types
 		$parameters['node_process_resource_usage_log_process_types'] = array(
+			'bitcoin_cash_cryptocurrency_blockchain',
 			'http_proxy',
-			'php',
 			'recursive_dns',
 			'socks_proxy'
 		);
@@ -50,7 +49,7 @@
 			} else {
 				foreach ($parameters['node_process_resource_usage_log_process_types'] as $nodeProcessResourceUsageLogProcessType) {
 					$parameters['data'][$nodeProcessResourceUsageLogProcessType]['memory_percentage'][$parameters['node_process_resource_usage_log_process_interval_index']] = 0;
-					$processProcessIdCommand = 'pgrep ' . $nodeProcessResourceUsageLogProcessType;
+					$processProcessIdCommand = 'pgrep -f ' . $nodeProcessResourceUsageLogProcessType;
 					$processProcessIds = false;
 					exec($processProcessIdCommand, $processProcessIds);
 
