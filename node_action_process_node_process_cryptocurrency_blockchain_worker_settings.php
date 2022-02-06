@@ -29,7 +29,7 @@
 
 			if (
 				(empty($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse['data']) === true) &&
-				(file_exists('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json') === false)
+				(file_exists('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings_data.json') === false)
 			) {
 				$response['message'] = 'Node process cryptocurrency blockchain worker settings processed successfully.';
 				$response['valid_status'] = '1';
@@ -62,7 +62,7 @@
 
 				if (
 					(($nodeProcessCryptocurrencyBlockchainWorkerSettings === false) === false) &&
-					((file_put_contents('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json', $nodeProcessCryptocurrencyBlockchainWorkerSettings) === false) === false)
+					((file_put_contents('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings_data.json', $nodeProcessCryptocurrencyBlockchainWorkerSettings) === false) === false)
 				) {
 					$crontabCommands[] = '# nodecompute_cryptocurrency_blockchain_worker_processes';
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderDelays = range(1, 56, 5);
@@ -85,7 +85,7 @@
 					}
 				}
 			} else {
-				unlink('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings.json');
+				unlink('/usr/local/nodecompute/node_process_cryptocurrency_blockchain_worker_settings_data.json');
 			}
 
 			$crontabCommands = implode("\n", $crontabCommands);
