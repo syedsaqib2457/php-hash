@@ -17,7 +17,6 @@
 					'action' => 'add_node_process_cryptocurrency_blockchain_block_processing_logs',
 					'data' => array(
 						'block' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[0],
-						'block_height' => '', // todo
 						'block_reward_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[1],
 						'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain'
 					),
