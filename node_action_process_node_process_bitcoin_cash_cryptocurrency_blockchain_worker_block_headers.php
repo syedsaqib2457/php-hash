@@ -9,8 +9,6 @@
 	$_0 = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_data_' . $_SERVER['argv'][1] . '.json');
 	$_0 = json_decode($_0, true);
 	// todo: add node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_benchmarking.php for estimating hashes per second performance with increment count
-	// todo: add process to send node_process_bitcoin_cash_cryptocurrency_worker_valid_block_header_data to cryptocurrency blockchain node
-	// todo: add process to add received node_process_bitcoin_cash_cryptocurrency_worker_valid_block_header_data block with cli
 
 	if ($_0 === false) {
 		exit;
