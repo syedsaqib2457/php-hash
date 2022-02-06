@@ -684,7 +684,6 @@
 				'block',
 				'block_hash',
 				'block_height',
-				'block_reward_node_process_cryptocurrency_blockchain_wallet_id',
 				'block_reward_transaction',
 				'created_timestamp',
 				'id',
