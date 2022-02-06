@@ -18,10 +18,10 @@
 		$_0[0][$_1] = hex2bin($_2);
 	}
 
-	$_0[3] = hex2bin($_0[3]);
+	$_0[4] = hex2bin($_0[4]);
 
-	foreach ($_0[4] as $_1 => $_2) {
-		$_0[4][$_1] = hex2bin($_2);
+	foreach ($_0[5] as $_1 => $_2) {
+		$_0[5][$_1] = hex2bin($_2);
 	}
 
 	while (true) {
@@ -30,8 +30,8 @@
 		$_1 = hex2bin($_1);
 
 		foreach ($_0[0] as $_2) {
-			foreach ($_0[4] as $_3) {
-				$_4 = hash('sha256', ($_2 . $_3 . $_0[3] . $_1), true);
+			foreach ($_0[5] as $_3) {
+				$_4 = hash('sha256', ($_2 . $_3 . $_0[4] . $_1), true);
 				$_4 = hash('sha256', $_4);
 
 				if (
@@ -44,11 +44,12 @@
 					$_4 = strrev($_4);
 					$_4 = bin2hex($_4);
 
-					if (($_4 < $_0[2]) === true) {
-						$_4 = bin2hex($_2 . $_3 . $_0[3] . $_1);
+					if (($_4 < $_0[3]) === true) {
+						$_4 = bin2hex($_2 . $_3 . $_0[4] . $_1);
 						$_4 = array(
 							$_4,
-							$_0[1]
+							$_0[1],
+							$_0[2]
 						);
 						$_4 = json_encode($_4);
 						file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_data.json', $_4);
