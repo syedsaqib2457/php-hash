@@ -19,8 +19,8 @@
 				return $response;
 			}
 
-			$encodedSystemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse = file_get_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_settings_response.json');
-			$systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse = json_decode($encodedSystemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse, true);
+			$systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse = file_get_contents('/usr/local/nodecompute/system_action_list_node_process_cryptocurrency_blockchain_worker_settings_response.json');
+			$systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse = json_decode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse, true);
 
 			if ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerSettingsResponse === false) {
 				$response['message'] = 'Error listing node process cryptocurrency blockchain worker settings, please try again.';
