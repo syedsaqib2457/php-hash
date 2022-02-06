@@ -17,8 +17,10 @@
 					'action' => 'add_node_process_cryptocurrency_blockchain_block_processing_log',
 					'data' => array(
 						'block' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[0],
-						'block_reward_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[1],
-						'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain'
+						'block_height' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[1],
+						'block_reward_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[2],
+						'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain',
+						'processed_status' => '0'
 					),
 					'node_authentication_token' => $parameters['node_authentication_token']
 				);
