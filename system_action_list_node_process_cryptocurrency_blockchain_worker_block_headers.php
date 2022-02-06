@@ -31,6 +31,7 @@
 				'next_block_target_hash',
 				'next_block_target_hash_bits',
 				'next_block_version',
+				'node_node_id',
 				'node_process_type',
 				'public_key_script'
 			),
@@ -82,6 +83,8 @@
 					$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey] = strrev($response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey]);
 					$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey] = bin2hex($response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['timestamps'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderTimestampKey]);
 				}
+
+				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['node_node_id'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_node_id'];
 			}
 		}
 
