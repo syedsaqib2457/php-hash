@@ -41,7 +41,16 @@
 
 		$parameters['data']['node_id'] = $parameters['node']['id'];
 		$parameters['data']['processed_status'] = '0';
-		// todo
+		unset($parameters['data']['created_timestamp']);
+		unset($parameters['data']['modified_timestamp']);
+		unset($parameters['data']['response_code']);
+		_save(array(
+			'data' => $parameters['data'],
+			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_block_processing_logs']
+		), $response);
+		$response['message'] = 'Node process cryptocurrency blockchain block processing log added successfully.';
+		$response['valid_status'] = '1';
+		return $response;
 	}
 
 	if (($parameters['action'] === 'add_node_process_cryptocurrency_blockchain_block_processing_log') === true) {
