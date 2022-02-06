@@ -45,7 +45,7 @@
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData);
 
 					if (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData === false) === false) {
-						file_put_contents('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_block_header_data_' . $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPartIndex . '.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData);
+						file_put_contents('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_block_headers_data_' . $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPartIndex . '.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData);
 					}
 				}
 			}
