@@ -7,6 +7,12 @@
 		while (true) {
 			$systemActionListNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters = array(
 				'action' => 'list_node_process_cryptocurrency_blockchain_block_processing_logs',
+				'data' => array(
+					'block',
+					'block_height',
+					'block_reward_transaction',
+					'id'
+				),
 				'node_authentication_token' => $parameters['node_authentication_token'],
 				'where' => array(
 					'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain',
