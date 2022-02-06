@@ -41,7 +41,8 @@
 						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_reward_transaction'],
 						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash'],
 						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_target_hash_bits'],
-						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_timestamps']
+						$nodeProcessCryptocurrencyBlockchainWorkerData['next_block_timestamps'],
+						$nodeProcessCryptocurrencyBlockchainWorkerData['node_node_id']
 					);
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData = json_encode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData);
 
