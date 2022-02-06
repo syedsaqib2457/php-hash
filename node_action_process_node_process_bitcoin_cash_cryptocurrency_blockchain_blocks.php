@@ -23,6 +23,11 @@
 				continue;
 			}
 
+			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters = array(
+				'action' => 'edit_node_process_cryptocurrency_blockchain_block_processing_logs',
+				'node_authentication_token' => $parameters['node_authentication_token']
+			);
+
 			foreach ($systemActionListNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse['data'] as $nodeProcessCryptocurrencyBlockchainBlockProcessingLog) {
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_' . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block_height'] . '_transactions.json');
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions, true);
@@ -31,21 +36,32 @@
 					continue;
 				}
 
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlock = $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'] = $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block_reward_transaction'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions;
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse = false;
-				exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf submitblock \'' . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block_reward_transaction'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions . '\' 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse);
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse = implode('', $nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse);
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse, true);
+				exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf submitblock \'' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlock . '\' 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse);
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse = implode(' ', $nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse);
 
 				if (empty($nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse) === true) {
-					// todo
+					$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response_code'] = 'success';
 				} else {
-					// todo
+					$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response_code'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse;
 				}
 
-				// todo: edit record in list_node_process_cryptocurrency_blockchain_block_processing_logs
+				$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['processed_status'] = '1';
+				$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters['data'] = $nodeProcessCryptocurrencyBlockchainBlockProcessingLog;
 			}
-			
-			$response['message'] = 'Node process Bitcoin Cash cryptocurrency blockchain block processed successfully.';
+
+			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters);
+			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_edit_node_process_bitcoin_cash_cryptocurrency_blockchain_block_processing_logs_response.json --no-dns-cache --post-data \'json=' . $systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse = file_get_contents('/usr/local/nodecompute/system_action_edit_node_process_bitcoin_cash_cryptocurrency_blockchain_block_processing_logs_response.json');
+			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse = json_decode($systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse, true);
+
+			if (empty($systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse['valid_status']) === true) {
+				$response['message'] = 'Error editing node process Bitcoin Cash cryptocurrency blockchain block processing logs, please try again.';
+				return $response;
+			}
+
+			$response['message'] = 'Node process Bitcoin Cash cryptocurrency blockchain blocks processed successfully.';
 			return $response;
 		}
 	}
