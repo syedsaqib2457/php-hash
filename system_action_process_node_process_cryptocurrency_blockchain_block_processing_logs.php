@@ -13,11 +13,21 @@
 		}
 
 		foreach ($parameters['data'] as $nodeProcessCryptocurrencyBlockchainBlockProcessingLogKey => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog) {
-			$parameters['data'][$nodeProcessCryptocurrencyBlockchainBlockProcessingLogKey] = array(
-				'block' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'],
-				'id' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['id'],
-				'processed_status' => '1'
-			);
+			$existingNodeProcessCryptocurrencyBlockchainBlockProcessingLogCount = _count(array(
+				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_block_processing_logs'],
+				'where' => array(
+					'id' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['id'],
+					'processed_status' => '0'
+				)
+			), $response);
+
+			if (($existingNodeProcessCryptocurrencyBlockchainBlockProcessingLogCount === 1) === true) {
+				$parameters['data'][$nodeProcessCryptocurrencyBlockchainBlockProcessingLogKey] = array(
+					'block' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'],
+					'id' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['id'],
+					'processed_status' => '1'
+				);
+			}
 		}
 
 		_save(array(
