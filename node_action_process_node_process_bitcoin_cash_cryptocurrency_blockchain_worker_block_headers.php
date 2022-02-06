@@ -49,7 +49,8 @@
 						$_4 = array(
 							$_4,
 							$_0[1],
-							$_0[2]
+							$_0[2],
+							$_0[6]
 						);
 						$_4 = json_encode($_4);
 						file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_data.json', $_4);
