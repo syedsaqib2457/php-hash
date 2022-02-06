@@ -19,6 +19,7 @@
 						'block' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[0],
 						'block_height' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[1],
 						'block_reward_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[2],
+						'node_node_id' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockData[3],
 						'node_process_type' => 'bitcoin_cash_cryptocurrency_blockchain',
 						'processed_status' => '0'
 					),
