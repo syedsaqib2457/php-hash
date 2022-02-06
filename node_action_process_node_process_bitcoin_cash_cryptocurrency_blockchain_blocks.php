@@ -29,7 +29,7 @@
 			);
 
 			foreach ($systemActionListNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse['data'] as $nodeProcessCryptocurrencyBlockchainBlockProcessingLog) {
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_' . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block_height'] . '_transactions.json');
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = file_get_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_' . $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block_height'] . '_transactions_data.json');
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = json_decode($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions, true);
 
 				if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions) === true) {
