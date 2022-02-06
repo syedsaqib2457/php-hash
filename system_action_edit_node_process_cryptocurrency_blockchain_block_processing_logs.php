@@ -7,15 +7,16 @@
 		'node_process_cryptocurrency_blockchain_block_processing_logs'
 	), $parameters['system_databases'], $response);
 
-	function _editNodeProcessCryptocurrencyBlockchainBlockProcessingLogs($parameters, $response) {
+	function _processNodeProcessCryptocurrencyBlockchainBlockProcessingLogs($parameters, $response) {
 		if (empty($parameters['node_authentication_token']) === true) {
 			return $response;
 		}
 
 		foreach ($parameters['data'] as $nodeProcessCryptocurrencyBlockchainBlockProcessingLogKey => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog) {
 			$parameters['data'][$nodeProcessCryptocurrencyBlockchainBlockProcessingLogKey] = array(
+				'block' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'],
+				'id' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['id'],
 				'processed_status' => '1'
-				// todo
 			);
 		}
 
@@ -23,12 +24,12 @@
 			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_block_processing_logs']
 		), $response);
-		$response['message'] = 'Node process cryptocurrency blockchain block processing logs edited successfully.';
+		$response['message'] = 'Node process cryptocurrency blockchain block processing logs processed successfully.';
 		$response['valid_status'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'edit_node_process_cryptocurrency_blockchain_block_processing_logs') === true) {
-		$response = _editNodeProcessCryptocurrencyBlockchainBlockProcessingLogs($parameters, $response);
+	if (($parameters['action'] === 'process_node_process_cryptocurrency_blockchain_block_processing_logs') === true) {
+		$response = _processNodeProcessCryptocurrencyBlockchainBlockProcessingLogs($parameters, $response);
 	}
 ?>
