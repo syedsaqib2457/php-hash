@@ -29,8 +29,8 @@
 				continue;
 			}
 
-			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters = array(
-				'action' => 'edit_node_process_cryptocurrency_blockchain_block_processing_logs',
+			$systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters = array(
+				'action' => 'process_node_process_cryptocurrency_blockchain_block_processing_logs',
 				'node_authentication_token' => $parameters['node_authentication_token']
 			);
 
@@ -53,17 +53,16 @@
 					$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response_code'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse;
 				}
 
-				$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['processed_status'] = '1';
-				$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters['data'][] = $nodeProcessCryptocurrencyBlockchainBlockProcessingLog;
+				$systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters['data'][] = $nodeProcessCryptocurrencyBlockchainBlockProcessingLog;
 			}
 
-			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters);
-			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_edit_node_process_bitcoin_cash_cryptocurrency_blockchain_block_processing_logs_response.json --no-dns-cache --post-data \'json=' . $systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
-			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse = file_get_contents('/usr/local/nodecompute/system_action_edit_node_process_bitcoin_cash_cryptocurrency_blockchain_block_processing_logs_response.json');
-			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse = json_decode($systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse, true);
+			$systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters = json_encode($systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters);
+			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_block_processing_logs_response.json --no-dns-cache --post-data \'json=' . $systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+			$systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_block_processing_logs_response.json');
+			$systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse = json_decode($systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse, true);
 
-			if (empty($systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse['valid_status']) === true) {
-				$response['message'] = 'Error editing node process Bitcoin Cash cryptocurrency blockchain block processing logs, please try again.';
+			if (empty($systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsResponse['valid_status']) === true) {
+				$response['message'] = 'Error processing node process Bitcoin Cash cryptocurrency blockchain block processing logs, please try again.';
 				return $response;
 			}
 
