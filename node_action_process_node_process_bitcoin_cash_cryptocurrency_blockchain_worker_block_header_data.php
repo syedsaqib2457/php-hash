@@ -37,11 +37,6 @@
 				return $response;
 			}
 
-			if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_next_block_height.dat', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['height']) === false) {
-				$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain block template next block height, please try again.';
-				return $response;
-			}
-
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize = 0;
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = 1;
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = '';
