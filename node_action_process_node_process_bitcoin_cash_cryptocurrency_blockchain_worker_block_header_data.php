@@ -201,7 +201,7 @@
 
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData);
 
-			if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data.json', $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData) === true) {
+			if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_data.json', $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData) === true) {
 				$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain worker block headers, please try again.';
 				return $response;
 			}
@@ -211,7 +211,7 @@
 				'node_authentication_token' => $parameters['node_authentication_token'],
 			);
 			$systemActionEditNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters);
-			exec('sudo curl -s --form "data=@/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data.json" --form-string \'json=' . $systemActionEditNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkersResponse);
+			exec('sudo curl -s --form "data=@/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_data.json" --form-string \'json=' . $systemActionEditNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkersResponse);
 			$systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse = current($systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse);
 			$systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse = json_decode($systemActionEditNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse, true);
 
@@ -226,7 +226,7 @@
 			);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions);
 
-			if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '_transactions.json', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions) === false) {
+			if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '_transactions_data.json', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions) === false) {
 				$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain block transactions, please try again.';
 				return $response;
 			}
