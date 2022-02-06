@@ -226,6 +226,7 @@
 				return $response;
 			}
 
+			// todo: unset previous node_process_bitcoin_cash_cryptocurrency_blockchain_block_X_transactions_data.json files
 			sleep(3);
 		}
 	}
