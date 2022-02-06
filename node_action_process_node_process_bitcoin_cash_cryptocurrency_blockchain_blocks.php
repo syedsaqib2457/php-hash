@@ -48,7 +48,7 @@
 				}
 
 				$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['processed_status'] = '1';
-				$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters['data'] = $nodeProcessCryptocurrencyBlockchainBlockProcessingLog;
+				$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters['data'][] = $nodeProcessCryptocurrencyBlockchainBlockProcessingLog;
 			}
 
 			$systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters = json_encode($systemActionEditNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters);
