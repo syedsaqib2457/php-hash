@@ -227,7 +227,7 @@
 				return $response;
 			}
 
-			// todo: unset previous node_process_bitcoin_cash_cryptocurrency_blockchain_block_X_transactions_data.json files
+			unlink('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_' . ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] - 3) . '_transactions_data.json');
 			sleep(3);
 		}
 	}
