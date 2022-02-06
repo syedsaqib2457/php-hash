@@ -226,7 +226,7 @@
 			);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = json_encode($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions);
 
-			if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_transactions.json', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions) === false) {
+			if (file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_block_' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '_transactions.json', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions) === false) {
 				$response['message'] = 'Error adding node process Bitcoin Cash cryptocurrency blockchain block transactions, please try again.';
 				return $response;
 			}
