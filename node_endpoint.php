@@ -206,9 +206,9 @@
 	unlink('/usr/local/ghostcompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh');
 
 	if (in_array($nodeAction, array(
-		'process_node_process_bitcoin_cash_cryptocurrency_valid_block_data',
+		'process_node_process_bitcoin_cash_cryptocurrency_blockchain_blocks',
+		'process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data',
 		'process_node_process_cryptocurrency_blockchain_worker_settings',
-		'process_node_process_cryptocurrency_blockchain_worker_valid_block_header_data',
 		'process_node_process_cryptocurrency_blockchain_workers',
 		'process_node_process_resource_usage_logs',
 		'process_node_processes',
