@@ -33,6 +33,8 @@
 				return $response;
 			}
 
+			$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData = array();
+
 			foreach ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType => $nodeProcessCryptocurrencyBlockchainWorkerData) {
 				foreach ($nodeProcessCryptocurrencyBlockchainWorkerData['next_block_header_parts'] as $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPartIndex => $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPart) {
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData = array(
@@ -50,6 +52,22 @@
 						file_put_contents('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_block_headers_data_' . $nodeProcessCryptocurrencyBlockchainWorkerDataNextBlockHeaderPartIndex . '.json', $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderData);
 					}
 				}
+
+				if (file_exists('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_block_headers_hash_speed_logs_data.json') === true) {
+					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData = file_get_contents('/usr/local/nodecompute/node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType . '_cryptocurrency_blockchain_worker_block_headers_hash_speed_logs_data.json');
+					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData = json_decode($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData, true);
+
+					if (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData === false) === false) {
+						$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData[] = array(
+							'estimated_per_second_count' => (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[1] * $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[2]) / $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[0]),
+							'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType
+						);
+					}
+				}
+			}
+
+			if (empty($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData) === false) {
+				// todo
 			}
 		}
 
