@@ -453,7 +453,7 @@
 		$nodeActionProcessNetworkInterfaceIpAddressesCommands = $nodeIpAddressesToDelete = array();
 
 		foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
-			$existingNodeIpAddresses = array();
+			$existingNodeIpAddresses = false;
 			exec('sudo ' . $parameters['binary_files']['ip'] . ' addr show dev ' . $parameters['interface_name'] . ' | grep "' . $ipAddressVersion['interface_type'] . ' " | grep "' . $ipAddressVersion['network_mask'] . ' " | awk \'{print substr($2, 0, length($2) - ' . ($ipAddressVersionNumber / 2) . ')}\'', $existingNodeIpAddresses);
 
 			if (empty($parameters['data'][$parameters['node_process_data_key']]['node_ip_addresses'][$ipAddressVersionNumber]) === false) {
