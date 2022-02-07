@@ -42,7 +42,24 @@
 			}
 
 			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
-				$nodeProcessCryptocurrencyBlockchainResourceUsageLog = _list(array(
+				$nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageLog = _list(array(
+					'data' => array(
+						'cpu_percentage',
+						'gpu_percentage',
+						'memory_percentage'
+					),
+					'in' => $parameters['system_databases']['node_process_resource_usage_logs'],
+					'limit' => 1,
+					'sort' => array(
+						'modified_timestamp' => 'descending'
+					),
+					'where' => array(
+						'node_id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_id'],
+						'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
+					)
+				), $response);
+				$nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageTypeLogs = current($nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageLog);
+				$nodeProcessCryptocurrencyBlockchainNodeResourceUsageLog = _list(array(
 					'data' => array(
 						'cpu_percentage',
 						'gpu_percentage',
@@ -58,15 +75,15 @@
 						'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
 					)
 				), $response);
-				$nodeProcessCryptocurrencyBlockchainResourceUsageTypeLogs = current($nodeProcessCryptocurrencyBlockchainResourceUsageLog);
-				$nodeProcessCryptocurrencyBlockchainWorkerResourceUsageMaximums = array(
+				$nodeProcessCryptocurrencyBlockchainNodeResourceUsageLog = current($nodeProcessCryptocurrencyBlockchainNodeResourceUsageLog);
+				$nodeProcessCryptocurrencyBlockchainWorkerSettingResourceUsageMaximums = array(
 					'cpu_percentage' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['cpu_usage_maximum_percentage'],
 					'gpu_percentage' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['gpu_usage_maximum_percentage'],
 					'memory_percentage' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['memory_usage_maximum_percentage']
 				);
 
-				foreach ($nodeProcessCryptocurrencyBlockchainResourceUsageTypeLogs as $nodeProcessCryptocurrencyBlockchainResourceUsageType => $nodeProcessCryptocurrencyBlockchainResourceUsageTypeLog) {
-					if (($nodeProcessCryptocurrencyBlockchainResourceUsageTypeLog > $nodeProcessCryptocurrencyBlockchainWorkerResourceUsageMaximums[$nodeProcessCryptocurrencyBlockchainResourceUsageType]) === true) {
+				foreach ($nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageTypeLogs as $nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageType => $nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageTypeLog) {
+					if (($nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageTypeLog > $nodeProcessCryptocurrencyBlockchainWorkerSettingResourceUsageMaximums[$nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageType]) === true) {
 						$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount = ceil($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersCount / $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']);
 						$nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] = ($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] - $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount);
 
