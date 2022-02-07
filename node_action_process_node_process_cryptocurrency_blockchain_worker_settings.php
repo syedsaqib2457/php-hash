@@ -83,7 +83,7 @@
 							}
 						}
 
-						$crontabCommands[] = '*/10 * * * * root sudo ' . $parameters['binary_files']['timeout'] . ' 10 ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType . '_worker_block_headers_benchmarking nodecompute_cryptocurrency_blockchain_worker_processes';
+						$crontabCommands[] = '*/10 * * * * root sudo ' . $parameters['binary_files']['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_' . $nodeProcessCryptocurrencyBlockchainWorkerSettingNodeProcessType . '_worker_block_headers_benchmarking nodecompute_cryptocurrency_blockchain_worker_processes';
 					}
 				}
 			} else {
