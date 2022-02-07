@@ -23,8 +23,7 @@
 					'id',
 					'node_id',
 					'memory_usage_maximum_percentage',
-					'node_process_type',
-					'unprocessed_count'
+					'node_process_type'
 				),
 				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
 				'sort' => array(
