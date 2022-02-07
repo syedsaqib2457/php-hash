@@ -78,6 +78,21 @@
 				), $response);
 				$nodeProcessCryptocurrencyBlockchainNodeResourceUsageLog = current($nodeProcessCryptocurrencyBlockchainNodeResourceUsageLog);
 				$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount = ceil($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersCount / $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']);
+				$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog = _list(array(
+					'data' => array(
+						'estimated_per_second_count'
+					),
+					'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_hash_speed_logs'],
+					'limit' => 1,
+					'sort' => array(
+						'modified_timestamp' => 'descending'
+					),
+					'where' => array(
+						'node_id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_id'],
+						'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
+					)
+				), $response);
+				$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog = current($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog);
 				$nodeProcessCryptocurrencyBlockchainWorkerSettingResourceUsageMaximums = array(
 					'cpu_percentage' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['cpu_usage_maximum_percentage'],
 					'gpu_percentage' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['gpu_usage_maximum_percentage'],
@@ -151,15 +166,21 @@
 					 	'data' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders,
 					 	'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers']
 					), $response);
-					_edit(array(
-						'data' => array(
-							'count' => ($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] + $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount)
-						),
-						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
-						'where' => array(
-							'id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['id']
-						)
-					), $response);
+
+					if (
+						(empty($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog) === true) ||
+						(($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog['estimated_per_second_count'] < ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount * 50000000)) === true)
+					) {
+						_edit(array(
+							'data' => array(
+								'count' => ($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] + $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount)
+							),
+							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
+							'where' => array(
+								'id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['id']
+							)
+						), $response);
+					}
 				}
 			}
 		}
