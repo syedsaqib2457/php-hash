@@ -4,7 +4,8 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
-		'node_process_cryptocurrency_blockchain_worker_settings'
+		'node_process_cryptocurrency_blockchain_worker_settings',
+		'node_process_resource_usage_logs'
 	), $parameters['system_databases'], $response);
 
 	function _processNodeProcessCryptocurrencyBlockchainWorkerSettings($parameters, $response) {
@@ -12,7 +13,6 @@
 			return $response;
 		}
 
-		// crontab every 10 mins + timeout 590s
 		while (true) {
 			$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
 				'data' => array(
@@ -40,6 +40,24 @@
 			}
 
 			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
+				$nodeProcessCryptocurrencyBlockchainResourceUsageLog = _list(array(
+					'data' => array(
+						'cpu_percentage',
+						'gpu_percentage',
+						'id',
+						'memory_percentage'
+					),
+					'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
+					'limit' => 1,
+					'sort' => array(
+						'modified_timestamp' => 'descending'
+					),
+					'where' => array(
+						'node_id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_id'],
+						'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
+					)
+				), $response);
+				$nodeProcessCryptocurrencyBlockchainResourceUsageLog = current($nodeProcessCryptocurrencyBlockchainResourceUsageLog);
 				// todo
 			}
 		}
