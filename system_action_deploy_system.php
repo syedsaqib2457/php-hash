@@ -443,8 +443,9 @@
 		}
 
 		$crontabCommands += array(
-			'# nodecompute_default',
+			'# nodecompute_processes',
 			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_system_action.php process_node_request_logs',
+			'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_node_process_cryptocurrency_blockchain_worker_settings.php nodecompute_processes',
 			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab'
 		);
 		$crontabCommands = implode("\n", $crontabCommands);
