@@ -57,52 +57,56 @@
 						'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
 					)
 				), $response);
-				$nodeProcessCryptocurrencyBlockchainResourceUsageLog = current($nodeProcessCryptocurrencyBlockchainResourceUsageLog);
+				$nodeProcessCryptocurrencyBlockchainResourceUsageTypeLogs = current($nodeProcessCryptocurrencyBlockchainResourceUsageLog);
+				$nodeProcessCryptocurrencyBlockchainWorkerResourceUsageMaximums = array(
+					'cpu_percentage' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['cpu_usage_maximum_percentage'],
+					'gpu_percentage' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['gpu_usage_maximum_percentage'],
+					'memory_percentage' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['memory_usage_maximum_percentage']
+				);
 
-				if (
-					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['cpu_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['cpu_usage_maximum_percentage']) === true) ||
-					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['gpu_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['gpu_usage_maximum_percentage']) === true) ||
-					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['memory_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['memory_usage_maximum_percentage']) === true)
-				) {
-					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount = ceil($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersCount / $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']);
-					$nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] = ($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] - $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount);
+				foreach ($nodeProcessCryptocurrencyBlockchainResourceUsageTypeLogs as $nodeProcessCryptocurrencyBlockchainResourceUsageType => $nodeProcessCryptocurrencyBlockchainResourceUsageTypeLog) {
+					if (($nodeProcessCryptocurrencyBlockchainResourceUsageTypeLog > $nodeProcessCryptocurrencyBlockchainWorkerResourceUsageMaximums[$nodeProcessCryptocurrencyBlockchainResourceUsageType]) === true) {
+						$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount = ceil($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersCount / $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']);
+						$nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] = ($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] - $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount);
 
-					if (($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] === 0) === true) {
-						$nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] = 1;
-						$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount = max(1, ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount - 1));
+						if (($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] === 0) === true) {
+							$nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] = 1;
+							$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount = max(1, ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount - 1));
+						}
+
+						_edit(array(
+							'data' => array(
+								'count' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']
+							),
+							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
+							'where' => array(
+								'id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['id']
+							)
+						), $response);
+						$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
+							'data' => array(
+								'id'
+							),
+							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
+							'limit' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount,
+							'where' => array(
+								'node_id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_id'],
+								'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
+							)
+						), $response);
+
+						foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader) {
+							$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderIds[] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['id'];
+						}
+
+						_delete(array(
+							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
+							'where' => array(
+								'id' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderIds
+							)
+						), $response);
+						break;
 					}
-
-					_edit(array(
-						'data' => array(
-							'count' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']
-						),
-						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
-						'where' => array(
-							'id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['id']
-						)
-					), $response);
-					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
-						'data' => array(
-							'id'
-						),
-						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
-						'limit' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount,
-						'where' => array(
-							'node_id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_id'],
-							'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
-						)
-					), $response);
-
-					foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader) {
-						$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderIds[] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['id'];
-					}
-
-					_delete(array(
-						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
-						'where' => array(
-							'id' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderIds
-						)
-					), $response);
 				} else {
 					// todo
 				}
