@@ -450,7 +450,13 @@
 		}
 
 		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-		$nodeActionProcessNetworkInterfaceIpAddressesCommands = $nodeIpAddressesToDelete = array();
+		$nodeActionProcessNetworkInterfaceIpAddressesCommands = array(
+			'<?php',
+			'if (empty($_SERVER[\'argv\'][1]) === true) {',
+			'exit;',
+			'}'
+		);
+		$nodeIpAddressesToDelete = array();
 
 		foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
 			$existingNodeIpAddresses = false;
@@ -471,7 +477,6 @@
 			}
 		}
 
-		array_unshift($nodeActionProcessNetworkInterfaceIpAddressesCommands, '<?php');
 		$nodeActionProcessNetworkInterfaceIpAddressesCommands = implode("\n", $nodeActionProcessNetworkInterfaceIpAddressesCommands);
 
 		if (file_put_contents('/usr/local/nodecompute/node_action_process_network_interface_ip_addresses.php', $nodeActionProcessNetworkInterfaceIpAddressesCommands) === false) {
