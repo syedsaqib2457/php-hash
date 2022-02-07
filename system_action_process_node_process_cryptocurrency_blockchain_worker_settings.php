@@ -4,6 +4,7 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
+		'node_process_cryptocurrency_blockchain_worker_block_headers',
 		'node_process_cryptocurrency_blockchain_worker_settings',
 		'node_process_resource_usage_logs'
 	), $parameters['system_databases'], $response);
@@ -44,7 +45,6 @@
 					'data' => array(
 						'cpu_percentage',
 						'gpu_percentage',
-						'id',
 						'memory_percentage'
 					),
 					'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
@@ -58,6 +58,15 @@
 					)
 				), $response);
 				$nodeProcessCryptocurrencyBlockchainResourceUsageLog = current($nodeProcessCryptocurrencyBlockchainResourceUsageLog);
+
+				if (
+					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['cpu_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['cpu_usage_maximum_percentage']) === true) ||
+					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['gpu_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['gpu_usage_maximum_percentage']) === true) ||
+					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['memory_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['memory_usage_maximum_percentage']) === true)
+				) {
+					// todo
+				}
+				
 				// todo
 			}
 		}
