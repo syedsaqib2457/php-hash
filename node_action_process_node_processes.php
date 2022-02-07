@@ -450,7 +450,7 @@
 		}
 
 		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-		$nodeActionAddNetworkInterfaceIpAddressesCommands = $nodeIpAddressesToDelete = array();
+		$nodeActionProcessNetworkInterfaceIpAddressesCommands = $nodeIpAddressesToDelete = array();
 
 		foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
 			$existingNodeIpAddresses = array();
@@ -458,7 +458,7 @@
 
 			if (empty($parameters['data'][$parameters['node_process_data_key']]['node_ip_addresses'][$ipAddressVersionNumber]) === false) {
 				foreach ($parameters['data'][$parameters['node_process_data_key']]['node_ip_addresses'][$ipAddressVersionNumber] as $nodeIpAddress) {
-					$nodeActionAddNetworkInterfaceIpAddressesCommands[] = 'shell_exec(\'' . 'sudo ' . $parameters['binary_files']['ip'] . ' -' . $ipAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $ipAddressVersion['network_mask'] . ' dev ' . $parameters['interface_name'] . '\');';
+					$nodeActionProcessNetworkInterfaceIpAddressesCommands[] = 'shell_exec(\'' . 'sudo ' . $parameters['binary_files']['ip'] . ' -' . $ipAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $ipAddressVersion['network_mask'] . ' dev ' . $parameters['interface_name'] . '\');';
 					shell_exec('sudo ' . $parameters['binary_files']['ip'] . ' -' . $ipAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $ipAddressVersion['network_mask'] . ' dev ' . $parameters['interface_name']);
 				}
 			}
@@ -471,11 +471,11 @@
 			}
 		}
 
-		array_unshift($nodeActionAddNetworkInterfaceIpAddressesCommands, '<?php');
-		$nodeActionAddNetworkInterfaceIpAddressesCommands = implode("\n", $nodeActionAddNetworkInterfaceIpAddressesCommands);
+		array_unshift($nodeActionProcessNetworkInterfaceIpAddressesCommands, '<?php');
+		$nodeActionProcessNetworkInterfaceIpAddressesCommands = implode("\n", $nodeActionProcessNetworkInterfaceIpAddressesCommands);
 
-		if (file_put_contents('/usr/local/nodecompute/node_action_add_network_interface_ip_addresses.php', $nodeActionAddNetworkInterfaceIpAddressesCommands) === false) {
-			$response['message'] = 'Error adding network interface IP addresses, please try again.';
+		if (file_put_contents('/usr/local/nodecompute/node_action_process_network_interface_ip_addresses.php', $nodeActionProcessNetworkInterfaceIpAddressesCommands) === false) {
+			$response['message'] = 'Error processing network interface IP addresses, please try again.';
 			return $response;
 		}
 
