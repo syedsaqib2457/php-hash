@@ -46,7 +46,14 @@
 			}
 		}
 
-		if (($_5 + 9) < time()) {
+		if ((($_5 + 10) < time()) === true) {
+			$_10 = array(
+				(time() - $_5),
+				$_2,
+				$_4
+			);
+			$_10 = json_encode($_10);
+			file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_benchmarking_data.json', $_10);
 			exit;
 		}
 
