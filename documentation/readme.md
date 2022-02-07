@@ -32,7 +32,3 @@ Self-hosting instructions are in development.
 ### API Documentation
 
 API documentation is in development.
-
-### PHP Framework Documentation
-
-PHP framework documentation is in development.
