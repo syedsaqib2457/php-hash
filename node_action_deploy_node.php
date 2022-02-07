@@ -307,7 +307,7 @@
 
 	$nodeActionProcessNetworkInterfaceIpAddressesCommands = array(
 		'<?php',
-		'if (empty($_SERVER[\'argv\'][1]) === true) {',
+		'if (empty($parameters) === true) {',
 		'exit;',
 		'}'
 	);
@@ -315,6 +315,7 @@
 	foreach ($systemActionProcessNodeResponse['data']['node_ip_address_versions'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
 		foreach ($systemActionProcessNodeResponse['data']['node_ip_addresses'][$nodeIpAddressVersionNetworkMask] as $nodeIpAddress) {
 			$nodeActionProcessNetworkInterfaceIpAddressesCommands[] = 'shell_exec(\'sudo ' . $binaryFiles['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $networkInterfaceName . '\');';
+			shell_exec('sudo ' . $binaryFiles['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $networkInterfaceName);
 		}
 	}
 
@@ -325,7 +326,6 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_action_process_network_interface_ip_addresses.php nodecompute_processes');
 	$recursiveDnsNodeProcessDefaultServiceName = 'named';
 
 	if (is_dir('/etc/default/bind9/') === true) {
