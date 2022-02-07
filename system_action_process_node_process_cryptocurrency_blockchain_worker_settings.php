@@ -4,7 +4,6 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
-		'node_process_cryptocurrency_blockchain_worker_block_headers',
 		'node_process_cryptocurrency_blockchain_worker_settings',
 		'node_process_resource_usage_logs'
 	), $parameters['system_databases'], $response);
@@ -23,7 +22,8 @@
 					'id',
 					'node_id',
 					'memory_usage_maximum_percentage',
-					'node_process_type'
+					'node_process_type',
+					'unprocessed_count'
 				),
 				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
 				'sort' => array(
@@ -40,14 +40,14 @@
 				return $response;
 			}
 
-			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingsKey => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
+			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
 				$nodeProcessCryptocurrencyBlockchainResourceUsageLog = _list(array(
 					'data' => array(
 						'cpu_percentage',
 						'gpu_percentage',
 						'memory_percentage'
 					),
-					'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
+					'in' => $parameters['system_databases']['node_process_resource_usage_logs'],
 					'limit' => 1,
 					'sort' => array(
 						'modified_timestamp' => 'descending'
@@ -58,52 +58,21 @@
 					)
 				), $response);
 				$nodeProcessCryptocurrencyBlockchainResourceUsageLog = current($nodeProcessCryptocurrencyBlockchainResourceUsageLog);
-				$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersCount = _count(array(
-					'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
-					'where' => array(
-						'node_id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_id'],
-						'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
-					)
-				), $response);
 
 				if (
 					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['cpu_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['cpu_usage_maximum_percentage']) === true) ||
 					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['gpu_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['gpu_usage_maximum_percentage']) === true) ||
 					(($nodeProcessCryptocurrencyBlockchainResourceUsageLog['memory_percentage'] > $nodeProcessCryptocurrencyBlockchainWorkerSetting['memory_usage_maximum_percentage']) === true)
 				) {
-					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderIds = array();
-					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount = ceil($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersCount / $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']);
-					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
-						'data' => array(
-							'id'
-						),
-						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
-						'limit' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount,
-						'where' => array(
-							'node_id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_id'],
-							'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
-						)
-					), $response);
-
-					foreach ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders as $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader) {
-						$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderIds[] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['id'];
-					}
-
-					_delete(array(
-						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
-						'where' => array(
-							'id' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaderIds
-						)
-					), $response);
-					$nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] -= $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount;
+					$nodeProcessCryptocurrencyBlockchainWorkerSetting['unprocessed_count'] = ($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] - 1);
 				} else {
 					// todo
 				}
 
-				if (($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] === $nodeProcessCryptocurrencyBlockchainWorkerSettings[$nodeProcessCryptocurrencyBlockchainWorkerSettingsKey]['count']) === false) {
+				if (isset($nodeProcessCryptocurrencyBlockchainWorkerSetting['unprocessed_count']) === true) {
 					_edit(array(
 						'data' => array(
-							'count' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']
+							'unprocessed_count' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']
 						),
 						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
 						'where' => array(
