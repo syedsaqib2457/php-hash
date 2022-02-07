@@ -132,11 +132,24 @@
 				}
 
 				if (empty($nodeProcessCryptocurrencyBlockchainWorkerSetting['id']) === false) {
-					// todo
-					// _save(array(
-					// 	'data' => array(),
-					// 	'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers']
-					// ), $response);
+					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
+						'data' => array(
+							'node_id',
+							'node_node_id',
+							'node_process_type',
+							'public_key_script'
+						),
+						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers'],
+						'limit' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount,
+						'where' => array(
+							'node_id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_id'],
+							'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type']
+						)
+					), $response);
+					_save(array(
+					 	'data' => $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders,
+					 	'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_block_headers']
+					), $response);
 					_edit(array(
 						'data' => array(
 							'count' => ($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] + $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount)
