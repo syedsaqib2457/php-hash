@@ -40,7 +40,7 @@
 				return $response;
 			}
 
-			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
+			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSettingsKey => $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
 				$nodeProcessCryptocurrencyBlockchainResourceUsageLog = _list(array(
 					'data' => array(
 						'cpu_percentage',
@@ -84,6 +84,18 @@
 						)
 					), $response);
 					$nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] -= $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount;
+				}
+
+				if (($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] === $nodeProcessCryptocurrencyBlockchainWorkerSettings[$nodeProcessCryptocurrencyBlockchainWorkerSettingsKey]['count']) === false) {
+					_edit(array(
+						'data' => array(
+							'count' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']
+						),
+						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
+						'where' => array(
+							'id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['id']
+						)
+					), $response);
 				}
 				
 				// todo
