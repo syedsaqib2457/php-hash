@@ -171,7 +171,7 @@
 
 					if (
 						(empty($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog) === true) ||
-						(($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog['estimated_per_second_count'] < (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount * 50000000) * ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders[0]['next_block_maximum_timestamp'] - $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders[0]['next_block_minimum_timestamp']))) === true)
+						(($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog['estimated_per_second_count'] < (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount * 10000000) * ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders[0]['next_block_maximum_timestamp'] - $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders[0]['next_block_minimum_timestamp']))) === true)
 					) {
 						_edit(array(
 							'data' => array(
