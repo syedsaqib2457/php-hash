@@ -83,7 +83,10 @@
 				);
 
 				foreach ($nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageTypeLogs as $nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageType => $nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageTypeLog) {
-					if (($nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageTypeLog > $nodeProcessCryptocurrencyBlockchainWorkerSettingResourceUsageMaximums[$nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageType]) === true) {
+					if (
+						(($nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageTypeLog > $nodeProcessCryptocurrencyBlockchainWorkerSettingResourceUsageMaximums[$nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageType]) === true) ||
+						(($nodeProcessCryptocurrencyBlockchainNodeResourceUsageLog[$nodeProcessCryptocurrencyBlockchainNodeProcessResourceUsageType] > 90) === true)
+					) {
 						$nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount = ceil($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersCount / $nodeProcessCryptocurrencyBlockchainWorkerSetting['count']);
 						$nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] = ($nodeProcessCryptocurrencyBlockchainWorkerSetting['count'] - $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount);
 
