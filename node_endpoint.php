@@ -49,18 +49,6 @@
 		_output($response);
 	}
 
-	if (
-		(empty($nodeData['authentication_token']) === true) ||
-		(is_string($nodeData['authentication_token']) === false) ||
-		(empty($nodeData['system_endpoint_destination_address']) === true) ||
-		(is_string($nodeData['system_endpoint_destination_address']) === false) ||
-		(isset($nodeData['system_version_number']) === false) ||
-		(is_numeric($nodeData['system_version_number']) === false)
-	) {
-		$response['message'] = 'Node must be redeployed because node data is invalid, please try again.';
-		_output($response);
-	}
-
 	$parameters = array(
 		'action' => $_SERVER['argv'][1],
 		'binary_files' => array(),
