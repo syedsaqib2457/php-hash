@@ -8,10 +8,27 @@
 	), $parameters['system_databases'], $response);
 
 	function _addNodeUser($parameters, $response) {
-		$parameters['data']['authentication_strict_only_allowed_status'] = strval(intval(empty($parameters['data']['authentication_strict_only_allowed_status']) === false));
-		$parameters['data']['id'] = _createUniqueId();
-		$parameters['data']['node_request_destinations_only_allowed_status'] = strval(intval(empty($parameters['data']['node_request_destinations_only_allowed_status']) === false));
-		$parameters['data']['node_request_logs_allowed_status'] = strval(intval(empty($parameters['data']['node_request_logs_allowed_status']) === false));
+		if (isset($parameters['data']['authentication_strict_only_allowed_status']) === false) {
+			$response['message'] = 'Node user must have an authentication strict only allowed status, please try again.';
+			return $response;
+		}
+
+		if (isset($parameters['data']['node_request_destinations_only_allowed_status']) === false) {
+			$response['message'] = 'Node user must have a node request destinations only allowed status, please try again.';
+			return $response;
+		}
+
+		if (isset($parameters['data']['node_request_logs_allowed_status']) === false) {
+			$response['message'] = 'Node user must have a node request logs allowed status, please try again.';
+			return $response;
+		}
+
+		$parameters['data'] = array(
+			'authentication_strict_only_allowed_status' => intval($parameters['data']['authentication_strict_only_allowed_status']),
+			'id' => _createUniqueId(),
+			'node_request_destinations_only_allowed_status' => intval($parameters['data']['node_request_destinations_only_allowed_status']),
+			'node_request_logs_allowed_status' => intval($parameters['data']['node_request_logs_allowed_status'])
+		);
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_users']
