@@ -67,6 +67,18 @@
 			}
 
 			if (empty($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData) === false) {
+				$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters = array(
+					'action' => 'add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs',
+					'data' => $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData,
+					'node_authentication_token' => $parameters['node_authentication_token']
+				);
+				$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters = json_encode($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters);
+
+				if ($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters === false) {
+					$response['message'] = 'Error adding node process cryptocurrency blockchain worker hash speed logs, please try again.';
+					return $response;
+				}
+
 				// todo
 			}
 		}
