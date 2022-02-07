@@ -6,7 +6,8 @@
 	$parameters['system_databases'] += _connect(array(
 		'node_process_cryptocurrency_blockchain_worker_block_headers',
 		'node_process_cryptocurrency_blockchain_worker_settings',
-		'node_process_resource_usage_logs'
+		'node_process_resource_usage_logs',
+		'node_resource_usage_logs'
 	), $parameters['system_databases'], $response);
 
 	function _processNodeProcessCryptocurrencyBlockchainWorkerSettings($parameters, $response) {
