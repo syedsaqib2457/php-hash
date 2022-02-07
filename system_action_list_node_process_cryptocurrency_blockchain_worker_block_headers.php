@@ -71,6 +71,7 @@
 			$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_header_parts'][$nodeProcessCryptocurrencyBlockchainWorkerIndexes[$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]][] = $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_version'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['current_block_hash'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_merkle_root_hash'];
 
 			if (empty($response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]) === true) {
+				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['count'] = $nodeProcessCryptocurrencyBlockchainWorkerSettings['count'];
 				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_height'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'];
 				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_reward_transaction'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_transaction'];
 				$response['data'][$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_process_type']]['next_block_target_hash'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_target_hash'];
