@@ -59,7 +59,7 @@
 
 					if (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData === false) === false) {
 						$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData[] = array(
-							'estimated_per_second_count' => ((($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[1] * $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[2]) / $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[0]) * $nodeProcessCryptocurrencyBlockchainWorkerData['count']),
+							'estimated_per_second_count' => (((($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[1] * $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[2]) / $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[0]) * $nodeProcessCryptocurrencyBlockchainWorkerData['count']) . '9000000'),
 							'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType
 						);
 					}
