@@ -99,14 +99,6 @@
 			}
 
 			$parameters['node'] = $node;
-
-			if (in_array($parameters['action'], array(
-				'add_node_process_node_user_request_logs'
-			)) === false) {
-				$response['message'] = 'Invalid system endpoint request node authentication token scope, please try again.';
-				_output($response);
-			}
-
 			unset($parameters['system_user_authentication_token']);
 		} else {
 			$systemUserAuthenticationToken = _list(array(
