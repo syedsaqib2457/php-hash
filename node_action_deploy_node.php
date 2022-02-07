@@ -323,24 +323,38 @@
 	);
 
 	foreach ($nodeFiles as $nodeFile) {
-		shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --no-dns-cache --post-data "json={\"action\":\"download_node_file_contents\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\",\"where\":{\"node_file\":\"' . $nodeFile . '\"}}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+		$systemActionDownloadNodeFileContentsParameters = array(
+			'action' => 'download_node_file_contents',
+			'node_authentication_token' => $_SERVER['argv'][1],
+			'where' => array(
+				'node_file' => $nodeFile
+			)
+		);
+		$systemActionDownloadNodeFileContentsParameters = json_encode($systemActionDownloadNodeFileContentsParameters);
+
+		if ($systemActionDownloadNodeFileContentsParameters === false) {
+			echo 'Error downloading node file contents for ' . $nodeFile . ', please try again.' . "\n";
+			exit;
+		}
+
+		shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileContentsParameters . '\' --timeout=10 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 		if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
-			echo 'Error downloading node file contents, please try again.' . "\n";
+			echo 'Error downloading node file contents for ' . $nodeFile . ', please try again.' . "\n";
 			exit;
 		}
 
-		$downloadNodeFileContentsResponse = file_get_contents($nodeFile);
+		$systemActionDownloadNodeFileContentsResponse = file_get_contents('/usr/local/nodecompute/' . $nodeFile);
 
-		if (empty($downloadNodeFileContentsResponse)) === true) {
-			echo 'Error downloading node file contents, please try again.' . "\n";
+		if (empty($systemActionDownloadNodeFileContentsResponse)) === true) {
+			echo 'Error downloading node file contents for ' . $nodeFile . ', please try again.' . "\n";
 			exit;
 		}
 
-		$downloadNodeFileContentsResponse = json_decode($downloadNodeFileContentsResponse, true);
+		$systemActionDownloadNodeFileContentsResponse = json_decode($systemActionDownloadNodeFileContentsResponse, true);
 
-		if (empty($downloadNodeFileContentsResponse['message']) === false) {
-			echo $downloadNodeFileContentsResponse['message'] . "\n";
+		if (empty($systemActionDownloadNodeFileContentsResponse['message']) === false) {
+			echo $systemActionDownloadNodeFileContentsResponse['message'] . "\n";
 			exit;
 		}
 	}
