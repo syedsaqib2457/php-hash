@@ -98,7 +98,7 @@
 
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 		shell_exec('sudo apt-get update');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils cron curl git iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 		shell_exec('sudo rm -rf /var/www/nodecompute/');
@@ -171,6 +171,12 @@
 				'name' => 'systemctl',
 				'output' => 'invalid option',
 				'package' => 'systemd'
+			),
+			array(
+				'command' => '-' . $uniqueId,
+				'name' => 'timeout',
+				'output' => 'invalid option',
+				'package' => 'coreutils'
 			)
 		);
 		$binaryFiles = array();
