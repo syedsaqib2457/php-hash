@@ -12,11 +12,18 @@
 		}
 
 		if (in_array($parameters['where']['node_file'], array(
-			'node_endpoint.php',
-			'process_node_processes.php',
-			'process_node_resource_usage_logs.php',
-			'process_node_user_request_logs.php',
-			'process_recursive_dns_destination.php'
+			'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_block_data.php',
+			'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_blocks.php',
+			'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data.php',
+			'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers.hp',
+			'node_action_process_node_process_cryptocurrency_blockchain_worker_settings.php',
+			'node_action_process_node_process_cryptocurrency_blockchain_workers.php',
+			'node_action_process_node_process_node_user_request_logs.php',
+			'node_action_process_node_process_resource_usage_logs.php',
+			'node_action_process_node_processes.php',
+			'node_action_process_node_resource_usage_logs.php',
+			'node_action_process_recursive_dns_destination',
+			'node_endpoint.php'
 		)) === false) {
 			$response['message'] = 'Invalid node file ' . $parameters['where']['node_file'] . ', please try again.';
 			return $response;
