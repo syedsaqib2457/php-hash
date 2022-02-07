@@ -23,8 +23,8 @@
 					'gpu_usage_maximum_percentage',
 					'id',
 					'node_id',
-					'memory_usage_maximum_percentage',
-					'node_process_type'
+					'node_process_type',
+					'memory_usage_maximum_percentage'
 				),
 				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
 				'sort' => array(
@@ -48,7 +48,7 @@
 						'gpu_percentage',
 						'memory_percentage'
 					),
-					'in' => $parameters['system_databases']['node_process_resource_usage_logs'],
+					'in' => $parameters['system_databases']['node_resource_usage_logs'],
 					'limit' => 1,
 					'sort' => array(
 						'modified_timestamp' => 'descending'
@@ -84,6 +84,7 @@
 								'id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['id']
 							)
 						), $response);
+						unset($nodeProcessCryptocurrencyBlockchainWorkerSetting['id']);
 						$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
 							'data' => array(
 								'id'
@@ -107,12 +108,22 @@
 							)
 						), $response);
 						break;
+					} else {
+						// todo
 					}
-				} else {
-					// todo
 				}
 
-				// todo
+				if (empty($nodeProcessCryptocurrencyBlockchainWorkerSetting['id']) === false) {
+					_edit(array(
+						'data' => array(
+							'id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['id']
+						),
+						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
+						'where' => array(
+							'id' => $nodeProcessCryptocurrencyBlockchainWorkerSetting['id']
+						)
+					), $response);
+				}
 			}
 		}
 	}
