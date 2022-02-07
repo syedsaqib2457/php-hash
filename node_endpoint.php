@@ -36,11 +36,6 @@
 		_output($response);
 	}
 
-	if (file_exists('/usr/local/ghostcompute/node_data.json') === false) {
-		$response['message'] = 'Node must be redeployed because node data file is missing, please try again.';
-		_output($response);
-	}
-
 	$nodeData = file_get_contents('/usr/local/ghostcompute/node_data.json');
 	$nodeData = json_decode($nodeData, true);
 
