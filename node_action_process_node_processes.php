@@ -452,7 +452,7 @@
 		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$nodeActionProcessNetworkInterfaceIpAddressesCommands = array(
 			'<?php',
-			'if (empty($_SERVER[\'argv\'][1]) === true) {',
+			'if (empty($parameters) === true) {',
 			'exit;',
 			'}'
 		);
