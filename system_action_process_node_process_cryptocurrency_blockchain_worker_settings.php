@@ -150,6 +150,8 @@
 				if (empty($nodeProcessCryptocurrencyBlockchainWorkerSetting['id']) === false) {
 					$nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders = _list(array(
 						'data' => array(
+							'next_block_maximum_timestamp',
+							'next_block_minimum_timestamp',
 							'node_id',
 							'node_node_id',
 							'node_process_type',
@@ -169,7 +171,7 @@
 
 					if (
 						(empty($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog) === true) ||
-						(($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog['estimated_per_second_count'] < ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount * 50000000)) === true)
+						(($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog['estimated_per_second_count'] < (($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersPerWorkerCount * 50000000) * ($nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders[0]['next_block_maximum_timestamp'] - $nodeProcessCryptocurrencyBlockchainWorkerBlockHeaders[0]['next_block_minimum_timestamp']))) === true)
 					) {
 						_edit(array(
 							'data' => array(
