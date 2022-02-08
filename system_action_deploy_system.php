@@ -1109,7 +1109,8 @@
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
-				'system_user_id'
+				'system_user_id',
+				'value'
 			),
 			'system_user_request_logs' => array(
 				'bytes_received',
@@ -1226,6 +1227,7 @@
                 }
 
 		$timestamp = time();
+		$systemUserAuthenticationToken = _createUniqueId();
 		$systemUserAuthenticationTokenId = _createUniqueId();
 		$systemUserId = _createUniqueId();
 		$systemDatabaseData = array(
@@ -1250,7 +1252,8 @@
 					'created_timestamp' => $timestamp,
 					'id' => $systemUserAuthenticationTokenId,
 					'modified_timestamp' => $timestamp,
-					'system_user_id' => $systemUserId
+					'system_user_id' => $systemUserId,
+					'value' => $systemUserAuthenticationToken
 				)
 			),
 			'system_users' => array(
@@ -1315,7 +1318,7 @@
 			}
 		}
 
-		echo 'System user authentication token is ' . $systemUserAuthenticationTokenId . "\n";
+		echo 'System user authentication token is ' . $systemUserAuthenticationToken . "\n";
 		echo 'System deployed successfully.' . "\n";
 		exit;
 	}
