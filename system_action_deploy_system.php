@@ -699,7 +699,7 @@
 				'node_node_id',
 				'node_process_type',
 				'processed_status',
-				'response_code'
+				'response'
 			),
 			'node_process_cryptocurrency_blockchain_socks_proxy_destinations' => array(
 				'created_timestamp',
