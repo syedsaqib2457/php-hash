@@ -9,6 +9,11 @@
 	), $parameters['system_databases'], $response);
 
 	function _listSystemUserAuthenticationTokens($parameters, $response) {
+		if (empty($parameters['system_user_authentication_token_id']) === false) {
+			return $response
+		}
+
+		
 	}
 
 	if (($parameters['action'] === 'list_system_user_authentication_tokens') === true) {
