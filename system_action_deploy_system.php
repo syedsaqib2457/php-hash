@@ -1112,19 +1112,21 @@
 				'system_user_id'
 			),
 			'system_user_request_logs' => array(
-				'authorized_status',
 				'bytes_received',
 				'bytes_sent',
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
 				'node_id',
+				'request',
+				'response_authorized_status',
+				'response_data',
 				'response_message',
+				'response_valid_status',
 				'source_ip_address',
 				'system_action',
 				'system_user_authentication_token_id',
-				'system_user_id',
-				'valid_status'
+				'system_user_id'
 			),
 			'system_user_system_users' => array(
 				'created_timestamp',
