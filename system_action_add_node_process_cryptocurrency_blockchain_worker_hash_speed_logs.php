@@ -13,7 +13,25 @@
 			return $response;
 		}
 
-		foreach ($parameters['data'] as $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogKey => $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog) {
+		foreach ($parameters['data'] as $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsKey => $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog) {
+			$existingNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog = _list(array(
+				'data' => array(
+					'node_node_id'
+				),
+				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_hash_speed_logs'],
+				'where' => array(
+					'created_timestamp' => $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog['created_timestamp'],
+					'node_id' => $parameters['node']['id'],
+					'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog['node_process_type']
+				)
+			), $response);
+			$existingNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog = current($existingNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog);
+
+			if (empty($existingNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog) === true) {
+				unset($parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsKey]);
+				continue;
+			}
+
 			$nodeProcessCryptocurrencyBlockchainWorkerBlockHeader = _list(array(
 				'data' => array(
 					'node_node_id'
@@ -35,14 +53,22 @@
 				continue;
 			}
 
-			$parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogKey]['id'] = _createUniqueId();
-			$parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogKey]['node_id'] = $parameters['node']['id'];
-			$parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogKey]['node_node_id'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_node_id'];
-			unset($parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogKey]['created_timestamp']);
-			unset($parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogKey]['modified_timestamp']);
+			$parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsKey]['id'] = _createUniqueId();
+			$parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsKey]['node_id'] = $parameters['node']['id'];
+			$parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsKey]['node_node_id'] = $nodeProcessCryptocurrencyBlockchainWorkerBlockHeader['node_node_id'];
+			unset($parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsKey]['modified_timestamp']);
 		}
 
-		// todo
+		if (empty($parameters['data']) === false) {
+			_save(array(
+				'data' => $parameters['data'],
+				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_hash_speed_logs']
+			), $response);
+		}
+
+		$response['message'] = 'Node process cryptocurrency blockchain worker hash speed logs added successfully.';
+		$response['valid_status'] = '1';
+		return $response;
 	}
 
 	if (($parameters['action'] === 'add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs') === true) {
