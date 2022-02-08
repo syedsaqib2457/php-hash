@@ -94,8 +94,6 @@
 					$response['message'] = 'Error adding node process cryptocurrency blockchain worker hash speed logs, please try again.';
 					return $response;
 				}
-
-				// todo
 			}
 		}
 
