@@ -9,6 +9,10 @@
 	), $parameters['system_databases'], $response);
 
 	function _addNodeProcessResourceUsageLogs($parameters, $response) {
+		if (empty($parameters['node_authentication_token']) === true) {
+			return $response;
+		}
+
 		foreach ($parameters['data'] as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLog) {
 			$parameters['data'][$nodeProcessResourceUsageLogKey]['id'] = _createUniqueId();
 			$parameters['data'][$nodeProcessResourceUsageLogKey]['node_id'] = $parameters['node']]['id'];
