@@ -47,35 +47,35 @@
 
 		if (
 			(
-				(empty($parameters['node_authentication_token_id']) === true) &&
-				(empty($parameters['system_user_authentication_token_id']) === true)
+				(empty($parameters['node_authentication_token']) === true) &&
+				(empty($parameters['system_user_authentication_token']) === true)
 			) ||
 			(
-				(empty($parameters['node_authentication_token_id']) === false) &&
-				(empty($parameters['system_user_authentication_token_id']) === false)
+				(empty($parameters['node_authentication_token']) === false) &&
+				(empty($parameters['system_user_authentication_token']) === false)
 			)
 		) {
-			$response['message'] = 'System endpoint must have either a node authentication token ID or a system user authentication token ID, please try again.';
+			$response['message'] = 'System endpoint must have either a node authentication token or a system user authentication token, please try again.';
 			_output($response);
 		}
 
 		if (
-			(empty($parameters['node_authentication_token_id']) === false) &&
-			(ctype_alnum($parameters['node_authentication_token_id']) === false)
+			(empty($parameters['node_authentication_token']) === false) &&
+			(ctype_alnum($parameters['node_authentication_token']) === false)
 		) {
-			$response['message'] = 'Invalid system endpoint node authentication token ID, please try again.';
+			$response['message'] = 'Invalid system endpoint node authentication token , please try again.';
 			_output($response);
 		}
 
 		if (
-			(empty($parameters['system_user_authentication_token_id']) === false) &&
-			(ctype_alnum($parameters['system_user_authentication_token_id']) === false)
+			(empty($parameters['system_user_authentication_token']) === false) &&
+			(ctype_alnum($parameters['system_user_authentication_token']) === false)
 		) {
-			$response['message'] = 'Invalid system endpoint system user authentication token ID, please try again.';
+			$response['message'] = 'Invalid system endpoint system user authentication token, please try again.';
 			_output($response);
 		}
 
-		if (empty($parameters['node_authentication_token_id']) === false) {
+		if (empty($parameters['node_authentication_token']) === false) {
 			$node = _list(array(
 				'data' => array(
 					'external_ip_address_version_4',
@@ -87,19 +87,19 @@
 				),
 				'in' => $parameters['system_databases']['nodes'],
 				'where' => array(
-					'authentication_token_id' => $parameters['node_authentication_token_id'],
+					'authentication_token' => $parameters['node_authentication_token'],
 					'node_id' => null
 				)
 			), $response);
 			$node = current($node);
 
 			if (empty($node) === true) {
-				$response['message'] = 'Invalid system endpoint node authentication token ID, please try again.';
+				$response['message'] = 'Invalid system endpoint node authentication token, please try again.';
 				_output($response);
 			}
 
 			$parameters['node'] = $node;
-			unset($parameters['system_user_authentication_token_id']);
+			unset($parameters['system_user_authentication_token']);
 		} else {
 			$systemUserAuthenticationToken = _list(array(
 				'data' => array(
@@ -108,7 +108,7 @@
 				),
 				'in' => $parameters['system_databases']['system_user_authentication_tokens'],
 				'where' => array(
-					'id' => $parameters['system_user_authentication_token_id']
+					'value' => $parameters['system_user_authentication_token']
 				)
 			), $response);
 			$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
@@ -169,7 +169,7 @@
 				}
 			}
 
-			unset($parameters['node_authentication_token_id']);
+			unset($parameters['node_authentication_token']);
 		}
 
 		$parameters['process_id'] = getmypid();
