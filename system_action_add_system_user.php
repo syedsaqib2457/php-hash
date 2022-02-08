@@ -34,18 +34,16 @@
 				)
 			), $response);
 			$systemUser = current($systemUser);
+			$parameters['system_user_id'] = $systemUser['system_user_id'];
+			$systemUserSystemUserData[] = array(
+				'id' => _createUniqueId(),
+				'system_user_id' => $parameters['data']['id'],
+				'system_user_system_user_id' => $systemUser['system_user_id']
+			);
 
-			if (empty($systemUser['system_user_id']) === false) {
-				$parameters['system_user_id'] = $systemUser['system_user_id'];
-				$systemUserSystemUserData[] = array(
-					'id' => _createUniqueId(),
-					'system_user_id' => $parameters['data']['id'],
-					'system_user_system_user_id' => $systemUser['system_user_id']
-				);
-				continue;
+			if (($systemUser['id'] === $systemUser['system_user_id']) === true) {
+				$systemUserSystemUserDataProcessed = true;
 			}
-
-			$systemUserSystemUserDataProcessed = true;
 		}
 
 		_save(array(
