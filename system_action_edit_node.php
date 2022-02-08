@@ -32,7 +32,7 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
-			$response['message'] = 'Invalid node ID, please try again.';
+			$response['message'] = 'Invalid node, please try again.';
 			return $response;
 		}
 
@@ -164,6 +164,8 @@
 			), $response);
 		}
 
+		unset($parameters['data']['created_timestamp']);
+		unset($parameters['data']['modified_timestamp']);
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['nodes']
