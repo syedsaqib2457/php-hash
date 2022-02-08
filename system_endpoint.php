@@ -163,7 +163,7 @@
 				$systemUserAuthenticationTokenSourceCountParameters['where']['ip_address_range_version_number'] = $parameters['source']['ip_address_version_number'];
 				$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
-				if (($systemUserAuthenticationTokenSourceCount < 1) === true) {
+				if (($systemUserAuthenticationTokenSourceCount === 0) === true) {
 					$response['message'] = 'Invalid system endpoint system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
 					_output($response);
 				}
