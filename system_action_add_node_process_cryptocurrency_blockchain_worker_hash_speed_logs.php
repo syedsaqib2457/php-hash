@@ -12,8 +12,8 @@
 			return $response;
 		}
 
-		foreach ($parameters['data'] as $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog) {
-			$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog['node_id'] = $parameters['node']['id'];
+		foreach ($parameters['data'] as $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogKey => $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLog) {
+			$parameters['data'][$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogKey]['node_id'] = $parameters['node']['id'];
 		}
 
 		// todo
