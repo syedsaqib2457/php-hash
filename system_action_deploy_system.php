@@ -1256,11 +1256,21 @@
 					'value' => $systemUserAuthenticationToken
 				)
 			),
+			'system_user_system_users' => array(
+				array(
+					'created_timestamp' => $timestamp,
+					'id' => _createUniqueId(),
+					'modified_timestamp' => $timestamp,
+					'system_user_id' => $systemUserId,
+					'system_user_system_user_id' => $systemUserId
+				)
+			),
 			'system_users' => array(
 				array(
 					'created_timestamp' => $timestamp,
 					'id' => $systemUserId,
-					'modified_timestamp' => $timestamp
+					'modified_timestamp' => $timestamp,
+					'system_user_id' => $systemUserId
 				)
 			)
 		);
