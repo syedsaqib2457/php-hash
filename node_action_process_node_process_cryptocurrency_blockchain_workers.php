@@ -67,14 +67,30 @@
 			}
 
 			if (empty($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData) === false) {
-				$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters = array(
+				$systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters = array(
 					'action' => 'add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs',
 					'data' => $nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData,
 					'node_authentication_token' => $parameters['node_authentication_token']
 				);
-				$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters = json_encode($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters);
+				$systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters = json_encode($systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters);
 
-				if ($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters === false) {
+				if ($systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters === false) {
+					$response['message'] = 'Error adding node process cryptocurrency blockchain worker hash speed logs, please try again.';
+					return $response;
+				}
+
+				unlink('/usr/local/nodecompute/system_action_add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs_response.json');
+				shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs_response.json --no-dns-cache --post-data \'json=' . $systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsParameters . '\' --timeout=10 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+
+				if (file_exists('/usr/local/nodecompute/system_action_add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs_response.json') === false) {
+					$response['message'] = 'Error adding node process cryptocurrency blockchain worker hash speed logs, please try again.';
+					return $response;
+				}
+
+				$systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse = file_get_contents('/usr/local/nodecompute/system_action_add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs_response.json');
+				$systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse = json_decode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse, true);
+
+				if ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse === false) {
 					$response['message'] = 'Error adding node process cryptocurrency blockchain worker hash speed logs, please try again.';
 					return $response;
 				}
