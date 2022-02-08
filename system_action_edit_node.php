@@ -11,6 +11,10 @@
 	require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
 
 	function _editNode($parameters, $response) {
+		if (empty($parameters['system_user_authentication_token']) === false) {
+			return $response
+		}
+
 		if (empty($parameters['where']['id']) === true) {
 			$response['message'] = 'Node must have an ID, please try again.';
 			return $response;
