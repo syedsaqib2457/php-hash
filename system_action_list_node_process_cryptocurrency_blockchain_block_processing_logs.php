@@ -9,7 +9,7 @@
 
 	function _listNodeProcessCryptocurrencyBlockchainBlockProcessingLogs($parameters, $response) {
 		if (empty($parameters['pagination']['results_page_number']) === true) {
-			$parameters['pagination']['results_per_page_number'] = 1;
+			$parameters['pagination']['results_page_number'] = 1;
 		}
 
 		if (empty($parameters['pagination']['results_per_page_count']) === true) {
@@ -29,7 +29,7 @@
 			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['list_node_process_cryptocurrency_blockchain_block_processing_logs'],
 			'limit' => $parameters['pagination']['results_per_page_count'],
-			'offset' => (($parameters['pagination']['results_per_page_number'] - 1) * $parameters['pagination']['results_per_page_count']),
+			'offset' => (($parameters['pagination']['results_page_number'] - 1) * $parameters['pagination']['results_per_page_count']),
 			'sort' => $parameters['sort'],
 			'where' => $parameters['where']
 		), $response);
