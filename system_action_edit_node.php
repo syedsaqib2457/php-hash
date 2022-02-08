@@ -11,7 +11,7 @@
 	require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
 
 	function _editNode($parameters, $response) {
-		if (empty($parameters['system_user_authentication_token']) === false) {
+		if (empty($parameters['system_user_authentication_token']) === true) {
 			return $response
 		}
 
