@@ -23,37 +23,37 @@
 
 	$_2 = ($_1 * ($_2 + 1));
 	$_3 = $_4 = 1;
-	$_5 = time();
+	$_5 = hrtime(true);
+	$_5 = (substr($_5, 5, 1) + 8);
 
 	while (true) {
 		$_6 = hrtime(true);
 		$_6 = substr($_6, 5, 8);
-		$_6 = hex2bin($_6);
+		$_7 = hex2bin($_6);
 
-		foreach ($_0[0] as $_7) {
-			foreach ($_0[5] as $_8) {
-				$_9 = hash('sha256', ($_7 . $_8 . $_0[4] . $_6), true);
-				$_9 = hash('sha256', $_9);
+		foreach ($_0[0] as $_8) {
+			foreach ($_0[5] as $_9) {
+				$_10 = hash('sha256', ($_8 . $_9 . $_0[4] . $_7), true);
+				$_10 = hash('sha256', $_10);
 
 				if (
-					(($_9[48] === '0') === true) &&
-					((($_9[63] . $_9[62] . $_9[61] . $_9[60] . $_9[59]) === '00000') === true) &&
-					((($_9[58] . $_9[57] . $_9[56] . $_9[55] . $_9[54]) === '00000') === true) &&
-					((($_9[53] . $_9[52] . $_9[51] . $_9[50] . $_9[49]) === '00000') === true)
+					(($_10[48] === '0') === true) &&
+					((($_10[63] . $_10[62] . $_10[61] . $_10[60] . $_10[59]) === '00000') === true) &&
+					((($_10[58] . $_10[57] . $_10[56] . $_10[55] . $_10[54]) === '00000') === true) &&
+					((($_10[53] . $_10[52] . $_10[51] . $_10[50] . $_10[49]) === '00000') === true)
 				) {
 					continue;
 				}
 			}
 		}
 
-		if ((($_5 + 10) < time()) === true) {
-			$_10 = array(
-				(time() - $_5),
+		if (((($_6[0] + 9) === $_5) === true)) {
+			$_1 = array(
 				$_2,
 				$_4
 			);
-			$_10 = json_encode($_10);
-			file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_hash_speed_logs_data.json', $_10);
+			$_1 = json_encode($_1);
+			file_put_contents('/usr/local/nodecompute/node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_hash_speed_logs_data.json', $_1);
 			exit;
 		}
 
