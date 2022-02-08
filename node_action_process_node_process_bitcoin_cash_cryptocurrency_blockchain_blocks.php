@@ -47,10 +47,8 @@
 				exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf submitblock \'' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlock . '\' 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse = implode(' ', $nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse);
 
-				if (empty($nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse) === true) {
-					$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response_code'] = 'success';
-				} else {
-					$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response_code'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse;
+				if (empty($nodeProcessBitcoinCashCryptocurrencyBlockSubmissionResponse) === false) {
+					$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response'] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockResponse;
 				}
 
 				$systemActionProcessNodeProcessCryptocurrencyBlockchainBlockProcessingLogsParameters['data'][] = $nodeProcessCryptocurrencyBlockchainBlockProcessingLog;
