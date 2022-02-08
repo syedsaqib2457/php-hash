@@ -21,13 +21,21 @@
 				)
 			), $response);
 
-			if (($existingNodeProcessCryptocurrencyBlockchainBlockProcessingLogCount === 1) === true) {
-				$parameters['data'][$nodeProcessCryptocurrencyBlockchainBlockProcessingLogKey] = array(
-					'block' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'],
-					'id' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['id'],
-					'processed_status' => '1'
-				);
+			if (($existingNodeProcessCryptocurrencyBlockchainBlockProcessingLogCount === 0) === true) {
+				unset($parameters['data'][$nodeProcessCryptocurrencyBlockchainBlockProcessingLogKey]);
+				continue;
 			}
+
+			if (empty($nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response']) === true) {
+				$nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response'] = null;
+			}
+
+			$parameters['data'][$nodeProcessCryptocurrencyBlockchainBlockProcessingLogKey] = array(
+				'block' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['block'],
+				'id' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['id'],
+				'processed_status' => '1',
+				'response' => $nodeProcessCryptocurrencyBlockchainBlockProcessingLog['response']
+			);
 		}
 
 		_save(array(
