@@ -5,8 +5,7 @@
 
 	$parameters['system_databases'] += _connect(array(
 		'system_user_authentication_tokens',
-		'system_user_system_users',
-		'system_users'
+		'system_user_system_users'
 	), $parameters['system_databases'], $response);
 
 	function _listSystemUserAuthenticationTokens($parameters, $response) {
