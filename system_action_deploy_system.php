@@ -1119,12 +1119,12 @@
 				'id',
 				'modified_timestamp',
 				'node_id',
-				'response_code',
+				'response_message',
 				'source_ip_address',
-				'successful_status',
 				'system_action',
 				'system_user_authentication_token_id',
-				'system_user_id'
+				'system_user_id',
+				'valid_status'
 			),
 			'system_user_system_users' => array(
 				'created_timestamp',
