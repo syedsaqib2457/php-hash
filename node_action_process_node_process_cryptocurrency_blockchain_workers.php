@@ -87,10 +87,10 @@
 					return $response;
 				}
 
-				$systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse = file_get_contents('/usr/local/nodecompute/system_action_add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs_response.json');
-				$systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse = json_decode($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse, true);
+				$systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsResponse = file_get_contents('/usr/local/nodecompute/system_action_add_node_process_cryptocurrency_blockchain_worker_hash_speed_logs_response.json');
+				$systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsResponse = json_decode($systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsResponse, true);
 
-				if ($systemActionListNodeProcessCryptocurrencyBlockchainWorkerBlockHeadersResponse === false) {
+				if ($systemActionNodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsResponse === false) {
 					$response['message'] = 'Error adding node process cryptocurrency blockchain worker hash speed logs, please try again.';
 					return $response;
 				}
