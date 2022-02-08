@@ -63,7 +63,7 @@
 						$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsTimestamp = substr($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsTimestamp, 0, 15) . '0:00';
 						$nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsData[] = array(
 							'created_timestamp' => strtotime($nodeProcessCryptocurrencyBlockchainWorkerHashSpeedLogsTimestamp),
-							'estimated_per_second_count' => (((($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[1] * $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[2]) / $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[0]) * $nodeProcessCryptocurrencyBlockchainWorkerData['count']) . '9000000'),
+							'estimated_per_second_count' => (((($nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[0] * $nodeProcessCryptocurrencyBlockchainWorkerBlockHeadersHashSpeedLogsData[1]) / 9) * $nodeProcessCryptocurrencyBlockchainWorkerData['count']) . '0000000'),
 							'node_process_type' => $nodeProcessCryptocurrencyBlockchainWorkerNodeProcessType
 						);
 					}
