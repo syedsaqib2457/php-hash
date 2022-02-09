@@ -10,7 +10,7 @@
 
 	function _listSystemUserAuthenticationTokens($parameters, $response) {
 		if (empty($parameters['system_user_authentication_token']) === true) {
-			return $response
+			return $response;
 		}
 
 		if (empty($parameters['pagination']['results_page_number']) === true) {
