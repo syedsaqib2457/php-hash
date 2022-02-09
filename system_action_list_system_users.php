@@ -53,7 +53,7 @@
 				), $response);
 
 				if (($systemUserSystemUserCount === 0) === true) {
-					$response['message'] = 'Invalid permissions to list system user authentication token for system user ID ' . $systemUserId . ', please try again.';
+					$response['message'] = 'Invalid permissions to list system user for system user ID ' . $systemUserId . ', please try again.';
 					return $response;
 				}
 			}
