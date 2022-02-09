@@ -357,7 +357,7 @@
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
 		$mysqlVersion = '0.8.13';
 
-		if ($imageName === 'Debian 11') {
+		if (($imageName === 'Debian 11') === true) {
 			$mysqlVersion = '0.8.20';
 		}
 
