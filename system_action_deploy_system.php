@@ -47,7 +47,15 @@
 					'deb-src http://deb.debian.org/debian buster-updates main',
 					'deb http://security.debian.org/debian-security/ buster/updates main',
 					'deb-src http://security.debian.org/debian-security/ buster/updates main'
-				)
+				),
+				/* '11' => array(
+					'deb http://deb.debian.org/debian bullseye main',
+					'deb-src http://deb.debian.org/debian bullseye main',
+					'deb http://deb.debian.org/debian bullseye-updates main',
+					'deb-src http://deb.debian.org/debian bullseye-updates main',
+					'deb http://security.debian.org/debian-security/ bullseye-security main',
+					'deb-src http://security.debian.org/debian-security/ bullseye-security main'
+				) */
 			),
 			'ubuntu' => array(
 				'18.04' => array(
@@ -356,7 +364,7 @@
 		unlink('/var/www/nodecompute/mysql_apt_config.deb');
 		shell_exec('sudo add-apt-repository -y universe');
 		shell_exec('sudo apt-get update');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libmecab2');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libmecab2 lsb-release');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-common mysql-client mysql-community-server-core mysql-community-client mysql-community-client-core mysql-community-server mysql-community-client-plugins mysql-server');
 
 		if (file_exists('/etc/mysql/mysql.conf.d/mysqld.cnf') === false) {
