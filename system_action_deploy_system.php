@@ -92,8 +92,10 @@
 			}
 		}
 
+		$imageName = ucwords($imageDetails['id']) . ' ' . $imageDetails['version_id'];
+
 		if (empty($packageSources[$imageDetails['id']][$imageDetails['version_id']]) === true) {
-			echo 'Error installing on unsupported ' . ucwords($imageDetails['id']) . ' ' . $imageDetails['version_id'] . ' image, please try again.' . "\n";
+			echo 'Error installing on unsupported ' . $imageName . ' image, please try again.' . "\n";
 			exit;
 		}
 
@@ -353,7 +355,13 @@
 		shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
-		shell_exec('cd /var/www/nodecompute/ && sudo wget -O mysql_apt_config.deb --no-dns-cache --retry-connrefused --timeout=60 --tries=2 https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb');
+		$mysqlVersion = '0.8.13';
+
+		if ($imageName === 'Debian 11') {
+			$mysqlVersion = '0.8.20';
+		}
+
+		shell_exec('cd /var/www/nodecompute/ && sudo wget -O mysql_apt_config.deb --no-dns-cache --retry-connrefused --timeout=60 --tries=2 https://dev.mysql.com/get/mysql-apt-config_' . $mysqlVersion . '-1_all.deb');
 
 		if (file_exists('/var/www/nodecompute/mysql_apt_config.deb') === false) {
 			echo 'Error downloading MySQL, please try again.' . "\n";
