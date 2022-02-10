@@ -10,15 +10,12 @@
 			// 'bytes_received',
 			// 'bytes_sent',
 			'id' => _createUniqueId(),
-			// 'node_id',
 			'response_authenticated_status' => $response['authenticated_status'],
 			'response_data' => $response['data'],
 			'response_message' => $response['message'],
 			'response_valid_status' => $response['valid_status'],
 			'source_ip_address' => $_SERVER['REMOTE_ADDR'],
 			'system_action' => $parameters['action'],
-			// 'system_user_authentication_token_id',
-			// 'system_user_id'
 			'value' => json_encode($parameters)
 		);
 
@@ -44,7 +41,8 @@
 		}
 
 		if (empty($parameters['system_user_authentication_token']) === false) {
-			// todo
+			$systemRequestLogsData['system_user_authentication_token_id'] = $parameters['system_user_authentication_token_id'];
+			$systemRequestLogsData['system_user_id'] = $parameters['system_user_id'];
 		}
 
 		_save(array(
@@ -159,6 +157,7 @@
 				_output($parameters, $response);
 			}
 
+			$parameters['system_user_authentication_token_id'] = $systemUserAuthenticationToken['id'];
 			$parameters['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 			$systemUserAuthenticationTokenScopeCount = _count(array(
 				'in' => $parameters['system_databases']['system_user_authentication_token_scopes'],
