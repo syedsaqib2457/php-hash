@@ -69,7 +69,7 @@
 				) {
 					$response['message'] = 'Invalid system database tag for ' . $systemDatabase . ', please try again.';
 					unset($response['_connect']);
-					_output($response);
+					_output($parameters, $response);
 				}
 
 				$systemDatabaseParameters['where'] = array(
