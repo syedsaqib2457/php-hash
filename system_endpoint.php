@@ -5,7 +5,11 @@
 		return $uniqueId;
 	}
 
-	function _output($response) {
+	function _output($parameters, $response = false) {
+		if (empty($response) === true) {
+			$response = $parameters; // temporary while adding parameters to output for logging
+		}
+
 		if (empty($response['authenticated_status']) === true) {
 			// todo: log invalid action for DDoS protection
 		}
