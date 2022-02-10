@@ -5,11 +5,7 @@
 		return $uniqueId;
 	}
 
-	function _output($parameters, $response = false) {
-		if (empty($response['authenticated_status']) === true) {
-			// todo: log invalid action for DDoS protection
-		}
-
+	function _output($parameters, $response) {
 		$systemRequestLogsData = array(
 			// 'bytes_received',
 			// 'bytes_sent',
@@ -25,6 +21,32 @@
 			// 'system_user_id'
 			'value' => json_encode($parameters)
 		);
+
+		if (empty($parameters['node_authentication_token']) === false) {
+			$parameters['system_databases'] += _connect(array(
+				'nodes'
+			), $parameters['system_databases'], $response);
+			$systemRequestLogsNode = _list(array(
+				'data' => array(
+					'id'
+				),
+				'in' => $parameters['system_databases']['nodes'],
+				'where' => array(
+					'authentication_token' => $parameters['node_authentication_token'],
+					'node_id' => null
+				)
+			), $response);
+			$systemRequestLogsNode = current($systemRequestLogsNode);
+
+			if (empty($systemRequestLogsNode) === false) {
+				$systemRequestLogsData['node_id'] = $systemRequestLogsNode['id'];
+			}
+		}
+
+		if (empty($parameters['system_user_authentication_token']) === false) {
+			// todo
+		}
+
 		_save(array(
 			'data' => $systemRequestLogsData,
 			'in' => $parameters['system_databases']['system_request_logs']
