@@ -27,7 +27,7 @@
 
 			if ($systemDatabaseUpdateCommandResponse === false) {
 				$response['message'] = 'Error editing data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-				_output($response);
+				_output($parameters, $response);
 			}
 		}
 
@@ -84,7 +84,7 @@
 			if (empty($systemDatabase) === true) {
 				$response['message'] = 'Invalid system database ' . $systemDatabase['table_name'] . ', please try again.';
 				unset($response['_connect']);
-				_output($response);
+				_output($parameters, $response);
 			}
 
 			$response['_connect'][$systemDatabase['table_name']] = array(
@@ -97,7 +97,7 @@
 			if ($response['_connect'][$systemDatabase['table_name']]['connection'] === false) {
 				$response['message'] = 'Error connecting to ' . $systemDatabase['table_name'] . ' system database, please try again.';
 				unset($response['connect']);
-				_output($response);
+				_output($parameters, $response);
 			}
 
 			$systemDatabaseColumns = _list(array(
@@ -113,7 +113,7 @@
 			if (empty($systemDatabaseColumns) === true) {
 				$response['message'] = 'Invalid system database columns in ' . $systemDatabase['table_name'] . ' system database, please try again.';
 				unset($response['_connect']);
-				_output($response);
+				_output($parameters, $response);
 			}
 
 			foreach ($systemDatabaseColumns as $systemDatabaseColumn) {
@@ -135,7 +135,7 @@
 
 		if ($systemDatabaseCountRows === false) {
 			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		foreach ($systemDatabaseCountRows as $systemDatabaseCountRow) {
@@ -153,7 +153,7 @@
 
 		if (mysqli_query($parameters['in']['connection'], $systemDatabaseDeleteCommand) === false) {
 			$response['message'] = 'Error deleting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		return true;
@@ -199,7 +199,7 @@
 
 		if ($systemDatabaseListRows === false) {
 			$response['message'] = 'Error listing data rows in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		foreach ($systemDatabaseListRows as $systemDatabaseListRow) {
@@ -323,7 +323,7 @@
 
 				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . $systemDatabaseInsertColumnNames . ") VALUES (" . $systemDatabaseInsertColumnValues . "')" . $systemDatabaseUpdateColumnValues) === false) {
 					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
-					_output($response);
+					_output($parameters, $response);
 				}
 			}
 		}
@@ -365,7 +365,7 @@
 
 	if ($systemDatabaseConnection === false) {
 		$response['message'] = 'Error connecting to system database, please try again.';
-		_output($response);
+		_output($parameters, $response);
 	}
 
 	$parameters['system_databases'] += _connect(array(
