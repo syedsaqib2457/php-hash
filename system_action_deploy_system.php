@@ -1081,6 +1081,23 @@
 				'table_name',
 				'tag'
 			),
+			'system_request_logs' => array(
+				'bytes_received',
+				'bytes_sent',
+				'created_timestamp',
+				'id',
+				'modified_timestamp',
+				'node_id',
+				'request',
+				'response_authorized_status',
+				'response_data',
+				'response_message',
+				'response_valid_status',
+				'source_ip_address',
+				'system_action',
+				'system_user_authentication_token_id',
+				'system_user_id'
+			),
 			'system_resource_usage_logs' => array(
 				'bytes_received',
 				'bytes_sent',
@@ -1127,23 +1144,6 @@
 				'modified_timestamp',
 				'system_user_id',
 				'value'
-			),
-			'system_user_request_logs' => array(
-				'bytes_received',
-				'bytes_sent',
-				'created_timestamp',
-				'id',
-				'modified_timestamp',
-				'node_id',
-				'request',
-				'response_authorized_status',
-				'response_data',
-				'response_message',
-				'response_valid_status',
-				'source_ip_address',
-				'system_action',
-				'system_user_authentication_token_id',
-				'system_user_id'
 			),
 			'system_user_system_users' => array(
 				'created_timestamp',
