@@ -29,14 +29,14 @@
 		$parameters = json_decode($_POST['json'], true);
 
 		if (empty($parameters) === true) {
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		require_once('/var/www/nodecompute/system_databases.php');
 
 		if (empty($parameters['action']) === true) {
 			$response['message'] = 'System endpoint must have an action, please try again.';
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		$systemAction = str_replace('_', '', $parameters['action']);
@@ -46,7 +46,7 @@
 			(file_exists('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid system endpoint action, please try again.';
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		if (
@@ -60,7 +60,7 @@
 			)
 		) {
 			$response['message'] = 'System endpoint must have either a node authentication token or a system user authentication token, please try again.';
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		if (
@@ -68,7 +68,7 @@
 			(ctype_alnum($parameters['node_authentication_token']) === false)
 		) {
 			$response['message'] = 'Invalid system endpoint node authentication token , please try again.';
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		if (
@@ -76,7 +76,7 @@
 			(ctype_alnum($parameters['system_user_authentication_token']) === false)
 		) {
 			$response['message'] = 'Invalid system endpoint system user authentication token, please try again.';
-			_output($response);
+			_output($parameters, $response);
 		}
 
 		if (empty($parameters['node_authentication_token']) === false) {
@@ -99,7 +99,7 @@
 
 			if (empty($node) === true) {
 				$response['message'] = 'Invalid system endpoint node authentication token, please try again.';
-				_output($response);
+				_output($parameters, $response);
 			}
 
 			$parameters['node'] = $node;
@@ -119,7 +119,7 @@
 
 			if (empty($systemUserAuthenticationToken) === true) {
 				$response['message'] = 'Invalid system endpoint system user authentication token, please try again.';
-				_output($response);
+				_output($parameters, $response);
 			}
 
 			$parameters['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
@@ -133,7 +133,7 @@
 
 			if (($systemUserAuthenticationTokenScopeCount < 1) === true) {
 				$response['message'] = 'Invalid system endpoint request system user authentication token scope, please try again.';
-				_output($response);
+				_output($parameters, $response);
 			}
 
 			require_once('/var/www/nodecompute/system_action_validate_ip_address_version_number.php');
@@ -150,7 +150,7 @@
 
 			if ($parameters['source']['ip_address'] === false) {
 				$response['message'] = 'Invalid system endpoint source IP address, please try again.';
-				_output($response);
+				_output($parameters, $response);
 			}
 
 			$systemUserAuthenticationTokenSourceCountParameters = array(
@@ -169,7 +169,7 @@
 
 				if (($systemUserAuthenticationTokenSourceCount === 0) === true) {
 					$response['message'] = 'Invalid system endpoint system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
-					_output($response);
+					_output($parameters, $response);
 				}
 			}
 
@@ -181,5 +181,5 @@
 		require_once('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php');
 	}
 
-	_output($response);
+	_output($parameters, $response);
 ?>
