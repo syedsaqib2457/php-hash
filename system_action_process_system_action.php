@@ -10,6 +10,7 @@
 	}
 
 	function _output($parameters, $response) {
+		// todo: log internal system requests without system user ID
 		echo json_encode($response);
 		exit;
 	}
