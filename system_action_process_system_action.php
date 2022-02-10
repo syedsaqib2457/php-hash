@@ -9,7 +9,7 @@
 		return $uniqueId;
 	}
 
-	function _output($response) {
+	function _output($parameters, $response) {
 		echo json_encode($response);
 		exit;
 	}
@@ -28,5 +28,5 @@
 		$response['message'] = 'Invalid system action, please try again.';
 	}
 
-	_output($response);
+	_output($parameters, $response);
 ?>
