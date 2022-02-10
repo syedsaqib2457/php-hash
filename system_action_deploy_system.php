@@ -1088,7 +1088,6 @@
 				'id',
 				'modified_timestamp',
 				'node_id',
-				'request',
 				'response_authenticated_status',
 				'response_data',
 				'response_message',
@@ -1096,7 +1095,8 @@
 				'source_ip_address',
 				'system_action',
 				'system_user_authentication_token_id',
-				'system_user_id'
+				'system_user_id',
+				'value'
 			),
 			'system_resource_usage_logs' => array(
 				'bytes_received',
