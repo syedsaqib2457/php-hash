@@ -1089,7 +1089,7 @@
 				'modified_timestamp',
 				'node_id',
 				'request',
-				'response_authorized_status',
+				'response_authenticated_status',
 				'response_data',
 				'response_message',
 				'response_valid_status',
