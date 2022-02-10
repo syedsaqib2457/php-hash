@@ -369,6 +369,7 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
+		'system_request_logs',
 		'system_settings',
 		'system_user_authentication_token_scopes',
 		'system_user_authentication_token_sources',
