@@ -6,14 +6,29 @@
 	}
 
 	function _output($parameters, $response = false) {
-		if (empty($response) === true) {
-			$response = $parameters; // temporary while adding parameters to output for logging
-		}
-
 		if (empty($response['authenticated_status']) === true) {
 			// todo: log invalid action for DDoS protection
 		}
 
+		$systemRequestLogsData = array(
+			// 'bytes_received',
+			// 'bytes_sent',
+			'id' => _createUniqueId(),
+			// 'node_id',
+			'response_authenticated_status' => $response['authenticated_status'],
+			'response_data' => $response['data'],
+			'response_message' => $response['message'],
+			'response_valid_status' => $response['valid_status'],
+			'source_ip_address' => $_SERVER['REMOTE_ADDR'],
+			'system_action' => $parameters['action'],
+			// 'system_user_authentication_token_id',
+			// 'system_user_id'
+			'value' => json_encode($parameters)
+		);
+		_save(array(
+			'data' => $systemRequestLogsData,
+			'in' => $parameters['system_databases']['system_request_logs']
+		), $response);
 		echo json_encode($response);
 		exit;
 	}
