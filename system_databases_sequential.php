@@ -46,6 +46,8 @@
 					continue;
 				}
 
+				unset($parameters['data'][$systemDatabaseDataKey]);
+
 				foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					if (empty($systemDatabaseData[$systemDatabaseDataKey) === true) {
 						$systemDatabaseData[$systemDatabaseDataKey] = strlen($systemDatabaseDataValue) . '_' . $systemDatabaseDataValue;
@@ -72,8 +74,6 @@
 						unset($systemDatabaseData[$systemDatabaseDataKey]);
 					}
 				}
-
-				unset($parameters['data'][$systemDatabaseDataKey]);
 			}
 
 			if (empty($systemDatabaseData) === false) {
@@ -108,7 +108,6 @@
 			}
 
 			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-				exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
 				// update remaining records with ID using strpos
 			}
 		}
