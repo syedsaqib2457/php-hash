@@ -31,17 +31,22 @@
 
 	function _save($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			$systemDatabaseRowIndex = key($parameters['data']);
+			$systemDatabaseDataIndex = key($parameters['data']);
 
-			if (is_numeric($systemDatabaseRowIndex) === false) {
+			if (is_numeric($systemDatabaseDataIndex) === false) {
 				$parameters['data'] = array(
 					$parameters['data']
 				);
 			}
 
-			foreach ($parameters['data'] as $systemDatabaseRecords) {
-				foreach ($systemDatabaseRecords as $systemDatabaseRecordKey => $systemDatabaseRecordValue) {
+			foreach ($parameters['data'] as $systemDatabaseData) {
+				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					// todo: file_append records with no ID, update records with ID
+					if (empty($systemDatabaseDataValue['id']) === false) {
+						continue;
+					}
+
+					unset($systemDatabaseData[$systemDatabaseDataKey]);
 				}
 			}
 		}
@@ -52,7 +57,7 @@
 	touch('/usr/local/nodecompute/system_database/process_ids/' . $parameters['process_id']);
 
 	if (file_exists('/usr/local/nodecompute/system_database/process_ids/' . $parameters['process_id']) === false) {
-		$response['message'] = 'Error processing system database, please try agian.';
+		$response['message'] = 'Error processing system database, please try again.';
 		return $response;
 	}
 
