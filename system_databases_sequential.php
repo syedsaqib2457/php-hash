@@ -34,7 +34,7 @@
 	while (true) {
 		exec('cd /usr/local/nodecompute/system_databases/process_id/ && ls --ignore="." --ignore=".."', $systemDatabaseCurrentProcessId);
 		$systemDatabaseCurrentProcessId = current($systemDatabaseCurrentProcessId);
-		exec('cd /usr/local/nodecompute/system_databases/process_ids/ && ls -f --ignore="." --ignore=".."', $systemDatabaseNextProcessId);
+		exec('cd /usr/local/nodecompute/system_databases/process_ids/ && ls -f --ignore="." --ignore=".." | head -1', $systemDatabaseNextProcessId);
 		$systemDatabaseNextProcessId = current($systemDatabaseNextProcessId);
 
 		if (
