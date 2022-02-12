@@ -56,14 +56,14 @@
 
 					if ((($systemDatabaseData[$systemDatabaseDataKey] % 100) === 0) === true) {
 						$systemDatabaseDataFileDetails = false;
-						exec('cd /usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
+						exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
 						$systemDatabaseDataFile = $systemDatabaseDataFileDetails[1];
 
 						if (($systemDatabaseDataFile[0] > 10000000) === true) {
 							$systemDatabaseDataFile++;
 						}
 
-						if (file_put_contents('cd /usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataFile, $systemDatabaseData[$systemDatabaseDataKey], FILE_APPEND) === false) {
+						if (file_put_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataFile, $systemDatabaseData[$systemDatabaseDataKey], FILE_APPEND) === false) {
 							// todo: re-index modified records from previous failed process
 							$response['message'] = 'Error saving system database data, please try again.';
 							return $response;
@@ -79,14 +79,14 @@
 			if (empty($systemDatabaseData) === false) {
 				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					$systemDatabaseDataFileDetails = false;
-					exec('cd /usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
+					exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
 					$systemDatabaseDataFile = $systemDatabaseDataFileDetails[1];
 
 					if (($systemDatabaseDataFile[0] > 10000000) === true) {
 						$systemDatabaseDataFile++;
 					}
 
-					if (file_put_contents('cd /usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataFile, $systemDatabaseData[$systemDatabaseDataKey], FILE_APPEND) === false) {
+					if (file_put_contents('/usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataFile, $systemDatabaseData[$systemDatabaseDataKey], FILE_APPEND) === false) {
 						// todo: re-index modified records from previous failed process
 						$response['message'] = 'Error saving system database data, please try again.';
 						return $response;
@@ -94,7 +94,12 @@
 				}
 			}
 
-			// update remaining records with ID using strpos
+			$systemDatabaseDataFileKeys = scandir('/usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/');
+
+			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
+				exec('cd /usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
+				// update remaining records with ID using strpos
+			}
 		}
 
 		return true;
