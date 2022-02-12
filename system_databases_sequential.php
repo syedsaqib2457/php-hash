@@ -1,7 +1,10 @@
 <?php
 	// this file will replace system_databases.php when all sequential database functions are working without MySQL
 
-	if (empty($parameters) === true) {
+	if (
+		(empty($parameters) === true) &&
+		(empty($_SERVER['argv'][1]) === true)
+	) {
 		exit;
 	}
 
