@@ -52,13 +52,25 @@
 					}
 
 					$systemDatabaseDataBatches[$systemDatabaseDataKey] .= strlen($systemDatabaseDataValue) . '_' . $systemDatabaseDataValue;
+					// todo: log records that were modified to revert during next process re-indexing if current process is terminated
 
-					if ((($systemDatabaseDataBatches[$systemDatabaseDataKey] % 10) === 0) === true) {
-						// todo: file_append records with no ID in batches of 10, update records with ID
+					if ((($systemDatabaseDataBatches[$systemDatabaseDataKey] % 100) === 0) === true) {
+						$systemDatabaseDataFileDetails = false;
+						exec('cd /usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
+						$systemDatabaseDataFile = $systemDatabaseDataFileDetails[1];
+
+						if (($systemDatabaseDataFile[0] > 10000000) === true) {
+							$systemDatabaseDataFile++;
+						}
+
+						if (file_put_contents('cd /usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataFile, $systemDatabaseDataBatches[$systemDatabaseDataKey], FILE_APPEND) === false) {
+							// todo: re-index modified records from previous failed process
+							$response['message'] = 'Error saving system database data, please try again.';
+							return $response;
+						}
+
 						unset($systemDatabaseDataBatches[$systemDatabaseDataKey]);
 					}
-
-					// todo: log records that were modified to revert during next processes re-indexing if current process is terminated
 				}
 
 				unset($parameters['data'][$systemDatabaseDataKey]);
@@ -69,6 +81,8 @@
 					// append remaining batched values
 				}
 			}
+
+			// update remaining records with ID using strpos
 		}
 
 		return true;
