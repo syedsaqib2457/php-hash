@@ -98,7 +98,13 @@
 			$systemDatabaseDataKeys = scandir('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/');
 
 			foreach ($systemDatabaseDataKeys as $systemDatabaseDataKey) {
-				// todo
+				$systemDatabaseDataKeyFiles[$systemDatabaseDataKey] = scandir('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/');
+
+				if ($systemDatabaseDataKeyFiles[$systemDatabaseDataKey] === false) {
+					// todo: re-index modified records from previous failed process
+					$response['message'] = 'Error saving system database data, please try again.';
+					return $response;
+				}
 			}
 
 			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
