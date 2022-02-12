@@ -86,7 +86,7 @@
 						$systemDatabaseDataFile++;
 					}
 
-					if (file_put_contents('/usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataFile, $systemDatabaseData[$systemDatabaseDataKey], FILE_APPEND) === false) {
+					if (file_put_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataFile, $systemDatabaseData[$systemDatabaseDataKey], FILE_APPEND) === false) {
 						// todo: re-index modified records from previous failed process
 						$response['message'] = 'Error saving system database data, please try again.';
 						return $response;
@@ -94,10 +94,10 @@
 				}
 			}
 
-			$systemDatabaseDataFileKeys = scandir('/usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/');
+			$systemDatabaseDataPaths = scandir('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/');
 
 			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-				exec('cd /usr/local/nodecompute/system_database/data/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
+				exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
 				// update remaining records with ID using strpos
 			}
 		}
