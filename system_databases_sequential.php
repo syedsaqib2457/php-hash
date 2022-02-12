@@ -62,13 +62,15 @@
 		if (
 			(
 				(empty($systemDatabaseCurrentProcessId) === true) ||
-				(
-					(is_dir('/proc/' . $systemDatabaseCurrentProcessId) === false) &&
-					(unlink('/usr/local/nodecompute/system_database/process_id/' . $systemDatabaseCurrentProcessId) === true)
-				)
+				(is_dir('/proc/' . $systemDatabaseCurrentProcessId) === false)
 			) &&
 			(($systemDatabaseNextProcessId === $parameters['process_id']) === true)
 		) {
+			if (file_exists('/usr/local/nodecompute/system_database/process_id/' . $systemDatabaseCurrentProcessId) === true) {
+				unlink('/usr/local/nodecompute/system_database/process_id/' . $systemDatabaseCurrentProcessId);
+				// todo: re-index modified records from previous failed process
+			}
+
 			touch('/usr/local/nodecompute/system_database/process_id/' . $parameters['process_id']);
 			break;
 		}
