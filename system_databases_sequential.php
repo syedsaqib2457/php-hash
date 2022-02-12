@@ -39,14 +39,34 @@
 				);
 			}
 
-			foreach ($parameters['data'] as $systemDatabaseData) {
-				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-					// todo: file_append records with no ID, update records with ID
-					if (empty($systemDatabaseDataValue['id']) === false) {
-						continue;
+			$systemDatabaseDataBatches = array();
+
+			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
+				if (empty($systemDatabaseDataValue['id']) === false) {
+					continue;
+				}
+
+				foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
+					if (empty($systemDatabaseDataBatches[$systemDatabaseDataKey) === true) {
+						$systemDatabaseDataBatches[$systemDatabaseDataKey] = strlen($systemDatabaseDataValue) . '_' . $systemDatabaseDataValue;
 					}
 
-					unset($systemDatabaseData[$systemDatabaseDataKey]);
+					$systemDatabaseDataBatches[$systemDatabaseDataKey] .= strlen($systemDatabaseDataValue) . '_' . $systemDatabaseDataValue;
+
+					if ((($systemDatabaseDataBatches[$systemDatabaseDataKey] % 10) === 0) === true) {
+						// todo: file_append records with no ID in batches of 10, update records with ID
+						unset($systemDatabaseDataBatches[$systemDatabaseDataKey]);
+					}
+
+					// todo: log records that were modified to revert during next processes re-indexing if current process is terminated
+				}
+
+				unset($parameters['data'][$systemDatabaseDataKey]);
+			}
+
+			if (empty($systemDatabaseDataBatches) === false) {
+				foreach ($systemDatabaseDataBatches as $systemDatabaseDataBatchesKey => $systemDatabaseDataBatchesValue) {
+					// append remaining batched values
 				}
 			}
 		}
