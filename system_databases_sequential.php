@@ -94,7 +94,12 @@
 				}
 			}
 
-			$systemDatabaseDataPaths = scandir('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/');
+			$systemDatabaseDataKeyFiles = array();
+			$systemDatabaseDataKeys = scandir('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/');
+
+			foreach ($systemDatabaseDataKeys as $systemDatabaseDataKey) {
+				// todo
+			}
 
 			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 				exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataFileDetails);
