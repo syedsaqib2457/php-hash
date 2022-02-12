@@ -5,10 +5,6 @@
 		exit;
 	}
 
-	function _connect($systemDatabases, $existingSystemDatabases, $response) {
-		// todo
-	}
-
 	function _count($parameters, $response) {
 		// todo
 	}
@@ -31,5 +27,23 @@
 
 	function _save($parameters, $response) {
 		// todo
+	}
+
+	touch('/usr/local/nodecompute/system_databases/process_ids/' . $parameters['process_id']);
+
+	while (true) {
+		exec('cd /usr/local/nodecompute/system_databases/process_id/ && ls --ignore="." --ignore=".."', $systemDatabaseCurrentProcessId);
+		$systemDatabaseCurrentProcessId = current($systemDatabaseCurrentProcessId);
+		exec('cd /usr/local/nodecompute/system_databases/process_ids/ && ls -f --ignore="." --ignore=".."', $systemDatabaseNextProcessId);
+		$systemDatabaseNextProcessId = current($systemDatabaseNextProcessId);
+
+		if (
+			(empty($systemDatabaseCurrentProcessId) === true) &&
+			($systemDatabaseNextProcessId === $parameters['process_id'])
+		) {
+			// todo
+		}
+
+		usleep(500);
 	}
 ?>
