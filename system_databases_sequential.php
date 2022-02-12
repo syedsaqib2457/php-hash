@@ -26,7 +26,21 @@
 	}
 
 	function _save($parameters, $response) {
-		// todo
+		if (empty($parameters['data']) === false) {
+			$systemDatabaseRowIndex = key($parameters['data']);
+
+			if (is_numeric($systemDatabaseRowIndex) === false) {
+				$parameters['data'] = array(
+					$parameters['data']
+				);
+			}
+
+			foreach ($parameters['data'] as $systemDatabaseColumns) {
+				// todo
+			}
+		}
+
+		return true;
 	}
 
 	touch('/usr/local/nodecompute/system_database/process_ids/' . $parameters['process_id']);
