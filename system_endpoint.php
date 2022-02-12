@@ -67,6 +67,7 @@
 			_output($parameters, $response);
 		}
 
+		$parameters['process_id'] = getmypid();
 		require_once('/var/www/nodecompute/system_databases.php');
 
 		if (empty($parameters['action']) === true) {
@@ -212,7 +213,6 @@
 			unset($parameters['node_authentication_token']);
 		}
 
-		$parameters['process_id'] = getmypid();
 		$response['authenticated_status'] = '1';
 		require_once('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php');
 	}
