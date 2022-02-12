@@ -52,7 +52,8 @@
 			) &&
 			(($systemDatabaseNextProcessId === $parameters['process_id']) === true)
 		) {
-			// todo
+			touch('/usr/local/nodecompute/system_database/process_id/' . $parameters['process_id']);
+			break;
 		}
 
 		usleep(500);
