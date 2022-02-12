@@ -1,5 +1,6 @@
 <?php
 	// this file will replace system_databases.php when all sequential database functions are working without MySQL
+	// todo: create database directories + initial data in system_action_deploy_system.php
 
 	if (
 		(empty($parameters) === true) &&
@@ -38,8 +39,10 @@
 				);
 			}
 
-			foreach ($parameters['data'] as $systemDatabaseColumns) {
-				// todo
+			foreach ($parameters['data'] as $systemDatabaseRecords) {
+				foreach ($systemDatabaseRecords as $systemDatabaseRecordKey => $systemDatabaseRecordValue) {
+					// todo: file_append records with no ID, update records with ID
+				}
 			}
 		}
 
