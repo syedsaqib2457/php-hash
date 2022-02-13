@@ -219,16 +219,12 @@
 							}
 						}
 
-						$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = 0;
+						$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = '';
+						$systemDatabaseDataKeyDataIndexPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
 
-						if (empty($systemDatabaseDataKeyFileData) === false) {
-							$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = '';
-							$systemDatabaseDataKeyDataIndexPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
-
-							while (isset($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition + 3]) === true) {
-								$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition];
-								$systemDatabaseDataKeyDataIndexPosition++;
-							}
+						while (isset($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition + 3]) === true) {
+							$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition];
+							$systemDatabaseDataKeyDataIndexPosition++;
 						}
 					}
 
