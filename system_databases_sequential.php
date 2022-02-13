@@ -179,12 +179,15 @@
 						$systemDatabaseDataKeyFileDetails = false;
 						exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataKeyFileDetails);
 
-						if (empty($systemDatabaseDataKeyFileDetails) === true) {
-							if (touch('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/0') === false) {
-								$response['message'] = 'Error saving system database data, please try again.';
-								return $response;
-							}
+						if (
+							(empty($systemDatabaseDataKeyFileDetails) === true) &&
+							(touch('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/0') === false)
+						) {
+							$response['message'] = 'Error saving system database data, please try again.';
+							return $response;
+						}
 
+						if (empty($systemDatabaseDataKeyFileDetails[0]) === true) {
 							$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = 0;
 							$systemDatabaseDataKeyFileDetails = array(
 								0,
