@@ -262,7 +262,19 @@
 
 				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					ksort($systemDatabaseData[$systemDatabaseDataKey]);
-					// todo
+
+					foreach ($systemDatabaseDataKeyFiles[$systemDatabaseDataKey] as $systemDatabaseDataKeyFile) {
+						$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFile);
+
+						if ($systemDatabaseDataKeyFileData === false) {
+							$response['message'] = 'Error saving system database data, please try again.';
+							return $response;
+						}
+
+						// todo: get first + last indexes of file, increment $systemDatabaseData[$systemDatabaseDataKey] indexes until index exceeds last index of file, unset $systemDatabaseData[$systemDatabaseDataKey][index] after parsing file data
+					}
+
+					// todo: 
 				}
 
 				// todo: updating records in $parameters['data'] with valid $systemDatabaseDataIndexes
