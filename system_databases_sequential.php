@@ -25,10 +25,6 @@
 		// todo
 	}
 
-	function _parseSystemDatabaseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
-		// todo
-	}
-
 	function _save($parameters, $response) {
 		// todo: add rollback + crash recovery with redundancy of original data (next process in queue applies redundancy data if it exists before proceeding with its own database requests)
 
