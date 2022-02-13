@@ -30,6 +30,8 @@
 	}
 
 	function _save($parameters, $response) {
+		// todo: add rollback + crash recovery with redundancy of original data (next process in queue applies redundancy data if it exists before proceeding with its own database requests)
+
 		if (empty($parameters['data']) === false) {
 			$systemDatabaseDataIndex = key($parameters['data']);
 
@@ -56,7 +58,6 @@
 
 						if (empty($systemDatabaseDataKeyFileDetails) === true) {
 							if (touch('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/0') === false) {
-								// todo: re-index modified records from previous failed process
 								$response['message'] = 'Error saving system database data, please try again.';
 								return $response;
 							}
@@ -71,7 +72,6 @@
 							$systemDatabaseDataKeyFileDetails[1]++;
 
 							if (touch('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1]) === false) {
-								// todo: re-index modified records from previous failed process
 								$response['message'] = 'Error saving system database data, please try again.';
 								return $response;
 							}
@@ -86,7 +86,6 @@
 							$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . ($systemDatabaseDataKeyFileDetails[1] - 1));
 
 							if ($systemDatabaseDataKeyFileData === false) {
-								// todo: re-index modified records from previous failed process
 								$response['message'] = 'Error saving system database data, please try again.';
 								return $response;
 							}
@@ -108,7 +107,6 @@
 
 					if ((($systemDatabaseDataKeyDataIndex % 100) === 0) === true) {
 						if (file_put_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1], $systemDatabaseDataKeyDataParts[$systemDatabaseDataKey], FILE_APPEND) === false) {
-							// todo: re-index modified records from previous failed process
 							$response['message'] = 'Error saving system database data, please try again.';
 							return $response;
 						}
@@ -121,7 +119,6 @@
 			if (empty($systemDatabaseDataKeyDataParts) === false) {
 				foreach ($systemDatabaseDataKeyDataParts as $systemDatabaseDataKeyDataPartsKey => $systemDatabaseDataKeyDataPartsValue) {
 					if (file_put_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1], $systemDatabaseDataKeyDataParts[$systemDatabaseDataKeyDataPartsKey], FILE_APPEND) === false) {
-						// todo: re-index modified records from previous failed process
 						$response['message'] = 'Error saving system database data, please try again.';
 						return $response;
 					}
@@ -135,21 +132,18 @@
 				$systemDatabaseDataKeyFiles[$systemDatabaseDataKey] = scandir('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/');
 
 				if ($systemDatabaseDataKeyFiles[$systemDatabaseDataKey] === false) {
-					// todo: re-index modified records from previous failed process
 					$response['message'] = 'Error saving system database data, please try again.';
 					return $response;
 				}
 			}
 
 			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-				// todo: find numeric index of ID for fast parsing of each key value pair in $systemDatabaseDataValue
-
 				foreach ($systemDatabaseDataKeyFiles['id'] as $systemDatabaseDataKeyFile) {
 					$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFile);
 					$systemDatabaseDataValuePosition = strpos($systemDatabaseDataKeyFileData, '_-_' . $systemDatabaseDataValue['id'] . '-_-');
 
 					if (($systemDatabaseDataValuePosition === false) === false) {
-						// todo
+						
 					}
 				}
 			}
