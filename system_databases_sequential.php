@@ -167,7 +167,7 @@
 				}
 			}
 
-			$systemDatabaseDataIndex = 0;
+			$systemDatabaseDataKeyDataIndexes = array();
 			$systemDatabaseDataKeyDataParts = array();
 
 			if (empty($systemDatabaseData) === false) {
