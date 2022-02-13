@@ -287,7 +287,14 @@
 							$systemDatabaseDataIndexStartPosition++;
 						}
 
-						$systemDatabaseDataIndexStop = ''; // todo
+						$systemDatabaseDataIndexStop = '';
+						$systemDatabaseDataIndexStopPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
+
+						while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexStopPosition]) === true) {
+							$systemDatabaseDataIndexStop .= $systemDatabaseDataKeyFileData[$systemDatabaseDataIndexStopPosition];
+							$systemDatabaseDataIndexStopPosition++;
+						}
+
 						// todo: get first + last indexes of file, increment $systemDatabaseData[$systemDatabaseDataKey] indexes until index exceeds last index of file, unset $systemDatabaseData[$systemDatabaseDataKey][index] after parsing file data
 					}
 
