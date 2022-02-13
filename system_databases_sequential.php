@@ -54,19 +54,19 @@
 
 				foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					if (empty($systemDatabaseDataKeyDataParts[$systemDatabaseDataKey) === true) {
-						$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] = '';
-					}
-
-					if (isset($systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey]) === false) {
 						$systemDatabaseDataKeyFileDetails = false;
 						exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataKeyFileDetails);
 
-						if (empty($systemDatabaseDataKeyFileDetails) === true) {
-							if (touch('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/0') === false) {
-								$response['message'] = 'Error saving system database data, please try again.';
-								return $response;
-							}
+						if (
+							(empty($systemDatabaseDataKeyFileDetails) === true) &&
+							(touch('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/0') === false)
+						) {
+							$response['message'] = 'Error saving system database data, please try again.';
+							return $response;
+						}
 
+						if (empty($systemDatabaseDataKeyFileDetails[0]) === true) {
+							$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = 0;
 							$systemDatabaseDataKeyFileDetails = array(
 								0,
 								0
@@ -82,6 +82,10 @@
 							}
 						}
 
+						$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] = '';
+					}
+
+					if (isset($systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey]) === false) {
 						$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1]);
 
 						if (
@@ -96,16 +100,12 @@
 							}
 						}
 
-						$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = 0;
+						$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = '';
+						$systemDatabaseDataKeyDataIndexPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
 
-						if (empty($systemDatabaseDataKeyFileData) === false) {
-							$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = '';
-							$systemDatabaseDataKeyDataIndexPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
-
-							while (isset($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition + 3]) === true) {
-								$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition];
-								$systemDatabaseDataKeyDataIndexPosition++;
-							}
+						while (isset($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition + 3]) === true) {
+							$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition];
+							$systemDatabaseDataKeyDataIndexPosition++;
 						}
 					}
 
