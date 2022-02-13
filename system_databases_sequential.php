@@ -271,22 +271,6 @@
 							return $response;
 						}
 
-						$systemDatabaseDataIndexStart = '';
-						$systemDatabaseDataIndexStartPosition = 0;
-
-						while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexStartPosition]) === true) {
-							$systemDatabaseDataIndexStart .= $systemDatabaseDataKeyFileData[$systemDatabaseDataIndexStartPosition];
-							$systemDatabaseDataIndexStartPosition++;
-						}
-
-						$systemDatabaseDataIndexStart = '';
-						$systemDatabaseDataIndexStartPosition = (strlen($systemDatabaseDataIndexStart) + $systemDatabaseDataIndexStart + 6);
-
-						while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexStartPosition]) === true) {
-							$systemDatabaseDataIndexStart .= $systemDatabaseDataKeyFileData[$systemDatabaseDataIndexStartPosition];
-							$systemDatabaseDataIndexStartPosition++;
-						}
-
 						$systemDatabaseDataIndexStop = '';
 						$systemDatabaseDataIndexStopPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
 
@@ -295,14 +279,21 @@
 							$systemDatabaseDataIndexStopPosition++;
 						}
 
-						// todo: get first + last indexes of file, increment $systemDatabaseData[$systemDatabaseDataKey] indexes until index exceeds last index of file, unset $systemDatabaseData[$systemDatabaseDataKey][index] after parsing file data
-					}
+						$systemDatabaseDataIndex = key($systemDatabaseDataIndexes[$systemDatabaseDataKey]);
+						$systemDatabaseDataIndexStop++;
 
-					// todo: 
+						while (($systemDatabaseDataIndex < $systemDatabaseDataIndexStop) === true) {
+							// add new string to $systemDatabaseDataKeyFileData with new string length
+							unset($systemDatabaseDataIndexes[$systemDatabaseDataKey][$systemDatabaseDataIndex]);
+							$systemDatabaseDataIndex = key($systemDatabaseDataIndexes[$systemDatabaseDataKey]);
+						}
+
+						// todo: write $systemDatabaseDataKeyFileData to file if modified
+					}
 				}
 
-				// todo: updating records in $parameters['data'] with valid $systemDatabaseDataIndexes
-				// todo: re-index data files in 10mb parts every 1000 modified records
+				// todo: require x2 database storage for crash recovery redundancy + log storage usage for database as x2
+				// todo: re-index data files after modifying records
 			}
 		}
 
