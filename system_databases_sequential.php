@@ -261,6 +261,7 @@
 				unset($systemDatabaseData['id']);
 
 				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
+					ksort($systemDatabaseData[$systemDatabaseDataKey]);
 					// todo
 				}
 
