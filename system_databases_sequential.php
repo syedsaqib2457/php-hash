@@ -260,8 +260,8 @@
 
 				unset($systemDatabaseData['id']);
 
-				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-					ksort($systemDatabaseData[$systemDatabaseDataKey]);
+				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValues) {
+					ksort($systemDatabaseDataValues);
 
 					foreach ($systemDatabaseDataKeyFiles[$systemDatabaseDataKey] as $systemDatabaseDataKeyFile) {
 						$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFile);
@@ -279,13 +279,13 @@
 							$systemDatabaseDataIndexStopPosition++;
 						}
 
-						$systemDatabaseDataIndex = key($systemDatabaseDataIndexes[$systemDatabaseDataKey]);
 						$systemDatabaseDataIndexStop++;
+						$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
 
-						while (($systemDatabaseDataIndex < $systemDatabaseDataIndexStop) === true) {
+						while (($systemDatabaseDataValuesIndex < $systemDatabaseDataIndexStop) === true) {
 							// add new string to $systemDatabaseDataKeyFileData with new string length
-							unset($systemDatabaseDataIndexes[$systemDatabaseDataKey][$systemDatabaseDataIndex]);
-							$systemDatabaseDataIndex = key($systemDatabaseDataIndexes[$systemDatabaseDataKey]);
+							unset($systemDatabaseDataValues[$systemDatabaseDataValuesIndex]);
+							$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
 						}
 
 						// todo: write $systemDatabaseDataKeyFileData to file if modified
