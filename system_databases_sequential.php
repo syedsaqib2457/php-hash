@@ -271,6 +271,18 @@
 							return $response;
 						}
 
+						$systemDatabaseDataIndexStart = '';
+						$systemDatabaseDataIndexStartPosition = 0;
+
+						//strpos($systemDatabaseDataKeyFileData, '_-_');
+
+						while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexStartPosition]) === true) {
+							$systemDatabaseDataIndexStart .= $systemDatabaseDataKeyFileData[$systemDatabaseDataIndexStartPosition];
+							$systemDatabaseDataIndexStartPosition++;
+						}
+
+						$systemDatabaseDataIndexStartPosition = (strlen($systemDatabaseDataIndexStart) + $systemDatabaseDataIndexStart + 6);
+						$systemDatabaseDataIndexStop = ''; // todo
 						// todo: get first + last indexes of file, increment $systemDatabaseData[$systemDatabaseDataKey] indexes until index exceeds last index of file, unset $systemDatabaseData[$systemDatabaseDataKey][index] after parsing file data
 					}
 
