@@ -279,7 +279,8 @@
 						$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
 
 						while (($systemDatabaseDataValuesIndex < $systemDatabaseDataIndexStop) === true) {
-							// add new string to $systemDatabaseDataKeyFileData with new string length
+							$systemDatabaseDataIndexPosition = strpos($systemDatabaseDataKeyFileData, '-_-' . $systemDatabaseDataValuesIndex . '_-_');
+							// todo: add new string to $systemDatabaseDataKeyFileData with new string length
 							unset($systemDatabaseDataValues[$systemDatabaseDataValuesIndex]);
 							$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
 						}
