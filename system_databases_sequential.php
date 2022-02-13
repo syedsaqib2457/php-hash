@@ -176,10 +176,6 @@
 
 				foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					if (empty($systemDatabaseDataKeyDataParts[$systemDatabaseDataKey) === true) {
-						$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] = '';
-					}
-
-					if (isset($systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey]) === false) {
 						$systemDatabaseDataKeyFileDetails = false;
 						exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataKeyFileDetails);
 
@@ -189,6 +185,7 @@
 								return $response;
 							}
 
+							$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = 0;
 							$systemDatabaseDataKeyFileDetails = array(
 								0,
 								0
@@ -204,6 +201,10 @@
 							}
 						}
 
+						$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] = '';
+					}
+
+					if (isset($systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey]) === false) {
 						$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1]);
 
 						if (
