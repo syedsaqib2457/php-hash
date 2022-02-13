@@ -247,13 +247,25 @@
 				}
 			}
 
+			$systemDatabaseData = array();
+
 			if (empty($parameters['data']) === false) {
 				foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
+					$systemDatabaseDataIndex = $systemDatabaseDataIndexes[$systemDatabaseDataKey];
+
 					foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-						// todo: updating records in $parameters['data'] with valid $systemDatabaseDataIndexes
-						// todo: re-index data files in 10mb parts every 1000 modified records
+						$systemDatabaseData[$systemDatabaseDataKey][$systemDatabaseDataIndex] = $systemDatabaseDataValue;
 					}
 				}
+
+				unset($systemDatabaseData['id']);
+
+				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
+					// todo
+				}
+
+				// todo: updating records in $parameters['data'] with valid $systemDatabaseDataIndexes
+				// todo: re-index data files in 10mb parts every 1000 modified records
 			}
 		}
 
