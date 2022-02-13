@@ -50,10 +50,10 @@
 
 				foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					if (empty($systemDatabaseData[$systemDatabaseDataKey) === true) {
-						$systemDatabaseData[$systemDatabaseDataKey] = strlen($systemDatabaseDataValue) . '_' . $systemDatabaseDataValue;
+						$systemDatabaseData[$systemDatabaseDataKey] = strlen($systemDatabaseDataValue) . '__' . $systemDatabaseDataValue . '__';
 					}
 
-					$systemDatabaseData[$systemDatabaseDataKey] .= strlen($systemDatabaseDataValue) . '_' . $systemDatabaseDataValue;
+					$systemDatabaseData[$systemDatabaseDataKey] .= strlen($systemDatabaseDataValue) . '__' . $systemDatabaseDataValue . '__';
 					// todo: log records that were modified to revert during next process re-indexing if current process is terminated
 
 					if ((($systemDatabaseData[$systemDatabaseDataKey] % 100) === 0) === true) {
@@ -108,7 +108,16 @@
 			}
 
 			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-				// update remaining records with ID using strpos
+				
+
+				foreach ($systemDatabaseDataKeyFiles['id'] as $systemDatabaseDataKeyFile) {
+					$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFile);
+					$systemDatabaseDataValuePosition = strpos($systemDatabaseDataKeyFileData, '__' . $systemDatabaseDataValue['id'] . '__');
+
+					if (($systemDatabaseDataValuePosition === false) === false) {
+						// todo
+					}
+				}
 			}
 		}
 
