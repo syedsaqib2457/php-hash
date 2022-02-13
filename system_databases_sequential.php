@@ -137,16 +137,28 @@
 				}
 			}
 
-			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-				foreach ($systemDatabaseDataKeyFiles['id'] as $systemDatabaseDataKeyFile) {
-					$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFile);
+			$systemDatabaseData = $parameters['data'];
+			$systemDatabaseDataIndexes = array();
+
+			foreach ($systemDatabaseDataKeyFiles['id'] as $systemDatabaseDataKeyFile) {
+				$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFile);
+
+				foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					$systemDatabaseDataValuePosition = strpos($systemDatabaseDataKeyFileData, '_-_' . $systemDatabaseDataValue['id'] . '-_-');
 
 					if (($systemDatabaseDataValuePosition === false) === false) {
-						
+						$systemDatabaseDataIndexes[$systemDatabaseDataKey] = '';
+						$systemDatabaseDataValuePosition += 72;
+
+						while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataValuePosition]) === true) {
+							$systemDatabaseDataIndexes[$systemDatabaseDataKey] .= $systemDatabaseDataKeyFileData[$systemDatabaseDataValuePosition];
+							$systemDatabaseDataValuePosition++;
+						}
 					}
 				}
 			}
+
+			// todo
 		}
 
 		return true;
