@@ -41,6 +41,7 @@
 				);
 			}
 
+			$systemDatabaseDataKeyDataIndexes = array();
 			$systemDatabaseDataKeyDataParts = array();
 
 			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
@@ -53,6 +54,10 @@
 
 				foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
 					if (empty($systemDatabaseDataKeyDataParts[$systemDatabaseDataKey) === true) {
+						$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] = '';
+					}
+
+					if (isset($systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey]) === false) {
 						$systemDatabaseDataKeyFileDetails = false;
 						exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataKeyFileDetails);
 
@@ -91,21 +96,23 @@
 							}
 						}
 
-						$systemDatabaseDataKeyDataIndex = '';
-						$systemDatabaseDataKeyDataIndexPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
+						$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = 0;
 
-						while (isset($systemDatabaseDataKeyDataParts[$systemDatabaseDataKeyDataIndexPosition + 3]) === true) {
-							$systemDatabaseDataKeyDataIndex .= $data[$systemDatabaseDataKeyDataIndexPosition];
-							$systemDatabaseDataKeyDataIndexPosition++;
+						if (empty($systemDatabaseDataKeyFileData) === false) {
+							$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] = '';
+							$systemDatabaseDataKeyDataIndexPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
+
+							while (isset($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition + 3]) === true) {
+								$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition];
+								$systemDatabaseDataKeyDataIndexPosition++;
+							}
 						}
-
-						$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] = '';
 					}
 
-					$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] .= strlen($systemDatabaseDataValue) . '_-_' . $systemDatabaseDataValue . '-_-' . $systemDatabaseDataKeyDataIndex . '_-_';
-					$systemDatabaseDataKeyDataIndex++;
+					$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] .= strlen($systemDatabaseDataValue) . '_-_' . $systemDatabaseDataValue . '-_-' . $systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] . '_-_';
+					$systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey]++;
 
-					if ((($systemDatabaseDataKeyDataIndex % 100) === 0) === true) {
+					if ((($systemDatabaseDataKeyDataIndexes[$systemDatabaseDataKey] % 100) === 0) === true) {
 						if (file_put_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1], $systemDatabaseDataKeyDataParts[$systemDatabaseDataKey], FILE_APPEND) === false) {
 							$response['message'] = 'Error saving system database data, please try again.';
 							return $response;
@@ -154,11 +161,89 @@
 							$systemDatabaseDataIndexes[$systemDatabaseDataKey] .= $systemDatabaseDataKeyFileData[$systemDatabaseDataValuePosition];
 							$systemDatabaseDataValuePosition++;
 						}
+
+						unset($systemDatabaseData[$systemDatabaseDataKey]);
 					}
 				}
 			}
 
-			// todo
+			$systemDatabaseDataIndex = 0;
+			$systemDatabaseDataKeyDataParts = array();
+
+			// appending records with invalid ID as new records
+			foreach ($systemDatabaseData as $systemDatabaseDataKey => $systemDatabaseDataValue) {
+				$systemDatabaseDataValue['id'] = _createUniqueId();
+				unset($parameters['data'][$systemDatabaseDataKey]);
+
+				foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
+					if (empty($systemDatabaseDataKeyDataParts[$systemDatabaseDataKey) === true) {
+						$systemDatabaseDataKeyFileDetails = false;
+						exec('cd /usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/ ls -f --ignore="." --ignore=".." --size | tail -1 | awk \'{print $1"\n"$2}\'', $systemDatabaseDataKeyFileDetails);
+
+						if (empty($systemDatabaseDataKeyFileDetails) === true) {
+							if (touch('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/0') === false) {
+								$response['message'] = 'Error saving system database data, please try again.';
+								return $response;
+							}
+
+							$systemDatabaseDataKeyFileDetails = array(
+								0,
+								0
+							);
+						}
+
+						if (($systemDatabaseDataKeyFileDetails[0] > 10000000) === true) {
+							$systemDatabaseDataKeyFileDetails[1]++;
+
+							if (touch('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1]) === false) {
+								$response['message'] = 'Error saving system database data, please try again.';
+								return $response;
+							}
+						}
+
+						$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1]);
+
+						if (
+							(empty($systemDatabaseDataKeyFileData) === true) &&
+							(file_exists('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . ($systemDatabaseDataKeyFileDetails[1] - 1)) === true)
+						) {
+							$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . ($systemDatabaseDataKeyFileDetails[1] - 1));
+
+							if ($systemDatabaseDataKeyFileData === false) {
+								$response['message'] = 'Error saving system database data, please try again.';
+								return $response;
+							}
+						}
+
+						$systemDatabaseDataKeyDataIndex = 0;
+
+						if (empty($systemDatabaseDataKeyFileData) === false) {
+							$systemDatabaseDataKeyDataIndex = '';
+							$systemDatabaseDataKeyDataIndexPosition = (strripos($systemDatabaseDataKeyFileData, '-_-') + 3);
+
+							while (isset($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition + 3]) === true) {
+								$systemDatabaseDataKeyDataIndex .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyDataIndexPosition];
+								$systemDatabaseDataKeyDataIndexPosition++;
+							}
+						}
+
+						$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] = '';
+					}
+
+					$systemDatabaseDataKeyDataParts[$systemDatabaseDataKey] .= strlen($systemDatabaseDataValue) . '_-_' . $systemDatabaseDataValue . '-_-' . $systemDatabaseDataKeyDataIndex . '_-_';
+
+					if ((($systemDatabaseDataKeyDataIndex % 100) === 0) === true) {
+						if (file_put_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFileDetails[1], $systemDatabaseDataKeyDataParts[$systemDatabaseDataKey], FILE_APPEND) === false) {
+							$response['message'] = 'Error saving system database data, please try again.';
+							return $response;
+						}
+
+						unset($systemDatabaseDataKeyDataParts[$systemDatabaseDataKey]);
+					}
+				}
+			}
+
+			// todo: updating records in $parameters['data'] with valid $systemDatabaseDataIndexes
 		}
 
 		return true;
