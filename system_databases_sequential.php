@@ -46,6 +46,7 @@
 					continue;
 				}
 
+				$systemDatabaseDataValue['id'] = _createUniqueId();
 				unset($parameters['data'][$systemDatabaseDataKey]);
 
 				foreach ($systemDatabaseDataValue as $systemDatabaseDataKey => $systemDatabaseDataValue) {
