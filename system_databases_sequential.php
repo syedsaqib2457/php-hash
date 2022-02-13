@@ -108,7 +108,7 @@
 			}
 
 			foreach ($parameters['data'] as $systemDatabaseDataKey => $systemDatabaseDataValue) {
-				
+				// todo: find numeric index of ID for fast parsing of each key value pair in $systemDatabaseDataValue
 
 				foreach ($systemDatabaseDataKeyFiles['id'] as $systemDatabaseDataKeyFile) {
 					$systemDatabaseDataKeyFileData = file_get_contents('/usr/local/nodecompute/system_database/data/' . $parameters['in'] . '/' . $systemDatabaseDataKey . '/' . $systemDatabaseDataKeyFile);
