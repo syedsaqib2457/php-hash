@@ -217,7 +217,7 @@
 
 	function _processNodeProcesses($parameters, $response) {
 		$parameters['processing_progress_checkpoints'] = array(
-			'processing_next_node_processes',
+			'processing_node_processes',
 			'processing_cryptocurrency_blockchain_node_processes',
 			'verifying_node_processes',
 			'processing_recursive_dns_node_processes',
