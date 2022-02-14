@@ -277,25 +277,10 @@
 
 						$systemDatabaseDataIndexStop++;
 						$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
-						// todo: parse each value with prepended string length for injection security
 
-						/*while (($systemDatabaseDataValuesIndex < $systemDatabaseDataIndexStop) === true) {
-							$systemDatabaseDataIndexPosition = stripos($systemDatabaseDataKeyFileData, '-_-' . $systemDatabaseDataValuesIndex . '_-_');
-							$systemDatabaseDataValue = '';
-
-							while (
-								(($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexPosition] === '_') === false) ||
-								(($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexPosition + 1] === '-') === false) ||
-								(($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexPosition + 2] === '_') === false)
-							) {
-								// todo: add current value to string to reference when adding new string
-								$systemDatabaseDataIndexPosition--;
-							}
-
-							// todo: add new string to $systemDatabaseDataKeyFileData with new string length
-							unset($systemDatabaseDataValues[$systemDatabaseDataValuesIndex]);
-							$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
-						}*/
+						while (($systemDatabaseDataValuesIndex < $systemDatabaseDataIndexStop) === true) {
+							// todo: parse each value with prepended string length
+						}
 
 						// todo: write $systemDatabaseDataKeyFileData to file if modified
 					}
