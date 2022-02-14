@@ -218,18 +218,11 @@
 	function _processNodeProcesses($parameters, $response) {
 		$parameters['processing_progress_checkpoints'] = array(
 			'processing_next_node_processes',
-			'processing_node_kernel_options',
-			'processing_node_interfaces',
 			'processing_cryptocurrency_blockchain_node_processes',
-			'verifying_current_http_proxy_node_processes',
-			'verifying_current_load_balancer_node_processes',
-			'verifying_current_recursive_dns_node_processes',
-			'verifying_current_socks_proxy_node_processes',
-			'processing_next_recursive_dns_node_processes',
-			'processing_next_proxy_node_processes',
+			'verifying_node_processes',
+			'processing_recursive_dns_node_processes',
+			'processing_proxy_node_processes',
 			'processing_firewall',
-			'deleting_previous_node_processes',
-			'processing_current_node_processes',
 			'processing_completed'
 		);
 		end($parameters['processing_progress_checkpoints']);
@@ -322,7 +315,6 @@
 			}
 		}
 
-		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$kernelOptions = array(
 			'fs.aio-max-nr = 1000000000',
 			'fs.file-max = 1000000000',
@@ -447,7 +439,6 @@
 			shell_exec('sudo ' . $parameters['binary_files']['sysctl'] . ' -w ' . $kernelOptionKey . '="' . $kernelOptionValue . '"');
 		}
 
-		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$nodeActionProcessNetworkInterfaceIpAddressesCommands = array(
 			'<?php',
 			'if (empty($parameters) === true) {',
@@ -482,9 +473,9 @@
 			return $response;
 		}
 
-		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-
 		if (empty($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchains']) === false) {
+			$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
+
 			foreach ($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchains'] as $nodeProcessCryptocurrencyBlockchainNodeProcessType => $nodeProcessCryptocurrencyBlockchain) {
 				if (empty($parameters['data'][$parameters['node_process_data_key']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]) === false) {
 					$nodeProcessCryptocurrencyBlockchain['ip_address'] = current($parameters['data'][$parameters['node_process_data_key']]['node_reserved_internal_destinations']);
@@ -501,12 +492,14 @@
 			}
 		}
 
+		unset($parameters['processing_progress_checkpoints'][1]);
+
 		if (empty($parameters['data']['next']['nodes']) === true) {
 			if (empty($parameters['data']['current']) === false) {
+				$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
+
 				foreach ($parameters['data']['current']['node_process_types'] as $nodeProcessType) {
 					if (empty($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType]) === false) {
-						$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-
 						foreach (array(0, 1) as $nodeProcessPartKey) {
 							$nodeIpAddressVersionNumber = key($parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'][$nodeProcessType][$nodeProcessPartKey]);
 
@@ -545,10 +538,7 @@
 			return $response;
 		}
 
-		unset($parameters['processing_progress_checkpoints'][4]);
-		unset($parameters['processing_progress_checkpoints'][5]);
-		unset($parameters['processing_progress_checkpoints'][6]);
-		unset($parameters['processing_progress_checkpoints'][7]);
+		unset($parameters['processing_progress_checkpoints'][2]);
 		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 
 		if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
@@ -1094,8 +1084,6 @@
 			}
 		}
 
-		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-
 		foreach ($nodeProcessesToRemove as $nodeProcessType => $nodeProcessIds) {
 			$nodeProcessProcessIds = array();
 
@@ -1132,7 +1120,6 @@
 			}
 		}
 
-		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$parameters['data']['current'] = array_intersect_key($parameters['data']['next'], array(
 			'node_ip_address_version_numbers' => true,
 			'node_ip_addresses' => true,
