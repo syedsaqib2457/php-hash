@@ -737,7 +737,9 @@
 				// logs all "sent" transactions + "received" transactions (in the case of multiple transactions received for 1 payment request) from wallets
 			// ),
 			'node_process_cryptocurrency_blockchain_wallets' => array(
+				'created_timestamp',
 				'id',
+				'modified_timestamp',
 				'node_id',
 				'node_node_id',
 				'node_process_type',
