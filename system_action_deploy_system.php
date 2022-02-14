@@ -371,6 +371,7 @@
 		shell_exec('cd /var/www/nodecompute/ && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql_apt_config.deb');
 		unlink('/var/www/nodecompute/mysql_apt_config.deb');
 		shell_exec('sudo add-apt-repository -y universe');
+		shell_exec('sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 467B942D3A79BD29');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libmecab2 lsb-release');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-common mysql-client mysql-community-server-core mysql-community-client mysql-community-client-core mysql-community-server mysql-community-client-plugins mysql-server');
