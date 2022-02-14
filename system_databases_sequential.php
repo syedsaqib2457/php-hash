@@ -296,7 +296,14 @@
 								$systemDatabaseDataKeyFileDataIndexPosition++;
 							}
 
-							// todo: parse each value with prepended string length
+							if (($systemDatabaseDataValuesIndex === $systemDatabaseDataKeyFileDataValueIndex) === true) {
+								// todo: add new value with updated string length + value
+								unset($systemDatabaseDataValues[$systemDatabaseDataValuesIndex]);
+								$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
+							}
+
+							// todo: increment $systemDatabaseDataKeyFileDataValuePosition for next value
+							
 						}
 
 						// todo: write $systemDatabaseDataKeyFileData to file if modified
