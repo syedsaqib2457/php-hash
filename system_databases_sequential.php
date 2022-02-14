@@ -276,15 +276,16 @@
 						}
 
 						$systemDatabaseDataIndexStop++;
-						$systemDatabaseDataKeyFileDataPosition = 0;
+						$systemDatabaseDataKeyFileDataValuePosition = 0;
 						$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
 
 						while (($systemDatabaseDataValuesIndex < $systemDatabaseDataIndexStop) === true) {
 							$systemDatabaseDataKeyFileDataValueLength = '';
+							$systemDatabaseDataKeyFileDataValue = '';
 
-							while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyFileDataPosition]) === true) {
-								$systemDatabaseDataKeyFileDataValueLength .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyFileDataPosition];
-								$systemDatabaseDataKeyFileDataPosition++;
+							while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyFileDataValuePosition]) === true) {
+								$systemDatabaseDataKeyFileDataValueLength .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyFileDataValuePosition];
+								$systemDatabaseDataKeyFileDataValuePosition++;
 							}
 
 							// todo: parse each value with prepended string length
