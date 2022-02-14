@@ -383,11 +383,14 @@
 
 		$mysqlSettings = array(
 			'[mysqld]',
-			'bind-address = 127.0.0.1',
+			'bind_address = 127.0.0.1',
 			'datadir = /var/lib/mysql/',
-			'default-authentication-plugin = mysql_native_password',
-			'log-error = /var/log/mysql/error.log',
-			'pid-file = /var/run/mysqld/mysqld.pid',
+			'default_authentication_plugin = mysql_native_password',
+			'log_error = /var/log/mysql/error.log',
+			'max_allowed_packet = 1000000000',
+			'max_connections = 100000',
+			'port = 3306',
+			'pid_file = /var/run/mysqld/mysqld.pid',
 			'socket = /var/run/mysqld/mysqld.sock'
 		);
 		$mysqlSettings = implode("\n", $mysqlSettings);
