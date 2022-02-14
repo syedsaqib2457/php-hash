@@ -276,9 +276,17 @@
 						}
 
 						$systemDatabaseDataIndexStop++;
+						$systemDatabaseDataKeyFileDataPosition = 0;
 						$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
 
 						while (($systemDatabaseDataValuesIndex < $systemDatabaseDataIndexStop) === true) {
+							$systemDatabaseDataKeyFileDataValueLength = '';
+
+							while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyFileDataPosition]) === true) {
+								$systemDatabaseDataKeyFileDataValueLength .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyFileDataPosition];
+								$systemDatabaseDataKeyFileDataPosition++;
+							}
+
 							// todo: parse each value with prepended string length
 						}
 
