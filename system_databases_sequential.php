@@ -279,7 +279,18 @@
 						$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
 
 						while (($systemDatabaseDataValuesIndex < $systemDatabaseDataIndexStop) === true) {
-							$systemDatabaseDataIndexPosition = strpos($systemDatabaseDataKeyFileData, '-_-' . $systemDatabaseDataValuesIndex . '_-_');
+							$systemDatabaseDataIndexPosition = stripos($systemDatabaseDataKeyFileData, '-_-' . $systemDatabaseDataValuesIndex . '_-_');
+							$systemDatabaseDataValue = '';
+							
+							while (
+								(($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexPosition] === '_') === false) ||
+								(($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexPosition + 1] === '-') === false) ||
+								(($systemDatabaseDataKeyFileData[$systemDatabaseDataIndexPosition + 2] === '_') === false)
+							) {
+								// todo: add current value to string to reference when adding new string
+								$systemDatabaseDataIndexPosition--;
+							}
+
 							// todo: add new string to $systemDatabaseDataKeyFileData with new string length
 							unset($systemDatabaseDataValues[$systemDatabaseDataValuesIndex]);
 							$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
