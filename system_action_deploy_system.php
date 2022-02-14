@@ -1231,15 +1231,14 @@
 				exit;
 			}
 
-			$systemDatabaseCommandResponse = mysqli_fetch_assoc($systemDatabaseCommandResponse);
-			$systemDatabaseCommandResponse = current($systemDatabaseCommandResponse);
-			$systemDatabaseCommandResponse = intval($systemDatabaseCommandResponse);
-			end($systemDatabaseColumnNames);
-			$systemDatabaseColumnNameCount = (key($systemDatabaseColumnNames) + 1);
+			foreach ($systemDatabaseCommandResponse as $systemDatabaseCommandResponse) {
+				end($systemDatabaseColumnNames);
+				$systemDatabaseColumnNameCount = (key($systemDatabaseColumnNames) + 1);
 
-			if (($systemDatabaseCommandResponse === $systemDatabaseColumnNameCount) === false) {
-				echo 'Error executing system database commands, please try again.' . "\n";
-				exit;
+				if ((intval($systemDatabaseCommandResponse) === $systemDatabaseColumnNameCount) === false) {
+					echo 'Error executing system database commands, please try again.' . "\n";
+					exit;
+				}
 			}
                 }
 
