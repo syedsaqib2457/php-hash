@@ -288,6 +288,14 @@
 								$systemDatabaseDataKeyFileDataValuePosition++;
 							}
 
+							$systemDatabaseDataKeyFileDataIndexPosition = ($systemDatabaseDataKeyFileDataValuePosition + $systemDatabaseDataKeyFileDataValueLength + 6);
+							$systemDatabaseDataKeyFileDataValueIndex = '';
+
+							while (is_numeric($systemDatabaseDataKeyFileData[$systemDatabaseDataKeyFileDataIndexPosition]) === true) {
+								$systemDatabaseDataKeyFileDataValueIndex .= $systemDatabaseDataKeyFileData[$systemDatabaseDataKeyFileDataIndexPosition];
+								$systemDatabaseDataKeyFileDataIndexPosition++;
+							}
+
 							// todo: parse each value with prepended string length
 						}
 
