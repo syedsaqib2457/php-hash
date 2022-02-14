@@ -361,7 +361,7 @@
 			$mysqlVersion = '0.8.20';
 		}
 
-		shell_exec('cd /var/www/nodecompute/ && sudo wget -O mysql_apt_config.deb --no-dns-cache --retry-connrefused --timeout=60 --tries=2 https://dev.mysql.com/get/mysql-apt-config_' . $mysqlVersion . '-1_all.deb');
+		shell_exec('cd /var/www/nodecompute/ && sudo wget -O mysql_apt_config.deb --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://dev.mysql.com/get/mysql-apt-config_' . $mysqlVersion . '-1_all.deb');
 
 		if (file_exists('/var/www/nodecompute/mysql_apt_config.deb') === false) {
 			echo 'Error downloading MySQL, please try again.' . "\n";
@@ -426,7 +426,7 @@
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
-		shell_exec('cd /var/www/nodecompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/nodecompute/nodecompute .');
+		shell_exec('cd /var/www/nodecompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/twexxor/nodecompute .');
 
 		if (file_exists('/var/www/nodecompute/readme.md') === false) {
 			echo 'Error downloading system files, please try again.' . "\n";
