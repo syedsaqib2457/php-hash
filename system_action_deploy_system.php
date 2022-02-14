@@ -729,13 +729,13 @@
 				'node_process_type',
 				'port_number'
 			),
-			'node_process_cryptocurrency_blockchain_wallet_payment_requests' => array(
+			// 'node_process_cryptocurrency_blockchain_wallet_payment_requests' => array(
 				// new addresses from the wallet are automatically created here for each payment request with a user-set time limit
 				// partial payments are stored in node_process_cryptocurrency_wallet_transaction_logs
-			),
-			'node_process_cryptocurrency_blockchain_wallet_transaction_logs' => array(
+			// ),
+			// 'node_process_cryptocurrency_blockchain_wallet_transaction_logs' => array(
 				// logs all "sent" transactions + "received" transactions (in the case of multiple transactions received for 1 payment request) from wallets
-			),
+			// ),
 			'node_process_cryptocurrency_blockchain_wallets' => array(
 				'id',
 				'node_id',
