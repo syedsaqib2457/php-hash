@@ -1231,11 +1231,14 @@
 				exit;
 			}
 
-			foreach ($systemDatabaseCommandResponse as $systemDatabaseCommandResponse) {
-				end($systemDatabaseColumnNames);
-				$systemDatabaseColumnNameCount = (key($systemDatabaseColumnNames) + 1);
+			end($systemDatabaseColumnNames);
+			$systemDatabaseColumnNameCount = (key($systemDatabaseColumnNames) + 1);
 
-				if ((intval($systemDatabaseCommandResponse) === $systemDatabaseColumnNameCount) === false) {
+			foreach ($systemDatabaseCommandResponse as $systemDatabaseCommandResponse) {
+				$systemDatabaseCommandResponse = current($systemDatabaseCommandResponse);
+				$systemDatabaseCommandResponse = intval($systemDatabaseCommandResponse);
+
+				if (($systemDatabaseColumnNameCount === $systemDatabaseCommandResponse) === false) {
 					echo 'Error executing system database commands, please try again.' . "\n";
 					exit;
 				}
