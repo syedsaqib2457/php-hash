@@ -296,7 +296,7 @@
 								$systemDatabaseDataKeyFileDataIndexPosition++;
 							}
 
-							if (($systemDatabaseDataValuesIndex === $systemDatabaseDataKeyFileDataValueIndex) === true) {
+							if (($systemDatabaseDataValuesIndex === intval($systemDatabaseDataKeyFileDataValueIndex)) === true) {
 								// todo: add new value with updated string length + value
 								unset($systemDatabaseDataValues[$systemDatabaseDataValuesIndex]);
 								$systemDatabaseDataValuesIndex = key($systemDatabaseDataValues);
