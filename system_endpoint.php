@@ -228,6 +228,23 @@
 		}
 
 		$response['authenticated_status'] = '1';
+		$parameters['system_endpoint_ip_address'] = _list(array(
+			'data' => array(
+				'value'
+			),
+			'in' => $parameters['system_databases']['system_settings'],
+			'where' => array(
+				'name' => 'system_endpoint_ip_address'
+			)
+		), $response);
+		$parameters['system_endpoint_ip_address'] = current($parameters['system_endpoint_ip_address']);
+		$parameters['system_endpoint_ip_address'] = current($parameters['system_endpoint_ip_address']);
+
+		if (empty($parameters['system_endpoint_ip_address']) === true) {
+			$response['message'] = 'Error listing system endpoint IP address, please try again.';
+			return $response;
+		}
+
 		require_once('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php');
 	}
 
