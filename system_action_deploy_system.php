@@ -114,7 +114,7 @@
 
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 		shell_exec('sudo apt-get update');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables net-tools php-curl php-mysqli procps syslinux systemd util-linux');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli procps syslinux systemd util-linux');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 		shell_exec('sudo rm -rf /var/www/nodecompute/');
@@ -126,6 +126,12 @@
 				'command' => $uniqueId,
 				'name' => 'a2dismod',
 				'output' => 'Module ' . $uniqueId,
+				'package' => 'apache2'
+			),
+			array(
+				'command' => $uniqueId,
+				'name' => 'a2enconf',
+				'output' => 'Conf ' . $uniqueId,
 				'package' => 'apache2'
 			),
 			array(
@@ -458,10 +464,15 @@
 			exit;
 		}
 
+		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' stop apache2');
+		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2dismod'] . ' php*');
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2dismod'] . ' mpm_prefork');
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2dismod'] . ' mpm_worker');
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' mpm_event');
+		shell_exec('cd /etc/apache2/conf-available && sudo ' . $binaryFiles['a2enconf'] . ' php*');
+		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' proxy');
+		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' proxy_fgci');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
 		shell_exec('cd /var/www/nodecompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/twexxor/nodecompute .');
