@@ -386,20 +386,16 @@
 			'bind_address = 127.0.0.1',
 			'datadir = /var/lib/mysql/',
 			'default_authentication_plugin = mysql_native_password',
-			'foreign_key_checks = 0',
 			'host_cache_size = 0',
 			'innodb_read_io_threads = 64',
 			'innodb_write_io_threads = 64',
-			'join_buffer_size = 128',
 			'log_error = /var/log/mysql/error.log',
 			'long_query_time = 100',
 			'max_allowed_packet = 1000000000',
 			'max_connections = 100000',
-			'max_join_size = 1',
 			'open_files_limit = 1000000',
 			'port = 3306',
 			'pid_file = /var/run/mysqld/mysqld.pid',
-			'range_optimizer_max_mem_size = 0',
 			'socket = /var/run/mysqld/mysqld.sock'
 		);
 		$mysqlSettings = implode("\n", $mysqlSettings);
