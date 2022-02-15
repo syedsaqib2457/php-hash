@@ -452,7 +452,7 @@
 			'MaxSpareThreads 1000',
 			'MinSpareThreads 10',
 			'ServerLimit 100',
-			'StartServers 2',
+			'StartServers 1',
 			'ThreadLimit 1000',
 			'ThreadsPerChild 1000',
 			'</IfModule>'
