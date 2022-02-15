@@ -16,7 +16,7 @@
 			'source_ip_address' => $_SERVER['REMOTE_ADDR']
 		);
 
-		if (empty($parameters) === false) {
+		if (empty($parameters['action']) === false) {
 			$systemRequestLogsData['system_action'] = $parameters['action'];
 			$systemRequestLogsData['value'] = $parameters;
 			unset($systemRequestLogsData['value']['system_databases']);
