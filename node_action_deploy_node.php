@@ -408,30 +408,30 @@
 	}
 
 	$crontabCommands = explode("\n", $crontabCommands);
-	$crontabCommandIndex = array_search('# nodecompute_processes', $crontabCommands);
+	$crontabCommandIndex = array_search('# nodecompute_node_processes', $crontabCommands);
 
 	if (is_int($crontabCommandIndex) === true) {
 		while (is_int($crontabCommandIndex) === true) {
 			unset($crontabCommands[$crontabCommandIndex]);
 			$crontabCommandIndex++;
 
-			if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_processes') === false) {
+			if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_node_processes') === false) {
 				$crontabCommandIndex = false;
 			}
 		}
 	}
 
 	$crontabCommands += array(
-		'# nodecompute_processes',
-		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_network_interface_ip_addresses nodecompute_processes'
-		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_blockchain_blocks nodecompute_processes',
-		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data nodecompute_processes',
-		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_worker_settings nodecompute_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_node_user_request_logs nodecompute_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_resource_usage_logs nodecompute_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_processes nodecompute_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_resource_usage_logs nodecompute_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_recursive_dns_destination nodecompute_processes',
+		'# nodecompute_node_processes',
+		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_network_interface_ip_addresses nodecompute_node_processes'
+		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_blockchain_blocks nodecompute_node_processes',
+		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data nodecompute_node_processes',
+		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_worker_settings nodecompute_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_node_user_request_logs nodecompute_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_resource_usage_logs nodecompute_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_processes nodecompute_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_resource_usage_logs nodecompute_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_recursive_dns_destination nodecompute_node_processes',
 	);
 	$crontabCommands = implode("\n", $crontabCommands);
 
