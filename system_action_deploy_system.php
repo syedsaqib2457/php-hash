@@ -432,6 +432,27 @@
 
 		shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $_SERVER['argv'][1]);
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
+		$apacheSettings = array(
+			'<IfModule mpm_event_module>',
+			'MaxConnectionsPerChild 100000',
+			'MaxMemFree 0',
+			'MaxRequestWorkers 1000',
+			'MaxSpareThreads 1000',
+			'MinSpareThreads 10',
+			'ServerLimit 100',
+			'StartServers 2',
+			'ThreadLimit 1000',
+			'ThreadsPerChild 1000',
+			'</IfModule>'
+		);
+		$apacheSettings = implode("\n", $apacheSettings);
+
+		if (file_put_contents('/etc/apache2/mods-available/mpm_event.conf', $apacheSettings) === false) {
+			echo 'Error adding Apache settings, please try again.' . "\n";
+			exit;
+		}
+
+		// todo
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
 		shell_exec('cd /var/www/nodecompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/twexxor/nodecompute .');
