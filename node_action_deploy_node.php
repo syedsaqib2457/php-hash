@@ -47,6 +47,14 @@
 				'deb-src http://deb.debian.org/debian buster-updates main',
 				'deb http://security.debian.org/debian-security/ buster/updates main',
 				'deb-src http://security.debian.org/debian-security/ buster/updates main'
+			),
+			'11' => array(
+				'deb http://deb.debian.org/debian bullseye main',
+				'deb-src http://deb.debian.org/debian bullseye main',
+				'deb http://deb.debian.org/debian bullseye-updates main',
+				'deb-src http://deb.debian.org/debian bullseye-updates main',
+				'deb http://security.debian.org/debian-security/ bullseye-security main',
+				'deb-src http://security.debian.org/debian-security/ bullseye-security main'
 			)
 		),
 		'ubuntu' => array(
