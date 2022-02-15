@@ -2,9 +2,7 @@
 
 ## Introduction
 
-This API action adds IP address data from an instance to NodeCompute so it can be deployed as a connected node with API automation.
-
-IP addresses must already be routed to a node instance by the hosting provider.
+The `add_node` API action adds a node with IP address data so it can be connected with NodeCompute API automation.
 
 ## Request Example
 
@@ -172,11 +170,13 @@ The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
-- current_network
-- loopback
-- private_network
-- public_network
-- [list_all_values]
+- `current_network`
+- `documentation`
+- `ietf_protocol_assignments`
+- `internet`
+- `loopback`
+- `private_network`
+- `public_network`
 
 ### data [external_ip_address_version_6]
 
@@ -194,11 +194,13 @@ The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
-- current_network
-- loopback
-- private_network
-- public_network
-- [list_all_values]
+- `current_network`
+- `documentation`
+- `ietf_protocol_assignments`
+- `internet`
+- `loopback`
+- `private_network`
+- `public_network`
 
 ### data[id]
 
@@ -220,10 +222,13 @@ The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
-- current_network
-- loopback
-- private_network
-- [list_all_values]
+- `current_network`
+- `documentation`
+- `ietf_protocol_assignments`
+- `internet`
+- `loopback`
+- `private_network`
+- `public_network`
 
 ### data[internal_ip_address_version_6]
 
@@ -241,10 +246,13 @@ The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
-- current_network
-- loopback
-- private_network
-- [list_all_values]
+- `current_network`
+- `documentation`
+- `ietf_protocol_assignments`
+- `internet`
+- `loopback`
+- `private_network`
+- `public_network`
 
 ### data[memory_capacity_megabytes]
 
@@ -280,11 +288,18 @@ This is the current progress checkpoint for diagnosing performance issues while 
 
 For example, a user can delete some request destination URLs if node processing takes too long during the `proxy_node_request_destinations` processing progress checkpoint.
 
-The value is either an `alphanumeric checkpoint` if the added node is currently processing, `completed` if processing is completed on the added node or `empty` if the added node isn't deployed.
+The value is either an `alphanumeric checkpoint` if the added node is deployed or `empty` if the added node isn't deployed.
 
 This is the list of possible values.
 
-[list_all_values]
+- `processing_completed`
+- `processing_cryptocurrency_blockchain_node_processes`
+- `processing_node_processes`
+- `processing_proxy_node_processes`
+- `processing_queued`
+- `processing_firewall`
+- `processing_recursive_dns_node_processes`
+- `verifying_node_processes`
 
 ### data[processing_progress_percentage]
 
