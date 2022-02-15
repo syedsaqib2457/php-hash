@@ -50,7 +50,7 @@
 			)
 		), $response);
 
-		if ($nodeCount < 1) === true) {
+		if (($nodeCount === 0) === true) {
 			$response['message'] = 'Invalid node process node user request log node ID, please try again.';
 			return $response;
 		}
