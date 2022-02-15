@@ -1,5 +1,5 @@
 <?php
-	if (empty($parameters) === true) {
+	if (isset($parameters) === false) {
 		exit;
 	}
 
