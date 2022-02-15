@@ -19,7 +19,9 @@
 
 		if (empty($parameters) === false) {
 			$systemRequestLogsData['system_action'] = $parameters['action'];
-			$systemRequestLogsData['value'] = json_encode($parameters);
+			$systemRequestLogsData['value'] = $parameters;
+			unset($systemRequestLogsData['value']['system_databases']);
+			$systemRequestLogsData['value'] = json_encode($systemRequestLogsData['value']);
 		}
 
 		if (empty($parameters['node_authentication_token']) === false) {
