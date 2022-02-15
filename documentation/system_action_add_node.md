@@ -136,7 +136,7 @@ The added node must be deployed before it can be activated.
 
 This is the CPU clock speed for a single core detected in the added node instance.
 
-The value is either a `numeric count in MHz` if the node is added to a deployed node or `empty` if the node isn't deployed.
+The value is either a `numeric count in megahertz` if the node is added to a deployed node or `empty` if the node isn't deployed.
 
 ### data[cpu_core_count]
 
@@ -258,7 +258,7 @@ This is the list of possible values.
 
 This is the total RAM capacity detected in the added node instance.
 
-The value is either a `numeric count in MB` if the node is added to a deployed node or `empty` if the node isn't deployed.
+The value is either a `numeric count in megabytes` if the node is added to a deployed node or `empty` if the node isn't deployed.
 
 ### data[modified_timestamp]
 
@@ -319,7 +319,7 @@ The added node must be deployed before it can be processed.
 
 This is the disk storage capacity detected in the added node instance.
 
-The value is either a `numeric count in MBs` if the node is added to a deployed node or `empty` if the node isn't deployed.
+The value is either a `numeric count in megabytes` if the node is added to a deployed node or `empty` if the node isn't deployed.
 
 ### message
 
