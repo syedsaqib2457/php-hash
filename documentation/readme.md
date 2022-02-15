@@ -1,14 +1,14 @@
-## GhostCompute Documentation
+## NodeCompute Documentation
 
-GhostCompute is currently in a pre-release development phase.
+NodeCompute is currently in a pre-release development phase.
 
 ### Activation and Deployment Instructions
 
 #### Deploy a Cloud or Self-Hosted Server
 
-GhostCompute code is isolated and self-hosted.
+NodeCompute code is isolated and self-hosted.
 
-Here are guides for deploying GhostCompute on cloud server instances.
+Here are guides for deploying NodeCompute on cloud server instances.
 
 - Alibaba Cloud
 - Amazon EC2
@@ -25,7 +25,7 @@ Here are guides for deploying GhostCompute on cloud server instances.
 
 Self-hosting instructions are in development.
 
-#### Deploy GhostCompute
+#### Deploy NodeCompute
 
 #### Deploy Connected Nodes
 
