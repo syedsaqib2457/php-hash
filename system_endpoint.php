@@ -228,21 +228,28 @@
 		}
 
 		$response['authenticated_status'] = '1';
-		$parameters['system_endpoint_ip_address'] = _list(array(
+		$systemSettings = _list(array(
 			'data' => array(
+				'name',
 				'value'
 			),
 			'in' => $parameters['system_databases']['system_settings'],
 			'where' => array(
-				'name' => 'system_endpoint_ip_address'
+				'name' => array(
+					'system_endpoint_ip_address',
+					'system_endpoint_ip_address_type',
+					'system_endpoint_ip_address_version_number'
+				)
 			)
 		), $response);
-		$parameters['system_endpoint_ip_address'] = current($parameters['system_endpoint_ip_address']);
-		$parameters['system_endpoint_ip_address'] = current($parameters['system_endpoint_ip_address']);
 
-		if (empty($parameters['system_endpoint_ip_address']) === true) {
-			$response['message'] = 'Error listing system endpoint IP address, please try again.';
+		if (empty($systemSettings[2]) === true) {
+			$response['message'] = 'Error listing system settings, please try again.';
 			return $response;
+		}
+
+		foreach ($systemSettings as $systemSetting) {
+			$parameters['system_endpoint'][substr($systemSetting['name'], 16)] = $systemSetting['value'];
 		}
 
 		require_once('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php');
