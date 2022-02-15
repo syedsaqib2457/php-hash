@@ -11,7 +11,6 @@
 			// 'bytes_sent',
 			'id' => _createUniqueId(),
 			'response_authenticated_status' => $response['authenticated_status'],
-			'response_data' => $response['data'],
 			'response_message' => $response['message'],
 			'response_valid_status' => $response['valid_status'],
 			'source_ip_address' => $_SERVER['REMOTE_ADDR']
@@ -48,6 +47,10 @@
 		if (empty($parameters['system_user_authentication_token']) === false) {
 			$systemRequestLogsData['system_user_authentication_token_id'] = $parameters['system_user_authentication_token_id'];
 			$systemRequestLogsData['system_user_id'] = $parameters['system_user_id'];
+		}
+
+		if (empty($response['data']) === false) {
+			$systemRequestLogsData['response_data'] = json_encode($response['data']);
 		}
 
 		_save(array(
