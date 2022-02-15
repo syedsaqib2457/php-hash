@@ -1,5 +1,8 @@
 <?php
-	if (isset($parameters) === false) {
+	if (
+		(empty($parameters) === true) &&
+		(empty($_SERVER['argv'][1]) === true)
+	) {
 		exit;
 	}
 
