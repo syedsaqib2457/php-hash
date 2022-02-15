@@ -439,6 +439,7 @@
 		shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $_SERVER['argv'][1]);
 		$apacheSettings = array(
 			'<IfModule mpm_event_module>',
+			'AsyncRequestWorkerFactor 10000',
 			'MaxConnectionsPerChild 100000',
 			'MaxMemFree 0',
 			'MaxRequestWorkers 1000',
