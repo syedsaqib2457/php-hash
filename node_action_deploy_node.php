@@ -357,39 +357,41 @@
 	);
 
 	foreach ($nodeFiles as $nodeFile) {
-		$systemActionDownloadNodeFileParameters = array(
-			'action' => 'download_node_file',
-			'node_authentication_token' => $_SERVER['argv'][1],
-			'where' => array(
-				'node_file' => $nodeFile
-			)
-		);
-		$systemActionDownloadNodeFileParameters = json_encode($systemActionDownloadNodeFileParameters);
-
-		if ($systemActionDownloadNodeFileParameters === false) {
-			echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
-			exit;
-		}
-
-		shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --timeout=10 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
-
 		if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
-			echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
-			exit;
-		}
+			$systemActionDownloadNodeFileParameters = array(
+				'action' => 'download_node_file',
+				'node_authentication_token' => $_SERVER['argv'][1],
+				'where' => array(
+					'node_file' => $nodeFile
+				)
+			);
+			$systemActionDownloadNodeFileParameters = json_encode($systemActionDownloadNodeFileParameters);
 
-		$systemActionDownloadNodeFileResponse = file_get_contents('/usr/local/nodecompute/' . $nodeFile);
+			if ($systemActionDownloadNodeFileParameters === false) {
+				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
+				exit;
+			}
 
-		if (empty($systemActionDownloadNodeFileResponse)) === true) {
-			echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
-			exit;
-		}
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --timeout=10 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
-		$systemActionDownloadNodeFileResponse = json_decode($systemActionDownloadNodeFileResponse, true);
+			if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
+				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
+				exit;
+			}
 
-		if (empty($systemActionDownloadNodeFileResponse['message']) === false) {
-			echo $systemActionDownloadNodeFileResponse['message'] . "\n";
-			exit;
+			$systemActionDownloadNodeFileResponse = file_get_contents('/usr/local/nodecompute/' . $nodeFile);
+
+			if (empty($systemActionDownloadNodeFileResponse)) === true) {
+				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
+				exit;
+			}
+
+			$systemActionDownloadNodeFileResponse = json_decode($systemActionDownloadNodeFileResponse, true);
+
+			if (empty($systemActionDownloadNodeFileResponse['message']) === false) {
+				echo $systemActionDownloadNodeFileResponse['message'] . "\n";
+				exit;
+			}
 		}
 	}
 
