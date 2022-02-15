@@ -1294,7 +1294,24 @@
 			}
                 }
 
+		require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
+		require_once('/var/www/nodecompute/system_action_validate_ip_address_version_number.php');
+
+		foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
+			$systemEndpointDestinationIpAddress = _validateIpAddressVersionNumber($_SERVER['argv'][1], $ipAddressVersionNumber);
+
+			if (($systemEndpointDestinationIpAddress === false) === false) {
+				break;
+			}
+		}
+
+		if ($systemEndpointDestinationIpAddress === false) {
+			echo 'Invalid system endpoint destination IP address, please try again.' . "\n";
+			exit;
+		}
+
 		$timestamp = time();
+		$systemEndpointDestinationIpAddressType = _validateIpAddressType($systemEndpointDestinationIpAddress, $ipAddressVersionNumber);
 		$systemUserAuthenticationToken = _createUniqueId();
 		$systemUserAuthenticationTokenId = _createUniqueId();
 		$systemUserId = _createUniqueId();
@@ -1305,7 +1322,21 @@
 					'id' => _createUniqueId(),
 					'modified_timestamp' => $timestamp,
 					'name' => 'endpoint_destination_ip_address',
-					'value' => $_SERVER['argv'][1]
+					'value' => $systemEndpointDestinationIpAddress
+				),
+				array(
+					'created_timestamp' => $timestamp,
+					'id' => _createUniqueId(),
+					'modified_timestamp' => $timestamp,
+					'name' => 'endpoint_destination_ip_address_type',
+					'value' => $systemEndpointDestinationIpAddressType
+				),
+				array(
+					'created_timestamp' => $timestamp,
+					'id' => _createUniqueId(),
+					'modified_timestamp' => $timestamp,
+					'name' => 'endpoint_destination_ip_address_version_number',
+					'value' => $ipAddressVersionNumber
 				),
 				array(
 					'created_timestamp' => $timestamp,
