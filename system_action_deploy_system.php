@@ -472,7 +472,7 @@
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' mpm_event');
 		shell_exec('cd /etc/apache2/conf-available && sudo ' . $binaryFiles['a2enconf'] . ' php*');
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' proxy');
-		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' proxy_fgci');
+		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' proxy_fcgi');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
 		shell_exec('cd /var/www/nodecompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/twexxor/nodecompute .');
