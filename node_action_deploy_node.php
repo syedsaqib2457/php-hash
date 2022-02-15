@@ -251,7 +251,7 @@
 	}
 
 	unlink('/usr/local/nodecompute/system_action_activate_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_activate_node_response.json --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --retry-connrefused --timeout=60 --tries=2 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_activate_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/nodecompute/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -284,7 +284,7 @@
 	}
 
 	unlink('/usr/local/nodecompute/system_action_process_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_response.json --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --timeout=600 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/nodecompute/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
@@ -344,7 +344,7 @@
 	_killProcessIds($binaryFiles, $recursiveDnsDefaultProcessIds);
 	shell_exec('sudo mkdir -m 0775 /var/run/named/');
 	shell_exec('sudo rm -rf /usr/src/3proxy/ && sudo mkdir -p /usr/src/3proxy/');
-	shell_exec('cd /usr/src/3proxy/ && sudo ' . $binaryFiles['wget'] . ' -O 3proxy.tar.gz --no-dns-cache --timeout=60 https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
+	shell_exec('cd /usr/src/3proxy/ && sudo ' . $binaryFiles['wget'] . ' -O 3proxy.tar.gz --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://github.com/3proxy/3proxy/archive/refs/tags/0.9.3.tar.gz');
 	shell_exec('cd /usr/src/3proxy/ && sudo tar -xvzf 3proxy.tar.gz');
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux');
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux install');
@@ -380,7 +380,7 @@
 				exit;
 			}
 
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --timeout=10 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 			if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
 				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
@@ -460,7 +460,7 @@
 	}
 
 	unlink('/usr/local/nodecompute/system_action_deploy_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/nodecompute/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
