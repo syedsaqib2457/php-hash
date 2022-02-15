@@ -14,10 +14,13 @@
 			'response_data' => $response['data'],
 			'response_message' => $response['message'],
 			'response_valid_status' => $response['valid_status'],
-			'source_ip_address' => $_SERVER['REMOTE_ADDR'],
-			'system_action' => $parameters['action'],
-			'value' => json_encode($parameters)
+			'source_ip_address' => $_SERVER['REMOTE_ADDR']
 		);
+
+		if (empty($parameters) === false) {
+			$systemRequestLogsData['system_action'] = $parameters['action'];
+			$systemRequestLogsData['value'] = json_encode($parameters);
+		}
 
 		if (empty($parameters['node_authentication_token']) === false) {
 			$parameters['system_databases'] += _connect(array(
@@ -59,16 +62,16 @@
 		'message' => 'Invalid system endpoint parameters, please try again.',
 		'valid_status' => '0'
 	);
+	require_once('/var/www/nodecompute/system_databases.php');
 
 	if (empty($_POST['json']) === false) {
-		$parameters = json_decode($_POST['json'], true);
+		$parametersData = json_decode($_POST['json'], true);
 
-		if (empty($parameters) === true) {
+		if (empty($parametersData) === true) {
 			_output($parameters, $response);
 		}
 
-		$parameters['process_id'] = getmypid();
-		require_once('/var/www/nodecompute/system_databases.php');
+		$parameters = $parametersData;
 
 		if (empty($parameters['action']) === true) {
 			$response['message'] = 'System endpoint must have an action, please try again.';
