@@ -124,6 +124,12 @@
 		$binaries = array(
 			array(
 				'command' => $uniqueId,
+				'name' => 'a2dismod',
+				'output' => 'Module ' . $uniqueId,
+				'package' => 'apache2'
+			),
+			array(
+				'command' => $uniqueId,
 				'name' => 'a2enmod',
 				'output' => 'Module ' . $uniqueId,
 				'package' => 'apache2'
@@ -431,7 +437,6 @@
 		}
 
 		shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $_SERVER['argv'][1]);
-		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
 		$apacheSettings = array(
 			'<IfModule mpm_event_module>',
 			'MaxConnectionsPerChild 100000',
@@ -452,7 +457,10 @@
 			exit;
 		}
 
-		// todo
+		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2dismod'] . ' mpm_prefork');
+		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2dismod'] . ' mpm_worker');
+		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' rewrite.load');
+		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' mpm_event');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
 		shell_exec('cd /var/www/nodecompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/twexxor/nodecompute .');
