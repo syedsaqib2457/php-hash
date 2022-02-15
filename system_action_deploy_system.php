@@ -355,13 +355,7 @@
 		shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
-		$mysqlVersion = '0.8.13';
-
-		if (($imageName === 'Debian 11') === true) {
-			$mysqlVersion = '0.8.20';
-		}
-
-		shell_exec('cd /var/www/nodecompute/ && sudo wget -O mysql_apt_config.deb --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://dev.mysql.com/get/mysql-apt-config_' . $mysqlVersion . '-1_all.deb');
+		shell_exec('cd /var/www/nodecompute/ && sudo wget -O mysql_apt_config.deb --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://dev.mysql.com/get/mysql-apt-config_0.8.20-1_all.deb');
 
 		if (file_exists('/var/www/nodecompute/mysql_apt_config.deb') === false) {
 			echo 'Error downloading MySQL, please try again.' . "\n";
