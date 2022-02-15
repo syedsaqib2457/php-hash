@@ -484,24 +484,24 @@
 		}
 
 		$crontabCommands = explode("\n", $crontabCommands);
-		$crontabCommandIndex = array_search('# nodecompute_default', $crontabCommands);
+		$crontabCommandIndex = array_search('# nodecompute_system_processes', $crontabCommands);
 
 		if (is_int($crontabCommandIndex) === true) {
 			while (is_int($crontabCommandIndex) === true) {
 				unset($crontabCommands[$crontabCommandIndex]);
 				$crontabCommandIndex++;
 
-				if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_default') === false) {
+				if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_system_processes') === false) {
 					$crontabCommandIndex = false;
 				}
 			}
 		}
 
 		$crontabCommands += array(
-			'# nodecompute_processes',
-			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_system_action.php process_node_request_logs',
-			'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_node_process_cryptocurrency_blockchain_worker_settings.php nodecompute_processes',
-			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab'
+			'# nodecompute_system_processes',
+			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab nodecompute_system_processes',
+			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_system_action.php process_node_request_logs nodecompute_system_processes',
+			'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_node_process_cryptocurrency_blockchain_worker_settings.php nodecompute_system_processes'
 		);
 		$crontabCommands = implode("\n", $crontabCommands);
 
