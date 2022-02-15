@@ -1,7 +1,13 @@
 <?php
 	function _createUniqueId() {
-		$uniqueId = random_bytes(17) . hrtime(true);
-		$uniqueId = bin2hex($uniqueId);
+		$uniqueId = hrtime(true);
+		$uniqueId = substr($uniqueId, 6, 10) . (microtime(true) * 10000);
+		$uniqueIdCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+		while (isset($uniqueId[29]) === false) {
+			$uniqueId .= $uniqueIdCharacters[mt_rand(0, 35)];
+		}
+
 		return $uniqueId;
 	}
 
