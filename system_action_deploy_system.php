@@ -1304,7 +1304,7 @@
 					'created_timestamp' => $timestamp,
 					'id' => _createUniqueId(),
 					'modified_timestamp' => $timestamp,
-					'name' => 'endpoint_destination_address',
+					'name' => 'endpoint_destination_ip_address',
 					'value' => $_SERVER['argv'][1]
 				),
 				array(
