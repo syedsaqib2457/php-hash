@@ -448,7 +448,19 @@
 		exit;
 	}
 
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --no-dns-cache --post-data "json={\"action\":\"deploy_node\",\"node_authentication_token\":\"' . $_SERVER['argv'][1] . '\"}" --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	$systemActionDeployNodeParameters = array(
+		'action' => 'deploy_node',
+		'node_authentication_token' => $_SERVER['argv'][1]
+	);
+	$systemActionDeployNodeParameters = json_encode($systemActionDeployNodeParameters);
+
+	if ($systemActionDeployNodeParameters === false) {
+		echo 'Error deploying node, please try again.' . "\n";
+		exit;
+	}
+
+	unlink('/usr/local/nodecompute/system_action_deploy_node_response.json');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --timeout=60 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/nodecompute/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
