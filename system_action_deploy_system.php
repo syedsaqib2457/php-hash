@@ -396,7 +396,7 @@
 			'max_allowed_packet = 1000000000',
 			'max_connections = 100000',
 			'max_join_size = 1',
-			'open_files_limit = 0',
+			'open_files_limit = 1000000',
 			'port = 3306',
 			'pid_file = /var/run/mysqld/mysqld.pid',
 			'range_optimizer_max_mem_size = 0',
