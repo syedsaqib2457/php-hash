@@ -480,7 +480,7 @@
 	if (($systemActionProcessNodeResponse['valid_status'] === '1') === true) {
 		$nodeData = array(
 			'authentication_token' => $_SERVER['argv'][1],
-			'system_endpoint_destination_address' => $_SERVER['argv'][2],
+			'system_endpoint_destination_ip_address' => $_SERVER['argv'][2],
 			'system_version_number' => '1'
 		);
 		$nodeData = json_encode($nodeData);
