@@ -191,15 +191,9 @@
 	unlink('/usr/local/nodecompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh');
 
 	if (in_array($nodeAction, array(
-		'process_node_process_bitcoin_cash_cryptocurrency_blockchain_blocks',
-		'process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data',
-		'process_node_process_cryptocurrency_blockchain_worker_settings',
-		'process_node_process_cryptocurrency_blockchain_workers',
-		'process_node_process_resource_usage_logs',
-		'process_node_processes',
-		'process_node_resource_usage_logs',
-		'process_node_user_request_logs'
-	)) === true) {
+		'process_network_interface_ip_addresses',
+		'process_recursive_dns_destination'
+	)) === false) {
 		if (($nodeAction === 'process_node_processes') === false) {
 			exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_' . $nodeAction . '" | awk \'{print $1}\'', $nodeActionProcessIds);
 
