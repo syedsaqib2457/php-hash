@@ -61,7 +61,7 @@
 				if (
 					(empty($parameters['data']['node_id']) === true) &&
 					(($parameters['data']['external_ip_address_version_' . $nodeIpAddressVersionNumber . '_type'] === 'public_network') === false) &&
-					(($parameters['system_endpoint']['ip_address_type'] === 'public_network') === true)
+					(($parameters['endpoint_destination_ip_address_type'] === 'public_network') === true)
 				) {
 					$response['message'] = 'Node external IP address version ' . $nodeIpAddressVersionNumber . ' must have a public network IP address type, please try again.';
 					return $response;
