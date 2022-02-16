@@ -259,10 +259,10 @@
 		exit;
 	}
 
-	$nodeData = array();
+	$nodeSettingsData = array();
 
 	foreach ($systemActionListSystemSettingsResponse['data'] as $systemActionListSystemSettingsResponseData) {
-		$nodeData['system_' . $systemActionListSystemSettingsResponseData['name']] = $systemActionListSystemSettingsResponseData['value'];
+		$nodeSettingsData['system_' . $systemActionListSystemSettingsResponseData['name']] = $systemActionListSystemSettingsResponseData['value'];
 	}
 
 	$systemActionActivateNodeParameters = array(
@@ -277,7 +277,7 @@
 	}
 
 	unlink('/usr/local/nodecompute/system_action_activate_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_activate_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_activate_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/nodecompute/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -310,7 +310,7 @@
 	}
 
 	unlink('/usr/local/nodecompute/system_action_process_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $nodeData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/nodecompute/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
@@ -406,7 +406,7 @@
 				exit;
 			}
 
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --read-timeout=60 --tries=1 ' . $nodeData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
 			if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
 				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
@@ -486,7 +486,7 @@
 	}
 
 	unlink('/usr/local/nodecompute/system_action_deploy_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
 	if (file_exists('/usr/local/nodecompute/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
@@ -504,12 +504,12 @@
 	echo $systemActionDeployNodeResponse['message'] . "\n";
 
 	if (($systemActionProcessNodeResponse['valid_status'] === '1') === true) {
-		$nodeData['authentication_token'] = $_SERVER['argv'][1];
-		$nodeData['system_version_number'] = '1';
-		$nodeData = json_encode($nodeData);
+		$nodeSettingsData['authentication_token'] = $_SERVER['argv'][1];
+		$nodeSettingsData['system_version_number'] = '1';
+		$nodeSettingsData = json_encode($nodeSettingsData);
 
-		if (file_put_contents('/usr/local/nodecompute/node_data.json', $nodeData) === false) {
-			echo 'Error adding node data, please try again.' . "\n";
+		if (file_put_contents('/usr/local/nodecompute/node_settings_data.json', $nodeSettingsData) === false) {
+			echo 'Error adding node settings data, please try again.' . "\n";
 			exit;
 		}
 
