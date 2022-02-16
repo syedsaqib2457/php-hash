@@ -3,7 +3,7 @@
 		for debugging
 		todo: condense into one line for easy deployment from readme instructions
 		  systemEndpointDestinationAddress=127.0.0.1
- 		  cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system_action_deploy_system.php ; sudo wget -O system_action_deploy_system.php --no-dns-cache --retry-connrefused --timeout=10 --tries=2 "https://raw.githubusercontent.com/nodecompute/nodecompute/main/system_action_deploy_system.php?$RANDOM" && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress 1;
+ 		  cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system_action_deploy_system.php ; sudo wget -O system_action_deploy_system.php --no-dns-cache --retry-connrefused --timeout=10 --tries=2 "https://raw.githubusercontent.com/nodecompute/nodecompute/main/system_action_deploy_system.php?$RANDOM" && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress 1;
 		  nodeExternalIpAddressVersion4=127.0.0.2
 		  nodeInternalIpAddressVersion4=127.0.0.3
 		  systemUserAuthenticationToken=1234
@@ -100,17 +100,19 @@
 		}
 
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
-		shell_exec('sudo apt-get update');
-		// todo: if php 7.3 + 7.4 don't exist from default package sources, delete php files + install php again with official sources
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli procps syslinux systemd util-linux');
 
-		$phpVersion = '7.3';
-
-		if (is_dir('/etc/php/7.4/') === true) {
-			$phpVersion = '7.4';
+		if (
+			(is_dir('/etc/php/7.3/') === false) &&
+			(is_dir('/etc/php/7.4/') === false)
+		) {
+			shell_exec('sudo rm -rf /etc/php/ /usr/bin/php* /usr/lib/php/ /var/lib/php/');
+			echo 'Error downloading PHP, please try again.' . "\n";
+			exit;
 		}
 
-		// todo: modify php.ini in /etc/php/$phpVersion/cli + /etc/php/$phpVersion/cli
+		shell_exec('sudo apt-get update');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli procps syslinux systemd util-linux');
+		// todo: modify php.ini in sudo nano /etc/php/*/cli/php.ini  + sudo nano /etc/php/*/fpm/php.ini
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 		shell_exec('sudo rm -rf /var/www/nodecompute/');
