@@ -1277,68 +1277,11 @@
 			}
                 }
 
-		require_once('/var/www/nodecompute/system_action_validate_ip_address_version_number.php');
-		$systemSettingsData = array(
-			'version_number' => '1'
-		);
-
-		foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
-			$systemSettingsData['system_endpoint_destination_ip_address'] = _validateIpAddressVersionNumber($_SERVER['argv'][1], $ipAddressVersionNumber);
-
-			if (($systemSettingsData['system_endpoint_destination_ip_address'] === false) === false) {
-				$systemSettingsData['system_endpoint_destination_ip_address_version_number'] = $ipAddressVersionNumber;
-				break;
-			}
-		}
-
-		if ($systemSettingsData['system_endpoint_destination_ip_address'] === false) {
-			echo 'Invalid system endpoint destination IP address, please try again.' . "\n";
-			exit;
-		}
-
-		require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
-		$systemSettingsData['system_endpoint_destination_ip_address_type'] = _validateIpAddressType($systemSettingsData['system_endpoint_destination_ip_address'], $systemSettingsData['system_endpoint_destination_ip_address_version_number']);
-
-		if (file_put_contents('/var/www/nodecompute/system_settings_data.json', $systemSettingsData) === false) {
-			echo 'Error adding system settings data, please try again.' . "\n";
-			exit;
-		}
-
 		$timestamp = time();
 		$systemUserAuthenticationToken = _createUniqueId();
 		$systemUserAuthenticationTokenId = _createUniqueId();
 		$systemUserId = _createUniqueId();
 		$systemDatabaseData = array(
-			'system_settings' => array(
-				array(
-					'created_timestamp' => $timestamp,
-					'id' => _createUniqueId(),
-					'modified_timestamp' => $timestamp,
-					'name' => 'endpoint_destination_ip_address',
-					'value' => $systemSettingsData['system_endpoint_destination_ip_address']
-				),
-				array(
-					'created_timestamp' => $timestamp,
-					'id' => _createUniqueId(),
-					'modified_timestamp' => $timestamp,
-					'name' => 'endpoint_destination_ip_address_type',
-					'value' => $systemSettingsData['system_endpoint_destination_ip_address_type']
-				),
-				array(
-					'created_timestamp' => $timestamp,
-					'id' => _createUniqueId(),
-					'modified_timestamp' => $timestamp,
-					'name' => 'endpoint_destination_ip_address_version_number',
-					'value' => $systemSettingsData['system_endpoint_destination_ip_address_version_number']
-				),
-				array(
-					'created_timestamp' => $timestamp,
-					'id' => _createUniqueId(),
-					'modified_timestamp' => $timestamp,
-					'name' => 'version_number',
-					'value' => $systemSettingsData['version_number']
-				)
-			),
 			'system_user_authentication_tokens' => array(
 				array(
 					'created_timestamp' => $timestamp,
@@ -1366,6 +1309,43 @@
 				)
 			)
 		);
+
+		require_once('/var/www/nodecompute/system_action_validate_ip_address_version_number.php');
+		$systemSettingsData = array(
+			'version_number' => '1'
+		);
+
+		foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
+			$systemSettingsData['endpoint_destination_ip_address'] = _validateIpAddressVersionNumber($_SERVER['argv'][1], $ipAddressVersionNumber);
+
+			if (($systemSettingsData['endpoint_destination_ip_address'] === false) === false) {
+				$systemSettingsData['endpoint_destination_ip_address_version_number'] = $ipAddressVersionNumber;
+				break;
+			}
+		}
+
+		if ($systemSettingsData['endpoint_destination_ip_address'] === false) {
+			echo 'Invalid system endpoint destination IP address, please try again.' . "\n";
+			exit;
+		}
+
+		require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
+		$systemSettingsData['endpoint_destination_ip_address_type'] = _validateIpAddressType($systemSettingsData['endpoint_destination_ip_address'], $systemSettingsData['endpoint_destination_ip_address_version_number']);
+
+		if (file_put_contents('/var/www/nodecompute/system_settings_data.json', $systemSettingsData) === false) {
+			echo 'Error adding system settings data, please try again.' . "\n";
+			exit;
+		}
+
+		foreach ($systemSettingsData as $systemSettingsDataKey => $systemSettingsDataValue) {
+			$systemDatabaseData['system_settings'][] = array(
+				'created_timestamp' => $timestamp,
+				'id' => _createUniqueId(),
+				'modified_timestamp' => $timestamp,
+				'name' => $systemSettingsDataKey,
+				'value' => $systemSettingsDataValue
+			);
+		}
 
 		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
 			$systemDatabaseId = _createUniqueId();
