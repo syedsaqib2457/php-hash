@@ -32,14 +32,6 @@
 	// todo: modify php.ini settings
 	$packageSources = array(
 		'debian' => array(
-			'9' => array(
-				'deb http://deb.debian.org/debian stretch main',
-				'deb-src http://deb.debian.org/debian stretch main',
-				'deb http://deb.debian.org/debian stretch-updates main',
-				'deb-src http://deb.debian.org/debian stretch-updates main',
-				'deb http://security.debian.org/debian-security/ stretch/updates main',
-				'deb-src http://security.debian.org/debian-security/ stretch/updates main'
-			),
 			'10' => array(
 				'deb http://deb.debian.org/debian buster main',
 				'deb-src http://deb.debian.org/debian buster main',
@@ -58,16 +50,6 @@
 			)
 		),
 		'ubuntu' => array(
-			'18.04' => array(
-				'deb http://archive.ubuntu.com/ubuntu bionic main',
-				'deb http://archive.ubuntu.com/ubuntu bionic-updates main',
-				'deb http://archive.ubuntu.com/ubuntu bionic-backports main',
-				'deb http://security.ubuntu.com/ubuntu bionic-security main',
-				'deb-src http://archive.ubuntu.com/ubuntu bionic main',
-				'deb-src http://archive.ubuntu.com/ubuntu bionic-backports main',
-				'deb-src http://archive.ubuntu.com/ubuntu bionic-updates main',
-				'deb-src http://security.ubuntu.com/ubuntu bionic-security main'
-			),
 			'20.04' => array(
 				'deb http://archive.ubuntu.com/ubuntu focal main',
 				'deb http://archive.ubuntu.com/ubuntu focal-updates main',
