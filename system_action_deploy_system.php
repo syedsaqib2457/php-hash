@@ -232,6 +232,7 @@
 			$binaryFiles[$binary['name']] = $binaryFile;
 		}
 
+		unlink('/var/www/nodecompute/system_action_deploy_system_binary_file_list_commands.sh');
 		$phpSettings = array(
 			'allow_url_fopen = On',
 			'allow_url_include = Off',
@@ -324,7 +325,6 @@
 		file_put_contents('/etc/php/' . $phpVersion . '/fpm/php.ini', $phpSettings);
 		shell_exec('sudo ' . $binaryFiles['service'] . ' php' . $phpVersion . '-fpm stop');
 		shell_exec('sudo ' . $binaryFiles['service'] . ' php' . $phpVersion . '-fpm start');
-		unlink('/var/www/nodecompute/system_action_deploy_system_binary_file_list_commands.sh');
 		$kernelSettings = array(
 			'fs.aio-max-nr = 1000000000',
 			'fs.file-max = 1000000000',
