@@ -112,6 +112,58 @@
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli procps syslinux systemd util-linux');
+		$phpSettings = array(
+			'allow_url_fopen = On',
+			'allow_url_include = Off',
+			'auto_append_file =',
+			'auto_globals_jit = On',
+			'auto_prepend_file =',
+			'cli_server.color = Off',
+			'default_charset = "UTF-8"',
+			'default_mimetype = "text/html"',
+			'default_socket_timeout = -1',
+			'disable_classes =',
+			'disable_functions = pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,pcntl_unshare,',
+			'display_errors = Off',
+			'display_startup_errors = Off',
+			'doc_root =',
+			'enable_dl = Off',
+			'engine = On',
+			'error_reporting = 0',
+			'expose_php = Off',
+			'implicit_flush = Off',
+			'ignore_repeated_errors = Off',
+			'ignore_repeated_source = Off',
+			'ldap.max_links = -1',
+			'log_errors = Off',
+			'mail.add_x_header = Off',
+			'max_execution_time = -1',
+			'max_input_time = -1',
+			'memory_limit = -1',
+			'output_buffering = 4096',
+			'pdo_mysql.default_socket =',
+			'post_max_size = 0',
+			'precision = 14',
+			'register_argc_argv = Off',
+			'report_memleaks = Off',
+			'request_order = "GP"',
+			'serialize_precision = -1',
+			'short_open_tag = Off',
+			'smtp_port = 25',
+			'tidy.clean_output = Off',
+			'unserialize_callback_func =',
+			'user_dir =',
+			'variables_order = "GPCS"',
+			'zend.enable_gc = On',
+			'zend.exception_ignore_args = On',
+			'zlib.output_compression = Off',
+			'version' => '7.3'
+		);
+
+		if (is_dir('/etc/php/7.4/') === true) {
+			$phpSettings['version'] = '7.4';
+		}
+
 		// todo: modify php.ini in sudo nano /etc/php/*/cli/php.ini  + sudo nano /etc/php/*/fpm/php.ini
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
