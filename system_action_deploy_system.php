@@ -560,7 +560,11 @@
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' proxy_fcgi');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
-		shell_exec('cd /var/www/nodecompute/ && sudo ' . $binaryFiles['git'] . ' clone https://github.com/twexxor/nodecompute .');
+		shell_exec('sudo rm -rf /var/www/nodecompute/');
+		// todo: download from most-recent release after v1
+		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['wget'] . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://github.com/twexxor/nodecompute/archive/refs/heads/main.tar.gz');
+		shell_exec('cd /var/www/ && sudo tar -xvzf main.tar.gz');
+		shell_exec('cd /var/www/ && sudo mv nodecompute-main nodecompute');
 
 		if (file_exists('/var/www/nodecompute/readme.md') === false) {
 			echo 'Error downloading system files, please try again.' . "\n";
