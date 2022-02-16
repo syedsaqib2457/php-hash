@@ -30,6 +30,11 @@
 		return $uniqueId;
 	}
 
+	$ipAddressVersionNumbers = array(
+		'32' => '4',
+		'128' => '6'
+	);
+
 	if (empty($_SERVER['argv'][1]) === true) {
 		echo 'Invalid URL parameter, please try again.' . "\n";
 		exit;
@@ -38,14 +43,6 @@
 	if (empty($_SERVER['argv'][2]) === true) {
 		$packageSources = array(
 			'debian' => array(
-				'9' => array(
-					'deb http://deb.debian.org/debian stretch main',
-					'deb-src http://deb.debian.org/debian stretch main',
-					'deb http://deb.debian.org/debian stretch-updates main',
-					'deb-src http://deb.debian.org/debian stretch-updates main',
-					'deb http://security.debian.org/debian-security/ stretch/updates main',
-					'deb-src http://security.debian.org/debian-security/ stretch/updates main'
-				),
 				'10' => array(
 					'deb http://deb.debian.org/debian buster main',
 					'deb-src http://deb.debian.org/debian buster main',
@@ -343,10 +340,6 @@
 		$memoryCapacityBytes = current($memoryCapacityBytes);
 		$memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize);
 		$defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034);
-		$ipAddressVersionNumbers = array(
-			'32' => '4',
-			'128' => '6'
-		);
 		$kernelSettings = array(
 			'kernel.shmall="' . floor($memoryCapacityBytes / $kernelPageSize) . '"',
 			'kernel.shmmax="' . $memoryCapacityBytes . '"',
