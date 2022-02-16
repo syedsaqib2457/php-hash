@@ -4,7 +4,6 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
-		'system_settings',
 		'system_user_system_users'
 	), $parameters['system_databases'], $response);
 
