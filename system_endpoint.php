@@ -74,6 +74,17 @@
 		'valid_status' => '0'
 	);
 	require_once('/var/www/nodecompute/system_databases.php');
+	$systemData = file_get_contents('/usr/local/nodecompute/system_data.json');
+	$systemData = json_decode($systemData, true);
+
+	if ($systemData === false) {
+		$response['message'] = 'Error listing system data, please try again.';
+		_output($parameters, $response);
+	}
+
+	foreach ($systemData as $systemDataKey => $systemDataValue) {
+		$parameters[$systemDataKey] = $systemDataValue;
+	}
 
 	if (empty($_POST['json']) === false) {
 		$parametersData = json_decode($_POST['json'], true);
@@ -228,30 +239,6 @@
 		}
 
 		$response['authenticated_status'] = '1';
-		$systemSettings = _list(array(
-			'data' => array(
-				'name',
-				'value'
-			),
-			'in' => $parameters['system_databases']['system_settings'],
-			'where' => array(
-				'name' => array(
-					'endpoint_destination_ip_address',
-					'endpoint_destination_ip_address_type',
-					'endpoint_destination_ip_address_version_number'
-				)
-			)
-		), $response);
-
-		if (empty($systemSettings[2]) === true) {
-			$response['message'] = 'Error listing system settings, please try again.';
-			return $response;
-		}
-
-		foreach ($systemSettings as $systemSetting) {
-			$parameters['system_' . $systemSetting['name']] = $systemSetting['value'];
-		}
-
 		require_once('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php');
 	}
 
