@@ -98,6 +98,7 @@
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	_killProcessIds($binaryFiles, $lockedProcessIds);
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential coreutils cron curl dnsutils net-tools php-curl procps syslinux systemd util-linux');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 	shell_exec('sudo /etc/init.d/apache2 stop');
 	$uniqueId = '_' . uniqid();
 	$binaries = array(
