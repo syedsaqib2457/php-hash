@@ -86,6 +86,15 @@
 		exit;
 	}
 
+	if (
+		(is_dir('/etc/php/7.3/') === false) &&
+		(is_dir('/etc/php/7.4/') === false)
+	) {
+		shell_exec('sudo rm -rf /etc/php/ /usr/bin/php* /usr/lib/php/ /var/lib/php/');
+		echo 'Error downloading PHP, please try again.' . "\n";
+		exit;
+	}
+
 	mkdir('/usr/local/nodecompute/');
 	chmod('/usr/local/nodecompute/', 0755);
 
@@ -94,6 +103,8 @@
 		exit;
 	}
 
+	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
+	_killProcessIds($binaryFiles, $lockedProcessIds);
 	shell_exec('sudo apt-get update');
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	_killProcessIds($binaryFiles, $lockedProcessIds);
