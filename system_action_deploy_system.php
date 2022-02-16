@@ -61,16 +61,6 @@
 				)
 			),
 			'ubuntu' => array(
-				'18.04' => array(
-					'deb http://archive.ubuntu.com/ubuntu bionic main',
-					'deb http://archive.ubuntu.com/ubuntu bionic-updates main',
-					'deb http://archive.ubuntu.com/ubuntu bionic-backports main',
-					'deb http://security.ubuntu.com/ubuntu bionic-security main',
-					'deb-src http://archive.ubuntu.com/ubuntu bionic main',
-					'deb-src http://archive.ubuntu.com/ubuntu bionic-backports main',
-					'deb-src http://archive.ubuntu.com/ubuntu bionic-updates main',
-					'deb-src http://security.ubuntu.com/ubuntu bionic-security main'
-				),
 				'20.04' => array(
 					'deb http://archive.ubuntu.com/ubuntu focal main',
 					'deb http://archive.ubuntu.com/ubuntu focal-updates main',
