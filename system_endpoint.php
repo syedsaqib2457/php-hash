@@ -74,16 +74,16 @@
 		'valid_status' => '0'
 	);
 	require_once('/var/www/nodecompute/system_databases.php');
-	$systemData = file_get_contents('/var/www/nodecompute/system_data.json');
-	$systemData = json_decode($systemData, true);
+	$systemSettingsData = file_get_contents('/var/www/nodecompute/system_settings_data.json');
+	$systemSettingsData = json_decode($systemSettingsData, true);
 
-	if ($systemData === false) {
-		$response['message'] = 'Error listing system data, please try again.';
+	if ($systemSettingsData === false) {
+		$response['message'] = 'Error listing system settings data, please try again.';
 		_output($parameters, $response);
 	}
 
-	foreach ($systemData as $systemDataKey => $systemDataValue) {
-		$parameters[$systemDataKey] = $systemDataValue;
+	foreach ($systemSettingsData as $systemSettingsDataKey => $systemSettingsDataValue) {
+		$parameters[$systemSettingsDataKey] = $systemSettingsDataValue;
 	}
 
 	if (empty($_POST['json']) === false) {
