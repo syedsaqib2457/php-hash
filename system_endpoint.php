@@ -236,9 +236,9 @@
 			'in' => $parameters['system_databases']['system_settings'],
 			'where' => array(
 				'name' => array(
-					'system_endpoint_ip_address',
-					'system_endpoint_ip_address_type',
-					'system_endpoint_ip_address_version_number'
+					'endpoint_destination_ip_address',
+					'endpoint_destination_ip_address_type',
+					'endpoint_destination_ip_address_version_number'
 				)
 			)
 		), $response);
@@ -249,7 +249,7 @@
 		}
 
 		foreach ($systemSettings as $systemSetting) {
-			$parameters['system_endpoint'][substr($systemSetting['name'], 16)] = $systemSetting['value'];
+			$parameters['system_' . $systemSetting['name']] = $systemSetting['value'];
 		}
 
 		require_once('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php');
