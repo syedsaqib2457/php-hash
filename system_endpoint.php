@@ -74,7 +74,7 @@
 		'valid_status' => '0'
 	);
 	require_once('/var/www/nodecompute/system_databases.php');
-	$systemData = file_get_contents('/usr/local/nodecompute/system_data.json');
+	$systemData = file_get_contents('/var/www/nodecompute/system_data.json');
 	$systemData = json_decode($systemData, true);
 
 	if ($systemData === false) {
