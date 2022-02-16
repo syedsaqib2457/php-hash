@@ -38,6 +38,14 @@ This is required to map IP addresses from an existing `node_id` to the node proc
 
 The value must be an `alphanumeric ID`.
 
+### data[port_number]
+
+This is required to assign a listening port to the process.
+
+The value must be a `numeric port number` between `1` and `65535`.
+
+Requests to a `port_number` will automatically load-balance between all node processes with the same `node_id`.
+
 ### data[type]
 
 This is required to assign a `type` the node process `port_number`.
