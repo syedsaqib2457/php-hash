@@ -99,8 +99,6 @@
 			exit;
 		}
 
-		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
-
 		if (
 			(is_dir('/etc/php/7.3/') === false) &&
 			(is_dir('/etc/php/7.4/') === false)
@@ -110,6 +108,7 @@
 			exit;
 		}
 
+		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli procps syslinux systemd util-linux');
