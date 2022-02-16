@@ -38,6 +38,20 @@ This is required to map IP addresses from an existing `node_id` to the node proc
 
 The value must be an `alphanumeric ID`.
 
+### data[type]
+
+This is required to assign a `type` the node process `port_number`.
+
+The value must be an `string`.
+
+This is the list of possible values.
+
+- `bitcoin_cash_cryptocurrency_blockchain`
+- `http_proxy`
+- `load_balancer`
+- `recursive_dns`
+- `socks_proxy`
+
 ### system_user_authentication_token
 
 This is required for authenticating system user access.
