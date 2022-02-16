@@ -191,15 +191,18 @@
 			'zend.assertions = -1',
 			'zend.enable_gc = On',
 			'zend.exception_ignore_args = On',
-			'zlib.output_compression = Off',
-			'version' => '7.3'
+			'zlib.output_compression = Off'
 		);
+		$phpSettings = implode("\n", $phpSettings);
+		$phpVersion = '7.3';
 
 		if (is_dir('/etc/php/7.4/') === true) {
-			$phpSettings['version'] = '7.4';
+			$phpVersion = '7.4';
 		}
 
-		// todo: modify php.ini in sudo nano /etc/php/*/cli/php.ini  + sudo nano /etc/php/*/fpm/php.ini
+		file_put_contents('/etc/php/' . $phpVersion . '/cli/php.ini', $phpSettings);
+		file_put_contents('/etc/php/' . $phpVersion . '/fpm/php.ini', $phpSettings);
+		// todo: restart php fpm processes
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 		shell_exec('sudo rm -rf /var/www/nodecompute/');
