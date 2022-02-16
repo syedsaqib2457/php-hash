@@ -156,12 +156,6 @@
 				'package' => 'cron'
 			),
 			array(
-				'command' => '-' . $uniqueId,
-				'name' => 'git',
-				'output' => 'usage: git ',
-				'package' => 'git'
-			),
-			array(
 				'command' => '-h',
 				'name' => 'ip6tables-restore',
 				'output' => 'tables-restore ',
@@ -196,6 +190,12 @@
 				'name' => 'systemctl',
 				'output' => 'invalid option',
 				'package' => 'systemd'
+			),
+			array(
+				'command' => '-' . $uniqueId,
+				'name' => 'tar',
+				'output' => 'invalid option',
+				'package' => 'tar'
 			),
 			array(
 				'command' => '-' . $uniqueId,
@@ -563,7 +563,7 @@
 		shell_exec('sudo rm -rf /var/www/nodecompute/');
 		// todo: download from most-recent release after v1
 		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['wget'] . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://github.com/twexxor/nodecompute/archive/refs/heads/main.tar.gz');
-		shell_exec('cd /var/www/ && sudo tar -xvzf main.tar.gz');
+		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['tar'] . ' -xvzf main.tar.gz');
 		shell_exec('cd /var/www/ && sudo mv nodecompute-main nodecompute');
 
 		if (file_exists('/var/www/nodecompute/readme.md') === false) {
