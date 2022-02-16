@@ -49,7 +49,9 @@
 		'binary_files' => array(),
 		'node_authentication_token' => $nodeData['authentication_token'],
 		'process_id' => getmypid(),
-		'system_endpoint_destination_address' => $nodeData['system_endpoint_destination_address'],
+		'system_endpoint_destination_ip_address' => $nodeData['system_endpoint_destination_ip_address'],
+		'system_endpoint_destination_ip_address_type' => $nodeData['system_endpoint_destination_ip_address_type'],
+		'system_endpoint_destination_ip_address_version_number' => $nodeData['system_endpoint_destination_ip_address_version_number'],
 		'system_version_number' => $nodeData['system_version_number']
 	);
 
