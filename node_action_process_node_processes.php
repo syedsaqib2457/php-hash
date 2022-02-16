@@ -124,14 +124,16 @@
 			$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
 			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 
-			foreach ($parameters['data']['next']['node_reserved_internal_sources'][$nodeIpAddressVersionNumber] as $nodeReservedInternalSource) {
-				foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
-					$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
+			if (($parameters['system_endpoint_destination_ip_address_type'] === 'public_network') === true) {
+				foreach ($parameters['data']['next']['node_reserved_internal_sources'][$nodeIpAddressVersionNumber] as $nodeReservedInternalSource) {
+					foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
+						$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
+					}
 				}
-			}
 
-			foreach ($parameters['data']['next']['node_process_cryptocurrency_destinations'] as $cryptocurrencyNodeProcessType => $nodeProcessCryptocurrencyDestination) {
-				$firewallRules[] = '-A PREROUTING ! -i lo -d ' . $nodeProcessCryptocurrencyDestination['ip_address'] . ' --dport ' . current($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType][0]) . ' -j DROP';
+				foreach ($parameters['data']['next']['node_process_cryptocurrency_destinations'] as $cryptocurrencyNodeProcessType => $nodeProcessCryptocurrencyDestination) {
+					$firewallRules[] = '-A PREROUTING ! -i lo -d ' . $nodeProcessCryptocurrencyDestination['ip_address'] . ' --dport ' . current($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType][0]) . ' -j DROP';
+				}
 			}
 
 			if (empty($parameters['data']['cryptocurrency_firewall_rules']) === false) {
