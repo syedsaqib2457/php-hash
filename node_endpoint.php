@@ -36,23 +36,23 @@
 		_output($response);
 	}
 
-	$nodeData = file_get_contents('/usr/local/nodecompute/node_data.json');
-	$nodeData = json_decode($nodeData, true);
+	$nodeSettingsData = file_get_contents('/usr/local/nodecompute/node_settings_data.json');
+	$nodeSettingsData = json_decode($nodeSettingsData, true);
 
-	if ($nodeData === false) {
-		$response['message'] = 'Error listing node data, please try again.';
+	if ($nodeSettingsData === false) {
+		$response['message'] = 'Error listing node settings data, please try again.';
 		_output($response);
 	}
 
 	$parameters = array(
 		'action' => $_SERVER['argv'][1],
 		'binary_files' => array(),
-		'node_authentication_token' => $nodeData['authentication_token'],
+		'node_authentication_token' => $nodeSettingsData['authentication_token'],
 		'process_id' => getmypid(),
-		'system_endpoint_destination_ip_address' => $nodeData['system_endpoint_destination_ip_address'],
-		'system_endpoint_destination_ip_address_type' => $nodeData['system_endpoint_destination_ip_address_type'],
-		'system_endpoint_destination_ip_address_version_number' => $nodeData['system_endpoint_destination_ip_address_version_number'],
-		'system_version_number' => $nodeData['system_version_number']
+		'system_endpoint_destination_ip_address' => $nodeSettingsData['system_endpoint_destination_ip_address'],
+		'system_endpoint_destination_ip_address_type' => $nodeSettingsData['system_endpoint_destination_ip_address_type'],
+		'system_endpoint_destination_ip_address_version_number' => $nodeSettingsData['system_endpoint_destination_ip_address_version_number'],
+		'system_version_number' => $nodeSettingsData['system_version_number']
 	);
 
 	if ($parameters['process_id'] === false) {
