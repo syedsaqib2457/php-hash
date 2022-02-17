@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The `add_node_process` API action adds a node process to an existing `node_id`.
+This API action adds a node process to an existing node.
 
 ## Request Example
 
@@ -36,8 +36,6 @@ The value must be `add_node_process`.
 
 This is required to map IP addresses from an existing `node_id` to the node process `port_number`.
 
-The value must be an `alphanumeric ID`.
-
 ### data [port_number]
 
 This is required to assign a listening port to the process.
@@ -50,8 +48,6 @@ Requests to a `port_number` will automatically load-balance between all node pro
 
 This is required to assign a `type` the node process `port_number`.
 
-The value must be a `string`.
-
 This is the list of possible values.
 
 - `bitcoin_cash_cryptocurrency_blockchain`
@@ -63,8 +59,6 @@ This is the list of possible values.
 ### system_user_authentication_token
 
 This is required for authenticating system user access.
-
-The value must be a `string` in the `system_user_authentication_tokens` database.
 
 ## Response Example
 
@@ -103,33 +97,25 @@ The request must have a valid `system_user_authentication_token` to be authentic
 
 ### data [created_timestamp]
 
-This is the timestamp of when the node process was added.
-
-The value is a `Unix timestamp in seconds`.
+This is the `Unix timestamp in seconds` of when the node process was added.
 
 ### data [id]
 
 This is the unique ID of the added node process.
 
-The value is an `alphanumeric ID` with a string length of `30 characters`.
-
 ### data [modified_timestamp]
 
-This is the timestamp of when the node process was added.
+This is the `Unix timestamp in seconds` of when the node process was added.
 
-The value is a `Unix timestamp in seconds`.
+The value changes to the current timestamp whenever the added system user is modified.
 
 ### data [node_id]
 
 This is the unique ID of the node that the node process was assigned to.
 
-The value is an `alphanumeric ID` with a string length of `30 characters`.
-
 ### data [node_node_id]
 
 This is the unique ID of the main node that the node process was assigned to.
-
-The value is an `alphanumeric ID` with a string length of `30 characters`.
 
 ### data [port_number]
 
@@ -154,8 +140,6 @@ This is the list of possible values.
 ### message
 
 This is the message for debugging after processing the request.
-
-The value is a `string`.
 
 ### valid_status
 
