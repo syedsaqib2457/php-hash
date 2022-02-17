@@ -17,8 +17,7 @@ All values are formatted as `string` types.
     "action": "add_system_user_authentication_token_source",
     "data": {
         "ip_address_range_start": "10.10.10.10",
-				"ip_address_range_stop": "10.10.10.20",
-				"ip_address_range_version_number": "4",
+        "ip_address_range_stop": "10.10.10.20",
         "system_user_authentication_token_id": "unique_id"
     },
     "system_user_authentication_token": "unique_id"
@@ -31,9 +30,21 @@ These are descriptions for each request parameter.
 
 ### action
 
-This is required for authenticating user scope and processing data for adding system user authentication token sources.
-
 The value must be `add_system_user_authentication_token_source`.
+
+### data [ip_address_range_start]
+
+This is required to identify the first IP address in a range of IP addresses.
+
+The value must be a `public or reserved IPv4 or IPv6 address`.
+
+### data [ip_address_range_stop]
+
+This is required to identify the last IP address in a range of IP addresses.
+
+The value must be a `public or reserved IPv4 or IPv6 address`.
+
+If the system user authentication token source only has 1 IP address, the value should be the same as `ip_address_range_start`.
 
 ### data [system_user_authentication_token_id]
 
@@ -56,8 +67,8 @@ All values are formatted as `string` types.
         "created_timestamp": "0000000000",
         "id": "unique_id",
         "ip_address_range_start": "10.10.10.10",
-				"ip_address_range_stop": "10.10.10.20",
-				"ip_address_range_version_number": "4",
+        "ip_address_range_stop": "10.10.10.20",
+        "ip_address_range_version_number": "4",
         "modified_timestamp": "0000000000",
         "system_user_authentication_token_id": "unique_id",
         "system_user_id": "unique_id"
@@ -86,6 +97,10 @@ This is the `Unix timestamp in seconds` of when the system user authentication t
 ### data [id]
 
 This is the unique ID of the added system user authentication token source.
+
+### data [system_user_authentication_token_id]
+
+This is the unique ID of the system user authentication token that the added system user authentication token source belongs to.
 
 ### data [modified_timestamp]
 
