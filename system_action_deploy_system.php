@@ -973,6 +973,7 @@
 				'node_id',
 				'node_node_id',
 				'node_process_type',
+				'node_user_authentication_source_id',
 				'node_user_authentication_source_ip_address',
 				'node_user_authentication_source_ip_address_block_length',
 				'node_user_authentication_source_ip_address_version_number',
