@@ -23,7 +23,7 @@
 
 		$parameters['data']['ip_address_range_version_number'] = '4';
 
-		if (is_int(strpos($parameters['data']['ip_address_range_start'], ':')) === true) {
+		if ((strpos($parameters['data']['ip_address_range_start'], ':') === false) === false) {
 			$parameters['data']['ip_address_range_version_number'] = '6';
 		}
 
