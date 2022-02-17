@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The `add_system_user_authentication_token` API action adds a system user authentication token to the current system user.
+The `add_system_user_authentication_token` API action adds a system user authentication token to a system user.
 
 ## Request Example
 
@@ -36,13 +36,13 @@ This is required to map the added `system_user_authentication_token` to a `syste
 
 The value must be an an `alphanumeric ID` with a string length of `30 characters`.
 
+The added system user authentication token will belong to the system user with this `system_user_id`.
+
 ### system_user_authentication_token
 
 This is required for authenticating system user access.
 
 The value must be a `string` in the `system_user_authentication_tokens` database.
-
-The added system user will belong to the system user with this `system_user_authentication_token`.
 
 ## Response Example
 
