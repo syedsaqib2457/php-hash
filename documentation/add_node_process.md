@@ -32,13 +32,13 @@ This is required for authenticating user scope and processing data for adding no
 
 The value must be `add_node_process`.
 
-### data[node_id]
+### data [node_id]
 
 This is required to map IP addresses from an existing `node_id` to the node process `port_number`.
 
 The value must be an `alphanumeric ID`.
 
-### data[port_number]
+### data [port_number]
 
 This is required to assign a listening port to the process.
 
@@ -46,7 +46,7 @@ The value must be a `numeric port number` between `1` and `65535`.
 
 Requests to a `port_number` will automatically load-balance between all node processes with the same `node_id`.
 
-### data[type]
+### data [type]
 
 This is required to assign a `type` the node process `port_number`.
 
@@ -101,37 +101,37 @@ The value is either `1` if the request is authenticated or `0` if the request is
 
 The request must have a valid `system_user_authentication_token` to be authenticated.
 
-### data[created_timestamp]
+### data [created_timestamp]
 
 This is the timestamp of when the node process was added.
 
 The value is a `Unix timestamp in seconds`.
 
-### data[id]
+### data [id]
 
 This is the unique ID of the added node process.
 
 The value is an `alphanumeric ID` with a string length of `30 characters`.
 
-### data[modified_timestamp]
+### data [modified_timestamp]
 
 This is the timestamp of when the node process was added.
 
 The value is a `Unix timestamp in seconds`.
 
-### data[node_id]
+### data [node_id]
 
 This is the unique ID of the node that the node process was assigned to.
 
 The value is an `alphanumeric ID` with a string length of `30 characters`.
 
-### data[node_node_id]
+### data [node_node_id]
 
 This is the unique ID of the main node that the node process was assigned to.
 
 The value is an `alphanumeric ID` with a string length of `30 characters`.
 
-### data[port_number]
+### data [port_number]
 
 This is the added port number in the added node process.
 
@@ -139,7 +139,7 @@ The value is a `numeric port number` between `1` and `65535`.
 
 Requests to a `port_number` will automatically load-balance between all node processes with the same `node_id`.
 
-### data[type]
+### data [type]
 
 This is the added type in the added node process.
 
