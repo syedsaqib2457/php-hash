@@ -3,11 +3,14 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'system_user_authentication_token_sources',
 		'system_user_authentication_tokens',
 		'system_user_system_users'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['system_user_authentication_token_sources'] = $systemDatabasesConnections['system_user_authentication_token_sources'];
+	$parameters['system_databases']['system_user_authentication_tokens'] = $systemDatabasesConnections['system_user_authentication_tokens'];
+	$parameters['system_databases']['system_user_system_users'] = $systemDatabasesConnections['system_user_system_users'];
 
 	function _addSystemUserAuthenticationTokenSource($parameters, $response) {
 		if (
@@ -73,7 +76,7 @@
 		), $response);
 
 		if (
-			(($systemUserSystemUserCount > 0) === false) &&
+			(($systemUserSystemUserCount === 1) === false) &&
 			(($parameters['system_user_id'] === $systemUserAuthenticationToken['system_user_id']) === false)
 		) {
 			$response['message'] = 'Invalid permissions to add system user authentication token source, please try again.';
@@ -83,16 +86,16 @@
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 		$existingSystemUserAuthenticationTokenSourceCount = _count(array(
 			'in' => $parameters['system_databases']['system_user_authentication_token_sources'],
-			'where' => array_intersect_key($parameters['data'], array(
-				'ip_address_range_start' => true,
-				'ip_address_range_stop' => true,
-				'ip_address_range_version_number' => true,
-				'system_user_authentication_token_id' => true,
-				'system_user_id' => true
-			))
+			'where' => array(
+				'ip_address_range_start' => $parameters['data']['ip_address_range_start'],
+				'ip_address_range_stop' => $parameters['data']['ip_address_range_stop'],
+				'ip_address_range_version_number' => $parameters['data']['ip_address_range_version_number'],
+				'system_user_authentication_token_id' => $parameters['data']['system_user_authentication_token_id'],
+				'system_user_id' => $parameters['data']['system_user_id']
+			)
 		), $response);
 
-		if (($existingSystemUserAuthenticationTokenSourceCount > 0) === true) {
+		if (($existingSystemUserAuthenticationTokenSourceCount === 1) === true) {
 			$response['message'] = 'System user authentication token source already exists, please try again.';
 			return $response;
 		}
