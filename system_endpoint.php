@@ -30,9 +30,10 @@
 		}
 
 		if (empty($parameters['node_authentication_token']) === false) {
-			$parameters['system_databases'] += _connect(array(
+			$systemDatabasesConnection = _connect(array(
 				'nodes'
 			), $parameters['system_databases'], $response);
+			$parameters['system_databases']['nodes'] = $systemDatabasesConnection['nodes'];
 			$systemRequestLogsNode = _list(array(
 				'data' => array(
 					'id'
