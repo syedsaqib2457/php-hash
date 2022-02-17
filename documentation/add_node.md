@@ -18,7 +18,7 @@ All values are formatted as `string` types.
         "external_ip_address_version_6": "::0",
         "internal_ip_address_version_4": "10.10.10.10",
         "internal_ip_address_version_6": "::1",
-        "node_id": "unique_id_1"
+        "node_id": "unique_id"
     },
     "system_user_authentication_token": "123456789"
 }
@@ -93,14 +93,14 @@ All values are formatted as `string` types.
         "external_ip_address_version_4_type": "current_network",
         "external_ip_address_version_6": "0000:0000:0000:0000:0000:0000:0000:0000",
         "external_ip_address_version_6_type": "loopback",
-        "id": "unique_id_2",
+        "id": "unique_id",
         "internal_ip_address_version_4": "10.10.10.10",
         "internal_ip_address_version_4_type": "private_network",
         "internal_ip_address_version_6": "0000:0000:0000:0000:0000:0000:0000:0001",
         "internal_ip_address_version_6_type": "loopback",
         "memory_capacity_megabytes": "",
         "modified_timestamp": "0000000000",
-        "node_id": "unique_id_1",
+        "node_id": "unique_id",
         "processed_status": "0",
         "processing_progress_checkpoint": "",
         "processing_progress_percentage": "0",
