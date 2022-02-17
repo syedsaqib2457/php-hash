@@ -81,7 +81,7 @@ The request must have a valid `system_user_authentication_token` value to be aut
 
 ### data [created_timestamp]
 
-This is the `Unix timestamp in seconds` of when the system user authentication token was added.
+This is the `Unix timestamp in seconds` of when the system user authentication token scope was added.
 
 ### data [id]
 
