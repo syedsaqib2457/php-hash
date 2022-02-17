@@ -3,14 +3,14 @@
 		exit;
 	}
 
-	$systemDatabaseConnections = _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'system_user_authentication_token_scopes',
 		'system_user_authentication_tokens',
 		'system_user_system_users'
 	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['system_user_authentication_token_scopes'] = $systemDatabaseConnections['system_user_authentication_token_scopes'];
-	$parameters['system_databases']['system_user_authentication_tokens'] = $systemDatabaseConnections['system_user_authentication_tokens'];
-	$parameters['system_databases']['system_user_system_users'] = $systemDatabaseConnections['system_user_system_users'];
+	$parameters['system_databases']['system_user_authentication_token_scopes'] = $systemDatabasesConnections['system_user_authentication_token_scopes'];
+	$parameters['system_databases']['system_user_authentication_tokens'] = $systemDatabasesConnections['system_user_authentication_tokens'];
+	$parameters['system_databases']['system_user_system_users'] = $systemDatabasesConnections['system_user_system_users'];
 
 	function _addSystemUserAuthenticationTokenScope($parameters, $response) {
 		if (empty($parameters['data']['system_action']) === true) {
