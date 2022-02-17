@@ -69,19 +69,19 @@ The value is either `1` if the request is authenticated or `0` if the request is
 
 The request must have a valid `system_user_authentication_token` to be authenticated.
 
-### data[created_timestamp]
+### data [created_timestamp]
 
 This is the timestamp of when the system user was added.
 
 The value is a `Unix timestamp in seconds`.
 
-### data[id]
+### data [id]
 
 This is the unique ID of the added system user.
 
 The value is an `alphanumeric ID` with a string length of `30 characters`.
 
-### data[modified_timestamp]
+### data [modified_timestamp]
 
 This is the timestamp of when the system user was added.
 
@@ -89,7 +89,7 @@ The value is a `Unix timestamp in seconds`.
 
 It changes to the current timestamp whenever a value is modified in the added system user.
 
-### data[system_user_id]
+### data [system_user_id]
 
 This is the unique ID of the system user that the added system user belongs to.
 
