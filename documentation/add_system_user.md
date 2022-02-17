@@ -77,7 +77,7 @@ The value is a `Unix timestamp in seconds`.
 
 ### data[id]
 
-This is the unique ID of the added system user ID.
+This is the unique ID of the added system user.
 
 The value is an `alphanumeric ID` with a string length of `30 characters`.
 
