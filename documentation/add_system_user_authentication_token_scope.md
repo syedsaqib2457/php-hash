@@ -39,9 +39,7 @@ This is required to map the added `system_user_authentication_token_scope` to a 
 
 ### data [system_user_authentication_token_id]
 
-This is required to map the added `system_user_authentication_token_scope` to a `system_user_authentication_token_id`.
-
-The added system user authentication token scope will belong to this `system_user_authentication_token_id`.
+This is required to map the added system user authentication token scope to a `system_user_authentication_token_id`.
 
 ### system_user_authentication_token
 
@@ -87,11 +85,11 @@ This is the `Unix timestamp in seconds` of when the system user authentication t
 
 ### data [id]
 
-This is the unique ID of the added system user authentication token ID.
+This is the unique ID of the added system user authentication token scope.
 
 ### data [modified_timestamp]
 
-This is the `Unix timestamp in seconds` of when the system user authentication token was added.
+This is the `Unix timestamp in seconds` of when the system user authentication token scope was added.
 
 ### data [system_action]
 
