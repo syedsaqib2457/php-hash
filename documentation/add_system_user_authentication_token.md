@@ -26,8 +26,6 @@ These are descriptions for each request parameter.
 
 ### action
 
-This is required for authenticating user scope and processing data for adding system user authentication tokens.
-
 The value must be `add_system_user_authentication_token`.
 
 ### data [system_user_id]
