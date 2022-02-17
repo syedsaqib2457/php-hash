@@ -50,7 +50,7 @@ Requests to a `port_number` will automatically load-balance between all node pro
 
 This is required to assign a `type` the node process `port_number`.
 
-The value must be an `string`.
+The value must be a `string`.
 
 This is the list of possible values.
 
@@ -124,6 +124,26 @@ The value is an `alphanumeric ID` with a string length of `30 characters`.
 This is the unique ID of the main node that the node process was assigned to.
 
 The value is an `alphanumeric ID` with a string length of `30 characters`.
+
+### data[port_number]
+
+This is the added port number in the added node process.
+
+The value is a `numeric port number` between `1` and `65535`.
+
+Requests to a `port_number` will automatically load-balance between all node processes with the same `node_id`.
+
+### data[type]
+
+This is the added type in the added node process.
+
+This is the list of possible values.
+
+- `bitcoin_cash_cryptocurrency_blockchain`
+- `http_proxy`
+- `load_balancer`
+- `recursive_dns`
+- `socks_proxy`
 
 ### message
 
