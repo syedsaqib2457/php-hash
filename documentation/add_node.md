@@ -30,8 +30,6 @@ These are descriptions for each request parameter.
 
 ### action
 
-This is required for authenticating user scope and processing data for adding nodes.
-
 The value must be `add_node`.
 
 ### data [external_ip_address_version_4]
