@@ -44,7 +44,7 @@ This is required to identify the last IP address in a range of IP addresses.
 
 The value must be a `public or reserved IPv4 or IPv6 address`.
 
-If the system user authentication token source only has 1 IP address, the value should be the same as `ip_address_range_start`.
+If the system user authentication token source has only 1 IP address, the value should be the same as `ip_address_range_start`.
 
 ### data [system_user_authentication_token_id]
 
@@ -98,9 +98,23 @@ This is the `Unix timestamp in seconds` of when the system user authentication t
 
 This is the unique ID of the added system user authentication token source.
 
-### data [system_user_authentication_token_id]
+### data [ip_address_range_start]
 
-This is the unique ID of the system user authentication token that the added system user authentication token source belongs to.
+This is the first IPv4 or IPv6 address in the added system user authentication token source.
+
+The value is a `public or reserved IPv4 or IPv6 address`.
+
+### data [ip_address_range_stop]
+
+This is the last IPv4 or IPv6 address in the added system user authentication token source.
+
+The value is a `public or reserved IPv4 or IPv6 address`.
+
+### data [ip_address_range_version_number]
+
+This is the numeric IP address range version number in the added system user authentication token source.
+
+The value is either `4` or `6`.
 
 ### data [modified_timestamp]
 
