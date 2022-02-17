@@ -28,8 +28,6 @@ These are descriptions for each request parameter.
 
 ### action
 
-This is required for authenticating user scope and processing data for adding node processes.
-
 The value must be `add_node_process`.
 
 ### data [node_id]
