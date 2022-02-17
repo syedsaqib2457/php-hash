@@ -154,13 +154,13 @@ The value is either `1` if the added node is deployed or `0` if the added node i
 
 ### data [external_ip_address_version_4]
 
-This is the added external IPv4 address in the added node.
+This is the external IPv4 address in the added node.
 
 The value is either a `public or reserved IPv4 address` or `empty`.
 
 ### data [external_ip_address_version_4_type]
 
-This is the added external IPv4 address type in the added node.
+This is the external IPv4 address type in the added node.
 
 The value is either an `IP address type` or `empty`.
 
@@ -176,7 +176,7 @@ This is the list of possible values.
 
 ### data [external_ip_address_version_6]
 
-This is the added external IPv6 address in the added node.
+This is the external IPv6 address in the added node.
 
 The value is either a `public or reserved IPv6 address` or `empty`.
 
@@ -184,7 +184,7 @@ Abbreviated IPv6 address notation values are converted to full IPv6 address nota
 
 ### data [external_ip_address_version_6_type]
 
-This is the added external IPv6 address type in the added node.
+This is the external IPv6 address type in the added node.
 
 The value is either an `IP address type` or `empty`.
 
@@ -204,13 +204,13 @@ This is the unique ID of the added node.
 
 ### data [internal_ip_address_version_4]
 
-This is the added internal IPv4 address in the added node.
+This is the internal IPv4 address in the added node.
 
 The value is either a `reserved IPv4 address` or `empty`.
 
 ### data [internal_ip_address_version_4_type]
 
-This is the added internal IPv4 address type in the added node.
+This is the internal IPv4 address type in the added node.
 
 The value is either an `IP address type` or `empty`.
 
@@ -226,7 +226,7 @@ This is the list of possible values.
 
 ### data [internal_ip_address_version_6]
 
-This is the added internal IPv6 address in the added node.
+This is the internal IPv6 address in the added node.
 
 The value is either a `reserved IPv6 address` or `empty`.
 
@@ -234,7 +234,7 @@ Abbreviated IPv6 address notation values are converted to full IPv6 address nota
 
 ### data [internal_ip_address_version_6_type]
 
-This is the added internal IPv6 address type in the added node.
+This is the internal IPv6 address type in the added node.
 
 The value is either an `IP address type` or `empty`.
 
