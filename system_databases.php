@@ -368,7 +368,7 @@
 		_output($parameters, $response);
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'system_request_logs',
 		'system_settings',
 		'system_user_authentication_token_scopes',
@@ -376,4 +376,10 @@
 		'system_user_authentication_tokens',
 		'system_users'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['system_request_logs'] = $systemDatabasesConnections['system_request_logs'];
+	$parameters['system_databases']['system_settings'] = $systemDatabasesConnections['system_settings'];
+	$parameters['system_databases']['system_user_authentication_token_scopes'] = $systemDatabasesConnections['system_user_authentication_token_scopes'];
+	$parameters['system_databases']['system_user_authentication_token_sources'] = $systemDatabasesConnections['system_user_authentication_token_sources'];
+	$parameters['system_databases']['system_user_authentication_tokens'] = $systemDatabasesConnections['system_user_authentication_tokens'];
+	$parameters['system_databases']['system_users'] = $systemDatabasesConnections['system_users'];
 ?>
