@@ -13,16 +13,16 @@
 			'id' => _createUniqueId(),
 			'system_user_id' => $parameters['system_user_id']
 		);
-		$systemUserSystemUserData = array(
+		$systemUserSystemUsersData = array(
 			array(
 				'id' => _createUniqueId(),
 				'system_user_id' => $parameters['data']['id'],
 				'system_user_system_user_id' => $parameters['system_user_id']
 			)
 		);
-		$systemUserSystemUserDataProcessed = false;
+		$systemUserSystemUsersDataProcessed = false;
 
-		while ($systemUserSystemUserDataProcessed === false) {
+		while ($systemUserSystemUsersDataProcessed === false) {
 			$systemUser = _list(array(
 				'data' => array(
 					'id',
@@ -35,19 +35,19 @@
 			), $response);
 			$systemUser = current($systemUser);
 			$parameters['system_user_id'] = $systemUser['system_user_id'];
-			$systemUserSystemUserData[] = array(
+			$systemUserSystemUsersData[] = array(
 				'id' => _createUniqueId(),
 				'system_user_id' => $parameters['data']['id'],
 				'system_user_system_user_id' => $systemUser['system_user_id']
 			);
 
 			if (($systemUser['id'] === $systemUser['system_user_id']) === true) {
-				$systemUserSystemUserDataProcessed = true;
+				$systemUserSystemUsersDataProcessed = true;
 			}
 		}
 
 		_save(array(
-			'data' => $systemUserSystemUserData,
+			'data' => $systemUserSystemUsersData,
 			'in' => $parameters['system_databases']['system_user_system_users']
 		), $response);
 		_save(array(
