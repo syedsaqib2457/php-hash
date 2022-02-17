@@ -83,6 +83,8 @@ This is the unique ID of the added system user authentication token.
 
 This is the `Unix timestamp in seconds` of when the system user authentication token was added.
 
+The value changes to the current timestamp whenever the added system user is modified.
+
 ### data [system_user_id]
 
 This is the unique ID of the system user that the added system user belongs to.
