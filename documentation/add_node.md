@@ -66,7 +66,7 @@ An `external_ip_address_version_6` value must also be set.
 
 This is required if the node is added as an additional node to an existing node.
 
-The value must be an `alphanumeric ID`.
+The value must be an `alphanumeric ID` with a string length of `30 characters`.
 
 ### system_user_authentication_token
 
