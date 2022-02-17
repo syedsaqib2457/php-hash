@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The `add_node` API action adds a node with IP address data so it can be connected with NodeCompute API automation.
+This API action adds a node to connect IP address data from a device to the system API.
 
 ## Request Example
 
@@ -36,19 +36,19 @@ The value must be `add_node`.
 
 ### data [external_ip_address_version_4]
 
-This is required if the node has an IPv4 address routed to the instance.
+This is required if the node has an IPv4 address routed to the device.
 
 The value must be a `public or reserved IPv4 address`.
 
 ### data [external_ip_address_version_6]
 
-This is required if the node has an IPv6 address routed to the instance.
+This is required if the node has an IPv6 address routed to the device.
 
 The value must be a `public or reserved IPv6 address`.
 
 ### data [internal_ip_address_version_4]
 
-This is required if the node has a private IPv4 address for internal routing to external IP addresses on the instance.
+This is required if the node has a private IPv4 address for internal routing to external IP addresses on the device.
 
 The value must be a `reserved IPv4 address`.
 
@@ -56,7 +56,7 @@ An `external_ip_address_version_4` value must also be set.
 
 ### data [internal_ip_address_version_6]
 
-This is required if the node has a private IPv6 address for internal routing to external IP addresses on the instance.
+This is required if the node has a private IPv6 address for internal routing to external IP addresses on the device.
 
 The value must be a `reserved IPv6 address`.
 
@@ -146,9 +146,7 @@ The value is either a `numeric count` if the added node is added to a deployed n
 
 ### data [created_timestamp]
 
-This is the timestamp of when the node was added.
-
-The value is a `Unix timestamp in seconds`.
+This is the `Unix timestamp in seconds` of when the node was added.
 
 ### data [deployed_status]
 
@@ -206,8 +204,6 @@ This is the list of possible values.
 
 This is the unique ID of the added node.
 
-The value is an `alphanumeric ID` with a string length of `30 characters`.
-
 ### data [internal_ip_address_version_4]
 
 This is the added internal IPv4 address in the added node.
@@ -262,9 +258,7 @@ The value is either a `numeric count in megabytes` if the node is added to a dep
 
 ### data [modified_timestamp]
 
-This is the timestamp of when the node was added.
-
-The value is a `Unix timestamp in seconds`.
+This is the `Unix timestamp in seconds` of when the node was added.
 
 It changes to the current timestamp whenever a value is modified in the added node.
 
@@ -324,8 +318,6 @@ The value is either a `numeric count in megabytes` if the node is added to a dep
 ### message
 
 This is the message for debugging after processing the request.
-
-The value is a `string`.
 
 ### valid_status
 
