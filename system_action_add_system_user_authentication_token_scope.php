@@ -19,7 +19,7 @@
 		}
 
 		if (
-			(ctype_alnum(str_replace('_', '', $parameters['data']['system_action'])) === false) ||
+			((strpos($parameters['data']['system_action'], '/') === false) === false) ||
 			(file_exists('/var/www/nodecompute/system_action_' . $parameters['data']['system_action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid system user authentication token scope system action, please try again.';
@@ -64,14 +64,14 @@
 		$parameters['data']['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
 		$existingSystemUserAuthenticationTokenScopeCount = _count(array(
 			'in' => $parameters['system_databases']['system_user_authentication_token_scopes'],
-			'where' => array_intersect_key($parameters['data'], array(
-				'system_action' => true,
-				'system_user_authentication_token_id' => true,
-				'system_user_id' => true
-			))
+			'where' => array(
+				'system_action' => $parameters['data']['system_action'],
+				'system_user_authentication_token_id' => $parameters['data']['system_user_authentication_token_id'],
+				'system_user_id' => $parameters['data']['system_user_id']
+			)
 		), $response);
 
-		if (($existingSystemUserAuthenticationTokenScopeCount > 0) === true) {
+		if (($existingSystemUserAuthenticationTokenScopeCount === 1) === true) {
 			$response['message'] = 'System user authentication token scope already exists, please try again.';
 			return $response;
 		}
@@ -93,7 +93,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_system_user_authentication_token_scopes') === true) {
+	if (($parameters['action'] === 'add_system_user_authentication_token_scope') === true) {
 		$response = _addSystemUserAuthenticationTokenScope($parameters, $response);
 	}
 ?>
