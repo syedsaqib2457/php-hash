@@ -35,7 +35,7 @@ The value must be `add_system_user_authentication_token_scope`.
 
 ### data [system_action]
 
-This is required to map the added `system_user_authentication_token_scope` to a `system_action`.
+This is required to map the added system user authentication token scope to a `system_action`.
 
 ### data [system_user_authentication_token_id]
 
