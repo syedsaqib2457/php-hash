@@ -2,9 +2,9 @@
 
 ## Introduction
 
-The `add_system_user` API action adds a system user below the current system user.
+This API action adds a system user below the current system user.
 
-All system users above the added system user have permissions to modify records belonging to the added system user.
+The added system user and all system users above the added system user have permissions to modify records belonging to the added system user.
 
 ## Request Example
 
@@ -32,10 +32,6 @@ The value must be `add_system_user`.
 ### system_user_authentication_token
 
 This is required for authenticating system user access.
-
-The value must be a `string` in the `system_user_authentication_tokens` database.
-
-The added system user will belong to the system user with this `system_user_authentication_token`.
 
 ## Response Example
 
@@ -71,35 +67,25 @@ The request must have a valid `system_user_authentication_token` to be authentic
 
 ### data [created_timestamp]
 
-This is the timestamp of when the system user was added.
-
-The value is a `Unix timestamp in seconds`.
+This is the `Unix timestamp in seconds` of when the system user was added.
 
 ### data [id]
 
 This is the unique ID of the added system user.
 
-The value is an `alphanumeric ID` with a string length of `30 characters`.
-
 ### data [modified_timestamp]
 
-This is the timestamp of when the system user was added.
+This is the `Unix timestamp in seconds` of when the system user was added.
 
-The value is a `Unix timestamp in seconds`.
-
-It changes to the current timestamp whenever a value is modified in the added system user.
+The value changes to the current timestamp whenever the added system user is modified.
 
 ### data [system_user_id]
 
 This is the unique ID of the system user that the added system user belongs to.
 
-The value is an `alphanumeric ID` with a string length of `30 characters`.
-
 ### message
 
 This is the message for debugging after processing the request.
-
-The value is a `string`.
 
 ### valid_status
 
