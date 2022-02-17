@@ -1,8 +1,10 @@
-# Add System User Authentication Token
+# Add System User Authentication Token Scope
 
 ## Introduction
 
-The `add_system_user_authentication_token_scope` API action adds a system user authentication token scope to the current system user.
+The `add_system_user_authentication_token_scope` API action adds a system user authentication token scope to a system user authentication token.
+
+System user authentication token scopes is required to grant permissions to each `system_action`.
 
 ## Request Example
 
@@ -12,11 +14,12 @@ All values are formatted as `string` types.
 
 ```json
 {
-    "action": "add_system_user_authentication_token",
+    "action": "add_system_user_authentication_token_scope",
     "data": {
-        "system_user_id": "unique_id"
+        "system_action": "add_node",
+        "system_user_authentication_token_id": "unique_id"
     },
-    "system_user_authentication_token": "123456789"
+    "system_user_authentication_token": "unique_id"
 }
 ```
 
@@ -26,23 +29,23 @@ These are descriptions for each request parameter.
 
 ### action
 
-This is required for authenticating user scope and processing data for adding system user authentication tokens.
+This is required for authenticating user scope and processing data for adding system user authentication token scopes.
 
-The value must be `add_system_user_authentication_token`.
+The value must be `add_system_user_authentication_token_scope`.
 
-### data [system_user_id]
+### data [system_action]
 
-This is required to map the added `system_user_authentication_token` to a `system_user_id`.
+This is required to map the added `system_user_authentication_token_scope` to a `system_action`.
 
-The value must be an an `alphanumeric ID` with a string length of `30 characters`.
+### data [system_user_authentication_token_id]
+
+This is required to map the added `system_user_authentication_token_scope` to a `system_user_authentication_token_id`.
+
+The added system user authentication token scope will belong to this `system_user_authentication_token_id`.
 
 ### system_user_authentication_token
 
 This is required for authenticating system user access.
-
-The value must be a `string` in the `system_user_authentication_tokens` database.
-
-The added system user will belong to the system user with this `system_user_authentication_token`.
 
 ## Response Example
 
@@ -57,10 +60,11 @@ All values are formatted as `string` types.
         "created_timestamp": "0000000000",
         "id": "unique_id",
         "modified_timestamp": "0000000000",
-        "system_user_id": "unique_id",
-        "value": "unique_id"
+        "system_action": "add_node",
+        "system_user_authentication_token_id": "unique_id",
+        "system_user_id": "unique_id"
     },
-    "message": "System user authentication token added successfully.",
+    "message": "System user authentication token scope added successfully.",
     "valid_status": "1"
 }
 ```
@@ -79,39 +83,31 @@ The request must have a valid `system_user_authentication_token` to be authentic
 
 ### data [created_timestamp]
 
-This is the timestamp of when the system user authentication token was added.
-
-The value is a `Unix timestamp in seconds`.
+This is the `Unix timestamp in seconds` of when the system user authentication token was added.
 
 ### data [id]
 
 This is the unique ID of the added system user authentication token ID.
 
-The value is an `alphanumeric ID` with a string length of `30 characters`.
-
 ### data [modified_timestamp]
 
-This is the timestamp of when the system user authentication token was added.
+This is the `Unix timestamp in seconds` of when the system user authentication token was added.
 
-The value is a `Unix timestamp in seconds`.
+### data [system_action]
+
+This is the system action that the added system user authentication token scope grants permissions to.
+
+### data [system_user_authentication_token_id]
+
+This is the unique ID of the system user authentication token that the added system user authentication token scope belongs to.
 
 ### data [system_user_id]
 
-This is the unique ID of the system user that the added system user belongs to.
-
-The value is an `alphanumeric ID` with a string length of `30 characters`.
-
-### data [value]
-
-This is the system user authentication token value for the `system_user_authentication_token` request parameter.
-
-The value is an `alphanumeric ID` with a string length of `30 characters`.
+This is the unique ID of the system user that the added system user authentication token scope belongs to.
 
 ### message
 
 This is the message for debugging after processing the request.
-
-The value is a `string`.
 
 ### valid_status
 
