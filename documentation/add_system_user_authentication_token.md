@@ -16,7 +16,7 @@ All values are formatted as `string` types.
     "data": {
         "system_user_id": "unique_id"
     },
-    "system_user_authentication_token": "123456789"
+    "system_user_authentication_token": "unique_id"
 }
 ```
 
@@ -32,17 +32,11 @@ The value must be `add_system_user_authentication_token`.
 
 ### data [system_user_id]
 
-This is required to map the added `system_user_authentication_token` to a `system_user_id`.
-
-The value must be an an `alphanumeric ID` with a string length of `30 characters`.
-
-The added system user authentication token will belong to the system user with this `system_user_id`.
+This is required to map the added system user authentication token to a `system_user_id`.
 
 ### system_user_authentication_token
 
 This is required for authenticating system user access.
-
-The value must be a `string` in the `system_user_authentication_tokens` database.
 
 ## Response Example
 
@@ -75,43 +69,31 @@ This is the authenticated status indicator for the request.
 
 The value is either `1` if the request is authenticated or `0` if the request isn't authenticated.
 
-The request must have a valid `system_user_authentication_token` to be authenticated.
+The request must have a valid `system_user_authentication_token` value to be authenticated.
 
 ### data [created_timestamp]
 
-This is the timestamp of when the system user authentication token was added.
-
-The value is a `Unix timestamp in seconds`.
+This is the `Unix timestamp in seconds` of when the system user authentication token was added.
 
 ### data [id]
 
-This is the unique ID of the added system user authentication token ID.
-
-The value is an `alphanumeric ID` with a string length of `30 characters`.
+This is the unique ID of the added system user authentication token.
 
 ### data [modified_timestamp]
 
-This is the timestamp of when the system user authentication token was added.
-
-The value is a `Unix timestamp in seconds`.
+This is the `Unix timestamp in seconds` of when the system user authentication token was added.
 
 ### data [system_user_id]
 
 This is the unique ID of the system user that the added system user belongs to.
 
-The value is an `alphanumeric ID` with a string length of `30 characters`.
-
 ### data [value]
 
-This is the system user authentication token value for the `system_user_authentication_token` request parameter.
-
-The value is an `alphanumeric ID` with a string length of `30 characters`.
+This is the system user authentication token value to use for the `system_user_authentication_token` request parameter.
 
 ### message
 
 This is the message for debugging after processing the request.
-
-The value is a `string`.
 
 ### valid_status
 
