@@ -77,7 +77,7 @@ This is the authenticated status indicator for the request.
 
 The value is either `1` if the request is authenticated or `0` if the request isn't authenticated.
 
-The request must have a valid `system_user_authentication_token` to be authenticated.
+The request must have a valid `system_user_authentication_token` value to be authenticated.
 
 ### data [created_timestamp]
 
