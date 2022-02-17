@@ -3,10 +3,12 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_reserved_internal_sources',
 		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_reserved_internal_sources'] = $systemDatabasesConnections['node_reserved_internal_sources'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 	require_once('/var/www/nodecompute/system_action_add_node_reserved_internal_destination.php');
 	require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
 
