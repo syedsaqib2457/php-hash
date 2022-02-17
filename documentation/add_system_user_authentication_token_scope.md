@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The `add_system_user_authentication_token_scope` API action adds a system user authentication token scope to a system user authentication token.
+This API action adds a system user authentication token scope to a system user authentication token.
 
 System user authentication token scopes are required to grant permissions to each `system_action`.
 
