@@ -14,7 +14,7 @@ All values are formatted as `string` types.
 {
     "action": "add_node_process",
     "data": {
-        "node_id": "unique_id_1",
+        "node_id": "unique_id",
         "port_number": "1080",
         "type": "socks_proxy"
     },
@@ -76,7 +76,13 @@ All values are formatted as `string` types.
 {
     "authenticated_status": "1",
     "data": {
-        // todo
+        "created_timestamp": "0000000000",
+        "id": "unique_id",
+        "modified_timestamp": "0000000000",
+        "node_id": "unique_id",
+        "node_node_id": "unique_id",
+        "port_number": "1080",
+        "type": "socks_proxy",
     },
     "message": "Node process added successfully.",
     "valid_status": "1"
