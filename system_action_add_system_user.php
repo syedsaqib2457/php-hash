@@ -3,10 +3,12 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'system_user_system_users',
 		'system_users'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['system_user_system_users'] = $systemDatabasesConnections['system_user_system_users'];
+	$parameters['system_databases']['system_users'] = $systemDatabasesConnections['system_users'];
 
 	function _addSystemUser($parameters, $response) {
 		$systemUserData = array(
