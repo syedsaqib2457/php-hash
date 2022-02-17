@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The `add_system_user_authentication_token` API action adds a system user authentication token to a system user.
+This API action adds a system user authentication token to a system user.
 
 ## Request Example
 
