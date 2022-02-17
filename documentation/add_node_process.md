@@ -117,7 +117,7 @@ This is the unique ID of the main node that the node process was assigned to.
 
 ### data [port_number]
 
-This is the added port number in the added node process.
+This is the port number in the added node process.
 
 The value is a `numeric port number` between `1` and `65535`.
 
@@ -125,7 +125,7 @@ Requests to a `port_number` will automatically load-balance between all node pro
 
 ### data [type]
 
-This is the added type in the added node process.
+This is the type in the added node process.
 
 This is the list of possible values.
 
