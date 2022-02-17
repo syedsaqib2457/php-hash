@@ -101,10 +101,8 @@
 			_output($parameters, $response);
 		}
 
-		$systemAction = str_replace('_', '', $parameters['action']);
-
 		if (
-			(ctype_alnum($systemAction) === false) ||
+			((strpos($parameters['action'], '/') === false) === false) ||
 			(file_exists('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid system endpoint action, please try again.';
