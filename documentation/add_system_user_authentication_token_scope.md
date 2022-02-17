@@ -91,6 +91,8 @@ This is the unique ID of the added system user authentication token scope.
 
 This is the `Unix timestamp in seconds` of when the system user authentication token scope was added.
 
+The value changes to the current timestamp whenever the added system user is modified.
+
 ### data [system_action]
 
 This is the system action that the added system user authentication token scope grants permissions to.
