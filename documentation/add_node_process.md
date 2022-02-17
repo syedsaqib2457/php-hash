@@ -95,6 +95,36 @@ The value is either `1` if the request is authenticated or `0` if the request is
 
 The request must have a valid `system_user_authentication_token` to be authenticated.
 
+### data[created_timestamp]
+
+This is the timestamp of when the node process was added.
+
+The value is a `Unix timestamp in seconds`.
+
+### data[id]
+
+This is the unique ID of the added node process.
+
+The value is an `alphanumeric ID` with a string length of `30 characters`.
+
+### data[modified_timestamp]
+
+This is the timestamp of when the node process was added.
+
+The value is a `Unix timestamp in seconds`.
+
+### data[node_id]
+
+This is the unique ID of the node that the node process was assigned to.
+
+The value is an `alphanumeric ID` with a string length of `30 characters`.
+
+### data[node_node_id]
+
+This is the unique ID of the main node that the node process was assigned to.
+
+The value is an `alphanumeric ID` with a string length of `30 characters`.
+
 ### message
 
 This is the message for debugging after processing the request.
