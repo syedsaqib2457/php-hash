@@ -28,7 +28,7 @@
 		$nodeUser = current($nodeUser);
 
 		if (empty($nodeUser) === true) {
-			$response['message'] = 'Invalid node user ID, please try again.';
+			$response['message'] = 'Invalid node user authentication source node user ID, please try again.';
 			return $response;
 		}
 
