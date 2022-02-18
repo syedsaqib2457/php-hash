@@ -12,7 +12,11 @@
 		'nodes'
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_process_node_user_node_request_destinations'] = $systemDatabasesConnections['node_process_node_user_node_request_destinations'];
+	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
+	$parameters['system_databases']['node_request_destinations'] = $systemDatabasesConnections['node_request_destinations'];
+	$parameters['system_databases']['node_process_node_user_node_request_destinations'] = $systemDatabasesConnections['node_process_node_user_node_request_destinations'];
 	$parameters['system_databases']['node_users'] = $systemDatabasesConnections['node_users'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _addNodeProcessNodeUserNodeRequestDestination($parameters, $response) {
 		if (empty($parameters['data']['node_id']) === true) {
