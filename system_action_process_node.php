@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
 		'node_process_cryptocurrency_blockchain_worker_settings',
 		'node_process_cryptocurrency_blockchains',
@@ -19,6 +19,20 @@
 		'node_reserved_internal_sources',
 		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchain_socks_proxy_destinations'];
+	$parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchain_worker_settings'];
+	$parameters['system_databases']['node_process_cryptocurrency_blockchains'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchains'];
+	$parameters['system_databases']['node_process_forwarding_destinations'] = $systemDatabasesConnections['node_process_forwarding_destinations'];
+	$parameters['system_databases']['node_process_node_user_authentication_credentials'] = $systemDatabasesConnections['node_process_node_user_authentication_credentials'];
+	$parameters['system_databases']['node_process_node_user_authentication_sources'] = $systemDatabasesConnections['node_process_node_user_authentication_sources'];
+	$parameters['system_databases']['node_process_node_user_node_request_destinations'] = $systemDatabasesConnections['node_process_node_user_node_request_destinations'];
+	$parameters['system_databases']['node_process_node_user_node_request_limit_rules'] = $systemDatabasesConnections['node_process_node_user_node_request_limit_rules'];
+	$parameters['system_databases']['node_process_node_users'] = $systemDatabasesConnections['node_process_node_users'];
+	$parameters['system_databases']['node_process_recursive_dns_destinations'] = $systemDatabasesConnections['node_process_recursive_dns_destinations'];
+	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
+	$parameters['system_databases']['node_reserved_internal_destinations'] = $systemDatabasesConnections['node_reserved_internal_destinations'];
+	$parameters['system_databases']['node_reserved_internal_sources'] = $systemDatabasesConnections['node_reserved_internal_sources'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _processNode($parameters, $response) {
 		$response['data'] = array(
