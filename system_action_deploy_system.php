@@ -1163,7 +1163,7 @@
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
-				'node_request_destination_address',
+				'node_request_destination_hostname',
 				'node_request_destination_id',
 				'node_user_id'
 			),
