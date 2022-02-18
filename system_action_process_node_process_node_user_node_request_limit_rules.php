@@ -19,5 +19,5 @@
 		// todo: delete request limit rules exceeding expired_timestamp value
 	}
 
-	$response = _processNodeProcessNodeUserRequestLogs($parameters, $response);
+	$response = _processNodeProcessNodeUserRequestLimitRules($parameters, $response);
 ?>
