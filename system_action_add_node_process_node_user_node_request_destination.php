@@ -7,6 +7,7 @@
 		'node_process_node_user_node_request_destinations',
 		'node_processes',
 		'node_request_destinations',
+		'node_user_node_request_destinations',
 		'node_users',
 		'nodes'
 	), $parameters['system_databases'], $response);
@@ -101,6 +102,26 @@
 		if (empty($nodeUser) === true) {
 			$response['message'] = 'Invalid node process node user node request destination node user ID, please try again.';
 			return $response;
+		}
+
+		$nodeUserNodeRequestDestinationCount = _count(array(
+			'in' => $parameters['system_databases']['node_user_node_request_destinations'],
+			'where' => array(
+				'node_request_destination_id' => $parameters['data']['node_request_destination_id'],
+				'node_user_id' => $parameters['data']['node_user_id']
+			)
+		), $response);
+		$nodeUserNodeRequestDestinationCount = current($nodeUserNodeRequestDestinationCount);
+
+		if (($nodeUserNodeRequestDestinationCount === 1) === false) {
+			_save(array(
+				'data' => array(
+					'id' => _createUniqueId(),
+					'node_request_destination_id' => $parameters['data']['node_request_destination_id'],
+					'node_user_id' => $parameters['data']['node_user_id']
+				),
+				'in' => $parameters['system_databases']['node_user_node_request_destinations']
+			), $response);
 		}
 
 		$parameters['data']['id'] = _createUniqueId();
