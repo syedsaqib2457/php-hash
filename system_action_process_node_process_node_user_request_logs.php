@@ -115,6 +115,7 @@
 				'data' => $nodeProcessNodeUserRequestLogs,
 				'in' => $parameters['system_databases']['node_process_node_user_request_logs']
 			), $response);
+			// todo: add $nodeUserRequestDestinationLogsData for node_user_request_destination_logs database to manage node_user_node_request_limit_rules
 			$nodeProcessNodeUserRequestDestinationLogsData = array();
 
 			foreach ($nodeProcessNodeUserRequestDestinationLogs as $nodeProcessNodeUserRequestDestinationLogsNodeId => $nodeProcessNodeUserRequestDestinationLogs) {
