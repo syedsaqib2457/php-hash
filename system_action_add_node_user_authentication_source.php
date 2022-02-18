@@ -53,7 +53,25 @@
 			return $response;
 		}
 
-		// todo
+		if (
+			(
+				(($parameters['data']['ip_address_version_number'] === '4') === true) &&
+				(
+					(($parameters['data']['ip_address_block_length'] > '32') === true) ||
+					(($parameters['data']['ip_address_block_length'] < '8') === true)
+				)
+			) ||
+			(
+				(($parameters['data']['ip_address_version_number'] === '6') === true) &&
+				(
+					(($parameters['data']['ip_address_block_length'] > '128') === true) ||
+					(($parameters['data']['ip_address_block_length'] < '48') === true)
+				)
+			)
+		) {
+			$response['message'] = 'Invalid node user authentication source IP address block length ' . $parameters['data']['ip_address_block_length'] . ', please try again.';
+			return $response;
+		}
 
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
