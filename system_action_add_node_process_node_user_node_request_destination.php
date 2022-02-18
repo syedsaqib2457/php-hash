@@ -117,6 +117,7 @@
 			_save(array(
 				'data' => array(
 					'id' => _createUniqueId(),
+					'node_request_destination_address' => $parameters['data']['node_request_destination_address'],
 					'node_request_destination_id' => $parameters['data']['node_request_destination_id'],
 					'node_user_id' => $parameters['data']['node_user_id']
 				),
