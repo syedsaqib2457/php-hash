@@ -8,6 +8,7 @@
 		'node_process_node_user_request_logs',
 		'node_process_node_users'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_process_node_user_request_destination_logs'] = $systemDatabasesConnections['node_process_node_user_request_destination_logs'];
 	$parameters['system_databases']['node_process_node_user_request_logs'] = $systemDatabasesConnections['node_process_node_user_request_logs'];
 	$parameters['system_databases']['node_process_node_users'] = $systemDatabasesConnections['node_process_node_users'];
 	require_once('/var/www/nodecompute/system_action_add_node_resource_usage_log.php');
