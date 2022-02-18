@@ -16,7 +16,7 @@
 
 			$systemDatabaseParameters = array(
 				'data' => array(
-					'authentication_credential_hostname',
+					'authentication_credential_address',
 					'authentication_credential_password',
 					'id',
 					'table_name'
@@ -59,7 +59,7 @@
 			}
 
 			$response['_connect'][$systemDatabase['table_name']] = array(
-				'connection' => mysqli_connect($systemDatabase['authentication_credential_hostname'], 'root', $systemDatabase['authentication_credential_password'], 'nodecompute'),
+				'connection' => mysqli_connect($systemDatabase['authentication_credential_address'], 'root', $systemDatabase['authentication_credential_password'], 'nodecompute'),
 				'structure'=> array(
 					'table_name' => $systemDatabaseParameters['where']['table_name']
 				)
@@ -350,7 +350,7 @@
 			'connection' => $systemDatabaseConnection,
 			'structure' => array(
 				'column_names' => array(
-					'authentication_credential_hostname',
+					'authentication_credential_address',
 					'authentication_credential_password',
 					'created_timestamp',
 					'id',
