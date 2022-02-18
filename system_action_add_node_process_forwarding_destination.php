@@ -3,11 +3,13 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_process_forwarding_destinations',
 		'nodes'
 	), $parameters['system_databases'], $response);
-	require_once('/var/www/nodecompute/system_action_validate_hostname.php');
+	$parameters['system_databases']['node_process_forwarding_destinations'] = $systemDatabasesConnections['node_process_forwarding_destinations'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
+	require_once('/var/www/nodecompute/system_action_validate_hostname_address.php');
 	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
 
 	function _addNodeProcessForwardingDestination($parameters, $response) {
@@ -55,12 +57,16 @@
 		);
 
 		foreach ($nodeIpAddressVersions as $nodeIpAddressVersion) {
-			if (empty($parameters['data']['hostname_version_' . $nodeIpAddressVersion]) === false) {
-				$parameters['data']['hostname_version_' . $nodeIpAddressVersion] = _validateHostname($parameters['data']['hostname_version_' . $nodeIpAddressVersion], true);
+			if (empty($parameters['data']['address_version_' . $nodeIpAddressVersion]) === false) {
+				$parameters['data']['address_version_' . $nodeIpAddressVersion] = _validateHostnameAddress($parameters['data']['address_version_' . $nodeIpAddressVersion], true);
 
-				if ($parameters['data']['hostname_version_' . $nodeIpAddressVersion] === false) {
-					$response['message'] = 'Invalid node process forwarding destination hostname version ' . $nodeIpAddressVersion . ', please try again.';
-					return $response;
+				if ($parameters['data']['address_version_' . $nodeIpAddressVersion] === false) {
+					$parameters['data']['address_version_' . $nodeIpAddressVersion] = _validateIpAddressVersionNumber($parameters['data']['address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion);
+
+					if ($parameters['data']['address_version_' . $nodeIpAddressVersion] === false) {
+						$response['message'] = 'Invalid node process forwarding destination address version ' . $nodeIpAddressVersion . ', please try again.';
+						return $response;
+					}
 				}
 
 				if (empty($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === true) {
@@ -73,7 +79,7 @@
 					return $response;
 				}
 			} else {
-				unset($parameters['data']['hostname_version_' . $nodeIpAddressVersion]);
+				unset($parameters['data']['address_version_' . $nodeIpAddressVersion]);
 				unset($parameters['data']['port_number_version_' . $nodeIpAddressVersion]);
 			}
 		}
@@ -92,7 +98,7 @@
 			)
 		), $response);
 
-		if (($existingNodeProcessForwardingDestinationCount > 0) === true) {
+		if (($existingNodeProcessForwardingDestinationCount === 1) === true) {
 			$response['message'] = 'Node process forwarding destination already exists with the same node process type ' . $parameters['data']['node_process_type'] . ', please try again.';
 			return $response;
 		}
