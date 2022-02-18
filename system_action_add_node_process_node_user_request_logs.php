@@ -63,7 +63,7 @@
 			return $response;	
 		}
 
-		$nodeProcessNodeUserRequestLogData = array();
+		$nodeProcessNodeUserRequestLogsData = array();
 
 		switch ($parameters['data']['node_process_type']) {
 			case 'http_proxy':
@@ -72,11 +72,11 @@
 
 				foreach ($nodeProcessNodeUserRequestLogs as $nodeProcessNodeUserRequestLog) {
 					$nodeProcessNodeUserRequestLog = explode(' _ ', $nodeProcessNodeUserRequestLog);
-					$nodeProcessNodeUserRequestLogData[] = array(
+					$nodeProcessNodeUserRequestLogsData[] = array(
 						'bytes_received' => $nodeProcessNodeUserRequestLog[0],
 						'bytes_sent' => $nodeProcessNodeUserRequestLog[1],
 						'created' => $nodeProcessNodeUserRequestLog[2],
-						'destination_hostname' => $nodeProcessNodeUserRequestLog[3],
+						'destination_hostname_address' => $nodeProcessNodeUserRequestLog[3],
 						'destination_ip_address' => $nodeProcessNodeUserRequestLog[4],
 						'id' => _createUniqueId(),
 						'node_id' => $parameters['data']['node_id'],
@@ -100,7 +100,7 @@
 		}
 
 		_save(array(
-			'data' => $nodeProcessNodeUserRequestLogData,
+			'data' => $nodeProcessNodeUserRequestLogsData,
 			'in' => $parameters['system_databases']['node_process_node_user_request_logs']
 		), $response);
 		$response['message'] = 'Node process node user request logs added successfully.';
