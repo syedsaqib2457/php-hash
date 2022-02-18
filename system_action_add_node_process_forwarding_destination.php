@@ -61,12 +61,8 @@
 				$parameters['data']['address_version_' . $nodeIpAddressVersion] = _validateHostnameAddress($parameters['data']['address_version_' . $nodeIpAddressVersion], true);
 
 				if ($parameters['data']['address_version_' . $nodeIpAddressVersion] === false) {
-					$parameters['data']['address_version_' . $nodeIpAddressVersion] = _validateIpAddressVersionNumber($parameters['data']['address_version_' . $nodeIpAddressVersion], $nodeIpAddressVersion);
-
-					if ($parameters['data']['address_version_' . $nodeIpAddressVersion] === false) {
-						$response['message'] = 'Invalid node process forwarding destination address version ' . $nodeIpAddressVersion . ', please try again.';
-						return $response;
-					}
+					$response['message'] = 'Invalid node process forwarding destination address version ' . $nodeIpAddressVersion . ', please try again.';
+					return $response;
 				}
 
 				if (empty($parameters['data']['port_number_version_' . $nodeIpAddressVersion]) === true) {
