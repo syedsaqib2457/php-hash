@@ -115,15 +115,41 @@
 				'data' => $nodeProcessNodeUserRequestLogs,
 				'in' => $parameters['system_databases']['node_process_node_user_request_logs']
 			), $response);
+			$nodeProcessNodeUserRequestDestinationLogsData = array();
 
 			foreach ($nodeProcessNodeUserRequestDestinationLogs as $nodeProcessNodeUserRequestDestinationLogsNodeId => $nodeProcessNodeUserRequestDestinationLogs) {
 				foreach ($nodeProcessNodeUserRequestDestinationLogs as $nodeProcessNodeUserRequestDestinationLogsNodeProcessType => $nodeProcessNodeUserRequestDestinationLogs) {
 					foreach ($nodeProcessNodeUserRequestDestinationLogs as $nodeProcessNodeUserRequestDestinationLogsNodeUserId => $nodeProcessNodeUserRequestDestinationLog) {
-						// todo
+						$existingNodeProcessNodeUserRequestDestinationLog = _list(array(
+							'data' => array(
+								'id',
+								'request_count'
+							),
+							'in' => $parameters['system_databases']['node_request_destinations'],
+							'where' => array(
+								'created_timestamp' => $nodeProcessNodeUserRequestDestinationLog['created_timestamp'],
+								'node_id' => $nodeProcessNodeUserRequestDestinationLog['node_id'],
+								'node_process_type' => $nodeProcessNodeUserRequestDestinationLog['node_process_type'],
+								'node_request_destination_id' => $nodeProcessNodeUserRequestDestinationLog['node_request_destination_id'],
+								'node_user_id' => $nodeProcessNodeUserRequestDestinationLog['node_user_id']
+							)
+						), $response);
+						$existingNodeProcessNodeUserRequestDestinationLog = current($existingNodeProcessNodeUserRequestDestinationLog);
+
+						if (empty($existingNodeProcessNodeUserRequestDestinationLog['id']) === false) {
+							$nodeProcessNodeUserRequestDestinationLog['id'] = $existingNodeProcessNodeUserRequestDestinationLog['id'];
+							$nodeProcessNodeUserRequestDestinationLog['request_count'] += $existingNodeProcessNodeUserRequestDestinationLog['request_count'];
+						}
+
+						$nodeProcessNodeUserRequestDestinationLogsData[] = $nodeProcessNodeUserRequestDestinationLog;
 					}
 				}
 			}
 
+			_save(array(
+				'data' => $nodeProcessNodeUserRequestDestinationLogsData,
+				'in' => $parameters['system_databases']['node_process_node_user_request_destination_logs']
+			), $response);
 			$nodeProcessNodeUserRequestLogPartIndex++;
 		}
 
