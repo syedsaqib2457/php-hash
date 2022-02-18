@@ -18,17 +18,17 @@ Read API Documentation `[guide coming soon]`
 
 ### Installation
 
-Bitcoin Cash Nodes `[guide coming soon]`
+BCH Mining `[guide coming soon]`
 
-Bitcoin Cash CPU Mining `[guide coming soon]`
+BCH Nodes `[guide coming soon]`
 
-Bitcoin Cash Transactions `[guide coming soon]`
+BCH Transactions `[guide coming soon]`
 
-Bitcoin Nodes `[guide coming soon]`
+BTC Mining `[guide coming soon]`
 
-Bitcoin CPU Mining `[guide coming soon]`
+BTC Nodes `[guide coming soon]`
 
-Bitcoin Transactions `[guide coming soon]`
+BTC Transactions `[guide coming soon]`
 
 Database Scaling `[guide coming soon]`
 
