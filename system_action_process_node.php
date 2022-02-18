@@ -397,6 +397,9 @@
 					}
 				}
 
+				// todo: unset users from node_process_node_users instead of node_users for both $nodeProcessNodeUserNodeRequestLimitRules and $nodeUserNodeRequestLimitRules
+				// $response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
+
 				if (empty($nodeProcessNodeUserNodeRequestLimitRules) === false) {
 					foreach ($nodeProcessNodeUserNodeRequestLimitRules as $nodeProcessNodeUserNodeRequestLimitRule) {
 						if (
