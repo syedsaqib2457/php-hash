@@ -4,6 +4,7 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
+		'node_process_node_user_request_destination_logs',
 		'node_process_node_user_request_logs',
 		'node_process_node_users'
 	), $parameters['system_databases'], $response);
