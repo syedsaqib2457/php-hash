@@ -72,7 +72,7 @@
 
 		$nodeRequestDestination = _list(array(
 			'data' => array(
-				'hostname'
+				'address'
 			),
 			'in' => $parameters['system_databases']['node_request_destinations'],
 			'where' => array(
@@ -86,7 +86,7 @@
 			return $response;
 		}
 
-		$parameters['data']['node_request_destination_hostname'] = $nodeRequestDestination['hostname'];
+		$parameters['data']['node_request_destination_address'] = $nodeRequestDestination['address'];
 		$nodeUser = _list(array(
 			'data' => array(
 				'id'
