@@ -54,6 +54,23 @@
 		}
 
 		// todo
+
+		$parameters['data']['id'] = _createUniqueId();
+		_save(array(
+			'data' => $parameters['data'],
+			'in' => $parameters['system_databases']['node_user_authentication_sources']
+		), $response);
+		$nodeUserAuthenticationSource = _list(array(
+			'in' => $parameters['system_databases']['node_user_authentication_sources'],
+			'where' => array(
+				'id' => $parameters['data']['id']
+			)
+		), $response);
+		$nodeUserAuthenticationSource = current($nodeUserAuthenticationSource);
+		$response['data'] = $nodeUserAuthenticationSource;
+		$response['message'] = 'Node user authentication source added successfully.';
+		$response['valid_status'] = '1';
+		return $response;
 	}
 
 	if (($parameters['action'] === 'add_node_user_authentication_source') === true) {
