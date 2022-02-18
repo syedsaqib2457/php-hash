@@ -72,7 +72,7 @@
 				}
 
 				$nodeProcessNodeUserRequestDestinationLogCreatedTimestamp = date('Y-m-d H:i', $nodeProcessNodeUserRequestDestinationLogCreatedTimestamp['created_timestamp']);
-				$nodeProcessNodeUserRequestDestinationLogCreatedTimestamp = substr($nodeProcessNodeUserRequestDestinationLogCreatedTimestamp, 0, 13) . ':00:00';
+				$nodeProcessNodeUserRequestDestinationLogCreatedTimestamp = substr($nodeProcessNodeUserRequestDestinationLogCreatedTimestamp, 0, 11) . '00:00:00';
 				$nodeProcessNodeUserRequestDestinationLogCreatedTimestamp = strtotime($nodeProcessNodeUserRequestDestinationLogCreatedTimestamp);
 
 				if (empty($nodeProcessNodeUserRequestDestinationLogs[$nodeProcessNodeUserRequestLog['node_id']][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_user_id']]) === true) {
