@@ -25,6 +25,7 @@
 				'processing_process_id' => null
 			)
 		), $response);
+		$nodeProcessNodeUserRequestDestinationLogs = array();
 		$nodeProcessNodeUserRequestLogPartIndex = 0;
 		$nodeProcessResourceUsageLogs = array();
 
@@ -35,8 +36,10 @@
 					'bytes_sent',
 					'destination_hostname_address',
 					'id',
+					'node_id',
 					'node_node_id',
-					'node_process_type'
+					'node_process_type',
+					'node_user_id'
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_request_logs'],
 				'limit' => 1000,
@@ -62,6 +65,23 @@
 					$nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']] = $nodeRequestDestination['id'];
 				}
 
+				$nodeProcessNodeUserRequestDestinationLogCreatedTimestamp = date('Y-m-d H:i', $nodeProcessNodeUserRequestDestinationLogCreatedTimestamp['created_timestamp']);
+				$nodeProcessNodeUserRequestDestinationLogCreatedTimestamp = substr($nodeProcessNodeUserRequestDestinationLogCreatedTimestamp, 0, 13) . ':00:00';
+				$nodeProcessNodeUserRequestDestinationLogCreatedTimestamp = strtotime($nodeProcessNodeUserRequestDestinationLogCreatedTimestamp);
+
+				if (empty($nodeProcessNodeUserRequestDestinationLogs[$nodeProcessNodeUserRequestLog['node_id']][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_user_id']]) === true) {
+					$nodeProcessNodeUserRequestDestinationLogs[$nodeProcessNodeUserRequestLog['node_id']][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_user_id']] = array(
+						'created_timestamp' => $nodeProcessNodeUserRequestDestinationLogCreatedTimestamp,
+						'node_id' => $nodeProcessNodeUserRequestLog['node_id'],
+						'node_node_id' => $nodeProcessNodeUserRequestLog['node_node_id'],
+						'node_process_type' => $nodeProcessNodeUserRequestLog['node_process_type'],
+						'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']],
+						'node_user_id' => $nodeProcessNodeUserRequestLog['node_user_id'],
+						'request_count' => 0
+					);
+				}
+
+				$nodeProcessNodeUserRequestDestinationLogs[$nodeProcessNodeUserRequestLog['node_id']][$nodeProcessNodeUserRequestLog['node_process_type']][$nodeProcessNodeUserRequestLog['node_user_id']]['request_count']++;
 				$nodeProcessResourceUsageLogs[] = array(
 					'id' => $nodeProcessNodeUserRequestLog['id'],
 					'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']],
@@ -90,6 +110,14 @@
 				'in' => $parameters['system_databases']['node_process_node_user_request_logs']
 			), $response);
 			$nodeProcessNodeUserRequestLogPartIndex++;
+		}
+
+		foreach ($nodeProcessNodeUserRequestDestinationLogs as $nodeProcessNodeUserRequestDestinationLogsNodeId => $nodeProcessNodeUserRequestDestinationLogs) {
+			foreach ($nodeProcessNodeUserRequestDestinationLogs as $nodeProcessNodeUserRequestDestinationLogsNodeProcessType => $nodeProcessNodeUserRequestDestinationLogs) {
+				foreach ($nodeProcessNodeUserRequestDestinationLogs as $nodeProcessNodeUserRequestDestinationLogsNodeUserId => $nodeProcessNodeUserRequestDestinationLog) {
+					// todo
+				}
+			}
 		}
 
 		foreach ($nodeProcessResourceUsageLogs as $nodeProcessResourceUsageLogCreatedTimestamp => $nodeProcessResourceUsageLogs) {
