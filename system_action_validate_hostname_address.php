@@ -15,8 +15,8 @@
 		foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
 			$ipAddress = _validateIpAddressVersionNumber($hostnameAddress, $ipAddressVersionNumber);
 
-			if (is_string($hostnameAddress) === true) {
-				$response = $hostnameAddress;
+			if (is_string($ipAddress) === true) {
+				$response = $ipAddress;
 				break;
 			}
 		}
