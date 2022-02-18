@@ -11,6 +11,27 @@
 	$parameters['system_databases']['node_users'] = $systemDatabasesConnections['node_users'];
 
 	function _addNodeUserAuthenticationSource($parameters, $response) {
+		if (empty($parameters['data']['node_user_id']) === true) {
+			$response['message'] = 'Node user authentication source must have a node user ID, please try again.';
+			return $response;
+		}
+
+		$nodeUser = _list(array(
+			'data' => array(
+				'id'
+			),
+			'in' => $parameters['system_databases']['node_users'],
+			'where' => array(
+				'id' => $parameters['data']['node_user_id']
+			)
+		), $response);
+		$nodeUser = current($nodeUser);
+
+		if (empty($nodeUser) === true) {
+			$response['message'] = 'Invalid node user ID, please try again.';
+			return $response;
+		}
+
 		// todo
 	}
 
