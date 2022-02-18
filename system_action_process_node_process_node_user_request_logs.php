@@ -30,7 +30,7 @@
 				'data' => array(
 					'bytes_received',
 					'bytes_sent',
-					'destination_hostname',
+					'destination_hostname_address',
 					'id',
 					'node_node_id',
 					'node_process_type'
@@ -45,23 +45,23 @@
 			$nodeRequestDestinations = array();
 
 			foreach ($nodeProcessNodeUserRequestLogs as $nodeProcessNodeUserRequestLog) {
-				if (empty($nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname']]) === true) {
+				if (empty($nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']]) === true) {
 					$nodeRequestDestination = _list(array(
 						'data' => array(
 							'id'
 						),
 						'in' => $parameters['system_databases']['node_request_destinations'],
 						'where' => array(
-							'hostname' => $nodeProcessNodeUserRequestLog['destination_hostname']
+							'address' => $nodeProcessNodeUserRequestLog['destination_hostname_address']
 						)
 					), $response);
 					$nodeRequestDestination = current($nodeRequestDestination);
-					$nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname']] = $nodeRequestDestination['id'];
+					$nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']] = $nodeRequestDestination['id'];
 				}
 
 				$nodeProcessResourceUsageLogs[] = array(
 					'id' => $nodeProcessNodeUserRequestLog['id'],
-					'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname']],
+					'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']],
 					'processed_status' => '1',
 					'processing_process_id' => null
 				);
