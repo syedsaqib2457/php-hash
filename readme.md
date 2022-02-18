@@ -1,39 +1,55 @@
-# NodeCompute
+## NodeCompute
 
 `NodeCompute is currently in a pre-release development phase and is likely to contain errors.`
 
 `Production systems shouldn't be deployed until version 1 is released with system update functionality from the API.`
 
-## A Scalable Cloud Node Automation API
+### A Scalable Cloud Node Automation API
 
 [NodeCompute](https://github.com/twexxor/nodecompute/) is a free and open-source API to automate deployment, monitoring and scaling of containerless network infrastructure.
 
-Every aspect is optimized for maximum performance, privacy and security with a custom [PHP framework](https://github.com/twexxor/nodecompute/blob/main/system_databases.php).
+Complexity is removed and every aspect is optimized for maximum performance, privacy and security with a custom [PHP framework](https://github.com/twexxor/nodecompute/blob/main/system_databases.php).
 
-## Get Started
+### Get Started
 
-- Deploy NodeCompute `[guide coming soon]`
-- Read API Documentation `[guide coming soon]`
+Deploy NodeCompute `[guide coming soon]`
 
-## Installation
+Read API Documentation `[guide coming soon]`
 
-All complexity is removed from the necessity of self-hosting.
+### Installation
 
-- Bitcoin Cash Nodes `[guide coming soon]`
-- Bitcoin Cash CPU Mining `[guide coming soon]`
-- Bitcoin Cash Transactions `[guide coming soon]`
-- Bitcoin Nodes `[guide coming soon]`
-- Bitcoin CPU Mining `[guide coming soon]`
-- Bitcoin Transactions `[guide coming soon]`
-- Database Scaling `[guide coming soon]`
-- DDoS Firewall `[guide coming soon]`
-- Egress Destination Throttling `[guide coming soon]`
-- Forwarding Proxies `[guide coming soon]`
-- Load Balancers `[guide coming soon]`
-- Performance Monitoring `[guide coming soon]`
-- Performance Tuning `[guide coming soon]`
-- Recursive DNS `[guide coming soon]`
-- Request Logging `[guide coming soon]`
-- Resource Usage Monitoring `[guide coming soon]`
-- Reverse Proxies `[guide coming soon]`
-- User Authentication `[guide coming soon]`
+Bitcoin Cash Nodes `[guide coming soon]`
+
+Bitcoin Cash CPU Mining `[guide coming soon]`
+
+Bitcoin Cash Transactions `[guide coming soon]`
+
+Bitcoin Nodes `[guide coming soon]`
+
+Bitcoin CPU Mining `[guide coming soon]`
+
+Bitcoin Transactions `[guide coming soon]`
+
+Database Scaling `[guide coming soon]`
+
+Egress Destination Throttling `[guide coming soon]`
+
+Forwarding Proxies `[guide coming soon]`
+
+Ingress DDoS Firewall `[guide coming soon]`
+
+Load Balancers `[guide coming soon]`
+
+Performance Monitoring `[guide coming soon]`
+
+Performance Tuning `[guide coming soon]`
+
+Recursive DNS `[guide coming soon]`
+
+Request Logging `[guide coming soon]`
+
+Resource Usage Monitoring `[guide coming soon]`
+
+Reverse Proxies `[guide coming soon]`
+
+User Authentication `[guide coming soon]`
