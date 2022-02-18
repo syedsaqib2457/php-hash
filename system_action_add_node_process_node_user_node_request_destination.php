@@ -5,6 +5,8 @@
 
 	$systemDatabasesConnections = _connect(array(
 		'node_process_node_user_node_request_destinations',
+		'node_processes',
+		'node_request_destinations',
 		'node_users',
 		'nodes'
 	), $parameters['system_databases'], $response);
@@ -54,8 +56,37 @@
 			$parameters['data']['node_node_id'] = $node['node_id'];
 		}
 
-		// todo: validate node_process_type
-		// todo: validate node_request_destination_id
+		$nodeProcessesCount = _list(array(
+			'in' => $parameters['system_databases']['node_processes'],
+			'where' => array(
+				'node_id' => $parameters['data']['node_id'],
+				'type' => $parameters['data']['node_process_type']
+			)
+		), $response);
+		$nodeProcessesCount = current($nodeProcessesCount);
+
+		if (($nodeProcessesCount === 0) === true) {
+			$response['message'] = 'Invalid node process node user node request destination node process type, please try again.';
+			return $response;
+		}
+
+		$nodeRequestDestination = _list(array(
+			'data' => array(
+				'hostname'
+			),
+			'in' => $parameters['system_databases']['node_request_destinations'],
+			'where' => array(
+				'id' => $parameters['data']['node_request_destination_id']
+			)
+		), $response);
+		$nodeRequestDestination = current($nodeRequestDestination);
+
+		if (empty($nodeRequestDestination) === true) {
+			$response['message'] = 'Invalid node process node user node request destination node request destination ID, please try again.';
+			return $response;
+		}
+
+		$parameters['data']['node_request_destination_hostname'] = $nodeRequestDestination['hostname'];
 		$nodeUser = _list(array(
 			'data' => array(
 				'id'
