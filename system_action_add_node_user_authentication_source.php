@@ -32,6 +32,27 @@
 			return $response;
 		}
 
+		$parameters['data']['ip_address_block_length'] = '32';
+		$parameters['data']['ip_address_version_number'] = '4';
+
+		if ((strpos($parameters['data']['ip_address'], ':') === false) === false) {
+			$parameters['data']['ip_address_block_length'] = '128';
+			$parameters['data']['ip_address_version_number'] = '6';
+		}
+
+		if ((strpos($parameters['data']['ip_address'], '/') === false) === false) {
+			$parameters['data']['ip_address'] = explode('/', $parameters['data']['ip_address']);
+			$parameters['data']['ip_address_block_length'] = next($parameters['data']['ip_address']);
+			$parameters['data']['ip_address'] = prev($parameters['data']['ip_address']);
+		}
+
+		$parameters['data']['ip_address'] = _validateIpAddressVersionNumber($parameters['data']['ip_address'], $parameters['data']['ip_address_version_number']);
+
+		if ($parameters['data']['ip_address'] === false) {
+			$response['message'] = 'Invalid node user authentication source IP address, please try again.';
+			return $response;
+		}
+
 		// todo
 	}
 
