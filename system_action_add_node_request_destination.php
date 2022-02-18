@@ -3,9 +3,10 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_request_destinations'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_request_destinations'] = $systemDatabasesConnections['node_request_destinations'];
 	require_once('/var/www/nodecompute/system_action_validate_hostname.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
@@ -21,12 +22,12 @@
 
 		$existingNodeRequestDestinationCount = _count(array(
 			'in' => $parameters['system_databases']['node_request_destinations'],
-			'where' => array_intersect_key($parameters['data'], array(
-				'hostname' => true
-			))
+			'where' => array(
+				'hostname' => $parameters['data']['hostname']
+			)
 		), $response);
 
-		if (($existingNodeRequestDestinationCount > 0) === true) {
+		if (($existingNodeRequestDestinationCount === 1) === true) {
 			$response['message'] = 'Node request destination already exists, please try again.';
 			return $response;
 		}
