@@ -3,10 +3,12 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_process_node_user_request_logs',
 		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_process_node_user_request_logs'] = $systemDatabasesConnections['node_process_node_user_request_logs'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _addNodeProcessNodeUserRequestLogs($parameters, $response) {
 		if (empty($_FILES['data']['tmp_name']) === true) {
