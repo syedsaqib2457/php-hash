@@ -7,23 +7,23 @@
 		'node_request_destinations'
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_request_destinations'] = $systemDatabasesConnections['node_request_destinations'];
-	require_once('/var/www/nodecompute/system_action_validate_hostname.php');
+	require_once('/var/www/nodecompute/system_action_validate_hostname_address.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
-		if (empty($parameters['data']['hostname']) === true) {
-			$response['message'] = 'Node request destination must have a hostname, please try again.';
+		if (empty($parameters['data']['address']) === true) {
+			$response['message'] = 'Node request destination must have an address, please try again.';
 			return $response;
 		}
 
-		if (_validateHostname($parameters['data']['hostname'], true) === false) {
-			$response['message'] = 'Invalid node request destination hostname, please try again.';
+		if (_validateHostnameAddress($parameters['data']['address'], true) === false) {
+			$response['message'] = 'Invalid node request destination address, please try again.';
 			return $response;
 		}
 
 		$existingNodeRequestDestinationCount = _count(array(
 			'in' => $parameters['system_databases']['node_request_destinations'],
 			'where' => array(
-				'hostname' => $parameters['data']['hostname']
+				'address' => $parameters['data']['address']
 			)
 		), $response);
 
