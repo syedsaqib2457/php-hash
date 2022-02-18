@@ -943,9 +943,9 @@
 				'storage_usage_maximum_megabytes'
 			),
 			'node_process_forwarding_destinations' => array(
+				'address_version_4',
+				'address_version_6',
 				'created_timestamp',
-				'hostname_version_4',
-				'hostname_version_6',
 				'id',
 				'modified_timestamp',
 				'node_id',
@@ -997,7 +997,7 @@
 				'node_id',
 				'node_node_id',
 				'node_process_type',
-				'node_request_destination_hostname',
+				'node_request_destination_address',
 				'node_request_destination_id',
 				'node_user_id'
 			),
@@ -1017,7 +1017,7 @@
 				'bytes_received',
 				'bytes_sent',
 				'created_timestamp',
-				'destination_hostname',
+				'destination_hostname_address',
 				'destination_ip_address',
 				'id',
 				'modified_timestamp',
@@ -1093,8 +1093,8 @@
 				'type'
 			),
 			'node_request_destinations' => array(
+				'address',
 				'created_timestamp',
-				'hostname',
 				'id',
 				'modified_timestamp'
 			),
@@ -1163,7 +1163,7 @@
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
-				'node_request_destination_hostname',
+				'node_request_destination_address',
 				'node_request_destination_id',
 				'node_user_id'
 			),
@@ -1219,7 +1219,7 @@
 				'system_database_id'
 			),
 			'system_databases' => array(
-				'authentication_credential_hostname',
+				'authentication_credential_address',
 				'authentication_credential_password',
 				'created_timestamp',
 				'id',
@@ -1463,7 +1463,7 @@
 		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
 			$systemDatabaseId = _createUniqueId();
 			$systemDatabaseData['system_databases'][] = array(
-				'authentication_credential_hostname' => 'localhost',
+				'authentication_credential_address' => 'localhost',
 				'authentication_credential_password' => 'password',
 				'created_timestamp' => $timestamp,
 				'id' => $systemDatabaseId,
