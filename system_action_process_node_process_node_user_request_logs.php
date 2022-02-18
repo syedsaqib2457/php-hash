@@ -53,6 +53,7 @@
 
 			foreach ($nodeProcessNodeUserRequestLogs as $nodeProcessNodeUserRequestLogsKey => $nodeProcessNodeUserRequestLog) {
 				if (empty($nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']]) === true) {
+					$nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']] = '';
 					$nodeRequestDestination = _list(array(
 						'data' => array(
 							'id'
@@ -63,7 +64,10 @@
 						)
 					), $response);
 					$nodeRequestDestination = current($nodeRequestDestination);
-					$nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']] = $nodeRequestDestination['id'];
+
+					if (empty($nodeRequestDestination) === false) {
+						$nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']] = $nodeRequestDestination['id'];
+					}
 				}
 
 				$nodeProcessNodeUserRequestDestinationLogCreatedTimestamp = date('Y-m-d H:i', $nodeProcessNodeUserRequestDestinationLogCreatedTimestamp['created_timestamp']);
