@@ -17,8 +17,6 @@
 		'node_processes',
 		'node_reserved_internal_destinations',
 		'node_reserved_internal_sources',
-		'node_user_node_request_destinations',
-		'node_user_node_request_limit_rules',
 		'nodes'
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchain_socks_proxy_destinations'];
@@ -34,8 +32,6 @@
 	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
 	$parameters['system_databases']['node_reserved_internal_destinations'] = $systemDatabasesConnections['node_reserved_internal_destinations'];
 	$parameters['system_databases']['node_reserved_internal_sources'] = $systemDatabasesConnections['node_reserved_internal_sources'];
-	$parameters['system_databases']['node_user_node_request_destinations'] = $systemDatabasesConnections['node_user_node_request_destinations'];
-	$parameters['system_databases']['node_user_node_request_limit_rules'] = $systemDatabasesConnections['node_user_node_request_limit_rules'];
 	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _processNode($parameters, $response) {
@@ -325,17 +321,6 @@
 					'node_id' => $nodeNodeId
 				)
 			), $response);
-			$nodeUserNodeRequestLimitRules = _list(array(
-				'data' => array(
-					'node_user_id',
-					'node_user_node_request_destination_id'
-				),
-				'in' => $parameters['system_databases']['node_user_node_request_limit_rules'],
-				'where' => array(
-					'activated_status' => '1',
-					'node_node_id' => $nodeNodeId
-				)
-			), $response);
 			$nodes = _list(array(
 				'data' => array(
 					'activated_status',
@@ -413,20 +398,12 @@
 					}
 				}
 
-				// todo: unset users from node_process_node_users instead of node_users for both $nodeProcessNodeUserNodeRequestLimitRules and $nodeUserNodeRequestLimitRules
-				// $response['data']['node_process_node_users'][$nodeProcessNodeUser['node_process_type']][$nodeProcessNodeUser['node_id']][$nodeProcessNodeUser['node_user_id']] = $nodeProcessNodeUser['node_user_id'];
-
 				if (empty($nodeProcessNodeUserNodeRequestLimitRules) === false) {
 					foreach ($nodeProcessNodeUserNodeRequestLimitRules as $nodeProcessNodeUserNodeRequestLimitRule) {
-						if (
-							(empty($nodeProcessNodeUserNodeRequestLimitRule['node_request_destination_id']) === false) &&
-							(empty($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destinations_only_allowed_status']) === false)
-						) {
-							if (empty($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids']) === false) {
-								unset($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeProcessNodeUserNodeRequestLimitRule['node_request_destination_id']]);
-							} else {
-								unset($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]);
-							}
+						if (empty($response['data']['node_process_node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids']) === true) {
+							unset($response['data']['node_process_node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_process_type']][$nodeProcessNodeUserNodeRequestLimitRule['node_id']][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]);
+						} else {
+							unset($response['data']['node_users'][$nodeProcessNodeUserNodeRequestLimitRule['node_user_id']]['node_request_destination_ids'][$nodeProcessNodeUserNodeRequestLimitRule['node_request_destination_id']]);
 						}
 					}
 				}
