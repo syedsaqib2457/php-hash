@@ -41,7 +41,7 @@
 			return $response;
 		}
 
-		$nodeProcessCount = _count(array(
+		$nodeProcessesCount = _count(array(
 			'in' => $parameters['system_databases']['node_processes'],
 			'where' => array(
 				'node_id' => $nodeProcess['node_id'],
@@ -49,7 +49,7 @@
 			)
 		), $response);
 
-		if (($nodeProcessCount <= 1) === true) {
+		if (($nodeProcessesCount === 1) === true) {
 			$systemDatabaseNames = array(
 				'node_process_forwarding_destinations',
 				'node_process_node_user_authentication_credentials',
@@ -60,15 +60,16 @@
 				'node_process_node_user_request_logs',
 				'node_process_node_user_resource_usage_logs',
 				'node_process_node_users',
-				'node_process_resource_usage_logs',
-				'node_process_recursive_dns_destinations'
+				'node_process_recursive_dns_destinations',
+				'node_process_resource_usage_logs'
 			);
 
-			foreach ($systemDatabaseNames as $systemDatabaseName) {
+			foreach ($systemDatabasesNames as $systemDatabasesName) {
 				_delete(array(
-					'in' => $parameters['system_databases'][$systemDatabaseName],
+					'in' => $parameters['system_databases'][$systemDatabasesName],
 					'where' => array(
-						'node_id' => $nodeProcess['node_id']
+						'node_id' => $nodeProcess['node_id'],
+						'type' => $nodeProcess['type']
 					)
 				), $response);
 			}
