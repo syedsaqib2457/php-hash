@@ -992,6 +992,8 @@
 				'id',
 				'modified_timestamp',
 				'node_id',
+				'node_node_id',
+				'node_process_type',
 				'node_request_destination_address',
 				'node_request_destination_id',
 				'node_user_id'
@@ -1003,6 +1005,8 @@
 				'id',
 				'modified_timestamp',
 				'node_id',
+				'node_node_id',
+				'node_process_type',
 				'node_request_destination_id',
 				'node_request_limit_rule_id',
 				'node_user_id'
