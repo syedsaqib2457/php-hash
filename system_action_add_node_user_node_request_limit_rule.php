@@ -118,11 +118,26 @@
 			));
 		}
 
-		// todo: save in node_user_node_request_limit_rules
+		$parameters['data']['id'] = _createUniqueId();
+		_save(array(
+			'data' => $parameters['data'],
+			'in' => $parameters['system_databases']['node_user_node_request_limit_rules']
+		));
 		// todo: get node_process_node_user node_id + node_node_id + node_process_type
 		// todo: save in node_process_node_user_node_request_destinations
 		// todo: save in node_process_node_user_node_request_limit_rules based on node_id + node_node_id + node_process_type in node_process_node_users
 			// node_process_node_user_node_request_limit_rules is only for fast querying + unsetting node_user request destination IDs in process_node_processes with node_id based on node_user_request_limit_rules 
+		$nodeUserNodeRequestLimitRule = _list(array(
+			'in' => $parameters['system_databases']['node_user_node_request_limit_rules'],
+			'where' => array(
+				'id' => $parameters['data']['id']
+			)
+		), $response);
+		$nodeUserNodeRequestLimitRule = current($nodeUserNodeRequestLimitRule);
+		$response['data'] = $nodeUserNodeRequestLimitRule;
+		$response['message'] = 'Node user node request limit rule added successfully.';
+		$response['valid_status'] = '1';
+		return $response;
 	}
 
 	if (($parameters['action'] === 'add_node_user_node_request_limit_rule') === true) {
