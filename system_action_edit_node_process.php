@@ -66,10 +66,21 @@
 
 		if (empty($parameters['data']['port_number']) === false) {
 			$existingNodeProcessCountParameters['where']['port_number'] = $parameters['data']['port_number'];
+			// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations port_number
+			// todo: update node_process_forwarding_destinations port_number
+			// todo: update node_process_recursive_dns_destinations port_number
 		}
 
-		if (empty($parameters['data']['type']) === false) {
-			$existingNodeProcessCountParameters['where']['type'] = $parameters['data']['type'];
+		if (
+			(empty($parameters['data']['type']) === false) &&
+			(strpos($parameters['data']['type'], 'cryptocurrency_blockchain') === false)
+		) {
+			$existingNodeProcessCountParameters['where'] = array(
+				'either' => array(
+					$existingNodeProcessCountParameters['where'],
+					'type' => $parameters['data']['type']
+				)
+			);
 		}
 
 		$existingNodeProcessCount = _count($existingNodeProcessCountParameters, $response);
