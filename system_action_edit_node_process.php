@@ -3,10 +3,13 @@
 		exit;
 	}
 
+	// todo: delete + add node processes that aren't cryptocurrency_blockchain nodes instead of editing because foreign key is node_process_type + node_id instead of node_process_id
 	$systemDatabasesConnections = _connect(array(
 		'node_processes'
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
+	require_once('/var/www/nodecompute/system_action_add_node_process.php');
+	require_once('/var/www/nodecompute/system_action_delete_node_process.php');
 	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
 
 	function _editNodeProcess($parameters, $response) {
