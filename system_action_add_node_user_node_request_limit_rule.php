@@ -141,10 +141,10 @@
 			$nodeProcessNodeUserNodeRequestLimitRules = array();
 
 			foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
-				$nodeProcessNodeUser['activated_status' = $nodeUserNodeRequestLimitRule['activated_status'];
-				$nodeProcessNodeUser['created_timestamp' = $nodeUserNodeRequestLimitRule['created_timestamp'];
-				$nodeProcessNodeUser['expired_timestamp' = $nodeUserNodeRequestLimitRule['expired_timestamp'];
-				$nodeProcessNodeUser['modified_timestamp' = $nodeUserNodeRequestLimitRule['modified_timestamp'];
+				$nodeProcessNodeUser['activated_status'] = $nodeUserNodeRequestLimitRule['activated_status'];
+				$nodeProcessNodeUser['created_timestamp'] = $nodeUserNodeRequestLimitRule['created_timestamp'];
+				$nodeProcessNodeUser['expired_timestamp'] = $nodeUserNodeRequestLimitRule['expired_timestamp'];
+				$nodeProcessNodeUser['modified_timestamp'] = $nodeUserNodeRequestLimitRule['modified_timestamp'];
 				$nodeProcessNodeUser['node_request_destination_id'] = $nodeUserNodeRequestLimitRule['node_request_destination_id'];
 				$nodeProcessNodeUser['node_request_limit_rule_id'] = $nodeUserNodeRequestLimitRule['node_request_limit_rule_id'];
 				$nodeProcessNodeUserNodeRequestLimitRules[] = $nodeProcessNodeUser;
