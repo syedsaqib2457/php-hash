@@ -3,10 +3,12 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_processes',
 		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
 
 	function _addNodeProcess($parameters, $response) {
