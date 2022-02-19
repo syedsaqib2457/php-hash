@@ -88,19 +88,15 @@
 			return $response;
 		}
 
-		$nodeUserNodeRequestDestination = _list(array(
-			'data' => array(
-				'node_request_destination_address'
-			),
+		$nodeUserNodeRequestDestinationCount = _count(array(
 			'in' => $parameters['system_databases']['node_user_node_request_destinations'],
 			'where' => array(
 				'node_request_destination_id' => $parameters['data']['node_request_destination_id'],
 				'node_user_id' => $parameters['data']['node_user_id']
 			)
 		), $response);
-		$nodeUserNodeRequestDestination = current($nodeUserNodeRequestDestination);
 
-		if (empty($nodeUserNodeRequestDestination) === true) {
+		if (($nodeUserNodeRequestDestinationCount === 0) === true) {
 			_save(array(
 				'data' => array(
 					'id' => _createUniqueId(),
