@@ -985,6 +985,7 @@
 				'modified_timestamp',
 				'node_id',
 				'node_node_id',
+				'node_process_type',
 				'node_request_destination_id',
 				'node_user_id',
 				'request_count'
