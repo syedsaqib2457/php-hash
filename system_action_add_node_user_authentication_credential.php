@@ -4,9 +4,13 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
+		'node_process_node_user_authentication_credentials',
+		'node_process_node_users',
 		'node_user_authentication_credentials',
 		'node_users'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_process_node_user_authentication_credentials'] = $systemDatabasesConnections['node_process_node_user_authentication_credentials'];
+	$parameters['system_databases']['node_process_node_users'] = $systemDatabasesConnections['node_process_node_users'];
 	$parameters['system_databases']['node_user_authentication_credentials'] = $systemDatabasesConnections['node_user_authentication_credentials'];
 	$parameters['system_databases']['node_users'] = $systemDatabasesConnections['node_users'];
 
@@ -60,6 +64,37 @@
 			)
 		), $response);
 		$nodeUserAuthenticationCredential = current($nodeUserAuthenticationCredential);
+		$nodeProcessNodeUsers = _list(array(
+			'data' => array(
+				'node_id',
+				'node_node_id',
+				'node_process_type',
+				'node_user_id'
+			),
+			'in' => $parameters['system_databases']['node_process_node_users'],
+			'where' => array(
+				'node_user_id' => $parameters['data']['node_user_id']
+			)
+		), $response);
+
+		if (empty($nodeProcessNodeUsers) === false) {
+			$nodeProcessNodeUserNodeAuthenticationCredentials = array();
+
+			foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
+				$nodeProcessNodeUser['created_timestamp' = $nodeUserAuthenticationCredential['created_timestamp'];
+				$nodeProcessNodeUser['modified_timestamp' = $nodeUserAuthenticationCredential['modified_timestamp'];
+				$nodeProcessNodeUser['node_user_authentication_credential_id'] = $nodeUserAuthenticationCredential['id'];
+				$nodeProcessNodeUser['node_user_authentication_credential_password'] = $nodeUserAuthenticationCredential['password'];
+				$nodeProcessNodeUser['node_user_authentication_credential_username'] = $nodeUserAuthenticationCredential['username'];
+				$nodeProcessNodeUserNodeAuthenticationCredentials[] = $nodeProcessNodeUser;
+			}
+
+			_save(array(
+				'data' => $nodeProcessNodeUserNodeAuthenticationCredentials,
+				'in' => $parameters['system_databases']['node_process_node_user_node_authentication_credentials']
+			));
+		}
+
 		$response['data'] = $nodeUserAuthenticationCredential;
 		$response['message'] = 'Node user authentication credential added successfully.';
 		$response['valid_status'] = '1';
