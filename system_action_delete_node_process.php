@@ -50,7 +50,7 @@
 		), $response);
 
 		if (($nodeProcessesCount === 1) === true) {
-			$systemDatabaseNames = array(
+			$systemDatabases = array(
 				'node_process_forwarding_destinations',
 				'node_process_node_user_authentication_credentials',
 				'node_process_node_user_authentication_sources',
@@ -64,9 +64,9 @@
 				'node_process_resource_usage_logs'
 			);
 
-			foreach ($systemDatabasesNames as $systemDatabasesName) {
+			foreach ($systemDatabases as $systemDatabase) {
 				_delete(array(
-					'in' => $parameters['system_databases'][$systemDatabasesName],
+					'in' => $parameters['system_databases'][$systemDatabase],
 					'where' => array(
 						'node_id' => $nodeProcess['node_id'],
 						'type' => $nodeProcess['type']
