@@ -1002,6 +1002,7 @@
 				'node_user_id'
 			),
 			'node_process_node_user_node_request_limit_rules' => array(
+				'activated_status',
 				'created_timestamp',
 				'expired_timestamp',
 				'id',
@@ -1168,6 +1169,7 @@
 				'node_user_id'
 			),
 			'node_user_node_request_limit_rules' => array(
+				'activated_status',
 				'created_timestamp',
 				'expired_timestamp',
 				'id',
