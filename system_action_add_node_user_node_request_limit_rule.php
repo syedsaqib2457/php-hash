@@ -4,25 +4,19 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_process_node_user_node_request_destinations',
 		'node_process_node_user_node_request_limit_rules',
-		'node_processes',
 		'node_request_destinations',
 		'node_request_limit_rules',
 		'node_user_node_request_destinations',
 		'node_user_node_request_limit_rules',
-		'node_users',
-		'nodes'
+		'node_users'
 	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_process_node_user_node_request_destinations'] = $systemDatabasesConnections['node_process_node_user_node_request_destinations'];
 	$parameters['system_databases']['node_process_node_user_node_request_limit_rules'] = $systemDatabasesConnections['node_process_node_user_node_request_limit_rules'];
-	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
 	$parameters['system_databases']['node_request_destinations'] = $systemDatabasesConnections['node_request_destinations'];
 	$parameters['system_databases']['node_request_limit_rules'] = $systemDatabasesConnections['node_request_limit_rules'];
 	$parameters['system_databases']['node_user_node_request_destinations'] = $systemDatabasesConnections['node_user_node_request_destinations'];
 	$parameters['system_databases']['node_user_node_request_limit_rules'] = $systemDatabasesConnections['node_user_node_request_limit_rules'];
 	$parameters['system_databases']['node_users'] = $systemDatabasesConnections['node_users'];
-	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _addNodeUserNodeRequestLimitRule($parameters, $response) {
 		if (empty($parameters['data']['node_request_destination_id']) === true) {
