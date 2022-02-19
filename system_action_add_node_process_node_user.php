@@ -68,7 +68,9 @@
 
 		$nodeUser = _list(array(
 			'data' => array(
-				'id'
+				'authentication_strict_only_allowed_status',
+				'node_request_destinations_only_allowed_status',
+				'node_request_logs_allowed_status'
 			),
 			'in' => $parameters['system_databases']['node_users'],
 			'where' => array(
@@ -83,6 +85,9 @@
 		}
 
 		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['node_user_authentication_strict_only_allowed_status'] = $nodeUser['authentication_strict_only_allowed_status'];
+		$parameters['data']['node_user_node_request_destinations_only_allowed_status'] = $nodeUser['node_request_destinations_only_allowed_status'];
+		$parameters['data']['node_user_node_request_logs_allowed_status'] = $nodeUser['node_request_logs_allowed_status'];
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['system_databases']['node_process_node_users']
