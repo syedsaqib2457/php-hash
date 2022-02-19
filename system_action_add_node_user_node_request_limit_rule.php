@@ -54,7 +54,22 @@
 			return $response;
 		}
 
-		// todo: validate node_request_destination_address with node_request_destination_id
+		$nodeUserNodeRequestDestination = _list(array(
+			'data' => array(
+				'node_request_destination_address'
+			),
+			'in' => $parameters['system_databases']['node_user_node_request_destinations'],
+			'where' => array(
+				'node_request_destination_id' => $parameters['data']['node_request_destination_id'],
+				'node_user_id' => $parameters['data']['node_user_id']
+			)
+		), $response);
+		$nodeUserNodeRequestDestination = current($nodeUserNodeRequestDestination);
+
+		if (empty($nodeUserNodeRequestDestination) === true) {
+			// todo: validate node_request_destination_address with node_request_destination_id in node_request_destinations
+		}
+
 		// todo: validate node_request_limit_rule_id
 		// todo: save in node_user_node_request_limit_rules
 		// todo: get node_process_node_user node_id + node_node_id + node_process_type
