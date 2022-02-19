@@ -43,7 +43,8 @@
 			return $response;
 		}
 
-		// todo
+		// todo: add records to node_process_node_user_node_request_limit_rules based on node_id + node_node_id + node_process_type in node_process_node_users
+			// node_process_node_user_node_request_limit_rules is only for fast querying in process_node_processes with node_id
 	}
 
 	if (($parameters['action'] === 'add_node_process_node_user_node_request_limit_rule') === true) {
