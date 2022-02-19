@@ -40,6 +40,24 @@
 			return $response;
 		}
 
+		$nodeRequestDestination = _list(array(
+			'data' => array(
+				'address'
+			),
+			'in' => $parameters['system_databases']['node_request_destinations'],
+			'where' => array(
+				'id' => $parameters['data']['node_request_destination_id']
+			)
+		), $response);
+		$nodeRequestDestination = current($nodeRequestDestination);
+
+		if (empty($nodeRequestDestination) === true) {
+			$response['message'] = 'Invalid node user node request limit rule node request destination ID, please try again.';
+			return $response;
+		}
+
+		// todo: validate node_request_limit_rule_id
+		// todo: validate node_user_id
 		$existingNodeUserNodeRequestLimitRuleCount = _count(array(
 			'in' => $parameters['system_databases']['node_user_node_request_limit_rules'],
 			'where' => array(
@@ -67,10 +85,17 @@
 		$nodeUserNodeRequestDestination = current($nodeUserNodeRequestDestination);
 
 		if (empty($nodeUserNodeRequestDestination) === true) {
-			// todo: validate node_request_destination_address with node_request_destination_id in node_request_destinations
+			_save(array(
+				'data' => array(
+					'id' => _createUniqueId(),
+					'node_request_destination_address' => $nodeRequestDestination['address'],
+					'node_request_destination_id' => $parameters['data']['node_request_destination_id'],
+					'node_user_id' => $parameters['data']['node_user_id']
+				),
+				'in' => $parameters['system_databases']['node_user_node_request_destinations']
+			));
 		}
 
-		// todo: validate node_request_limit_rule_id
 		// todo: save in node_user_node_request_limit_rules
 		// todo: get node_process_node_user node_id + node_node_id + node_process_type
 		// todo: save in node_process_node_user_node_request_destinations
