@@ -80,7 +80,6 @@
 						'created_timestamp' => $nodeProcessNodeUserRequestDestinationLogCreatedTimestamp,
 						'node_id' => $nodeProcessNodeUserRequestLog['node_id'],
 						'node_node_id' => $nodeProcessNodeUserRequestLog['node_node_id'],
-						'node_process_type' => $nodeProcessNodeUserRequestLog['node_process_type'],
 						'node_request_destination_id' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destination_hostname_address']],
 						'node_user_id' => $nodeProcessNodeUserRequestLog['node_user_id'],
 						'request_count' => 0
@@ -115,7 +114,6 @@
 				'data' => $nodeProcessNodeUserRequestLogs,
 				'in' => $parameters['system_databases']['node_process_node_user_request_logs']
 			), $response);
-			// todo: add $nodeUserRequestDestinationLogsData for node_user_request_destination_logs database to manage node_user_node_request_limit_rules
 			$nodeProcessNodeUserRequestDestinationLogsData = array();
 
 			foreach ($nodeProcessNodeUserRequestDestinationLogs as $nodeProcessNodeUserRequestDestinationLogsNodeId => $nodeProcessNodeUserRequestDestinationLogs) {
@@ -130,7 +128,6 @@
 							'where' => array(
 								'created_timestamp' => $nodeProcessNodeUserRequestDestinationLog['created_timestamp'],
 								'node_id' => $nodeProcessNodeUserRequestDestinationLog['node_id'],
-								'node_process_type' => $nodeProcessNodeUserRequestDestinationLog['node_process_type'],
 								'node_request_destination_id' => $nodeProcessNodeUserRequestDestinationLog['node_request_destination_id'],
 								'node_user_id' => $nodeProcessNodeUserRequestDestinationLog['node_user_id']
 							)
