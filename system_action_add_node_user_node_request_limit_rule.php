@@ -40,7 +40,20 @@
 			return $response;
 		}
 
-		// todo: validate existing nodeUserNodeRequestLimitRule
+		$existingNodeUserNodeRequestLimitRuleCount = _count(array(
+			'in' => $parameters['system_databases']['node_user_node_request_limit_rules'],
+			'where' => array(
+				'node_request_destination_id' => $parameters['data']['node_request_destination_id'],
+				'node_request_limit_rule_id' => $parameters['data']['node_request_limit_rule_id'],
+				'node_user_id' => $parameters['data']['node_user_id']
+			)
+		), $response);
+
+		if (($existingNodeUserNodeRequestLimitRuleCount === 1) === true) {
+			$response['message'] = 'Node user node request limit rule already exists, please try again.';
+			return $response;
+		}
+
 		// todo: validate node_request_destination_address with node_request_destination_id
 		// todo: validate node_request_limit_rule_id
 		// todo: save in node_user_node_request_limit_rules
