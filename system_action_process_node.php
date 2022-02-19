@@ -267,6 +267,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_limit_rules'],
 				'where' => array(
+					'activated_status' => '1',
 					'node_node_id' => $nodeNodeId
 				)
 			), $response);
@@ -322,6 +323,17 @@
 				'in' => $parameters['system_databases']['node_reserved_internal_sources'],
 				'where' => array(
 					'node_id' => $nodeNodeId
+				)
+			), $response);
+			$nodeUserNodeRequestLimitRules = _list(array(
+				'data' => array(
+					'node_user_id',
+					'node_user_node_request_destination_id'
+				),
+				'in' => $parameters['system_databases']['node_user_node_request_limit_rules'],
+				'where' => array(
+					'activated_status' => '1',
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodes = _list(array(
