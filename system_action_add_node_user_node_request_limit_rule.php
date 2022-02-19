@@ -134,6 +134,38 @@
 			)
 		), $response);
 		$nodeUserNodeRequestLimitRule = current($nodeUserNodeRequestLimitRule);
+		$nodeProcessNodeUsers = _list(array(
+			'data' => array(
+				'node_id',
+				'node_node_id',
+				'node_process_type',
+				'node_user_id'
+			),
+			'in' => $parameters['system_databases']['node_process_node_users'],
+			'where' => array(
+				'node_user_id' => $parameters['data']['node_user_id']
+			)
+		), $response);
+
+		if (empty($nodeProcessNodeUsers) === false) {
+			$nodeProcessNodeUserNodeRequestLimitRules = array();
+
+			foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
+				$nodeProcessNodeUser['activated_status' = $nodeUserNodeRequestLimitRule['activated_status'];
+				$nodeProcessNodeUser['created_timestamp' = $nodeUserNodeRequestLimitRule['created_timestamp'];
+				$nodeProcessNodeUser['expired_timestamp' = $nodeUserNodeRequestLimitRule['expired_timestamp'];
+				$nodeProcessNodeUser['modified_timestamp' = $nodeUserNodeRequestLimitRule['modified_timestamp'];
+				$nodeProcessNodeUser['node_request_destination_id'] = $nodeUserNodeRequestLimitRule['node_request_destination_id'];
+				$nodeProcessNodeUser['node_request_limit_rule_id'] = $nodeUserNodeRequestLimitRule['node_request_limit_rule_id'];
+				$nodeProcessNodeUserNodeRequestLimitRules[] = $nodeProcessNodeUser;
+			}
+
+			_save(array(
+				'data' => $nodeProcessNodeUserNodeRequestLimitRules,
+				'in' => $parameters['system_databases']['node_process_node_user_node_request_limit_rules']
+			));
+		}
+
 		$response['data'] = $nodeUserNodeRequestLimitRule;
 		$response['message'] = 'Node user node request limit rule added successfully.';
 		$response['valid_status'] = '1';
