@@ -25,13 +25,8 @@
 	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _addNodeUserNodeRequestLimitRule($parameters, $response) {
-		if (empty($parameters['data']['node_id']) === true) {
-			$response['message'] = 'Node process node user node request limit rule must have a node ID, please try again.';
-			return $response;
-		}
-
-		if (empty($parameters['data']['node_process_type']) === true) {
-			$response['message'] = 'Node process node user node request limit rule must have a node process type, please try again.';
+		if (empty($parameters['data']['node_request_destination_id']) === true) {
+			$response['message'] = 'Node process node user node request limit rule must have a node request destination ID, please try again.';
 			return $response;
 		}
 
@@ -45,7 +40,13 @@
 			return $response;
 		}
 
-		// todo: add records to node_process_node_user_node_request_limit_rules based on node_id + node_node_id + node_process_type in node_process_node_users
+		// todo: validate existing nodeUserNodeRequestLimitRule
+		// todo: validate node_request_destination_address with node_request_destination_id
+		// todo: validate node_request_limit_rule_id
+		// todo: save in node_user_node_request_limit_rules
+		// todo: get node_process_node_user node_id + node_node_id + node_process_type
+		// todo: save in node_process_node_user_node_request_destinations
+		// todo: save in node_process_node_user_node_request_limit_rules based on node_id + node_node_id + node_process_type in node_process_node_users
 			// node_process_node_user_node_request_limit_rules is only for fast querying + unsetting node_user request destination IDs in process_node_processes with node_id based on node_user_request_limit_rules 
 	}
 
