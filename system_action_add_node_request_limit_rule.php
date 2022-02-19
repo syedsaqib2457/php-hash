@@ -3,9 +3,10 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_request_limit_rules'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_request_limit_rules'] = $systemDatabasesConnections['node_request_limit_rules'];
 
 	function _addNodeRequestLimitRule($parameters, $response) {
 		if (empty($parameters['data']['interval_minutes']) === true) {
