@@ -17,6 +17,8 @@
 		'node_processes',
 		'node_reserved_internal_destinations',
 		'node_reserved_internal_sources',
+		'node_user_node_request_destinations',
+		'node_user_node_request_limit_rules',
 		'nodes'
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchain_socks_proxy_destinations'];
@@ -32,6 +34,8 @@
 	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
 	$parameters['system_databases']['node_reserved_internal_destinations'] = $systemDatabasesConnections['node_reserved_internal_destinations'];
 	$parameters['system_databases']['node_reserved_internal_sources'] = $systemDatabasesConnections['node_reserved_internal_sources'];
+	$parameters['system_databases']['node_user_node_request_destinations'] = $systemDatabasesConnections['node_user_node_request_destinations'];
+	$parameters['system_databases']['node_user_node_request_limit_rules'] = $systemDatabasesConnections['node_user_node_request_limit_rules'];
 	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _processNode($parameters, $response) {
