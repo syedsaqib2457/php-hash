@@ -251,18 +251,20 @@
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_destinations'],
 				'where' => array(
-					'node_id' => $nodeNodeId
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUserNodeRequestLimitRules = _list(array(
 				'data' => array(
+					'node_id',
+					'node_process_type',
 					'node_user_id',
 					'node_user_node_request_destination_id'
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_limit_rules'],
 				'where' => array(
 					'activated_status' => '1',
-					'node_id' => $nodeNodeId
+					'node_node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUsers = _list(array(
