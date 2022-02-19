@@ -75,7 +75,6 @@
 
 		if (empty($node) === true) {
 			$response['message'] = 'Invalid node authentication token, please try again.';
-			// todo: log as unauthorized request
 
 			if (empty($parameters['where']['id']) === false) {
 				_edit(array(
@@ -235,7 +234,6 @@
 			), $response);
 			$nodeProcessNodeUserAuthenticationSources = _list(array(
 				'data' => array(
-					'node_id',
 					'node_user_authentication_source_ip_address',
 					'node_user_authentication_source_ip_address_block_length',
 					'node_user_id'
