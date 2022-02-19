@@ -262,7 +262,7 @@
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_limit_rules'],
 				'where' => array(
 					'activated_status' => '1',
-					'node_node_id' => $nodeNodeId
+					'node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUsers = _list(array(
