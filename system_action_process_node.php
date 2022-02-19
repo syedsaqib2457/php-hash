@@ -251,7 +251,7 @@
 				),
 				'in' => $parameters['system_databases']['node_process_node_user_node_request_destinations'],
 				'where' => array(
-					'node_node_id' => $nodeNodeId
+					'node_id' => $nodeNodeId
 				)
 			), $response);
 			$nodeProcessNodeUserNodeRequestLimitRules = _list(array(
