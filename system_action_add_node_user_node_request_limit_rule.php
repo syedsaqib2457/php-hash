@@ -56,8 +56,30 @@
 			return $response;
 		}
 
-		// todo: validate node_request_limit_rule_id
-		// todo: validate node_user_id
+		$nodeRequestLimitRuleCount = _count(array(
+			'in' => $parameters['system_databases']['node_request_limit_rules'],
+			'where' => array(
+				'id' => $parameters['data']['node_request_limit_rule_id']
+			)
+		), $response);
+
+		if (($nodeRequestLimitRuleCount === 0) === true) {
+			$response['message'] = 'Invalid node user node request limit rule node request limit rule ID, please try again.';
+			return $response;
+		}
+
+		$nodeUserCount = _count(array(
+			'in' => $parameters['system_databases']['node_users'],
+			'where' => array(
+				'id' => $parameters['data']['node_user_id']
+			)
+		), $response);
+
+		if (($nodeUserCount === 0) === true) {
+			$response['message'] = 'Invalid node user node request limit rule node user ID, please try again.';
+			return $response;
+		}
+
 		$existingNodeUserNodeRequestLimitRuleCount = _count(array(
 			'in' => $parameters['system_databases']['node_user_node_request_limit_rules'],
 			'where' => array(
