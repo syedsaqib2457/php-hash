@@ -233,6 +233,39 @@
 					}
 				}
 
+				$nodeProcessRecursiveDnsDestinations = _list(array(
+					'data' => array(
+						'address_version_4',
+						'address_version_4_node_id',
+						'address_version_6',
+						'address_version_6_node_id',
+						'id',
+						'node_id',
+						'node_node_id',
+						'port_number_version_4',
+						'port_number_version_6'
+					),
+					'in' => $parameters['system_databases']['node_process_recursive_dns_destinations']
+					'where' => array(
+						'either' => array(
+							array(
+								'address_version_4_node_id' => $nodeProcess['node_id'],
+								'address_version_6_node_id' => $nodeProcess['node_id']
+							),
+							array(
+								'port_number_version_4' => $nodeProcess['port_number'],
+								'port_number_version_6' => $nodeProcess['port_number']
+							)
+						)
+					)
+				), $response);
+				
+				if (empty($nodeProcessRecursiveDnsDestinations) === false) {
+					foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestinationsKey => $nodeProcessRecursiveDnsDestination) {
+						
+					}
+				}
+
 				// todo: update node_process_forwarding_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 				// todo: update node_process_recursive_dns_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 			}
