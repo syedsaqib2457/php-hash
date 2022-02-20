@@ -158,7 +158,8 @@
 					),
 					'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'],
 					'where' => array(
-						'ip_address_node_id' => $nodeProcess['node_id']
+						'ip_address_node_id' => $nodeProcess['node_id'],
+						'port_number' => $nodeProcess['port_number']
 					)
 				), $response);
 				$node = _list(array(
@@ -180,7 +181,8 @@
 						_delete(array(
 							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'],
 							'where' => array(
-								'ip_address_node_id' => $nodeProcess['node_id']
+								'ip_address_node_id' => $nodeProcess['node_id'],
+								'port_number' => $nodeProcess['port_number']
 							)
 						), $response);
 					} else {
@@ -193,10 +195,7 @@
 								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address'] = $node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']];
 							}
 
-							if (
-								(empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address']) === 'false') ||
-								(($parameters['data']['type'] === 'socks_proxy') === false)
-							) {
+							if (empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address']) === 'false') {
 								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['node_node_id'] = '';
 							}
 						}
