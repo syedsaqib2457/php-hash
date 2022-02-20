@@ -274,6 +274,7 @@
 						foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
 							if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
 								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = $parameters['data']['node_id'];
 
 								if (
 									(empty($node['internal_ip_address_version_' . $ipAddressVersionNumber]) === false) &&
@@ -284,6 +285,7 @@
 
 								if (empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber]) === true) {
 									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber] = '';
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = '';
 									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = '';
 								}
 
