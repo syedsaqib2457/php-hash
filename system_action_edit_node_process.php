@@ -4,9 +4,23 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_processes'
+		'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
+		'node_process_node_user_authentication_credentials',
+		'node_process_node_user_authentication_sources',
+		'node_process_node_user_node_request_destinations',
+		'node_process_node_user_node_request_limit_rules',
+		'node_process_node_users',
+		'node_processes',
+		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchain_socks_proxy_destinations'];
+	$parameters['system_databases']['node_process_node_user_authentication_credentials'] = $systemDatabasesConnections['node_process_node_user_authentication_credentials'];
+	$parameters['system_databases']['node_process_node_user_authentication_sources'] = $systemDatabasesConnections['node_process_node_user_authentication_sources'];
+	$parameters['system_databases']['node_process_node_user_node_request_destinations'] = $systemDatabasesConnections['node_process_node_user_node_request_destinations'];
+	$parameters['system_databases']['node_process_node_user_node_request_limit_rules'] = $systemDatabasesConnections['node_process_node_user_node_request_limit_rules'];
+	$parameters['system_databases']['node_process_node_users'] = $systemDatabasesConnections['node_process_node_users'];
 	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
 
 	function _editNodeProcess($parameters, $response) {
@@ -115,10 +129,9 @@
 				$systemDatabaseNames = array(
 					'node_process_node_user_authentication_credentials',
 					'node_process_node_user_authentication_sources',
-					'node_process_node_user_request_destination_logs',
 					'node_process_node_user_node_request_destinations',
 					'node_process_node_user_node_request_limit_rules',
-					'node_process_node_users',
+					'node_process_node_users'
 				);
 
 				foreach ($systemDatabaseNames as $systemDatabaseName) {
