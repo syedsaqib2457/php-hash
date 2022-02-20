@@ -208,7 +208,10 @@
 							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address_node_id'] = $parameters['data']['node_id'];
 							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['port_number'] = $parameters['data']['port_number'];
 
-							if (empty($node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']]) === 'false') {
+							if (
+								(empty($node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']]) === 'false') &&
+								(($nodeProcess['node_node_id'] === $parameters['data']['node_node_id']) === true)
+							) {
 								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address'] = $node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']];
 							}
 
