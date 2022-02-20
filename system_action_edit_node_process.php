@@ -54,6 +54,39 @@
 			return $response;
 		}
 
+		$node = _list(array(
+			'data' => array(
+				'external_ip_address_version_4',
+				'external_ip_address_version_4',
+				'id',
+				'internal_ip_address_version_6',
+				'internal_ip_address_version_6',
+				'node_id',
+				'processed_status'
+			),
+			'in' => $parameters['system_databases']['nodes'],
+			'where' => array(
+				'id' => $parameters['data']['node_id']
+			)
+		), $response);
+		$node = current($node);
+
+		if (empty($node) === true) {
+			$response['message'] = 'Invalid node process node ID, please try again.';
+			return $response;
+		}
+
+		if (($node['processed_status'] === '1') === false) {
+			$response['message'] = 'Node process node must be processed, please try again.';
+			return $response;
+		}
+
+		$parameters['data']['node_node_id'] = $node['id'];
+
+		if (empty($node['node_id']) === false) {
+			$parameters['data']['node_node_id'] = $node['node_id'];
+		}
+
 		$nodeProcess = _list(array(
 			'data' => array(
 				'node_id',
@@ -103,9 +136,6 @@
 		if (empty($parameters['data']['type']) === true) {
 			$parameters['data']['type'] = $nodeProcess['type'];
 		}
-
-		// todo: validate node processed_status = '1' for node_node_id
-		// todo: set $parameters['data']['node_node_id'] from node[id]
 
 		if (
 			(($nodeProcess['node_id'] === $parameters['data']['node_id']) === false) ||
@@ -162,19 +192,6 @@
 						'port_number' => $nodeProcess['port_number']
 					)
 				), $response);
-				$node = _list(array(
-					'data' => array(
-						'external_ip_address_version_4',
-						'external_ip_address_version_4',
-						'internal_ip_address_version_6',
-						'internal_ip_address_version_6'
-					),
-					'in' => $parameters['system_databases']['nodes'],
-					'where' => array(
-						'id' => $parameters['data']['node_id']
-					)
-				), $response);
-				$node = current($node);
 
 				if (empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations) === false) {
 					if (($parameters['data']['type'] === 'socks_proxy') === false) {
