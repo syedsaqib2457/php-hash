@@ -233,6 +233,93 @@
 					}
 				}
 
+				$nodeProcessForwardingDestinations = _list(array(
+					'data' => array(
+						'address_version_4',
+						'address_version_4_node_id',
+						'address_version_6',
+						'address_version_6_node_id',
+						'id',
+						'node_id',
+						'node_node_id',
+						'port_number_version_4',
+						'port_number_version_6'
+					),
+					'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
+					'where' => array(
+						'either' => array(
+							array(
+								'address_version_4_node_id' => $nodeProcess['node_id'],
+								'port_number_version_4' => $nodeProcess['port_number']
+							),
+							array(
+								'address_version_6_node_id' => $nodeProcess['node_id'],
+								'port_number_version_6' => $nodeProcess['port_number']
+							),
+							array(
+								'node_id' => $nodeProcess['node_id'],
+								'node_process_type' => $nodeProcess['node_process_type']
+							)
+						)
+					)
+				), $response);
+
+				if (empty($nodeProcessForwardingDestinations) === false) {
+					$ipAddressVersionNumbers = array(
+						4,
+						6
+					);
+
+					foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestinationsKey => $nodeProcessForwardingDestination) {
+						foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
+							if (($nodeProcess['node_id'] === $nodeProcessForwardingDestination['address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
+								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
+								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = $parameters['data']['node_id'];
+
+								if (
+									(empty($node['internal_ip_address_version_' . $ipAddressVersionNumber]) === false) &&
+									(($nodeProcess['node_node_id'] === $nodeProcessForwardingDestination['node_node_id']) === true)
+								) {
+									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['internal_ip_address_version_' . $ipAddressVersionNumber];
+								}
+
+								if (empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber]) === true) {
+									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = '';
+									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = '';
+									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = '';
+								}
+
+								if (($nodeProcess['port_number'] === $nodeProcessForwardingDestination['port_number_version_' . $ipAddressVersionNumber]) === true) {
+									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = $parameters['data']['port_number_version_' . $ipAddressVersionNumber];
+								}
+							}
+						}
+
+						if (($nodeProcess['node_id'] === $nodeProcessForwardingDestination['node_id']) === true) {
+							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_id'] = $parameters['data']['node_id'];
+							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_node_id'] = $parameters['data']['node_node_id'];
+							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_process_type'] = $parameters['data']['node_process_type'];
+						}
+
+						if (
+							(empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_4']) === true) &&
+							(empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_6']) === true)
+						) {
+							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_node_id'] = '';
+						}
+					}
+				}
+
+				_save(array(
+					'data' => $nodeProcessForwardingDestinations,
+					'in' => $parameters['system_databases']['node_process_forwarding_destinations']
+				), $response);
+				_delete(array(
+					'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
+					'where' => array(
+						'node_node_id' => ''
+					)
+				), $response);
 				$nodeProcessRecursiveDnsDestinations = _list(array(
 					'data' => array(
 						'address_version_4',
