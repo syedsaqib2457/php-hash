@@ -250,10 +250,10 @@
 						'either' => array(
 							array(
 								'address_version_4_node_id' => $nodeProcess['node_id'],
-								'address_version_6_node_id' => $nodeProcess['node_id']
+								'port_number_version_4' => $nodeProcess['port_number']
 							),
 							array(
-								'port_number_version_4' => $nodeProcess['port_number'],
+								'address_version_6_node_id' => $nodeProcess['node_id'],
 								'port_number_version_6' => $nodeProcess['port_number']
 							)
 						)
@@ -262,12 +262,11 @@
 				
 				if (empty($nodeProcessRecursiveDnsDestinations) === false) {
 					foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestinationsKey => $nodeProcessRecursiveDnsDestination) {
-						
+						// todo: update node_process_recursive_dns_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 					}
 				}
 
 				// todo: update node_process_forwarding_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
-				// todo: update node_process_recursive_dns_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 			}
 		}
 
