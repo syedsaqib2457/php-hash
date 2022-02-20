@@ -242,10 +242,11 @@
 						'id',
 						'node_id',
 						'node_node_id',
+						'node_process_type',
 						'port_number_version_4',
 						'port_number_version_6'
 					),
-					'in' => $parameters['system_databases']['node_process_recursive_dns_destinations']
+					'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
 					'where' => array(
 						'either' => array(
 							array(
@@ -255,11 +256,15 @@
 							array(
 								'address_version_6_node_id' => $nodeProcess['node_id'],
 								'port_number_version_6' => $nodeProcess['port_number']
+							),
+							array(
+								'node_id' => $nodeProcess['node_id'],
+								'node_process_type' => $nodeProcess['node_process_type']
 							)
 						)
 					)
 				), $response);
-				
+
 				if (empty($nodeProcessRecursiveDnsDestinations) === false) {
 					foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestinationsKey => $nodeProcessRecursiveDnsDestination) {
 						// todo: update node_process_recursive_dns_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
