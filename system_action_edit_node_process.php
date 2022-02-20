@@ -108,7 +108,8 @@
 			}
 
 			if ((strpos($nodeProcess['type'], 'cryptocurrency_blockchain') === false) === false) {
-				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations with $parameters['data']['node_id'] + $parameters['data']['port_number']
+				// todo: validate same node_node_id for cryptocurrency_blockchain process types
+				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations with $parameters['data']['node_id']
 				// todo: update node_process_cryptocurrency_blockchains with $parameters['data']['node_id']
 			} else {
 				$systemDatabaseNames = array(
@@ -135,8 +136,59 @@
 					), $response);
 				}
 
-				// todo: update node_process_* databases with $parameters['data']['node_id'] + $parameters['data']['type']
-				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
+				if (($nodeProcess['port_number'] === $parameters['data']['port_number']) === false) {
+					$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations = _list(array(
+						'data' => array(
+							'id',
+							'ip_address_version_number'
+						),
+						'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'],
+						'where' => array(
+							'ip_address_node_id' => $nodeProcess['node_id']
+						)
+					), $response);
+					$node = _list(array(
+						'data' => array(
+							'external_ip_address_version_4',
+							'external_ip_address_version_4',
+							'internal_ip_address_version_6',
+							'internal_ip_address_version_6'
+						),
+						'in' => $parameters['system_databases']['nodes'],
+						'where' => array(
+							'id' => $parameters['data']['node_id']
+						)
+					), $response);
+					$node = current($node);
+
+					if (empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations) === false) {
+						foreach ($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations as $nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey => $nodeProcessCryptocurrencyBlockchainSocksProxyDestination) {
+							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address'] = $node['external_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']];
+							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address_node_id'] = $parameters['data']['node_id'];
+							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['port_number'] = $parameters['data']['port_number'];
+
+							if (empty($node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']]) === 'false') {
+								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address'] = $node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']];
+							}
+
+							if (empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address']) === 'false') {
+								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['node_node_id'] = '';
+							}
+						}
+
+						_save(array(
+							'data' => $nodeProcessCryptocurrencyBlockchainSocksProxyDestinations,
+							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations']
+						), $response);
+						_delete(array(
+							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'],
+							'where' => array(
+								'node_node_id' => ''
+							)
+						), $response);
+					}
+				}
+
 				// todo: update node_process_forwarding_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 				// todo: update node_process_recursive_dns_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 			}
