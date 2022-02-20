@@ -154,7 +154,11 @@
 			}
 
 			if ((strpos($nodeProcess['type'], 'cryptocurrency_blockchain') === false) === false) {
-				// todo: validate same node_node_id for cryptocurrency_blockchain process types
+				if (($nodeProcess['node_node_id'] === $parameters['data']['node_node_id']) === false) {
+					$response['message'] = 'Node processes with cryptocurrency blockchain types must have the same node node ID, please try again.';
+					return $response;
+				}
+
 				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations with $parameters['data']['node_id']
 				// todo: update node_process_cryptocurrency_blockchains with $parameters['data']['node_id']
 			} else {
