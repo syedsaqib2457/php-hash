@@ -271,6 +271,16 @@
 					}
 				}
 
+				_save(array(
+					'data' => $nodeProcessRecursiveDnsDestinations,
+					'in' => $parameters['system_databases']['node_process_recursive_dns_destinations']
+				), $response);
+				_delete(array(
+					'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
+					'where' => array(
+						'node_node_id' => ''
+					)
+				), $response);
 				// todo: update node_process_forwarding_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 			}
 		}
