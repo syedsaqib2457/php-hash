@@ -159,8 +159,24 @@
 					return $response;
 				}
 
-				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations with $parameters['data']['node_id']
-				// todo: update node_process_cryptocurrency_blockchains with $parameters['data']['node_id']
+				$systemDatabaseNames = array(
+					'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
+					'node_process_cryptocurrency_blockchains'
+				);
+
+				foreach ($systemDatabaseNames as $systemDatabaseName) {
+					_edit(array(
+						'data' => array(
+							'node_id' => $parameters['data']['node_id'],
+							'node_node_id' => $parameters['data']['node_node_id']
+						),
+						'in' => $parameters['system_databases'][$systemDatabaseName],
+						'where' => array(
+							'node_id' => $nodeProcess['node_id'],
+							'node_process_type' => $nodeProcess['type']
+						)
+					), $response);
+				}
 			} else {
 				$systemDatabaseNames = array(
 					'node_process_node_user_authentication_credentials',
