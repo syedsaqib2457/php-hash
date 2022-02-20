@@ -866,6 +866,7 @@
 				'created_timestamp',
 				'id',
 				'ip_address',
+				'ip_address_node_id',
 				'ip_address_version_number',
 				'modified_timestamp',
 				'node_id',
