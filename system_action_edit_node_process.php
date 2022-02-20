@@ -3,13 +3,10 @@
 		exit;
 	}
 
-	// todo: delete + add node processes that aren't cryptocurrency_blockchain nodes instead of editing because foreign key is node_process_type + node_id instead of node_process_id
 	$systemDatabasesConnections = _connect(array(
 		'node_processes'
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
-	require_once('/var/www/nodecompute/system_action_add_node_process.php');
-	require_once('/var/www/nodecompute/system_action_delete_node_process.php');
 	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
 
 	function _editNodeProcess($parameters, $response) {
@@ -45,6 +42,7 @@
 			'data' => array(
 				'node_id',
 				'node_node_id',
+				'port_number',
 				'type'
 			),
 			'in' => $parameters['system_databases']['node_processes'],
@@ -69,21 +67,6 @@
 
 		if (empty($parameters['data']['port_number']) === false) {
 			$existingNodeProcessCountParameters['where']['port_number'] = $parameters['data']['port_number'];
-			// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations port_number
-			// todo: update node_process_forwarding_destinations port_number
-			// todo: update node_process_recursive_dns_destinations port_number
-		}
-
-		if (
-			(empty($parameters['data']['type']) === false) &&
-			(strpos($parameters['data']['type'], 'cryptocurrency_blockchain') === false)
-		) {
-			$existingNodeProcessCountParameters['where'] = array(
-				'either' => array(
-					$existingNodeProcessCountParameters['where'],
-					'type' => $parameters['data']['type']
-				)
-			);
 		}
 
 		$existingNodeProcessCount = _count($existingNodeProcessCountParameters, $response);
@@ -91,6 +74,48 @@
 		if (($existingNodeProcessCount === 0) === false) {
 			$response['message'] = 'Node process already exists on the same node, please try again.';
 			return $response;
+		}
+
+		if (empty($parameters['data']['node_id']) === true) {
+			$parameters['data']['node_id'] = $nodeProcess['node_id'];
+		}
+
+		if (empty($parameters['data']['port_number']) === true) {
+			$parameters['data']['port_number'] = $nodeProcess['port_number'];
+		}
+
+		if (empty($parameters['data']['type']) === true) {
+			$parameters['data']['type'] = $nodeProcess['type'];
+		}
+
+		// todo: node_id editing for node_processes on same node_node_id
+		// todo: validate node processed_status = '1' for node_node_id
+
+		if (
+			(($nodeProcess['node_id'] === $parameters['data']['node_id']) === false) ||
+			(($nodeProcess['port_number'] === $parameters['data']['port_number']) === false) ||
+			(($nodeProcess['type'] === $parameters['data']['type']) === false)
+		) {
+			if (
+				(($nodeProcess['type'] === $parameters['data']['type']) === false) &&
+				(
+					((strpos($nodeProcess['type'], 'cryptocurrency_blockchain') === false) === false) ||
+					((strpos($parameters['data']['type'], 'cryptocurrency_blockchain') === false) === false)
+				)
+			) {
+				$response['message'] = 'Invalid node process type, please try again.';
+				return $response;
+			}
+
+			if ((strpos($nodeProcess['type'], 'cryptocurrency_blockchain') === false) === false) {
+				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations with $parameters['data']['node_id']
+				// todo: update node_process_cryptocurrency_blockchains with $parameters['data']['node_id']
+			} else {
+				// todo: update node_process_* databases with $parameters['data']['node_id'] + $parameters['data']['type']
+				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
+				// todo: update node_process_forwarding_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
+				// todo: update node_process_recursive_dns_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
+			}
 		}
 
 		_edit(array(
