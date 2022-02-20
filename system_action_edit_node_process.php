@@ -88,8 +88,8 @@
 			$parameters['data']['type'] = $nodeProcess['type'];
 		}
 
-		// todo: node_id editing for node_processes on same node_node_id
 		// todo: validate node processed_status = '1' for node_node_id
+		// todo: set $parameters['data']['node_node_id'] from node[id]
 
 		if (
 			(($nodeProcess['node_id'] === $parameters['data']['node_id']) === false) ||
@@ -108,9 +108,33 @@
 			}
 
 			if ((strpos($nodeProcess['type'], 'cryptocurrency_blockchain') === false) === false) {
-				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations with $parameters['data']['node_id']
+				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations with $parameters['data']['node_id'] + $parameters['data']['port_number']
 				// todo: update node_process_cryptocurrency_blockchains with $parameters['data']['node_id']
 			} else {
+				$systemDatabaseNames = array(
+					'node_process_node_user_authentication_credentials',
+					'node_process_node_user_authentication_sources',
+					'node_process_node_user_request_destination_logs',
+					'node_process_node_user_node_request_destinations',
+					'node_process_node_user_node_request_limit_rules',
+					'node_process_node_users',
+				);
+
+				foreach ($systemDatabaseNames as $systemDatabaseName) {
+					_edit(array(
+						'data' => array(
+							'node_id' => $parameters['data']['node_id'],
+							'node_node_id' => $parameters['data']['node_node_id'],
+							'node_process_type' => $parameters['data']['type']
+						),
+						'in' => $parameters['system_databases'][$systemDatabaseName],
+						'where' => array(
+							'node_id' => $nodeProcess['node_id'],
+							'node_process_type' => $nodeProcess['type']
+						)
+					), $response);
+				}
+
 				// todo: update node_process_* databases with $parameters['data']['node_id'] + $parameters['data']['type']
 				// todo: update node_process_cryptocurrency_blockchain_socks_proxy_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 				// todo: update node_process_forwarding_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
