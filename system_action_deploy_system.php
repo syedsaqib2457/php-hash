@@ -945,7 +945,9 @@
 			),
 			'node_process_forwarding_destinations' => array(
 				'address_version_4',
+				'address_version_4_node_id',
 				'address_version_6',
+				'address_version_6_node_id',
 				'created_timestamp',
 				'id',
 				'modified_timestamp',
