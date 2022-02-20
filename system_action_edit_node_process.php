@@ -209,13 +209,13 @@
 							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['port_number'] = $parameters['data']['port_number'];
 
 							if (
-								(empty($node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']]) === 'false') &&
+								(empty($node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']]) === false) &&
 								(($nodeProcess['node_node_id'] === $parameters['data']['node_node_id']) === true)
 							) {
 								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address'] = $node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']];
 							}
 
-							if (empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address']) === 'false') {
+							if (empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address']) === true) {
 								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['node_node_id'] = '';
 							}
 						}
@@ -242,7 +242,6 @@
 						'id',
 						'node_id',
 						'node_node_id',
-						'node_process_type',
 						'port_number_version_4',
 						'port_number_version_6'
 					),
@@ -266,8 +265,46 @@
 				), $response);
 
 				if (empty($nodeProcessRecursiveDnsDestinations) === false) {
+					$ipAddressVersionNumbers = array(
+						4,
+						6
+					);
+
 					foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestinationsKey => $nodeProcessRecursiveDnsDestination) {
-						// todo: update node_process_recursive_dns_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
+						foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
+							if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
+
+								if (
+									(empty($node['internal_ip_address_version_' . $ipAddressVersionNumber]) === false) &&
+									(($nodeProcess['node_node_id'] === $nodeProcessRecursiveDnsDestination['node_node_id']) === true)
+								) {
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['internal_ip_address_version_' . $ipAddressVersionNumber];
+								}
+
+								if (empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber]) === true) {
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber] = '';
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = '';
+								}
+
+								if (($nodeProcess['port_number'] === $nodeProcessRecursiveDnsDestination['port_number_version_' . $ipAddressVersionNumber]) === true) {
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = $parameters['data']['port_number_version_' . $ipAddressVersionNumber];
+								}
+							}
+						}
+
+						if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['node_id']) === true) {
+							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_id'] = $parameters['data']['node_id'];
+							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_node_id'] = $parameters['data']['node_node_id'];
+							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_process_type'] = $parameters['data']['node_process_type'];
+						}
+
+						if (
+							(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_4']) === true) &&
+							(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_6']) === true)
+						) {
+							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_node_id'] = '';
+						}
 					}
 				}
 
