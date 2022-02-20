@@ -322,10 +322,10 @@
 				), $response);
 				$nodeProcessRecursiveDnsDestinations = _list(array(
 					'data' => array(
-						'address_version_4',
-						'address_version_4_node_id',
-						'address_version_6',
-						'address_version_6_node_id',
+						'destination_ip_address_version_4',
+						'destination_ip_address_version_4_node_id',
+						'destination_ip_address_version_6',
+						'destination_ip_address_version_6_node_id',
 						'id',
 						'node_id',
 						'node_node_id',
@@ -336,11 +336,11 @@
 					'where' => array(
 						'either' => array(
 							array(
-								'address_version_4_node_id' => $nodeProcess['node_id'],
+								'destination_ip_address_version_4_node_id' => $nodeProcess['node_id'],
 								'port_number_version_4' => $nodeProcess['port_number']
 							),
 							array(
-								'address_version_6_node_id' => $nodeProcess['node_id'],
+								'destination_ip_address_version_6_node_id' => $nodeProcess['node_id'],
 								'port_number_version_6' => $nodeProcess['port_number']
 							),
 							array(
@@ -359,20 +359,22 @@
 
 					foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestinationsKey => $nodeProcessRecursiveDnsDestination) {
 						foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
-							if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
-								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
-								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = $parameters['data']['node_id'];
+							if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id'] = $parameters['data']['node_id'];
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['source_ip_address_version_' . $ipAddressVersionNumber] = '';
 
 								if (
 									(empty($node['internal_ip_address_version_' . $ipAddressVersionNumber]) === false) &&
 									(($nodeProcess['node_node_id'] === $nodeProcessRecursiveDnsDestination['node_node_id']) === true)
 								) {
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['internal_ip_address_version_' . $ipAddressVersionNumber];
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = $node['internal_ip_address_version_' . $ipAddressVersionNumber];
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['source_ip_address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
 								}
 
-								if (empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber]) === true) {
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber] = '';
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = '';
+								if (empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber]) === true) {
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = '';
+									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id'] = '';
 									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = '';
 								}
 
@@ -389,8 +391,8 @@
 						}
 
 						if (
-							(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_4']) === true) &&
-							(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['address_version_6']) === true)
+							(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_4']) === true) &&
+							(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_6']) === true)
 						) {
 							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_node_id'] = '';
 						}
@@ -407,7 +409,6 @@
 						'node_node_id' => ''
 					)
 				), $response);
-				// todo: update node_process_forwarding_destinations $parameters['data']['node_id'] + $parameters['data']['port_number'] + $parameters['data']['type']
 			}
 		}
 
