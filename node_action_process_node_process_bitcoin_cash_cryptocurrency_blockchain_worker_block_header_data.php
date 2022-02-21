@@ -134,12 +134,6 @@
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransaction = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript . '00000000';
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIds;
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransactionId = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransaction);
-
-				if ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransactionId === false) {
-					$response['message'] = 'Error listing node process Bitcoin Cash cryptocurrency blockchain block reward transaction, please try again.';
-					return $response;
-				}
-
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransactionId = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransactionId, true);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransactionId = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransactionId, true);
 				array_unshift($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds, $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransactionId);
