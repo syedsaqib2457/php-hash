@@ -102,7 +102,6 @@
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount']);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version']);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData = array();
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerIndexes = range(1, $systemActionCountNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data']);
 
 			foreach ($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader) {
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d707574655f' . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['modified_timestamp'] . hrtime(true);
