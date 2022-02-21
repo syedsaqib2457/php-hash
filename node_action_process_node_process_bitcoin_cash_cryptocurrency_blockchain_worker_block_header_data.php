@@ -39,6 +39,7 @@
 			}
 
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize = 0;
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIds = array();
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = 1;
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = '';
 
@@ -63,7 +64,7 @@
 
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount++;
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions .= $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['data'];
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['transactions'][$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIndex] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['hash'];
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIds[] = $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['hash'];
 			}
 
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = dechex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
@@ -116,8 +117,8 @@
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0], true);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0], true);
 
-				foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['transactions'] as $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction) {
-					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction);
+				foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIds as $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionId) {
+					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionId);
 					$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId = strrev($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId);
 
 					if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionId) === true) {
