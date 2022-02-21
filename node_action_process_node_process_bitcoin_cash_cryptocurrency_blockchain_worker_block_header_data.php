@@ -104,7 +104,7 @@
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData = array();
 
 			foreach ($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader) {
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d707574655f' . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['modified_timestamp'] . hrtime(true);
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d707574655f' . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['id'] . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['modified_timestamp'] . hrtime(true);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript) / 2);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript = $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['public_key_script'];
