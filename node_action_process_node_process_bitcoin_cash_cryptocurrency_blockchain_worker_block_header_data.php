@@ -45,6 +45,11 @@
 
 			foreach ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['transactions'] as $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransactionIndex => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction) {
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplateTransaction['data']);
+
+				if (empty($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize) === true) {
+					continue;
+				}
+
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize = strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockSize += $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionSize;
 
