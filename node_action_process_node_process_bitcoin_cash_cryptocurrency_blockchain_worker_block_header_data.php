@@ -110,9 +110,9 @@
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript = $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['public_key_script'];
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript) / 2);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize);
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript . '00000000';
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransaction = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff' . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript . 'ffffffff01' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScriptSize . $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript . '00000000';
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds = array();
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction);
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hex2bin($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransaction);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0], true);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0] = hash('sha256', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionIds[0], true);
 
@@ -186,7 +186,7 @@
 					'next_block_maximum_timestamp' => ($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['curtime'] + 6000),
 					'next_block_merkle_root_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['merkle_root_hash'],
 					'next_block_minimum_timestamp' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['mintime'],
-					'next_block_reward_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderTransaction,
+					'next_block_reward_transaction' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardTransaction,
 					'next_block_target_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash'],
 					'next_block_target_hash_bits' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['target_hash_bits'],
 					'next_block_version' => $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'],
