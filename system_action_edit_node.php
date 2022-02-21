@@ -3,16 +3,18 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_reserved_internal_destinations',
 		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_reserved_internal_destinations'] = $systemDatabasesConnections['node_reserved_internal_destinations'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];;
 	require_once('/var/www/nodecompute/system_action_add_node_reserved_internal_destination.php');
 	require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
 
 	function _editNode($parameters, $response) {
 		if (empty($parameters['system_user_authentication_token']) === true) {
-			return $response
+			return $response;
 		}
 
 		if (empty($parameters['where']['id']) === true) {
