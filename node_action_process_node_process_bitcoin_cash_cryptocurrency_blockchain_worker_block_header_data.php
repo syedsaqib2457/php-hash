@@ -27,6 +27,13 @@
 			return $response;
 		}
 
+		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersCountLength = end($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data']);
+		$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersCountLength = (key($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersCountLength) + 1);
+
+		if (((strlen($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersCountLength) % 2) === 1) === true) {
+			$systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersCountLength++;
+		}
+
 		while (true) {
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate = false;
 			exec('sudo /usr/local/nodecompute/bitcoin_cash/bin/bitcoin-cli -conf=/usr/local/nodecompute/bitcoin_cash/bitcoin.conf getblocktemplate 2>&1', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate);
@@ -117,8 +124,8 @@
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version']);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData = array();
 
-			foreach ($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader) {
-				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d707574655f' . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['id'] . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['modified_timestamp'] . hrtime(true);
+			foreach ($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersKey => $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader) {
+				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript = '0' . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] . $nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] . '6e6f6465636f6d707574655f' . sprintf('%0' . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersCountLength . 'x', $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersKey) . $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['modified_timestamp'] . hrtime(true);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = (strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScript) / 2);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize = sprintf('%02x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockCoinbaseScriptSize);
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockRewardPublicKeyScript = $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['public_key_script'];
