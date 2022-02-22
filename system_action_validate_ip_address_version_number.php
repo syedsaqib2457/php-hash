@@ -160,7 +160,7 @@
 							$ipAddress .= ':';
 						}
 
-						$ipAddress .= str_pad($ipAddressPart, 4, '0', STR_PAD_LEFT);
+						$ipAddress .= sprintf('%04s', $ipAddressPart);
 
 						if (isset($ipAddressBlockParts[1]) === true) {
 							$ipAddress .= '/' . $ipAddressBlockParts[1];
