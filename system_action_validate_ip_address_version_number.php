@@ -19,7 +19,7 @@
 					foreach ($ipAddressParts as $ipAddressPartKey => $ipAddressPart) {
 						if (
 							(is_numeric($ipAddressPart) === false) ||
-							((strlen(intval($ipAddressPart)) > 3) === true) ||
+							((strlen($ipAddressPart) > 3) === true) ||
 							(($ipAddressPart > 255) === true) ||
 							(($ipAddressPart < 0) === true)
 						) {
@@ -35,7 +35,7 @@
 
 							if (
 								(is_numeric($ipAddressBlockParts[0]) === false) ||
-								((strlen(intval($ipAddressBlockParts[0])) > 3) === true) ||
+								((strlen($ipAddressBlockParts[0]) > 3) === true) ||
 								(($ipAddressBlockParts[0] > 255) === true) ||
 								(($ipAddressBlockParts[0] < 0) === true) ||
 								(is_numeric($ipAddressBlockParts[1]) === false) ||
@@ -45,13 +45,13 @@
 								return false;
 							}
 
-							$ipAddress .= '.' . intval($ipAddressBlockParts[0]) . '/' . $ipAddressBlockParts[1];
+							$ipAddress .= '.' . $ipAddressBlockParts[0] . '/' . $ipAddressBlockParts[1];
 						} else {
 							if (($ipAddressPartKey === 0) === false) {
 								$ipAddress .= '.';
 							}
 
-							$ipAddress .= intval($ipAddressPart);
+							$ipAddress .= $ipAddressPart;
 						}
 					}
 
@@ -63,10 +63,10 @@
 			case '6':
 				$validIpAddressPartLetters = 'ABCDEF';
 
-				if (is_int(strpos($ipAddress, '::')) === true) {
+				if ((strpos($ipAddress, '::') === false) === false) {
 					$ipAddressDelimiterCount = substr_count($ipAddress, ':') - 2;
 
-					if (is_int(strpos($ipAddress, '.')) === true) {
+					if ((strpos($ipAddress, '.') === false) === false) {
 						$ipAddressDelimiterCount = 1;
 					}
 
@@ -79,7 +79,7 @@
 
 					$ipAddress = trim(str_replace('::', str_repeat(':0000', 7 - $ipAddressDelimiterCount) . ':', $ipAddress), ':');
 
-					if (is_int(strpos($ipAddress, ':/')) === true) {
+					if ((strpos($ipAddress, ':/') === false) === false) {
 						$ipAddress = str_replace(':/', '/', $ipAddress);
 					}
 				}
@@ -150,7 +150,7 @@
 									continue;
 								}
 
-								if (is_int(strpos($validIpAddressPartLetters,  $ipAddressPart[$ipAddressPartCharacterIndex])) === false) {
+								if (strpos($validIpAddressPartLetters,  $ipAddressPart[$ipAddressPartCharacterIndex]) === false) {
 									return false;
 								}
 							}
