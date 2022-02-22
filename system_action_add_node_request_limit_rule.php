@@ -14,10 +14,7 @@
 			return $response;
 		}
 
-		if (
-			(is_numeric($parameters['data']['interval_minutes']) === false) ||
-			((strval(intval($parameters['data']['interval_minutes'])) === $parameters['data']['interval_minutes']) === false)
-		) {
+		if (is_numeric($parameters['data']['interval_minutes']) === false) {
 			$response['message'] = 'Invalid node request limit rule interval minutes, please try again.';
 			return $response;
 		}
@@ -28,7 +25,7 @@
 		) {
 			if (
 				(is_numeric($parameters['data']['request_count']) === false) ||
-				((strval(intval($parameters['data']['request_count'])) === $parameters['data']['request_count']) === false)
+				(($parameters['data']['request_count'] < 0) === true)
 			) {
 				$response['message'] = 'Invalid node request limit rule request count, please try again.';
 				return $response;
@@ -36,9 +33,9 @@
 
 			if (
 				(is_numeric($parameters['data']['request_count_interval_minutes']) === false) ||
-				((strval(intval($parameters['data']['request_count_interval_minutes'])) === $parameters['data']['request_count_interval_minutes']) === false)
+				(($parameters['data']['request_count_interval_minutes'] < 0) === true)
 			) {
-				$response['message'] = 'Invalid node request limit rule request count, please try again.';
+				$response['message'] = 'Invalid node request limit rule request count interval minutes, please try again.';
 				return $response;
 			}
 		} else {
@@ -48,14 +45,14 @@
 
 		$existingNodeRequestLimitRuleCount = _count(array(
 			'in' => $parameters['system_databases']['node_request_limit_rules'],
-			'where' => array_intersect_key($parameters['data'], array(
-				'interval_minutes' => true,
-				'request_count' => true,
-				'request_count_interval_minutes' => true
-			))
+			'where' => array(
+				'interval_minutes' => $parameters['data']['interval_minutes'],
+				'request_count' => $parameters['data']['request_count'],
+				'request_count_interval_minutes' => $parameters['data']['request_count_interval_minutes']
+			)
 		), $response);
 
-		if (($existingNodeRequestLimitRuleCount > 0) === true) {
+		if (($existingNodeRequestLimitRuleCount === 1) === true) {
 			$response['message'] = 'Node request limit rule already exists, please try again.';
 			return $response;
 		}
