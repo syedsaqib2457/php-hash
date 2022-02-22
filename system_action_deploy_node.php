@@ -3,9 +3,10 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _deployNode($parameters, $response) {
 		if (empty($parameters['node_authentication_token']) === true) {
