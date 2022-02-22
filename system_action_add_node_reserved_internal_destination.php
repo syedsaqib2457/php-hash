@@ -3,9 +3,10 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_reserved_internal_destinations'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_reserved_internal_destinations'] = $systemDatabasesConnections['node_reserved_internal_destinations'];
 
 	function _addNodeReservedInternalDestination($parameters, $response) {
 		$nodeIpAddressVersionNumber = key($parameters['node']);
@@ -93,7 +94,7 @@
 					)
 				), $response);
 
-				if (($existingNodeCount > 0) === false) {
+				if (($existingNodeCount === 0) === true) {
 					$existingNodeReservedInternalDestination['added_status'] = '1';
 					$existingNodeReservedInternalDestination['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 				}
@@ -102,15 +103,15 @@
 			$existingNodeReservedInternalDestination['added_status'] = true;
 		}
 
-		$existingNodeReservedInternalDestinationData = array(
+		$existingNodeReservedInternalDestinationsData = array(
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
-		unset($existingNodeReservedInternalDestinationData[1]['id']);
-		$existingNodeReservedInternalDestinationData[1]['added_status'] = '0';
+		unset($existingNodeReservedInternalDestinationsData[1]['id']);
+		$existingNodeReservedInternalDestinationsData[1]['added_status'] = '0';
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
 
-		while (($existingNodeReservedInternalDestinationData[0]['ip_address'] === $existingNodeReservedInternalDestinationData[1]['ip_address']) === true) {
+		while (($existingNodeReservedInternalDestinationsData[0]['ip_address'] === $existingNodeReservedInternalDestinationsData[1]['ip_address']) === true) {
 			switch ($nodeIpAddressVersionNumber) {
 				case '4':
 					$nodeReservedInternalDestinationIpAddress = ip2long($nodeReservedInternalDestinationIpAddress);
@@ -150,13 +151,13 @@
 				)
 			), $response);
 
-			if (($existingNodeCount > 0) === false) {
-				$existingNodeReservedInternalDestinationData[1]['ip_address'] = $nodeReservedInternalDestinationIpAddress;
+			if (($existingNodeCount === 0) === true) {
+				$existingNodeReservedInternalDestinationsData[1]['ip_address'] = $nodeReservedInternalDestinationIpAddress;
 			}
 		}
 
 		_save(array(
-			'data' => $existingNodeReservedInternalDestinationData,
+			'data' => $existingNodeReservedInternalDestinationsData,
 			'to' => $parameters['system_databases']['node_reserved_internal_destinations']
 		), $response);
 		$response = $nodeReservedInternalDestinationIpAddress;
