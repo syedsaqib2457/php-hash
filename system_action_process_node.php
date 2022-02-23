@@ -4,9 +4,6 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
-		'node_process_cryptocurrency_blockchain_worker_settings',
-		'node_process_cryptocurrency_blockchains',
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
 		'node_process_node_user_authentication_sources',
@@ -19,9 +16,6 @@
 		'node_reserved_internal_sources',
 		'nodes'
 	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchain_socks_proxy_destinations'];
-	$parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchain_worker_settings'];
-	$parameters['system_databases']['node_process_cryptocurrency_blockchains'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchains'];
 	$parameters['system_databases']['node_process_forwarding_destinations'] = $systemDatabasesConnections['node_process_forwarding_destinations'];
 	$parameters['system_databases']['node_process_node_user_authentication_credentials'] = $systemDatabasesConnections['node_process_node_user_authentication_credentials'];
 	$parameters['system_databases']['node_process_node_user_authentication_sources'] = $systemDatabasesConnections['node_process_node_user_authentication_sources'];
@@ -40,13 +34,7 @@
 				'32' => '4',
 				'128' => '6'
 			),
-			'node_process_cryptocurrency_blockchain_node_process_types' => array(
-				'bitcoin_cash_cryptocurrency_blockchain',
-				'bitcoin_cryptocurrency_blockchain'
-			),
 			'node_process_types' => array(
-				'bitcoin_cash_cryptocurrency_blockchain',
-				'bitcoin_cryptocurrency_blockchain',
 				'http_proxy',
 				'load_balancer',
 				'recursive_dns',
@@ -157,44 +145,6 @@
 				return $response;
 			}
 
-			$nodeProcessCryptocurrencyBlockchains = _list(array(
-				'data' => array(
-					'block_download_progress_percentage',
-					'daily_sent_traffic_maximum_megabytes',
-					'id',
-					'node_id',
-					'node_process_type',
-					'simultaneous_received_connection_maximum_count',
-					'simultaneous_sent_connection_maximum_count',
-					'storage_usage_maximum_megabytes'
-				),
-				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchains'],
-				'where' => array(
-					'node_node_id' => $nodeNodeId
-				)
-			), $response);
-			$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations = _list(array(
-				'data' => array(
-					'ip_address',
-					'ip_address_version_number',
-					'node_id',
-					'node_process_type',
-					'port_number'
-				),
-				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'],
-				'where' => array(
-					'node_node_id' => $nodeNodeId
-				)
-			), $response);
-			$nodeProcessCryptocurrencyBlockchainWorkerSettings = _list(array(
-				'data' => array(
-					'node_process_type'
-				),
-				'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_worker_settings'],
-				'where' => array(
-					'node_id' => $nodeNodeId
-				)
-			), $response);
 			$nodeProcesses = _list(array(
 				'data' => array(
 					'id',
@@ -339,26 +289,11 @@
 				)
 			), $response);
 
-			foreach ($nodeProcessCryptocurrencyBlockchains as $nodeProcessCryptocurrencyBlockchain) {
-				$response['data']['node_process_cryptocurrency_blockchains'][$nodeProcessCryptocurrencyBlockchain['node_process_type']] = $nodeProcessCryptocurrencyBlockchain;
-				unset($response['data']['node_process_cryptocurrency_blockchains'][$nodeProcessCryptocurrencyBlockchain['node_process_type']]['node_process_type']);
-			}
-
-			foreach ($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations as $nodeProcessCryptocurrencyBlockchainSocksProxyDestination) {
-				$response['data']['node_process_cryptocurrency_blockchains'][$nodeProcessCryptocurrencyBlockchainSocksProxyDestination['node_process_type']]['socks_proxy_destination_addresses'][$nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']] = $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address'] . ':' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['port_number'];
-			}
-
-			foreach ($nodeProcessCryptocurrencyBlockchainWorkerSettings as $nodeProcessCryptocurrencyBlockchainWorkerSetting) {
-				$response['data']['node_process_cryptocurrency_blockchain_worker_node_process_types'][] = $nodeProcessCryptocurrencyBlockchainWorkerSetting['node_process_type'];
-			}
-
 			$nodeProcessPartKeys = array();
 
 			foreach ($parameters['data']['node_process_types'] as $nodeProcessType) {
 				$nodeProcessPartKeys[$nodeProcessType] = 0;
 			}
-
-			$parameters['data']['node_process_types'] = array_diff($parameters['data']['node_process_types'], $parameters['data']['node_process_cryptocurrency_blockchain_node_process_types']);
 
 			foreach ($nodeProcesses as $nodeProcess) {
 				$response['data']['node_processes'][$nodeProcess['type']][$nodeProcessPartKeys[$nodeProcess['type']]][$nodeProcess['node_id']][$nodeProcess['id']] = $nodeProcess['port_number'];
