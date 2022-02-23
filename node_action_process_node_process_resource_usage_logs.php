@@ -16,7 +16,6 @@
 
 	function _processNodeProcessResourceUsageLogs($parameters, $response) {
 		$parameters['node_process_resource_usage_log_process_types'] = array(
-			'bitcoin_cash_cryptocurrency_blockchain',
 			'http_proxy',
 			'recursive_dns',
 			'socks_proxy'
