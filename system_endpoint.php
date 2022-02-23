@@ -68,6 +68,16 @@
 		exit;
 	}
 
+	$parameters = array();
+
+	if (empty($_POST['json']) === false) {
+		$parametersData = json_decode($_POST['json'], true);
+
+		if (empty($parametersData) === false) {
+			$parameters = $parametersData;
+		}
+	}
+
 	$response = array(
 		'authenticated_status' => '0',
 		'data' => array(),
@@ -88,13 +98,9 @@
 	}
 
 	if (empty($_POST['json']) === false) {
-		$parametersData = json_decode($_POST['json'], true);
-
 		if (empty($parametersData) === true) {
 			_output($parameters, $response);
 		}
-
-		$parameters = $parametersData;
 
 		if (empty($parameters['action']) === true) {
 			$response['message'] = 'System endpoint must have an action, please try again.';
