@@ -8,7 +8,7 @@
 
 [NodeCompute](https://github.com/twexxor/nodecompute/) is a free and open-source API to automate deployment, monitoring and scaling of containerless network infrastructure.
 
-Complexity is removed and every aspect is optimized for maximum performance, privacy and security with a custom [PHP framework](https://github.com/twexxor/nodecompute/blob/main/system_databases.php).
+Complexity is removed for maximum performance, privacy and security with a custom [PHP framework](https://github.com/twexxor/nodecompute/blob/main/system_databases.php).
 
 ### Get Started
 
