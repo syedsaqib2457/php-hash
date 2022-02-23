@@ -1450,11 +1450,6 @@
 		require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
 		$systemSettingsData['endpoint_destination_ip_address_type'] = _validateIpAddressType($systemSettingsData['endpoint_destination_ip_address'], $systemSettingsData['endpoint_destination_ip_address_version_number']);
 
-		if (file_put_contents('/var/www/nodecompute/system_settings_data.json', $systemSettingsData) === false) {
-			echo 'Error adding system settings data, please try again.' . "\n";
-			exit;
-		}
-
 		foreach ($systemSettingsData as $systemSettingsDataKey => $systemSettingsDataValue) {
 			$systemDatabaseData['system_settings'][] = array(
 				'created_timestamp' => $timestamp,
@@ -1463,6 +1458,13 @@
 				'name' => $systemSettingsDataKey,
 				'value' => $systemSettingsDataValue
 			);
+		}
+
+		$systemSettingsData = json_encode($systemSettingsData);
+
+		if (file_put_contents('/var/www/nodecompute/system_settings_data.json', $systemSettingsData) === false) {
+			echo 'Error adding system settings data, please try again.' . "\n";
+			exit;
 		}
 
 		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
