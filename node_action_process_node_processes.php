@@ -130,16 +130,6 @@
 						$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
 					}
 				}
-
-				foreach ($parameters['data']['next']['node_process_cryptocurrency_destinations'] as $cryptocurrencyNodeProcessType => $nodeProcessCryptocurrencyDestination) {
-					$firewallRules[] = '-A PREROUTING ! -i lo -d ' . $nodeProcessCryptocurrencyDestination['ip_address'] . ' --dport ' . current($parameters['data']['next']['node_processes'][$cryptocurrencyNodeProcessType][0]) . ' -j DROP';
-				}
-			}
-
-			if (empty($parameters['data']['cryptocurrency_firewall_rules']) === false) {
-				foreach ($parameters['data']['cryptocurrency_firewall_rules'] as $cryptocurrencyFirewallRule) {
-					$firewallRules[] = $cryptocurrencyFirewallRule;
-				}
 			}
 
 			foreach ($parameters['data']['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
@@ -220,7 +210,6 @@
 	function _processNodeProcesses($parameters, $response) {
 		$parameters['processing_progress_checkpoints'] = array(
 			'processing_node_processes',
-			'processing_cryptocurrency_blockchain_node_processes',
 			'verifying_node_processes',
 			'processing_recursive_dns_node_processes',
 			'processing_proxy_node_processes',
@@ -474,27 +463,6 @@
 			$response['message'] = 'Error processing network interface IP addresses, please try again.';
 			return $response;
 		}
-
-		if (empty($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchains']) === false) {
-			$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-
-			foreach ($parameters['data'][$parameters['node_process_data_key']]['node_process_cryptocurrency_blockchains'] as $nodeProcessCryptocurrencyBlockchainNodeProcessType => $nodeProcessCryptocurrencyBlockchain) {
-				if (empty($parameters['data'][$parameters['node_process_data_key']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]) === false) {
-					$nodeProcessCryptocurrencyBlockchain['ip_address'] = current($parameters['data'][$parameters['node_process_data_key']]['node_reserved_internal_destinations']);
-
-					if (empty($nodeProcessCryptocurrencyBlockchain['socks_proxy_destination_addresses'][$nodeProcessCryptocurrencyBlockchain['ip_address']['ip_address_version_number']]) === false) {
-						$nodeProcessCryptocurrencyBlockchain['socks_proxy_destination_address'] = $nodeProcessCryptocurrencyBlockchain['socks_proxy_destination_addresses'][$nodeProcessCryptocurrencyBlockchain['ip_address']['ip_address_version_number']];
-					}
-
-					$nodeProcessCryptocurrencyBlockchain['ip_address'] = current($nodeProcessCryptocurrencyBlockchain['ip_address']);
-					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($parameters['data'][$parameters['node_process_data_key']]['node_processes'][$nodeProcessCryptocurrencyBlockchainNodeProcessType]);
-					$nodeProcessCryptocurrencyBlockchain['port_number'] = current($nodeProcessCryptocurrencyBlockchain['port_number'][$nodeProcessCryptocurrencyBlockchain['node_id']]);
-					require_once('/usr/local/nodecompute/node_action_process_node_process_' . $nodeProcessCryptocurrencyBlockchainNodeProcessType . '.php');
-				}
-			}
-		}
-
-		unset($parameters['processing_progress_checkpoints'][1]);
 
 		if (empty($parameters['data']['next']['nodes']) === true) {
 			if (empty($parameters['data']['current']) === false) {
