@@ -33,7 +33,6 @@
 		}
 
 		if (in_array($parameters['data']['type'], array(
-			'bitcoin_cash_cryptocurrency_blockchain',
 			'http_proxy',
 			'load_balancer',
 			'recursive_dns',
@@ -78,17 +77,6 @@
 		if (($existingNodeProcessCount === 1) === true) {
 			$response['message'] = 'Node process already exists with the same port number ' . $parameters['data']['port_number'] . ', please try again.';
 			return $response;
-		}
-
-		if ((strpos($parameters['data']['type'], 'cryptocurrency_blockchain') === false) === false) {
-			unset($existingNodeProcessCountParameters['where']['port_number']);
-			$existingNodeProcessCountParameters['where']['type'] = $parameters['data']['type'];
-			$existingNodeProcessCount = _count($existingNodeProcessCountParameters, $response);
-
-			if (($existingNodeProcessCount === 1) === true) {
-				$response['message'] = 'Node process already exists with the same type ' . $parameters['data']['type'] . ', please try again.';
-				return $response;
-			}
 		}
 
 		$parameters['data']['id'] = _createUniqueId();
