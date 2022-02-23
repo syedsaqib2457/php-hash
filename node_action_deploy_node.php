@@ -458,14 +458,6 @@
 	shell_exec('cd /usr/src/3proxy/*/ && sudo make -f Makefile.Linux install');
 	shell_exec('sudo mkdir -p /var/log/3proxy/');
 	$nodeFiles = array(
-		'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain.php',
-		'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_block_data.php',
-		'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_blocks.php',
-		'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data.php',
-		'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers.php',
-		'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers_hash_speed_logs.php',
-		'node_action_process_node_process_cryptocurrency_blockchain_worker_settings.php',
-		'node_action_process_node_process_cryptocurrency_blockchain_workers.php',
 		'node_action_process_node_process_node_user_request_logs.php',
 		'node_action_process_node_process_resource_usage_logs.php',
 		'node_action_process_node_processes.php',
@@ -535,10 +527,7 @@
 
 	$crontabCommands += array(
 		'# nodecompute_node_processes',
-		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_network_interface_ip_addresses nodecompute_node_processes'
-		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_blockchain_blocks nodecompute_node_processes',
-		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data nodecompute_node_processes',
-		'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_cryptocurrency_blockchain_worker_settings nodecompute_node_processes',
+		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_network_interface_ip_addresses nodecompute_node_processes',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_node_user_request_logs nodecompute_node_processes',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_resource_usage_logs nodecompute_node_processes',
 		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_processes nodecompute_node_processes',
