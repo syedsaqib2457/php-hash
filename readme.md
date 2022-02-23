@@ -18,18 +18,6 @@ Read API Documentation `[guide coming soon]`
 
 ### Installation
 
-BCH Mining `[guide coming soon]`
-
-BCH Nodes `[guide coming soon]`
-
-BCH Transactions `[guide coming soon]`
-
-BTC Mining `[guide coming soon]`
-
-BTC Nodes `[guide coming soon]`
-
-BTC Transactions `[guide coming soon]`
-
 Database Scaling `[guide coming soon]`
 
 Egress Destination Throttling `[guide coming soon]`
