@@ -4,7 +4,6 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
 		'node_process_node_user_authentication_credentials',
 		'node_process_node_user_authentication_sources',
 		'node_process_node_user_node_request_destinations',
@@ -14,7 +13,6 @@
 		'node_processes',
 		'nodes'
 	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'] = $systemDatabasesConnections['node_process_cryptocurrency_blockchain_socks_proxy_destinations'];
 	$parameters['system_databases']['node_process_node_user_authentication_credentials'] = $systemDatabasesConnections['node_process_node_user_authentication_credentials'];
 	$parameters['system_databases']['node_process_node_user_authentication_sources'] = $systemDatabasesConnections['node_process_node_user_authentication_sources'];
 	$parameters['system_databases']['node_process_node_user_node_request_destinations'] = $systemDatabasesConnections['node_process_node_user_node_request_destinations'];
@@ -42,8 +40,6 @@
 		if (
 			(empty($parameters['data']['type']) === false) &&
 			(in_array($parameters['data']['type'], array(
-				'bitcoin_cryptocurrency_blockchain',
-				'bitcoin_cash_cryptocurrency_blockchain',
 				'http_proxy',
 				'load_balancer',
 				'recursive_dns',
@@ -142,294 +138,205 @@
 			(($nodeProcess['port_number'] === $parameters['data']['port_number']) === false) ||
 			(($nodeProcess['type'] === $parameters['data']['type']) === false)
 		) {
-			if (
-				(($nodeProcess['type'] === $parameters['data']['type']) === false) &&
-				(
-					((strpos($nodeProcess['type'], 'cryptocurrency_blockchain') === false) === false) ||
-					((strpos($parameters['data']['type'], 'cryptocurrency_blockchain') === false) === false)
-				)
-			) {
-				$response['message'] = 'Invalid node process type, please try again.';
-				return $response;
-			}
+			$systemDatabaseNames = array(
+				'node_process_node_user_authentication_credentials',
+				'node_process_node_user_authentication_sources',
+				'node_process_node_user_node_request_destinations',
+				'node_process_node_user_node_request_limit_rules',
+				'node_process_node_users'
+			);
 
-			if ((strpos($nodeProcess['type'], 'cryptocurrency_blockchain') === false) === false) {
-				if (($nodeProcess['node_node_id'] === $parameters['data']['node_node_id']) === false) {
-					$response['message'] = 'Node processes with cryptocurrency blockchain types must have the same node node ID, please try again.';
-					return $response;
-				}
-
-				$systemDatabaseNames = array(
-					'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
-					'node_process_cryptocurrency_blockchains'
-				);
-
-				foreach ($systemDatabaseNames as $systemDatabaseName) {
-					_edit(array(
-						'data' => array(
-							'node_id' => $parameters['data']['node_id'],
-							'node_node_id' => $parameters['data']['node_node_id']
-						),
-						'in' => $parameters['system_databases'][$systemDatabaseName],
-						'where' => array(
-							'node_id' => $nodeProcess['node_id'],
-							'node_process_type' => $nodeProcess['type']
-						)
-					), $response);
-				}
-			} else {
-				$systemDatabaseNames = array(
-					'node_process_node_user_authentication_credentials',
-					'node_process_node_user_authentication_sources',
-					'node_process_node_user_node_request_destinations',
-					'node_process_node_user_node_request_limit_rules',
-					'node_process_node_users'
-				);
-
-				foreach ($systemDatabaseNames as $systemDatabaseName) {
-					_edit(array(
-						'data' => array(
-							'node_id' => $parameters['data']['node_id'],
-							'node_node_id' => $parameters['data']['node_node_id'],
-							'node_process_type' => $parameters['data']['type']
-						),
-						'in' => $parameters['system_databases'][$systemDatabaseName],
-						'where' => array(
-							'node_id' => $nodeProcess['node_id'],
-							'node_process_type' => $nodeProcess['type']
-						)
-					), $response);
-				}
-
-				$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations = _list(array(
+			foreach ($systemDatabaseNames as $systemDatabaseName) {
+				_edit(array(
 					'data' => array(
-						'id',
-						'ip_address_version_number'
+						'node_id' => $parameters['data']['node_id'],
+						'node_node_id' => $parameters['data']['node_node_id'],
+						'node_process_type' => $parameters['data']['type']
 					),
-					'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'],
+					'in' => $parameters['system_databases'][$systemDatabaseName],
 					'where' => array(
-						'ip_address_node_id' => $nodeProcess['node_id'],
-						'port_number' => $nodeProcess['port_number']
+						'node_id' => $nodeProcess['node_id'],
+						'node_process_type' => $nodeProcess['type']
 					)
 				), $response);
+			}
 
-				if (empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations) === false) {
-					if (($parameters['data']['type'] === 'socks_proxy') === false) {
-						_delete(array(
-							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'],
-							'where' => array(
-								'ip_address_node_id' => $nodeProcess['node_id'],
-								'port_number' => $nodeProcess['port_number']
-							)
-						), $response);
-					} else {
-						foreach ($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations as $nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey => $nodeProcessCryptocurrencyBlockchainSocksProxyDestination) {
-							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address'] = $node['external_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']];
-							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address_node_id'] = $parameters['data']['node_id'];
-							$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['port_number'] = $parameters['data']['port_number'];
+			$nodeProcessForwardingDestinations = _list(array(
+				'data' => array(
+					'address_version_4',
+					'address_version_4_node_id',
+					'address_version_6',
+					'address_version_6_node_id',
+					'id',
+					'node_id',
+					'node_node_id',
+					'port_number_version_4',
+					'port_number_version_6'
+				),
+				'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
+				'where' => array(
+					'either' => array(
+						array(
+							'address_version_4_node_id' => $nodeProcess['node_id'],
+							'port_number_version_4' => $nodeProcess['port_number']
+						),
+						array(
+							'address_version_6_node_id' => $nodeProcess['node_id'],
+							'port_number_version_6' => $nodeProcess['port_number']
+						),
+						array(
+							'node_id' => $nodeProcess['node_id'],
+							'node_process_type' => $nodeProcess['node_process_type']
+						)
+					)
+				)
+			), $response);
+
+			if (empty($nodeProcessForwardingDestinations) === false) {
+				$ipAddressVersionNumbers = array(
+					4,
+					6
+				);
+
+				foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestinationsKey => $nodeProcessForwardingDestination) {
+					foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
+						if (($nodeProcess['node_id'] === $nodeProcessForwardingDestination['address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
+							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
+							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = $parameters['data']['node_id'];
 
 							if (
-								(empty($node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']]) === false) &&
-								(($nodeProcess['node_node_id'] === $parameters['data']['node_node_id']) === true)
+								(empty($node['internal_ip_address_version_' . $ipAddressVersionNumber]) === false) &&
+								(($nodeProcess['node_node_id'] === $nodeProcessForwardingDestination['node_node_id']) === true)
 							) {
-								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address'] = $node['internal_ip_address_version_' . $nodeProcessCryptocurrencyBlockchainSocksProxyDestination['ip_address_version_number']];
+								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['internal_ip_address_version_' . $ipAddressVersionNumber];
 							}
 
-							if (empty($nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['ip_address']) === true) {
-								$nodeProcessCryptocurrencyBlockchainSocksProxyDestinations[$nodeProcessCryptocurrencyBlockchainSocksProxyDestinationsKey]['node_node_id'] = '';
+							if (empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber]) === true) {
+								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = '';
+								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = '';
+								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = '';
 							}
-						}
 
-						_save(array(
-							'data' => $nodeProcessCryptocurrencyBlockchainSocksProxyDestinations,
-							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations']
-						), $response);
-						_delete(array(
-							'in' => $parameters['system_databases']['node_process_cryptocurrency_blockchain_socks_proxy_destinations'],
-							'where' => array(
-								'node_node_id' => ''
-							)
-						), $response);
-					}
-				}
-
-				$nodeProcessForwardingDestinations = _list(array(
-					'data' => array(
-						'address_version_4',
-						'address_version_4_node_id',
-						'address_version_6',
-						'address_version_6_node_id',
-						'id',
-						'node_id',
-						'node_node_id',
-						'port_number_version_4',
-						'port_number_version_6'
-					),
-					'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
-					'where' => array(
-						'either' => array(
-							array(
-								'address_version_4_node_id' => $nodeProcess['node_id'],
-								'port_number_version_4' => $nodeProcess['port_number']
-							),
-							array(
-								'address_version_6_node_id' => $nodeProcess['node_id'],
-								'port_number_version_6' => $nodeProcess['port_number']
-							),
-							array(
-								'node_id' => $nodeProcess['node_id'],
-								'node_process_type' => $nodeProcess['node_process_type']
-							)
-						)
-					)
-				), $response);
-
-				if (empty($nodeProcessForwardingDestinations) === false) {
-					$ipAddressVersionNumbers = array(
-						4,
-						6
-					);
-
-					foreach ($nodeProcessForwardingDestinations as $nodeProcessForwardingDestinationsKey => $nodeProcessForwardingDestination) {
-						foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
-							if (($nodeProcess['node_id'] === $nodeProcessForwardingDestination['address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
-								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
-								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = $parameters['data']['node_id'];
-
-								if (
-									(empty($node['internal_ip_address_version_' . $ipAddressVersionNumber]) === false) &&
-									(($nodeProcess['node_node_id'] === $nodeProcessForwardingDestination['node_node_id']) === true)
-								) {
-									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = $node['internal_ip_address_version_' . $ipAddressVersionNumber];
-								}
-
-								if (empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber]) === true) {
-									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber] = '';
-									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_' . $ipAddressVersionNumber . '_node_id'] = '';
-									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = '';
-								}
-
-								if (($nodeProcess['port_number'] === $nodeProcessForwardingDestination['port_number_version_' . $ipAddressVersionNumber]) === true) {
-									$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = $parameters['data']['port_number_version_' . $ipAddressVersionNumber];
-								}
+							if (($nodeProcess['port_number'] === $nodeProcessForwardingDestination['port_number_version_' . $ipAddressVersionNumber]) === true) {
+								$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = $parameters['data']['port_number_version_' . $ipAddressVersionNumber];
 							}
-						}
-
-						if (($nodeProcess['node_id'] === $nodeProcessForwardingDestination['node_id']) === true) {
-							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_id'] = $parameters['data']['node_id'];
-							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_node_id'] = $parameters['data']['node_node_id'];
-							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_process_type'] = $parameters['data']['node_process_type'];
-						}
-
-						if (
-							(empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_4']) === true) &&
-							(empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_6']) === true)
-						) {
-							$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_node_id'] = '';
 						}
 					}
-				}
 
-				_save(array(
-					'data' => $nodeProcessForwardingDestinations,
-					'in' => $parameters['system_databases']['node_process_forwarding_destinations']
-				), $response);
-				_delete(array(
-					'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
-					'where' => array(
-						'node_node_id' => ''
-					)
-				), $response);
-				$nodeProcessRecursiveDnsDestinations = _list(array(
-					'data' => array(
-						'destination_ip_address_version_4',
-						'destination_ip_address_version_4_node_id',
-						'destination_ip_address_version_6',
-						'destination_ip_address_version_6_node_id',
-						'id',
-						'node_id',
-						'node_node_id',
-						'port_number_version_4',
-						'port_number_version_6'
-					),
-					'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
-					'where' => array(
-						'either' => array(
-							array(
-								'destination_ip_address_version_4_node_id' => $nodeProcess['node_id'],
-								'port_number_version_4' => $nodeProcess['port_number']
-							),
-							array(
-								'destination_ip_address_version_6_node_id' => $nodeProcess['node_id'],
-								'port_number_version_6' => $nodeProcess['port_number']
-							),
-							array(
-								'node_id' => $nodeProcess['node_id'],
-								'node_process_type' => $nodeProcess['node_process_type']
-							)
-						)
-					)
-				), $response);
+					if (($nodeProcess['node_id'] === $nodeProcessForwardingDestination['node_id']) === true) {
+						$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_id'] = $parameters['data']['node_id'];
+						$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_node_id'] = $parameters['data']['node_node_id'];
+						$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_process_type'] = $parameters['data']['node_process_type'];
+					}
 
-				if (empty($nodeProcessRecursiveDnsDestinations) === false) {
-					$ipAddressVersionNumbers = array(
-						4,
-						6
-					);
-
-					foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestinationsKey => $nodeProcessRecursiveDnsDestination) {
-						foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
-							if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
-								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
-								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id'] = $parameters['data']['node_id'];
-								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['source_ip_address_version_' . $ipAddressVersionNumber] = '';
-
-								if (
-									(empty($node['internal_ip_address_version_' . $ipAddressVersionNumber]) === false) &&
-									(($nodeProcess['node_node_id'] === $nodeProcessRecursiveDnsDestination['node_node_id']) === true)
-								) {
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = $node['internal_ip_address_version_' . $ipAddressVersionNumber];
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['source_ip_address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
-								}
-
-								if (empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber]) === true) {
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = '';
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id'] = '';
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = '';
-								}
-
-								if (($nodeProcess['port_number'] === $nodeProcessRecursiveDnsDestination['port_number_version_' . $ipAddressVersionNumber]) === true) {
-									$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = $parameters['data']['port_number_version_' . $ipAddressVersionNumber];
-								}
-							}
-						}
-
-						if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['node_id']) === true) {
-							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_id'] = $parameters['data']['node_id'];
-							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_node_id'] = $parameters['data']['node_node_id'];
-							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_process_type'] = $parameters['data']['node_process_type'];
-						}
-
-						if (
-							(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_4']) === true) &&
-							(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_6']) === true)
-						) {
-							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_node_id'] = '';
-						}
+					if (
+						(empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_4']) === true) &&
+						(empty($nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['address_version_6']) === true)
+					) {
+						$nodeProcessForwardingDestinations[$nodeProcessForwardingDestinationsKey]['node_node_id'] = '';
 					}
 				}
-
-				_save(array(
-					'data' => $nodeProcessRecursiveDnsDestinations,
-					'in' => $parameters['system_databases']['node_process_recursive_dns_destinations']
-				), $response);
-				_delete(array(
-					'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
-					'where' => array(
-						'node_node_id' => ''
-					)
-				), $response);
 			}
+
+			_save(array(
+				'data' => $nodeProcessForwardingDestinations,
+				'in' => $parameters['system_databases']['node_process_forwarding_destinations']
+			), $response);
+			_delete(array(
+				'in' => $parameters['system_databases']['node_process_forwarding_destinations'],
+				'where' => array(
+					'node_node_id' => ''
+				)
+			), $response);
+			$nodeProcessRecursiveDnsDestinations = _list(array(
+				'data' => array(
+					'destination_ip_address_version_4',
+					'destination_ip_address_version_4_node_id',
+					'destination_ip_address_version_6',
+					'destination_ip_address_version_6_node_id',
+					'id',
+					'node_id',
+					'node_node_id',
+					'port_number_version_4',
+					'port_number_version_6'
+				),
+				'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
+				'where' => array(
+					'either' => array(
+						array(
+							'destination_ip_address_version_4_node_id' => $nodeProcess['node_id'],
+							'port_number_version_4' => $nodeProcess['port_number']
+						),
+						array(
+							'destination_ip_address_version_6_node_id' => $nodeProcess['node_id'],
+							'port_number_version_6' => $nodeProcess['port_number']
+						),
+						array(
+							'node_id' => $nodeProcess['node_id'],
+							'node_process_type' => $nodeProcess['node_process_type']
+						)
+					)
+				)
+			), $response);
+
+			if (empty($nodeProcessRecursiveDnsDestinations) === false) {
+				$ipAddressVersionNumbers = array(
+					4,
+					6
+				);
+
+				foreach ($nodeProcessRecursiveDnsDestinations as $nodeProcessRecursiveDnsDestinationsKey => $nodeProcessRecursiveDnsDestination) {
+					foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
+						if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id']) === true) {
+							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
+							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id'] = $parameters['data']['node_id'];
+							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['source_ip_address_version_' . $ipAddressVersionNumber] = '';
+
+							if (
+								(empty($node['internal_ip_address_version_' . $ipAddressVersionNumber]) === false) &&
+								(($nodeProcess['node_node_id'] === $nodeProcessRecursiveDnsDestination['node_node_id']) === true)
+							) {
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = $node['internal_ip_address_version_' . $ipAddressVersionNumber];
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['source_ip_address_version_' . $ipAddressVersionNumber] = $node['external_ip_address_version_' . $ipAddressVersionNumber];
+							}
+
+							if (empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber]) === true) {
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber] = '';
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_' . $ipAddressVersionNumber . '_node_id'] = '';
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = '';
+							}
+
+							if (($nodeProcess['port_number'] === $nodeProcessRecursiveDnsDestination['port_number_version_' . $ipAddressVersionNumber]) === true) {
+								$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['port_number_version_' . $ipAddressVersionNumber] = $parameters['data']['port_number_version_' . $ipAddressVersionNumber];
+							}
+						}
+					}
+
+					if (($nodeProcess['node_id'] === $nodeProcessRecursiveDnsDestination['node_id']) === true) {
+						$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_id'] = $parameters['data']['node_id'];
+						$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_node_id'] = $parameters['data']['node_node_id'];
+						$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_process_type'] = $parameters['data']['node_process_type'];
+					}
+
+					if (
+						(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_4']) === true) &&
+						(empty($nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['destination_ip_address_version_6']) === true)
+					) {
+						$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['node_node_id'] = '';
+					}
+				}
+			}
+
+			_save(array(
+				'data' => $nodeProcessRecursiveDnsDestinations,
+				'in' => $parameters['system_databases']['node_process_recursive_dns_destinations']
+			), $response);
+			_delete(array(
+				'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
+				'where' => array(
+					'node_node_id' => ''
+				)
+			), $response);
 		}
 
 		_edit(array(
