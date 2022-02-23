@@ -606,8 +606,7 @@
 		$crontabCommands += array(
 			'# nodecompute_system_processes',
 			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab nodecompute_system_processes',
-			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_system_action.php process_node_request_logs nodecompute_system_processes',
-			'*/10 * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_node_process_cryptocurrency_blockchain_worker_settings.php nodecompute_system_processes'
+			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/nodecompute/system_action_process_system_action.php process_node_request_logs nodecompute_system_processes'
 		);
 		$crontabCommands = implode("\n", $crontabCommands);
 
@@ -848,101 +847,6 @@
 		}
 
 		$systemDatabases = array(
-			'node_process_cryptocurrency_blockchain_block_processing_logs' => array(
-				'block',
-				'block_hash',
-				'block_height',
-				'block_reward_transaction',
-				'created_timestamp',
-				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'processed_status',
-				'response'
-			),
-			'node_process_cryptocurrency_blockchain_socks_proxy_destinations' => array(
-				'created_timestamp',
-				'id',
-				'ip_address',
-				'ip_address_node_id',
-				'ip_address_version_number',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'port_number'
-			),
-			'node_process_cryptocurrency_blockchain_wallet_payment_requests' => array(
-				// new addresses from the wallet are automatically created here for each payment request with a user-set time limit
-				// partial payments are stored in node_process_cryptocurrency_wallet_transaction_logs
-			),
-			'node_process_cryptocurrency_blockchain_wallet_transaction_logs' => array(
-				// logs all "sent" transactions + "received" transactions (in the case of multiple transactions received for 1 payment request) from wallets
-			),
-			'node_process_cryptocurrency_blockchain_wallets' => array(
-				'created_timestamp',
-				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'public_key',
-				'public_key_hash',
-				'public_key_script'
-			),
-			'node_process_cryptocurrency_blockchain_worker_block_headers' => array(
-				'created_timestamp',
-				'current_block_hash',
-				'id',
-				'modified_timestamp',
-				'next_block_height',
-				'next_block_maximum_timestamp',
-				'next_block_merkle_root_hash',
-				'next_block_minimum_timestamp',
-				'next_block_reward_transaction',
-				'next_block_target_hash',
-				'next_block_target_hash_bits',
-				'next_block_version',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'public_key_script'
-			),
-			'node_process_cryptocurrency_blockchain_worker_hash_speed_logs' => array(
-				'created_timestamp',
-				'estimated_per_second_count',
-				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type'
-			),
-			'node_process_cryptocurrency_blockchain_worker_settings' => array(
-				'count',
-				'cpu_usage_maximum_percentage',
-				'created_timestamp',
-				'id',
-				'memory_usage_maximum_percentage',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type'
-			),
-			'node_process_cryptocurrency_blockchains' => array(
-				'block_download_progress_percentage',
-				'created_timestamp',
-				'daily_sent_traffic_maximum_megabytes',
-				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'simultaneous_received_connection_maximum_count',
-				'simultaneous_sent_connection_maximum_count',
-				'storage_usage_maximum_megabytes'
-			),
 			'node_process_forwarding_destinations' => array(
 				'address_version_4',
 				'address_version_4_node_id',
