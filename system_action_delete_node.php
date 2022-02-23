@@ -4,13 +4,6 @@
 	}
 
 	$parameters['system_databases'] += _connect(array(
-		'node_process_cryptocurrency_blockchain_block_submission_logs',
-		'node_process_cryptocurrency_blockchain_socks_proxy_destinations',
-		'node_process_cryptocurrency_blockchain_wallet_payment_requests',
-		'node_process_cryptocurrency_blockchain_wallet_transaction_logs',
-		'node_process_cryptocurrency_blockchain_wallets',
-		'node_process_cryptocurrency_blockchain_worker_block_headers',
-		'node_process_cryptocurrency_blockchains',
 		'node_process_forwarding_destinations',
 		'node_process_node_user_authentication_credentials',
 		'node_process_node_user_authentication_sources',
