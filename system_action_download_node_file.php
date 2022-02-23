@@ -12,12 +12,6 @@
 		}
 
 		if (in_array($parameters['where']['node_file'], array(
-			'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_block_data.php',
-			'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_blocks.php',
-			'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_header_data.php',
-			'node_action_process_node_process_bitcoin_cash_cryptocurrency_blockchain_worker_block_headers.hp',
-			'node_action_process_node_process_cryptocurrency_blockchain_worker_settings.php',
-			'node_action_process_node_process_cryptocurrency_blockchain_workers.php',
 			'node_action_process_node_process_node_user_request_logs.php',
 			'node_action_process_node_process_resource_usage_logs.php',
 			'node_action_process_node_processes.php',
