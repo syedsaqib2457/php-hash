@@ -337,12 +337,6 @@
 		)
 	);
 	$systemActionListSystemSettingsParameters = json_encode($systemActionListSystemSettingsParameters);
-
-	if ($systemActionListSystemSettingsParameters === false) {
-		echo 'Error listing system settings, please try again.' . "\n";
-		exit;
-	}
-
 	unlink('/usr/local/nodecompute/system_action_list_system_settings_response.json');
 	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_list_system_settings_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionListSystemSettingsParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
@@ -370,12 +364,6 @@
 		'node_authentication_token' => $_SERVER['argv'][1]
 	);
 	$systemActionActivateNodeParameters = json_encode($systemActionActivateNodeParameters);
-
-	if ($systemActionActivateNodeParameters === false) {
-		echo 'Error activating node, please try again.' . "\n";
-		exit;
-	}
-
 	unlink('/usr/local/nodecompute/system_action_activate_node_response.json');
 	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_activate_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
@@ -403,12 +391,6 @@
 		'node_authentication_token' => $_SERVER['argv'][1]
 	);
 	$systemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
-
-	if ($systemActionProcessNodeParameters === false) {
-		echo 'Error processing node, please try again.' . "\n";
-		exit;
-	}
-
 	unlink('/usr/local/nodecompute/system_action_process_node_response.json');
 	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
@@ -502,12 +484,6 @@
 				)
 			);
 			$systemActionDownloadNodeFileParameters = json_encode($systemActionDownloadNodeFileParameters);
-
-			if ($systemActionDownloadNodeFileParameters === false) {
-				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
-				exit;
-			}
-
 			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
 			if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
@@ -581,12 +557,6 @@
 		'node_authentication_token' => $_SERVER['argv'][1]
 	);
 	$systemActionDeployNodeParameters = json_encode($systemActionDeployNodeParameters);
-
-	if ($systemActionDeployNodeParameters === false) {
-		echo 'Error deploying node, please try again.' . "\n";
-		exit;
-	}
-
 	unlink('/usr/local/nodecompute/system_action_deploy_node_response.json');
 	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
