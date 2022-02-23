@@ -48,8 +48,6 @@ This is required to assign a `type` the node process `port_number`.
 
 This is the list of possible values.
 
-`bitcoin_cash_cryptocurrency_blockchain`
-
 `http_proxy`
 
 `load_balancer`
@@ -132,8 +130,6 @@ Requests to a `port_number` will automatically load-balance between all node pro
 This is the type in the added node process.
 
 This is the list of possible values.
-
-`bitcoin_cash_cryptocurrency_blockchain`
 
 `http_proxy`
 
