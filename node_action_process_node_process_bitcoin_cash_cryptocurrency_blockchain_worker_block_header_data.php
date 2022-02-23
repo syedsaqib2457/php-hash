@@ -3,8 +3,8 @@
 		exit;
 	}
 
-	function _createReverseByteOrderHexidecimalString($hexidecimalString) {
-		$binaryString = hex2bin($hexidecimalString);
+	function _createReverseByteOrderHexadecimalString($hexadecimalString) {
+		$binaryString = hex2bin($hexadecimalString);
 		$binaryString = strrev($binaryString);
 		return bin2hex($binaryString);
 	}
@@ -88,11 +88,11 @@
 			}
 
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader = array(
-				'current_block_hash' => _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['previousblockhash']),
+				'current_block_hash' => _createReverseByteOrderHexadecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['previousblockhash']),
 				'next_block_height' => dechex($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['height']),
 				'next_block_reward_amount' => sprintf('%016x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['coinbasevalue']),
 				'target_hash' => $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['target'],
-				'target_hash_bits' => _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['bits']),
+				'target_hash_bits' => _createReverseByteOrderHexadecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['bits']),
 				'version' => sprintf('%08x', $nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTemplate['version'])
 			);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] = strlen($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height']);
@@ -102,10 +102,10 @@
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size']++;
 			}
 
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height']);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height'] = _createReverseByteOrderHexadecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height']);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] = ($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_height_size'] / 2);
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount']);
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] = _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version']);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount'] = _createReverseByteOrderHexadecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['next_block_reward_amount']);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version'] = _createReverseByteOrderHexadecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader['version']);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeaderData = array();
 
 			foreach ($systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersResponse['data'] as $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeadersKey => $systemActionListNodeProcessBitcoinCashCryptocurrencyBlockchainWorkerBlockHeader) {
@@ -216,14 +216,14 @@
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength++;
 			}
 
-			$compactSizeUnsignedIntegerHexidecimalPrefixes = array(
+			$compactSizeUnsignedIntegerHexadecimalPrefixes = array(
 				2 => '',
 				4 => 'fd',
 				6 => 'fe',
 				8 => 'fe',
 				10 => 'ff'
 			);
-			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = $compactSizeUnsignedIntegerHexidecimalPrefixes[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength] . _createReverseByteOrderHexidecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
+			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount = $compactSizeUnsignedIntegerHexadecimalPrefixes[$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCountLength] . _createReverseByteOrderHexadecimalString($nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount);
 			$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions = array(
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactionCount,
 				$nodeProcessBitcoinCashCryptocurrencyBlockchainBlockTransactions
