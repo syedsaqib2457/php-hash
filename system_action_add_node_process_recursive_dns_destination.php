@@ -173,7 +173,7 @@
 			)
 		), $response);
 
-		if (($existingNodeProcessRecursiveDnsDestinationCount > 0) === true) {
+		if (($existingNodeProcessRecursiveDnsDestinationCount === 1) === true) {
 			$response['message'] = 'Node process recursive DNS destination already exists, please try again.';
 			return $response;
 		}
