@@ -3,10 +3,12 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_process_resource_usage_logs',
 		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_process_resource_usage_logs'] = $systemDatabasesConnections['node_process_resource_usage_logs'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _addNodeProcessResourceUsageLogs($parameters, $response) {
 		if (empty($parameters['node_authentication_token']) === true) {
