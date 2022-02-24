@@ -84,8 +84,8 @@
 		'message' => 'Invalid system endpoint parameters, please try again.',
 		'valid_status' => '0'
 	);
-	require_once('/var/www/nodecompute/system_databases.php');
-	$systemSettingsData = file_get_contents('/var/www/nodecompute/system_settings_data.json');
+	require_once('/var/www/cloud_node_automation_api/system_databases.php');
+	$systemSettingsData = file_get_contents('/var/www/cloud_node_automation_api/system_settings_data.json');
 	$systemSettingsData = json_decode($systemSettingsData, true);
 
 	if ($systemSettingsData === false) {
@@ -109,7 +109,7 @@
 
 		if (
 			((strpos($parameters['action'], '/') === false) === false) ||
-			(file_exists('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php') === false)
+			(file_exists('/var/www/cloud_node_automation_api/system_action_' . $parameters['action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid system endpoint action, please try again.';
 			_output($parameters, $response);
@@ -203,7 +203,7 @@
 				_output($parameters, $response);
 			}
 
-			require_once('/var/www/nodecompute/system_action_validate_ip_address_version_number.php');
+			require_once('/var/www/cloud_node_automation_api/system_action_validate_ip_address_version_number.php');
 			$parameters['source'] = array(
 				'ip_address' => $_SERVER['REMOTE_ADDR'],
 				'ip_address_version_number' => '4'
@@ -244,7 +244,7 @@
 		}
 
 		$response['authenticated_status'] = '1';
-		require_once('/var/www/nodecompute/system_action_' . $parameters['action'] . '.php');
+		require_once('/var/www/cloud_node_automation_api/system_action_' . $parameters['action'] . '.php');
 	}
 
 	_output($parameters, $response);
