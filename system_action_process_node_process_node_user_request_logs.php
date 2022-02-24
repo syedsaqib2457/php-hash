@@ -11,8 +11,8 @@
 	$parameters['system_databases']['node_process_node_user_request_destination_logs'] = $systemDatabasesConnections['node_process_node_user_request_destination_logs'];
 	$parameters['system_databases']['node_process_node_user_request_logs'] = $systemDatabasesConnections['node_process_node_user_request_logs'];
 	$parameters['system_databases']['node_process_node_users'] = $systemDatabasesConnections['node_process_node_users'];
-	require_once('/var/www/nodecompute/system_action_add_node_resource_usage_log.php');
-	require_once('/var/www/nodecompute/system_action_add_node_process_resource_usage_logs.php');
+	require_once('/var/www/cloud_node_automation_api/system_action_add_node_resource_usage_log.php');
+	require_once('/var/www/cloud_node_automation_api/system_action_add_node_process_resource_usage_logs.php');
 
 	function _processNodeProcessNodeUserRequestLogs($parameters, $response) {
 		_edit(array(
