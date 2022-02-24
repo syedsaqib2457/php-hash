@@ -9,7 +9,7 @@
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
 	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
-	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
+	require_once('/var/www/cloud_node_automation_api/system_action_validate_port_number.php');
 
 	function _addNodeProcess($parameters, $response) {
 		if (empty($parameters['data']['node_id']) === true) {
