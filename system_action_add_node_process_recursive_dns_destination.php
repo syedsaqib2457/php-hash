@@ -163,14 +163,14 @@
 		$parameters['data']['node_node_id'] = $node['node_id'];
 		$existingNodeProcessRecursiveDnsDestinationCount = _count(array(
 			'in' => $parameters['system_databases']['node_process_recursive_dns_destinations'],
-			'where' => array_intersect_key($parameters['data'], array(
-				'destination_ip_address_version_4' => true,
-				'destination_ip_address_version_6' => true,
-				'node_id' => true,
-				'node_process_type' => true,
-				'source_ip_address_version_4' => true,
-				'source_ip_address_version_6' => true
-			))
+			'where' => array(
+				'destination_ip_address_version_4' => $parameters['data']['destination_ip_address_version_4'],
+				'destination_ip_address_version_6' => $parameters['data']['destination_ip_address_version_6'],
+				'node_id' => $parameters['data']['node_id'],
+				'node_process_type' => $parameters['data']['node_process_type'],
+				'source_ip_address_version_4' => $parameters['data']['source_ip_address_version_4'],
+				'source_ip_address_version_6' => $parameters['data']['source_ip_address_version_6']
+			)
 		), $response);
 
 		if (($existingNodeProcessRecursiveDnsDestinationCount > 0) === true) {
