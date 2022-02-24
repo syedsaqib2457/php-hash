@@ -19,13 +19,13 @@
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
 
-		if (file_put_contents('/usr/local/nodecompute/node_action_deploy_node_commands.sh', $killProcessCommands) === false) {
+		if (file_put_contents('/usr/local/cloud_node_automation_api/node_action_deploy_node_commands.sh', $killProcessCommands) === false) {
 			echo 'Error adding kill process ID commands, please try again.' . "\n";
 			exit;
 		}
 
-		shell_exec('sudo chmod +x /usr/local/nodecompute/node_action_deploy_node_commands.sh');
-		shell_exec('cd /usr/local/nodecompute/ && sudo ./node_action_deploy_node_commands.sh');
+		shell_exec('sudo chmod +x /usr/local/cloud_node_automation_api/node_action_deploy_node_commands.sh');
+		shell_exec('cd /usr/local/cloud_node_automation_api/ && sudo ./node_action_deploy_node_commands.sh');
 		return;
 	}
 
@@ -94,10 +94,10 @@
 		exit;
 	}
 
-	mkdir('/usr/local/nodecompute/');
-	chmod('/usr/local/nodecompute/', 0755);
+	mkdir('/usr/local/cloud_node_automation_api/');
+	chmod('/usr/local/cloud_node_automation_api/', 0755);
 
-	if (is_dir('/usr/local/nodecompute/') === false) {
+	if (is_dir('/usr/local/cloud_node_automation_api/') === false) {
 		echo 'Error adding root directory, please try again.' . "\n";
 		exit;
 	}
@@ -212,13 +212,13 @@
 		);
 		$commands = implode("\n", $commands);
 
-		if (file_put_contents('/usr/local/nodecompute/node_action_deploy_node_commands.sh', $commands) === false) {
+		if (file_put_contents('/usr/local/cloud_node_automation_api/node_action_deploy_node_commands.sh', $commands) === false) {
 			echo 'Error adding binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/usr/local/nodecompute/node_action_deploy_node_commands.sh', 0755);
-		exec('cd /usr/local/nodecompute/ && sudo ./node_action_deploy_node_commands.sh', $binaryFile);
+		chmod('/usr/local/cloud_node_automation_api/node_action_deploy_node_commands.sh', 0755);
+		exec('cd /usr/local/cloud_node_automation_api/ && sudo ./node_action_deploy_node_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -337,15 +337,15 @@
 		)
 	);
 	$systemActionListSystemSettingsParameters = json_encode($systemActionListSystemSettingsParameters);
-	unlink('/usr/local/nodecompute/system_action_list_system_settings_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_list_system_settings_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionListSystemSettingsParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
+	unlink('/usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionListSystemSettingsParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system_endpoint.php');
 
-	if (file_exists('/usr/local/nodecompute/system_action_list_system_settings_response.json') === false) {
+	if (file_exists('/usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json') === false) {
 		echo 'Error listing system settings, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionListSystemSettingsResponse = file_get_contents('/usr/local/nodecompute/system_action_list_system_settings_response.json');
+	$systemActionListSystemSettingsResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json');
 	$systemActionListSystemSettingsResponse = json_decode($systemActionListSystemSettingsResponse, true);
 
 	if (empty($systemActionListSystemSettingsResponse['data']) === true) {
@@ -364,15 +364,15 @@
 		'node_authentication_token' => $_SERVER['argv'][1]
 	);
 	$systemActionActivateNodeParameters = json_encode($systemActionActivateNodeParameters);
-	unlink('/usr/local/nodecompute/system_action_activate_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_activate_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
+	unlink('/usr/local/cloud_node_automation_api/system_action_activate_node_response.json');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_activate_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
-	if (file_exists('/usr/local/nodecompute/system_action_activate_node_response.json') === false) {
+	if (file_exists('/usr/local/cloud_node_automation_api/system_action_activate_node_response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionActivateNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_activate_node_response.json');
+	$systemActionActivateNodeResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_activate_node_response.json');
 	$systemActionActivateNodeResponse = json_decode($systemActionActivateNodeResponse, true);
 
 	if (empty($systemActionActivateNodeResponse['message']) === true) {
@@ -391,15 +391,15 @@
 		'node_authentication_token' => $_SERVER['argv'][1]
 	);
 	$systemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
-	unlink('/usr/local/nodecompute/system_action_process_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
+	unlink('/usr/local/cloud_node_automation_api/system_action_process_node_response.json');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_process_node_response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
-	if (file_exists('/usr/local/nodecompute/system_action_process_node_response.json') === false) {
+	if (file_exists('/usr/local/cloud_node_automation_api/system_action_process_node_response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionProcessNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_response.json');
+	$systemActionProcessNodeResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_process_node_response.json');
 	$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 	if (empty($systemActionProcessNodeResponse['message']) === true) {
@@ -437,7 +437,7 @@
 
 	$nodeActionProcessNetworkInterfaceIpAddressesCommands = implode("\n", $nodeActionProcessNetworkInterfaceIpAddressesCommands);
 
-	if (file_put_contents('/usr/local/nodecompute/node_action_process_network_interface_ip_addresses.php', $nodeActionProcessNetworkInterfaceIpAddressesCommands) === false) {
+	if (file_put_contents('/usr/local/cloud_node_automation_api/node_action_process_network_interface_ip_addresses.php', $nodeActionProcessNetworkInterfaceIpAddressesCommands) === false) {
 		echo 'Error processing network interface IP addresses, please try again.' . "\n";
 		exit;
 	}
@@ -467,7 +467,7 @@
 	);
 
 	foreach ($nodeFiles as $nodeFile) {
-		if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
+		if (file_exists('/usr/local/cloud_node_automation_api/' . $nodeFile) === false) {
 			$systemActionDownloadNodeFileParameters = array(
 				'action' => 'download_node_file',
 				'node_authentication_token' => $_SERVER['argv'][1],
@@ -476,14 +476,14 @@
 				)
 			);
 			$systemActionDownloadNodeFileParameters = json_encode($systemActionDownloadNodeFileParameters);
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/' . $nodeFile . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/cloud_node_automation_api/' . $nodeFile . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
-			if (file_exists('/usr/local/nodecompute/' . $nodeFile) === false) {
+			if (file_exists('/usr/local/cloud_node_automation_api/' . $nodeFile) === false) {
 				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
 				exit;
 			}
 
-			$systemActionDownloadNodeFileResponse = file_get_contents('/usr/local/nodecompute/' . $nodeFile);
+			$systemActionDownloadNodeFileResponse = file_get_contents('/usr/local/cloud_node_automation_api/' . $nodeFile);
 
 			if (empty($systemActionDownloadNodeFileResponse)) === true) {
 				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
@@ -512,27 +512,27 @@
 	}
 
 	$crontabCommands = explode("\n", $crontabCommands);
-	$crontabCommandIndex = array_search('# nodecompute_node_processes', $crontabCommands);
+	$crontabCommandIndex = array_search('# cloud_node_automation_api_node_processes', $crontabCommands);
 
 	if (is_int($crontabCommandIndex) === true) {
 		while (is_int($crontabCommandIndex) === true) {
 			unset($crontabCommands[$crontabCommandIndex]);
 			$crontabCommandIndex++;
 
-			if (strpos($crontabCommands[$crontabCommandIndex], ' nodecompute_node_processes') === false) {
+			if (strpos($crontabCommands[$crontabCommandIndex], ' cloud_node_automation_api_node_processes') === false) {
 				$crontabCommandIndex = false;
 			}
 		}
 	}
 
 	$crontabCommands += array(
-		'# nodecompute_node_processes',
-		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_network_interface_ip_addresses nodecompute_node_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_node_user_request_logs nodecompute_node_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_process_resource_usage_logs nodecompute_node_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_processes nodecompute_node_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_node_resource_usage_logs nodecompute_node_processes',
-		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/nodecompute/node_endpoint.php process_recursive_dns_destination nodecompute_node_processes',
+		'# cloud_node_automation_api_node_processes',
+		'@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/cloud_node_automation_api/node_endpoint.php process_network_interface_ip_addresses cloud_node_automation_api_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/cloud_node_automation_api/node_endpoint.php process_node_process_node_user_request_logs cloud_node_automation_api_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/cloud_node_automation_api/node_endpoint.php process_node_process_resource_usage_logs cloud_node_automation_api_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/cloud_node_automation_api/node_endpoint.php process_node_processes cloud_node_automation_api_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/cloud_node_automation_api/node_endpoint.php process_node_resource_usage_logs cloud_node_automation_api_node_processes',
+		'* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/cloud_node_automation_api/node_endpoint.php process_recursive_dns_destination cloud_node_automation_api_node_processes',
 	);
 	$crontabCommands = implode("\n", $crontabCommands);
 
@@ -546,15 +546,15 @@
 		'node_authentication_token' => $_SERVER['argv'][1]
 	);
 	$systemActionDeployNodeParameters = json_encode($systemActionDeployNodeParameters);
-	unlink('/usr/local/nodecompute/system_action_deploy_node_response.json');
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_deploy_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
+	unlink('/usr/local/cloud_node_automation_api/system_action_deploy_node_response.json');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_deploy_node_response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['system_endpoint_destination_ip_address'] . '/system_endpoint.php');
 
-	if (file_exists('/usr/local/nodecompute/system_action_deploy_node_response.json') === false) {
+	if (file_exists('/usr/local/cloud_node_automation_api/system_action_deploy_node_response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
 		exit;
 	}
 
-	$systemActionDeployNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_deploy_node_response.json');
+	$systemActionDeployNodeResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_deploy_node_response.json');
 	$systemActionDeployNodeResponse = json_decode($systemActionDeployNodeResponse, true);
 
 	if (empty($systemActionDeployNodeResponse['message']) === true) {
@@ -569,7 +569,7 @@
 		$nodeSettingsData['system_version_number'] = '1';
 		$nodeSettingsData = json_encode($nodeSettingsData);
 
-		if (file_put_contents('/usr/local/nodecompute/node_settings_data.json', $nodeSettingsData) === false) {
+		if (file_put_contents('/usr/local/cloud_node_automation_api/node_settings_data.json', $nodeSettingsData) === false) {
 			echo 'Error adding node settings data, please try again.' . "\n";
 			exit;
 		}
