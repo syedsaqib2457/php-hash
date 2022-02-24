@@ -13,10 +13,10 @@
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
-		file_put_contents('/usr/local/nodecompute/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh', $killProcessCommands);
-		shell_exec('sudo chmod +x /usr/local/nodecompute/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
-		shell_exec('cd /usr/local/nodecompute/ && sudo ./node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
-		unlink('/usr/local/nodecompute/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
+		file_put_contents('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh', $killProcessCommands);
+		shell_exec('sudo chmod +x /usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
+		shell_exec('cd /usr/local/cloud_node_automation_api/ && sudo ./node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
+		unlink('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
 		return;
 	}
 
@@ -36,7 +36,7 @@
 		_output($response);
 	}
 
-	$nodeSettingsData = file_get_contents('/usr/local/nodecompute/node_settings_data.json');
+	$nodeSettingsData = file_get_contents('/usr/local/cloud_node_automation_api/node_settings_data.json');
 	$nodeSettingsData = json_decode($nodeSettingsData, true);
 
 	if ($nodeSettingsData === false) {
@@ -168,14 +168,14 @@
 		);
 		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
 		
-		if (file_put_contents('/usr/local/nodecompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
+		if (file_put_contents('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
 			$response['message'] = 'Error adding binary file list commands, please try again.';
 			_output($response);
 		}
 
-		chmod('/usr/local/nodecompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh', 0755);
+		chmod('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_binary_file_list_commands.sh', 0755);
 		unset($binaryFile);
-		exec('cd /usr/local/nodecompute/ && sudo ./node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFile);
+		exec('cd /usr/local/cloud_node_automation_api/ && sudo ./node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -188,7 +188,7 @@
 		$parameters['binary_files'][$binary['name']] = $binaryFile;
 	}
 
-	unlink('/usr/local/nodecompute/node_action_' . $nodeAction . '_binary_file_list_commands.sh');
+	unlink('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_binary_file_list_commands.sh');
 
 	if (in_array($nodeAction, array(
 		'process_network_interface_ip_addresses',
@@ -213,14 +213,14 @@
 			_output($response);
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_list_system_settings_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=60 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=60 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 
-		if (file_exists('/usr/local/nodecompute/system_action_list_system_settings_response.json') === false) {
+		if (file_exists('/usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json') === false) {
 			$response['message'] = 'Error listing system settings, please try again.';
 			_output($response);
 		}
 
-		$systemSettingsResponse = file_get_contents('/usr/local/nodecompute/system_action_list_system_settings_response.json');
+		$systemSettingsResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json');
 		$systemSettingsResponse = json_decode($systemSettingsResponse, true);
 
 		if ($systemSettingsResponse === false) {
@@ -244,12 +244,12 @@
 
 	if (
 		(ctype_alnum($nodeAction) === false) ||
-		(file_exists('/usr/local/nodecompute/node_action_' . $nodeAction . '.php') === false)
+		(file_exists('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '.php') === false)
 	) {
 		$response['message'] = 'Invalid node endpoint request action, please try again.';
 		_output($response);
 	}
 
-	require_once('/usr/local/nodecompute/node_action_' . $nodeAction . '.php');
+	require_once('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '.php');
 	_output($response);
 ?>
