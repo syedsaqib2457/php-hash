@@ -59,7 +59,7 @@
 			}
 
 			$response['_connect'][$systemDatabase['table_name']] = array(
-				'connection' => mysqli_connect($systemDatabase['authentication_credential_address'], 'root', $systemDatabase['authentication_credential_password'], 'nodecompute'),
+				'connection' => mysqli_connect($systemDatabase['authentication_credential_address'], 'root', $systemDatabase['authentication_credential_password'], 'cloud_node_automation_api'),
 				'structure'=> array(
 					'table_name' => $systemDatabaseParameters['where']['table_name']
 				)
@@ -331,7 +331,7 @@
 		return true;
 	}
 
-	$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'nodecompute');
+	$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'cloud_node_automation_api');
 	$parameters['system_databases'] = array(
 		'system_database_columns' => array(
 			'connection' => $systemDatabaseConnection,
