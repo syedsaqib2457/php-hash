@@ -1,10 +1,11 @@
-`This is currently in a pre-release development phase and is likely to contain errors during development.`
-
-`Production systems shouldn't be deployed until version 1 is released with system update functionality from the API.`
+<br>
 
 ### Cloud Node Automation API
+___
 
 This is a free and open-source API to automate cloud firewalls.
+
+`This is a pre-release development API and shouldn't be deployed in production until version 1.00 is released.`
 
 ### Get Started
 
