@@ -4,9 +4,7 @@
 
 ### Cloud Node Automation API
 
-This is a free and open-source API to automate deployment, monitoring and scaling of cloud firewalls and network infrastructure.
-
-Complexity is removed for maximum performance, privacy and security with a custom [PHP framework](https://github.com/twexxor/cloud-node-automation-api/blob/main/system_databases.php).
+This is a free and open-source API to automate cloud firewalls.
 
 ### Get Started
 
