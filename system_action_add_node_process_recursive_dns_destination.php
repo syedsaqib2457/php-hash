@@ -3,10 +3,12 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_process_recursive_dns_destinations',
 		'nodes'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_process_recursive_dns_destinations'] = $systemDatabasesConnections['node_process_recursive_dns_destinations'];
+	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 	require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
 	require_once('/var/www/nodecompute/system_action_validate_port_number.php');
 
@@ -26,10 +28,10 @@
 			return $response;
 		}
 
-		if (in_array($parameters['data']['node_process_type'], array(
-			'http_proxy',
-			'socks_proxy'
-		)) === false) {
+		if (
+			(($parameters['data']['node_process_type'] === 'http_proxy') === false) &&
+			(($parameters['data']['node_process_type'] === 'socks_proxy') === false)
+		) {
 			$response['message'] = 'Invalid node process recursive DNS destination node process type, please try again.';
 			return $response;
 		}
@@ -145,7 +147,7 @@
 						)
 					));
 
-					if (($portNumberNodeProcessCount <= 0) === true) {
+					if (($portNumberNodeProcessCount === 1) === false) {
 						$response['message'] = 'Node process recursive DNS destination port number must have a matching recursive DNS node process port number, please try again.';
 						return $response;
 					}
