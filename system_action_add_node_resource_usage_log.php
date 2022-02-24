@@ -3,9 +3,10 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_resource_usage_logs'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_resource_usage_logs'] = $systemDatabasesConnections['node_resource_usage_logs'];
 
 	function _addNodeResourceUsageLog($parameters, $response) {
 		$parameters['data']['id'] = _createUniqueId();
