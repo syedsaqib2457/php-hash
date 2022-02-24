@@ -3,9 +3,10 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'node_users'
 	), $parameters['system_databases'], $response);
+	$parameters['system_databases']['node_users'] = $systemDatabasesConnections['node_users'];
 
 	function _addNodeUser($parameters, $response) {
 		if (isset($parameters['data']['authentication_strict_only_allowed_status']) === false) {
