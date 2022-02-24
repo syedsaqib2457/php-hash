@@ -91,7 +91,7 @@
 			}
 
 			if (empty($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersionNumber]) === false) {
-				$parameters['data'][$parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersionNumber] = _validateIpAddressVersionNumber($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersionNumber], $nodeIpAddressVersionNumber);
+				$parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersionNumber] = _validateIpAddressVersionNumber($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersionNumber], $nodeIpAddressVersionNumber);
 
 				if ($parameters['data']['destination_ip_address_version_' . $nodeIpAddressVersionNumber] === false) {
 					$response['message'] = 'Invalid node process recursive DNS destination destination IP address version ' . $nodeIpAddressVersionNumber . ', please try again.';
