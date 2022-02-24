@@ -9,8 +9,8 @@
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_reserved_internal_sources'] = $systemDatabasesConnections['node_reserved_internal_sources'];
 	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
-	require_once('/var/www/nodecompute/system_action_add_node_reserved_internal_destination.php');
-	require_once('/var/www/nodecompute/system_action_validate_ip_address_type.php');
+	require_once('/var/www/cloud_node_automation_api/system_action_add_node_reserved_internal_destination.php');
+	require_once('/var/www/cloud_node_automation_api/system_action_validate_ip_address_type.php');
 
 	function _addNode($parameters, $response) {
 		$parameters['data']['activated_status'] = $parameters['data']['deployed_status'] = '0';
