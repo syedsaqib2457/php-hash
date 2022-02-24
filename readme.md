@@ -5,7 +5,7 @@ ___
 
 This is a free and open-source API to automate cloud firewalls.
 
-`This is a pre-release development API and shouldn't be deployed in production until version 1.00 is released.`
+`This is a pre-release development version.`
 
 ### Get Started
 
