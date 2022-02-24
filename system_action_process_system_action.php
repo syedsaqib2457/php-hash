@@ -31,7 +31,7 @@
 		'valid_status' => '0'
 	);
 
-	if (file_exists('/var/www/nodecompute/system_action_' . $_SERVER['argv'][1] . '.php') === false) {
+	if (file_exists('/var/www/cloud_node_automation_api/system_action_' . $_SERVER['argv'][1] . '.php') === false) {
 		$response['message'] = 'Invalid system action, please try again.';
 	}
 
