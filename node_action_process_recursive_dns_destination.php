@@ -14,7 +14,7 @@
 		}
 
 		while (true) {
-			shell_exec('sudo cp /usr/local/nodecompute/resolv.conf /etc/resolv.conf');
+			shell_exec('sudo cp /usr/local/cloud_node_automation_api/resolv.conf /etc/resolv.conf');
 			usleep(200000);
 		}
 	}
