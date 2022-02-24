@@ -142,17 +142,17 @@
 
 			$firewallRules[] = '-A PREROUTING -i ' . $parameters['interface_name'] . ' -m set ! --match-set _ dst,src -j DROP';
 			$firewallRules[] = 'COMMIT';
-			unlink('/usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
-			touch('/usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
+			unlink('/usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
+			touch('/usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
 			$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 			foreach ($firewallRuleParts as $firewallRulePart) {
 				$firewallRulePart = implode("\n", $firewallRulePart);
-				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
+				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
 			}
 
-			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
-			unlink('/usr/local/nodecompute/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
+			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
+			unlink('/usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
 			sleep(1);
 		}
 
@@ -251,8 +251,8 @@
 			}
 		}
 
-		if (file_exists('/usr/local/nodecompute/system_action_process_node_current_response.json') === true) {
-			$systemActionProcessNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_current_response.json');
+		if (file_exists('/usr/local/cloud_node_automation_api/system_action_process_node_current_response.json') === true) {
+			$systemActionProcessNodeResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_process_node_current_response.json');
 			$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 			if (empty($systemActionProcessNodeResponse) === false) {
@@ -277,18 +277,18 @@
 			return $response;
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=600 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_process_node_next_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=600 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
 		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
 		unset($systemActionProcessNodeParameterData);
 
-		if (file_exists('/usr/local/nodecompute/system_action_process_node_next_response.json') === false) {
+		if (file_exists('/usr/local/cloud_node_automation_api/system_action_process_node_next_response.json') === false) {
 			$response['message'] = 'Error processing node, please try again.';
 			return $response;
 		}
 
-		$systemActionProcessNodeResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_next_response.json');
+		$systemActionProcessNodeResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_process_node_next_response.json');
 		$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
-		unlink('/usr/local/nodecompute/system_action_process_node_next_response.json');
+		unlink('/usr/local/cloud_node_automation_api/system_action_process_node_next_response.json');
 
 		if ($systemActionProcessNodeResponse === false) {
 			$response['message'] = 'Error processing node, please try again.';
@@ -459,7 +459,7 @@
 
 		$nodeActionProcessNetworkInterfaceIpAddressesCommands = implode("\n", $nodeActionProcessNetworkInterfaceIpAddressesCommands);
 
-		if (file_put_contents('/usr/local/nodecompute/node_action_process_network_interface_ip_addresses.php', $nodeActionProcessNetworkInterfaceIpAddressesCommands) === false) {
+		if (file_put_contents('/usr/local/cloud_node_automation_api/node_action_process_network_interface_ip_addresses.php', $nodeActionProcessNetworkInterfaceIpAddressesCommands) === false) {
 			$response['message'] = 'Error processing network interface IP addresses, please try again.';
 			return $response;
 		}
@@ -772,7 +772,7 @@
 
 		$nodeRecursiveDnsDestinations = implode("\n", $nodeRecursiveDnsDestinations);
 
-		if (file_put_contents('/usr/local/nodecompute/resolv.conf', $nodeRecursiveDnsDestinations) === false) {
+		if (file_put_contents('/usr/local/cloud_node_automation_api/resolv.conf', $nodeRecursiveDnsDestinations) === false) {
 			$response['message'] = 'Error adding node recursive DNS destinations, please try again.';
 			return $response;
 		}
@@ -1107,7 +1107,7 @@
 
 		if (
 			($encodedSystemActionProcessNodeResponse === false) ||
-			(file_put_contents('/usr/local/nodecompute/system_action_process_node_current_response.json', $encodedSystemActionProcessNodeResponse) === false)
+			(file_put_contents('/usr/local/cloud_node_automation_api/system_action_process_node_current_response.json', $encodedSystemActionProcessNodeResponse) === false)
 		) {
 			$response['message'] = 'Error processing node, please try again.';
 			return $response;
@@ -1119,7 +1119,7 @@
 
 		$systemActionProcessNodeParameters['data']['processing_status'] = '0';
 		_processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-		unlink('/usr/local/nodecompute/system_action_process_node_next_response.json');
+		unlink('/usr/local/cloud_node_automation_api/system_action_process_node_next_response.json');
 		unset($systemActionProcessNodeResponse['data']);
 		$response = $systemActionProcessNodeResponse;
 		return $response;
@@ -1152,10 +1152,10 @@
 		}
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_process_node_processing_status_' . $processId . '_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-			if (file_exists('/usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json') === true) {
-				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/nodecompute/system_action_process_node_processing_status_' . $processId . '_response.json');
+			if (file_exists('/usr/local/cloud_node_automation_api/system_action_process_node_processing_status_' . $processId . '_response.json') === true) {
+				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_process_node_processing_status_' . $processId . '_response.json');
 				$systemActionProcessNodeProcessingStatusResponse = json_decode($systemActionProcessNodeResponse, true);
 
 				if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
@@ -1183,11 +1183,11 @@
 					'http_proxy' => '-x',
 					'socks_proxy' => '--socks5-hostname'
 				);
-				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://nodecompute -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://cloud-node-automation-api -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 				$response = (empty($proxyNodeProcessResponse) === true);
 				break;
 			case 'recursive_dns':
-				exec($binaryFiles['dig'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 nodecompute @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+				exec($binaryFiles['dig'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 cloud-node-automation-api @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 				$response = (empty($recursiveDnsNodeProcessResponse) === false);
 				break;
 		}
