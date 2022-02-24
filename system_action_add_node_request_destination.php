@@ -7,7 +7,7 @@
 		'node_request_destinations'
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_request_destinations'] = $systemDatabasesConnections['node_request_destinations'];
-	require_once('/var/www/nodecompute/system_action_validate_hostname_address.php');
+	require_once('/var/www/cloud_node_automation_api/system_action_validate_hostname_address.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
 		if (empty($parameters['data']['address']) === true) {
