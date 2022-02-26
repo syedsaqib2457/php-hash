@@ -1,9 +1,9 @@
 <br>
 
-### Cloud Node Automation API
+### Firewall Security API
 ___
 
-This is a free and open-source API to automate cloud firewalls.
+This is a free and open-source API to secure firewalls.
 
 `This is a pre-release development version.`
 
