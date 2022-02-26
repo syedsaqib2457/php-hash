@@ -918,279 +918,279 @@
 				'responseCode',
 				'sourceIpAddress'
 			),
-			'node_process_node_user_resource_usage_logs' => array(
-				'bytes_received',
-				'bytes_sent',
-				'created_timestamp',
+			'nodeProcessNodeUserResourceUsageLogs' => array(
+				'bytesReceived',
+				'bytesSent',
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_user_id',
-				'request_count'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeUserId',
+				'requestCount'
 			),
-			'node_process_node_users' => array(
-				'created_timestamp',
+			'nodeProcessNodeUsers' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_user_authentication_strict_only_allowed_status',
-				'node_user_id',
-				'node_user_node_request_destinations_only_allowed_status',
-				'node_user_node_request_logs_allowed_status'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeUserAuthenticationStrictOnlyAllowedStatus',
+				'nodeUserId',
+				'nodeUserNodeRequestDestinationsOnlyAllowedStatus',
+				'nodeUserNodeRequestLogsAllowedStatus'
 			),
-			'node_process_recursive_dns_destinations' => array(
-				'created_timestamp',
-				'destination_ip_address_version_4',
-				'destination_ip_address_version_4_node_id',
-				'destination_ip_address_version_6',
-				'destination_ip_address_version_6_node_id',
+			'nodeProcessRecursiveDnsDestinations' => array(
+				'createdTimestamp',
+				'destinationIpAddressVersion4',
+				'destinationIpAddressVersion4NodeId',
+				'destinationIpAddressVersion6',
+				'destinationIpAddressVersion6NodeId',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'port_number_version_4',
-				'port_number_version_6',
-				'source_ip_address_version_4',
-				'source_ip_address_version_6'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'portNumberVersion4',
+				'portNumberVersion6',
+				'sourceIpAddressVersion4',
+				'sourceIpAddressVersion6'
 			),
-			'node_process_resource_usage_logs' => array(
-				'bytes_received',
-				'bytes_sent',
-				'cpu_percentage',
-				'created_timestamp',
+			'nodeProcessResourceUsageLogs' => array(
+				'bytesReceived',
+				'bytesSent',
+				'cpuPercentage',
+				'createdTimestamp',
 				'id',
-				'memory_percentage',
-				'modified_timestamp',
-				'node_id',
-				'node_process_type',
-				'request_count'
+				'memoryPercentage',
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeProcessType',
+				'requestCount'
 			),
-			'node_processes' => array(
-				'created_timestamp',
+			'nodeProcesses' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'port_number',
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'portNumber',
 				'type'
 			),
-			'node_request_destinations' => array(
+			'nodeRequestDestinations' => array(
 				'address',
-				'created_timestamp',
+				'createdTimestamp',
 				'id',
-				'modified_timestamp'
+				'modifiedTimestamp'
 			),
-			'node_request_limit_rules' => array(
-				'created_timestamp',
+			'nodeRequestLimitRules' => array(
+				'createdTimestamp',
 				'id',
-				'interval_minutes',
-				'modified_timestamp',
-				'request_count',
-				'request_count_interval_minutes'
+				'intervalMinutes',
+				'modifiedTimestamp',
+				'requestCount',
+				'requestCountIntervalMinutes'
 			),
-			'node_reserved_internal_destinations' => array(
-				'added_status',
-				'created_timestamp',
+			'nodeReservedInternalDestinations' => array(
+				'addedStatus',
+				'createdTimestamp',
 				'id',
-				'ip_address',
-				'ip_address_version_number',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'processed_status'
+				'ipAddress',
+				'ipAddressVersionNumber',
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'processedStatus'
 			),
-			'node_reserved_internal_sources' => array(
-				'created_timestamp',
+			'nodeReservedInternalSources' => array(
+				'createdTimestamp',
 				'id',
-				'ip_address',
-				'ip_address_block_length',
-				'ip_address_version_number',
-				'modified_timestamp',
-				'node_id'
+				'ipAddress',
+				'ipAddressBlockLength',
+				'ipAddressVersionNumber',
+				'modifiedTimestamp',
+				'nodeId'
 			),
-			'node_resource_usage_logs' => array(
-				'bytes_received',
-				'bytes_sent',
-				'cpu_capacity_megahertz',
-				'cpu_core_count',
-				'cpu_percentage',
-				'created_timestamp',
+			'nodeResourceUsageLogs' => array(
+				'bytesReceived',
+				'bytesSent',
+				'cpuCapacityMegahertz',
+				'cpuCoreCount',
+				'cpuPercentage',
+				'createdTimestamp',
 				'id',
-				'memory_capacity_megabytes',
-				'memory_percentage',
-				'modified_timestamp',
-				'node_id',
-				'request_count',
-				'storage_capacity_megabytes',
-				'storage_percentage'
+				'memoryCapacityMegabytes',
+				'memoryPercentage',
+				'modifiedTimestamp',
+				'nodeId',
+				'requestCount',
+				'storageCapacityMegabytes',
+				'storagePercentage'
 			),
-			'node_user_authentication_credentials' => array(
-				'created_timestamp',
+			'nodeUserAuthenticationCredentials' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_user_id',
+				'modifiedTimestamp',
+				'nodeUserId',
 				'password',
 				'username'
 			),
-			'node_user_authentication_sources' => array(
-				'created_timestamp',
+			'nodeUserAuthenticationSources' => array(
+				'createdTimestamp',
 				'id',
-				'ip_address',
-				'ip_address_block_length',
-				'ip_address_version_number',
-				'modified_timestamp',
-				'node_user_id'
+				'ipAddress',
+				'ipAddressBlockLength',
+				'ipAddressVersionNumber',
+				'modifiedTimestamp',
+				'nodeUserId'
 			),
-			'node_user_node_request_destinations' => array(
-				'created_timestamp',
+			'nodeUserNodeRequestDestinations' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_request_destination_address',
-				'node_request_destination_id',
-				'node_user_id'
+				'modifiedTimestamp',
+				'nodeRequestDestinationAddress',
+				'nodeRequestDestinationId',
+				'nodeUserId'
 			),
-			'node_user_node_request_limit_rules' => array(
-				'activated_status',
-				'created_timestamp',
-				'expired_timestamp',
+			'nodeUserNodeRequestLimitRules' => array(
+				'activatedStatus',
+				'createdTimestamp',
+				'expiredTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_request_destination_id',
-				'node_request_limit_rule_id',
-				'node_user_id'
+				'modifiedTimestamp',
+				'nodeRequestDestinationId',
+				'nodeRequestLimitRuleId',
+				'nodeUserId'
 			),
-			'node_users' => array(
-				'authentication_strict_only_allowed_status',
-				'created_timestamp',
+			'nodeUsers' => array(
+				'authenticationStrictOnlyAllowedStatus',
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_request_destinations_only_allowed_status',
-				'node_request_logs_allowed_status',
+				'modifiedTimestamp',
+				'nodeRequestDestinationsOnlyAllowedStatus',
+				'nodeRequestLogsAllowedStatus',
 				'tag'
 			),
 			'nodes' => array(
-				'activated_status',
-				'authentication_token',
-				'cpu_capacity_megahertz',
-				'cpu_core_count',
-				'created_timestamp',
-				'deployed_status',
-				'external_ip_address_version_4',
-				'external_ip_address_version_4_type',
-				'external_ip_address_version_6',
-				'external_ip_address_version_6_type',
+				'activatedStatus',
+				'authenticationToken',
+				'cpuCapacityMegahertz',
+				'cpuCoreCount',
+				'createdTimestamp',
+				'deployedStatus',
+				'externalIpAddressVersion4',
+				'externalIpAddressVersion4Type',
+				'externalIpAddressVersion6',
+				'externalIpAddressVersion6Type',
 				'id',
-				'internal_ip_address_version_4',
-				'internal_ip_address_version_4_type',
-				'internal_ip_address_version_6',
-				'internal_ip_address_version_6_type',
-				'memory_capacity_megabytes',
-				'modified_timestamp',
-				'node_id',
-				'processed_status',
-				'processing_progress_checkpoint',
-				'processing_progress_override_status',
-				'processing_progress_percentage',
-				'processing_status',
-				'storage_capacity_megabytes'
+				'internalIpAddressVersion4',
+				'internalIpAddressVersion4Type',
+				'internalIpAddressVersion6',
+				'internalIpAddressVersion6Type',
+				'memoryCapacityMegabytes',
+				'modifiedTimestamp',
+				'nodeId',
+				'processedStatus',
+				'processingProgressCheckpoint',
+				'processingProgressOverrideStatus',
+				'processingProgressPercentage',
+				'processingStatus',
+				'storageCapacityMegabytes'
 			),
-			'system_database_columns' => array(
-				'created_timestamp',
+			'systemDatabaseColumns' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'name',
-				'system_database_id'
+				'key',
+				'modifiedTimestamp',
+				'systemDatabaseId'
 			),
-			'system_databases' => array(
-				'authentication_credential_address',
-				'authentication_credential_password',
-				'created_timestamp',
+			'systemDatabases' => array(
+				'authenticationCredentialAddress',
+				'authenticationCredentialPassword',
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'table_name',
+				'modifiedTimestamp',
+				'tableKey',
 				'tag'
 			),
-			'system_request_logs' => array(
-				'bytes_received',
-				'bytes_sent',
-				'created_timestamp',
+			'systemRequestLogs' => array(
+				'bytesReceived',
+				'bytesSent',
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'response_authenticated_status',
-				'response_data',
-				'response_message',
-				'response_valid_status',
-				'source_ip_address',
-				'system_action',
-				'system_user_authentication_token_id',
-				'system_user_id',
+				'modifiedTimestamp',
+				'nodeId',
+				'responseAuthenticatedStatus',
+				'responseData',
+				'responseMessage',
+				'responseValidStatus',
+				'sourceIpAddress',
+				'systemAction',
+				'systemUserAuthenticationTokenId',
+				'systemUserId',
 				'value'
 			),
-			'system_resource_usage_logs' => array(
-				'bytes_received',
-				'bytes_sent',
-				'cpu_capacity_megahertz',
-				'cpu_core_count',
-				'cpu_percentage',
-				'created_timestamp',
-				'destination_ip_address',
+			'systemResourceUsageLogs' => array(
+				'bytesReceived',
+				'bytesSent',
+				'cpuCapacity_megahertz',
+				'cpuCoreCount',
+				'cpuPercentage',
+				'createdTimestamp',
+				'destinationIpAddress',
 				'id',
-				'memory_capacity_megabytes',
-				'memory_percentage',
-				'modified_timestamp',
-				'storage_capacity_megabytes',
-				'storage_percentage'
+				'memoryCapacityMegabytes',
+				'memoryPercentage',
+				'modifiedTimestamp',
+				'storageCapacityMegabytes',
+				'storagePercentage'
 			),
-			'system_settings' => array(
-				'created_timestamp',
+			'systemSettings' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
+				'modifiedTimestamp',
 				'name',
 				'value'
 			),
-			'system_user_authentication_token_scopes' => array(
-				'created_timestamp',
+			'systemUserAuthenticationTokenScopes' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'system_action',
-				'system_user_authentication_token_id',
-				'system_user_id'
+				'modifiedTimestamp',
+				'systemAction',
+				'systemUserAuthenticationTokenId',
+				'systemUserId'
 			),
-			'system_user_authentication_token_sources' => array(
-				'created_timestamp',
+			'systemUserAuthenticationTokenSources' => array(
+				'createdTimestamp',
 				'id',
-				'ip_address_range_start',
-				'ip_address_range_stop',
-				'ip_address_range_version_number',
-				'modified_timestamp',
-				'system_user_authentication_token_id',
-				'system_user_id'
+				'ipAddressRangeStart',
+				'ipAddressRangeStop',
+				'ipAddressRangeVersionNumber',
+				'modifiedTimestamp',
+				'systemUserAuthenticationTokenId',
+				'systemUserId'
 			),
-			'system_user_authentication_tokens' => array(
-				'created_timestamp',
+			'systemUserAuthenticationTokens' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'system_user_id',
+				'modifiedTimestamp',
+				'systemUserId',
 				'value'
 			),
-			'system_user_system_users' => array(
-				'created_timestamp',
+			'systemUserSystemUsers' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'system_user_id',
-				'system_user_system_user_id'
+				'modifiedTimestamp',
+				'systemUserId',
+				'systemUserSystemUserId'
 			),
-			'system_users' => array(
-				'created_timestamp',
+			'systemUsers' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'system_user_id'
+				'modifiedTimestamp',
+				'systemUserId'
 			)
 		);
 		$systemDatabaseCommands = array();
