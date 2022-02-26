@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	require_once('/var/www/cloud_node_automation_api/system_action_validate_ip_address_version_number.php');
+	require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
 
 	function _validateHostnameAddress($hostnameAddress, $allowIpAddress = false) {
 		$ipAddressVersionNumbers = array(
