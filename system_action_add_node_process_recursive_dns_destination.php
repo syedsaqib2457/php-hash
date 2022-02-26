@@ -5,9 +5,11 @@
 
 	$systemDatabasesConnections = _connect(array(
 		'node_process_recursive_dns_destinations',
+		'node_processes',
 		'nodes'
 	), $parameters['system_databases'], $response);
 	$parameters['system_databases']['node_process_recursive_dns_destinations'] = $systemDatabasesConnections['node_process_recursive_dns_destinations'];
+	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
 	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
 	require_once('/var/www/cloud_node_automation_api/system_action_validate_ip_address_type.php');
 	require_once('/var/www/cloud_node_automation_api/system_action_validate_port_number.php');
