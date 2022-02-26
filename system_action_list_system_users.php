@@ -3,40 +3,42 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
-		'system_user_system_users',
-		'system_users'
-	), $parameters['system_databases'], $response);
+	$systemDatabasesConnections = _connect(array(
+		'systemUserSystemUsers',
+		'systemUsers'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
+	$parameters['systemDatabases']['systemUsers'] = $systemDatabasesConnections['systemUsers'];
 
 	function _listSystemUsers($parameters, $response) {
-		if (empty($parameters['system_user_authentication_token']) === true) {
+		if (empty($parameters['systemUserAuthenticationToken']) === true) {
 			return $response;
 		}
 
-		if (empty($parameters['pagination']['results_page_number']) === true) {
-			$parameters['pagination']['results_page_number'] = 1;
+		if (empty($parameters['pagination']['resultsPageNumber']) === true) {
+			$parameters['pagination']['resultsPageNumber'] = 1;
 		}
 
-		if (empty($parameters['pagination']['results_per_page_count']) === true) {
-			$parameters['pagination']['results_per_page_count'] = 100;
+		if (empty($parameters['pagination']['resultsPerPageCount']) === true) {
+			$parameters['pagination']['resultsPerPageCount'] = 100;
 		}
 
 		if (empty($parameters['where']['id']) === true) {
 			$systemUserSystemUsers =  = _list(array(
 				'data' => array(
-					'system_user_id'
+					'systemUserId'
 				),
-				'in' => $parameters['system_databases']['system_user_system_users'],
+				'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
 				'where' => array(
 					'either' => array(
-						'system_user_id' => $parameters['system_user_id'],
-						'system_user_system_user_id' => $parameters['system_user_id']
+						'systemUserId' => $parameters['systemUserId'],
+						'systemUserSystemUserId' => $parameters['systemUserId']
 					)
 				)
 			), $response);
 
 			foreach ($systemUserSystemUsers as $systemUserSystemUser) {
-				$parameters['where']['id'][] = $systemUserSystemUser['system_user_id'];
+				$parameters['where']['id'][] = $systemUserSystemUser['systemUserId'];
 			}
 		} else {
 			if (is_array($parameters['where']['id']) === false) {
@@ -45,10 +47,10 @@
 
 			foreach ($parameters['where']['id'] as $systemUserId) {
 				$systemUserSystemUserCount = _count(array(
-					'in' => $parameters['system_databases']['system_user_system_users'],
+					'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
 					'where' => array(
-						'system_user_id' => $systemUserId,
-						'system_user_system_user_id' => $parameters['system_user_id']
+						'systemUserId' => $systemUserId,
+						'systemUserSystemUserId' => $parameters['systemUserId']
 					)
 				), $response);
 
@@ -59,15 +61,15 @@
 			}
 		}
 
-		$parameters['pagination']['results_total_count'] = _count(array(
-			'in' => $parameters['system_databases']['system_users'],
+		$parameters['pagination']['resultsTotalCount'] = _count(array(
+			'in' => $parameters['systemDatabases']['systemUsers'],
 			'where' => $parameters['where']
 		), $response);
 		$systemUsers = _list(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['system_users'],
-			'limit' => $parameters['pagination']['results_per_page_count'],
-			'offset' => (($parameters['pagination']['results_page_number'] - 1) * $parameters['pagination']['results_per_page_count']),
+			'in' => $parameters['systemDatabases']['systemUsers'],
+			'limit' => $parameters['pagination']['resultsPerPageCount'],
+			'offset' => (($parameters['pagination']['resultsPageNumber'] - 1) * $parameters['pagination']['resultsPerPageCount']),
 			'sort' => $parameters['sort'],
 			'where' => $parameters['where']
 		), $response);
@@ -78,7 +80,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list_system_users') === true) {
+	if (($parameters['action'] === 'list-system-users') === true) {
 		$response = _listSystemUsers($parameters, $response);
 	}
 ?>
