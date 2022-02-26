@@ -16,18 +16,18 @@
 
 			$systemDatabaseParameters = array(
 				'data' => array(
-					'authentication_credential_address',
-					'authentication_credential_password',
+					'authenticationCredentialAddress',
+					'authenticationCredentialPassword',
 					'id',
-					'table_name'
+					'tableKey'
 				),
-				'in' => $existingSystemDatabases['system_databases'],
+				'in' => $existingSystemDatabases['systemDatabases'],
 				'limit' => 1,
 				'sort' => array(
-					'created_timestamp' => 'descending'
+					'createdTimestamp' => 'descending'
 				),
 				'where' => array(
-					'table_name' => $systemDatabase
+					'tableKey' => $systemDatabase
 				)
 			);
 
@@ -44,7 +44,7 @@
 				}
 
 				$systemDatabaseParameters['where'] = array(
-					'table_name' => $systemDatabaseParts[0],
+					'tableKey' => $systemDatabaseParts[0],
 					'tag' => $systemDatabaseParts[1]
 				);
 			}
@@ -53,42 +53,42 @@
 			$systemDatabase = current($systemDatabase);
 
 			if (empty($systemDatabase) === true) {
-				$response['message'] = 'Invalid system database ' . $systemDatabase['table_name'] . ', please try again.';
+				$response['message'] = 'Invalid system database ' . $systemDatabase['tableKey'] . ', please try again.';
 				unset($response['_connect']);
 				_output($parameters, $response);
 			}
 
-			$response['_connect'][$systemDatabase['table_name']] = array(
-				'connection' => mysqli_connect($systemDatabase['authentication_credential_address'], 'root', $systemDatabase['authentication_credential_password'], 'cloud_node_automation_api'),
+			$response['_connect'][$systemDatabase['tableKey']] = array(
+				'connection' => mysqli_connect($systemDatabase['authenticationCredentialAddress'], 'root', $systemDatabase['authenticationCredentialPassword'], 'firewallSecurityApi'),
 				'structure'=> array(
-					'table_name' => $systemDatabaseParameters['where']['table_name']
+					'tableKey' => $systemDatabaseParameters['where']['tableKey']
 				)
 			);
 
-			if ($response['_connect'][$systemDatabase['table_name']]['connection'] === false) {
-				$response['message'] = 'Error connecting to ' . $systemDatabase['table_name'] . ' system database, please try again.';
+			if ($response['_connect'][$systemDatabase['tableKey']]['connection'] === false) {
+				$response['message'] = 'Error connecting to ' . $systemDatabase['tableKey'] . ' system database, please try again.';
 				unset($response['connect']);
 				_output($parameters, $response);
 			}
 
 			$systemDatabaseColumns = _list(array(
 				'data' => array(
-					'name'
+					'key'
 				),
-				'in' => $existingSystemDatabases['system_database_columns'],
+				'in' => $existingSystemDatabases['systemDatabaseColumns'],
 				'where' => array(
-					'system_database_id' => $systemDatabase['id']
+					'systemDatabaseId' => $systemDatabase['id']
 				)
 			), $response);
 
 			if (empty($systemDatabaseColumns) === true) {
-				$response['message'] = 'Invalid system database columns in ' . $systemDatabase['table_name'] . ' system database, please try again.';
+				$response['message'] = 'Error listing system database columns in ' . $systemDatabase['table_name'] . ' system database, please try again.';
 				unset($response['_connect']);
 				_output($parameters, $response);
 			}
 
 			foreach ($systemDatabaseColumns as $systemDatabaseColumn) {
-				$response['_connect'][$systemDatabase['table_name']]['structure']['column_names'][] = [$systemDatabaseColumn['name']];
+				$response['_connect'][$systemDatabase['table_name']]['structure']['column_keys'][] = [$systemDatabaseColumn['key']];
 			}
 		}
 
@@ -96,7 +96,7 @@
 	}
 
 	function _count($parameters, $response) {
-		$systemDatabaseCountCommand = 'SELECT COUNT(id) FROM ' . $parameters['in']['structure']['table_name'];
+		$systemDatabaseCountCommand = 'SELECT COUNT(id) FROM ' . $parameters['in']['structure']['tableKey'];
 
 		if (empty($parameters['where']) === false) {
 			$systemDatabaseCountCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
@@ -105,7 +105,7 @@
 		$systemDatabaseCountRows = mysqli_query($parameters['in']['connection'], $systemDatabaseCountCommand);
 
 		if ($systemDatabaseCountRows === false) {
-			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
+			$response['message'] = 'Error counting data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
 			_output($parameters, $response);
 		}
 
@@ -116,14 +116,14 @@
 	}
 
 	function _delete($parameters, $response) {
-		$systemDatabaseDeleteCommand = 'DELETE FROM ' . $parameters['in']['structure']['table_name'];
+		$systemDatabaseDeleteCommand = 'DELETE FROM ' . $parameters['in']['structure']['tableKey'];
 
 		if (empty($parameters['where']) === false) {
 			$systemDatabaseDeleteCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
 		}
 
 		if (mysqli_query($parameters['in']['connection'], $systemDatabaseDeleteCommand) === false) {
-			$response['message'] = 'Error deleting data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
+			$response['message'] = 'Error deleting data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
 			_output($parameters, $response);
 		}
 
@@ -132,10 +132,10 @@
 
 	function _edit($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			$systemDatabaseUpdateCommand = 'UPDATE ' . $parameters['in']['table_name'] . ' SET ';
+			$systemDatabaseUpdateCommand = 'UPDATE ' . $parameters['in']['tableKey'] . ' SET ';
 
-			if (isset($parameters['data']['modified']) === false) {
-				$parameters['data']['modified'] = time();
+			if (isset($parameters['data']['modifiedTimestamp']) === false) {
+				$parameters['data']['modifiedTimestamp'] = time();
 			}
 
 			foreach ($parameters['data'] as $updateValueKey => $updateValue) {
@@ -151,7 +151,7 @@
 			$systemDatabaseUpdateCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseUpdateCommand);
 
 			if ($systemDatabaseUpdateCommandResponse === false) {
-				$response['message'] = 'Error editing data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
+				$response['message'] = 'Error editing data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
 				_output($parameters, $response);
 			}
 		}
@@ -166,7 +166,7 @@
 			);
 		}
 
-		$systemDatabaseListCommand = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['table_name'];
+		$systemDatabaseListCommand = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['tableKey'];
 
 		if (empty($parameters['where']) === false) {
 			$systemDatabaseListCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
@@ -178,9 +178,9 @@
 			if ($parameters['sort'] === 'random') {
 				$systemDatabaseListCommand .= 'RAND()';
 			} else {
-				foreach ($parameters['sort'] as $systemDatabaseListSortColumnName => $systemDatabaseListSortOrder) {
+				foreach ($parameters['sort'] as $systemDatabaseListSortColumnKey => $systemDatabaseListSortOrder) {
 					$systemDatabaseListSortOrder = str_replace('ending', '', $systemDatabaseListSortOrder);
-					$systemDatabaseListCommand .= $systemDatabaseListSortColumnName . ' ' . strtoupper($systemDatabaseListSortOrder) . ',';
+					$systemDatabaseListCommand .= $systemDatabaseListSortColumnKey . ' ' . strtoupper($systemDatabaseListSortOrder) . ',';
 				}
 
 				$systemDatabaseListCommand = rtrim($systemDatabaseListCommand, ',');
@@ -198,7 +198,7 @@
 		$systemDatabaseListRows = mysqli_query($parameters['in']['connection'], $systemDatabaseListCommand);
 
 		if ($systemDatabaseListRows === false) {
-			$response['message'] = 'Error listing data rows in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
+			$response['message'] = 'Error listing data rows in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
 			_output($parameters, $response);
 		}
 
@@ -271,7 +271,8 @@
 							$whereConditionValueCondition = 'NOT ' . $whereConditionValueCondition;
 						}
 
-						$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueCondition . " ('" . implode("','", str_replace("'", "\'", $whereConditionValue)) . "')";
+						$whereConditionValue = str_replace("'", "\'", $whereConditionValue);
+						$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueCondition . " ('" . implode("','", $whereConditionValue) . "')";
 					}
 				}
 
@@ -306,23 +307,23 @@
 				}
 
 				if (empty($systemDatabaseColumns['created_timestamp']) === true) {
-					$systemDatabaseInsertColumnNames .= ',created_timestamp';
+					$systemDatabaseInsertColumnNames .= ',createdTimestamp';
 					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
-					$systemDatabaseUpdateColumnValues .= ",created_timestamp='" . $timestamp . "'";
+					$systemDatabaseUpdateColumnValues .= ",createdTimestamp='" . $timestamp . "'";
 				}
 
 				if (empty($systemDatabaseColumns['modified_timestamp']) === true) {
-					$systemDatabaseInsertColumnNames .= ',modified_timestamp';
+					$systemDatabaseInsertColumnNames .= ',modifiedTimestamp';
 					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
-					$systemDatabaseUpdateColumnValues .= ",modified_timestamp='" . $timestamp . "'";
+					$systemDatabaseUpdateColumnValues .= ",modifiedTimestamp='" . $timestamp . "'";
 				}
 
 				$systemDatabaseInsertColumnNames = substr($systemDatabaseInsertColumnNames, 1);
 				$systemDatabaseInsertColumnValues = substr($systemDatabaseInsertColumnValues, 2);
 				$systemDatabaseUpdateColumnValues = ' ON DUPLICATE KEY UPDATE ' . substr($systemDatabaseUpdateColumnValues, 1);
 
-				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['table_name'] . '(' . $systemDatabaseInsertColumnNames . ") VALUES (" . $systemDatabaseInsertColumnValues . "')" . $systemDatabaseUpdateColumnValues) === false) {
-					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['table_name'] . ' system database, please try again.';
+				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['tableKey'] . '(' . $systemDatabaseInsertColumnNames . ") VALUES (" . $systemDatabaseInsertColumnValues . "')" . $systemDatabaseUpdateColumnValues) === false) {
+					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
 					_output($parameters, $response);
 				}
 			}
@@ -331,34 +332,34 @@
 		return true;
 	}
 
-	$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'cloud_node_automation_api');
-	$parameters['system_databases'] = array(
-		'system_database_columns' => array(
+	$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'firewallSecurityApi');
+	$parameters['systemDatabases'] = array(
+		'systemDatabaseColumns' => array(
 			'connection' => $systemDatabaseConnection,
 			'structure' => array(
-				'column_names' => array(
-					'created_timestamp',
+				'columnKeys' => array(
+					'createdTimestamp',
 					'id',
-					'modified_timestamp',
+					'modifiedTimestamp',
 					'name',
-					'system_database_id'
+					'systemDatabaseId'
 				),
-				'table_name' => 'system_database_columns'
+				'table_name' => 'systemDatabaseColumns'
 			)
 		),
-		'system_databases' => array(
+		'systemDatabases' => array(
 			'connection' => $systemDatabaseConnection,
 			'structure' => array(
-				'column_names' => array(
-					'authentication_credential_address',
-					'authentication_credential_password',
-					'created_timestamp',
+				'columnKeys' => array(
+					'authenticationCredentialAddress',
+					'authenticationCredentialPassword',
+					'createdTimestamp',
 					'id',
-					'modified_timestamp',
-					'table_name',
+					'modifiedTimestamp',
+					'tableKey',
 					'tag'
 				),
-				'table_name' => 'system_databases'
+				'tableKey' => 'system_databases'
 			)
 		)
 	);
@@ -369,17 +370,17 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'system_request_logs',
-		'system_settings',
-		'system_user_authentication_token_scopes',
-		'system_user_authentication_token_sources',
-		'system_user_authentication_tokens',
-		'system_users'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['system_request_logs'] = $systemDatabasesConnections['system_request_logs'];
-	$parameters['system_databases']['system_settings'] = $systemDatabasesConnections['system_settings'];
-	$parameters['system_databases']['system_user_authentication_token_scopes'] = $systemDatabasesConnections['system_user_authentication_token_scopes'];
-	$parameters['system_databases']['system_user_authentication_token_sources'] = $systemDatabasesConnections['system_user_authentication_token_sources'];
-	$parameters['system_databases']['system_user_authentication_tokens'] = $systemDatabasesConnections['system_user_authentication_tokens'];
-	$parameters['system_databases']['system_users'] = $systemDatabasesConnections['system_users'];
+		'systemRequestLogs',
+		'systemSettings',
+		'systemUserAuthenticationTokenScopes',
+		'systemUserAuthenticationTokenSources',
+		'systemUserAuthenticationTokens',
+		'systemUsers'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['systemRequestLogs'] = $systemDatabasesConnections['systemRequestLogs'];
+	$parameters['systemDatabases']['systemSettings'] = $systemDatabasesConnections['systemSettings'];
+	$parameters['systemDatabases']['systemUserAuthenticationTokenScopes'] = $systemDatabasesConnections['systemUserAuthenticationTokenScopes'];
+	$parameters['systemDatabases']['systemUserAuthenticationTokenSources'] = $systemDatabasesConnections['systemUserAuthenticationTokenSources'];
+	$parameters['systemDatabases']['systemUserAuthenticationTokens'] = $systemDatabasesConnections['systemUserAuthenticationTokens'];
+	$parameters['systemDatabases']['systemUsers'] = $systemDatabasesConnections['systemUsers'];
 ?>
