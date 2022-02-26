@@ -1,13 +1,9 @@
 <?php
 	function _createUniqueId() {
 		$uniqueId = hrtime(true);
-		$uniqueId = substr($uniqueId, 6, 10) . (microtime(true) * 10000);
-		$uniqueIdCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-
-		while (isset($uniqueId[29]) === false) {
-			$uniqueId .= $uniqueIdCharacters[mt_rand(0, 35)];
-		}
-
+		$uniqueId = substr($uniqueId, -10);
+		$uniqueId = sprintf('%010s', $uniqueId);
+		$uniqueId .= (microtime(true) * 10000) . mt_rand(100000, 999999);
 		return $uniqueId;
 	}
 
