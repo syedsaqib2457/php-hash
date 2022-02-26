@@ -148,7 +148,7 @@
 					), $response);
 
 					if (($portNumberNodeProcessCount === 1) === false) {
-						$response['message'] = 'Node process recursive DNS destination port number must have a matching recursive DNS node process port number, please try again.';
+						$response['message'] = 'Node process recursive DNS destination port number version ' . $nodeIpAddressVersionNumber . ' must have a matching recursive DNS node process port number, please try again.';
 						return $response;
 					}
 				}
