@@ -617,130 +617,130 @@
 		$nodeReservedInternalSources = array(
 			'4' => array(
 				array(
-					'ip_address' => '0.0.0.0',
-					'ip_address_block_length' => '8'
+					'ipAddress' => '0.0.0.0',
+					'ipAddressBlockLength' => '8'
 				),
 				array(
-					'ip_address' => '10.0.0.0',
-					'ip_address_block_length' => '8'
+					'ipAddress' => '10.0.0.0',
+					'ipAddressBlockLength' => '8'
 				),
 				array(
-					'ip_address' => '100.64.0.0',
-					'ip_address_block_length' => '10'
+					'ipAddress' => '100.64.0.0',
+					'ipAddressBlockLength' => '10'
 				),
 				array(
-					'ip_address' => '127.0.0.0',
-					'ip_address_block_length' => '8'
+					'ipAddress' => '127.0.0.0',
+					'ipAddressBlockLength' => '8'
 				),
 				array(
-					'ip_address' => '169.254.0.0',
-					'ip_address_block_length' => '16'
+					'ipAddress' => '169.254.0.0',
+					'ipAddressBlockLength' => '16'
 				),
 				array(
-					'ip_address' => '172.16.0.0',
-					'ip_address_block_length' => '12'
+					'ipAddress' => '172.16.0.0',
+					'ipAddressBlockLength' => '12'
 				),
 				array(
-					'ip_address' => '192.0.0.0',
-					'ip_address_block_length' => '24'
+					'ipAddress' => '192.0.0.0',
+					'ipAddressBlockLength' => '24'
 				),
 				array(
-					'ip_address' => '192.0.2.0',
-					'ip_address_block_length' => '24'
+					'ipAddress' => '192.0.2.0',
+					'ipAddressBlockLength' => '24'
 				),
 				array(
-					'ip_address' => '192.88.99.0',
-					'ip_address_block_length' => '24'
+					'ipAddress' => '192.88.99.0',
+					'ipAddressBlockLength' => '24'
 				),
 				array(
-					'ip_address' => '192.168.0.0',
-					'ip_address_block_length' => '16'
+					'ipAddress' => '192.168.0.0',
+					'ipAddressBlockLength' => '16'
 				),
 				array(
-					'ip_address' => '198.18.0.0',
-					'ip_address_block_length' => '15'
+					'ipAddress' => '198.18.0.0',
+					'ipAddressBlockLength' => '15'
 				),
 				array(
-					'ip_address' => '198.51.100.0',
-					'ip_address_block_length' => '24'
+					'ipAddress' => '198.51.100.0',
+					'ipAddressBlockLength' => '24'
 				),
 				array(
-					'ip_address' => '203.0.113.0',
-					'ip_address_block_length' => '24'
+					'ipAddress' => '203.0.113.0',
+					'ipAddressBlockLength' => '24'
 				),
 				array(
-					'ip_address' => '224.0.0.0',
-					'ip_address_block_length' => '4'
+					'ipAddress' => '224.0.0.0',
+					'ipAddressBlockLength' => '4'
 				),
 				array(
-					'ip_address' => '233.252.0.0',
-					'ip_address_block_length' => '24'
+					'ipAddress' => '233.252.0.0',
+					'ipAddressBlockLength' => '24'
 				),
 				array(
-					'ip_address' => '240.0.0.0',
-					'ip_address_block_length' => '4'
+					'ipAddress' => '240.0.0.0',
+					'ipAddressBlockLength' => '4'
 				),
 				array(
-					'ip_address' => '255.255.255.255',
-					'ip_address_block_length' => '32'
+					'ipAddress' => '255.255.255.255',
+					'ipAddressBlockLength' => '32'
 				)
 			),
 			'6' => array(
 				array(
-					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '128'
+					'ipAddress' => '0000:0000:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '128'
 				),
 				array(
-					'ip_address' => '0000:0000:0000:0000:0000:0000:0000:0001',
-					'ip_address_block_length' => '128'
+					'ipAddress' => '0000:0000:0000:0000:0000:0000:0000:0001',
+					'ipAddressBlockLength' => '128'
 				),
 				array(
-					'ip_address' => '0000:0000:0000:0000:0000:ffff:0000:0000',
-					'ip_address_block_length' => '96'
+					'ipAddress' => '0000:0000:0000:0000:0000:ffff:0000:0000',
+					'ipAddressBlockLength' => '96'
 				),
 				array(
-					'ip_address' => '0000:0000:0000:0000:ffff:0000:0000:0000',
-					'ip_address_block_length' => '96'
+					'ipAddress' => '0000:0000:0000:0000:ffff:0000:0000:0000',
+					'ipAddressBlockLength' => '96'
 				),
 				array(
-					'ip_address' => '0064:ff9b:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '96'
+					'ipAddress' => '0064:ff9b:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '96'
 				),
 				array(
-					'ip_address' => '0064:ff9b:0001:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '48'
+					'ipAddress' => '0064:ff9b:0001:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '48'
 				),
 				array(
-					'ip_address' => '0100:0000:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '64'
+					'ipAddress' => '0100:0000:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '64'
 				),
 				array(
-					'ip_address' => '2001:0000:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '32'
+					'ipAddress' => '2001:0000:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '32'
 				),
 				array(
-					'ip_address' => '2001:0020:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '28'
+					'ipAddress' => '2001:0020:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '28'
 				),
 				array(
-					'ip_address' => '2001:0db8:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '32'
+					'ipAddress' => '2001:0db8:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '32'
 				),
 				array(
-					'ip_address' => '2002:0000:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '16'
+					'ipAddress' => '2002:0000:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '16'
 				),
 				array(
-					'ip_address' => 'fc00:0000:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '7'
+					'ipAddress' => 'fc00:0000:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '7'
 				),
 				array(
-					'ip_address' => 'fe80:0000:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '10'
+					'ipAddress' => 'fe80:0000:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '10'
 				),
 				array(
-					'ip_address' => 'ff00:0000:0000:0000:0000:0000:0000:0000',
-					'ip_address_block_length' => '8'
+					'ipAddress' => 'ff00:0000:0000:0000:0000:0000:0000:0000',
+					'ipAddressBlockLength' => '8'
 				)
 			)
 		);
@@ -750,13 +750,13 @@
 		);
 		$gcloudBinaryFileListCommands = implode("\n", $gcloudBinaryFileListCommands);
 
-		if (file_put_contents('/var/www/cloud_node_automation_api/system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFileListCommands) === false) {
+		if (file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-gcloud-binary-file-list-commands.sh', $gcloudBinaryFileListCommands) === false) {
 			echo 'Error adding gcloud binary file list commands, please try again.' . "\n";
 			exit;
 		}
 
-		chmod('/var/www/cloud_node_automation_api/system_action_deploy_system_gcloud_binary_file_list_commands.sh', 0755);
-		exec('cd /var/www/cloud_node_automation_api/ && sudo ./system_action_deploy_system_gcloud_binary_file_list_commands.sh', $gcloudBinaryFile);
+		chmod('/var/www/firewall-security-api/system-action-deploy-system-gcloud-binary-file-list-commands.sh', 0755);
+		exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-gcloud-binary-file-list-commands.sh', $gcloudBinaryFile);
 		$gcloudBinaryFile = current($gcloudBinaryFile);
 
 		if (empty($gcloudBinaryFile) === false) {
@@ -788,21 +788,21 @@
 			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 
 			foreach ($nodeReservedInternalSources[$ipAddressVersionNumber] as $nodeReservedInternalSource) {
-				$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource['ip_address'] . '/' . $nodeReservedInternalSource['ip_address_block_length'] . ' -j DROP';
+				$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource['ipAddress'] . '/' . $nodeReservedInternalSource['ipAddressBlockLength'] . ' -j DROP';
 			}
 
 			$firewallRules[] = 'COMMIT';
-			unlink('/var/www/cloud_node_automation_api/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
-			touch('/var/www/cloud_node_automation_api/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+			unlink('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
+			touch('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
 			$firewallRuleParts = array_chunk($firewallRules, 1000);
 
 			foreach ($firewallRuleParts as $firewallRulePart) {
 				$firewallRulePart = implode("\n", $firewallRulePart);
-				shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/cloud_node_automation_api/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+				shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/firewall-security-api/firewall-ip-aaddress-version-' . $ipAddressVersionNumber . '.dat');
 			}
 
-			shell_exec('sudo ' . $firewallBinaryFiles[$ipAddressVersionNumber] . ' < /var/www/cloud_node_automation_api/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
-			unlink('/var/www/cloud_node_automation_api/firewall_ip_address_version_' . $ipAddressVersionNumber . '.txt');
+			shell_exec('sudo ' . $firewallBinaryFiles[$ipAddressVersionNumber] . ' < /var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
+			unlink('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.txt');
 			sleep(1);
 		}
 	} else {
@@ -813,12 +813,12 @@
 			exit;
 		}
 
-		if (mysqli_query($systemDatabaseConnection, 'CREATE DATABASE IF NOT EXISTS `cloud_node_automation_api` CHARSET UTF8') === false) {
+		if (mysqli_query($systemDatabaseConnection, 'CREATE DATABASE IF NOT EXISTS `firewallSecurityApi` CHARSET UTF8') === false) {
 			echo 'Error creating system database, please try again.' . "\n";
 			exit;
 		}
 
-		$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'cloud_node_automation_api');
+		$systemDatabaseConnection = mysqli_connect('localhost', 'root', 'password', 'firewallSecurityApi');
 
 		if ($systemDatabaseConnection === false) {
 			echo 'Error connecting to system database, please try again.' . "\n";
@@ -826,97 +826,97 @@
 		}
 
 		$systemDatabases = array(
-			'node_process_forwarding_destinations' => array(
-				'address_version_4',
-				'address_version_4_node_id',
-				'address_version_6',
-				'address_version_6_node_id',
-				'created_timestamp',
+			'nodeProcessForwardingDestinations' => array(
+				'addressVersion4',
+				'addressVersion4NodeId',
+				'addressVersion6',
+				'addressVersion6NodeId',
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'port_number_version_4',
-				'port_number_version_6'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'portNumberVersion4',
+				'portNumberVersion6'
 			),
-			'node_process_node_user_authentication_credentials' => array(
-				'created_timestamp',
+			'nodeProcessNodeUserAuthenticationCredentials' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_user_authentication_credential_id',
-				'node_user_authentication_credential_password',
-				'node_user_authentication_credential_username',
-				'node_user_id'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeUserAuthenticationCredentialId',
+				'nodeUserAuthenticationCredentialPassword',
+				'nodeUserAuthenticationCredentialUsername',
+				'nodeUserId'
 			),
-			'node_process_node_user_authentication_sources' => array(
-				'created_timestamp',
+			'nodeProcessNodeUserAuthenticationSources' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_user_authentication_source_id',
-				'node_user_authentication_source_ip_address',
-				'node_user_authentication_source_ip_address_block_length',
-				'node_user_authentication_source_ip_address_version_number',
-				'node_user_id'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeUserAuthenticationSourceId',
+				'nodeUserAuthenticationSourceIpAddress',
+				'nodeUserAuthenticationSourceIpAddressBlockLength',
+				'nodeUserAuthenticationSourceIpAddressVersionNumber',
+				'nodeUserId'
 			),
-			'node_process_node_user_request_destination_logs' => array(
-				'created_timestamp',
+			'nodeProcessNodeUserRequestDestinationLogs' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_request_destination_id',
-				'node_user_id',
-				'request_count'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeRequestDestinationId',
+				'nodeUserId',
+				'requestCount'
 			),
-			'node_process_node_user_node_request_destinations' => array(
-				'created_timestamp',
+			'nodeProcessNodeUserNodeRequestDestinations' => array(
+				'createdTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_request_destination_address',
-				'node_request_destination_id',
-				'node_user_id'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeRequestDestinationAddress',
+				'nodeRequestDestinationId',
+				'nodeUserId'
 			),
-			'node_process_node_user_node_request_limit_rules' => array(
-				'activated_status',
-				'created_timestamp',
-				'expired_timestamp',
+			'nodeProcessNodeUserNodeRequestLimitRules' => array(
+				'activatedStatus',
+				'createdTimestamp',
+				'expiredTimestamp',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_request_destination_id',
-				'node_request_limit_rule_id',
-				'node_user_id'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeRequestDestinationId',
+				'nodeRequestLimitRuleId',
+				'nodeUserId'
 			),
-			'node_process_node_user_request_logs' => array(
-				'bytes_received',
-				'bytes_sent',
-				'created_timestamp',
-				'destination_hostname_address',
-				'destination_ip_address',
+			'nodeProcessNodeUserRequestLogs' => array(
+				'bytesReceived',
+				'bytesSent',
+				'createdTimestamp',
+				'destinationHostnameAddress',
+				'destinationIpAddress',
 				'id',
-				'modified_timestamp',
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_request_destination_id',
-				'node_user_id',
-				'processed_status',
-				'processing_process_id',
-				'response_code',
-				'source_ip_address'
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeRequestDestinationId',
+				'nodeUserId',
+				'processedStatus',
+				'processingProcessId',
+				'responseCode',
+				'sourceIpAddress'
 			),
 			'node_process_node_user_resource_usage_logs' => array(
 				'bytes_received',
