@@ -1,5 +1,5 @@
 <?php
-	if (empty($parameters) === false) {
+	if (empty($parameters) === true) {
 		exit;
 	}
 
@@ -7,14 +7,10 @@
 		$response = false;	
 
 		if (
-			((trim($portNumber) === $portNumber) === true) &&
-			(is_numeric($portNumber) === true) &&
-			(
-				(($portNumber > 0) === true) &&
-				(($portNumber < 65536) === true)
-			)
+			(($portNumber > 0) === true) &&
+			(($portNumber < 65536) === true)
 		) {
-			$response = $portNumber;
+			$response = intval($portNumber);
 		}
 
 		return $response;
