@@ -7,10 +7,10 @@
 	}
 
 	function _validateIpAddressType($ipAddress, $ipAddressVersionNumber) {
-		$response = 'public_network';
+		$response = 'publicNetwork';
 		$reservedIpAddressVersions = array(
 			'4' => array(
-				'current_network' => array(
+				'currentNetwork' => array(
 					array(
 						'start' => '0.0.0.0',
 						'stop' => '0.255.255.255',
@@ -30,7 +30,7 @@
 						'stop' => '203.0.113.255'
 					)
 				),
-				'ietf_protocol_assignments' => array(
+				'ietfProtocolAssignments' => array(
 					array(
 						'start' => '192.0.0.0',
 						'stop' => '192.0.0.255'
@@ -56,7 +56,7 @@
 						'stop' => '127.255.255.255'
 					)
 				),
-				'private_network' => array(
+				'privateNetwork' => array(
 					array(
 						'start' => '10.0.0.0',
 						'stop' => '10.255.255.255',
