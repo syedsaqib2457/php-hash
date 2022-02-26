@@ -145,7 +145,7 @@
 							'port_number' => $parameters['data']['port_number_version_' . $nodeIpAddressVersionNumber],
 							'type' => 'recursive_dns'
 						)
-					));
+					), $response);
 
 					if (($portNumberNodeProcessCount === 1) === false) {
 						$response['message'] = 'Node process recursive DNS destination port number must have a matching recursive DNS node process port number, please try again.';
