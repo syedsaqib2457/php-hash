@@ -1192,10 +1192,10 @@
 		$systemDatabaseCommands = array();
 
 		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
-			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableName . '` (`created_timestamp` VARCHAR(10) NULL DEFAULT NULL);';
+			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableName . '` (`createdTimestamp` VARCHAR(10) NULL DEFAULT NULL);';
 
 			foreach ($systemDatabaseColumnNames as $systemDatabaseColumnName) {
-				if (($systemDatabaseColumnName === 'created_timestamp') === true) {
+				if (($systemDatabaseColumnName === 'createdTimestamp') === true) {
 					continue;
 				}
 
@@ -1203,20 +1203,20 @@
 
 				if (
 					(($systemDatabaseColumnName === 'id') === true) ||
-					((substr($systemDatabaseColumnName, -3) === '_id') === true)
+					((substr($systemDatabaseColumnName, -2) === 'Id') === true)
 				) {
 					$systemDatabaseColumnType = 'VARCHAR(30)';
 				}
 
-				if ((substr($systemDatabaseColumnName, -11) === '_percentage') === true) {
+				if ((substr($systemDatabaseColumnName, -10) === 'Percentage') === true) {
 					$systemDatabaseColumnType = 'VARCHAR(3)';
 				}
 
-				if ((substr($systemDatabaseColumnName, -7) === '_status') === true) {
+				if ((substr($systemDatabaseColumnName, -6) === 'Status') === true) {
 					$systemDatabaseColumnType = 'VARCHAR(1)';
 				}
 
-				if ((substr($systemDatabaseColumnName, -10) === '_timestamp') === true) {
+				if ((substr($systemDatabaseColumnName, -9) === 'Timestamp') === true) {
 					$systemDatabaseColumnType = 'VARCHAR(10)';
 				}
 
@@ -1279,108 +1279,104 @@
 		$systemUserAuthenticationTokenId = _createUniqueId();
 		$systemUserId = _createUniqueId();
 		$systemDatabaseData = array(
-			'system_user_authentication_tokens' => array(
+			'systemUserAuthenticationTokens' => array(
 				array(
-					'created_timestamp' => $timestamp,
+					'createdTimestamp' => $timestamp,
 					'id' => $systemUserAuthenticationTokenId,
-					'modified_timestamp' => $timestamp,
-					'system_user_id' => $systemUserId,
+					'modifiedTimestamp' => $timestamp,
+					'systemUserId' => $systemUserId,
 					'value' => $systemUserAuthenticationToken
 				)
 			),
-			'system_user_system_users' => array(
+			'systemUserSystemUsers' => array(
 				array(
-					'created_timestamp' => $timestamp,
+					'createdTimestamp' => $timestamp,
 					'id' => _createUniqueId(),
-					'modified_timestamp' => $timestamp,
-					'system_user_id' => $systemUserId,
-					'system_user_system_user_id' => $systemUserId
+					'modifiedTimestamp' => $timestamp,
+					'systemUserId' => $systemUserId,
+					'systemUserSystemUserId' => $systemUserId
 				)
 			),
-			'system_users' => array(
+			'systemUsers' => array(
 				array(
-					'created_timestamp' => $timestamp,
+					'createdTimestamp' => $timestamp,
 					'id' => $systemUserId,
-					'modified_timestamp' => $timestamp,
-					'system_user_id' => $systemUserId
+					'modifiedTimestamp' => $timestamp,
+					'systemUserId' => $systemUserId
 				)
 			)
 		);
 
-		require_once('/var/www/cloud_node_automation_api/system_action_validate_ip_address_version_number.php');
+		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
 		$systemSettingsData = array(
-			'version_number' => '1'
+			'versionNumber' => '1'
 		);
 
 		foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
-			$systemSettingsData['endpoint_destination_ip_address'] = _validateIpAddressVersionNumber($_SERVER['argv'][1], $ipAddressVersionNumber);
+			$systemSettingsData['endpointDestinationIpAddress'] = _validateIpAddressVersionNumber($_SERVER['argv'][1], $ipAddressVersionNumber);
 
-			if (($systemSettingsData['endpoint_destination_ip_address'] === false) === false) {
-				$systemSettingsData['endpoint_destination_ip_address_version_number'] = $ipAddressVersionNumber;
+			if (($systemSettingsData['endpointDestinationIpAddress'] === false) === false) {
+				$systemSettingsData['endpointDestinationIpAddressVersionNumber'] = $ipAddressVersionNumber;
 				break;
 			}
 		}
 
-		if ($systemSettingsData['endpoint_destination_ip_address'] === false) {
+		if ($systemSettingsData['endpointDestinationIpAddress'] === false) {
 			echo 'Invalid system endpoint destination IP address, please try again.' . "\n";
 			exit;
 		}
 
-		require_once('/var/www/cloud_node_automation_api/system_action_validate_ip_address_type.php');
-		$systemSettingsData['endpoint_destination_ip_address_type'] = _validateIpAddressType($systemSettingsData['endpoint_destination_ip_address'], $systemSettingsData['endpoint_destination_ip_address_version_number']);
+		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-type.php');
+		$systemSettingsData['endpointDestinationIpAddressType'] = _validateIpAddressType($systemSettingsData['endpointDestinationIpAddress'], $systemSettingsData['endpointDestinationIpAddressVersionNumber']);
 
 		foreach ($systemSettingsData as $systemSettingsDataKey => $systemSettingsDataValue) {
-			$systemDatabaseData['system_settings'][] = array(
-				'created_timestamp' => $timestamp,
+			$systemDatabaseData['systemSettings'][] = array(
+				'createdTimestamp' => $timestamp,
 				'id' => _createUniqueId(),
-				'modified_timestamp' => $timestamp,
-				'name' => $systemSettingsDataKey,
+				'modifiedTimestamp' => $timestamp,
+				'key' => $systemSettingsDataKey,
 				'value' => $systemSettingsDataValue
 			);
 		}
 
 		$systemSettingsData = json_encode($systemSettingsData);
-
-		if (file_put_contents('/var/www/cloud_node_automation_api/system_settings_data.json', $systemSettingsData) === false) {
-			echo 'Error adding system settings data, please try again.' . "\n";
-			exit;
-		}
+		file_put_contents('/var/www/firewall-security-api/system-settings-data.json', $systemSettingsData);
 
 		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
 			$systemDatabaseId = _createUniqueId();
-			$systemDatabaseData['system_databases'][] = array(
-				'authentication_credential_address' => 'localhost',
-				'authentication_credential_password' => 'password',
-				'created_timestamp' => $timestamp,
+			$systemDatabaseData['systemDatabases'][] = array(
+				'authenticationCredentialAddress' => 'localhost',
+				'authenticationCredentialPassword' => 'password',
+				'createdTimestamp' => $timestamp,
 				'id' => $systemDatabaseId,
-				'modified_timestamp' => $timestamp,
-				'table_name' => $systemDatabaseTableName
+				'modifiedTimestamp' => $timestamp,
+				'tableKey' => $systemDatabaseTableKey
 			);
 
 			foreach ($systemDatabaseColumnNames as $systemDatabaseColumnName) {
-				$systemDatabaseData['system_database_columns'][] = array(
-					'created_timestamp' => $timestamp,
+				$systemDatabaseData['systemDatabaseColumns'][] = array(
+					'createdTimestamp' => $timestamp,
 					'id' => _createUniqueId(),
-					'modified_timestamp' => $timestamp,
-					'name' => $systemDatabaseColumnName,
-					'system_database_id' => $systemDatabaseId
+					'key' => $systemDatabaseColumnKey,
+					'modifiedTimestamp' => $timestamp,
+					'systemDatabaseId' => $systemDatabaseId
 				);
 			}
 		}
 
-		$systemFiles = scandir('/var/www/cloud_node_automation_api/');
+		$systemFiles = scandir('/var/www/firewall-security-api/');
 
 		foreach ($systemFiles as $systemFile) {
-			if ((substr($systemFile, 0, 13) === 'system_action') === true) {
+			if ((substr($systemFile, 0, 13) === 'systemAction') === true) {
 				$systemAction = substr($systemFile, 14);
 				$systemAction = substr($systemAction, 0, -4);
-				$systemDatabaseData['system_user_authentication_token_scopes'][] = array(
-					'created_timestamp' => $timestamp,
+				$systemDatabaseData['systemUserAuthenticationTokenScopes'][] = array(
+					'createdTimestamp' => $timestamp,
 					'id' => _createUniqueId(),
-					'modified_timestamp' => $timestamp,
-					'system_action' => $systemAction,
-					'system_user_authentication_token_id' => $systemUserAuthenticationTokenId,
-					'system_user_id' => $systemUserId
+					'modifiedTimestamp' => $timestamp,
+					'systemAction' => $systemAction,
+					'systemUserAuthenticationTokenId' => $systemUserAuthenticationTokenId,
+					'systemUserId' => $systemUserId
 				);
 			}
 		}
