@@ -1,23 +1,4 @@
 <?php
-	/*
-		for debugging
-		todo: condense into one line for easy deployment from readme instructions
-		  systemEndpointDestinationAddress=127.0.0.1
- 		  cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system_action_deploy_system.php ; sudo wget -O system_action_deploy_system.php --no-dns-cache --retry-connrefused --timeout=10 --tries=2 "https://raw.githubusercontent.com/twexxor/cloud-node-automation-api/main/system_action_deploy_system.php?$RANDOM" && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress && sudo php system_action_deploy_system.php $systemEndpointDestinationAddress 1;
-		  nodeExternalIpAddressVersion4=127.0.0.2
-		  nodeInternalIpAddressVersion4=127.0.0.3
-		  systemUserAuthenticationToken=1234
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data 'json={"action":"add_node","data":{"external_ip_address_version_4":"$nodeExternalIpAddressVersion4","internal_ip_address_version_4":"$nodeInternalIpAddressVersion4"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
-		  sudo cat /tmp/debug.php for node ID
-		  nodeId="1"
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id":"$nodeId","port_number":"1080","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id":"$nodeId","port_number":"1081","type":"socks_proxy"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id":"$nodeId","port_number":"53","type":"recursive_dns"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process","data":{"node_id":"$nodeId","port_number":"54","type":"recursive_dns"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"add_node_process_recursive_dns_destination","data":{"destination_ip_address_version_4":"$nodeExternalIpAddressVersion4","node_id":"$nodeId","node_process_type":"socks_proxy","port_number_version_4":"53"},"system_user_authentication_token":"$systemUserAuthenticationToken"}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
-		  sudo wget -O /tmp/debug.php --no-dns-cache --post-data='{"action":"activate_node","data":{"id":"$nodeId","system_user_authentication_token":"$systemUserAuthenticationToken"}}' --retry-connrefused --timeout=10 --tries=2 $systemEndpointDestinationAddress/system_endpoint.php
-	*/
-
 	function _createUniqueId() {
 		$uniqueId = hrtime(true);
 		$uniqueId = substr($uniqueId, 6, 10) . (microtime(true) * 10000);
@@ -114,9 +95,9 @@
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli procps syslinux systemd util-linux');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
-		shell_exec('sudo rm -rf /var/www/cloud_node_automation_api/');
-		mkdir('/var/www/cloud_node_automation_api/');
-		chmod('/var/www/cloud_node_automation_api/', 0755);
+		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
+		mkdir('/var/www/firewall-security-api/');
+		chmod('/var/www/firewall-security-api/', 0755);
 		$uniqueId = '_' . uniqid();
 		$binaries = array(
 			array(
@@ -219,13 +200,13 @@
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
 
-			if (file_put_contents('/var/www/cloud_node_automation_api/system_action_deploy_system_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
+			if (file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands) === false) {
 				echo 'Error adding binary file list commands, please try again.' . "\n";
 				exit;
 			}
 
-			chmod('/var/www/cloud_node_automation_api/system_action_deploy_system_binary_file_list_commands.sh', 0755);
-			exec('cd /var/www/cloud_node_automation_api/ && sudo ./system_action_deploy_system_binary_file_list_commands.sh', $binaryFile);
+			chmod('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', 0755);
+			exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-binary-file-list-commands.sh', $binaryFile);
 			$binaryFile = current($binaryFile);
 
 			if (empty($binaryFile) === true) {
@@ -238,7 +219,7 @@
 			$binaryFiles[$binary['name']] = $binaryFile;
 		}
 
-		unlink('/var/www/cloud_node_automation_api/system_action_deploy_system_binary_file_list_commands.sh');
+		unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
 		$phpSettings = array(
 			'allow_url_fopen = On',
 			'allow_url_include = Off',
@@ -464,15 +445,15 @@
 		shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
-		shell_exec('cd /var/www/cloud_node_automation_api/ && sudo ' . $binaryFiles['wget'] . ' -O mysql_apt_config.deb --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://dev.mysql.com/get/mysql-apt-config_0.8.20-1_all.deb');
+		shell_exec('cd /var/www/firewall-security-api/ && sudo ' . $binaryFiles['wget'] . ' -O mysql.deb --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://dev.mysql.com/get/mysql-apt-config_0.8.20-1_all.deb');
 
-		if (file_exists('/var/www/cloud_node_automation_api/mysql_apt_config.deb') === false) {
+		if (file_exists('/var/www/firewall-security-api/mysql.deb') === false) {
 			echo 'Error downloading MySQL, please try again.' . "\n";
 			exit;
 		}
 
-		shell_exec('cd /var/www/cloud_node_automation_api/ && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql_apt_config.deb');
-		unlink('/var/www/cloud_node_automation_api/mysql_apt_config.deb');
+		shell_exec('cd /var/www/firewall-security-api/ && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql.deb');
+		unlink('/var/www/firewall-security-api/mysql.deb');
 		shell_exec('sudo add-apt-repository -y universe');
 		shell_exec('sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 467B942D3A79BD29');
 		shell_exec('sudo apt-get update');
@@ -518,8 +499,8 @@
 			'<VirtualHost *:80>',
 			'ServerAlias ' . $_SERVER['argv'][1],
 			'ServerName ' . $_SERVER['argv'][1],
-			'DocumentRoot /var/www/cloud_node_automation_api/',
-			'<Directory /var/www/cloud_node_automation_api/>',
+			'DocumentRoot /var/www/firewall-security-api/',
+			'<Directory /var/www/firewall-security-api/>',
 			'Allow from all',
 			'Options FollowSymLinks',
 			'AllowOverride All',
@@ -566,13 +547,13 @@
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2enmod'] . ' proxy_fcgi');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
-		shell_exec('sudo rm -rf /var/www/cloud_node_automation_api/');
+		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
 		// todo: download from most-recent release after v1
 		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['wget'] . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://github.com/twexxor/cloud-node-automation-api/archive/refs/heads/main.tar.gz');
 		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['tar'] . ' -xvzf main.tar.gz');
-		shell_exec('cd /var/www/ && sudo mv cloud-node-automation-api-main cloud_node_automation_api');
+		shell_exec('cd /var/www/ && sudo mv firewall-security-api-main firewall-security-api');
 
-		if (file_exists('/var/www/cloud_node_automation_api/readme.md') === false) {
+		if (file_exists('/var/www/firewall-security-api/readme.md') === false) {
 			echo 'Error downloading system files, please try again.' . "\n";
 			exit;
 		}
@@ -590,23 +571,21 @@
 		}
 
 		$crontabCommands = explode("\n", $crontabCommands);
-		$crontabCommandIndex = array_search('# cloud_node_automation_api_system_processes', $crontabCommands);
+		$crontabCommandIndex = array_search('# firewall-security-api-system-processes', $crontabCommands);
 
-		if (is_int($crontabCommandIndex) === true) {
-			while (is_int($crontabCommandIndex) === true) {
-				unset($crontabCommands[$crontabCommandIndex]);
-				$crontabCommandIndex++;
+		while (is_int($crontabCommandIndex) === true) {
+			unset($crontabCommands[$crontabCommandIndex]);
+			$crontabCommandIndex++;
 
-				if (strpos($crontabCommands[$crontabCommandIndex], ' cloud_node_automation_api_system_processes') === false) {
-					$crontabCommandIndex = false;
-				}
+			if (strpos($crontabCommands[$crontabCommandIndex], ' firewall-security-api-system-processes') === false) {
+				$crontabCommandIndex = false;
 			}
 		}
 
 		$crontabCommands += array(
-			'# cloud_node_automation_api_system_processes',
-			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab cloud_node_automation_api_system_processes',
-			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/cloud_node_automation_api/system_action_process_system_action.php process_node_request_logs cloud_node_automation_api_system_processes'
+			'# firewall-security-api-system-processes',
+			'@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab firewall-security-api-system-processes',
+			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/firewall-security-api/system-action-process-system-action.php process-node-request-logs firewall-security-api-system-processes'
 		);
 		$crontabCommands = implode("\n", $crontabCommands);
 
