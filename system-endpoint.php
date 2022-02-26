@@ -13,56 +13,56 @@
 
 	function _output($parameters, $response) {
 		$systemRequestLogsData = array(
-			// 'bytes_received',
-			// 'bytes_sent',
+			// 'bytesReceived',
+			// 'bytesSent',
 			'id' => _createUniqueId(),
-			'response_authenticated_status' => $response['authenticated_status'],
-			'response_message' => $response['message'],
-			'response_valid_status' => $response['valid_status'],
-			'source_ip_address' => $_SERVER['REMOTE_ADDR']
+			'responseAuthenticatedStatus' => $response['authenticatedStatus'],
+			'responseMessage' => $response['message'],
+			'responseValidStatus' => $response['validStatus'],
+			'sourceIpAddress' => $_SERVER['REMOTE_ADDR']
 		);
 
 		if (empty($parameters['action']) === false) {
-			$systemRequestLogsData['system_action'] = $parameters['action'];
+			$systemRequestLogsData['systemAction'] = $parameters['action'];
 			$systemRequestLogsData['value'] = $parameters;
-			unset($systemRequestLogsData['value']['system_databases']);
+			unset($systemRequestLogsData['value']['systemDatabases']);
 			$systemRequestLogsData['value'] = json_encode($systemRequestLogsData['value']);
 		}
 
-		if (empty($parameters['node_authentication_token']) === false) {
+		if (empty($parameters['nodeAuthenticationToken']) === false) {
 			$systemDatabasesConnection = _connect(array(
 				'nodes'
-			), $parameters['system_databases'], $response);
-			$parameters['system_databases']['nodes'] = $systemDatabasesConnection['nodes'];
+			), $parameters['systemDatabases'], $response);
+			$parameters['systemDatabases']['nodes'] = $systemDatabasesConnection['nodes'];
 			$systemRequestLogsNode = _list(array(
 				'data' => array(
 					'id'
 				),
-				'in' => $parameters['system_databases']['nodes'],
+				'in' => $parameters['systemDatabases']['nodes'],
 				'where' => array(
-					'authentication_token' => $parameters['node_authentication_token'],
-					'node_id' => null
+					'authenticationToken' => $parameters['nodeAuthenticationToken'],
+					'nodeId' => null
 				)
 			), $response);
 			$systemRequestLogsNode = current($systemRequestLogsNode);
 
 			if (empty($systemRequestLogsNode) === false) {
-				$systemRequestLogsData['node_id'] = $systemRequestLogsNode['id'];
+				$systemRequestLogsData['nodeId'] = $systemRequestLogsNode['id'];
 			}
 		}
 
-		if (empty($parameters['system_user_authentication_token']) === false) {
-			$systemRequestLogsData['system_user_authentication_token_id'] = $parameters['system_user_authentication_token_id'];
-			$systemRequestLogsData['system_user_id'] = $parameters['system_user_id'];
+		if (empty($parameters['systemUserAuthenticationToken']) === false) {
+			$systemRequestLogsData['systemUserAuthenticationTokenId'] = $parameters['systemUserAuthenticationTokenId'];
+			$systemRequestLogsData['systemUserId'] = $parameters['systemUserId'];
 		}
 
 		if (empty($response['data']) === false) {
-			$systemRequestLogsData['response_data'] = json_encode($response['data']);
+			$systemRequestLogsData['responseData'] = json_encode($response['data']);
 		}
 
 		_save(array(
 			'data' => $systemRequestLogsData,
-			'in' => $parameters['system_databases']['system_request_logs']
+			'in' => $parameters['systemDatabases']['systemRequestLogs']
 		), $response);
 		echo json_encode($response);
 		exit;
@@ -79,13 +79,13 @@
 	}
 
 	$response = array(
-		'authenticated_status' => '0',
+		'authenticatedStatus' => '0',
 		'data' => array(),
 		'message' => 'Invalid system endpoint parameters, please try again.',
-		'valid_status' => '0'
+		'validStatus' => '0'
 	);
-	require_once('/var/www/cloud_node_automation_api/system_databases.php');
-	$systemSettingsData = file_get_contents('/var/www/cloud_node_automation_api/system_settings_data.json');
+	require_once('/var/www/firewall-security-api/system-databases.php');
+	$systemSettingsData = file_get_contents('/var/www/firewall-security-api/system-settings-data.json');
 	$systemSettingsData = json_decode($systemSettingsData, true);
 
 	if ($systemSettingsData === false) {
@@ -109,7 +109,7 @@
 
 		if (
 			((strpos($parameters['action'], '/') === false) === false) ||
-			(file_exists('/var/www/cloud_node_automation_api/system_action_' . $parameters['action'] . '.php') === false)
+			(file_exists('/var/www/firewall-security-api/system-action-' . $parameters['action'] . '.php') === false)
 		) {
 			$response['message'] = 'Invalid system endpoint action, please try again.';
 			_output($parameters, $response);
@@ -117,12 +117,12 @@
 
 		if (
 			(
-				(empty($parameters['node_authentication_token']) === true) &&
-				(empty($parameters['system_user_authentication_token']) === true)
+				(empty($parameters['nodeAuthenticationToken']) === true) &&
+				(empty($parameters['systemUserAuthenticationToken']) === true)
 			) ||
 			(
-				(empty($parameters['node_authentication_token']) === false) &&
-				(empty($parameters['system_user_authentication_token']) === false)
+				(empty($parameters['nodeAuthenticationToken']) === false) &&
+				(empty($parameters['systemUserAuthenticationToken']) === false)
 			)
 		) {
 			$response['message'] = 'System endpoint must have either a node authentication token or a system user authentication token, please try again.';
@@ -130,35 +130,35 @@
 		}
 
 		if (
-			(empty($parameters['node_authentication_token']) === false) &&
-			(ctype_alnum($parameters['node_authentication_token']) === false)
+			(empty($parameters['nodeAuthenticationToken']) === false) &&
+			(ctype_alnum($parameters['nodeAuthenticationToken']) === false)
 		) {
 			$response['message'] = 'Invalid system endpoint node authentication token , please try again.';
 			_output($parameters, $response);
 		}
 
 		if (
-			(empty($parameters['system_user_authentication_token']) === false) &&
-			(ctype_alnum($parameters['system_user_authentication_token']) === false)
+			(empty($parameters['systemUserAuthenticationToken']) === false) &&
+			(ctype_alnum($parameters['systemUserAuthenticationToken']) === false)
 		) {
 			$response['message'] = 'Invalid system endpoint system user authentication token, please try again.';
 			_output($parameters, $response);
 		}
 
-		if (empty($parameters['node_authentication_token']) === false) {
+		if (empty($parameters['nodeAuthenticationToken']) === false) {
 			$node = _list(array(
 				'data' => array(
-					'external_ip_address_version_4',
-					'external_ip_address_version_6',
+					'externalIpAddressVersion4',
+					'externalIpAddressVersion6',
 					'id',
-					'internal_ip_address_version_4',
-					'internal_ip_address_version_6',
-					'node_id'
+					'internalIpAddressVersion4',
+					'internalIpAddressVersion6',
+					'nodeId'
 				),
-				'in' => $parameters['system_databases']['nodes'],
+				'in' => $parameters['systemDatabases']['nodes'],
 				'where' => array(
-					'authentication_token' => $parameters['node_authentication_token'],
-					'node_id' => null
+					'authenticationToken' => $parameters['nodeAuthenticationToken'],
+					'nodeId' => null
 				)
 			), $response);
 			$node = current($node);
@@ -169,16 +169,16 @@
 			}
 
 			$parameters['node'] = $node;
-			unset($parameters['system_user_authentication_token']);
+			unset($parameters['systemUserAuthenticationToken']);
 		} else {
 			$systemUserAuthenticationToken = _list(array(
 				'data' => array(
 					'id',
-					'system_user_id'
+					'systemUserId'
 				),
-				'in' => $parameters['system_databases']['system_user_authentication_tokens'],
+				'in' => $parameters['system_databases']['systemUserAuthenticationTokens'],
 				'where' => array(
-					'value' => $parameters['system_user_authentication_token']
+					'value' => $parameters['systemUserAuthenticationToken']
 				)
 			), $response);
 			$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
@@ -188,13 +188,13 @@
 				_output($parameters, $response);
 			}
 
-			$parameters['system_user_authentication_token_id'] = $systemUserAuthenticationToken['id'];
-			$parameters['system_user_id'] = $systemUserAuthenticationToken['system_user_id'];
+			$parameters['systemUserAuthenticationTokenId'] = $systemUserAuthenticationToken['id'];
+			$parameters['systemUserId'] = $systemUserAuthenticationToken['systemUserId'];
 			$systemUserAuthenticationTokenScopeCount = _count(array(
-				'in' => $parameters['system_databases']['system_user_authentication_token_scopes'],
+				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenScopes'],
 				'where' => array(
-					'system_action' => $parameters['action'],
-					'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
+					'systemAction' => $parameters['action'],
+					'systemUserAuthenticationTokenId' => $systemUserAuthenticationToken['id']
 				)
 			), $response);
 
@@ -203,35 +203,35 @@
 				_output($parameters, $response);
 			}
 
-			require_once('/var/www/cloud_node_automation_api/system_action_validate_ip_address_version_number.php');
+			require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
 			$parameters['source'] = array(
-				'ip_address' => $_SERVER['REMOTE_ADDR'],
-				'ip_address_version_number' => '4'
+				'ipAddress' => $_SERVER['REMOTE_ADDR'],
+				'ipAddressVersionNumber' => '4'
 			);
 
-			if ((strpos($parameters['source']['ip_address'], ':') === false) === false) {
-				$parameters['source']['ip_address_version_number'] = '6';
+			if ((strpos($parameters['source']['ipAddress'], ':') === false) === false) {
+				$parameters['source']['ipAddressVersionNumber'] = '6';
 			}
 
-			$parameters['source']['ip_address'] = _validateIpAddressVersionNumber($parameters['source']['ip_address'], $parameters['source']['ip_address_version_number']);
+			$parameters['source']['ipAddress'] = _validateIpAddressVersionNumber($parameters['source']['ipAddress'], $parameters['source']['ipAddressVersionNumber']);
 
-			if ($parameters['source']['ip_address'] === false) {
+			if ($parameters['source']['ipAddress'] === false) {
 				$response['message'] = 'Invalid system endpoint source IP address, please try again.';
 				_output($parameters, $response);
 			}
 
 			$systemUserAuthenticationTokenSourceCountParameters = array(
-				'in' => $parameters['system_databases']['system_user_authentication_token_sources'],
+				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenSources'],
 				'where' => array(
-					'system_user_authentication_token_id' => $systemUserAuthenticationToken['id']
+					'systemUserAuthenticationTokenId' => $systemUserAuthenticationToken['id']
 				)
 			);
 			$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
 			if (($systemUserAuthenticationTokenSourceCount === 0) === false) {
-				$systemUserAuthenticationTokenSourceCountParameters['where']['ip_address_range_start <='] = $parameters['source']['ip_address'];
-				$systemUserAuthenticationTokenSourceCountParameters['where']['ip_address_range_stop >='] = $parameters['source']['ip_address'];
-				$systemUserAuthenticationTokenSourceCountParameters['where']['ip_address_range_version_number'] = $parameters['source']['ip_address_version_number'];
+				$systemUserAuthenticationTokenSourceCountParameters['where']['ipAddressRangeStart <='] = $parameters['source']['ipAddress'];
+				$systemUserAuthenticationTokenSourceCountParameters['where']['ipAddressRangeStop >='] = $parameters['source']['ipAddress'];
+				$systemUserAuthenticationTokenSourceCountParameters['where']['ipAddressRangeVersionNumber'] = $parameters['source']['ipAddressVersionNumber'];
 				$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
 				if (($systemUserAuthenticationTokenSourceCount === 0) === true) {
@@ -244,7 +244,7 @@
 		}
 
 		$response['authenticated_status'] = '1';
-		require_once('/var/www/cloud_node_automation_api/system_action_' . $parameters['action'] . '.php');
+		require_once('/var/www/firewall-security-api/system-action-' . $parameters['action'] . '.php');
 	}
 
 	_output($parameters, $response);
