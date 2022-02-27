@@ -3,9 +3,10 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'nodes'
-	), $parameters['system_databases'], $response);
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _deactivateNode($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
@@ -15,9 +16,9 @@
 
 		$nodeParameters = array(
 			'data' => array(
-				'activated_status'
+				'activatedStatus'
 			),
-			'in' => $parameters['system_databases']['nodes'],
+			'in' => $parameters['systemDatabases']['nodes'],
 			'where' => array(
 				'id' => $parameters['where']['id']
 			)
@@ -30,21 +31,21 @@
 			return $response;
 		}
 
-		if (($node['activated_status'] === '0') === true) {
+		if (($node['activatedStatus'] === '0') === true) {
 			$response['message'] = 'Node is already deactivated, please try again.';
 			return $response;
 		}
 
 		$nodeParameters['data'] = array(
-			'activated_status' => '0'
+			'activatedStatus' => '0'
 		);
 		_edit($nodeParameters, $response);
 		$response['message'] = 'Node deactivated successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'deactivate_node') === true) {
+	if (($parameters['action'] === 'deactivate-node') === true) {
 		$response = _deactivateNode($parameters, $response);
 	}
 ?>
