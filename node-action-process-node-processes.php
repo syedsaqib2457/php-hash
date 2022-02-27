@@ -700,7 +700,7 @@
 						$recursiveDnsNodeProcessProcessIds = _listProcessIds('recursiveDns' . $recursiveDnsNodeProcessId . ' ', 'recursiveDns' . $recursiveDnsNodeProcessId . '/');
 
 						if (empty($recursiveDnsNodeProcessProcessIds) === false) {
-							_killProcessIds($parameters['binaryFiles'], $parameters['action'], $parameters['processId'], $recursiveDnsNodeProcessProcessIds);
+							_killProcessIds($parameters['binaryFiles'], $parameters['processId'], $parameters['action'], $recursiveDnsNodeProcessProcessIds);
 						}
 					}
 
@@ -977,7 +977,7 @@
 								$proxyNodeProcessProcessIds = _listProcessIds($proxyNodeProcessType . $proxyNodeProcessId . ' ', '/etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg');
 
 								if (empty($proxyNodeProcessProcessIds) === false) {
-									_killProcessIds($parameters['binaryFiles'], $parameters['action'], $parameters['processId'], $proxyNodeProcessProcessIds);
+									_killProcessIds($parameters['binaryFiles'], $parameters['processId'], $parameters['action'], $proxyNodeProcessProcessIds);
 								}
 							}
 
@@ -1095,7 +1095,7 @@
 
 			if (empty($nodeProcessProcessIds) === false) {
 				$nodeProcessProcessIds = array_filter($nodeProcessProcessIds);
-				_killProcessIds($parameters['binaryFiles'], $parameters['action'], $parameters['processId'], $nodeProcessProcessIds);
+				_killProcessIds($parameters['binaryFiles'], $parameters['processId'], $parameters['action'], $nodeProcessProcessIds);
 			}
 		}
 
@@ -1169,7 +1169,7 @@
 
 				if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
 					exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-process-node-processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
-					_killProcessIds($binaryFiles, 'processNodeProcesses', $currentProcessId, $nodeProcessProcessIds);
+					_killProcessIds($binaryFiles, $currentProcessId, 'processNodeProcesses', $nodeProcessProcessIds);
 				} elseif (
 					(empty($nodeProcessProcessIds[1]) === false) &&
 					(($processingProgressCheckpoint === 'listingNodeParameters') === true)
