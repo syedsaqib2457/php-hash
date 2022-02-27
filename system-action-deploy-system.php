@@ -70,11 +70,7 @@
 		}
 
 		$packageSources = implode("\n", $packageSources[$imageDetails['id']][$imageDetails['version_id']]);
-
-		if (file_put_contents('/etc/apt/sources.list', $packageSources) === false) {
-			echo 'Error adding package sources, please try again.' . "\n";
-			exit;
-		}
+		file_put_contents('/etc/apt/sources.list', $packageSources);
 
 		if (
 			(is_dir('/etc/php/7.3/') === false) &&
@@ -196,11 +192,7 @@
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
 
-			if (file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands) === false) {
-				echo 'Error adding binary file list commands, please try again.' . "\n";
-				exit;
-			}
-
+			file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands);
 			chmod('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', 0755);
 			exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-binary-file-list-commands.sh', $binaryFile);
 			$binaryFile = current($binaryFile);
@@ -402,12 +394,7 @@
 			'vm.swappiness = 0'
 		);
 		$kernelSettings = implode("\n", $kernelSettings);
-
-		if (file_put_contents('/etc/sysctl.conf', $kernelSettings) === false) {
-			echo 'Error adding kernel settings, please try again.' . "\n";
-			exit;
-		}
-
+		file_put_contents('/etc/sysctl.conf', $kernelSettings);
 		shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -p');
 		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
 		$kernelPageSize = current($kernelPageSize);
@@ -479,12 +466,7 @@
 			'socket = /var/run/mysqld/mysqld.sock'
 		);
 		$mysqlSettings = implode("\n", $mysqlSettings);
-
-		if (file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $mysqlSettings) === false) {
-			echo 'Error adding MySQL settings, please try again.' . "\n";
-			exit;
-		}
-
+		file_put_contents('/etc/mysql/mysql.conf.d/mysqld.cnf', $mysqlSettings);
 		shell_exec('sudo ' . $binaryFiles['service'] . ' mysql restart');
 		shell_exec('sudo mysql -u root -p"password" -e "DELETE FROM mysql.user WHERE User=\'\'; DELETE FROM mysql.user WHERE User=\'root\' AND Host NOT IN (\'localhost\', \'127.0.0.1\', \'::1\');"');
 		shell_exec('sudo mysql -u root -p"password" -e "DROP USER \'root\'@\'localhost\'; CREATE USER \'root\'@\'localhost\' IDENTIFIED BY \'password\'; GRANT ALL PRIVILEGES ON *.* TO \'root\'@\'localhost\' WITH GRANT OPTION; FLUSH PRIVILEGES;"');
@@ -504,12 +486,7 @@
 			'</VirtualHost>'
 		);
 		$apacheSettings = implode("\n", $apacheSettings);
-
-		if (file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $apacheSettings) === false) {
-			echo 'Error adding Apache settings, please try again.' . "\n";
-			exit;
-		}
-
+		file_put_contents('/etc/apache2/sites-available/' . $_SERVER['argv'][1] . '.conf', $apacheSettings);
 		shell_exec('cd /etc/apache2/sites-available && sudo ' . $binaryFiles['a2ensite'] . ' ' . $_SERVER['argv'][1]);
 		$apacheSettings = array(
 			'<IfModule mpm_event_module>',
@@ -526,12 +503,7 @@
 			'</IfModule>'
 		);
 		$apacheSettings = implode("\n", $apacheSettings);
-
-		if (file_put_contents('/etc/apache2/mods-available/mpm_event.conf', $apacheSettings) === false) {
-			echo 'Error adding Apache settings, please try again.' . "\n";
-			exit;
-		}
-
+		file_put_contents('/etc/apache2/mods-available/mpm_event.conf', $apacheSettings);
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' stop apache2');
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2dismod'] . ' php*');
 		shell_exec('cd /etc/apache2/mods-available && sudo ' . $binaryFiles['a2dismod'] . ' mpm_prefork');
@@ -584,12 +556,7 @@
 			// '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/firewall-security-api/system-action-process-system-action.php process-node-request-logs firewall-security-api-system-processes'
 		);
 		$crontabCommands = implode("\n", $crontabCommands);
-
-		if (file_put_contents('/etc/crontab', $crontabCommands) === false) {
-			echo 'Error adding crontab commands, please try again.' . "\n";
-			exit;
-		}
-
+		file_put_contents('/etc/crontab', $crontabCommands);
 		shell_exec('sudo ' . $binaryFiles['crontab'] . ' /etc/crontab');
 		$sshPortNumbers = array();
 
@@ -745,12 +712,7 @@
 			'whereis gcloud | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r gcloudBinaryFile; do echo $((sudo $gcloudBinaryFile "-_-") 2>&1) | grep -c "unrecognized" && echo $gcloudBinaryFile && break; done | tail -1'
 		);
 		$gcloudBinaryFileListCommands = implode("\n", $gcloudBinaryFileListCommands);
-
-		if (file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-gcloud-binary-file-list-commands.sh', $gcloudBinaryFileListCommands) === false) {
-			echo 'Error adding gcloud binary file list commands, please try again.' . "\n";
-			exit;
-		}
-
+		file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-gcloud-binary-file-list-commands.sh', $gcloudBinaryFileListCommands);
 		chmod('/var/www/firewall-security-api/system-action-deploy-system-gcloud-binary-file-list-commands.sh', 0755);
 		exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-gcloud-binary-file-list-commands.sh', $gcloudBinaryFile);
 		$gcloudBinaryFile = current($gcloudBinaryFile);
