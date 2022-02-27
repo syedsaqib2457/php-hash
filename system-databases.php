@@ -82,13 +82,13 @@
 			), $response);
 
 			if (empty($systemDatabaseColumns) === true) {
-				$response['message'] = 'Error listing system database columns in ' . $systemDatabase['table_name'] . ' system database, please try again.';
+				$response['message'] = 'Error listing system database columns in ' . $systemDatabase['tableKey'] . ' system database, please try again.';
 				unset($response['_connect']);
 				_output($parameters, $response);
 			}
 
 			foreach ($systemDatabaseColumns as $systemDatabaseColumn) {
-				$response['_connect'][$systemDatabase['table_name']]['structure']['column_keys'][] = [$systemDatabaseColumn['key']];
+				$response['_connect'][$systemDatabase['tableKey']]['structure']['columnKeys'][] = [$systemDatabaseColumn['key']];
 			}
 		}
 
@@ -306,13 +306,13 @@
 					$systemDatabaseUpdateColumnValues .= "," . $systemDatabaseColumnName . "='" . $systemDatabaseInsertColumnValue . "'";
 				}
 
-				if (empty($systemDatabaseColumns['created_timestamp']) === true) {
+				if (empty($systemDatabaseColumns['createdTimestamp']) === true) {
 					$systemDatabaseInsertColumnNames .= ',createdTimestamp';
 					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
 					$systemDatabaseUpdateColumnValues .= ",createdTimestamp='" . $timestamp . "'";
 				}
 
-				if (empty($systemDatabaseColumns['modified_timestamp']) === true) {
+				if (empty($systemDatabaseColumns['modifiedTimestamp']) === true) {
 					$systemDatabaseInsertColumnNames .= ',modifiedTimestamp';
 					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
 					$systemDatabaseUpdateColumnValues .= ",modifiedTimestamp='" . $timestamp . "'";
@@ -340,11 +340,11 @@
 				'columnKeys' => array(
 					'createdTimestamp',
 					'id',
+					'key',
 					'modifiedTimestamp',
-					'name',
 					'systemDatabaseId'
 				),
-				'table_name' => 'systemDatabaseColumns'
+				'tableKey' => 'systemDatabaseColumns'
 			)
 		),
 		'systemDatabases' => array(
@@ -359,7 +359,7 @@
 					'tableKey',
 					'tag'
 				),
-				'tableKey' => 'system_databases'
+				'tableKey' => 'systemDatabases'
 			)
 		)
 	);
