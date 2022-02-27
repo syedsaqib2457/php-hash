@@ -305,13 +305,13 @@
 							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['portNumberVersion' . $ipAddressVersionNumber] = '';
 						}
 
-						if (($nodeProcess['port_number'] === $nodeProcessRecursiveDnsDestination['portNumberVersion' . $ipAddressVersionNumber]) === true) {
+						if (($nodeProcess['portNumber'] === $nodeProcessRecursiveDnsDestination['portNumberVersion' . $ipAddressVersionNumber]) === true) {
 							$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['portNumberVersion' . $ipAddressVersionNumber] = $parameters['data']['portNumberVersion' . $ipAddressVersionNumber];
 						}
 					}
 				}
 
-				if (($nodeProcess['nodeId'] === $nodeProcessRecursiveDnsDestination['node_id']) === true) {
+				if (($nodeProcess['nodeId'] === $nodeProcessRecursiveDnsDestination['nodeId']) === true) {
 					$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['nodeId'] = $parameters['data']['nodeId'];
 					$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['nodeNodeId'] = $parameters['data']['nodeNodeId'];
 					$nodeProcessRecursiveDnsDestinations[$nodeProcessRecursiveDnsDestinationsKey]['nodeProcessType'] = $parameters['data']['nodeProcessType'];
