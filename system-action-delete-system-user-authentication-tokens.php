@@ -14,7 +14,7 @@
 	$parameters['system_databases']['systemUserAuthenticationTokenSources'] = $systemDatabasesConnections['systemUserAuthenticationTokenSources'];
 	$parameters['system_databases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
 
-	function _deleteSystemUserAuthenticationToken($parameters, $response) {
+	function _deleteSystemUserAuthenticationTokens($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
 			$response['message'] = 'System user authentication token must have an ID, please try again.';
 			return $response;
@@ -75,12 +75,12 @@
 				'id' => $parameters['where']['id']
 			)
 		), $response);
-		$response['message'] = 'System user authentication token deleted successfully.';
+		$response['message'] = 'System user authentication tokens deleted successfully.';
 		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'delete-system-user-authentication-token') === true) {
-		$response = _deleteSystemUserAuthenticationToken($parameters, $response);
+	if (($parameters['action'] === 'delete-system-user-authentication-tokens') === true) {
+		$response = _deleteSystemUserAuthenticationTokens($parameters, $response);
 	}
 ?>
