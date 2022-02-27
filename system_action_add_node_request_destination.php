@@ -4,10 +4,10 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_request_destinations'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_request_destinations'] = $systemDatabasesConnections['node_request_destinations'];
-	require_once('/var/www/cloud_node_automation_api/system_action_validate_hostname_address.php');
+		'nodeRequestDestinations'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodeRequestDestinations'] = $systemDatabasesConnections['nodeRequestDestinations'];
+	require_once('/var/www/firewall-security-api/system-action-validate-hostname-address.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
 		if (empty($parameters['data']['address']) === true) {
@@ -21,7 +21,7 @@
 		}
 
 		$existingNodeRequestDestinationCount = _count(array(
-			'in' => $parameters['system_databases']['node_request_destinations'],
+			'in' => $parameters['systemDatabases']['nodeRequestDestinations'],
 			'where' => array(
 				'address' => $parameters['data']['address']
 			)
@@ -35,10 +35,10 @@
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['node_request_destinations']
+			'in' => $parameters['systemDatabases']['nodeRequestDestinations']
 		), $response);
 		$nodeRequestDestination = _list(array(
-			'in' => $parameters['system_databases']['node_request_destinations'],
+			'in' => $parameters['systemDatabases']['nodeRequestDestinations'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
@@ -46,11 +46,11 @@
 		$nodeRequestDestination = current($nodeRequestDestination);
 		$response['data'] = $nodeRequestDestination;
 		$response['message'] = 'Node request destination added successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_node_request_destination') === true) {
+	if (($parameters['action'] === 'add-node-request-destination') === true) {
 		$response = _addNodeRequestDestination($parameters, $response);
 	}
 ?>
