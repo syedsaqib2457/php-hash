@@ -3,20 +3,18 @@
 		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
-		$processIdParts = array_chunk($processIds, 10);
 
-		foreach ($processIdParts as $processIdPart) {
-			$processIdPart = implode(' ', $processIdPart);
-			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
+		foreach ($processIds as $processId) {
+			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processId;
 		}
 
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
-		file_put_contents('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh', $killProcessCommands);
-		shell_exec('sudo chmod +x /usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
-		shell_exec('cd /usr/local/cloud_node_automation_api/ && sudo ./node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
-		unlink('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_kill_process_commands_' . $processId . '.sh');
+		file_put_contents('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $processId . '.sh', $killProcessCommands);
+		shell_exec('sudo chmod +x /usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $processId . '.sh');
+		shell_exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-' . $nodeAction . '-kill-process-commands-' . $processId . '.sh');
+		unlink('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $processId . '.sh');
 		return;
 	}
 
@@ -26,17 +24,17 @@
 	}
 
 	$response = array(
-		'authenticated_status' => '1',
+		'authenticatedStatus' => '1',
 		'data' => array(),
 		'message' => 'Invalid node endpoint request, please try again.',
-		'valid_status' => '0'
+		'validStatus' => '0'
 	);
 
 	if (empty($_SERVER['argv'][1]) === true) {
 		_output($response);
 	}
 
-	$nodeSettingsData = file_get_contents('/usr/local/cloud_node_automation_api/node_settings_data.json');
+	$nodeSettingsData = file_get_contents('/usr/local/firewall-security-api/node-settings-data.json');
 	$nodeSettingsData = json_decode($nodeSettingsData, true);
 
 	if ($nodeSettingsData === false) {
@@ -46,16 +44,16 @@
 
 	$parameters = array(
 		'action' => $_SERVER['argv'][1],
-		'binary_files' => array(),
-		'node_authentication_token' => $nodeSettingsData['authentication_token'],
-		'process_id' => getmypid(),
-		'system_endpoint_destination_ip_address' => $nodeSettingsData['system_endpoint_destination_ip_address'],
-		'system_endpoint_destination_ip_address_type' => $nodeSettingsData['system_endpoint_destination_ip_address_type'],
-		'system_endpoint_destination_ip_address_version_number' => $nodeSettingsData['system_endpoint_destination_ip_address_version_number'],
-		'system_version_number' => $nodeSettingsData['system_version_number']
+		'binaryFiles' => array(),
+		'nodeAuthenticationToken' => $nodeSettingsData['authenticationToken'],
+		'processId' => getmypid(),
+		'systemEndpointDestinationIpAddress' => $nodeSettingsData['systemEndpointDestinationIpAddress'],
+		'systemEndpointDestinationIpAddressType' => $nodeSettingsData['systemEndpointDestinationIpAddressType'],
+		'systemEndpointDestinationIpAddressVersionNumber' => $nodeSettingsData['systemEndpointDestinationIpAddressVersionNumber'],
+		'systemVersionNumber' => $nodeSettingsData['systemVersionNumber']
 	);
 
-	if ($parameters['process_id'] === false) {
+	if ($parameters['processId'] === false) {
 		$response['message'] = 'Error listing process ID, please try again.';
 		_output($response);
 	}
@@ -159,7 +157,7 @@
 			'package' => 'wget'
 		)
 	);
-	$nodeAction = strval($parameters['action']);
+	$nodeAction = $parameters['action'];
 
 	foreach ($binaries as $binary) {
 		$binaryFileListCommands = array(
@@ -168,14 +166,14 @@
 		);
 		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
 		
-		if (file_put_contents('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFileListCommands) === false) {
+		if (file_put_contents('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh', $binaryFileListCommands) === false) {
 			$response['message'] = 'Error adding binary file list commands, please try again.';
 			_output($response);
 		}
 
-		chmod('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_binary_file_list_commands.sh', 0755);
+		chmod('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh', 0755);
 		unset($binaryFile);
-		exec('cd /usr/local/cloud_node_automation_api/ && sudo ./node_action_' . $nodeAction . '_binary_file_list_commands.sh', $binaryFile);
+		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-' . $nodeAction . '-binary-file-list-commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -185,17 +183,17 @@
 			_output($response);
 		}
 
-		$parameters['binary_files'][$binary['name']] = $binaryFile;
+		$parameters['binaryFiles'][$binary['name']] = $binaryFile;
 	}
 
-	unlink('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '_binary_file_list_commands.sh');
+	unlink('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh');
 
-	if (in_array($nodeAction, array(
-		'process_network_interface_ip_addresses',
-		'process_recursive_dns_destination'
-	)) === false) {
-		if (($nodeAction === 'process_node_processes') === false) {
-			exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_' . $nodeAction . '" | awk \'{print $1}\'', $nodeActionProcessIds);
+	if (
+		(($nodeAction === 'process-network-interface-ip-addresses') === false) &&
+		(($nodeAction === 'process-recursive-dns-destination') === false)
+	) {
+		if (($nodeAction === 'process-node-processes') === false) {
+			exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-' . $nodeAction . '" | awk \'{print $1}\'', $nodeActionProcessIds);
 
 			if (empty($nodeActionProcessIds[1]) === false) {
 				exit;
@@ -203,8 +201,8 @@
 		}
 
 		$systemParameters = array(
-			'action' => 'list_system_settings',
-			'node_authentication_token' => $parameters['node_authentication_token']
+			'action' => 'list-system-settings',
+			'nodeAuthenticationToken' => $parameters['nodeAuthenticationToken']
 		);
 		$encodedSystemParameters = json_encode($systemParameters);
 
@@ -213,14 +211,14 @@
 			_output($response);
 		}
 
-		shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=60 ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php');
+		shell_exec('sudo ' . $parameters['binaryFiles']['wget'] . ' -O /usr/local/firewall-security-api/system-action-list-system-settings-response.json --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --timeout=60 ' . $parameters['systemEndpointDestinationAddress'] . '/system-endpoint.php');
 
-		if (file_exists('/usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json') === false) {
+		if (file_exists('/usr/local/firewall-security-api/system-action-list-system-settings-response.json') === false) {
 			$response['message'] = 'Error listing system settings, please try again.';
 			_output($response);
 		}
 
-		$systemSettingsResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_list_system_settings_response.json');
+		$systemSettingsResponse = file_get_contents('/usr/local/firewall-security-api/system-action-list-system-settings-response.json');
 		$systemSettingsResponse = json_decode($systemSettingsResponse, true);
 
 		if ($systemSettingsResponse === false) {
@@ -228,7 +226,7 @@
 			_output($response);
 		}
 
-		if (($parameters['system_version'] < $systemSettingsResponse['version']) === true) {
+		if (($parameters['systemVersion'] < $systemSettingsResponse['version']) === true) {
 			$systemFiles = json_decode($systemSettingsResponse['files'], true);
 
 			foreach ($systemFiles as $systemFile) {
@@ -240,16 +238,14 @@
 		// todo: update system_endpoint_destination_address if changed
 	}
 
-	$nodeAction = str_replace('_', '', $nodeAction);
-
 	if (
 		(ctype_alnum($nodeAction) === false) ||
-		(file_exists('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '.php') === false)
+		(file_exists('/usr/local/firewall-security-api/node-action-' . $nodeAction . '.php') === false)
 	) {
 		$response['message'] = 'Invalid node endpoint request action, please try again.';
 		_output($response);
 	}
 
-	require_once('/usr/local/cloud_node_automation_api/node_action_' . $nodeAction . '.php');
+	require_once('/usr/local/firewall-security-api/node-action-' . $nodeAction . '.php');
 	_output($response);
 ?>
