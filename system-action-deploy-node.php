@@ -5,24 +5,24 @@
 
 	$systemDatabasesConnections = _connect(array(
 		'nodes'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _deployNode($parameters, $response) {
-		if (empty($parameters['node_authentication_token']) === true) {
+		if (empty($parameters['nodeAuthenticationToken']) === true) {
 			$response['message'] = 'Node authentication token is required, please try again.';
 			return $response;
 		}
 
 		$nodeParameters = array(
 			'data' => array(
-				'deployed_status',
+				'deployedStatus',
 				'id',
-				'node_id'
+				'nodeId'
 			),
-			'in' => $parameters['system_databases']['nodes'],
+			'in' => $parameters['systemDatabases']['nodes'],
 			'where' => array(
-				'authentication_token' => $parameters['node_authentication_token']
+				'authenticationToken' => $parameters['nodeAuthenticationToken']
 			)
 		);
 		$node = _list($nodeParameters, $response);
@@ -33,31 +33,31 @@
 			return $response;
 		}
 
-		if (($node['deployed_status'] === '1') === true) {
+		if (($node['deployedStatus'] === '1') === true) {
 			$response['message'] = 'Node is already deployed, please try again.';
 			return $response;
 		}
 
 		$nodeIds = array_filter(array(
 			$node['id'],
-			$node['node_id']
+			$node['nodeId']
 		));
 		$nodeParameters['data'] = array(
-			'deployed_status' => '1'
+			'deployedStatus' => '1'
 		);
 		$nodeParameters['where'] = array(
 			'either' => array(
 				'id' => $nodeIds,
-				'node_id' => $nodeIds
+				'nodeId' => $nodeIds
 			)
 		);
 		_edit($nodeParameters, $response);
 		$response['message'] = 'Node deployed successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'deploy_node') === true) {
+	if (($parameters['action'] === 'deploy-node') === true) {
 		$response = _deployNode($parameters, $response);
 	}
 ?>
