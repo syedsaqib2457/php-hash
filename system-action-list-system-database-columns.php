@@ -54,7 +54,7 @@
 				'where' => $parameters['where']
 			), $response);
 			$mostRecentSystemDatabaseColumn = current($mostRecentSystemDatabaseColumn);
-			$pagination['modified_timestamp'] = $mostRecentSystemDatabaseColumn['modifiedTimestamp'];
+			$pagination['modifiedTimestamp'] = $mostRecentSystemDatabaseColumn['modifiedTimestamp'];
 		}
 
 		$response['data'] = $systemDatabaseColumns;
