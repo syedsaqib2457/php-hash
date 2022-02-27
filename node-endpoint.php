@@ -1,20 +1,33 @@
 <?php
-	function _killProcessIds($binaryFiles, $nodeAction, $processId, $processIds) {
+	function _killProcessIds($binaryFiles, $currentProcessId, $nodeAction, $processIds) {
 		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
+		$processIdParts = array(
+			''
+		);
+		$processIdPartsKey = 1;
 
 		foreach ($processIds as $processId) {
-			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processId;
+			if ((($processIdPartsKey % 10) === 0) === true) {
+				$processIdPartsKey++;
+				$processIdParts[$processIdPartsKey] = '';
+			}
+
+			$processIdParts[$processIdPartsKey] .= $processId . ' ';
+		}
+
+		foreach ($processIdParts as $processIdPart) {
+			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
 		}
 
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
-		file_put_contents('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $processId . '.sh', $killProcessCommands);
-		shell_exec('sudo chmod +x /usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $processId . '.sh');
-		shell_exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-' . $nodeAction . '-kill-process-commands-' . $processId . '.sh');
-		unlink('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $processId . '.sh');
+		file_put_contents('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $currentProcessId . '.sh', $killProcessCommands);
+		shell_exec('sudo chmod +x /usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $currentProcessId . '.sh');
+		shell_exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-' . $nodeAction . '-kill-process-commands-' . $currentProcessId . '.sh');
+		unlink('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $currentProcessId . '.sh');
 		return;
 	}
 
