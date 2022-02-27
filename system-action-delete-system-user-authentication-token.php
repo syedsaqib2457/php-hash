@@ -60,9 +60,9 @@
 			'systemUserAuthenticationTokenSources',
 		);
 
-		foreach ($systemDatabaseNames as $systemDatabaseName) {
+		foreach ($systemDatabaseTableKeys as $systemDatabaseTableKey) {
 			_delete(array(
-				'in' => $parameters['systemDatabases'][$systemDatabaseName],
+				'in' => $parameters['systemDatabases'][$systemDatabaseTableKey],
 				'where' => array(
 					'systemUserAuthenticationTokenId' => $parameters['where']['id']
 				)
