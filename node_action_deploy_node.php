@@ -8,10 +8,21 @@
 		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
-		$processIdParts = array_chunk($processIds, 10);
+		$processIdParts = array(
+			''
+		);
+		$processIdPartsKey = 1;
+
+		foreach ($processIds as $processId) {
+			if ((($processIdPartsKey % 10) === 0) === true) {
+				$processIdPartsKey++;
+				$processIdParts[$processIdPartsKey] = '';
+			}
+
+			$processIdParts[$processIdPartsKey] .= $processId . ' ';
+		}
 
 		foreach ($processIdParts as $processIdPart) {
-			$processIdPart = implode(' ', $processIdPart);
 			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
 		}
 
