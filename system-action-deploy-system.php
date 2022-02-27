@@ -784,6 +784,15 @@
 		}
 
 		$systemDatabases = array(
+			'nodeProcesses' => array(
+				'createdTimestamp',
+				'id',
+				'modifiedTimestamp',
+				'nodeId',
+				'nodeNodeId',
+				'portNumber',
+				'type'
+			),
 			'nodeProcessForwardingDestinations' => array(
 				'addressVersion4',
 				'addressVersion4NodeId',
@@ -928,15 +937,6 @@
 				'nodeProcessType',
 				'requestCount'
 			),
-			'nodeProcesses' => array(
-				'createdTimestamp',
-				'id',
-				'modifiedTimestamp',
-				'nodeId',
-				'nodeNodeId',
-				'portNumber',
-				'type'
-			),
 			'nodeRequestDestinations' => array(
 				'address',
 				'createdTimestamp',
@@ -987,6 +987,32 @@
 				'storageCapacityMegabytes',
 				'storagePercentage'
 			),
+			'nodes' => array(
+				'activatedStatus',
+				'authenticationToken',
+				'cpuCapacityMegahertz',
+				'cpuCoreCount',
+				'createdTimestamp',
+				'deployedStatus',
+				'externalIpAddressVersion4',
+				'externalIpAddressVersion4Type',
+				'externalIpAddressVersion6',
+				'externalIpAddressVersion6Type',
+				'id',
+				'internalIpAddressVersion4',
+				'internalIpAddressVersion4Type',
+				'internalIpAddressVersion6',
+				'internalIpAddressVersion6Type',
+				'memoryCapacityMegabytes',
+				'modifiedTimestamp',
+				'nodeId',
+				'processedStatus',
+				'processingProgressCheckpoint',
+				'processingProgressOverrideStatus',
+				'processingProgressPercentage',
+				'processingStatus',
+				'storageCapacityMegabytes'
+			),
 			'nodeUserAuthenticationCredentials' => array(
 				'createdTimestamp',
 				'id',
@@ -1030,32 +1056,6 @@
 				'nodeRequestDestinationsOnlyAllowedStatus',
 				'nodeRequestLogsAllowedStatus',
 				'tag'
-			),
-			'nodes' => array(
-				'activatedStatus',
-				'authenticationToken',
-				'cpuCapacityMegahertz',
-				'cpuCoreCount',
-				'createdTimestamp',
-				'deployedStatus',
-				'externalIpAddressVersion4',
-				'externalIpAddressVersion4Type',
-				'externalIpAddressVersion6',
-				'externalIpAddressVersion6Type',
-				'id',
-				'internalIpAddressVersion4',
-				'internalIpAddressVersion4Type',
-				'internalIpAddressVersion6',
-				'internalIpAddressVersion6Type',
-				'memoryCapacityMegabytes',
-				'modifiedTimestamp',
-				'nodeId',
-				'processedStatus',
-				'processingProgressCheckpoint',
-				'processingProgressOverrideStatus',
-				'processingProgressPercentage',
-				'processingStatus',
-				'storageCapacityMegabytes'
 			),
 			'systemDatabaseColumns' => array(
 				'createdTimestamp',
@@ -1112,6 +1112,13 @@
 				'name',
 				'value'
 			),
+			'systemUserAuthenticationTokens' => array(
+				'createdTimestamp',
+				'id',
+				'modifiedTimestamp',
+				'systemUserId',
+				'value'
+			),
 			'systemUserAuthenticationTokenScopes' => array(
 				'createdTimestamp',
 				'id',
@@ -1130,12 +1137,11 @@
 				'systemUserAuthenticationTokenId',
 				'systemUserId'
 			),
-			'systemUserAuthenticationTokens' => array(
+			'systemUsers' => array(
 				'createdTimestamp',
 				'id',
 				'modifiedTimestamp',
-				'systemUserId',
-				'value'
+				'systemUserId'
 			),
 			'systemUserSystemUsers' => array(
 				'createdTimestamp',
@@ -1143,12 +1149,6 @@
 				'modifiedTimestamp',
 				'systemUserId',
 				'systemUserSystemUserId'
-			),
-			'systemUsers' => array(
-				'createdTimestamp',
-				'id',
-				'modifiedTimestamp',
-				'systemUserId'
 			)
 		);
 		$systemDatabaseCommands = array();
@@ -1250,6 +1250,14 @@
 					'value' => $systemUserAuthenticationToken
 				)
 			),
+			'systemUsers' => array(
+				array(
+					'createdTimestamp' => $timestamp,
+					'id' => $systemUserId,
+					'modifiedTimestamp' => $timestamp,
+					'systemUserId' => $systemUserId
+				)
+			),
 			'systemUserSystemUsers' => array(
 				array(
 					'createdTimestamp' => $timestamp,
@@ -1257,14 +1265,6 @@
 					'modifiedTimestamp' => $timestamp,
 					'systemUserId' => $systemUserId,
 					'systemUserSystemUserId' => $systemUserId
-				)
-			),
-			'systemUsers' => array(
-				array(
-					'createdTimestamp' => $timestamp,
-					'id' => $systemUserId,
-					'modifiedTimestamp' => $timestamp,
-					'systemUserId' => $systemUserId
 				)
 			)
 		);
