@@ -4,15 +4,15 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_resource_usage_logs'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_resource_usage_logs'] = $systemDatabasesConnections['node_resource_usage_logs'];
+		'nodeResourceUsageLogs'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodeResourceUsageLogs'] = $systemDatabasesConnections['nodeResourceUsageLogs'];
 
 	function _listNodeResourceUsageLogs($parameters, $response) {
 		
 	}
 
-	if (($parameters['action'] === 'list_node_resource_usage_logs') === true) {
+	if (($parameters['action'] === 'list-node-resource-usage-logs') === true) {
 		$response = _listNodeResourceUsageLogs($parameters, $response);
 	}
 ?>
