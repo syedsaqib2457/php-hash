@@ -1134,7 +1134,7 @@
 		return $response;
 	}
 
-	function _processNodeProcessingProgress($binaryFiles, $processId, $processingProgressCheckpoints, $processingProgressCheckpointCount, $systemActionProcessNodeParameters, $systemEndpointDestinationAddress) {
+	function _processNodeProcessingProgress($binaryFiles, $currentProcessId, $processingProgressCheckpoints, $processingProgressCheckpointCount, $systemActionProcessNodeParameters, $systemEndpointDestinationAddress) {
 		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-process-node-processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
 
 		if (
@@ -1161,15 +1161,15 @@
 		}
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-processing-status-' . $processId . '-response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-			if (file_exists('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $processId . '-response.json') === true) {
-				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $processId . '-response.json');
+			if (file_exists('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json') === true) {
+				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json');
 				$systemActionProcessNodeProcessingStatusResponse = json_decode($systemActionProcessNodeResponse, true);
 
 				if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
 					exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-process-node-processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
-					_killProcessIds($binaryFiles, 'processNodeProcesses', $processId, $nodeProcessProcessIds);
+					_killProcessIds($binaryFiles, 'processNodeProcesses', $currentProcessId, $nodeProcessProcessIds);
 				} elseif (
 					(empty($nodeProcessProcessIds[1]) === false) &&
 					(($processingProgressCheckpoint === 'listingNodeParameters') === true)
