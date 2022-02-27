@@ -559,7 +559,7 @@
 			$parameters = _processFirewall($parameters);
 			$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
-			foreach ($parameters['data']['next']['node_processes']['recursive_dns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
+			foreach ($parameters['data']['next']['nodeProcesses']['recursiveDns'][$nodeProcessPartKey] as $recursiveDnsNodeProcessNodeId => $recursiveDnsNodeProcessPortNumbers) {
 				$recursiveDnsNodeProcessConfiguration = array(
 					'a0' => 'acl nodeReservedInternalSources {',
 					'b0' => '};',
@@ -601,33 +601,33 @@
 					'h' => 0
 				);
 
-				foreach ($parameters['data']['next']['node_reserved_internal_sources'] as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
+				foreach ($parameters['data']['next']['nodeReservedInternalSources'] as $nodeReservedInternalSourceIpAddressVersionNumber => $nodeReservedInternalSources) {
 					foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
 						$recursiveDnsNodeProcessConfiguration['a' . $recursiveDnsNodeProcessConfigurationIndexes['a']] = $nodeReservedInternalSource . ';';
 						$recursiveDnsNodeProcessConfigurationIndexes['a']++;
 					}
 				}
 
-				if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
+				if (empty($parameters['data']['next']['nodeProcessNodeUsers']['recursiveDns'][$recursiveDnsNodeProcessNodeId]) === false) {
 					$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'logging {';
 					$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 
-					foreach ($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserId) {
-						if (empty($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources']) === false) {
-							foreach ($parameters['data']['next']['node_users'][$recursiveDnsNodeProcessNodeUserId]['node_user_authentication_sources'] as $recursiveDnsNodeProcessNodeUserAuthenticationSource) {
+					foreach ($parameters['data']['next']['nodeProcessNodeUsers']['recursiveDns'][$recursiveDnsNodeProcessNodeId] as $recursiveDnsNodeProcessNodeUserId) {
+						if (empty($parameters['data']['next']['nodeUsers'][$recursiveDnsNodeProcessNodeUserId]['nodeUserAuthenticationSources']) === false) {
+							foreach ($parameters['data']['next']['nodeUsers'][$recursiveDnsNodeProcessNodeUserId]['nodeUserAuthenticationSources'] as $recursiveDnsNodeProcessNodeUserAuthenticationSource) {
 								$recursiveDnsNodeProcessConfiguration['b' . $recursiveDnsNodeProcessConfigurationIndexes['b']] = $recursiveDnsNodeProcessNodeUserAuthenticationSource . ';';
 								$recursiveDnsNodeProcessConfigurationIndexes['b']++;
 							}
 
-							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'channel ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'channel ' . $recursiveDnsNodeProcessNodeId . $recursiveDnsNodeProcessNodeUserId . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'file "/var/log/recursive_dns/' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . '"';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'file "/var/log/recursiveDns/' . $recursiveDnsNodeProcessNodeId . $recursiveDnsNodeProcessNodeUserId . '"';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'print-time yes';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = '};';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
-							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'category ' . $recursiveDnsNodeProcessNodeId . '_' . $recursiveDnsNodeProcessNodeUserId . ' {';
+							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'category ' . $recursiveDnsNodeProcessNodeId . $recursiveDnsNodeProcessNodeUserId . ' {';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
 							$recursiveDnsNodeProcessConfiguration['h' . sprintf('%06u', $recursiveDnsNodeProcessConfigurationIndexes['h'])] = 'queries_log;';
 							$recursiveDnsNodeProcessConfigurationIndexes['h']++;
@@ -642,41 +642,41 @@
 				$recursiveDnsNodeProcessesStart = true;
 				$recursiveDnsNodeProcessInterfaceDestinationIpAddresses = $recursiveDnsNodeProcessNodeIpAddresses = array();
 
-				foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $recursiveDnsNodeIpAddressVersionNumber) {
+				foreach ($parameters['data']['next']['nodeIpAddressVersionNumbers'] as $recursiveDnsNodeIpAddressVersionNumber) {
 					$recursiveDnsNodeProcessConfigurationOptionSuffix = '';
 
 					if ($recursiveDnsNodeIpAddressVersionNumber === '6') {
 						$recursiveDnsNodeProcessConfigurationOptionSuffix = '-v6';
 					}
 
-					if (empty($parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber]) === false) {
+					if (empty($parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['externalIpAddressVersion' . $recursiveDnsNodeIpAddressVersionNumber]) === false) {
 						$recursiveDnsNodeProcessConfiguration['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = 'listen-on' . $recursiveDnsNodeProcessConfigurationOptionSuffix . ' {';
 						$recursiveDnsNodeProcessConfigurationIndexes['c']++;
-						$recursiveDnsNodeProcessInterfaceSourceIpAddress = $recursiveDnsNodeProcessNodeIpAddresses[$recursiveDnsNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber];
+						$recursiveDnsNodeProcessInterfaceSourceIpAddress = $recursiveDnsNodeProcessNodeIpAddresses[$recursiveDnsNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['externalIpAddressVersion' . $recursiveDnsNodeIpAddressVersionNumber];
 						$recursiveDnsNodeProcessConfiguration['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = false;
 
-						if (empty($parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber]) === false) {
-							$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber];
-							$recursiveDnsNodeProcessInterfaceSourceIpAddress = $recursiveDnsNodeProcessNodeIpAddresses[$recursiveDnsNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internal_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber];
+						if (empty($parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internalIpAddressVersion' . $recursiveDnsNodeIpAddressVersionNumber]) === false) {
+							$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internalIpAddressVersion' . $recursiveDnsNodeIpAddressVersionNumber];
+							$recursiveDnsNodeProcessInterfaceSourceIpAddress = $recursiveDnsNodeProcessNodeIpAddresses[$recursiveDnsNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internalIpAddressVersion' . $recursiveDnsNodeIpAddressVersionNumber];
 						} else {
-							$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['external_ip_address_version_' . $recursiveDnsNodeIpAddressVersionNumber];
+							$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = $parameters['data']['next']['nodes'][$recursiveDnsNodeProcessNodeId]['internalIpAddressVersion' . $recursiveDnsNodeIpAddressVersionNumber];
 						}
 
-						if (empty($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpAddressVersionNumber][$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']]]) === false) {
+						if (empty($parameters['data']['current']['nodeReservedInternalDestinationIpAddresses'][$recursiveDnsNodeIpAddressVersionNumber][$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']]]) === false) {
 							$recursiveDnsNodeProcessesStart = false;
 						}
 
 						$recursiveDnsNodeProcessConfigurationIndexes['c']++;
 						$recursiveDnsNodeProcessConfiguration['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = false;
-						$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersionNumber]['ip_address'];
+						$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = $parameters['data']['next']['nodeReservedInternalDestinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersionNumber]['ipAddress'];
 						$recursiveDnsNodeProcessConfigurationIndexes['c']++;
 
-						if (empty($parameters['data']['next']['node_process_node_users']['recursive_dns'][$recursiveDnsNodeProcessNodeId]) === false) {
+						if (empty($parameters['data']['next']['nodeProcessNodeUsers']['recursiveDns'][$recursiveDnsNodeProcessNodeId]) === false) {
 							$recursiveDnsNodeProcessConfiguration['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = false;
 							$recursiveDnsNodeProcessInterfaceDestinationIpAddresses['c' . $recursiveDnsNodeProcessConfigurationIndexes['c']] = $recursiveDnsNodeProcessInterfaceSourceIpAddress;
 							$recursiveDnsNodeProcessConfigurationIndexes['c']++;
 
-							if (empty($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$recursiveDnsNodeIpAddressVersionNumber][$recursiveDnsNodeProcessInterfaceSourceIpAddress]) === false) {
+							if (empty($parameters['data']['current']['nodeReservedInternalDestinationIpAddresses'][$recursiveDnsNodeIpAddressVersionNumber][$recursiveDnsNodeProcessInterfaceSourceIpAddress]) === false) {
 								$recursiveDnsNodeProcessesStart = false;
 							}
 						}
@@ -692,15 +692,15 @@
 
 				foreach ($recursiveDnsNodeProcessPortNumbers as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
 					// todo: add default node timeout column to wait for X seconds before closing open connections
-					while (_verifyNodeProcessConnections($parameters['binary_files'], $recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) {
+					while (_verifyNodeProcessConnections($parameters['binaryFiles'], $recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) {
 						sleep(1);
 					}
 
-					if (file_exists('/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf') === true) {
-						$recursiveDnsNodeProcessProcessIds = _listProcessIds('recursive_dns_' . $recursiveDnsNodeProcessId . ' ', 'recursive_dns_' . $recursiveDnsNodeProcessId . '/');
+					if (file_exists('/etc/recursiveDns' . $recursiveDnsNodeProcessId . '/named.conf') === true) {
+						$recursiveDnsNodeProcessProcessIds = _listProcessIds('recursiveDns' . $recursiveDnsNodeProcessId . ' ', 'recursiveDns' . $recursiveDnsNodeProcessId . '/');
 
 						if (empty($recursiveDnsNodeProcessProcessIds) === false) {
-							_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $recursiveDnsNodeProcessProcessIds);
+							_killProcessIds($parameters['binaryFiles'], $parameters['action'], $parameters['processId'], $recursiveDnsNodeProcessProcessIds);
 						}
 					}
 
@@ -708,38 +708,38 @@
 						$recursiveDnsNodeProcessConfiguration[$recursiveDnsNodeProcessInterfaceDestinationIpAddressIndex] = $recursiveDnsNodeProcessInterfaceDestinationIpAddress . ':' . $recursiveDnsNodeProcessPortNumber . ';';
 					}
 
-					$recursiveDnsNodeProcessConfiguration['e'] = '"/var/cache/recursive_dns_' . $recursiveDnsNodeProcessId . '";';
-					$recursiveDnsNodeProcessConfiguration['f'] = 'pid-file "/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid";';
+					$recursiveDnsNodeProcessConfiguration['e'] = '"/var/cache/recursiveDns' . $recursiveDnsNodeProcessId . '";';
+					$recursiveDnsNodeProcessConfiguration['f'] = 'pid-file "/var/run/named/recursiveDns' . $recursiveDnsNodeProcessId . '.pid";';
 					$recursiveDnsNodeProcessConfiguration = implode("\n", $recursiveDnsNodeProcessConfiguration);
-					file_put_contents('/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf.options', $recursiveDnsNodeProcessConfiguration);
-					shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named recursive_dns_' . $recursiveDnsNodeProcessId);
+					file_put_contents('/etc/recursiveDns' . $recursiveDnsNodeProcessId . '/named.conf.options', $recursiveDnsNodeProcessConfiguration);
+					shell_exec('cd /usr/sbin && sudo ln /usr/sbin/named recursiveDns' . $recursiveDnsNodeProcessId);
 					$recursiveDnsNodeProcessService = array(
 						'[Service]',
-						'ExecStart=/usr/sbin/recursive_dns_' . $recursiveDnsNodeProcessId . ' -f -c /etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf -S 40000 -u root'
+						'ExecStart=/usr/sbin/recursiveDns' . $recursiveDnsNodeProcessId . ' -f -c /etc/recursiveDns' . $recursiveDnsNodeProcessId . '/named.conf -S 40000 -u root'
 					);
 					$recursiveDnsNodeProcessService = implode("\n", $recursiveDnsNodeProcessService);
-					file_put_contents('/lib/systemd/system/recursive_dns_' . $recursiveDnsNodeProcessId . '.service', $recursiveDnsNodeProcessService);
+					file_put_contents('/lib/systemd/system/recursiveDns' . $recursiveDnsNodeProcessId . '.service', $recursiveDnsNodeProcessService);
 
-					if (file_exists('/etc/default/recursive_dns_' . $recursiveDnsNodeProcessId) === false) {
-						copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/recursive_dns_' . $recursiveDnsNodeProcessId);
+					if (file_exists('/etc/default/recursiveDns' . $recursiveDnsNodeProcessId) === false) {
+						copy('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName, '/etc/default/recursiveDns' . $recursiveDnsNodeProcessId);
 					}
 
-					if (file_exists('/etc/recursive_dns_' . $recursiveDnsNodeProcessId) === false) {
-						shell_exec('sudo cp -r /etc/bind /etc/recursive_dns_' . $recursiveDnsNodeProcessId);
-						file_put_contents('/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf', 'include "/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf.options"; include "/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf.local"; include "/etc/recursive_dns_' . $recursiveDnsNodeProcessId . '/named.conf.default-zones";');
+					if (file_exists('/etc/recursiveDns' . $recursiveDnsNodeProcessId) === false) {
+						shell_exec('sudo cp -r /etc/bind /etc/recursiveDns' . $recursiveDnsNodeProcessId);
+						file_put_contents('/etc/recursiveDns' . $recursiveDnsNodeProcessId . '/named.conf', 'include "/etc/recursiveDns' . $recursiveDnsNodeProcessId . '/named.conf.options"; include "/etc/recursiveDns' . $recursiveDnsNodeProcessId . '/named.conf.local"; include "/etc/recursiveDns' . $recursiveDnsNodeProcessId . '/named.conf.default-zones";');
 					}
 
-					if (is_dir('/var/cache/recursive_dns_' . $recursiveDnsNodeProcessId) === false) {
-						mkdir('/var/cache/recursive_dns_' . $recursiveDnsNodeProcessId);
+					if (is_dir('/var/cache/recursiveDns' . $recursiveDnsNodeProcessId) === false) {
+						mkdir('/var/cache/recursiveDns' . $recursiveDnsNodeProcessId);
 					}
 
-					shell_exec('sudo ' . $parameters['binary_files']['systemctl'] . ' daemon-reload');
-					unlink('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid');
+					shell_exec('sudo ' . $parameters['binaryFiles']['systemctl'] . ' daemon-reload');
+					unlink('/var/run/named/recursiveDns' . $recursiveDnsNodeProcessId . '.pid');
 					// todo: add default node timeout column to wait for X seconds before proceeding with processing after processes start + stop
 					$recursiveDnsNodeProcessResponse = false;
 
 					while ($recursiveDnsNodeProcessResponse === false) {
-						$recursiveDnsNodeProcessResponse = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersionNumber]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === false);
+						$recursiveDnsNodeProcessResponse = (_verifyNodeProcess($parameters['binaryFiles'], $parameters['data']['next']['nodeReservedInternalDestinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersionNumber]['ipAddress'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursiveDns') === false);
 						sleep(1);
 					}
 
@@ -747,22 +747,22 @@
 
 					if ($recursiveDnsNodeProcessesStart === true) {
 						while ($recursiveDnsNodeProcessResponse === false) {
-							shell_exec('sudo ' . $parameters['binary_files']['service'] . ' recursive_dns_' . $recursiveDnsNodeProcessId . ' start');
-							$recursiveDnsNodeProcessResponse = (_verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersionNumber]['ip_address'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursive_dns') === true);
+							shell_exec('sudo ' . $parameters['binaryFiles']['service'] . ' recursiveDns' . $recursiveDnsNodeProcessId . ' start');
+							$recursiveDnsNodeProcessResponse = (_verifyNodeProcess($parameters['binaryFiles'], $parameters['data']['next']['nodeReservedInternalDestinations'][$recursiveDnsNodeProcessNodeId][$recursiveDnsNodeIpAddressVersionNumber]['ipAddress'], $recursiveDnsNodeIpAddressVersion, $recursiveDnsNodeProcessPortNumber, 'recursiveDns') === true);
 							sleep(1);
 						}
 					} else {
-						$systemActionProcessNodeParameters['data']['processed_status'] = '0';
+						$systemActionProcessNodeParameters['data']['processedStatus'] = '0';
 					}
 
-					if (file_exists('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid') === true) {
-						$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/recursive_dns_' . $recursiveDnsNodeProcessId . '.pid');
+					if (file_exists('/var/run/named/recursiveDns' . $recursiveDnsNodeProcessId . '.pid') === true) {
+						$recursiveDnsNodeProcessProcessId = file_get_contents('/var/run/named/recursiveDns' . $recursiveDnsNodeProcessId . '.pid');
 
 						if (is_numeric($recursiveDnsNodeProcessProcessId) === true) {
-							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n1000000000');
-							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n=1000000000');
-							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s"unlimited"');
-							shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s=unlimited');
+							shell_exec('sudo ' . $parameters['binaryFiles']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n1000000000');
+							shell_exec('sudo ' . $parameters['binaryFiles']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -n=1000000000');
+							shell_exec('sudo ' . $parameters['binaryFiles']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s"unlimited"');
+							shell_exec('sudo ' . $parameters['binaryFiles']['prlimit'] . ' -p ' . $recursiveDnsNodeProcessProcessId . ' -s=unlimited');
 						}
 					}
 				}
@@ -771,35 +771,35 @@
 
 		$nodeRecursiveDnsDestinations = array();
 
-		foreach ($parameters['data']['next']['node_recursive_dns_destinations']['recursive_dns'] as $nodeRecursiveDnsDestination) {
-			foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
-				if (empty($nodeRecursiveDnsDestination['destination_ip_address_version_' . $ipAddressVersionNumber]) === false) {
-					$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['destination_ip_address_version_' . $ipAddressVersionNumber] . ']:' . $nodeRecursiveDnsDestination['port_number_version_' . $ipAddressVersionNumber];
+		foreach ($parameters['data']['next']['nodeRecursiveDnsDestinations']['recursiveDns'] as $nodeRecursiveDnsDestination) {
+			foreach ($parameters['ipAddressVersions'] as $ipAddressVersionNumber => $ipAddressVersion) {
+				if (empty($nodeRecursiveDnsDestination['destinationIpAddressVersion' . $ipAddressVersionNumber]) === false) {
+					$nodeRecursiveDnsDestinations[] = 'nameserver [' . $nodeRecursiveDnsDestination['destinationIpAddressVersion' . $ipAddressVersionNumber] . ']:' . $nodeRecursiveDnsDestination['portNumberVersion' . $ipAddressVersionNumber];
 				}
 			}
 		}
 
 		$nodeRecursiveDnsDestinations = implode("\n", $nodeRecursiveDnsDestinations);
 
-		if (file_put_contents('/usr/local/cloud_node_automation_api/resolv.conf', $nodeRecursiveDnsDestinations) === false) {
+		if (file_put_contents('/usr/local/firewall-security-api/resolv.conf', $nodeRecursiveDnsDestinations) === false) {
 			$response['message'] = 'Error adding node recursive DNS destinations, please try again.';
 			return $response;
 		}
 
-		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-		$parameters['node_process_type_process_part_data_keys']['recursive_dns'] = array(
+		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationAddress']);
+		$parameters['nodeProcessTypeProcessPartDataKeys']['recursiveDns'] = array(
 			'next',
 			'next'
 		);
 
 		foreach (array(0, 1) as $nodeProcessPartKey) {
-			$parameters['node_process_part_key'] = $nodeProcessPartKey;
+			$parameters['nodeProcessPartKey'] = $nodeProcessPartKey;
 			$parameters = _processFirewall($parameters);
 			$nodeProcessPartKey = abs($nodeProcessPartKey - 1);
 
-			foreach ($parameters['data']['next']['proxy_node_process_types'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
-				if (empty($parameters['data']['next']['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey]) === false) {
-					foreach ($parameters['data']['next']['node_processes'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessNodeId => $proxyNodeProcessPortNumbers) {
+			foreach ($parameters['data']['next']['proxyNodeProcessTypes'] as $proxyNodeProcessTypeServiceName => $proxyNodeProcessType) {
+				if (empty($parameters['data']['next']['nodeProcesses'][$proxyNodeProcessType][$nodeProcessPartKey]) === false) {
+					foreach ($parameters['data']['next']['nodeProcesses'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessNodeId => $proxyNodeProcessPortNumbers) {
 						$proxyNodeProcessConfiguration = array(
 							'a0' => 'maxconn 20000',
 							'a1' => 'nobandlimin',	
@@ -822,16 +822,16 @@
 							'i' => 0
 						);
 
-						foreach ($parameters['data']['next']['node_process_node_users'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessNodeUserIds) {
+						foreach ($parameters['data']['next']['nodeProcessNodeUsers'][$proxyNodeProcessType][$proxyNodeProcessNodeId] as $proxyNodeProcessNodeUserIds) {
 							$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'auth iponly strong';
 							$proxyNodeProcessConfigurationIndexes['c']++;
 
 							foreach ($proxyNodeProcessNodeUserIds as $proxyNodeProcessNodeUserId) {
-								$proxyNodeProcessNodeUser = $parameters['data']['next']['node_users'][$proxyNodeProcessNodeUserId];
+								$proxyNodeProcessNodeUser = $parameters['data']['next']['nodeUsers'][$proxyNodeProcessNodeUserId];
 								$proxyNodeProcessNodeUserAuthenticationCredentialParts = array();
 
-								if (empty($proxyNodeProcessNodeUser['node_user_authentication_credentials']) === false) {
-									foreach ($proxyNodeProcessNodeUser['node_user_authentication_credentials'] as $proxyNodeProcessNodeUserAuthenticationCredential) {	
+								if (empty($proxyNodeProcessNodeUser['nodeUserAuthenticationCredentials']) === false) {
+									foreach ($proxyNodeProcessNodeUser['nodeUserAuthenticationCredentials'] as $proxyNodeProcessNodeUserAuthenticationCredential) {	
 										if (($proxyNodeProcessConfigurationIndexes['b'] % 10) === 0) {
 											$proxyNodeProcessConfiguration['b' . $proxyNodeProcessConfigurationPartIndexes['b']] = 'users ' . $proxyNodeProcessNodeUserAuthenticationCredential['username'] . ':CL:' . $proxyNodeProcessNodeUserAuthenticationCredential['password'];
 											$proxyNodeProcessConfigurationPartIndexes['b'] = $proxyNodeProcessConfigurationIndexes['b'];
@@ -847,38 +847,38 @@
 
 								if (
 									(
-										(empty($proxyNodeProcessNodeUser['node_request_destination_ids']) === false) ||
-										(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === true)
+										(empty($proxyNodeProcessNodeUser['nodeRequestDestinationIds']) === false) ||
+										(empty($proxyNodeProcessNodeUser['nodeRequestDestinationsOnlyAllowedStatus']) === true)
 									) &&
 									(
-										(empty($proxyNodeProcessNodeUser['node_user_authentication_credentials']) === false) ||
-										(empty($proxyNodeProcessNodeUser['node_user_authentication_sources']) === false)
+										(empty($proxyNodeProcessNodeUser['nodeUserAuthenticationCredentials']) === false) ||
+										(empty($proxyNodeProcessNodeUser['nodeUserAuthenticationSources']) === false)
 									)
 								) {
 									$proxyNodeProcessNodeUserNodeRequestDestinationParts = array(
 										'*'
 									);
 
-									foreach ($proxyNodeProcessNodeUser['node_request_destination_ids'] as $proxyNodeProcessNodeUserNodeRequestDestinationId) {
+									foreach ($proxyNodeProcessNodeUser['nodeRequestDestinationIds'] as $proxyNodeProcessNodeUserNodeRequestDestinationId) {
 										if (($proxyNodeProcessConfigurationIndexes['h'] % 10) === 0) {
 											$proxyNodeProcessConfigurationPartIndexes['h'] = $proxyNodeProcessConfigurationIndexes['h'];
-											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessConfigurationPartIndexes['h']] = $parameters['data']['next']['node_request_destinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
+											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessConfigurationPartIndexes['h']] = $parameters['data']['next']['nodeRequestDestinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
 										} else {
-											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessConfigurationPartIndexes['h']] .= ',' . $parameters['data']['next']['node_request_destinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
+											$proxyNodeProcessNodeUserNodeRequestDestinationParts[$proxyNodeProcessConfigurationPartIndexes['h']] .= ',' . $parameters['data']['next']['nodeRequestDestinations'][$proxyNodeProcessNodeUserNodeRequestDestinationId];
 										}
 
 										$proxyNodeProcessConfigurationIndexes['h']++;
 									}
 
-									if (empty($proxyNodeProcessNodeUser['node_request_logs_allowed_status']) === false) {
-										$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . '_' . $proxyNodeProcessNodeUserId;
+									if (empty($proxyNodeProcessNodeUser['nodeRequestLogsAllowedStatus']) === false) {
+										$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'log /var/log/' . $proxyNodeProcessType . '/' . $proxyNodeProcessNodeId . $proxyNodeProcessNodeUserId;
 										$proxyNodeProcessConfigurationIndexes['c']++;
 										$proxyNodeProcessConfiguration['c' . sprintf('%010u', $proxyNodeProcessConfigurationIndexes['c'])] = 'logformat " %I _ %O _ %Y-%m-%d %H-%M-%S.%. _ %n _ %R _ %E _ %C"';
 										$proxyNodeProcessConfigurationIndexes['c']++;
 									}
 
 									if (
-										(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === true) &&
+										(empty($proxyNodeProcessNodeUser['nodeRequestDestinationsOnlyAllowedStatus']) === true) &&
 										(empty($proxyNodeProcessNodeUserNodeRequestDestinationParts) === false)
 									) {
 										foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
@@ -887,10 +887,10 @@
 										}
 									}
 
-									if (empty($proxyNodeProcessNodeUser['authentication_strict_only_allowed_status']) === true) {
+									if (empty($proxyNodeProcessNodeUser['authenticationStrictOnlyAllowedStatus']) === true) {
 										if (
-											(empty($proxyNodeProcessNodeUser['node_request_destinations_only_allowed_status']) === false) &&
-											(empty($proxyNodeProcessNodeUser['node_user_authentication_credentials']) === false)
+											(empty($proxyNodeProcessNodeUser['nodeRequestDestinationsOnlyAllowedStatus']) === false) &&
+											(empty($proxyNodeProcessNodeUser['nodeUserAuthenticationCredentials']) === false)
 										) {
 											foreach ($proxyNodeProcessNodeUserAuthenticationCredentialParts as $proxyNodeProcessNodeUserAuthenticationCredentialPart) {
 												foreach ($proxyNodeProcessNodeUserNodeRequestDestinationParts as $proxyNodeProcessNodeUserNodeRequestDestinationPart) {
@@ -905,10 +905,10 @@
 										);
 									}
 
-									if (empty($proxyNodeProcessNodeUser['node_user_authentication_sources']) === false) {
+									if (empty($proxyNodeProcessNodeUser['nodeUserAuthenticationSources']) === false) {
 										$proxyNodeProcessNodeUserAuthenticationSourceParts = array();
 
-										foreach ($proxyNodeProcessNodeUser['node_user_authentication_sources'] as $proxyNodeProcessNodeUserAuthenticationSource) {
+										foreach ($proxyNodeProcessNodeUser['nodeUserAuthenticationSources'] as $proxyNodeProcessNodeUserAuthenticationSource) {
 											if (($proxyNodeProcessConfigurationIndexes['i'] % 10) === 0) {
 												$proxyNodeProcessNodeUserAuthenticationSourceParts[$proxyNodeProcessConfigurationIndexes['i']] = $proxyNodeProcessNodeUserAuthenticationSource;
 												$proxyNodeProcessConfigurationPartIndexes['i'] = $proxyNodeProcessConfigurationIndexes['i'];
@@ -940,25 +940,25 @@
 						$proxyNodeProcessesStart = true;
 						$proxyNodeProcessNodeIpAddresses = array();
 
-						foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $proxyNodeIpAddressVersionNumber) {
-							if (empty($parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['destination_ip_address_version_' . $proxyNodeIpAddressVersionNumber]) === false) {
-								$proxyNodeProcessConfiguration['e' . $proxyNodeProcessConfigurationIndexes['e']] = 'nserver ' . $parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['destination_ip_address_version_' . $proxyNodeIpAddressVersionNumber] . '[:' . $parameters['data']['next']['node_process_recursive_dns_destinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['port_number_version_' . $proxyNodeIpAddressVersionNumber] . ']';
+						foreach ($parameters['data']['next']['nodeIpAddressVersionNumbers'] as $proxyNodeIpAddressVersionNumber) {
+							if (empty($parameters['data']['next']['nodeProcessRecursiveDnsDestinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['destinationIpAddressVersion' . $proxyNodeIpAddressVersionNumber]) === false) {
+								$proxyNodeProcessConfiguration['e' . $proxyNodeProcessConfigurationIndexes['e']] = 'nserver ' . $parameters['data']['next']['nodeProcessRecursiveDnsDestinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['destinationIpAddressVersion' . $proxyNodeIpAddressVersionNumber] . '[:' . $parameters['data']['next']['nodeProcessRecursiveDnsDestinations'][$proxyNodeProcessType][$proxyNodeProcessNodeId]['portNumberVersion' . $proxyNodeIpAddressVersionNumber] . ']';
 								$proxyNodeProcessConfigurationIndexes['e']++;
 							}
 
-							if (empty($parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['external_ip_address_version_' . $proxyNodeIpAddressVersionNumber]) === false) {
-								$proxyNodeProcessInterfaceDestinationIpAddress = $proxyNodeProcessNodeIpAddresses[$proxyNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['external_ip_address_version_' . $proxyNodeIpAddressVersionNumber];
+							if (empty($parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['externalIpAddressVersion' . $proxyNodeIpAddressVersionNumber]) === false) {
+								$proxyNodeProcessInterfaceDestinationIpAddress = $proxyNodeProcessNodeIpAddresses[$proxyNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['externalIpAddressVersion' . $proxyNodeIpAddressVersionNumber];
 
-								if (empty($parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_address_version_' . $proxyNodeIpAddressVersionNumber]) === false) {
-									$proxyNodeProcessInterfaceDestinationIpAddress = $proxyNodeProcessNodeIpAddresses[$proxyNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['internal_ip_address_version_' . $proxyNodeIpAddressVersionNumber];
+								if (empty($parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['internalIpAddressVersion' . $proxyNodeIpAddressVersionNumber]) === false) {
+									$proxyNodeProcessInterfaceDestinationIpAddress = $proxyNodeProcessNodeIpAddresses[$proxyNodeIpAddressVersionNumber] = $parameters['data']['next']['nodes'][$proxyNodeProcessNodeId]['internalIpAddressVersion' . $proxyNodeIpAddressVersionNumber];
 
-									if (empty($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$proxyNodeIpAddressVersionNumber][$proxyNodeProcessInterfaceDestinationIpAddress]) === false) {
+									if (empty($parameters['data']['current']['nodeReservedInternalDestinationIpAddresses'][$proxyNodeIpAddressVersionNumber][$proxyNodeProcessInterfaceDestinationIpAddress]) === false) {
 										$proxyNodeProcessesStart = false;
 									}
 								}
 
 								$proxyNodeProcessConfiguration['f'] .= ' -e' . $proxyNodeProcessInterfaceDestinationIpAddress . ' -i' . $proxyNodeProcessInterfaceDestinationIpAddress;
-								$proxyNodeProcessConfiguration['g'] .= ' -e' . $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'] . ' -i' . $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'];
+								$proxyNodeProcessConfiguration['g'] .= ' -e' . $parameters['data']['next']['nodeReservedInternalDestinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ipAddress'] . ' -i' . $parameters['data']['next']['nodeReservedInternalDestinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ipAddress'];
 							}
 						}
 
@@ -969,38 +969,38 @@
 						);
 
 						foreach ($proxyNodeProcessPortNumbers as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
-							while (_verifyNodeProcessConnections($parameters['binary_files'], $proxyNodeProcessNodeIpAddresses, $proxyNodeProcessPortNumber) === true) {
+							while (_verifyNodeProcessConnections($parameters['binaryFiles'], $proxyNodeProcessNodeIpAddresses, $proxyNodeProcessPortNumber) === true) {
 								sleep(1);
 							}
 
-							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg') === true) {
-								$proxyNodeProcessProcessIds = _listProcessIds($proxyNodeProcessType . '_' . $proxyNodeProcessId . ' ', '/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg');
+							if (file_exists('/etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg') === true) {
+								$proxyNodeProcessProcessIds = _listProcessIds($proxyNodeProcessType . $proxyNodeProcessId . ' ', '/etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg');
 
 								if (empty($proxyNodeProcessProcessIds) === false) {
-									_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $proxyNodeProcessProcessIds);
+									_killProcessIds($parameters['binaryFiles'], $parameters['action'], $parameters['processId'], $proxyNodeProcessProcessIds);
 								}
 							}
 
-							shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessType . '_' . $proxyNodeProcessId);
+							shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessType . $proxyNodeProcessId);
 							$proxyNodeProcessService = array(
 								'[Service]',
-								'ExecStart=/bin/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . ' /etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg')
+								'ExecStart=/bin/' . $proxyNodeProcessType . $proxyNodeProcessId . ' /etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg')
 							);
 							$proxyNodeProcessService = implode("\n", $proxyNodeProcessService);
-							file_put_contents('/etc/systemd/system/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.service', $proxyNodeProcessService);
-							$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid';
+							file_put_contents('/etc/systemd/system/' . $proxyNodeProcessType . $proxyNodeProcessId . '.service', $proxyNodeProcessService);
+							$proxyNodeProcessConfiguration['a8'] = 'pidfile /var/run/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.pid';
 							$proxyNodeProcessConfiguration['f'] = $proxyNodeProcessInterfaceConfigurations['f'] . ' -p' . $proxyNodeProcessPortNumber;
 							$proxyNodeProcessConfiguration['g'] = $proxyNodeProcessInterfaceConfigurations['g'] . ' -p' . $proxyNodeProcessPortNumber;
 							$proxyNodeProcessConfiguration = implode("\n", $proxyNodeProcessConfiguration);
-							file_put_contents('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg', $proxyNodeProcessConfiguration);
-							chmod('/etc/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.cfg', 0755);
-							shell_exec('sudo ' . $parameters['binary_files']['systemctl'] . ' daemon-reload');
-							unlink('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid');
+							file_put_contents('/etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg', $proxyNodeProcessConfiguration);
+							chmod('/etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg', 0755);
+							shell_exec('sudo ' . $parameters['binaryFiles']['systemctl'] . ' daemon-reload');
+							unlink('/var/run/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.pid');
 							// todo: add default node timeout column to wait for X seconds before proceeding with processing after processes start + stop
 							$proxyNodeProcessResponse = false;
 
 							while ($proxyNodeProcessResponse === false) {
-								$proxyNodeProcessResponse = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
+								$proxyNodeProcessResponse = _verifyNodeProcess($parameters['binaryFiles'], $parameters['data']['next']['nodeReservedInternalDestinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ipAddress'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
 								sleep(1);
 							}
 
@@ -1008,22 +1008,22 @@
 
 							if ($proxyNodeProcessesStart === true) {
 								while ($proxyNodeProcessResponse === false) {
-									shell_exec('sudo ' . $parameters['binary_files']['service'] . ' ' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . ' start');
-									$proxyNodeProcessResponse = _verifyNodeProcess($parameters['binary_files'], $parameters['data']['next']['node_reserved_internal_destinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ip_address'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
+									shell_exec('sudo ' . $parameters['binaryFiles']['service'] . ' ' . $proxyNodeProcessType . $proxyNodeProcessId . ' start');
+									$proxyNodeProcessResponse = _verifyNodeProcess($parameters['binaryFiles'], $parameters['data']['next']['nodeReservedInternalDestinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ipAddress'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
 									sleep(1);
 								}
 							} else {
-								$systemActionProcessNodeParameters['data']['processed_status'] = '0';
+								$systemActionProcessNodeParameters['data']['processedStatus'] = '0';
 							}
 
-							if (file_exists('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid') === true) {
-								$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessType . '_' . $proxyNodeProcessId . '.pid');
+							if (file_exists('/var/run/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.pid') === true) {
+								$proxyNodeProcessProcessId = file_get_contents('/var/run/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.pid');
 
 								if (is_numeric($proxyNodeProcessProcessId) === true) {
-									shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n1000000000');
-									shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n=1000000000');
-									shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s"unlimited"');
-									shell_exec('sudo ' . $parameters['binary_files']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
+									shell_exec('sudo ' . $parameters['binaryFiles']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n1000000000');
+									shell_exec('sudo ' . $parameters['binaryFiles']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -n=1000000000');
+									shell_exec('sudo ' . $parameters['binaryFiles']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s"unlimited"');
+									shell_exec('sudo ' . $parameters['binaryFiles']['prlimit'] . ' -p ' . $proxyNodeProcessProcessId . ' -s=unlimited');
 								}
 							}
 						}
@@ -1032,33 +1032,33 @@
 			}
 		}
 
-		$nodeProcessTypeFirewallRuleSetsToDestroy = $parameters['node_process_type_firewall_rule_sets'];
-		$parameters['node_process_type_firewall_rule_sets'] = array();
+		$nodeProcessTypeFirewallRuleSetsToDestroy = $parameters['nodeProcessTypeFirewallRuleSets'];
+		$parameters['nodeProcessTypeFirewallRuleSets'] = array();
 
-		foreach ($parameters['data']['next']['node_process_types'] as $nodeProcessType) {
-			$parameters['node_process_type_process_part_data_keys'][$nodeProcessType] = array(
+		foreach ($parameters['data']['next']['nodeProcessTypes'] as $nodeProcessType) {
+			$parameters['nodeProcessTypeProcessPartDataKeys'][$nodeProcessType] = array(
 				'next',
 				'next'
 			);
 		}
 
-		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
+		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationAddress']);
 		$parameters = _processFirewall($parameters);
 
 		foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSetToDestroy) {
-			shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSetToDestroy);
+			shell_exec('sudo ' . $parameters['binaryFiles']['ipset'] . ' destroy ' . $nodeProcessTypeFirewallRuleSetToDestroy);
 		}
 
-		foreach ($parameters['ip_address_versions'] as $ipAddressVersionNumber => $ipAddressVersion) {
+		foreach ($parameters['ipAddressVersions'] as $ipAddressVersionNumber => $ipAddressVersion) {
 			if (empty($nodeIpAddressesToDelete[$ipAddressVersionNumber]) === false) {
 				foreach ($nodeIpAddressesToDelete[$ipAddressVersionNumber] as $nodeIpAddressToDelete) {
-					shell_exec('sudo ' . $parameters['binary_files']['ip'] . ' -' . $ipAddressVersionNumber . ' addr delete ' . $nodeIpAddressToDelete . '/' . $ipAddressVersion['network_mask'] . ' dev ' . $parameters['interface_name']) . '\');';
+					shell_exec('sudo ' . $parameters['binaryFiles']['ip'] . ' -' . $ipAddressVersionNumber . ' addr delete ' . $nodeIpAddressToDelete . '/' . $ipAddressVersion['networkMask'] . ' dev ' . $parameters['interfaceName']) . '\');';
 				}
 			}
 
-			foreach ($parameters['data']['current']['node_reserved_internal_destination_ip_addresses'][$ipAddressVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
-				if (empty($parameters['data']['next']['node_reserved_internal_destination_ip_addresses'][$ipAddressVersionNumber][$nodeReservedInternalDestinationIpAddress]) === true) {
-					shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' del _ ' . $nodeReservedInternalDestinationIpAddress);
+			foreach ($parameters['data']['current']['nodeReservedInternalDestinationIpAddresses'][$ipAddressVersionNumber] as $nodeReservedInternalDestinationIpAddress) {
+				if (empty($parameters['data']['next']['nodeReservedInternalDestinationIpAddresses'][$ipAddressVersionNumber][$nodeReservedInternalDestinationIpAddress]) === true) {
+					shell_exec('sudo ' . $parameters['binaryFiles']['ipset'] . ' del _ ' . $nodeReservedInternalDestinationIpAddress);
 				}
 			}
 		}
@@ -1068,86 +1068,86 @@
 
 			foreach ($nodeProcessIds as $nodeProcessId) {
 				switch ($nodeProcessType) {
-					case 'http_proxy':
-					case 'socks_proxy':
-						if (file_exists('/var/run/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.pid') === true) {
-							$nodeProcessProcessIds[] = file_get_contents('/var/run/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.pid');
+					case 'httpProxy':
+					case 'socksProxy':
+						if (file_exists('/var/run/3proxy/' . $nodeProcessType . $nodeProcessId . '.pid') === true) {
+							$nodeProcessProcessIds[] = file_get_contents('/var/run/3proxy/' . $nodeProcessType . $nodeProcessId . '.pid');
 						}
 
-						unlink('/bin/' . $nodeProcessType . '_' . $nodeProcessId);
-						unlink('/etc/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.cfg');
-						unlink('/etc/systemd/system/' . $nodeProcessType . '_' . $nodeProcessId . '.service');
-						unlink('/var/run/3proxy/' . $nodeProcessType . '_' . $nodeProcessId . '.pid');
+						unlink('/bin/' . $nodeProcessType . $nodeProcessId);
+						unlink('/etc/3proxy/' . $nodeProcessType . $nodeProcessId . '.cfg');
+						unlink('/etc/systemd/system/' . $nodeProcessType . $nodeProcessId . '.service');
+						unlink('/var/run/3proxy/' . $nodeProcessType . $nodeProcessId . '.pid');
 						break;
-					case 'recursive_dns':
-						if (file_exists('/var/run/named/' . $nodeProcessType . '_' . $nodeProcess['id'] . '.pid') === true) {
-							$nodeProcessProcessIds[] = file_get_contents('/var/run/named/' . $nodeProcessType . '_' . $nodeProcess['id'] . '.pid');
+					case 'recursiveDns':
+						if (file_exists('/var/run/named/' . $nodeProcessType . $nodeProcess['id'] . '.pid') === true) {
+							$nodeProcessProcessIds[] = file_get_contents('/var/run/named/' . $nodeProcessType . $nodeProcess['id'] . '.pid');
 						}
 
-						shell_exec('sudo rm -rf /etc/' . $nodeProcessType . '_' . $nodeProcessId . ' /var/cache/' . $nodeProcessType . '_' . $nodeProcessId);
-						unlink('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessType . '_' . $nodeProcessId);
-						unlink('/lib/systemd/system/' . $recursiveDnsNodeProcessDefaultServiceName . '_' . $nodeProcessType . '_' . $nodeProcessId . '.service');
-						unlink('/usr/sbin/' . $nodeProcessType . '_' . $nodeProcessId);
-						unlink('/var/run/named/' . $nodeProcessType . '_' . $nodeProcessId . '.pid');
+						shell_exec('sudo rm -rf /etc/' . $nodeProcessType . $nodeProcessId . ' /var/cache/' . $nodeProcessType . $nodeProcessId);
+						unlink('/etc/default/' . $recursiveDnsNodeProcessDefaultServiceName . $nodeProcessType . $nodeProcessId);
+						unlink('/lib/systemd/system/' . $recursiveDnsNodeProcessDefaultServiceName . $nodeProcessType . $nodeProcessId . '.service');
+						unlink('/usr/sbin/' . $nodeProcessType . $nodeProcessId);
+						unlink('/var/run/named/' . $nodeProcessType . $nodeProcessId . '.pid');
 						break;
 				}
 			}
 
 			if (empty($nodeProcessProcessIds) === false) {
 				$nodeProcessProcessIds = array_filter($nodeProcessProcessIds);
-				_killProcessIds($parameters['binary_files'], $parameters['action'], $parameters['process_id'], $nodeProcessProcessIds);
+				_killProcessIds($parameters['binaryFiles'], $parameters['action'], $parameters['processId'], $nodeProcessProcessIds);
 			}
 		}
 
-		$parameters['data']['current'] = array_intersect_key($parameters['data']['next'], array(
-			'node_ip_address_version_numbers' => true,
-			'node_ip_addresses' => true,
-			'node_processes' => true,
-			'node_process_type_firewall_rule_set_reserved_internal_destinations' => true,
-			'node_process_types' => true,
-			'node_recursive_dns_destinations' => true,
-			'node_reserved_internal_destination_ip_addresses' => true,
-			'node_reserved_internal_destinations' => true,
-			'node_reserved_internal_sources' => true,
-			'node_ssh_port_numbers' => true
-		));
-		$parameters['data']['current']['node_process_type_firewall_rule_set_port_numbers'] = $parameters['node_process_type_firewall_rule_set_port_numbers'][4]['next'];
+		$parameters['data']['current'] = array(
+			'nodeIpAddressVersionNumbers' => $parameters['data']['next']['nodeIpAddressVersionNumbers'],
+			'nodeIpAddresses' => $parameters['data']['next']['nodeIpAddresses'],
+			'nodeProcesses' => $parameters['data']['next']['nodeProcesses'],
+			'nodeProcessTypeFirewallRuleSetReservedInternalDestinations' => $parameters['data']['next']['nodeProcessTypeFirewallRuleSetReservedInternalDestinations'],
+			'nodeProcessTypes' => $parameters['data']['next']['nodeProcessTypes'],
+			'nodeRecursiveDnsDestinations' => $parameters['data']['next']['nodeRecursiveDnsDestinations'],
+			'nodeReservedInternalDestinationIpAddresses' => $parameters['data']['next']['nodeReservedInternalDestinationIpAddresses'],
+			'nodeReservedInternalDestinations' => $parameters['data']['next']['nodeReservedInternalDestinations'],
+			'nodeReservedInternalSources' => $parameters['data']['next']['nodeReservedInternalSources'],
+			'nodeSshPortNumbers' => $parameters['data']['next']['nodeSshPortNumbers']
+		);
+		$parameters['data']['current']['nodeProcessTypeFirewallRuleSetPortNumbers'] = $parameters['nodeProcessTypeFirewallRuleSetPortNumbers'][4]['next'];
 		$encodedSystemActionProcessNodeResponse = json_encode($parameters['data']['current']);
 
 		if (
 			($encodedSystemActionProcessNodeResponse === false) ||
-			(file_put_contents('/usr/local/cloud_node_automation_api/system_action_process_node_current_response.json', $encodedSystemActionProcessNodeResponse) === false)
+			(file_put_contents('/usr/local/firewall-security-api/system-action-process-node-current-response.json', $encodedSystemActionProcessNodeResponse) === false)
 		) {
 			$response['message'] = 'Error processing node, please try again.';
 			return $response;
 		}
 
-		if (isset($systemActionProcessNodeParameters['data']['processed_status']) === false) {
-			$systemActionProcessNodeParameters['data']['processed_status'] = '1';
+		if (isset($systemActionProcessNodeParameters['data']['processingStatus']) === false) {
+			$systemActionProcessNodeParameters['data']['processingStatus'] = '1';
 		}
 
-		$systemActionProcessNodeParameters['data']['processing_status'] = '0';
-		_processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
-		unlink('/usr/local/cloud_node_automation_api/system_action_process_node_next_response.json');
+		$systemActionProcessNodeParameters['data']['processingStatus'] = '0';
+		_processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationAddress']);
+		unlink('/usr/local/firewall-security-api/system-action-process-node-next-response.json');
 		unset($systemActionProcessNodeResponse['data']);
 		$response = $systemActionProcessNodeResponse;
 		return $response;
 	}
 
 	function _processNodeProcessingProgress($binaryFiles, $processId, $processingProgressCheckpoints, $processingProgressCheckpointCount, $systemActionProcessNodeParameters, $systemEndpointDestinationAddress) {
-		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_node_processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
+		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-process-node-processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
 
 		if (
 			(empty($nodeProcessProcessIds[2]) === false) &&
-			((current($processingProgressCheckpoints) === 'listing_node_parameters') === true)
+			((current($processingProgressCheckpoints) === 'listingNodeParameters') === true)
 		) {
 			exit;
 		}
 
 		$processingProgressCheckpointIndex = key($processingProgressCheckpoints);
 		$systemActionProcessNodeParameters['data'] += array(
-			'processing_progress_checkpoint' => $processingProgressCheckpoints[$processingProgressCheckpointIndex],
-			'processing_progress_percentage' => ceil((($processingProgressCheckpointIndex + 1) / $processingProgressCheckpointCount) * 100)
+			'processingProgressCheckpoint' => $processingProgressCheckpoints[$processingProgressCheckpointIndex],
+			'processingProgressPercentage' => ceil((($processingProgressCheckpointIndex + 1) / $processingProgressCheckpointCount) * 100)
 		);
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 		unset($processingProgressCheckpoints[$processingProgressCheckpointIndex]);
@@ -1155,24 +1155,24 @@
 
 		if (
 			($encodedSystemActionProcessNodeParameters === false) &&
-			(($processingProgressCheckpoint === 'listing_node_parameters') === true)
+			(($processingProgressCheckpoint === 'listingNodeParameters') === true)
 		) {
 			exit;
 		}
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/cloud_node_automation_api/system_action_process_node_processing_status_' . $processId . '_response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-processing-status-' . $processId . '-response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationAddress . '/system_endpoint.php');
 
-			if (file_exists('/usr/local/cloud_node_automation_api/system_action_process_node_processing_status_' . $processId . '_response.json') === true) {
-				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_process_node_processing_status_' . $processId . '_response.json');
+			if (file_exists('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $processId . '-response.json') === true) {
+				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $processId . '-response.json');
 				$systemActionProcessNodeProcessingStatusResponse = json_decode($systemActionProcessNodeResponse, true);
 
 				if (empty($systemActionProcessNodeProcessingStatusResponse['data']['processing_progress_override_status']) === false) {
-					exec('ps -h -o pid -o cmd $(pgrep php) | grep "node_endpoint.php node_action_process_node_processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
-					_killProcessIds($binaryFiles, 'process_node_processes', $processId, $nodeProcessProcessIds);
+					exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-process-node-processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
+					_killProcessIds($binaryFiles, 'processNodeProcesses', $processId, $nodeProcessProcessIds);
 				} elseif (
 					(empty($nodeProcessProcessIds[1]) === false) &&
-					(($processingProgressCheckpoint === 'listing_node_parameters') === true)
+					(($processingProgressCheckpoint === 'listingNodeParameters') === true)
 				) {
 					exit;
 				}
@@ -1186,17 +1186,17 @@
 		$response = false;
 
 		switch ($nodeProcessType) {
-			case 'http_proxy':
-			case 'socks_proxy':
+			case 'httpProxy':
+			case 'socksProxy':
 				$nodeProcessTypeParameters = array(
-					'http_proxy' => '-x',
-					'socks_proxy' => '--socks5-hostname'
+					'httpProxy' => '-x',
+					'socksProxy' => '--socks5-hostname'
 				);
-				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://cloud-node-automation-api -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
+				exec('sudo ' . $binaryFiles['curl'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' ' . $nodeProcessTypeParameters[$nodeProcessType] . ' ' . $nodeProcessNodeIpAddress . ':' . $nodeProcessPortNumber . ' http://firewall-security-api -v --connect-timeout 2 | grep " refused" 1 2>&1', $proxyNodeProcessResponse);
 				$response = (empty($proxyNodeProcessResponse) === true);
 				break;
-			case 'recursive_dns':
-				exec($binaryFiles['dig'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 cloud-node-automation-api @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
+			case 'recursiveDns':
+				exec($binaryFiles['dig'] . ' -' . $nodeProcessNodeIpAddressVersionNumber . ' +time=2 +tries=1 firewall-security-api @' . $nodeProcessNodeIpAddress . ' -p ' . $nodeProcessPortNumber . ' | grep "Got answer" 2>&1', $recursiveDnsNodeProcessResponse);
 				$response = (empty($recursiveDnsNodeProcessResponse) === false);
 				break;
 		}
@@ -1226,7 +1226,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'process_node_processes') === true) {
+	if (($parameters['action'] === 'process-node-processes') === true) {
 		$response = _processNodeProcesses($parameters, $response);
 	}
 ?>
