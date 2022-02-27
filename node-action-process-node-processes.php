@@ -30,8 +30,8 @@
 
 	function _processFirewall($parameters) {
 		$firewallBinaryFiles = array(
-			'4' => $parameters['binary_files']['iptables-restore'],
-			'6' => $parameters['binary_files']['ip6tables-restore']
+			'4' => $parameters['binaryFiles']['iptables-restore'],
+			'6' => $parameters['binaryFiles']['ip6tables-restore']
 		);
 		$nodeProcessPartKeys = array(
 			0,
@@ -39,20 +39,20 @@
 		);
 
 		if (
-			(isset($parameters['node_process_part_key']) === true) &&
-			(in_array($parameters['node_process_part_key'], $nodeProcessPartKeys) === true)
+			(isset($parameters['nodeProcessPartKey']) === true) &&
+			(in_array($parameters['nodeProcessPartKey'], $nodeProcessPartKeys) === true)
 		) {
 			$nodeProcessPartKeys = array(
-				$parameters['node_process_part_key']
+				$parameters['nodeProcessPartKey']
 			);
 		}
 
 		foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
-			$parameters['node_process_part_key'] = $nodeProcessPartKey;
+			$parameters['nodeProcessPartKey'] = $nodeProcessPartKey;
 			$parameters = _processFirewallRuleSets($parameters);
 		}
 
-		foreach ($parameters['data']['next']['node_ip_address_version_numbers'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
+		foreach ($parameters['data']['next']['nodeIpAddressVersionNumbers'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
 			$firewallRules = array(
 				'*filter',
 				':INPUT ACCEPT [0:0]',
@@ -61,7 +61,7 @@
 				'-A INPUT -p icmp -m hashlimit --hashlimit-above 1/second --hashlimit-burst 2 --hashlimit-htable-gcinterval 100000 --hashlimit-htable-expire 10000 --hashlimit-mode srcip --hashlimit-name icmp --hashlimit-srcmask ' . $nodeIpAddressVersionNetworkMask . ' -j DROP'
 			);
 
-			foreach ($parameters['data']['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
+			foreach ($parameters['data']['next']['nodeSshPortNumbers'] as $nodeSshPortNumber) {
 				$firewallRules[] = '-A INPUT -p tcp --dport ' . $nodeSshPortNumber . ' -m hashlimit --hashlimit-above 1/minute --hashlimit-burst 10 --hashlimit-htable-gcinterval 600000 --hashlimit-htable-expire 60000 --hashlimit-mode srcip --hashlimit-name ssh --hashlimit-srcmask ' . $nodeIpAddressVersionNetworkMask . ' -j DROP';
 			}
 
@@ -74,12 +74,12 @@
 
 			// todo: make sure prerouting NAT load balancing works with DNS from system requests and proxy process requests, use output instead of prerouting if not
 
-			foreach ($parameters['data']['next']['node_process_types'] as $nodeProcessType) {
+			foreach ($parameters['data']['next']['nodeProcessTypes'] as $nodeProcessType) {
 				$nodeProcessTypeFirewallRuleSetPortNumberIndexes = array();
 
 				foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
-					if (empty($parameters['node_process_type_firewall_rule_set_port_numbers'][$parameters['node_process_type_firewall_rule_set_index']][$parameters['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber]) === false) {
-						foreach ($parameters['node_process_type_firewall_rule_set_port_numbers'][$parameters['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
+					if (empty($parameters['nodeProcessTypeFirewallRuleSetPortNumbers'][$parameters['nodeProcessTypeFirewallRuleSetIndex']][$parameters['nodeProcessTypeProcessPartDataKeys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber]) === false) {
+						foreach ($parameters['nodeProcessTypeFirewallRuleSetPortNumbers'][$parameters['nodeProcessTypeProcessPartDataKeys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
 							if (empty($nodeProcessTypeFirewallRuleSetPortNumberIndexes[$nodeProcessTypeFirewallRuleSet]) === true) {
 								$nodeProcessTypeFirewallRuleSetPortNumberIndexes[$nodeProcessTypeFirewallRuleSet] = 0;
 							}
@@ -91,7 +91,7 @@
 
 				foreach ($nodeProcessTypeFirewallRuleSetPortNumberIndexes as $nodeProcessTypeFirewallRuleSet => $nodeProcessTypeFirewallRuleSetPortNumberIndex) {
 					foreach ($nodeProcessPartKeys as $nodeProcessPartKey) {
-						foreach ($parameters['node_process_type_firewall_rule_set_port_numbers'][$parameters['node_process_type_firewall_rule_set_index']][$parameters['node_process_type_process_part_data_keys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber][$nodeProcessTypeFirewallRuleSet] as $nodeProcessPortNumbers) {
+						foreach ($parameters['nodeProcessTypeFirewallRuleSetPortNumbers'][$parameters['nodeProcessTypeFirewallRuleSetIndex']][$parameters['nodeProcessTypeProcessPartDataKeys'][$nodeProcessType][$nodeProcessPartKey]][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber][$nodeProcessTypeFirewallRuleSet] as $nodeProcessPortNumbers) {
 							foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
 								$nodeProcessTypeFirewallRuleSetLoadBalancer = '-m statistic --mode nth --every ' . $nodeProcessTypeFirewallRuleSetPortNumberIndex . ' --packet 0 ';
 
@@ -104,7 +104,7 @@
 									'udp'
 								);
 
-								if ($nodeProcessType === 'http_proxy') {
+								if ($nodeProcessType === 'httpProxy') {
 									unset($nodeProcessTransportProtocols[1]);
 								}
 
@@ -124,35 +124,44 @@
 			$firewallRules[] = ':PREROUTING ACCEPT [0:0]';
 			$firewallRules[] = ':OUTPUT ACCEPT [0:0]';
 
-			if (($parameters['system_endpoint_destination_ip_address_type'] === 'public_network') === true) {
-				foreach ($parameters['data']['next']['node_reserved_internal_sources'][$nodeIpAddressVersionNumber] as $nodeReservedInternalSource) {
+			if (($parameters['systemEndpointDestinationIpAddressType'] === 'publicNetwork') === true) {
+				foreach ($parameters['data']['next']['nodeReservedInternalSources'][$nodeIpAddressVersionNumber] as $nodeReservedInternalSource) {
 					foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
 						$firewallRules[] = '-A PREROUTING ! -i lo -s ' . $nodeReservedInternalSource . ' -j DROP';
 					}
 				}
 			}
 
-			foreach ($parameters['data']['next']['node_ssh_port_numbers'] as $nodeSshPortNumber) {
+			foreach ($parameters['data']['next']['nodeSshPortNumbers'] as $nodeSshPortNumber) {
 				$firewallRules[] = '-A PREROUTING -p tcp --dport ' . $nodeSshPortNumber . ' -j ACCEPT';
 			}
 
-			foreach ($parameters['node_process_type_firewall_rule_sets'] as $nodeProcessTypeFirewallRuleSet) {
+			foreach ($parameters['nodeProcessTypeFirewallRuleSets'] as $nodeProcessTypeFirewallRuleSet) {
 				$firewallRules[] = '-A PREROUTING -m set --match-set ' . $nodeProcessTypeFirewallRuleSet . ' dst,src -j ACCEPT';
 			}
 
-			$firewallRules[] = '-A PREROUTING -i ' . $parameters['interface_name'] . ' -m set ! --match-set _ dst,src -j DROP';
+			$firewallRules[] = '-A PREROUTING -i ' . $parameters['interfaceName'] . ' -m set ! --match-set _ dst,src -j DROP';
 			$firewallRules[] = 'COMMIT';
-			unlink('/usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
-			touch('/usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
-			$firewallRuleParts = array_chunk($firewallRules, 1000);
+			unlink('/usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
+			touch('/usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
+			$firewallRuleParts = array();
+			$firewallRulePartsKey = 0;
+
+			foreach ($firewallRules as $firewallRulesKey => $firewallRule) {
+				if ((($firewallRulesKey % 1000) === 0) === true) {
+					$firewallRulePartsKey++;
+				}
+
+				$firewallRuleParts[$firewallRulePartsKey][] = $firewallRule;
+			}
 
 			foreach ($firewallRuleParts as $firewallRulePart) {
 				$firewallRulePart = implode("\n", $firewallRulePart);
-				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
+				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
 			}
 
-			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
-			unlink('/usr/local/cloud_node_automation_api/firewall_ip_address_version_' . $nodeIpAddressVersionNumber . '.dat');
+			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '.dat');
+			unlink('/usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
 			sleep(1);
 		}
 
@@ -160,15 +169,15 @@
 	}
 
 	function _processFirewallRuleSets($parameters) {
-		foreach ($parameters['node_process_type_process_part_data_keys'] as $nodeProcessType => $nodeProcessTypeProcessPartDataKeys) {
+		foreach ($parameters['nodeProcessTypeProcessPartDataKeys'] as $nodeProcessType => $nodeProcessTypeProcessPartDataKeys) {
 			$nodeProcessPortNumberHash = '';
 
-			foreach ($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_processes'][$nodeProcessType][$parameters['node_process_part_key']] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
-				$nodeReservedInternalDestinationIpAddressVersionNumber = key($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_reserved_internal_destinations'][$nodeProcessNodeId]);
+			foreach ($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodeProcesses'][$nodeProcessType][$parameters['nodeProcessPartKey']] as $nodeProcessNodeId => $nodeProcessPortNumbers) {
+				$nodeReservedInternalDestinationIpAddressVersionNumber = key($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodeReservedInternalDestinations'][$nodeProcessNodeId]);
 				$nodeProcessPortNumbersVerified = array();
 
 				foreach ($nodeProcessPortNumbers as $nodeProcessId => $nodeProcessPortNumber) {
-					if (_verifyNodeProcess($parameters['binary_files'], $parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpAddressVersionNumber]['ip_address'], $nodeReservedInternalDestinationIpAddressVersionNumber, $nodeProcessPortNumber, $nodeProcessType) === true) {
+					if (_verifyNodeProcess($parameters['binaryFiles'], $parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodeReservedInternalDestinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpAddressVersionNumber]['ipAddress'], $nodeReservedInternalDestinationIpAddressVersionNumber, $nodeProcessPortNumber, $nodeProcessType) === true) {
 						$nodeProcessPortNumberHash .= '_' . $nodeProcessPortNumber;
 						$nodeProcessPortNumbersVerified[] = $nodeProcessPortNumber;
 					}
@@ -176,72 +185,72 @@
 
 				$nodeProcessPortNumberHash = sha1($nodeProcessPortNumberHash);
 
-				foreach ($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_ip_address_version_numbers'] as $nodeIpAddressVersionNumber) {
-					if (empty($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['nodes'][$nodeProcessNodeId]['external_ip_address_version_' . $nodeIpAddressVersionNumber]) === false) {
-						$nodeProcessNodeIpAddress = $parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['nodes'][$nodeProcessNodeId]['external_ip_address_version_' . $nodeIpAddressVersionNumber];
+				foreach ($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodeIpAddressVersionNumbers'] as $nodeIpAddressVersionNumber) {
+					if (empty($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodes'][$nodeProcessNodeId]['externalIpAddressVersion' . $nodeIpAddressVersionNumber]) === false) {
+						$nodeProcessNodeIpAddress = $parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodes'][$nodeProcessNodeId]['externalIpAddressVersion' . $nodeIpAddressVersionNumber];
 
-						if (empty($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['nodes'][$nodeProcessNodeId]['internal_ip_address_version_' . $nodeIpAddressVersionNumber]) === false) {
-							$nodeProcessNodeIpAddress = $parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['nodes'][$nodeProcessNodeId]['internal_ip_address_version_' . $nodeIpAddressVersionNumber];
+						if (empty($parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodes'][$nodeProcessNodeId]['internalIpAddressVersion' . $nodeIpAddressVersionNumber]) === false) {
+							$nodeProcessNodeIpAddress = $parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodes'][$nodeProcessNodeId]['internalIpAddressVersion' . $nodeIpAddressVersionNumber];
 						}
 
-						$parameters['node_process_type_firewall_rule_set_port_numbers'][$parameters['node_process_type_firewall_rule_set_index']][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]][$nodeProcessType][$parameters['node_process_part_key']][$nodeIpAddressVersionNumber][($nodeProcessTypeFirewallRuleSet = $nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['node_process_type_firewall_rule_set_index'])] = $nodeProcessPortNumbersVerified;
-						shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' create ' . $nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['node_process_type_firewall_rule_set_index'] . ' hash:ip,port family ' . $parameters['ip_address_versions'][$nodeIpAddressVersionNumber]['interface_type'] . ' timeout 0');
+						$parameters['nodeProcessTypeFirewallRuleSetPortNumbers'][$parameters['nodeProcessTypeFirewallRuleSetIndex']][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]][$nodeProcessType][$parameters['nodeProcessPartKey']][$nodeIpAddressVersionNumber][($nodeProcessTypeFirewallRuleSet = $nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['nodeProcessPartKey'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['nodeProcessTypeFirewallRuleSetIndex'])] = $nodeProcessPortNumbersVerified;
+						shell_exec('sudo ' . $parameters['binaryFiles']['ipset'] . ' create ' . $nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['nodeProcessPartKey'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['nodeProcessTypeFirewallRuleSetIndex'] . ' hash:ip,port family ' . $parameters['ipAddressVersions'][$nodeIpAddressVersionNumber]['interfaceType'] . ' timeout 0');
 
 						foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-							shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' add ' . $nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['node_process_type_firewall_rule_set_index'] . ' ' . $nodeProcessNodeIpAddress . ',tcp:' . $nodeProcessPortNumber);
-							shell_exec('sudo ' . $parameters['binary_files']['ipset'] . ' add ' . $nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['node_process_type_firewall_rule_set_index'] . ' ' . $nodeProcessNodeIpAddress . ',udp:' . $nodeProcessPortNumber);
+							shell_exec('sudo ' . $parameters['binaryFiles']['ipset'] . ' add ' . $nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['nodeProcessPartKey'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['nodeProcessTypeFirewallRuleSetIndex'] . ' ' . $nodeProcessNodeIpAddress . ',tcp:' . $nodeProcessPortNumber);
+							shell_exec('sudo ' . $parameters['binaryFiles']['ipset'] . ' add ' . $nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['nodeProcessPartKey'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['nodeProcessTypeFirewallRuleSetIndex'] . ' ' . $nodeProcessNodeIpAddress . ',udp:' . $nodeProcessPortNumber);
 						}
 
-						$parameters['node_process_type_firewall_rule_sets'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['node_process_type_firewall_rule_set_index']] = $nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['node_process_type_firewall_rule_set_index'];
+						$parameters['nodeProcessTypeFirewallRuleSets'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['nodeProcessPartKey'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['nodeProcessTypeFirewallRuleSetIndex']] = $nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['nodeProcessPartKey'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['nodeProcessTypeFirewallRuleSetIndex'];
 						$nodeReservedInternalDestinationIpAddressVersionNumber = $nodeIpAddressVersionNumber;
 					}
 				}
 
-				if ($parameters['node_process_type_firewall_rule_set_index'] === 4) {
-					$parameters['data']['next']['node_process_type_firewall_rule_set_reserved_internal_destinations'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['node_process_part_key'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['node_process_type_firewall_rule_set_index']][$nodeProcessNodeId] = $parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['node_process_part_key']]]['node_reserved_internal_destinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpAddressVersionNumber];
+				if ($parameters['nodeProcessTypeFirewallRuleSetIndex'] === 4) {
+					$parameters['data']['next']['nodeProcessTypeFirewallRuleSetReservedInternalDestinations'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']] . '_' . $nodeIpAddressVersionNumber . '_' . $parameters['nodeProcessPartKey'] . '_' . $nodeProcessType . '_' . $nodeProcessPortNumberHash . '_' . $parameters['nodeProcessTypeFirewallRuleSetIndex']][$nodeProcessNodeId] = $parameters['data'][$nodeProcessTypeProcessPartDataKeys[$parameters['nodeProcessPartKey']]]['nodeReservedInternalDestinations'][$nodeProcessNodeId][$nodeReservedInternalDestinationIpAddressVersionNumber];
 				}
 			}
 		}
 
-		$parameters['node_process_type_firewall_rule_set_index']++;
+		$parameters['nodeProcessTypeFirewallRuleSetIndex']++;
 		return $parameters;
 	}
 
 	function _processNodeProcesses($parameters, $response) {
-		$parameters['processing_progress_checkpoints'] = array(
-			'processing_node_processes',
-			'verifying_node_processes',
-			'processing_recursive_dns_node_processes',
-			'processing_proxy_node_processes',
-			'processing_firewall',
-			'processing_completed'
+		$parameters['processingProgressCheckpoints'] = array(
+			'processingNodeProcesses',
+			'verifyingNodeProcesses',
+			'processingRecursiveDnsNodeProcesses',
+			'processingProxyNodeProcesses',
+			'processingFirewall',
+			'processingCompleted'
 		);
-		end($parameters['processing_progress_checkpoints']);
-		$parameters['processing_progress_checkpoint_count'] = (key($parameters['processing_progress_checkpoints']) + 1);
-		reset($parameters['processing_progress_checkpoints']);
-		exec('sudo ' . $parameters['binary_files']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
-		$parameters['interface_name'] = current($interfaceName);
-		$parameters['ip_address_versions'] = array(
+		end($parameters['processingProgressCheckpoints']);
+		$parameters['processingProgressCheckpointCount'] = (key($parameters['processingProgressCheckpoints']) + 1);
+		reset($parameters['processingProgressCheckpoints']);
+		exec('sudo ' . $parameters['binaryFiles']['netstat'] . ' -i | grep -v : | grep -v face | grep -v lo | awk \'NR==1{print $1}\' 2>&1', $interfaceName);
+		$parameters['interfaceName'] = current($interfaceName);
+		$parameters['ipAddressVersions'] = array(
 			'4' => array(
-				'interface_type' => 'inet',
-				'network_mask' => '32'
+				'interfaceType' => 'inet',
+				'networkMask' => '32'
 			),
 			'6' => array(
-				'interface_type' => 'inet6',
-				'network_mask' => '128'
+				'interfaceType' => 'inet6',
+				'networkMask' => '128'
 			)
 		);
 		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-		$parameters['kernel_page_size'] = current($kernelPageSize);
+		$parameters['kernelPageSize'] = current($kernelPageSize);
 		exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
-		$parameters['memory_capacity_bytes'] = current($memoryCapacityBytes);
-		$parameters['node_process_type_firewall_rule_set_index'] = 0;
+		$parameters['memoryCapacityBytes'] = current($memoryCapacityBytes);
+		$parameters['nodeProcessTypeFirewallRuleSetIndex'] = 0;
 
 		if (file_exists('/etc/ssh/sshd_config') === true) {
 			exec('grep "Port " /etc/ssh/sshd_config | grep -v "#" | awk \'{print $2}\' 2>&1', $sshPortNumbers);
-			$parameters['node_ssh_port_numbers'] = $sshPortNumbers;
+			$parameters['nodeSshPortNumbers'] = $sshPortNumbers;
 
-			foreach ($parameters['node_ssh_port_numbers'] as $sshPortNumberKey => $sshPortNumber) {
+			foreach ($parameters['nodeSshPortNumbers'] as $sshPortNumberKey => $sshPortNumber) {
 				if (
 					((strlen($sshPortNumber) > 5) === true) ||
 					(is_numeric($sshPortNumber) === false)
@@ -251,8 +260,8 @@
 			}
 		}
 
-		if (file_exists('/usr/local/cloud_node_automation_api/system_action_process_node_current_response.json') === true) {
-			$systemActionProcessNodeResponse = file_get_contents('/usr/local/cloud_node_automation_api/system_action_process_node_current_response.json');
+		if (file_exists('/usr/local/firewall-security-api/system-action-process-node-current-response.json') === true) {
+			$systemActionProcessNodeResponse = file_get_contents('/usr/local/firewall-security-api/system-action-process-node-current-response.json');
 			$systemActionProcessNodeResponse = json_decode($systemActionProcessNodeResponse, true);
 
 			if (empty($systemActionProcessNodeResponse) === false) {
@@ -261,11 +270,11 @@
 		}
 
 		$systemActionProcessNodeParameters = array(
-			'action' => 'process_node',
+			'action' => 'process-node',
 			'data' => array(
-				'processing_status' => '1'
+				'processingStatus' => '1'
 			),
-			'node_authentication_token' => $parameters['node_authentication_token']
+			'nodeAuthenticationToken' => $parameters['nodeAuthenticationToken']
 		);
 		$parameters['processing_progress_checkpoints'] = _processNodeProcessingProgress($parameters['binary_files'], $parameters['process_id'], $parameters['processing_progress_checkpoints'], $parameters['processing_progress_checkpoint_count'], $systemActionProcessNodeParameters, $parameters['system_endpoint_destination_address']);
 		$systemActionProcessNodeParameterData = $systemActionProcessNodeParameters['data'];
