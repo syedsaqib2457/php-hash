@@ -4,38 +4,38 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_users'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_users'] = $systemDatabasesConnections['node_users'];
+		'nodeUsers'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodeUsers'] = $systemDatabasesConnections['nodeUsers'];
 
 	function _addNodeUser($parameters, $response) {
-		if (isset($parameters['data']['authentication_strict_only_allowed_status']) === false) {
+		if (isset($parameters['data']['authenticationStrictOnlyAllowedStatus']) === false) {
 			$response['message'] = 'Node user must have an authentication strict only allowed status, please try again.';
 			return $response;
 		}
 
-		if (isset($parameters['data']['node_request_destinations_only_allowed_status']) === false) {
+		if (isset($parameters['data']['nodeRequestDestinationsOnlyAllowedStatus']) === false) {
 			$response['message'] = 'Node user must have a node request destinations only allowed status, please try again.';
 			return $response;
 		}
 
-		if (isset($parameters['data']['node_request_logs_allowed_status']) === false) {
+		if (isset($parameters['data']['nodeRequestLogsAllowedStatus']) === false) {
 			$response['message'] = 'Node user must have a node request logs allowed status, please try again.';
 			return $response;
 		}
 
 		$parameters['data'] = array(
-			'authentication_strict_only_allowed_status' => intval($parameters['data']['authentication_strict_only_allowed_status']),
+			'authenticationStrictOnlyAllowedStatus' => intval($parameters['data']['authenticationStrictOnlyAllowedStatus']),
 			'id' => _createUniqueId(),
-			'node_request_destinations_only_allowed_status' => intval($parameters['data']['node_request_destinations_only_allowed_status']),
-			'node_request_logs_allowed_status' => intval($parameters['data']['node_request_logs_allowed_status'])
+			'nodeRequestDestinationsOnlyAllowedStatus' => intval($parameters['data']['nodeRequestDestinationsOnlyAllowedStatus']),
+			'nodeRequestLogsAllowedStatus' => intval($parameters['data']['nodeRequestLogsAllowedStatus'])
 		);
 		_save(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['node_users']
+			'in' => $parameters['systemDatabases']['nodeUsers']
 		), $response);
 		$nodeUser = _list(array(
-			'in' => $parameters['system_databases']['node_users'],
+			'in' => $parameters['systemDatabases']['nodeUsers'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
@@ -43,11 +43,11 @@
 		$nodeUser = current($nodeUser);
 		$response['data'] = $nodeUser;
 		$response['message'] = 'Node user added successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_node_user') === true) {
+	if (($parameters['action'] === 'add-node-user') === true) {
 		$response = _addNodeUser($parameters, $response);
 	}
 ?>
