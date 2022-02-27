@@ -3,39 +3,33 @@
 		exit;
 	}
 
-	$parameters['system_databases'] += _connect(array(
+	$systemDatabasesConnections = _connect(array(
 		'nodes'
-	), $parameters['system_databases'], $response);
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _listNodes($parameters, $response) {
-		$pagination = array(
-			'results_count_per_page' => 100,
-			'results_page_number' => 1
-		);
-
-		if (
-			(empty($parameters['pagination']['results_count_per_page']) === false) &&
-			(is_int($parameters['pagination']['results_count_per_page']) === true)
-		) {
-			$pagination['results_count_per_page'] = $parameters['pagination']['results_count_per_page'];
+		if (empty($parameters['systemUserAuthenticationToken']) === true) {
+			return $response;
 		}
 
-		if (
-			(empty($parameters['pagination']['results_page_number']) === false) &&
-			(is_int($parameters['pagination']['results_page_number']) === true)
-		) {
-			$pagination['results_page_number'] = $parameters['pagination']['results_page_number'];
+		if (empty($parameters['pagination']['resultsPageNumber']) === true) {
+			$parameters['pagination']['resultsPageNumber'] = 1;
 		}
 
-		$pagination['results_count_total'] = _count(array(
-			'in' => $parameters['system_databases']['nodes'],
+		if (empty($parameters['pagination']['resultsPerPageCount']) === true) {
+			$parameters['pagination']['resultsPerPageCount'] = 100;
+		}
+
+		$parameters['pagination']['resultsTotalCount'] = _count(array(
+			'in' => $parameters['systemDatabases']['nodes'],
 			'where' => $parameters['where']
 		), $response);
 		$nodes = _list(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['nodes'],
-			'limit' => $pagination['results_count_per_page'],
-			'offset' => (($pagination['results_page_number'] - 1) * $pagination['results_count_per_page']),
+			'in' => $parameters['systemDatabases']['nodes'],
+			'limit' => $parameters['pagination']['resultsPerPageCount'],
+			'offset' => (($parameters['pagination']['resultsPageNumber'] - 1) * $parameters['pagination']['resultsPerPageCount']),
 			'sort' => $parameters['sort'],
 			'where' => $parameters['where']
 		), $response);
@@ -43,27 +37,27 @@
 		if (empty($nodes) === false) {
 			$mostRecentNode = _list(array(
 				'data' => array(
-					'modified_timestamp'
+					'modifiedTimestamp'
 				),
-				'in' => $parameters['system_databases']['nodes'],
+				'in' => $parameters['systemDatabases']['nodes'],
 				'limit' => 1,
 				'sort' => array(
-					'modified_timestamp' => 'descending'
+					'modifiedTimestamp' => 'descending'
 				),
 				'where' => $parameters['where']
 			), $response);
 			$mostRecentNode = current($mostRecentNode);
-			$pagination['modified_timestamp'] = $mostRecentNode['modified_timestamp'];
+			$parameters['pagination']['modifiedTimestamp'] = $mostRecentNode['modifiedTimestamp'];
 		}
 
 		$response['data'] = $nodes;
 		$response['message'] = 'Nodes listed successfully.';
-		$response['pagination'] = $pagination;
-		$response['valid_status'] = '1';
+		$response['pagination'] = $parameters['pagination'];
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list_nodes') === true) {
+	if (($parameters['action'] === 'list-nodes') === true) {
 		$response = _listNodes($parameters, $response);
 	}
 ?>
