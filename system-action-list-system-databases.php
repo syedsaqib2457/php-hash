@@ -9,34 +9,27 @@
 	$parameters['systemDatabases']['systemDatabases'] = $systemDatabasesConnections['systemDatabases'];
 
 	function _listSystemDatabases($parameters, $response) {
-		$pagination = array(
-			'resultsCountPerPage' => 100,
-			'resultsPageNumber' => 1
-		);
-
-		if (
-			(empty($parameters['pagination']['resultsCountPerPage']) === false) &&
-			(is_int($parameters['pagination']['resultsCountPerPage']) === true)
-		) {
-			$pagination['resultsCountPerPage'] = $parameters['pagination']['resultsCountPerPage'];
+		if (empty($parameters['systemUserAuthenticationToken']) === true) {
+			return $response;
 		}
 
-		if (
-			(empty($parameters['pagination']['resultsPageNumber']) === false) &&
-			(is_int($parameters['pagination']['resultsPageNumber']) === true)
-		) {
-			$pagination['resultsPageNumber'] = $parameters['pagination']['resultsPageNumber'];
+		if (empty($parameters['pagination']['resultsPageNumber']) === true) {
+			$parameters['pagination']['resultsPageNumber'] = 1;
 		}
 
-		$pagination['resultsCountTotal'] = _count(array(
+		if (empty($parameters['pagination']['resultsPerPageCount']) === true) {
+			$parameters['pagination']['resultsPerPageCount'] = 100;
+		}
+
+		$parameters['pagination']['resultsTotalCount'] = _count(array(
 			'in' => $parameters['systemDatabases']['systemDatabases'],
 			'where' => $parameters['where']
 		), $response);
-		$systemDatabases = _list(array(
+		$systemUserSystemUsers = _list(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['systemDatabases']['systemDatabases'],
-			'limit' => $pagination['resultsCountPerPage'],
-			'offset' => (($pagination['resultsPageNumber'] - 1) * $pagination['resultsCountPerPage']),
+			'limit' => $parameters['pagination']['resultsPerPageCount'],
+			'offset' => (($parameters['pagination']['resultsPageNumber'] - 1) * $parameters['pagination']['resultsPerPageCount']),
 			'sort' => $parameters['sort'],
 			'where' => $parameters['where']
 		), $response);
@@ -54,12 +47,12 @@
 				'where' => $parameters['where']
 			), $response);
 			$mostRecentSystemDatabase = current($mostRecentSystemDatabase);
-			$pagination['modifiedTimestamp'] = $mostRecentSystemDatabase['modifiedTimestamp'];
+			$parameters['pagination']['modifiedTimestamp'] = $mostRecentSystemDatabase['modifiedTimestamp'];
 		}
 
 		$response['data'] = $systemDatabases;
 		$response['message'] = 'System databases listed successfully.';	
-		$response['pagination'] = $pagination;
+		$response['pagination'] = $parameters['pagination'];
 		$response['validStatus'] = '1';
 		return $response;
 	}
