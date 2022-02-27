@@ -22,13 +22,13 @@
 			return $response;
 		}
 
-		if (_validatePortNumber($parameters['data']['portNumber']) === false) {
-			$response['message'] = 'Invalid node process port number, please try again.';
+		if (empty($parameters['data']['type']) === true) {
+			$response['message'] = 'Node process must have a type, please try again.';
 			return $response;
 		}
 
-		if (empty($parameters['data']['type']) === true) {
-			$response['message'] = 'Node process must have a type, please try again.';
+		if (_validatePortNumber($parameters['data']['portNumber']) === false) {
+			$response['message'] = 'Invalid node process port number, please try again.';
 			return $response;
 		}
 
