@@ -10,7 +10,7 @@
 	$parameters['systemDatabases']['systemUserAuthenticationTokenScopes'] = $systemDatabasesConnections['systemUserAuthenticationTokenScopes'];
 	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
 
-	function _deleteSystemUserAuthenticationTokenScope($parameters, $response) {
+	function _deleteSystemUserAuthenticationTokenScopes($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
 			$response['message'] = 'System user authentication token scope must have an ID, please try again.';
 			return $response;
@@ -61,7 +61,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'delete-system-user-authentication-token-scope') === true) {
-		$response = _deleteSystemUserAuthenticationTokenScope($parameters, $response);
+	if (($parameters['action'] === 'delete-system-user-authentication-token-scopes') === true) {
+		$response = _deleteSystemUserAuthenticationTokenScopes($parameters, $response);
 	}
 ?>
