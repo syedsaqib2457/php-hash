@@ -55,7 +55,7 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
-			$response['message'] = 'Invalid node process node ID, please try again.';
+			$response['message'] = 'Error listing node process node, please try again.';
 			return $response;
 		}
 
