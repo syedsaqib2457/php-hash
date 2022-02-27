@@ -165,12 +165,7 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-		
-		if (file_put_contents('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh', $binaryFileListCommands) === false) {
-			$response['message'] = 'Error adding binary file list commands, please try again.';
-			_output($response);
-		}
-
+		file_put_contents('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh', $binaryFileListCommands);
 		chmod('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh', 0755);
 		unset($binaryFile);
 		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-' . $nodeAction . '-binary-file-list-commands.sh', $binaryFile);
