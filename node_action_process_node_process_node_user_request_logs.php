@@ -5,18 +5,18 @@
 
 	function processNodeProcessNodeUserRequestLogs($parameters, $response) {
 		$nodeProcessTypes = array(
-			'http_proxy',
-			'recursive_dns',
-			'socks_proxy'
+			'httpProxy',
+			'recursiveDns',
+			'socksProxy'
 		);
 		$systemParameters = array(
-			'action' => 'add_node_process_node_user_request_logs',
-			'node_authentication_token' => $parameters['node_authentication_token']
+			'action' => 'add-node-process-node-user-request-logs',
+			'nodeAuthenticationToken' => $parameters['nodeAuthenticationToken']
 		);
 
 		foreach ($nodeProcessTypes as $nodeProcessType) {
 			$nodeProcessNodeUserRequestLogFiles = scandir('/var/log/' . $nodeProcessType);
-			$systemParameters['data']['node_process_type'] = $nodeProcessType;
+			$systemParameters['data']['nodeProcessType'] = $nodeProcessType;
 
 			if (empty($nodeProcessNodeUserRequestLogFiles) === false) {
 				unset($nodeProcessNodeUserRequestLogFiles[0]);
@@ -29,8 +29,8 @@
 						(empty($nodeProcessNodeUserRequestLogFileParts[1]) === false) &&
 						(empty($nodeProcessNodeUserRequestLogFileParts[2]) === true)
 					) {
-						$systemParameters['data']['node_id'] = $nodeProcessNodeUserRequestLogFileParts[0];
-						$systemParameters['data']['node_user_id'] = $nodeProcessNodeUserRequestLogFileParts[1];
+						$systemParameters['data']['nodeId'] = $nodeProcessNodeUserRequestLogFileParts[0];
+						$systemParameters['data']['nodeUserId'] = $nodeProcessNodeUserRequestLogFileParts[1];
 						$encodedSystemParameters = json_encode($systemParameters);
 
 						if ($encodedSystemParameters === false) {
@@ -38,19 +38,19 @@
 							return $response;
 						}
 
-						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['system_endpoint_destination_address'] . '/system_endpoint.php 2>&1', $systemActionProcessNodeProcessNodeUserRequestLogsResponse);
+						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['systemEndpointDestinationAddress'] . '/system-endpoint.php 2>&1', $systemActionProcessNodeProcessNodeUserRequestLogsResponse);
 						$systemActionProcessNodeProcessNodeUserRequestLogsResponse = current($systemActionProcessNodeProcessNodeUserRequestLogsResponse);
 						$systemActionProcessNodeProcessNodeUserRequestLogsResponse = json_decode($systemActionProcessNodeProcessNodeUserRequestLogsResponse, true);
 
-						if (empty($systemActionProcessNodeProcessNodeUserRequestLogsResponse['valid_status']) === true) {
+						if (empty($systemActionProcessNodeProcessNodeUserRequestLogsResponse['validStatus']) === true) {
 							$response['message'] = 'Error processing node process node user request logs, please try again.';
 							return $response;
 						}
 
 						$response['message'] = $systemActionProcessNodeProcessNodeUserRequestLogsResponse['message'];
 
-						if (empty($response['data']['most_recent_node_process_node_user_request_log']) === false) {
-							$mostRecentNodeProcessNodeUserRequestLog = $response['data']['most_recent_node_process_node_user_request_log'];
+						if (empty($response['data']['mostRecentNodeProcessNodeUserRequestLog']) === false) {
+							$mostRecentNodeProcessNodeUserRequestLog = $response['data']['mostRecentNodeProcessNodeUserRequestLog'];
 							$mostRecentNodeProcessNodeUserRequestLogLength = strlen($mostRecentNodeProcessNodeUserRequestLog);
 							$nodeProcessNodeUserRequestLogs = file_get_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile);
 							$mostRecentNodeProcessNodeUserRequestLogPosition = strpos($nodeProcessNodeUserRequestLogs, $mostRecentNodeProcessNodeUserRequestLog);
@@ -59,7 +59,7 @@
 								continue;
 							}
 
-							$updatedNodeProcessNodeUserRequestLogs = substr($nodeProcessNodeUserRequestLogs, $mostRecentNodeProcessNodeUserRequestLogPosition + $mostRecentNodeProcessNodeUserRequestLogLength);
+							$updatedNodeProcessNodeUserRequestLogs = substr($nodeProcessNodeUserRequestLogs, ($mostRecentNodeProcessNodeUserRequestLogPosition + $mostRecentNodeProcessNodeUserRequestLogLength));
 							$updatedNodeProcessNodeUserRequestLogs = trim($updatedNodeProcessNodeUserRequestLogs);
 							file_put_contents('/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile, $updatedNodeProcessNodeUserRequestLogs);
 						}
@@ -68,11 +68,11 @@
 			}
 		}
 
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'process_node_process_node_user_request_logs') === true) {
+	if (($parameters['action'] === 'process-node-process-node-user-request-logs') === true) {
 		$response = _processNodeProcessNodeUserRequestLogs($parameters, $response);
 	}
 ?>
