@@ -832,7 +832,7 @@
 				'nodeUserAuthenticationSourceIpAddressVersionNumber',
 				'nodeUserId'
 			),
-			'nodeProcessNodeUserRequestDestinationLogs' => array(
+			'nodeProcessNodeUserNodeRequestDestinationLogs' => array(
 				'createdTimestamp',
 				'id',
 				'modifiedTimestamp',
