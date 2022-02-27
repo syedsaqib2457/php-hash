@@ -10,7 +10,7 @@
 	$parameters['systemDatabases']['systemUserAuthenticationTokenSources'] = $systemDatabasesConnections['systemUserAuthenticationTokenSources'];
 	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
 
-	function _deleteSystemUserAuthenticationTokenSource($parameters, $response) {
+	function _deleteSystemUserAuthenticationTokenSources($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
 			$response['message'] = 'System user authentication token source must have an ID, please try again.';
 			return $response;
@@ -56,7 +56,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'delete-system-user-authentication-token-source') === true) {
-		$response = _deleteSystemUserAuthenticationTokenSource($parameters, $response);
+	if (($parameters['action'] === 'delete-system-user-authentication-token-sources') === true) {
+		$response = _deleteSystemUserAuthenticationTokenSources($parameters, $response);
 	}
 ?>
