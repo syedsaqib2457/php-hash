@@ -4,51 +4,51 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_request_limit_rules'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_request_limit_rules'] = $systemDatabasesConnections['node_request_limit_rules'];
+		'nodeRequestLimitRules'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodeRequestLimitRules'] = $systemDatabasesConnections['nodeRequestLimitRules'];
 
 	function _addNodeRequestLimitRule($parameters, $response) {
-		if (empty($parameters['data']['interval_minutes']) === true) {
+		if (empty($parameters['data']['intervalMinutes']) === true) {
 			$response['message'] = 'Node request limit rule must have interval minutes, please try again.';
 			return $response;
 		}
 
-		if (is_numeric($parameters['data']['interval_minutes']) === false) {
+		if (is_numeric($parameters['data']['intervalMinutes']) === false) {
 			$response['message'] = 'Invalid node request limit rule interval minutes, please try again.';
 			return $response;
 		}
 
 		if (
-			(isset($parameters['data']['request_count']) === true) &&
-			(isset($parameters['data']['request_count_interval_minutes']) === true)
+			(isset($parameters['data']['requestCount']) === true) &&
+			(isset($parameters['data']['requestCountIntervalMinutes']) === true)
 		) {
 			if (
-				(is_numeric($parameters['data']['request_count']) === false) ||
-				(($parameters['data']['request_count'] < 0) === true)
+				(is_numeric($parameters['data']['requestCount']) === false) ||
+				(($parameters['data']['requestCount'] < 0) === true)
 			) {
 				$response['message'] = 'Invalid node request limit rule request count, please try again.';
 				return $response;
 			}
 
 			if (
-				(is_numeric($parameters['data']['request_count_interval_minutes']) === false) ||
-				(($parameters['data']['request_count_interval_minutes'] < 0) === true)
+				(is_numeric($parameters['data']['requestCountIntervalMinutes']) === false) ||
+				(($parameters['data']['requestCountIntervalMinutes'] < 0) === true)
 			) {
 				$response['message'] = 'Invalid node request limit rule request count interval minutes, please try again.';
 				return $response;
 			}
 		} else {
-			$parameters['data']['request_count'] = '0';
-			$parameters['data']['request_count_interval_minutes'] = '0';
+			$parameters['data']['requestCount'] = '0';
+			$parameters['data']['requestCountIntervalMinutes'] = '0';
 		}
 
 		$existingNodeRequestLimitRuleCount = _count(array(
-			'in' => $parameters['system_databases']['node_request_limit_rules'],
+			'in' => $parameters['systemDatabases']['nodeRequestLimitRules'],
 			'where' => array(
-				'interval_minutes' => $parameters['data']['interval_minutes'],
-				'request_count' => $parameters['data']['request_count'],
-				'request_count_interval_minutes' => $parameters['data']['request_count_interval_minutes']
+				'intervalMinutes' => $parameters['data']['intervalMinutes'],
+				'requestCount' => $parameters['data']['requestCount'],
+				'requestCountIntervalMinutes' => $parameters['data']['requestCountIntervalMinutes']
 			)
 		), $response);
 
@@ -60,10 +60,10 @@
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['node_request_limit_rules']
+			'in' => $parameters['systemDatabases']['nodeRequestLimitRules']
 		), $response);
 		$nodeRequestLimitRule = _list(array(
-			'in' => $parameters['system_databases']['node_request_limit_rules'],
+			'in' => $parameters['systemDatabases']['nodeRequestLimitRules'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
@@ -71,11 +71,11 @@
 		$nodeRequestLimitRule = current($nodeRequestLimitRule);
 		$response['data'] = $nodeRequestLimitRule;
 		$response['message'] = 'Node request limit rule added successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_node_request_limit_rule') === true) {
+	if (($parameters['action'] === 'add-node-request-limit-rule') === true) {
 		$response = _addNodeRequestLimitRule($parameters, $response);
 	}
 ?>
