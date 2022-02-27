@@ -33,10 +33,10 @@
 		}
 
 		if (
-			(($parameters['data']['type'] === 'httpProxy') === true) ||
-			(($parameters['data']['type'] === 'loadBalancer') === true) ||
-			(($parameters['data']['type'] === 'recursiveDns') === true) ||
-			(($parameters['data']['type'] === 'socksProxy') === true)
+			(($parameters['data']['type'] === 'httpProxy') === false) &&
+			(($parameters['data']['type'] === 'loadBalancer') === false) &&
+			(($parameters['data']['type'] === 'recursiveDns') === false) &&
+			(($parameters['data']['type'] === 'socksProxy') === false)
 		) {
 			$response['message'] = 'Invalid node process type, please try again.';
 			return $response;
