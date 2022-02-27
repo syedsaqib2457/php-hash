@@ -4,31 +4,31 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_process_resource_usage_logs',
+		'nodeProcessResourceUsageLogs',
 		'nodes'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_process_resource_usage_logs'] = $systemDatabasesConnections['node_process_resource_usage_logs'];
-	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodeProcessResourceUsageLogs'] = $systemDatabasesConnections['nodeProcessResourceUsageLogs'];
+	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _addNodeProcessResourceUsageLogs($parameters, $response) {
-		if (empty($parameters['node_authentication_token']) === true) {
+		if (empty($parameters['nodeAuthenticationToken']) === true) {
 			return $response;
 		}
 
 		foreach ($parameters['data'] as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLog) {
 			$parameters['data'][$nodeProcessResourceUsageLogKey]['id'] = _createUniqueId();
-			$parameters['data'][$nodeProcessResourceUsageLogKey]['node_id'] = $parameters['node']]['id'];
+			$parameters['data'][$nodeProcessResourceUsageLogKey]['nodeId'] = $parameters['node']]['id'];
 			$existingNodeProcessResourceUsageLog = _list(array(
 				'data' => array(
-					'bytes_received',
-					'bytes_sent',
+					'bytesReceived',
+					'bytesSent',
 					'id',
-					'request_count'
+					'requestCount'
 				),
-				'in' => $parameters['system_databases']['node_process_resource_usage_logs'],
+				'in' => $parameters['systemDatabases']['nodeProcessResourceUsageLogs'],
 				'where' => array(
-					'created_timestamp' => $parameters['data'][$nodeProcessResourceUsageLogKey]['created_timestamp'],
-					'node_id' => $parameters['data'][$nodeProcessResourceUsageLogKey]['node_id']
+					'createdTimestamp' => $parameters['data'][$nodeProcessResourceUsageLogKey]['createdTimestamp'],
+					'nodeId' => $parameters['data'][$nodeProcessResourceUsageLogKey]['nodeId']
 				)
 			), $response);
 			$existingNodeProcessResourceUsageLog = current($existingNodeProcessResourceUsageLog);
@@ -37,23 +37,23 @@
 				$parameters['data'][$nodeProcessResourceUsageLogKey]['id'] = $existingNodeProcessResourceUsageLog['id'];
 
 				if (empty($existingNodeProcessResourceUsageLog['request_count']) === false) {
-					$parameters['data'][$nodeProcessResourceUsageLogKey]['bytes_received'] += $existingNodeProcessResourceUsageLog['bytes_received'];
-					$parameters['data'][$nodeProcessResourceUsageLogKey]['bytes_sent'] += $existingNodeProcessResourceUsageLog['bytes_sent'];
-					$parameters['data'][$nodeProcessResourceUsageLogKey]['request_count'] += $existingNodeProcessResourceUsageLog['request_count'];
+					$parameters['data'][$nodeProcessResourceUsageLogKey]['bytesReceived'] += $existingNodeProcessResourceUsageLog['bytesReceived'];
+					$parameters['data'][$nodeProcessResourceUsageLogKey]['bytesSent'] += $existingNodeProcessResourceUsageLog['bytesSent'];
+					$parameters['data'][$nodeProcessResourceUsageLogKey]['requestCount'] += $existingNodeProcessResourceUsageLog['requestCount'];
 				}
 			}
 		}
 
 		_save(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['node_process_resource_usage_logs']
+			'in' => $parameters['systemDatabases']['nodeProcessResourceUsageLogs']
 		), $response);
 		$response['message'] = 'Node process resource usage logs added successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_node_process_resource_usage_logs') === true) {
+	if (($parameters['action'] === 'add-node-process-resource-usage-logs') === true) {
 		$response = _addNodeProcessResourceUsageLogs($parameters, $response);
 	}
 ?>
