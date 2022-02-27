@@ -76,7 +76,7 @@
 		$response['data'] = $systemUsers;
 		$response['message'] = 'System users listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
