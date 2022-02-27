@@ -4,25 +4,25 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_processes',
+		'nodeProcesses',
 		'nodes'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_processes'] = $systemDatabasesConnections['node_processes'];
-	$parameters['system_databases']['nodes'] = $systemDatabasesConnections['nodes'];
-	require_once('/var/www/cloud_node_automation_api/system_action_validate_port_number.php');
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['node_processes'] = $systemDatabasesConnections['nodeProcesses'];
+	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
+	require_once('/var/www/firewall-security-api/system-action-validate-port-number.php');
 
 	function _addNodeProcess($parameters, $response) {
-		if (empty($parameters['data']['node_id']) === true) {
+		if (empty($parameters['data']['nodeId']) === true) {
 			$response['message'] = 'Node process must have a node ID, please try again.';
 			return $response;
 		}
 
-		if (empty($parameters['data']['port_number']) === true) {
+		if (empty($parameters['data']['portNumber']) === true) {
 			$response['message'] = 'Node process must have a port number, please try again.';
 			return $response;
 		}
 
-		if (_validatePortNumber($parameters['data']['port_number']) === false) {
+		if (_validatePortNumber($parameters['data']['portNumber']) === false) {
 			$response['message'] = 'Invalid node process port number, please try again.';
 			return $response;
 		}
@@ -32,12 +32,12 @@
 			return $response;
 		}
 
-		if (in_array($parameters['data']['type'], array(
-			'http_proxy',
-			'load_balancer',
-			'recursive_dns',
-			'socks_proxy'
-		)) === false) {
+		if (
+			(($parameters['data']['type'] === 'httpProxy') === true) ||
+			(($parameters['data']['type'] === 'loadBalancer') === true) ||
+			(($parameters['data']['type'] === 'recursiveDns') === true) ||
+			(($parameters['data']['type'] === 'socksProxy') === true)
+		) {
 			$response['message'] = 'Invalid node process type, please try again.';
 			return $response;
 		}
@@ -45,11 +45,11 @@
 		$node = _list(array(
 			'data' => array(
 				'id',
-				'node_id'
+				'nodeId'
 			),
-			'in' => $parameters['system_databases']['nodes'],
+			'in' => $parameters['systemDatabases']['nodes'],
 			'where' => array(
-				'id' => $parameters['data']['node_id']
+				'id' => $parameters['data']['nodeId']
 			)
 		), $response);
 		$node = current($node);
@@ -59,33 +59,33 @@
 			return $response;
 		}
 
-		$parameters['data']['node_node_id'] = $node['id'];
+		$parameters['data']['nodeNodeId'] = $node['id'];
 
-		if (empty($node['node_id']) === false) {
-			$parameters['data']['node_node_id'] = $node['node_id'];
+		if (empty($node['nodeId']) === false) {
+			$parameters['data']['nodeNodeId'] = $node['nodeId'];
 		}
 
 		$existingNodeProcessCountParameters = array(
-			'in' => $parameters['system_databases']['node_processes'],
+			'in' => $parameters['system_databases']['portNumber'],
 			'where' => array(
-				'node_id' => $parameters['data']['node_id'],
-				'port_number' => $parameters['data']['port_number']
+				'nodeId' => $parameters['data']['nodeId'],
+				'portNumber' => $parameters['data']['portNumber']
 			)
 		);
 		$existingNodeProcessCount = _count($existingNodeProcessCountParameters, $response);
 
 		if (($existingNodeProcessCount === 1) === true) {
-			$response['message'] = 'Node process already exists with the same port number ' . $parameters['data']['port_number'] . ', please try again.';
+			$response['message'] = 'Node process already exists with the same port number ' . $parameters['data']['portNumber'] . ', please try again.';
 			return $response;
 		}
 
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['node_processes']
+			'in' => $parameters['systemDatabases']['nodeProcesses']
 		), $response);
 		$nodeProcess = _list(array(
-			'in' => $parameters['system_databases']['node_processes'],
+			'in' => $parameters['systemDatabases']['nodeProcesses'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
@@ -93,11 +93,11 @@
 		$nodeProcess = current($nodeProcess);
 		$response['data'] = $nodeProcess;
 		$response['message'] = 'Node process added successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_node_process') === true) {
+	if (($parameters['action'] === 'add-node-process') === true) {
 		$response = _addNodeProcess($parameters, $response);
 	}
 ?>
