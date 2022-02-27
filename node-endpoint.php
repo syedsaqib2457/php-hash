@@ -3,13 +3,11 @@
 		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
-		$processIdParts = array(
-			''
-		);
+		$processIdParts = array();
 		$processIdPartsKey = 1;
 
-		foreach ($processIds as $processId) {
-			if ((($processIdPartsKey % 10) === 0) === true) {
+		foreach ($processIds as $processIdKey => $processId) {
+			if ((($processIdKey % 10) === 0) === true) {
 				$processIdPartsKey++;
 				$processIdParts[$processIdPartsKey] = '';
 			}
