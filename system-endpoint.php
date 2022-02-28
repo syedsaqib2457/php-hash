@@ -103,6 +103,17 @@
 			_output($parameters, $response);
 		}
 
+		$actionIndex = 0;
+
+		while (isset($parameters['action'][$actionIndex]) === true) {
+			if (ctype_upper($parameters['action'][$actionIndex]) === true) {
+				$parameters['action'][$actionIndex] = strtolower($parameters['action'][$actionIndex]);
+				$parameters['action'] = substr_replace($action, '-' . $parameters['action'][$actionIndex], $actionIndex, 1);
+			}
+
+			$actionIndex++;
+		}
+		
 		if (
 			((strpos($parameters['action'], '/') === false) === false) ||
 			(file_exists('/var/www/firewall-security-api/system-action-' . $parameters['action'] . '.php') === false)
