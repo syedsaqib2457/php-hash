@@ -330,7 +330,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node') === true) {
+	if (($parameters['action'] === 'addNode') === true) {
 		$response = _addNode($parameters, $response);
 	}
 ?>
