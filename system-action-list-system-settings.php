@@ -31,11 +31,7 @@
 		$response['data'] = $systemSettings;
 		$response['message'] = 'System settings listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listSystemSettings') === true) {
-		$response = _listSystemSettings($parameters, $response);
 	}
 ?>
