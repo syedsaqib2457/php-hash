@@ -35,7 +35,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-system-settings') === true) {
+	if (($parameters['action'] === 'listSystemSettings') === true) {
 		$response = _listSystemSettings($parameters, $response);
 	}
 ?>
