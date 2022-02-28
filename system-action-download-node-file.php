@@ -32,8 +32,4 @@
 		echo file_get_contents('/var/www/firewall-security-api/' . $parameters['where']['nodeFile']);
 		exit;
 	}
-
-	if (($parameters['action'] === 'downloadNodeFileContents') === true) {
-		$response = _downloadNodeFileContents($parameters, $response);
-	}
 ?>
