@@ -26,11 +26,6 @@
 			$nodeParameters['where']['id'] = $parameters['where']['id'];
 		}
 
-		if (empty($parameters['where']['nodeAuthenticationToken']) === true) {
-			$response['message'] = 'Node must have an authentication token, please try again.';
-			return $response;
-		}
-
 		$node = _list($nodeParameters, $response);
 		$node = current($node);
 
