@@ -101,11 +101,7 @@
 		$nodeProcessNodeUser = current($nodeProcessNodeUser);
 		$response['data'] = $nodeProcessNodeUser;
 		$response['message'] = 'Node process node user added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeProcessNodeUser') === true) {
-		$response = _addNodeProcessNodeUser($parameters, $response);
 	}
 ?>
