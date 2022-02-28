@@ -4,22 +4,22 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'system_user_authentication_tokens',
-		'system_users'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['system_user_authentication_tokens'] = $systemDatabasesConnections['system_user_authentication_tokens'];
-	$parameters['system_databases']['system_users'] = $systemDatabasesConnections['system_users'];
+		'systemUserAuthenticationTokens',
+		'systemUserSystemUsers'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['systemUserAuthenticationTokens'] = $systemDatabasesConnections['systemUserAuthenticationTokens'];
+	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
 
 	function _addSystemUserAuthenticationToken($parameters, $response) {
-		if (empty($parameters['data']['system_user_id']) === true) {
+		if (empty($parameters['data']['systemUserId']) === true) {
 			$response['message'] = 'System user authentication token must have a system user ID, please try again.';
 			return $response;
 		}
 
 		$systemUserCount = _count(array(
-			'in' => $parameters['system_databases']['system_users'],
+			'in' => $parameters['systemDatabases']['systemUsers'],
 			'where' => array(
-				'id' => $parameters['data']['system_user_id']
+				'id' => $parameters['data']['systemUserId']
 			)
 		), $response);
 
@@ -29,16 +29,16 @@
 		}
 
 		$systemUserSystemUserCount = _count(array(
-			'in' => $parameters['system_databases']['system_user_system_users'],
+			'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
 			'where' => array(
-				'system_user_id' => $parameters['data']['system_user_id'],
-				'system_user_system_user_id' => $parameters['system_user_id']
+				'systemUserId' => $parameters['data']['systemUserId'],
+				'systemUserSystemUserId' => $parameters['systemUserId']
 			)
 		), $response);
 
 		if (
 			(($systemUserSystemUserCount === 1) === false) &&
-			(($parameters['system_user_id'] === $parameters['data']['system_user_id']) === false)
+			(($parameters['systemUserId'] === $parameters['data']['systemUserId']) === false)
 		) {
 			$response['message'] = 'Invalid permissions to add system user authentication token, please try again.';
 			return $response;
@@ -47,10 +47,10 @@
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['system_user_authentication_tokens']
+			'in' => $parameters['systemDatabases']['systemUserAuthenticationTokens']
 		), $response);
 		$systemUserAuthenticationToken = _list(array(
-			'in' => $parameters['system_databases']['system_user_authentication_tokens'],
+			'in' => $parameters['systemDatabases']['systemUserAuthenticationTokens'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
@@ -58,11 +58,11 @@
 		$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 		$response['data'] = $systemUserAuthenticationToken;
 		$response['message'] = 'System user authentication token added successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_system_user_authentication_token') === true) {
+	if (($parameters['action'] === 'add-system-user-authentication-token') === true) {
 		$response = _addSystemUserAuthenticationToken($parameters, $response);
 	}
 ?>
