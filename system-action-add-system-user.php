@@ -65,11 +65,7 @@
 		$systemUser = current($systemUser);
 		$response['data'] = $systemUser;
 		$response['message'] = 'System user added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addSystemUser') === true) {
-		$response = _addSystemUser($parameters, $response);
 	}
 ?>
