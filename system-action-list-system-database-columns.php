@@ -57,7 +57,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-system-database-columns') === true) {
+	if (($parameters['action'] === 'listSystemDatabaseColumns') === true) {
 		$response = _listSystemDatabaseColumns($parameters, $response);
 	}
 ?>
