@@ -110,7 +110,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'delete-node') === true) {
+	if (($parameters['action'] === 'deleteNode') === true) {
 		$response = _deleteNode($parameters, $response);
 	}
 ?>
