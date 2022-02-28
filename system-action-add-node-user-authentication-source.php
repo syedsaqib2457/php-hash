@@ -127,7 +127,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-user-authentication-source') === true) {
+	if (($parameters['action'] === 'addNodeUserAuthenticationSource') === true) {
 		$response = _addNodeUserAuthenticationSource($parameters, $response);
 	}
 ?>
