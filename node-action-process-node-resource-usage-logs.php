@@ -85,7 +85,7 @@
 		$parameters['data']['cpuPercentage'] = max($parameters['data']['cpuPercentage']);
 		$parameters['data']['createdTimestamp'] = strtotime($nodeResourceUsageLogTimestamp);
 		$systemParameters = array(
-			'action' => 'add-node-resource-usage-logs',
+			'action' => 'addNodeResourceUsageLogs',
 			'data' => $parameters['data'],
 			'nodeAuthenticationToken' => $parameters['nodeAuthenticationToken']
 		);
@@ -107,7 +107,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'process-node-resource-usage-logs') === true) {
+	if (($parameters['action'] === 'processNodeResourceUsageLogs') === true) {
 		$response = _processNodeResourceUsageLogs($parameters, $response);
 	}
 ?>
