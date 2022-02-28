@@ -1083,7 +1083,7 @@
 				'responseAuthenticatedStatus',
 				'responseData',
 				'responseMessage',
-				'responseValidStatus',
+				'responseValidatedStatus',
 				'sourceIpAddress',
 				'systemAction',
 				'systemUserAuthenticationTokenId',
