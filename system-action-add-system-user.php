@@ -4,11 +4,11 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'systemUserSystemUsers',
-		'systemUsers'
+		'systemUsers',
+		'systemUserSystemUsers'
 	), $parameters['systemDatabases'], $response);
-	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
 	$parameters['systemDatabases']['systemUsers'] = $systemDatabasesConnections['systemUsers'];
+	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
 
 	function _addSystemUser($parameters, $response) {
 		$systemUserData = array(
@@ -69,7 +69,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-system-user') === true) {
+	if (($parameters['action'] === 'addSystemUser') === true) {
 		$response = _addSystemUser($parameters, $response);
 	}
 ?>
