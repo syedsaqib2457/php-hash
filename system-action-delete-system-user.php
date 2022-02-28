@@ -108,7 +108,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'delete-system-user') === true) {
+	if (($parameters['action'] === 'deleteSystemUser') === true) {
 		$response = _deleteSystemUser($parameters, $response);
 	}
 ?>
