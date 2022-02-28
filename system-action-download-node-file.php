@@ -33,7 +33,7 @@
 		exit;
 	}
 
-	if (($parameters['action'] === 'download-node-file-contents') === true) {
+	if (($parameters['action'] === 'downloadNodeFileContents') === true) {
 		$response = _downloadNodeFileContents($parameters, $response);
 	}
 ?>
