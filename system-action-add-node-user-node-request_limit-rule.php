@@ -158,7 +158,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-user-node-request-limit-rule') === true) {
+	if (($parameters['action'] === 'addNodeUserNodeRequestLimitRule') === true) {
 		$response = _addNodeUserNodeRequestLimitRule($parameters, $response);
 	}
 ?>
