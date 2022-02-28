@@ -53,7 +53,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-process-resource-usage-logs') === true) {
+	if (($parameters['action'] === 'addNodeProcessResourceUsageLogs') === true) {
 		$response = _addNodeProcessResourceUsageLogs($parameters, $response);
 	}
 ?>
