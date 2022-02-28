@@ -66,7 +66,7 @@
 		}
 
 		$existingNodeProcessCountParameters = array(
-			'in' => $parameters['system_databases']['portNumber'],
+			'in' => $parameters['systemDatabases']['portNumber'],
 			'where' => array(
 				'nodeId' => $parameters['data']['nodeId'],
 				'portNumber' => $parameters['data']['portNumber']
