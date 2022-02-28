@@ -160,16 +160,17 @@
 	}
 
 	function _list($parameters, $response) {
-		if (empty($parameters['data']) === true) {
-			$parameters['data'] = array(
-				'*'
-			);
+		$systemDatabaseListColumnKeys = '*';
+
+		if (empty($parameters['data']) === false) {
+			$systemDatabaseListColumnKeys = '`' . implode('`,`', $parameters['data']) . '`';
 		}
 
-		$systemDatabaseListCommand = 'SELECT ' . implode(',', $parameters['data']) . ' FROM ' . $parameters['in']['structure']['tableKey'];
+		$systemDatabaseListCommand = 'SELECT ' . $systemDatabaseListColumnKeys . ' FROM ' . $parameters['in']['structure']['tableKey'];
 
 		if (empty($parameters['where']) === false) {
-			$systemDatabaseListCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
+			$parameters['where'] = _parseSystemDatabaseCommandWhereConditions($parameters['where']);
+			$systemDatabaseListCommand .= ' WHERE ' . implode(' AND ', $parameters['where']);
 		}
 
 		if (empty($parameters['sort']) === false) {
