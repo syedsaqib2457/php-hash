@@ -104,11 +104,7 @@
 		$systemUserAuthenticationTokenScope = current($systemUserAuthenticationTokenScope);
 		$response['data'] = $systemUserAuthenticationTokenScope;
 		$response['message'] = 'System user authentication token scope added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addSystemUserAuthenticationTokenScope') === true) {
-		$response = _addSystemUserAuthenticationTokenScope($parameters, $response);
 	}
 ?>
