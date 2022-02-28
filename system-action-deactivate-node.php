@@ -27,7 +27,7 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
-			$response['message'] = 'Invalid node authentication token or ID, please try again.';
+			$response['message'] = 'Error listing node, please try again.';
 			return $response;
 		}
 
@@ -41,11 +41,7 @@
 		);
 		_edit($nodeParameters, $response);
 		$response['message'] = 'Node deactivated successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'deactivateNode') === true) {
-		$response = _deactivateNode($parameters, $response);
 	}
 ?>
