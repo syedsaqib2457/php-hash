@@ -76,11 +76,7 @@
 		$response['data'] = $systemUserAuthenticationTokenScopes;
 		$response['message'] = 'System user authentication token scopes listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listSystemUserAuthenticationTokenScopes') === true) {
-		$response = _listSystemUserAuthenticationTokenScopes($parameters, $response);
 	}
 ?>
