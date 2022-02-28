@@ -4,23 +4,23 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'node_process_node_user_node_request_destinations',
-		'node_request_destinations',
-		'node_user_node_request_destinations',
-		'node_users'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['node_process_node_user_node_request_destinations'] = $systemDatabasesConnections['node_process_node_user_node_request_destinations'];
-	$parameters['system_databases']['node_request_destinations'] = $systemDatabasesConnections['node_request_destinations'];
-	$parameters['system_databases']['node_user_node_request_destinations'] = $systemDatabasesConnections['node_user_node_request_destinations'];
-	$parameters['system_databases']['node_users'] = $systemDatabasesConnections['node_users'];
+		'nodeProcessNodeUserNodeRequestDestinations',
+		'nodeRequestDestinations',
+		'nodeUserNodeRequestDestinations',
+		'nodeUsers'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['nodeProcessNodeUserNodeRequestDestinations'] = $systemDatabasesConnections['nodeProcessNodeUserNodeRequestDestinations'];
+	$parameters['systemDatabases']['nodeRequestDestinations'] = $systemDatabasesConnections['nodeRequestDestinations'];
+	$parameters['systemDatabases']['nodeUserNodeRequestDestinations'] = $systemDatabasesConnections['nodeUserNodeRequestDestinations'];
+	$parameters['systemDatabases']['nodeUsers'] = $systemDatabasesConnections['nodeUsers'];
 
 	function _addNodeUserNodeRequestDestination($parameters, $response) {
-		if (empty($parameters['data']['node_request_destination_id']) === true) {
+		if (empty($parameters['data']['nodeRequestDestinationId']) === true) {
 			$response['message'] = 'Node process node user node request destination must have a node request destination ID, please try again.';
 			return $response;
 		}
 
-		if (empty($parameters['data']['node_user_id']) === true) {
+		if (empty($parameters['data']['nodeUserId']) === true) {
 			$response['message'] = 'Node process node user node request destination must have a node user ID, please try again.';
 			return $response;
 		}
@@ -29,9 +29,9 @@
 			'data' => array(
 				'address'
 			),
-			'in' => $parameters['system_databases']['node_request_destinations'],
+			'in' => $parameters['systemDatabases']['nodeRequestDestinations'],
 			'where' => array(
-				'id' => $parameters['data']['node_request_destination_id']
+				'id' => $parameters['data']['nodeRequestDestinationId']
 			)
 		), $response);
 		$nodeRequestDestination = current($nodeRequestDestination);
@@ -42,9 +42,9 @@
 		}
 
 		$nodeUserCount = _count(array(
-			'in' => $parameters['system_databases']['node_users'],
+			'in' => $parameters['systemDatabases']['nodeUsers'],
 			'where' => array(
-				'id' => $parameters['data']['node_user_id']
+				'id' => $parameters['data']['nodeUserId']
 			)
 		), $response);
 
@@ -54,10 +54,10 @@
 		}
 
 		$existingNodeUserNodeRequestDestinationCount = _count(array(
-			'in' => $parameters['system_databases']['node_user_node_request_destinations'],
+			'in' => $parameters['systemDatabases']['nodeUserNodeRequestDestinations'],
 			'where' => array(
-				'node_request_destination_id' => $parameters['data']['node_request_destination_id'],
-				'node_user_id' => $parameters['data']['node_user_id']
+				'nodeRequestDestinationId' => $parameters['data']['nodeRequestDestinationId'],
+				'nodeUserId' => $parameters['data']['nodeUserId']
 			)
 		), $response);
 
@@ -69,10 +69,10 @@
 		$parameters['data']['id'] = _createUniqueId();
 		_save(array(
 			'data' => $parameters['data'],
-			'in' => $parameters['system_databases']['node_user_node_request_destinations']
+			'in' => $parameters['systemDatabases']['nodeUserNodeRequestDestinations']
 		));
 		$nodeUserNodeRequestDestination = _list(array(
-			'in' => $parameters['system_databases']['node_user_node_request_destinations'],
+			'in' => $parameters['systemDatabases']['nodeUserNodeRequestDestinations'],
 			'where' => array(
 				'id' => $parameters['data']['id']
 			)
@@ -80,14 +80,14 @@
 		$nodeUserNodeRequestDestination = current($nodeUserNodeRequestDestination);
 		$nodeProcessNodeUsers = _list(array(
 			'data' => array(
-				'node_id',
-				'node_node_id',
-				'node_process_type',
-				'node_user_id'
+				'nodeId',
+				'nodeNodeId',
+				'nodeProcessType',
+				'nodeUserId'
 			),
-			'in' => $parameters['system_databases']['node_process_node_users'],
+			'in' => $parameters['systemDatabases']['nodeProcessNodeUsers'],
 			'where' => array(
-				'node_user_id' => $parameters['data']['node_user_id']
+				'nodeUserId' => $parameters['data']['nodeUserId']
 			)
 		), $response);
 
@@ -95,26 +95,26 @@
 			$nodeProcessNodeUserNodeRequestDestinations = array();
 
 			foreach ($nodeProcessNodeUsers as $nodeProcessNodeUser) {
-				$nodeProcessNodeUser['created_timestamp' = $nodeUserNodeRequestDestination['created_timestamp'];
-				$nodeProcessNodeUser['modified_timestamp' = $nodeUserNodeRequestDestination['modified_timestamp'];
-				$nodeProcessNodeUser['node_request_destination_address'] = $nodeUserNodeRequestDestination['node_request_destination_address'];
-				$nodeProcessNodeUser['node_request_destination_id'] = $nodeUserNodeRequestDestination['node_request_destination_id'];
+				$nodeProcessNodeUser['createdTimestamp' = $nodeUserNodeRequestDestination['createdTimestamp'];
+				$nodeProcessNodeUser['modifiedTimestamp' = $nodeUserNodeRequestDestination['modifiedTimestamp'];
+				$nodeProcessNodeUser['nodeRequestDestinationAddress'] = $nodeUserNodeRequestDestination['nodeRequestDestinationAddress'];
+				$nodeProcessNodeUser['nodeRequestDestinationId'] = $nodeUserNodeRequestDestination['nodeRequestDestinationId'];
 				$nodeProcessNodeUserNodeRequestDestinations[] = $nodeProcessNodeUser;
 			}
 
 			_save(array(
 				'data' => $nodeProcessNodeUserNodeRequestDestinations,
-				'in' => $parameters['system_databases']['node_process_node_user_node_request_destinations']
+				'in' => $parameters['systemDatabases']['nodeProcessNodeUserNodeRequestDestinations']
 			));
 		}
 
 		$response['data'] = $nodeUserNodeRequestDestination;
 		$response['message'] = 'Node user node request destination added successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_node_user_node_request_destination') === true) {
+	if (($parameters['action'] === 'add-node-user-node-request-destination') === true) {
 		$response = _addNodeUserNodeRequestDestination($parameters, $response);
 	}
 ?>
