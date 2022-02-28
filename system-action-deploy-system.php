@@ -1108,8 +1108,8 @@
 			'systemSettings' => array(
 				'createdTimestamp',
 				'id',
+				'key',
 				'modifiedTimestamp',
-				'name',
 				'value'
 			),
 			'systemUserAuthenticationTokens' => array(
