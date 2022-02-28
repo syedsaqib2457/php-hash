@@ -93,11 +93,7 @@
 		$nodeProcess = current($nodeProcess);
 		$response['data'] = $nodeProcess;
 		$response['message'] = 'Node process added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeProcess') === true) {
-		$response = _addNodeProcess($parameters, $response);
 	}
 ?>
