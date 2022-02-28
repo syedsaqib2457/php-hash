@@ -160,7 +160,7 @@
 					'nodeId' => $nodeProcessResourceUsageLogNodeId,
 					'requestCount' => 0
 				);
-				$parameters['action'] = 'add-node-process-resource-usage-logs';
+				$parameters['action'] = 'addNodeProcessResourceUsageLogs';
 				$parameters['node']['id'] = $nodeProcessResourceUsageLogNodeId;
 
 				foreach ($nodeProcessResourceUsageLogs as $nodeProcessResourceUsageLogProcessType => $nodeProcessResourceUsageLog) {
@@ -178,7 +178,7 @@
 				}
 
 				$response = _addNodeProcessResourceUsageLogs($parameters, $response);
-				$parameters['action'] = 'add-node-resource-usage-log';
+				$parameters['action'] = 'addNodeResourceUsageLog';
 				$parameters['data'] = $nodeResourceUsageLogData;
 				$response = _addNodeResourceUsageLog($parameters, $response);
 			}
