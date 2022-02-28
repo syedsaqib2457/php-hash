@@ -57,7 +57,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'node-request-limit-rules') === true) {
+	if (($parameters['action'] === 'nodeRequestLimitRules') === true) {
 		$response = _listNodeRequestLimitRules($parameters, $response);
 	}
 ?>
