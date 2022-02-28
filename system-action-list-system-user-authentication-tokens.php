@@ -80,7 +80,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-system-user-authentication-tokens') === true) {
+	if (($parameters['action'] === 'listSystemUserAuthenticationTokens') === true) {
 		$response = _listSystemUserAuthenticationTokens($parameters, $response);
 	}
 ?>
