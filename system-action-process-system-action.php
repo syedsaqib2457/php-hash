@@ -24,7 +24,7 @@
 		'authenticatedStatus' => '1',
 		'data' => array(),
 		'message' => 'Error processing system action, please try again.',
-		'validStatus' => '0'
+		'validatedStatus' => '0'
 	);
 
 	if (file_exists('/var/www/firewall-security-api/system-action-' . $_SERVER['argv'][1] . '.php') === false) {
