@@ -3,11 +3,6 @@
 		exit;
 	}
 
-	$systemDatabasesConnections = _connect(array(
-		'systemUserSystemUsers'
-	), $parameters['systemDatabases'], $response);
-	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
-
 	function _listSystemSettings($parameters, $response) {
 		if (empty($parameters['systemUserAuthenticationToken']) === true) {
 			return $response;
