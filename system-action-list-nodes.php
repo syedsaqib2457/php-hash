@@ -57,7 +57,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-nodes') === true) {
+	if (($parameters['action'] === 'listNodes') === true) {
 		$response = _listNodes($parameters, $response);
 	}
 ?>
