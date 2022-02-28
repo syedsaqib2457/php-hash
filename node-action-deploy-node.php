@@ -480,7 +480,7 @@
 
 			$systemActionDownloadNodeFileResponse = file_get_contents('/usr/local/firewall-security-api/' . $nodeFile);
 
-			if (empty($systemActionDownloadNodeFileResponse)) === true) {
+			if (empty($systemActionDownloadNodeFileResponse) === true) {
 				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
 				exit;
 			}
