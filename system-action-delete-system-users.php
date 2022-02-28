@@ -18,39 +18,40 @@
 	$parameters['systemDatabases']['systemUsers'] = $systemDatabasesConnections['systemUsers'];
 	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
 
-	function _deleteSystemUser($parameters, $response) {
+	function _deleteSystemUsers($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
 			$response['message'] = 'System user must have an ID, please try again.';
 			return $response;
 		}
 
-		if (is_string($parameters['where']['id']) === false) {
-			$response['message'] = 'Invalid system user ID, please try again.';
-			return $response;
+		$systemUserIds = $parameters['where']['id'];
+
+		if (is_string($parameters['where']['id']) === true) {
+			$systemUserIds = array(
+				$parameters['where']['id']
+			);
 		}
 
-		$systemUserSystemUserCount = _count(array(
-			'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
-			'where' => array(
-				'systemUserId' => $parameters['where']['id'],
-				'systemUserSystemUserId' => $parameters['systemUserId']
-			)
-		), $response);
+		foreach ($systemUserIds as $systemUserId) {
+			$systemUserSystemUserCount = _count(array(
+				'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
+				'where' => array(
+					'systemUserId' => $systemUserId,
+					'systemUserSystemUserId' => $parameters['systemUserId']
+				)
+			), $response);
 
-		if (
-			(($systemUserSystemUserCount === 1) === false) ||
-			(($parameters['systemUserId'] === $parameters['where']['id']) === true)
-		) {
-			$response['message'] = 'Invalid permissions to delete system user, please try again.';
-			return $response;
+			if (
+				(($systemUserSystemUserCount === 1) === false) ||
+				(($parameters['systemUserId'] === $systemUserId) === true)
+			) {
+				$response['message'] = 'Invalid permissions to delete system user ID ' . $systemUserId . ', please try again.';
+				return $response;
+			}
 		}
 
 		$systemUserSystemUserIdPartIndex = 0;
-		$systemUserSystemUserIdParts = array(
-			array(
-				$parameters['where']['id']
-			)
-		);
+		$systemUserSystemUserIdParts = array();
 		$systemUserSystemUsers = _list(array(
 			'data' => array(
 				'systemUserId'
@@ -103,7 +104,7 @@
 				)
 			)
 		), $response);
-		$response['message'] = 'System user deleted successfully.';
+		$response['message'] = 'System users deleted successfully.';
 		$response['validatedStatus'] = '1';
 		return $response;
 	}
