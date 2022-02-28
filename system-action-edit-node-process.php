@@ -359,7 +359,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'edit-node-process') === true) {
+	if (($parameters['action'] === 'editNodeProcess') === true) {
 		$response = _editNodeProcess($parameters, $response);
 	}
 ?>
