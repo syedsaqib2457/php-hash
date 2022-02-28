@@ -6,7 +6,7 @@
 	$systemDatabasesConnections = _connect(array(
 		'systemUserAuthenticationTokenScopes',
 		'systemUserSystemUsers'
-	), $parameters['system_databases'], $response);
+	), $parameters['systemDatabases'], $response);
 	$parameters['systemDatabases']['systemUserAuthenticationTokenScopes'] = $systemDatabasesConnections['systemUserAuthenticationTokenScopes'];
 	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
 
@@ -34,7 +34,7 @@
 			}
 
 			$systemUserSystemUserCount = _count(array(
-				'in' => $parameters['system_databases']['system_user_system_users'],
+				'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
 				'where' => array(
 					'systemUserId' => $systemUserAuthenticationTokenScope['systemUserId'],
 					'systemUserSystemUserId' => $parameters['systemUserId']
@@ -57,11 +57,7 @@
 			)
 		), $response);
 		$response['message'] = 'System user authentication token scope deleted successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'deleteSystemUserAuthenticationTokenScopes') === true) {
-		$response = _deleteSystemUserAuthenticationTokenScopes($parameters, $response);
 	}
 ?>
