@@ -1268,7 +1268,6 @@
 				)
 			)
 		);
-
 		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
 		$systemSettingsData = array(
 			'versionNumber' => '1'
@@ -1329,9 +1328,22 @@
 		$systemFiles = scandir('/var/www/firewall-security-api/');
 
 		foreach ($systemFiles as $systemFile) {
-			if ((substr($systemFile, 0, 13) === 'systemAction') === true) {
-				$systemAction = substr($systemFile, 14);
-				$systemAction = substr($systemAction, 0, -4);
+			if ((substr($systemFile, 0, 13) === 'system-action') === true) {
+				$systemAction = '';
+				$systemActionFile = substr($systemFile, 14);
+				$systemActionFile = substr($systemActionFile, 0, -4);
+				$systemActionFileIndex = 0;
+
+				while (isset($systemActionFile[$systemActionFileIndex]) === true) {
+					if ((strpos($systemActionFile[$systemActionFileIndex], '-') === false) === false) {
+						$systemActionFileIndex++;
+						$systemActionFile[$systemActionFileIndex] = strtoupper($systemActionFile[$systemActionFileIndex]);
+					}
+
+					$systemAction .= $systemActionFile[$systemActionFileIndex];
+					$systemActionFileIndex++;
+				}
+
 				$systemDatabaseData['systemUserAuthenticationTokenScopes'][] = array(
 					'createdTimestamp' => $timestamp,
 					'id' => _createUniqueId(),
