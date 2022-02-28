@@ -114,11 +114,7 @@
 		$systemUserAuthenticationTokenSource = current($systemUserAuthenticationTokenSource);
 		$response['data'] = $systemUserAuthenticationTokenSource;
 		$response['message'] = 'System user authentication token source added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addSystemUserAuthenticationTokenSource') === true) {
-		$response = _addSystemUserAuthenticationTokenSource($parameters, $response);
 	}
 ?>
