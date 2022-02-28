@@ -76,11 +76,7 @@
 		$response['data'] = $systemUserAuthenticationTokens;
 		$response['message'] = 'System user authentication tokens listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listSystemUserAuthenticationTokens') === true) {
-		$response = _listSystemUserAuthenticationTokens($parameters, $response);
 	}
 ?>
