@@ -32,7 +32,7 @@
 		$nodeUser = current($nodeUser);
 
 		if (empty($nodeUser) === true) {
-			$response['message'] = 'Invalid node user authentication credential node user ID, please try again.';
+			$response['message'] = 'Error listing node user authentication credential node user, please try again.';
 			return $response;
 		}
 
@@ -91,11 +91,7 @@
 
 		$response['data'] = $nodeUserAuthenticationCredential;
 		$response['message'] = 'Node user authentication credential added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeUserAuthenticationCredential') === true) {
-		$response = _addNodeUserAuthenticationCredential($parameters, $response);
 	}
 ?>
