@@ -270,7 +270,7 @@
 		}
 
 		$systemActionProcessNodeParameters = array(
-			'action' => 'process-node',
+			'action' => 'processNode',
 			'data' => array(
 				'processingStatus' => '1'
 			),
@@ -1226,7 +1226,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'process-node-processes') === true) {
+	if (($parameters['action'] === 'processNodeProcesses') === true) {
 		$response = _processNodeProcesses($parameters, $response);
 	}
 ?>
