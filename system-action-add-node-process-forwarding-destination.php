@@ -114,7 +114,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-process-forwarding-destination') === true) {
+	if (($parameters['action'] === 'addNodeProcessForwardingDestination') === true) {
 		$response = _addNodeProcessForwardingDestination($parameters, $response);
 	}
 ?>
