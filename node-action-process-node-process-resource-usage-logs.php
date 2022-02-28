@@ -105,7 +105,7 @@
 		}
 
 		$systemParameters = array(
-			'action' => 'add-node-process-resource-usage-logs',
+			'action' => 'addNodeProcessResourceUsageLogs',
 			'data' => $parameters['data'],
 			'nodeAuthenticationToken' => $parameters['nodeAuthenticationToken']
 		);
