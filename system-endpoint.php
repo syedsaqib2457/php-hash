@@ -108,7 +108,7 @@
 		while (isset($parameters['action'][$actionIndex]) === true) {
 			if (ctype_upper($parameters['action'][$actionIndex]) === true) {
 				$parameters['action'][$actionIndex] = strtolower($parameters['action'][$actionIndex]);
-				$parameters['action'] = substr_replace($action, '-' . $parameters['action'][$actionIndex], $actionIndex, 1);
+				$parameters['action'] = substr_replace($parameters['action'], '-' . $parameters['action'][$actionIndex], $actionIndex, 1);
 			}
 
 			$actionIndex++;
