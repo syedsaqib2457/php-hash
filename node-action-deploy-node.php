@@ -28,7 +28,7 @@
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
 
-		if (file_put_contents('/usr/local/cloud_node_automation_api/node_action_deploy_node_commands.sh', $killProcessCommands) === false) {
+		if (file_put_contents('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', $killProcessCommands) === false) {
 			echo 'Error adding kill process ID commands, please try again.' . "\n";
 			exit;
 		}
@@ -322,7 +322,7 @@
 
 	file_put_contents('/etc/php/' . $phpVersion . '/cli/php.ini', $phpSettings);
 	$systemActionListSystemSettingsParameters = array(
-		'action' => 'list-system-settings',
+		'action' => 'listSystemSettings',
 		'data' => array(
 			'key',
 			'value'
@@ -387,7 +387,7 @@
 	}
 
 	$systemActionProcessNodeParameters = array(
-		'action' => 'process_node',
+		'action' => 'processNode',
 		'node_authentication_token' => $_SERVER['argv'][1]
 	);
 	$systemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
@@ -464,7 +464,7 @@
 	foreach ($nodeFiles as $nodeFile) {
 		if (file_exists('/usr/local/firewall-security-api/' . $nodeFile) === false) {
 			$systemActionDownloadNodeFileParameters = array(
-				'action' => 'download-node-file',
+				'action' => 'downloadNodeFile',
 				'nodeAuthenticationToken' => $_SERVER['argv'][1],
 				'where' => array(
 					'nodeFile' => $nodeFile
@@ -532,7 +532,7 @@
 	$crontabCommands = implode("\n", $crontabCommands);
 	file_put_contents('/etc/crontab', $crontabCommands);
 	$systemActionDeployNodeParameters = array(
-		'action' => 'deploy-node',
+		'action' => 'deployNode',
 		'nodeAuthenticationToken' => $_SERVER['argv'][1]
 	);
 	$systemActionDeployNodeParameters = json_encode($systemActionDeployNodeParameters);
