@@ -194,7 +194,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-process-recursive-dns-destination') === true) {
+	if (($parameters['action'] === 'addNodeProcessRecursiveDnsDestination') === true) {
 		$response = _addNodeProcessRecursiveDnsDestination($parameters, $response);
 	}
 ?>
