@@ -50,7 +50,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-request-destination') === true) {
+	if (($parameters['action'] === 'addNodeRequestDestination') === true) {
 		$response = _addNodeRequestDestination($parameters, $response);
 	}
 ?>
