@@ -32,7 +32,7 @@
 		$nodeUser = current($nodeUser);
 
 		if (empty($nodeUser) === true) {
-			$response['message'] = 'Invalid node user authentication source node user ID, please try again.';
+			$response['message'] = 'Error listing node user authentication source node user, please try again.';
 			return $response;
 		}
 
@@ -123,11 +123,7 @@
 
 		$response['data'] = $nodeUserAuthenticationSource;
 		$response['message'] = 'Node user authentication source added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeUserAuthenticationSource') === true) {
-		$response = _addNodeUserAuthenticationSource($parameters, $response);
 	}
 ?>
