@@ -49,14 +49,14 @@
 				),
 				'in' => $parameters['systemDatabases']['systemSettings'],
 				'where' => array(
-					'key' => 'systemEndpointDestinationIpAddress'
+					'key' => 'endpointDestinationIpAddress'
 				)
 			), $response);
 			$systemEndpointDestinationIpAddress = current($systemEndpointDestinationIpAddress);
 			$systemEndpointDestinationIpAddress = current($systemEndpointDestinationIpAddress);
 
 			if (empty($systemEndpointDestinationIpAddress) === true) {
-				$response['message'] = 'Error listing system endpoint destination address, please try again.';
+				$response['message'] = 'Error listing system endpoint destination IP address, please try again.';
 				return $response;
 			}
 
