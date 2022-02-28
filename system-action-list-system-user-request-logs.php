@@ -76,11 +76,7 @@
 		$response['data'] = $systemUserRequestLogs;
 		$response['message'] = 'System user request logs listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listSystemUserRequestLogs') === true) {
-		$response = _listSystemUserRequestLogs($parameters, $response);
 	}
 ?>
