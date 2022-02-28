@@ -53,11 +53,7 @@
 		$response['data'] = $systemDatabases;
 		$response['message'] = 'System databases listed successfully.';	
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listSystemDatabases') === true) {
-		$response = _listSystemDatabases($parameters, $response);
 	}
 ?>
