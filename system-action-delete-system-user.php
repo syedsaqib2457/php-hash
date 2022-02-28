@@ -38,7 +38,7 @@
 		), $response);
 
 		if (
-			(($systemUserSystemUserCount > 0) === false) ||
+			(($systemUserSystemUserCount === 1) === false) ||
 			(($parameters['systemUserId'] === $parameters['where']['id']) === true)
 		) {
 			$response['message'] = 'Invalid permissions to delete system user, please try again.';
@@ -104,11 +104,7 @@
 			)
 		), $response);
 		$response['message'] = 'System user deleted successfully.';
-		$response['valid_status'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'deleteSystemUser') === true) {
-		$response = _deleteSystemUser($parameters, $response);
 	}
 ?>
