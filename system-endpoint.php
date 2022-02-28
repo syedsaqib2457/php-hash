@@ -14,7 +14,7 @@
 			'id' => _createUniqueId(),
 			'responseAuthenticatedStatus' => $response['authenticatedStatus'],
 			'responseMessage' => $response['message'],
-			'responseValidStatus' => $response['validStatus'],
+			'responseValidatedStatus' => $response['validatedStatus'],
 			'sourceIpAddress' => $_SERVER['REMOTE_ADDR']
 		);
 
@@ -78,7 +78,7 @@
 		'authenticatedStatus' => '0',
 		'data' => array(),
 		'message' => 'Invalid parameters, please try again.',
-		'validStatus' => '0'
+		'validatedStatus' => '0'
 	);
 	require_once('/var/www/firewall-security-api/system-databases.php');
 	$systemSettingsData = file_get_contents('/var/www/firewall-security-api/system-settings-data.json');
