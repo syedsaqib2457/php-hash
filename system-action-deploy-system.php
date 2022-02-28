@@ -518,7 +518,7 @@
 		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
 		// todo: download from most-recent release after v1
 		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['wget'] . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://github.com/twexxor/firewall-security-api/archive/refs/heads/main.tar.gz');
-		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['tar'] . ' -xvzf main.tar.gz');
+		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['tar'] . ' -xvzf main.tar.gz && sudo rm main.tar.gz');
 		shell_exec('cd /var/www/ && sudo mv firewall-security-api-main firewall-security-api');
 
 		if (file_exists('/var/www/firewall-security-api/readme.md') === false) {
