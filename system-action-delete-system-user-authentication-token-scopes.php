@@ -61,7 +61,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'delete-system-user-authentication-token-scopes') === true) {
+	if (($parameters['action'] === 'deleteSystemUserAuthenticationTokenScopes') === true) {
 		$response = _deleteSystemUserAuthenticationTokenScopes($parameters, $response);
 	}
 ?>
