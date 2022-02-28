@@ -1226,7 +1226,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'processNodeProcesses') === true) {
+	if (($parameters['action'] === 'process-node-processes') === true) {
 		$response = _processNodeProcesses($parameters, $response);
 	}
 ?>
