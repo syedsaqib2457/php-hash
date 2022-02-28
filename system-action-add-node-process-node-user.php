@@ -4,8 +4,8 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'nodeProcessNodeUsers',
 		'nodeProcesses',
+		'nodeProcessNodeUsers',
 		'nodeUsers',
 		'nodes'
 	), $parameters['systemDatabases'], $response);
