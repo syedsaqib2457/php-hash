@@ -382,13 +382,13 @@
 
 	echo $systemActionActivateNodeResponse['message'] . "\n";
 
-	if (($systemActionActivateNodeResponse['validStatus'] === '0') === true) {
+	if (($systemActionActivateNodeResponse['validatedStatus'] === '0') === true) {
 		exit;
 	}
 
 	$systemActionProcessNodeParameters = array(
 		'action' => 'processNode',
-		'node_authentication_token' => $_SERVER['argv'][1]
+		'nodeAuthenticationToken' => $_SERVER['argv'][1]
 	);
 	$systemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
 	unlink('/usr/local/firewall-security-api/system-action-process-node-response.json');
@@ -409,7 +409,7 @@
 
 	echo $systemActionProcessNodeResponse['message'] . "\n";
 
-	if (($systemActionProcessNodeResponse['valid_status'] === '0') === true) {
+	if (($systemActionProcessNodeResponse['validatedStatus'] === '0') === true) {
 		exit;
 	}
 
@@ -554,7 +554,7 @@
 
 	echo $systemActionDeployNodeResponse['message'] . "\n";
 
-	if (($systemActionProcessNodeResponse['validStatus'] === '1') === true) {
+	if (($systemActionProcessNodeResponse['validatedStatus'] === '1') === true) {
 		$nodeSettingsData['authenticationToken'] = $_SERVER['argv'][1];
 		$nodeSettingsData['systemVersionNumber'] = '1';
 		$nodeSettingsData = json_encode($nodeSettingsData);
