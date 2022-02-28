@@ -207,7 +207,7 @@
 		}
 
 		$systemParameters = array(
-			'action' => 'list-system-settings',
+			'action' => 'listSystemSettings',
 			'nodeAuthenticationToken' => $parameters['nodeAuthenticationToken']
 		);
 		$encodedSystemParameters = json_encode($systemParameters);
@@ -244,11 +244,13 @@
 		// todo: update system_endpoint_destination_address if changed
 	}
 
-	if (
-		(ctype_alnum($nodeAction) === false) ||
-		(file_exists('/usr/local/firewall-security-api/node-action-' . $nodeAction . '.php') === false)
-	) {
-		$response['message'] = 'Invalid node endpoint request action, please try again.';
+	if ((strpos($nodeAction, '/') === false) === false) {
+		$response['message'] = 'Invalid node action, please try again.';
+		_output($response);
+	}
+
+	if (file_exists('/usr/local/firewall-security-api/node-action-' . $nodeAction . '.php') === false) {
+		$response['message'] = 'Error listing node action file, please try again.';
 		_output($response);
 	}
 
