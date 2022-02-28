@@ -10,7 +10,7 @@
 			'socksProxy'
 		);
 		$systemParameters = array(
-			'action' => 'add-node-process-node-user-request-logs',
+			'action' => 'addNodeProcessNodeUserRequestLogs',
 			'nodeAuthenticationToken' => $parameters['nodeAuthenticationToken']
 		);
 
