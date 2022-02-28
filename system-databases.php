@@ -296,33 +296,33 @@
 			$timestamp = time();
 
 			foreach ($parameters['data'] as $systemDatabaseColumns) {
-				$systemDatabaseInsertColumnNames = $systemDatabaseInsertColumnValues = $systemDatabaseUpdateColumnValues = '';
+				$systemDatabaseInsertColumnKeys = $systemDatabaseInsertColumnValues = $systemDatabaseUpdateColumnValues = '';
 
-				foreach ($systemDatabaseColumns as $systemDatabaseColumnName => $systemDatabaseColumnValue) {
-					$systemDatabaseInsertColumnNames .= ',' . $systemDatabaseColumnName;
+				foreach ($systemDatabaseColumns as $systemDatabaseColumnKey => $systemDatabaseColumnValue) {
+					$systemDatabaseInsertColumnKeys .= ',' . $systemDatabaseColumnKey;
 					$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseColumnValue);
 					$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
 					$systemDatabaseInsertColumnValues .= "','" . $systemDatabaseInsertColumnValue;
-					$systemDatabaseUpdateColumnValues .= "," . $systemDatabaseColumnName . "='" . $systemDatabaseInsertColumnValue . "'";
+					$systemDatabaseUpdateColumnValues .= "," . $systemDatabaseColumnKey . "='" . $systemDatabaseInsertColumnValue . "'";
 				}
 
 				if (empty($systemDatabaseColumns['createdTimestamp']) === true) {
-					$systemDatabaseInsertColumnNames .= ',createdTimestamp';
+					$systemDatabaseInsertColumnKeys .= ',createdTimestamp';
 					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
 					$systemDatabaseUpdateColumnValues .= ",createdTimestamp='" . $timestamp . "'";
 				}
 
 				if (empty($systemDatabaseColumns['modifiedTimestamp']) === true) {
-					$systemDatabaseInsertColumnNames .= ',modifiedTimestamp';
+					$systemDatabaseInsertColumnKeys .= ',modifiedTimestamp';
 					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
 					$systemDatabaseUpdateColumnValues .= ",modifiedTimestamp='" . $timestamp . "'";
 				}
 
-				$systemDatabaseInsertColumnNames = substr($systemDatabaseInsertColumnNames, 1);
+				$systemDatabaseInsertColumnKeys = substr($systemDatabaseInsertColumnKeys, 1);
 				$systemDatabaseInsertColumnValues = substr($systemDatabaseInsertColumnValues, 2);
 				$systemDatabaseUpdateColumnValues = ' ON DUPLICATE KEY UPDATE ' . substr($systemDatabaseUpdateColumnValues, 1);
 
-				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['tableKey'] . '(' . $systemDatabaseInsertColumnNames . ") VALUES (" . $systemDatabaseInsertColumnValues . "')" . $systemDatabaseUpdateColumnValues) === false) {
+				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['tableKey'] . '(' . $systemDatabaseInsertColumnKeys . ") VALUES (" . $systemDatabaseInsertColumnValues . "')" . $systemDatabaseUpdateColumnValues) === false) {
 					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
 					_output($parameters, $response);
 				}
