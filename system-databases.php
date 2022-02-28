@@ -251,7 +251,7 @@
 							$whereConditionValueValueCondition = 'NOT ' . $whereConditionValueValueCondition;
 						}
 
-						$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueValueCondition . " ('" . str_replace("'", "\'", $whereConditionValueValue) . "')";
+						$whereConditionValueConditions[] = '`' . $whereConditionValueKey . '` ' . $whereConditionValueValueCondition . " ('" . str_replace("'", "\'", $whereConditionValueValue) . "')";
 					}
 				}
 
@@ -273,7 +273,7 @@
 						}
 
 						$whereConditionValue = str_replace("'", "\'", $whereConditionValue);
-						$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueCondition . " ('" . implode("','", $whereConditionValue) . "')";
+						$whereConditionValueConditions[] = '`' . $whereConditionValueKey . '` ' . $whereConditionValueCondition . " ('" . implode("','", $whereConditionValue) . "')";
 					}
 				}
 
