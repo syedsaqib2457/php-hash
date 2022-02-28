@@ -11,8 +11,4 @@
 	function _listNodeResourceUsageLogs($parameters, $response) {
 		
 	}
-
-	if (($parameters['action'] === 'listNodeResourceUsageLogs') === true) {
-		$response = _listNodeResourceUsageLogs($parameters, $response);
-	}
 ?>
