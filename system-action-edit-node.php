@@ -38,7 +38,7 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
-			$response['message'] = 'Invalid node, please try again.';
+			$response['message'] = 'Error listing node, please try again.';
 			return $response;
 		}
 
@@ -170,8 +170,6 @@
 			), $response);
 		}
 
-		unset($parameters['data']['createdTimestamp']);
-		unset($parameters['data']['modifiedTimestamp']);
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['systemDatabases']['nodes']
@@ -185,11 +183,7 @@
 		$node = current($node);
 		$response['data'] = $node;
 		$response['message'] = 'Node edited successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'editNode') === true) {
-		$response = _editNode($parameters, $response);
 	}
 ?>
