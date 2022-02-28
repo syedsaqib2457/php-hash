@@ -52,11 +52,7 @@
 			)
 		), $response);
 		$response['message'] = 'System user authentication token source deleted successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'deleteSystemUserAuthenticationTokenSources') === true) {
-		$response = _deleteSystemUserAuthenticationTokenSources($parameters, $response);
 	}
 ?>
