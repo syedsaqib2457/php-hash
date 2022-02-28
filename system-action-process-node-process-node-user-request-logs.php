@@ -195,7 +195,7 @@
 			)
 		), $response);
 		$response['message'] = 'Node process node user request logs processed successfully.';
-		$response['valid_status'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
 	}
 
