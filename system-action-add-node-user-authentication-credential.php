@@ -95,7 +95,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-user-authentication-credential') === true) {
+	if (($parameters['action'] === 'addNodeUserAuthenticationCredential') === true) {
 		$response = _addNodeUserAuthenticationCredential($parameters, $response);
 	}
 ?>
