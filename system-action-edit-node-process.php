@@ -355,11 +355,7 @@
 		$nodeProcess = current($nodeProcess);
 		$response['data'] = $nodeProcess;
 		$response['message'] = 'Node process edited successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'editNodeProcess') === true) {
-		$response = _editNodeProcess($parameters, $response);
 	}
 ?>
