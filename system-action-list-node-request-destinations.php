@@ -57,7 +57,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-node-request-destinations') === true) {
+	if (($parameters['action'] === 'listNodeRequestDestinations') === true) {
 		$response = _listNodeRequestDestinations($parameters, $response);
 	}
 ?>
