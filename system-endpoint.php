@@ -26,10 +26,10 @@
 		}
 
 		if (empty($parameters['nodeAuthenticationToken']) === false) {
-			$systemDatabasesConnection = _connect(array(
+			$systemDatabasesConnections = _connect(array(
 				'nodes'
 			), $parameters['systemDatabases'], $response);
-			$parameters['systemDatabases']['nodes'] = $systemDatabasesConnection['nodes'];
+			$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
 			$systemRequestLogsNode = _list(array(
 				'data' => array(
 					'id'
@@ -125,22 +125,6 @@
 			_output($parameters, $response);
 		}
 
-		if (
-			(empty($parameters['nodeAuthenticationToken']) === false) &&
-			(ctype_alnum($parameters['nodeAuthenticationToken']) === false)
-		) {
-			$response['message'] = 'Invalid system endpoint node authentication token , please try again.';
-			_output($parameters, $response);
-		}
-
-		if (
-			(empty($parameters['systemUserAuthenticationToken']) === false) &&
-			(ctype_alnum($parameters['systemUserAuthenticationToken']) === false)
-		) {
-			$response['message'] = 'Invalid system endpoint system user authentication token, please try again.';
-			_output($parameters, $response);
-		}
-
 		if (empty($parameters['nodeAuthenticationToken']) === false) {
 			$node = _list(array(
 				'data' => array(
@@ -172,7 +156,7 @@
 					'id',
 					'systemUserId'
 				),
-				'in' => $parameters['system_databases']['systemUserAuthenticationTokens'],
+				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokens'],
 				'where' => array(
 					'value' => $parameters['systemUserAuthenticationToken']
 				)
@@ -236,10 +220,10 @@
 				}
 			}
 
-			unset($parameters['node_authentication_token']);
+			unset($parameters['nodeAuthenticationToken']);
 		}
 
-		$response['authenticated_status'] = '1';
+		$response['authenticatedStatus'] = '1';
 		require_once('/var/www/firewall-security-api/system-action-' . $parameters['action'] . '.php');
 	}
 
