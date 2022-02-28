@@ -16,7 +16,7 @@
 			(($parameters['where']['nodeFile'] === 'node-action-process-node-process_resource-usage-logs.php') === false) &&
 			(($parameters['where']['nodeFile'] === 'node-action-process-node-processes.php') === false) &&
 			(($parameters['where']['nodeFile'] === 'node-action-process-node-resource-usage-logs.php') === false) &&
-			(($parameters['where']['nodeFile'] === 'node-action-process-recursive-dns-destination') === false) &&
+			(($parameters['where']['nodeFile'] === 'node-action-process-recursive-dns-destination.php') === false) &&
 			(($parameters['where']['nodeFile'] === 'node-endpoint.php') === false)
 		) {
 			$response['message'] = 'Invalid node file ' . $parameters['where']['nodeFile'] . ', please try again.';
