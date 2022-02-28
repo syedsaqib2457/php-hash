@@ -56,7 +56,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'delete-system-user-authentication-token-sources') === true) {
+	if (($parameters['action'] === 'deleteSystemUserAuthenticationTokenSources') === true) {
 		$response = _deleteSystemUserAuthenticationTokenSources($parameters, $response);
 	}
 ?>
