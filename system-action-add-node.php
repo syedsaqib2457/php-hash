@@ -326,11 +326,7 @@
 		$node = current($node);
 		$response['data'] = $node;
 		$response['message'] = 'Node added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNode') === true) {
-		$response = _addNode($parameters, $response);
 	}
 ?>
