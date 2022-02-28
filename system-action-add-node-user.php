@@ -43,11 +43,7 @@
 		$nodeUser = current($nodeUser);
 		$response['data'] = $nodeUser;
 		$response['message'] = 'Node user added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeUser') === true) {
-		$response = _addNodeUser($parameters, $response);
 	}
 ?>
