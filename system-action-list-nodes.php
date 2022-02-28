@@ -53,11 +53,7 @@
 		$response['data'] = $nodes;
 		$response['message'] = 'Nodes listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listNodes') === true) {
-		$response = _listNodes($parameters, $response);
 	}
 ?>
