@@ -1153,47 +1153,47 @@
 		);
 		$systemDatabaseCommands = array();
 
-		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
-			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableName . '` (`createdTimestamp` VARCHAR(10) NULL DEFAULT NULL);';
+		foreach ($systemDatabases as $systemDatabaseTableKey => $systemDatabaseColumnKeys) {
+			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableKey . '` (`createdTimestamp` VARCHAR(10) NULL DEFAULT NULL);';
 
-			foreach ($systemDatabaseColumnNames as $systemDatabaseColumnName) {
-				if (($systemDatabaseColumnName === 'createdTimestamp') === true) {
+			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey) {
+				if (($systemDatabaseColumnKey === 'createdTimestamp') === true) {
 					continue;
 				}
 
 				$systemDatabaseColumnType = 'text';
 
 				if (
-					(($systemDatabaseColumnName === 'id') === true) ||
-					((substr($systemDatabaseColumnName, -2) === 'Id') === true)
+					(($systemDatabaseColumnKey === 'id') === true) ||
+					((substr($systemDatabaseColumnKey, -2) === 'Id') === true)
 				) {
 					$systemDatabaseColumnType = 'VARCHAR(30)';
 				}
 
-				if ((substr($systemDatabaseColumnName, -10) === 'Percentage') === true) {
+				if ((substr($systemDatabaseColumnKey, -10) === 'Percentage') === true) {
 					$systemDatabaseColumnType = 'VARCHAR(3)';
 				}
 
-				if ((substr($systemDatabaseColumnName, -6) === 'Status') === true) {
+				if ((substr($systemDatabaseColumnKey, -6) === 'Status') === true) {
 					$systemDatabaseColumnType = 'VARCHAR(1)';
 				}
 
-				if ((substr($systemDatabaseColumnName, -9) === 'Timestamp') === true) {
+				if ((substr($systemDatabaseColumnKey, -9) === 'Timestamp') === true) {
 					$systemDatabaseColumnType = 'VARCHAR(10)';
 				}
 
 				$systemDatabaseCommandActions = array(
-					'add' => 'ADD `' . $systemDatabaseColumnName . '`',
-					'change' => 'CHANGE `' . $systemDatabaseColumnName . '` `' . $systemDatabaseColumnName . '`'
+					'add' => 'ADD `' . $systemDatabaseColumnKey . '`',
+					'change' => 'CHANGE `' . $systemDatabaseColumnKey . '` `' . $systemDatabaseColumnKey . '`'
 				);
-				$systemDatabaseCommand = 'ALTER TABLE `' . $systemDatabaseTableName . '` ' . $systemDatabaseCommandActions['change'] . ' ' . $systemDatabaseColumnType . ' NULL DEFAULT NULL';
+				$systemDatabaseCommand = 'ALTER TABLE `' . $systemDatabaseTableKey . '` ' . $systemDatabaseCommandActions['change'] . ' ' . $systemDatabaseColumnType . ' NULL DEFAULT NULL';
 
 				if (mysqli_query($systemDatabaseConnection, $systemDatabaseCommand) === false) {
 					$systemDatabaseCommands[] = str_replace($systemDatabaseCommandActions['change'], $systemDatabaseCommandActions['add'], $systemDatabaseCommand);
 				}
 
-				if (($systemDatabaseColumnName === 'id') === true) {
-					$systemDatabaseCommands[$systemDatabaseColumnName . '__' . $systemDatabaseTableName] = 'ALTER TABLE `' . $systemDatabaseTableName . '` ADD PRIMARY KEY (`' . $systemDatabaseColumnName . '`)';
+				if (($systemDatabaseColumnKey === 'id') === true) {
+					$systemDatabaseCommands[$systemDatabaseColumnKey . '__' . $systemDatabaseTableKey] = 'ALTER TABLE `' . $systemDatabaseTableKey . '` ADD PRIMARY KEY (`' . $systemDatabaseColumnKey . '`)';
 				}
 			}
 		}
@@ -1214,22 +1214,22 @@
 			mysqli_query($systemDatabaseConnection, $systemDatabaseCommand);
 		}
 
-		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
-			$systemDatabaseCommandResponse = mysqli_query($systemDatabaseConnection, 'SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = \'' . $systemDatabaseTableName . '\'');
+		foreach ($systemDatabases as $systemDatabaseTableKey => $systemDatabaseColumnKeys) {
+			$systemDatabaseCommandResponse = mysqli_query($systemDatabaseConnection, 'SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = \'' . $systemDatabaseTableKey . '\'');
 
 			if (empty($systemDatabaseCommandResponse->num_rows) === true) {
 				echo 'Error executing system database commands, please try again.' . "\n";
 				exit;
 			}
 
-			end($systemDatabaseColumnNames);
-			$systemDatabaseColumnNameCount = (key($systemDatabaseColumnNames) + 1);
+			end($systemDatabaseColumnKeys);
+			$systemDatabaseColumnKeysCount = (key($systemDatabaseColumnKeys) + 1);
 
 			foreach ($systemDatabaseCommandResponse as $systemDatabaseCommandResponse) {
 				$systemDatabaseCommandResponse = current($systemDatabaseCommandResponse);
 				$systemDatabaseCommandResponse = intval($systemDatabaseCommandResponse);
 
-				if (($systemDatabaseColumnNameCount === $systemDatabaseCommandResponse) === false) {
+				if (($systemDatabaseColumnKeysCount === $systemDatabaseCommandResponse) === false) {
 					echo 'Error executing system database commands, please try again.' . "\n";
 					exit;
 				}
@@ -1303,7 +1303,7 @@
 		$systemSettingsData = json_encode($systemSettingsData);
 		file_put_contents('/var/www/firewall-security-api/system-settings-data.json', $systemSettingsData);
 
-		foreach ($systemDatabases as $systemDatabaseTableName => $systemDatabaseColumnNames) {
+		foreach ($systemDatabases as $systemDatabaseTableKey => $systemDatabaseColumnKeys) {
 			$systemDatabaseId = _createUniqueId();
 			$systemDatabaseData['systemDatabases'][] = array(
 				'authenticationCredentialAddress' => 'localhost',
@@ -1314,7 +1314,7 @@
 				'tableKey' => $systemDatabaseTableKey
 			);
 
-			foreach ($systemDatabaseColumnNames as $systemDatabaseColumnName) {
+			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey) {
 				$systemDatabaseData['systemDatabaseColumns'][] = array(
 					'createdTimestamp' => $timestamp,
 					'id' => _createUniqueId(),
@@ -1355,14 +1355,14 @@
 			}
 		}
 
-		foreach ($systemDatabaseData as $systemDatabaseTableName => $systemDatabaseRows) {
+		foreach ($systemDatabaseData as $systemDatabaseTableKey => $systemDatabaseRows) {
 			foreach ($systemDatabaseRows as $systemDatabaseRow) {
-				$systemDatabaseRowColumnNames = array_keys($systemDatabaseRow);
-				$systemDatabaseRowColumnNames = implode('`, `', $systemDatabaseRowColumnNames);
+				$systemDatabaseRowColumnKeys = array_keys($systemDatabaseRow);
+				$systemDatabaseRowColumnKeys = implode('`, `', $systemDatabaseRowColumnKeys);
 				$systemDatabaseRowColumnValues = array_values($systemDatabaseRow);
 				$systemDatabaseRowColumnValues = implode('\', \'', $systemDatabaseRowColumnValues);
 
-				if (mysqli_query($systemDatabaseConnection, 'INSERT IGNORE INTO `' . $systemDatabaseTableName . '` (`' . $systemDatabaseRowColumnNames . '`) VALUES (\'' . $systemDatabaseRowColumnValues . '\')') === false) {
+				if (mysqli_query($systemDatabaseConnection, 'INSERT IGNORE INTO `' . $systemDatabaseTableKey . '` (`' . $systemDatabaseRowColumnKeys . '`) VALUES (\'' . $systemDatabaseRowColumnValues . '\')') === false) {
 					echo 'Error adding system database data, please try again.' . "\n";
 					exit;
 				}
