@@ -105,7 +105,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-process-node-user') === true) {
+	if (($parameters['action'] === 'addNodeProcessNodeUser') === true) {
 		$response = _addNodeProcessNodeUser($parameters, $response);
 	}
 ?>
