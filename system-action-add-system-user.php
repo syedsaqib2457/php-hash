@@ -4,22 +4,22 @@
 	}
 
 	$systemDatabasesConnections = _connect(array(
-		'system_user_system_users',
-		'system_users'
-	), $parameters['system_databases'], $response);
-	$parameters['system_databases']['system_user_system_users'] = $systemDatabasesConnections['system_user_system_users'];
-	$parameters['system_databases']['system_users'] = $systemDatabasesConnections['system_users'];
+		'systemUserSystemUsers',
+		'systemUsers'
+	), $parameters['systemDatabases'], $response);
+	$parameters['systemDatabases']['systemUserSystemUsers'] = $systemDatabasesConnections['systemUserSystemUsers'];
+	$parameters['systemDatabases']['systemUsers'] = $systemDatabasesConnections['systemUsers'];
 
 	function _addSystemUser($parameters, $response) {
 		$systemUserData = array(
 			'id' => _createUniqueId(),
-			'system_user_id' => $parameters['system_user_id']
+			'systemUserId' => $parameters['systemUserId']
 		);
 		$systemUserSystemUsersData = array(
 			array(
 				'id' => _createUniqueId(),
-				'system_user_id' => $parameters['data']['id'],
-				'system_user_system_user_id' => $parameters['system_user_id']
+				'systemUserId' => $parameters['data']['id'],
+				'systemUserSystemUserId' => $parameters['systemUserId']
 			)
 		);
 		$systemUserSystemUsersDataProcessed = false;
@@ -28,36 +28,36 @@
 			$systemUser = _list(array(
 				'data' => array(
 					'id',
-					'system_user_id'
+					'systemUserId'
 				),
-				'in' => $parameters['system_databases']['system_users'],
+				'in' => $parameters['systemDatabases']['systemUsers'],
 				'where' => array(
-					'id' => $parameters['system_user_id']
+					'id' => $parameters['systemUserId']
 				)
 			), $response);
 			$systemUser = current($systemUser);
-			$parameters['system_user_id'] = $systemUser['system_user_id'];
+			$parameters['systemUserId'] = $systemUser['systemUserId'];
 			$systemUserSystemUsersData[] = array(
 				'id' => _createUniqueId(),
-				'system_user_id' => $parameters['data']['id'],
-				'system_user_system_user_id' => $systemUser['system_user_id']
+				'systemUserId' => $parameters['data']['id'],
+				'systemUserSystemUserId' => $systemUser['systemUserId']
 			);
 
-			if (($systemUser['id'] === $systemUser['system_user_id']) === true) {
+			if (($systemUser['id'] === $systemUser['systemUserId']) === true) {
 				$systemUserSystemUsersDataProcessed = true;
 			}
 		}
 
 		_save(array(
 			'data' => $systemUserSystemUsersData,
-			'in' => $parameters['system_databases']['system_user_system_users']
+			'in' => $parameters['systemDatabases']['systemUserSystemUsers']
 		), $response);
 		_save(array(
 			'data' => $systemUserData,
-			'in' => $parameters['system_databases']['system_users']
+			'in' => $parameters['systemDatabases']['systemUsers']
 		), $response);
 		$systemUser = _list(array(
-			'in' => $parameters['system_databases']['system_users'],
+			'in' => $parameters['systemDatabases']['systemUsers'],
 			'where' => array(
 				'id' => $systemUserData['id']
 			)
@@ -65,11 +65,11 @@
 		$systemUser = current($systemUser);
 		$response['data'] = $systemUser;
 		$response['message'] = 'System user added successfully.';
-		$response['valid_status'] = '1';
+		$response['validStatus'] = '1';
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add_system_user') === true) {
+	if (($parameters['action'] === 'add-system-user') === true) {
 		$response = _addSystemUser($parameters, $response);
 	}
 ?>
