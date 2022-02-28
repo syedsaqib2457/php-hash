@@ -80,7 +80,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-system-user-request-logs') === true) {
+	if (($parameters['action'] === 'listSystemUserRequestLogs') === true) {
 		$response = _listSystemUserRequestLogs($parameters, $response);
 	}
 ?>
