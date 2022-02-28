@@ -12,7 +12,7 @@
 		
 	}
 
-	if (($parameters['action'] === 'list-node-resource-usage-logs') === true) {
+	if (($parameters['action'] === 'listNodeResourceUsageLogs') === true) {
 		$response = _listNodeResourceUsageLogs($parameters, $response);
 	}
 ?>
