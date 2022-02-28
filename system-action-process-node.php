@@ -401,7 +401,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'process-node') === true) {
+	if (($parameters['action'] === 'processNode') === true) {
 		$response = _processNode($parameters, $response);
 	}
 ?>
