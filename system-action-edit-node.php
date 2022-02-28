@@ -189,7 +189,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'edit-node') === true) {
+	if (($parameters['action'] === 'editNode') === true) {
 		$response = _editNode($parameters, $response);
 	}
 ?>
