@@ -82,7 +82,7 @@
 					)
 				), $response);
 				$response['message'] = 'Nodes processed successfully.';
-				$response['validStatus'] = '1';
+				$response['validatedStatus'] = '1';
 			}
 
 			return $response;
@@ -141,7 +141,7 @@
 
 			if (($nodeCount === 0) === true) {
 				$response['message'] = 'Node is already processed, please try again.';
-				$response['validStatus'] = '1';
+				$response['validatedStatus'] = '1';
 				return $response;
 			}
 
@@ -397,11 +397,7 @@
 		}
 
 		$response['message'] = 'Nodes processed successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'processNode') === true) {
-		$response = _processNode($parameters, $response);
 	}
 ?>
