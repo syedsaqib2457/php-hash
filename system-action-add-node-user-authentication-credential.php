@@ -65,7 +65,7 @@
 				'nodeProcessType',
 				'nodeUserId'
 			),
-			'in' => $parameters['systemDatabases']['node_process_node_users'],
+			'in' => $parameters['systemDatabases']['nodeProcessNodeUsers'],
 			'where' => array(
 				'nodeUserId' => $parameters['data']['nodeUserId']
 			)
