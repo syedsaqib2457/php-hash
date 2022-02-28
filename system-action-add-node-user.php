@@ -47,7 +47,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-user') === true) {
+	if (($parameters['action'] === 'addNodeUser') === true) {
 		$response = _addNodeUser($parameters, $response);
 	}
 ?>
