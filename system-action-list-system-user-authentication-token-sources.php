@@ -76,11 +76,7 @@
 		$response['data'] = $systemUserAuthenticationTokenSources;
 		$response['message'] = 'System user authentication token sources listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listSystemUserAuthenticationTokenSources') === true) {
-		$response = _listSystemUserAuthenticationTokenSources($parameters, $response);
 	}
 ?>
