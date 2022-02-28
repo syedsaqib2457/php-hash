@@ -114,7 +114,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-user-node-request-destination') === true) {
+	if (($parameters['action'] === 'addNodeUserNodeRequestDestination') === true) {
 		$response = _addNodeUserNodeRequestDestination($parameters, $response);
 	}
 ?>
