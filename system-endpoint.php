@@ -77,7 +77,7 @@
 	$response = array(
 		'authenticatedStatus' => '0',
 		'data' => array(),
-		'message' => 'Invalid system endpoint parameters, please try again.',
+		'message' => 'Invalid system parameters, please try again.',
 		'validStatus' => '0'
 	);
 	require_once('/var/www/firewall-security-api/system-databases.php');
@@ -99,26 +99,32 @@
 		}
 
 		if (empty($parameters['action']) === true) {
-			$response['message'] = 'System endpoint must have an action, please try again.';
+			$response['message'] = 'System must have an action, please try again.';
+			_output($parameters, $response);
+		}
+
+		if ((strpos($parameters['action'], '/') === false) === false) {
+			$response['message'] = 'Invalid system action, please try again.';
 			_output($parameters, $response);
 		}
 
 		$actionIndex = 0;
+		$parameters['systemActionFile'] = '';
 
 		while (isset($parameters['action'][$actionIndex]) === true) {
 			if (ctype_upper($parameters['action'][$actionIndex]) === true) {
-				$parameters['action'][$actionIndex] = strtolower($parameters['action'][$actionIndex]);
-				$parameters['action'] = substr_replace($parameters['action'], '-' . $parameters['action'][$actionIndex], $actionIndex, 1);
+				$parameters['systemActionFile'] .= '-' . strtolower($parameters['action'][$actionIndex]);
+			} else {
+				$parameters['systemActionFile'] .= $parameters['action'][$actionIndex];
 			}
 
 			$actionIndex++;
 		}
-		
-		if (
-			((strpos($parameters['action'], '/') === false) === false) ||
-			(file_exists('/var/www/firewall-security-api/system-action-' . $parameters['action'] . '.php') === false)
-		) {
-			$response['message'] = 'Invalid system endpoint action, please try again.';
+
+		$parameters['systemActionFile'] = '/var/www/firewall-security-api/system-action-' . $parameters['systemActionFile'] . '.php';
+
+		if (file_exists($parameters['systemActionFile']) === false) {
+			$response['message'] = 'Error listing system endpoint action file, please try again.';
 			_output($parameters, $response);
 		}
 
@@ -132,7 +138,7 @@
 				(empty($parameters['systemUserAuthenticationToken']) === false)
 			)
 		) {
-			$response['message'] = 'System endpoint must have either a node authentication token or a system user authentication token, please try again.';
+			$response['message'] = 'System must have either a node authentication token or a system user authentication token, please try again.';
 			_output($parameters, $response);
 		}
 
@@ -155,7 +161,7 @@
 			$node = current($node);
 
 			if (empty($node) === true) {
-				$response['message'] = 'Invalid system endpoint node authentication token, please try again.';
+				$response['message'] = 'Invalid system node authentication token, please try again.';
 				_output($parameters, $response);
 			}
 
@@ -235,7 +241,7 @@
 		}
 
 		$response['authenticatedStatus'] = '1';
-		require_once('/var/www/firewall-security-api/system-action-' . $parameters['action'] . '.php');
+		require_once($parameters['systemActionFile']);
 	}
 
 	_output($parameters, $response);
