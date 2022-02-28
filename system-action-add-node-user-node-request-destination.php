@@ -37,7 +37,7 @@
 		$nodeRequestDestination = current($nodeRequestDestination);
 
 		if (empty($nodeRequestDestination) === true) {
-			$response['message'] = 'Invalid node user node request destination node request destination ID, please try again.';
+			$response['message'] = 'Error listing node user node request destination node request destination, please try again.';
 			return $response;
 		}
 
@@ -49,7 +49,7 @@
 		), $response);
 
 		if (($nodeUserCount === 0) === true) {
-			$response['message'] = 'Invalid node user node request destination node user ID, please try again.';
+			$response['message'] = 'Error counting node user node request destination node user, please try again.';
 			return $response;
 		}
 
@@ -110,11 +110,7 @@
 
 		$response['data'] = $nodeUserNodeRequestDestination;
 		$response['message'] = 'Node user node request destination added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeUserNodeRequestDestination') === true) {
-		$response = _addNodeUserNodeRequestDestination($parameters, $response);
 	}
 ?>
