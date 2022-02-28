@@ -107,7 +107,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-process-node-user-request-logs') === true) {
+	if (($parameters['action'] === 'addNodeProcessNodeUserRequestLogs') === true) {
 		$response = _addNodeProcessNodeUserRequestLogs($parameters, $response);
 	}
 ?>
