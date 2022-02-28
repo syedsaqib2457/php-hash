@@ -71,11 +71,7 @@
 		$nodeRequestLimitRule = current($nodeRequestLimitRule);
 		$response['data'] = $nodeRequestLimitRule;
 		$response['message'] = 'Node request limit rule added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeRequestLimitRule') === true) {
-		$response = _addNodeRequestLimitRule($parameters, $response);
 	}
 ?>
