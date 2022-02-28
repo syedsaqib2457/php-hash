@@ -78,7 +78,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-system-user-system-users') === true) {
+	if (($parameters['action'] === 'listSystemUserSystemUsers') === true) {
 		$response = _listSystemUserSystemUsers($parameters, $response);
 	}
 ?>
