@@ -49,11 +49,7 @@
 			'in' => $parameters['systemDatabases']['nodeProcessResourceUsageLogs']
 		), $response);
 		$response['message'] = 'Node process resource usage logs added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeProcessResourceUsageLogs') === true) {
-		$response = _addNodeProcessResourceUsageLogs($parameters, $response);
 	}
 ?>
