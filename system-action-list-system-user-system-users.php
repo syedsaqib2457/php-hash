@@ -74,11 +74,7 @@
 		$response['data'] = $systemUserSystemUsers;
 		$response['message'] = 'System user system users listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listSystemUserSystemUsers') === true) {
-		$response = _listSystemUserSystemUsers($parameters, $response);
 	}
 ?>
