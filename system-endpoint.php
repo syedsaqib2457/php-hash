@@ -242,6 +242,10 @@
 
 		$response['authenticatedStatus'] = '1';
 		require_once($parameters['systemActionFile']);
+
+		if (function_exists('_' . $parameters['action']) === true) {
+			$response = call_user_func('_' . $parameters['action'], $parameters, $response);
+		}
 	}
 
 	_output($parameters, $response);
