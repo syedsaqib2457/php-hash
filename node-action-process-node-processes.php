@@ -140,7 +140,7 @@
 				$firewallRules[] = '-A PREROUTING -m set --match-set ' . $nodeProcessTypeFirewallRuleSet . ' dst,src -j ACCEPT';
 			}
 
-			$firewallRules[] = '-A PREROUTING -i ' . $parameters['interfaceName'] . ' -m set ! --match-set _ dst,src -j DROP';
+			$firewallRules[] = '-A PREROUTING -i ' . $parameters['interfaceName'] . ' -j DROP';
 			$firewallRules[] = 'COMMIT';
 			unlink('/usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
 			touch('/usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
@@ -160,7 +160,7 @@
 				shell_exec('sudo echo "' . $firewallRulePart . '" >> /usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
 			}
 
-			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '.dat');
+			shell_exec('sudo ' . $firewallBinaryFiles[$nodeIpAddressVersionNumber] . ' < /usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
 			unlink('/usr/local/firewall-security-api/ip-address-version-' . $nodeIpAddressVersionNumber . '-firewall-rules.dat');
 			sleep(1);
 		}
