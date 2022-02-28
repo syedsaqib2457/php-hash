@@ -80,7 +80,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-system-users') === true) {
+	if (($parameters['action'] === 'listSystemUsers') === true) {
 		$response = _listSystemUsers($parameters, $response);
 	}
 ?>
