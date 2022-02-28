@@ -53,11 +53,7 @@
 		);
 		_edit($nodeParameters, $response);
 		$response['message'] = 'Node deployed successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'deployNode') === true) {
-		$response = _deployNode($parameters, $response);
 	}
 ?>
