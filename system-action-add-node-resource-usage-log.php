@@ -45,7 +45,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-node-resource-usage-log') === true) {
+	if (($parameters['action'] === 'addNodeResourceUsageLog') === true) {
 		$response = _addNodeResourceUsageLog($parameters, $response);
 	}
 ?>
