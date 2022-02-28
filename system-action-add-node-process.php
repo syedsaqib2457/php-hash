@@ -7,7 +7,7 @@
 		'nodeProcesses',
 		'nodes'
 	), $parameters['systemDatabases'], $response);
-	$parameters['systemDatabases']['node_processes'] = $systemDatabasesConnections['nodeProcesses'];
+	$parameters['systemDatabases']['nodeProcesses'] = $systemDatabasesConnections['nodeProcesses'];
 	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
 	require_once('/var/www/firewall-security-api/system-action-validate-port-number.php');
 
