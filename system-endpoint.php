@@ -77,7 +77,7 @@
 	$response = array(
 		'authenticatedStatus' => '0',
 		'data' => array(),
-		'message' => 'Invalid system parameters, please try again.',
+		'message' => 'Invalid parameters, please try again.',
 		'validStatus' => '0'
 	);
 	require_once('/var/www/firewall-security-api/system-databases.php');
@@ -99,7 +99,7 @@
 		}
 
 		if (empty($parameters['action']) === true) {
-			$response['message'] = 'System must have an action, please try again.';
+			$response['message'] = 'Request must have an action, please try again.';
 			_output($parameters, $response);
 		}
 
@@ -124,7 +124,7 @@
 		$parameters['systemActionFile'] = '/var/www/firewall-security-api/system-action-' . $parameters['systemActionFile'] . '.php';
 
 		if (file_exists($parameters['systemActionFile']) === false) {
-			$response['message'] = 'Error listing system endpoint action file, please try again.';
+			$response['message'] = 'Error listing system action file, please try again.';
 			_output($parameters, $response);
 		}
 
@@ -138,7 +138,7 @@
 				(empty($parameters['systemUserAuthenticationToken']) === false)
 			)
 		) {
-			$response['message'] = 'System must have either a node authentication token or a system user authentication token, please try again.';
+			$response['message'] = 'Request must have either a node authentication token or a system user authentication token, please try again.';
 			_output($parameters, $response);
 		}
 
@@ -161,7 +161,7 @@
 			$node = current($node);
 
 			if (empty($node) === true) {
-				$response['message'] = 'Invalid system node authentication token, please try again.';
+				$response['message'] = 'Invalid node authentication token, please try again.';
 				_output($parameters, $response);
 			}
 
@@ -181,7 +181,7 @@
 			$systemUserAuthenticationToken = current($systemUserAuthenticationToken);
 
 			if (empty($systemUserAuthenticationToken) === true) {
-				$response['message'] = 'Invalid system endpoint system user authentication token, please try again.';
+				$response['message'] = 'Invalid system user authentication token, please try again.';
 				_output($parameters, $response);
 			}
 
@@ -196,7 +196,7 @@
 			), $response);
 
 			if (($systemUserAuthenticationTokenScopeCount === 1) === false) {
-				$response['message'] = 'Invalid system endpoint request system user authentication token scope, please try again.';
+				$response['message'] = 'Invalid system user authentication token scope, please try again.';
 				_output($parameters, $response);
 			}
 
@@ -213,7 +213,7 @@
 			$parameters['source']['ipAddress'] = _validateIpAddressVersionNumber($parameters['source']['ipAddress'], $parameters['source']['ipAddressVersionNumber']);
 
 			if ($parameters['source']['ipAddress'] === false) {
-				$response['message'] = 'Invalid system endpoint source IP address, please try again.';
+				$response['message'] = 'Invalid source IP address, please try again.';
 				_output($parameters, $response);
 			}
 
@@ -232,7 +232,7 @@
 				$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
 				if (($systemUserAuthenticationTokenSourceCount === 0) === true) {
-					$response['message'] = 'Invalid system endpoint system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
+					$response['message'] = 'Invalid system user authentication token source IP address ' . $sourceIpAddress . ', please try again.';
 					_output($parameters, $response);
 				}
 			}
