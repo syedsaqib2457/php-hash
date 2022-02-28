@@ -18,11 +18,26 @@
 			return $response;
 		}
 
-		if (
-			((strpos($parameters['data']['systemAction'], '/') === false) === false) ||
-			(file_exists('/var/www/firewall-security-api/system-action-' . $parameters['data']['systemAction'] . '.php') === false)
-		) {
+		if ((strpos($systemActionFile, '/') === false) === false) {
 			$response['message'] = 'Invalid system user authentication token scope system action, please try again.';
+			return $response;
+		}
+
+		$systemActionFile = '';
+		$systemActionIndex = 0;
+
+		while (isset($parameters['data']['systemAction'][$systemActionIndex]) === true) {
+			if (ctype_upper($parameters['data']['systemAction'][$systemActionIndex]) === true) {
+				$systemActionFile .= '-' . strtolower($parameters['data']['systemAction'][$systemActionIndex]);
+			} else {
+				$systemActionFile .= $parameters['data']['systemAction'][$systemActionIndex];
+			}
+
+			$systemActionIndex++;
+		}
+
+		if (file_exists('/var/www/firewall-security-api/system-action-' . $systemActionFile . '.php') === false) {
+			$response['message'] = 'Error listing system user authentication token scope system action file, please try again.';
 			return $response;
 		}
 
@@ -93,7 +108,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-system-user-authentication-token-scope') === true) {
+	if (($parameters['action'] === 'addSystemUserAuthenticationTokenScope') === true) {
 		$response = _addSystemUserAuthenticationTokenScope($parameters, $response);
 	}
 ?>
