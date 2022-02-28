@@ -110,11 +110,7 @@
 		$nodeProcessForwardingDestination = current($nodeProcessForwardingDestination);
 		$response['data'] = $nodeProcessForwardingDestination;
 		$response['message'] = 'Node process forwarding destination added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeProcessForwardingDestination') === true) {
-		$response = _addNodeProcessForwardingDestination($parameters, $response);
 	}
 ?>
