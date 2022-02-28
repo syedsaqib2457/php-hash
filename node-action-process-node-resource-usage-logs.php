@@ -107,7 +107,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'processNodeResourceUsageLogs') === true) {
+	if (($parameters['action'] === 'process-node-resource-usage-logs') === true) {
 		$response = _processNodeResourceUsageLogs($parameters, $response);
 	}
 ?>
