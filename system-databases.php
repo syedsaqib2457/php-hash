@@ -372,15 +372,15 @@
 	$systemDatabasesConnections = _connect(array(
 		'systemRequestLogs',
 		'systemSettings',
+		'systemUserAuthenticationTokens',
 		'systemUserAuthenticationTokenScopes',
 		'systemUserAuthenticationTokenSources',
-		'systemUserAuthenticationTokens',
 		'systemUsers'
 	), $parameters['systemDatabases'], $response);
 	$parameters['systemDatabases']['systemRequestLogs'] = $systemDatabasesConnections['systemRequestLogs'];
 	$parameters['systemDatabases']['systemSettings'] = $systemDatabasesConnections['systemSettings'];
+	$parameters['systemDatabases']['systemUserAuthenticationTokens'] = $systemDatabasesConnections['systemUserAuthenticationTokens'];
 	$parameters['systemDatabases']['systemUserAuthenticationTokenScopes'] = $systemDatabasesConnections['systemUserAuthenticationTokenScopes'];
 	$parameters['systemDatabases']['systemUserAuthenticationTokenSources'] = $systemDatabasesConnections['systemUserAuthenticationTokenSources'];
-	$parameters['systemDatabases']['systemUserAuthenticationTokens'] = $systemDatabasesConnections['systemUserAuthenticationTokens'];
 	$parameters['systemDatabases']['systemUsers'] = $systemDatabasesConnections['systemUsers'];
 ?>
