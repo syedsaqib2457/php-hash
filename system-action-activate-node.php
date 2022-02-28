@@ -19,7 +19,7 @@
 		);
 
 		if (empty($parameters['nodeAuthenticationToken']) === false) {
-			$nodeParameters['where']['nodeAuthenticationToken'] = $parameters['nodeAuthenticationToken'];
+			$nodeParameters['where']['authenticationToken'] = $parameters['nodeAuthenticationToken'];
 		}
 
 		if (empty($parameters['where']['id']) === false) {
