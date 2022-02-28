@@ -80,7 +80,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'list-system-user-authentication-token-scopes') === true) {
+	if (($parameters['action'] === 'listSystemUserAuthenticationTokenScopes') === true) {
 		$response = _listSystemUserAuthenticationTokenScopes($parameters, $response);
 	}
 ?>
