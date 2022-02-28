@@ -13,7 +13,8 @@
 	require_once('/var/www/firewall-security-api/system-action-validate-ip-address-type.php');
 
 	function _addNode($parameters, $response) {
-		$parameters['data']['activatedStatus'] = $parameters['data']['deployedStatus'] = '0';
+		$parameters['data']['activatedStatus'] = '0';
+		$parameters['data']['deployedStatus'] = '0';
 
 		if (empty($parameters['data']['nodeId']) === false) {
 			$nodeNode = _list(array(
@@ -309,8 +310,11 @@
 			), $response);
 		}
 
-		$parameters['data']['processedStatus'] = $parameters['data']['processingProgressOverrideStatus'] = $parameters['data']['processingProgressPercentage'] = $parameters['data']['processingStatus'] = '0';
+		$parameters['data']['processedStatus'] = '0';
 		$parameters['data']['processingProgressCheckpoint'] = 'processingQueued';
+		$parameters['data']['processingProgressOverrideStatus'] = '0';
+		$parameters['data']['processingProgressPercentage'] = '0';
+		$parameters['data']['processingStatus'] = '0';
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['systemDatabases']['nodes']
