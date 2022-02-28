@@ -53,11 +53,7 @@
 		$response['data'] = $nodeRequestDestinations;
 		$response['message'] = 'Node request destinations listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['valid_status'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listNodeRequestDestinations') === true) {
-		$response = _listNodeRequestDestinations($parameters, $response);
 	}
 ?>
