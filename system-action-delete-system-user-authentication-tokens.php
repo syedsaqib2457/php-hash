@@ -80,7 +80,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'delete-system-user-authentication-tokens') === true) {
+	if (($parameters['action'] === 'deleteSystemUserAuthenticationTokens') === true) {
 		$response = _deleteSystemUserAuthenticationTokens($parameters, $response);
 	}
 ?>
