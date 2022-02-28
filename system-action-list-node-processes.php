@@ -53,11 +53,7 @@
 		$response['data'] = $nodeProcesses;
 		$response['message'] = 'Node processes listed successfully.';
 		$response['pagination'] = $parameters['pagination'];
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'listNodeProcesses') === true) {
-		$response = _listNodeProcesses($parameters, $response);
 	}
 ?>
