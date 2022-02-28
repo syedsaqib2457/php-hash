@@ -58,7 +58,7 @@
 		$nodeProcessNodeUserRequestLogs = explode("\n", $nodeProcessNodeUserRequestLogs);
 
 		if (empty($nodeProcessNodeUserRequestLogs) === true) {
-			$response['message'] = 'Invalid node process node user request log data, please try again.';
+			$response['message'] = 'Error listing process node user request log data, please try again.';
 			return $response;
 		}
 
@@ -103,11 +103,7 @@
 			'in' => $parameters['systemDatabases']['nodeProcessNodeUserRequestLogs']
 		), $response);
 		$response['message'] = 'Node process node user request logs added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeProcessNodeUserRequestLogs') === true) {
-		$response = _addNodeProcessNodeUserRequestLogs($parameters, $response);
 	}
 ?>
