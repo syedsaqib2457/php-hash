@@ -76,11 +76,7 @@
 			)
 		), $response);
 		$response['message'] = 'System user authentication tokens deleted successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'deleteSystemUserAuthenticationTokens') === true) {
-		$response = _deleteSystemUserAuthenticationTokens($parameters, $response);
 	}
 ?>
