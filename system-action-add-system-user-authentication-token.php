@@ -62,7 +62,7 @@
 		return $response;
 	}
 
-	if (($parameters['action'] === 'add-system-user-authentication-token') === true) {
+	if (($parameters['action'] === 'addSystemUserAuthenticationToken') === true) {
 		$response = _addSystemUserAuthenticationToken($parameters, $response);
 	}
 ?>
