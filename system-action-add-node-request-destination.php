@@ -46,11 +46,7 @@
 		$nodeRequestDestination = current($nodeRequestDestination);
 		$response['data'] = $nodeRequestDestination;
 		$response['message'] = 'Node request destination added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeRequestDestination') === true) {
-		$response = _addNodeRequestDestination($parameters, $response);
 	}
 ?>
