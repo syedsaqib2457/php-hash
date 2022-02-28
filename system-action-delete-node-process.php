@@ -85,11 +85,7 @@
 			)
 		), $response);
 		$response['message'] = 'Node process deleted successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'deleteNodeProcess') === true) {
-		$response = _deleteNodeProcess($parameters, $response);
 	}
 ?>
