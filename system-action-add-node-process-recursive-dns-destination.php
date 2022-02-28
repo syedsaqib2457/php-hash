@@ -50,7 +50,7 @@
 		$node = current($node);
 
 		if (empty($node) === true) {
-			$response['message'] = 'Invalid node process node ID, please try again.';
+			$response['message'] = 'Error listing node process recursive DNS destination node, please try again.';
 			return $response;
 		}
 
@@ -190,11 +190,7 @@
 		$nodeProcessRecursiveDnsDestination = current($nodeProcessRecursiveDnsDestination);
 		$response['data'] = $nodeProcessRecursiveDnsDestination;
 		$response['message'] = 'Node process recursive DNS destination added successfully.';
-		$response['validStatus'] = '1';
+		$response['validatedStatus'] = '1';
 		return $response;
-	}
-
-	if (($parameters['action'] === 'addNodeProcessRecursiveDnsDestination') === true) {
-		$response = _addNodeProcessRecursiveDnsDestination($parameters, $response);
 	}
 ?>
