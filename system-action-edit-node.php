@@ -107,7 +107,7 @@
 			'in' => $parameters['systemDatabases']['nodes'],
 			'where' => array(
 				'either' => $nodeExternalIpAddresses,
-				'id !=' => $parameters['where']['id']
+				'id not' => $parameters['where']['id']
 			)
 		);
 		$nodeIpAddresses = array_merge($nodeExternalIpAddresses, $nodeInternalIpAddresses);
