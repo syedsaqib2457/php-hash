@@ -230,8 +230,8 @@
 			$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
 			if (($systemUserAuthenticationTokenSourceCount === 0) === false) {
-				$systemUserAuthenticationTokenSourceCountParameters['where']['ipAddressRangeStart <='] = $parameters['source']['ipAddress'];
-				$systemUserAuthenticationTokenSourceCountParameters['where']['ipAddressRangeStop >='] = $parameters['source']['ipAddress'];
+				$systemUserAuthenticationTokenSourceCountParameters['where']['ipAddressRangeStart lessThanOrEqualTo'] = $parameters['source']['ipAddress'];
+				$systemUserAuthenticationTokenSourceCountParameters['where']['ipAddressRangeStop greaterThanOrEqualTo'] = $parameters['source']['ipAddress'];
 				$systemUserAuthenticationTokenSourceCountParameters['where']['ipAddressRangeVersionNumber'] = $parameters['source']['ipAddressVersionNumber'];
 				$systemUserAuthenticationTokenSourceCount = _count($systemUserAuthenticationTokenSourceCountParameters, $response);
 
