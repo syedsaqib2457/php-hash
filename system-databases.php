@@ -246,6 +246,10 @@
 
 	function _processSystemDatabaseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
 		foreach ($whereConditions as $whereConditionKey => $whereConditionValue) {
+			if ((strpos($whereConditionKey, "`") === false) === false) {
+				return false;
+			}
+
 			if ($whereConditionKey === 'either') {
 				$whereConditionConjunction = 'OR';
 			}
@@ -267,6 +271,10 @@
 				$whereConditionValueConditions = array();
 
 				foreach ($whereConditionValue as $whereConditionValueKey => $whereConditionValueValue) {
+					if ((strpos($whereConditionKey, "`") === false) === false) {
+						return false;
+					}
+
 					if (is_bool($whereConditionValueValue) === true) {
 						$whereConditionValueValue = intval($whereConditionValueValue);
 					}
