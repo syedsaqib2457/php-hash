@@ -294,27 +294,27 @@
 							$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueValue;
 						} else {
 							if ((strpos($whereConditionValueKey, ' like') === false) === false) {
-								$whereConditionValueValueWildcards = array(
+								$whereConditionValueWildcards = array(
 									'prefix' => '%',
 									'suffix' => '%'
 								);
 								$whereConditionValueKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ');
-								$whereConditionValueValuePrefix = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
+								$whereConditionValuePrefix = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
 
-								if (empty($whereConditionValueValueWildcards[$whereConditionValueValuePrefix]) === false) {
+								if (empty($whereConditionValueWildcards[$whereConditionValuePrefix]) === false) {
 									$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
-									$whereConditionValueValueWildcards[$whereConditionValueValuePrefix] = '';
+									$whereConditionValueWildcards[$whereConditionValuePrefix] = '';
 								}
 
 								$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 								$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
 								$whereConditionValueCondition = strtoupper($whereConditionValueCondition);
 								$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
-								$whereConditionValueValue = $whereConditionValueValueWildcards['prefix'] . str_replace('%', '\%', $whereConditionValueValue) . $whereConditionValueValueWildcards['suffix'];
+								$whereConditionValueValue = $whereConditionValueWildcards['prefix'] . str_replace('%', '\%', $whereConditionValueValue) . $whereConditionValueWildcards['suffix'];
 							} else {
 								$whereConditionValueValueCondition = 'IN';
 
-								if ((strpos($whereConditionValueKey, ' !=') === false) === false) {
+								if ((strpos($whereConditionValueKey, ' not') === false) === false) {
 									$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 									$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
 									$whereConditionValueValueCondition = 'NOT ' . $whereConditionValueValueCondition;
@@ -329,25 +329,38 @@
 				}
 
 				if (empty($whereConditionValueConditions) === true) {
+					$whereConditionValueKey = $whereConditionKey;
+
 					if (
-						((strpos($whereConditionKey, ' >') === false) === false) ||
-						((strpos($whereConditionKey, ' <') === false) === false)
+						((strpos($whereConditionValueKey, ' greater than') === false) === false) ||
+						((strpos($whereConditionValueKey, ' less than') === false) === false)
 					) {
-						// todo: use 'greater'[>=] + 'less'[<=]
-						$whereConditionValue = current($whereConditionValue);
-						$whereConditionValueConditions[] = $whereConditionKey . ' ' . $whereConditionValue;
+						$whereConditionValueComparisons = array(
+							'greater than' => '>',
+							'less than' => '<'
+						);
+						$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ', -6);
+						$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionKeyDelimiterPosition + 1));
+						$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
+						$whereConditionValueKey = '`' . substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition) . '`';
+
+						if (empty($whereConditionValueComparisons[$whereConditionValueCondition]) === false) {
+							$whereConditionValueKey .= ' ' . $whereConditionValueComparisons[$whereConditionValueCondition];
+						}
+
+						$whereConditionValueConditions[] = $whereConditionValueKey . " '" . current($whereConditionValue) . "'";
 					} else {
 						if ((strpos($whereConditionValueKey, ' like') === false) === false) {
-							$whereConditionValueValueWildcards = array(
+							$whereConditionValueWildcards = array(
 								'prefix' => '%',
 								'suffix' => '%'
 							);
 							$whereConditionValueKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ');
-							$whereConditionValueValuePrefix = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
+							$whereConditionValuePrefix = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
 
-							if (empty($whereConditionValueValueWildcards[$whereConditionValueValuePrefix]) === false) {
+							if (empty($whereConditionValueWildcards[$whereConditionValuePrefix]) === false) {
 								$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
-								$whereConditionValueValueWildcards[$whereConditionValueValuePrefix] = '';
+								$whereConditionValueWildcards[$whereConditionValuePrefix] = '';
 							}
 
 							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
@@ -361,7 +374,7 @@
 									$whereConditionValueValue = str_replace('%', '\%', $whereConditionValueValue);
 								}
 
-								$whereConditionValueValueConditions .= '`' . $whereConditionValueKey . '` ' . $whereConditionValueCondition . " '" . $whereConditionValueValueWildcards['prefix'] . $whereConditionValueValue . $whereConditionValueValueWildcards['suffix'] . "' OR";
+								$whereConditionValueValueConditions .= '`' . $whereConditionValueKey . '` ' . $whereConditionValueCondition . " '" . $whereConditionValueWildcards['prefix'] . $whereConditionValueValue . $whereConditionValueWildcards['suffix'] . "' OR";
 							}
 
 							$whereConditionValueConditions[] = substr($whereConditionValueValueConditions, 0, '-3') . ')';
@@ -369,7 +382,7 @@
 							$whereConditionValueCondition = 'IN';
 							$whereConditionValueKey = $whereConditionKey;
 
-							if ((strpos($whereConditionValueKey, ' !=') === false) === false) {
+							if ((strpos($whereConditionValueKey, ' not') === false) === false) {
 								$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 								$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
 								$whereConditionValueCondition = 'NOT ' . $whereConditionValueCondition;
