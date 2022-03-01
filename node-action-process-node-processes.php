@@ -552,6 +552,7 @@
 			}
 		}
 
+		$nodeProcessConnectionsExpiredTimestamp = (time() + 86400);
 		$parameters['nodeProcessTypeFirewallRuleSets'] = array();
 
 		foreach (array(0, 1) as $nodeProcessPartKey) {
@@ -691,9 +692,10 @@
 				ksort($recursiveDnsNodeProcessConfiguration);
 
 				foreach ($recursiveDnsNodeProcessPortNumbers as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
-					// todo: add default node timeout column to wait for X seconds before closing open connections
-
-					while (_verifyNodeProcessConnections($parameters['binaryFiles'], $recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) {
+					while (
+						(_verifyNodeProcessConnections($parameters['binaryFiles'], $recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) &&
+						((time() < $nodeProcessConnectionsExpiredTimestamp) === true)
+					) {
 						sleep(1);
 					}
 
@@ -969,9 +971,10 @@
 						);
 
 						foreach ($proxyNodeProcessPortNumbers as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
-							// todo: add default node timeout column to wait for X seconds before closing open connections
-
-							while (_verifyNodeProcessConnections($parameters['binaryFiles'], $proxyNodeProcessNodeIpAddresses, $proxyNodeProcessPortNumber) === true) {
+							while (
+								(_verifyNodeProcessConnections($parameters['binaryFiles'], $proxyNodeProcessNodeIpAddresses, $proxyNodeProcessPortNumber) === true) &&
+								((time() < $nodeProcessConnectionsExpiredTimestamp) === true)
+							) {
 								sleep(1);
 							}
 
