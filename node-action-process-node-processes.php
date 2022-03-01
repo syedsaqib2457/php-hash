@@ -692,6 +692,7 @@
 
 				foreach ($recursiveDnsNodeProcessPortNumbers as $recursiveDnsNodeProcessId => $recursiveDnsNodeProcessPortNumber) {
 					// todo: add default node timeout column to wait for X seconds before closing open connections
+
 					while (_verifyNodeProcessConnections($parameters['binaryFiles'], $recursiveDnsNodeProcessNodeIpAddresses, $recursiveDnsNodeProcessPortNumber) === true) {
 						sleep(1);
 					}
@@ -735,7 +736,6 @@
 
 					shell_exec('sudo ' . $parameters['binaryFiles']['systemctl'] . ' daemon-reload');
 					unlink('/var/run/named/recursiveDns' . $recursiveDnsNodeProcessId . '.pid');
-					// todo: add default node timeout column to wait for X seconds before proceeding with processing after processes start + stop
 					$recursiveDnsNodeProcessResponse = false;
 
 					while ($recursiveDnsNodeProcessResponse === false) {
@@ -969,6 +969,8 @@
 						);
 
 						foreach ($proxyNodeProcessPortNumbers as $proxyNodeProcessId => $proxyNodeProcessPortNumber) {
+							// todo: add default node timeout column to wait for X seconds before closing open connections
+
 							while (_verifyNodeProcessConnections($parameters['binaryFiles'], $proxyNodeProcessNodeIpAddresses, $proxyNodeProcessPortNumber) === true) {
 								sleep(1);
 							}
@@ -996,7 +998,6 @@
 							chmod('/etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg', 0755);
 							shell_exec('sudo ' . $parameters['binaryFiles']['systemctl'] . ' daemon-reload');
 							unlink('/var/run/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.pid');
-							// todo: add default node timeout column to wait for X seconds before proceeding with processing after processes start + stop
 							$proxyNodeProcessResponse = false;
 
 							while ($proxyNodeProcessResponse === false) {
