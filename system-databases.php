@@ -11,6 +11,7 @@
 				(empty($existingSystemDatabases) === false) &&
 				(empty($existingSystemDatabases[$systemDatabase]) === false)
 			) {
+				$response['_connect'][$systemDatabase] = $existingSystemDatabases[$systemDatabase];
 				continue;
 			}
 
