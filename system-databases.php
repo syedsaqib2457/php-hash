@@ -133,7 +133,7 @@
 
 	function _edit($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			$systemDatabaseUpdateCommand = 'UPDATE ' . $parameters['in']['tableKey'] . ' SET ';
+			$systemDatabaseUpdateCommand = 'UPDATE ' . $parameters['in']['structure']['tableKey'] . ' SET ';
 
 			if (isset($parameters['data']['modifiedTimestamp']) === false) {
 				$parameters['data']['modifiedTimestamp'] = time();
