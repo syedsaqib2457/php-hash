@@ -7,6 +7,40 @@
 		return $uniqueId;
 	}
 
+	function _killProcessIds($binaryFiles, $processIds) {
+		$killProcessCommands = array(
+			'#!/bin/bash'
+		);
+		$processIdParts = array();
+		$processIdPartsKey = 0;
+
+		foreach ($processIds as $processIdKey => $processId) {
+			if ((($processIdKey % 10) === 0) === true) {
+				$processIdPartsKey++;
+				$processIdParts[$processIdPartsKey] = '';
+			}
+
+			$processIdParts[$processIdPartsKey] .= $processId . ' ';
+		}
+
+		foreach ($processIdParts as $processIdPart) {
+			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
+		}
+
+		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
+		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
+		$killProcessCommands = implode("\n", $killProcessCommands);
+
+		if (file_put_contents('/usr/local/firewall-security-api/system-action-deploy-system-commands.sh', $killProcessCommands) === false) {
+			echo 'Error adding kill process ID commands, please try again.' . "\n";
+			exit;
+		}
+
+		shell_exec('sudo chmod +x /usr/local/firewall-security-api/system-action-deploy-system-commands.sh');
+		shell_exec('cd /usr/local/firewall-security-api/ && sudo ./system-action-deploy-system-commands.sh');
+		return;
+	}
+
 	$ipAddressVersionNumbers = array(
 		'32' => '4',
 		'128' => '6'
@@ -84,9 +118,50 @@
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
-		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
+		$binaries = array(
+			array(
+				'command' => '-' . $uniqueId,
+				'name' => 'kill',
+				'output' => 'invalid ',
+				'package' => 'procps'
+			),
+			array(
+				'command' => $uniqueId,
+				'name' => 'telinit',
+				'output' => 'single',
+				'package' => 'systemd'
+			)
+		);
+		$binaryFiles = array();
+
+		foreach ($binaries as $binary) {
+			$binaryFileListCommands = array(
+				'#!/bin/bash',
+				'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
+			);
+			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
+			unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
+			file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands);
+			chmod('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', 0755);
+			exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-binary-file-list-commands.sh', $binaryFile);
+			$binaryFile = current($binaryFile);
+
+			if (empty($binaryFile) === true) {
+				shell_exec('sudo apt-get update');
+				shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
+				echo 'Error listing ' . $binary['name'] . ' binary file from the ' . $binary['package'] . ' package, please try again.' . "\n";
+				exit;
+			}
+
+			$binaryFiles[$binary['name']] = $binaryFile;
+		}
+
+		exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
+		_killProcessIds($binaryFiles, $lockedProcessIds);
 		shell_exec('sudo apt-get update');
-		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
+		$lockedProcessIds = false;
+		exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
+		_killProcessIds($binaryFiles, $lockedProcessIds);
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli syslinux systemd util-linux');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
@@ -189,7 +264,6 @@
 				'package' => 'wget'
 			)
 		);
-		$binaryFiles = array();
 
 		foreach ($binaries as $binary) {
 			$binaryFileListCommands = array(
@@ -197,7 +271,7 @@
 				'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-
+			unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
 			file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands);
 			chmod('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', 0755);
 			exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-binary-file-list-commands.sh', $binaryFile);
