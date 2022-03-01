@@ -83,7 +83,6 @@
 						'nodeProcessType' => $parameters['data']['nodeProcessType'],
 						'nodeUserId' => $parameters['data']['nodeUserId'],
 						'processedStatus' => '0',
-						'processingProcessId' => null,
 						'responseCode' => $nodeProcessNodeUserRequestLog[5],
 						'sourceIpAddress' => $nodeProcessNodeUserRequestLog[6]
 					);
