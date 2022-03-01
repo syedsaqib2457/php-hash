@@ -100,7 +100,14 @@
 		$systemDatabaseCountCommand = 'SELECT COUNT(id) FROM ' . $parameters['in']['structure']['tableKey'];
 
 		if (empty($parameters['where']) === false) {
-			$systemDatabaseCountCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
+			$parameters['where'] = _processSystemDatabaseCommandWhereConditions($parameters['where']);
+
+			if ($parameters['where'] === false) {
+				$response['message'] = 'Error processing where conditions in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
+				_output($parameters, $response);
+			}
+
+			$systemDatabaseCountCommand .= ' WHERE ' . implode(' AND ', $parameters['where']);
 		}
 
 		$systemDatabaseCountRows = mysqli_query($parameters['in']['connection'], $systemDatabaseCountCommand);
@@ -120,7 +127,14 @@
 		$systemDatabaseDeleteCommand = 'DELETE FROM ' . $parameters['in']['structure']['tableKey'];
 
 		if (empty($parameters['where']) === false) {
-			$systemDatabaseDeleteCommand .= ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
+			$parameters['where'] = _processSystemDatabaseCommandWhereConditions($parameters['where']);
+
+			if ($parameters['where'] === false) {
+				$response['message'] = 'Error processing where conditions in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
+				_output($parameters, $response);
+			}
+
+			$systemDatabaseDeleteCommand .= ' WHERE ' . implode(' AND ', $parameters['where']);
 		}
 
 		if (mysqli_query($parameters['in']['connection'], $systemDatabaseDeleteCommand) === false) {
@@ -147,7 +161,13 @@
 				$systemDatabaseUpdateCommand .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
 			}
 
-			$parameters['where'] = _parseSystemDatabaseCommandWhereConditions($parameters['where']);
+			$parameters['where'] = _processSystemDatabaseCommandWhereConditions($parameters['where']);
+
+			if ($parameters['where'] === false) {
+				$response['message'] = 'Error processing where conditions in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
+				_output($parameters, $response);
+			}
+
 			$systemDatabaseUpdateCommand = rtrim($systemDatabaseUpdateCommand, ',') . ' WHERE ' . implode(' AND ', $parameters['where']);
 
 			if (empty($parameters['limit']) === false) {
@@ -175,7 +195,13 @@
 		$systemDatabaseListCommand = 'SELECT ' . $systemDatabaseListColumnKeys . ' FROM ' . $parameters['in']['structure']['tableKey'];
 
 		if (empty($parameters['where']) === false) {
-			$parameters['where'] = _parseSystemDatabaseCommandWhereConditions($parameters['where']);
+			$parameters['where'] = _processSystemDatabaseCommandWhereConditions($parameters['where']);
+
+			if ($parameters['where'] === false) {
+				$response['message'] = 'Error processing where conditions in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
+				_output($parameters, $response);
+			}
+
 			$systemDatabaseListCommand .= ' WHERE ' . implode(' AND ', $parameters['where']);
 		}
 
@@ -218,7 +244,7 @@
 		return $response['data'];
 	}
 
-	function _parseSystemDatabaseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
+	function _processSystemDatabaseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
 		foreach ($whereConditions as $whereConditionKey => $whereConditionValue) {
 			if ($whereConditionKey === 'either') {
 				$whereConditionConjunction = 'OR';
@@ -229,7 +255,8 @@
 				((count($whereConditionValue) === count($whereConditionValue, true)) === false)
 			) {
 				$recursiveWhereConditions = $whereConditionValue;
-				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $whereConditionConjunction . ' (', _parseSystemDatabaseCommandWhereConditions($recursiveWhereConditions, $whereConditionConjunction)) . ')';
+				$whereConditions[$whereConditionKey] = _processSystemDatabaseCommandWhereConditions($recursiveWhereConditions, $whereConditionConjunction);
+				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $whereConditionConjunction . ' (', $whereConditions[$whereConditionKey]) . ')';
 			} else {
 				if (is_array($whereConditionValue) === false) {
 					$whereConditionValue = array(
