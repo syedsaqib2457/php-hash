@@ -81,6 +81,7 @@
 			exit;
 		}
 
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
