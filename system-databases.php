@@ -310,7 +310,7 @@
 								$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
 								$whereConditionValueCondition = strtoupper($whereConditionValueCondition);
 								$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
-								$whereConditionValueValue = $whereConditionValueValueWildcards['prefix'] . $whereConditionValueValue . $whereConditionValueValueWildcards['suffix'];
+								$whereConditionValueValue = $whereConditionValueValueWildcards['prefix'] . str_replace('%', '\%', $whereConditionValueValue) . $whereConditionValueValueWildcards['suffix'];
 							} else {
 								$whereConditionValueValueCondition = 'IN';
 
