@@ -13,7 +13,7 @@
 
 		if (
 			(($parameters['where']['nodeFile'] === 'node-action-process-node-process-node-user-request-logs.php') === false) &&
-			(($parameters['where']['nodeFile'] === 'node-action-process-node-process_resource-usage-logs.php') === false) &&
+			(($parameters['where']['nodeFile'] === 'node-action-process-node-process-resource-usage-logs.php') === false) &&
 			(($parameters['where']['nodeFile'] === 'node-action-process-node-processes.php') === false) &&
 			(($parameters['where']['nodeFile'] === 'node-action-process-node-resource-usage-logs.php') === false) &&
 			(($parameters['where']['nodeFile'] === 'node-action-process-recursive-dns-destination.php') === false) &&
