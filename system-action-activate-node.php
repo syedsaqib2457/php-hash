@@ -62,7 +62,7 @@
 		}
 
 		if (
-			($node['activatedStatus'] === '1') === true) &&
+			(($node['activatedStatus'] === '1') === true) &&
 			(empty($parameters['systemUserAuthenticationToken']) === false)
 		) {
 			$response['message'] = 'Node is already activated, please try again.';
