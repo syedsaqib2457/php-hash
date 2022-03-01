@@ -246,7 +246,7 @@
 
 	function _processSystemDatabaseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
 		foreach ($whereConditions as $whereConditionKey => $whereConditionValue) {
-			if ((strpos($whereConditionKey, "`") === false) === false) {
+			if ((strpos($whereConditionKey, '`') === false) === false) {
 				return false;
 			}
 
@@ -271,15 +271,15 @@
 				$whereConditionValueConditions = array();
 
 				foreach ($whereConditionValue as $whereConditionValueKey => $whereConditionValueValue) {
-					if ((strpos($whereConditionKey, "`") === false) === false) {
+					if ((strpos($whereConditionKey, '`') === false) === false) {
 						return false;
 					}
 
-					if (is_bool($whereConditionValueValue) === true) {
+					if ((strpos($whereConditionValueValue, "'") === false) === false) {
+						$whereConditionValueValue = str_replace("'", "\'", $whereConditionValueValue);
+					} elseif (is_bool($whereConditionValueValue) === true) {
 						$whereConditionValueValue = intval($whereConditionValueValue);
-					}
-
-					if (is_null($whereConditionValueValue) === true) {
+					} elseif (is_null($whereConditionValueValue) === true) {
 						$whereConditionValueValue = '';
 					}
 
@@ -291,22 +291,26 @@
 							((strpos($whereConditionValueKey, ' <') === false) === false)
 						) {
 							// todo: use 'greater'[>=] + 'less'[<=]
-							$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . str_replace("'", "\'", $whereConditionValueValue);
+							$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueValue;
 						} else {
-							$whereConditionValueValueCondition = 'IN';
-
 							if ((strpos($whereConditionValueKey, ' like') === false) === false) {
 								$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 								$whereConditionValueValueCondition = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
 								$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
 								$whereConditionValueKey = strtoupper($whereConditionValueKey);
-							} elseif ((strpos($whereConditionValueKey, ' !=') === false) === false) {
-								$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
-								$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
-								$whereConditionValueValueCondition = 'NOT ' . $whereConditionValueValueCondition;
+							} else {
+								$whereConditionValueValueCondition = 'IN';
+
+								if ((strpos($whereConditionValueKey, ' !=') === false) === false) {
+									$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
+									$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
+									$whereConditionValueValueCondition = 'NOT ' . $whereConditionValueValueCondition;
+								}
+
+								$whereConditionValueValue = "('" . $whereConditionValueValue . "')";
 							}
 
-							$whereConditionValueConditions[] = '`' . $whereConditionValueKey . '` ' . $whereConditionValueValueCondition . " ('" . str_replace("'", "\'", $whereConditionValueValue) . "')";
+							$whereConditionValueConditions[] = '`' . $whereConditionValueKey . '` ' . $whereConditionValueValueCondition . ' ' . $whereConditionValueValue;
 						}
 					}
 				}
@@ -316,25 +320,34 @@
 						((strpos($whereConditionKey, ' >') === false) === false) ||
 						((strpos($whereConditionKey, ' <') === false) === false)
 					) {
+						// todo: use 'greater'[>=] + 'less'[<=]
 						$whereConditionValue = current($whereConditionValue);
-						$whereConditionValueConditions[] = $whereConditionKey . ' ' . str_replace("'", "\'", $whereConditionValue);
+						$whereConditionValueConditions[] = $whereConditionKey . ' ' . $whereConditionValue;
 					} else {
-						$whereConditionValueCondition = 'IN';
-						$whereConditionValueKey = $whereConditionKey;
-
 						if ((strpos($whereConditionValueKey, ' like') === false) === false) {
 							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 							$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
 							$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
 							$whereConditionValueKey = strtoupper($whereConditionValueKey);
-						} elseif ((strpos($whereConditionValueKey, ' !=') === false) === false) {
-							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
-							$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
-							$whereConditionValueCondition = 'NOT ' . $whereConditionValueCondition;
-						}
+							$whereConditionValueValueConditions = '(';
 
-						$whereConditionValue = str_replace("'", "\'", $whereConditionValue);
-						$whereConditionValueConditions[] = '`' . $whereConditionValueKey . '` ' . $whereConditionValueCondition . " ('" . implode("','", $whereConditionValue) . "')";
+							foreach ($whereConditionValue as $whereConditionValueValue) {
+								$whereConditionValueValueConditions .= '`' . $whereConditionValueKey . '` ' . $whereConditionValueCondition . " '" . $whereConditionValueValue . "' OR";
+							}
+
+							$whereConditionValueConditions[] = substr($whereConditionValueValueConditions, 0, '-3') . ')';
+						} else {
+							$whereConditionValueCondition = 'IN';
+							$whereConditionValueKey = $whereConditionKey;
+
+							if ((strpos($whereConditionValueKey, ' !=') === false) === false) {
+								$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
+								$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
+								$whereConditionValueCondition = 'NOT ' . $whereConditionValueCondition;
+							}
+
+							$whereConditionValueConditions[] = '`' . $whereConditionValueKey . '` ' . $whereConditionValueCondition . " ('" . implode("','", $whereConditionValue) . "')";
+						}
 					}
 				}
 
