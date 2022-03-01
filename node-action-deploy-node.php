@@ -107,17 +107,57 @@
 		exit;
 	}
 
-	$binaryFiles = array(
-		'kill' => 'kill',
-		'telinit' => 'telinit'
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
+	$binaries = array(
+		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'kill',
+			'output' => 'invalid ',
+			'package' => 'procps'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'telinit',
+			'output' => 'single',
+			'package' => 'systemd'
+		)
 	);
+	$binaryFiles = array();
+
+	foreach ($binaries as $binary) {
+		$commands = array(
+			'#!/bin/bash',
+			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
+		);
+		$commands = implode("\n", $commands);
+		unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
+		file_put_contents('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', $commands);
+		chmod('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', 0755);
+		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-deploy-node-commands.sh', $binaryFile);
+		$binaryFile = current($binaryFile);
+
+		if (empty($binaryFile) === true) {
+			shell_exec('sudo apt-get update');
+			shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ' . $binary['package']);
+			echo 'Error listing ' . $binary['name'] . ' binary file from the ' . $binary['package'] . ' package, please try again.' . "\n";
+			exit;
+		}
+
+		$binaryFiles[$binary['name']] = $binaryFile;
+	}
+
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	_killProcessIds($binaryFiles, $lockedProcessIds);
 	shell_exec('sudo apt-get update');
 	$lockedProcessIds = false;
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	_killProcessIds($binaryFiles, $lockedProcessIds);
-	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential coreutils cron curl dnsutils net-tools php-curl procps syslinux systemd util-linux');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential coreutils cron curl dnsutils net-tools php-curl syslinux systemd util-linux');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 	shell_exec('sudo /etc/init.d/apache2 stop');
 	$uniqueId = '_' . uniqid();
@@ -213,7 +253,6 @@
 			'package' => 'wget'
 		)
 	);
-	$binaryFiles = array();
 
 	foreach ($binaries as $binary) {
 		$commands = array(
@@ -221,6 +260,7 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commands = implode("\n", $commands);
+		unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
 		file_put_contents('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', $commands);
 		chmod('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', 0755);
 		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-deploy-node-commands.sh', $binaryFile);
