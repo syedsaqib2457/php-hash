@@ -209,6 +209,8 @@
 			_output($parameters, $response);
 		}
 
+		$response['data'] = array();
+
 		foreach ($systemDatabaseListRows as $systemDatabaseListRow) {
 			$response['data'][] = $systemDatabaseListRow;
 		}
