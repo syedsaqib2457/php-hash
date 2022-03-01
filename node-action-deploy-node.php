@@ -110,6 +110,7 @@
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
+	$uniqueId = '_' . uniqid();
 	$binaries = array(
 		array(
 			'command' => '-' . $uniqueId,
@@ -160,7 +161,6 @@
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 	shell_exec('sudo /etc/init.d/apache2 stop');
-	$uniqueId = '_' . uniqid();
 	$binaries = array(
 		array(
 			'command' => $uniqueId,
