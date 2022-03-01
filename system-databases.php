@@ -287,11 +287,23 @@
 
 					if (($whereConditionKey === 'either') === true) {
 						if (
-							((strpos($whereConditionValueKey, ' >') === false) === false) ||
-							((strpos($whereConditionValueKey, ' <') === false) === false)
+							((strpos($whereConditionValueKey, ' greater than') === false) === false) ||
+							((strpos($whereConditionValueKey, ' less than') === false) === false)
 						) {
-							// todo: use 'greater'[>=] + 'less'[<=]
-							$whereConditionValueConditions[] = $whereConditionValueKey . ' ' . $whereConditionValueValue;
+							$whereConditionValueComparisons = array(
+								'greater than' => '>',
+								'less than' => '<'
+							);
+							$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ', -6);
+							$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionKeyDelimiterPosition + 1));
+							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
+							$whereConditionValueKey = '`' . substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition) . '`';
+
+							if (empty($whereConditionValueComparisons[$whereConditionValueCondition]) === false) {
+								$whereConditionValueKey .= ' ' . $whereConditionValueComparisons[$whereConditionValueCondition];
+							}
+
+							$whereConditionValueConditions[] = $whereConditionValueKey . " '" . $whereConditionValueValue . "'";
 						} else {
 							if ((strpos($whereConditionValueKey, ' like') === false) === false) {
 								$whereConditionValueWildcards = array(
