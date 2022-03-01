@@ -109,7 +109,7 @@
 		$existingNodeProcessCountParameters = array(
 			'in' => $parameters['systemDatabases']['nodeProcesses'],
 			'where' => array(
-				'id !=' => $parameters['where']['id'],
+				'id not' => $parameters['where']['id'],
 				'nodeId' => $nodeProcess['nodeId']
 			)
 		);
