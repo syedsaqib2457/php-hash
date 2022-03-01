@@ -195,9 +195,9 @@
 			), $response);
 			$nodeProcessNodeUserNodeRequestDestinations = _list(array(
 				'data' => array(
-					'nodeUserId',
-					'nodeUserNodeRequestDestinationAddress',
-					'nodeUserNodeRequestDestinationId'
+					'nodeRequestDestinationAddress',
+					'nodeRequestDestinationId',
+					'nodeUserId'
 				),
 				'in' => $parameters['systemDatabases']['nodeProcessNodeUserNodeRequestDestinations'],
 				'where' => array(
@@ -208,8 +208,8 @@
 				'data' => array(
 					'nodeId',
 					'nodeProcessType',
-					'nodeUserId',
-					'nodeUserNodeRequestDestinationId'
+					'nodeRequestDestinationId',
+					'nodeUserId'
 				),
 				'in' => $parameters['systemDatabases']['nodeProcessNodeUserNodeRequestLimitRules'],
 				'where' => array(
@@ -328,7 +328,7 @@
 
 				if (empty($nodeProcessNodeUserNodeRequestDestinations) === false) {
 					foreach ($nodeProcessNodeUserNodeRequestDestinations as $nodeProcessNodeUserNodeRequestDestination) {
-						$response['data']['nodeRequestDestinations'][$nodeProcessNodeUserNodeRequestDestination['nodeRequestDestinationIds']] = $nodeProcessNodeUserNodeRequestDestination['nodeRequestDestinationAddress'];
+						$response['data']['nodeRequestDestinations'][$nodeProcessNodeUserNodeRequestDestination['nodeRequestDestinationId']] = $nodeProcessNodeUserNodeRequestDestination['nodeRequestDestinationAddress'];
 						$response['data']['nodeUsers'][$nodeProcessNodeUserNodeRequestDestination['nodeUserId']]['nodeRequestDestinationIds'][$nodeProcessNodeUserNodeRequestDestination['nodeRequestDestinationId']] = $nodeProcessNodeUserNodeRequestDestination['nodeRequestDestinationId'];
 					}
 				}
