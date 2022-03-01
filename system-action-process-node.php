@@ -237,7 +237,7 @@
 					'listeningIpAddressVersion4NodeId',
 					'listeningIpAddressVersion6',
 					'listeningIpAddressVersion6NodeId',
-					'node_id',
+					'nodeId',
 					'nodeProcessType',
 					'portNumberVersion4',
 					'portNumberVersion6',
@@ -246,7 +246,7 @@
 				),
 				'in' => $parameters['systemDatabases']['nodeProcessRecursiveDnsDestinations'],
 				'where' => array(
-					'node_node_id' => $nodeNodeId
+					'nodeNodeId' => $nodeNodeId
 				)
 			), $response);
 			$nodeReservedInternalDestinations = _list(array(
