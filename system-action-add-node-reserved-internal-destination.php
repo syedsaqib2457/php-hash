@@ -88,7 +88,7 @@
 							),
 							array(
 								'externalIpAddressVersion' . $nodeIpAddressVersionNumber => $nodeReservedInternalDestinationIpAddress,
-								'externalIpAddressVersion' . $nodeIpAddressVersionNumber . 'Type !=' => 'publicNetwork'
+								'externalIpAddressVersion' . $nodeIpAddressVersionNumber . 'Type not' => 'publicNetwork'
 							)
 						)
 					)
@@ -145,7 +145,7 @@
 						),
 						array(
 							'externalIpAddressVersion' . $nodeIpAddressVersionNumber => $nodeReservedInternalDestinationIpAddress,
-							'externalIpAddressVersion' . $nodeIpAddressVersionNumber . 'Type !=' => 'publicNetwork'
+							'externalIpAddressVersion' . $nodeIpAddressVersionNumber . 'Type not' => 'publicNetwork'
 						)
 					)
 				)
