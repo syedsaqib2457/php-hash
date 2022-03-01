@@ -1235,7 +1235,7 @@
 		$systemDatabaseCommands = array();
 
 		foreach ($systemDatabases as $systemDatabaseTableKey => $systemDatabaseColumnKeys) {
-			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableKey . '` (`createdTimestamp` VARCHAR(10) NULL DEFAULT NULL);';
+			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableKey . '` (`createdTimestamp` VARCHAR(10) NOT NULL DEFAULT "");';
 
 			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey) {
 				if (($systemDatabaseColumnKey === 'createdTimestamp') === true) {
@@ -1267,7 +1267,7 @@
 					'add' => 'ADD `' . $systemDatabaseColumnKey . '`',
 					'change' => 'CHANGE `' . $systemDatabaseColumnKey . '` `' . $systemDatabaseColumnKey . '`'
 				);
-				$systemDatabaseCommand = 'ALTER TABLE `' . $systemDatabaseTableKey . '` ' . $systemDatabaseCommandActions['change'] . ' ' . $systemDatabaseColumnType . ' NULL DEFAULT NULL';
+				$systemDatabaseCommand = 'ALTER TABLE `' . $systemDatabaseTableKey . '` ' . $systemDatabaseCommandActions['change'] . ' ' . $systemDatabaseColumnType . ' NOT NULL DEFAULT ""';
 
 				if (mysqli_query($systemDatabaseConnection, $systemDatabaseCommand) === false) {
 					$systemDatabaseCommands[] = str_replace($systemDatabaseCommandActions['change'], $systemDatabaseCommandActions['add'], $systemDatabaseCommand);
