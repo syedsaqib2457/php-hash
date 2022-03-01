@@ -109,7 +109,7 @@
 
 	$binaryFiles = array(
 		'kill' => 'kill',
-		'teliinit' => 'telinit'
+		'telinit' => 'telinit'
 	);
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	_killProcessIds($binaryFiles, $lockedProcessIds);
