@@ -155,7 +155,7 @@
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'kill',
-			'output' => 'invalid signal',
+			'output' => 'invalid ',
 			'package' => 'procps'
 		),
 		array(
