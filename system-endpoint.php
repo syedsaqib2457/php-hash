@@ -143,6 +143,10 @@
 		}
 
 		if (empty($parameters['nodeAuthenticationToken']) === false) {
+			$systemDatabasesConnections = _connect(array(
+				'nodes'
+			), $parameters['systemDatabases'], $response);
+			$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
 			$node = _list(array(
 				'data' => array(
 					'externalIpAddressVersion4',
