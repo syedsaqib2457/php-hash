@@ -236,10 +236,6 @@
 						$whereConditionValueValue = intval($whereConditionValueValue);
 					}
 
-					if (is_null($whereConditionValueValue) === true) {
-						$whereConditionValueValue = 'IS NULL';
-					}
-
 					$whereConditionValue[$whereConditionValueKey] = $whereConditionValueValue;
 
 					if (($whereConditionKey === 'either') === true) {
