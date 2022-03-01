@@ -14,7 +14,9 @@
 
 	function _addNode($parameters, $response) {
 		$parameters['data']['activatedStatus'] = '0';
+		$parameters['data']['authenticationToken'] = _createUniqueId();
 		$parameters['data']['deployedStatus'] = '0';
+		$parameters['data']['nodeId'] = '';
 
 		if (empty($parameters['data']['nodeId']) === false) {
 			$nodeNode = _list(array(
@@ -39,9 +41,6 @@
 			$parameters['data']['authenticationToken'] = $nodeNode['authenticationToken'];
 			$parameters['data']['deployedStatus'] = $nodeNode['deployedStatus'];
 			$parameters['data']['nodeId'] = $nodeNode['id'];
-		} else {
-			$parameters['data']['authenticationToken'] = _createUniqueId();
-			$parameters['data']['nodeId'] = null;
 		}
 
 		$nodeExternalIpAddresses = $nodeInternalIpAddresses = array();
