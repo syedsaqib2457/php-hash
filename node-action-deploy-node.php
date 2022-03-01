@@ -107,9 +107,14 @@
 		exit;
 	}
 
+	$binaryFiles = array(
+		'kill' => 'kill',
+		'teliinit' => 'telinit'
+	);
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	_killProcessIds($binaryFiles, $lockedProcessIds);
 	shell_exec('sudo apt-get update');
+	$lockedProcessIds = false;
 	exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 	_killProcessIds($binaryFiles, $lockedProcessIds);
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 apache2-utils bind9 bind9utils build-essential coreutils cron curl dnsutils net-tools php-curl procps syslinux systemd util-linux');
