@@ -233,10 +233,10 @@
 			), $response);
 			$nodeProcessRecursiveDnsDestinations = _list(array(
 				'data' => array(
-					'listeningIpAddressVersion4',
-					'listeningIpAddressVersion4NodeId',
-					'listeningIpAddressVersion6',
-					'listeningIpAddressVersion6NodeId',
+					'destinationIpAddressVersion4',
+					'destinationIpAddressVersion4NodeId',
+					'destinationIpAddressVersion6',
+					'destinationIpAddressVersion6NodeId',
 					'nodeId',
 					'nodeProcessType',
 					'portNumberVersion4',
