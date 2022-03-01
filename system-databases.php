@@ -5,13 +5,13 @@
 		exit;
 	}
 
-	function _connect($systemDatabases, $existingSystemDatabases, $response) {
-		foreach ($systemDatabases as $systemDatabase) {
+	function _connect($systemDatabaseTableKeys, $existingSystemDatabases, $response) {
+		foreach ($systemDatabaseTableKeys as $systemDatabaseTableKey) {
 			if (
 				(empty($existingSystemDatabases) === false) &&
-				(empty($existingSystemDatabases[$systemDatabase]) === false)
+				(empty($existingSystemDatabases[$systemDatabaseTableKey]) === false)
 			) {
-				$response['_connect'][$systemDatabase] = $existingSystemDatabases[$systemDatabase];
+				$response['_connect'][$systemDatabaseTableKey] = $existingSystemDatabases[$systemDatabaseTableKey];
 				continue;
 			}
 
@@ -28,25 +28,25 @@
 					'createdTimestamp' => 'descending'
 				),
 				'where' => array(
-					'tableKey' => $systemDatabase
+					'tableKey' => $systemDatabaseTableKey
 				)
 			);
 
-			if ((strpos($systemDatabase, '__') === false) === false) {
-				$systemDatabaseParts = explode('__', $systemDatabase);
+			if ((strpos($systemDatabaseTableKey, '__') === false) === false) {
+				$systemDatabaseTableKeyParts = explode('__', $systemDatabaseTableKey);
 
 				if (
-					(isset($systemDatabaseParts[1]) === false) ||
-					(isset($systemDatabaseParts[2]) === true)
+					(isset($systemDatabaseTableKeyParts[1]) === false) ||
+					(isset($systemDatabaseTableKeyParts[2]) === true)
 				) {
-					$response['message'] = 'Invalid system database tag for ' . $systemDatabase . ', please try again.';
+					$response['message'] = 'Invalid system database tag for ' . $systemDatabaseTableKey . ', please try again.';
 					unset($response['_connect']);
 					_output($parameters, $response);
 				}
 
 				$systemDatabaseParameters['where'] = array(
-					'tableKey' => $systemDatabaseParts[0],
-					'tag' => $systemDatabaseParts[1]
+					'tableKey' => $systemDatabaseTableKeyParts[0],
+					'tag' => $systemDatabaseTableKeyParts[1]
 				);
 			}
 
