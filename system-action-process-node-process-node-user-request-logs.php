@@ -23,7 +23,7 @@
 			'limit' => 10000,
 			'where' => array(
 				'processedStatus' => '0',
-				'processingProcessId' => null
+				'processingProcessId' => ''
 			)
 		), $response);
 		$nodeProcessNodeUserRequestDestinationLogs = array();
@@ -91,7 +91,7 @@
 					'id' => $nodeProcessNodeUserRequestLog['id'],
 					'nodeRequestDestinationId' => $nodeRequestDestinations[$nodeProcessNodeUserRequestLog['destinationHostnameAddress']],
 					'processedStatus' => '1',
-					'processingProcessId' => null
+					'processingProcessId' => ''
 				);
 				$nodeProcessResourceUsageLogCreatedTimestamp = date('Y-m-d H:i', $nodeProcessNodeUserRequestLog['createdTimestamp']);
 				$nodeProcessResourceUsageLogCreatedTimestamp = substr($nodeProcessResourceUsageLogCreatedTimestamp, 0, 15) . '0:00';
@@ -184,11 +184,11 @@
 
 		_edit(array(
 			'data' => array(
-				'processingProcessId' => null
+				'processingProcessId' => ''
 			),
 			'in' => $parameters['systemDatabases']['nodeProcessNodeUserRequestLogs'],
 			'where' => array(
-				'modifiedTimestamp <' => strtotime('-10 minutes'),
+				'modifiedTimestamp lessThan' => strtotime('-10 minutes'),
 				'processedStatus' => '0'
 			)
 		), $response);
