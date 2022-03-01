@@ -139,10 +139,15 @@
 			}
 
 			foreach ($parameters['data'] as $updateValueKey => $updateValue) {
+				if (empty($updateValue) === true) {
+					$updateValue = '';
+				}
+
 				$systemDatabaseUpdateCommand .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
 			}
 
-			$systemDatabaseUpdateCommand = rtrim($systemDatabaseUpdateCommand, ',') . ' WHERE ' . implode(' AND ', _parseSystemDatabaseCommandWhereConditions($parameters['where']));
+			$parameters['where'] = _parseSystemDatabaseCommandWhereConditions($parameters['where']);
+			$systemDatabaseUpdateCommand = rtrim($systemDatabaseUpdateCommand, ',') . ' WHERE ' . implode(' AND ', $parameters['where']);
 
 			if (empty($parameters['limit']) === false) {
 				$systemDatabaseUpdateCommand .= ' LIMIT ' . $parameters['limit'];
@@ -301,8 +306,13 @@
 
 				foreach ($systemDatabaseColumns as $systemDatabaseColumnKey => $systemDatabaseColumnValue) {
 					$systemDatabaseInsertColumnKeys .= ',' . $systemDatabaseColumnKey;
-					$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseColumnValue);
-					$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
+					$systemDatabaseInsertColumnValue = '';
+
+					if (empty($systemDatabaseInsertColumnValue) === false) {
+						$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseColumnValue);
+						$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
+					}
+
 					$systemDatabaseInsertColumnValues .= "','" . $systemDatabaseInsertColumnValue;
 					$systemDatabaseUpdateColumnValues .= "," . $systemDatabaseColumnKey . "='" . $systemDatabaseInsertColumnValue . "'";
 				}
