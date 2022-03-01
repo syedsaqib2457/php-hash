@@ -296,15 +296,16 @@
 								'lessThan' => '<',
 								'lessThanOrEqualTo' => '<='
 							);
-							$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ');
+							$whereConditionKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 							$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionKeyDelimiterPosition + 1));
 							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 							$whereConditionValueKey = '`' . substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition) . '`';
 
-							if (empty($whereConditionValueComparisons[$whereConditionValueCondition]) === false) {
-								$whereConditionValueKey .= ' ' . $whereConditionValueComparisons[$whereConditionValueCondition];
+							if (empty($whereConditionValueComparisons[$whereConditionValueCondition]) === true) {
+								return false;
 							}
 
+							$whereConditionValueKey .= ' ' . $whereConditionValueComparisons[$whereConditionValueCondition];
 							$whereConditionValueConditions[] = $whereConditionValueKey . " '" . $whereConditionValueValue . "'";
 						} else {
 							if ((strpos($whereConditionValueKey, ' like') === false) === false) {
@@ -355,15 +356,16 @@
 							'lessThan' => '<',
 							'lessThanOrEqualTo' => '<='
 						);
-						$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ');
+						$whereConditionKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 						$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionKeyDelimiterPosition + 1));
 						$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 						$whereConditionValueKey = '`' . substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition) . '`';
 
-						if (empty($whereConditionValueComparisons[$whereConditionValueCondition]) === false) {
-							$whereConditionValueKey .= ' ' . $whereConditionValueComparisons[$whereConditionValueCondition];
+						if (empty($whereConditionValueComparisons[$whereConditionValueCondition]) === true) {
+							return false;
 						}
 
+						$whereConditionValueKey .= ' ' . $whereConditionValueComparisons[$whereConditionValueCondition];
 						$whereConditionValueConditions[] = $whereConditionValueKey . " '" . current($whereConditionValue) . "'";
 					} else {
 						if ((strpos($whereConditionValueKey, ' like') === false) === false) {
