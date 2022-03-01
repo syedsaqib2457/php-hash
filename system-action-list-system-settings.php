@@ -4,10 +4,6 @@
 	}
 
 	function _listSystemSettings($parameters, $response) {
-		if (empty($parameters['systemUserAuthenticationToken']) === true) {
-			return $response;
-		}
-
 		if (empty($parameters['pagination']['resultsPageNumber']) === true) {
 			$parameters['pagination']['resultsPageNumber'] = 1;
 		}
