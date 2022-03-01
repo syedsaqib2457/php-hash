@@ -287,14 +287,14 @@
 
 					if (($whereConditionKey === 'either') === true) {
 						if (
-							((strpos($whereConditionValueKey, ' greater than') === false) === false) ||
-							((strpos($whereConditionValueKey, ' less than') === false) === false)
+							((strpos($whereConditionValueKey, ' greaterThan') === false) === false) ||
+							((strpos($whereConditionValueKey, ' lessThan') === false) === false)
 						) {
 							$whereConditionValueComparisons = array(
-								'greater than' => '>',
-								'less than' => '<'
+								'greaterThan' => '>',
+								'lessThan' => '<'
 							);
-							$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ', -6);
+							$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ');
 							$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionKeyDelimiterPosition + 1));
 							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 							$whereConditionValueKey = '`' . substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition) . '`';
@@ -344,14 +344,14 @@
 					$whereConditionValueKey = $whereConditionKey;
 
 					if (
-						((strpos($whereConditionValueKey, ' greater than') === false) === false) ||
-						((strpos($whereConditionValueKey, ' less than') === false) === false)
+						((strpos($whereConditionValueKey, ' greaterThan') === false) === false) ||
+						((strpos($whereConditionValueKey, ' lessThan') === false) === false)
 					) {
 						$whereConditionValueComparisons = array(
-							'greater than' => '>',
-							'less than' => '<'
+							'greaterThan' => '>',
+							'lessThan' => '<'
 						);
-						$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ', -6);
+						$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ');
 						$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionKeyDelimiterPosition + 1));
 						$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 						$whereConditionValueKey = '`' . substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition) . '`';
