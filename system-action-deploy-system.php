@@ -82,14 +82,15 @@
 		}
 
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit* --fix-missing');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart* --fix-missing');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit*');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo kill -9 $(fuser -v /var/cache/debconf/config.dat)');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli syslinux systemd util-linux');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit* --fix-missing');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart* --fix-missing');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit*');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
