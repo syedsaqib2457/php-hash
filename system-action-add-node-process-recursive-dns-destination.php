@@ -111,7 +111,7 @@
 									'either' => array(
 										array(
 											'externalIpAddressVersion' . $nodeIpAddressVersionNumber => $parameters['data']['destinationIpAddressVersion' . $nodeIpAddressVersionNumber],
-											'externalIpAddressVersion' . $nodeIpAddressVersionNumber . 'Type !=' => 'publicNetwork'
+											'externalIpAddressVersion' . $nodeIpAddressVersionNumber . 'Type not' => 'publicNetwork'
 										),
 										'internalIpAddressVersion' . $nodeIpAddressVersionNumber => $parameters['data']['destinationIpAddressVersion' . $nodeIpAddressVersionNumber]
 									)
