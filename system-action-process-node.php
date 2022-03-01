@@ -226,7 +226,7 @@
 					'nodeUserNodeRequestDestinationsOnlyAllowedStatus',
 					'nodeUserNodeRequestLogsAllowedStatus'
 				),
-				'in' => $parameters['systemDatabases']['nodeProcessNodeUsers'], 
+				'in' => $parameters['systemDatabases']['nodeProcessNodeUsers'],
 				'where' => array(
 					'nodeNodeId' => $nodeNodeId
 				)
