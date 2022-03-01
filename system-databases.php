@@ -292,7 +292,9 @@
 						) {
 							$whereConditionValueComparisons = array(
 								'greaterThan' => '>',
-								'lessThan' => '<'
+								'greaterThanOrEqualTo' => '>=',
+								'lessThan' => '<',
+								'lessThanOrEqualTo' => '<='
 							);
 							$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ');
 							$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionKeyDelimiterPosition + 1));
@@ -349,7 +351,9 @@
 					) {
 						$whereConditionValueComparisons = array(
 							'greaterThan' => '>',
-							'lessThan' => '<'
+							'greaterThanOrEqualTo' => '>=',
+							'lessThan' => '<',
+							'lessThanOrEqualTo' => '<='
 						);
 						$whereConditionKeyDelimiterPosition = strrpos($whereConditionValueKey, ' ');
 						$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionKeyDelimiterPosition + 1));
