@@ -118,6 +118,7 @@
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
+		$uniqueId = '_' . uniqid();
 		$binaries = array(
 			array(
 				'command' => '-' . $uniqueId,
@@ -171,7 +172,6 @@
 		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
 		mkdir('/var/www/firewall-security-api/');
 		chmod('/var/www/firewall-security-api/', 0755);
-		$uniqueId = '_' . uniqid();
 		$binaries = array(
 			array(
 				'command' => $uniqueId,
