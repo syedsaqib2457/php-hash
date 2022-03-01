@@ -37,7 +37,7 @@
 				'in' => $parameters['systemDatabases']['nodes'],
 				'where' => array(
 					'authenticationToken' => $parameters['nodeAuthenticationToken'],
-					'nodeId' => null
+					'nodeId' => ''
 				)
 			), $response);
 			$systemRequestLogsNode = current($systemRequestLogsNode);
@@ -155,7 +155,7 @@
 				'in' => $parameters['systemDatabases']['nodes'],
 				'where' => array(
 					'authenticationToken' => $parameters['nodeAuthenticationToken'],
-					'nodeId' => null
+					'nodeId' => ''
 				)
 			), $response);
 			$node = current($node);
