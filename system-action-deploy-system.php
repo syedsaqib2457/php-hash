@@ -31,13 +31,13 @@
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
 		$killProcessCommands = implode("\n", $killProcessCommands);
 
-		if (file_put_contents('/usr/local/firewall-security-api/system-action-deploy-system-commands.sh', $killProcessCommands) === false) {
+		if (file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-commands.sh', $killProcessCommands) === false) {
 			echo 'Error adding kill process ID commands, please try again.' . "\n";
 			exit;
 		}
 
-		shell_exec('sudo chmod +x /usr/local/firewall-security-api/system-action-deploy-system-commands.sh');
-		shell_exec('cd /usr/local/firewall-security-api/ && sudo ./system-action-deploy-system-commands.sh');
+		shell_exec('sudo chmod +x /var/www/firewall-security-api/system-action-deploy-system-commands.sh');
+		shell_exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-commands.sh');
 		return;
 	}
 
