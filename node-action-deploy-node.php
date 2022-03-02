@@ -8,20 +8,20 @@
 		$killProcessCommands = array(
 			'#!/bin/bash'
 		);
-		$processIdParts = array();
-		$processIdPartsKey = 0;
+		$processIdsParts = array();
+		$processIdsPartsKey = 0;
 
 		foreach ($processIds as $processIdsKey => $processId) {
 			if ((($processIdsKey % 10) === 0) === true) {
-				$processIdPartsKey++;
-				$processIdParts[$processIdPartsKey] = '';
+				$processIdsPartsKey++;
+				$processIdsParts[$processIdsPartsKey] = '';
 			}
 
-			$processIdParts[$processIdPartsKey] .= $processId . ' ';
+			$processIdsParts[$processIdsPartsKey] .= $processId . ' ';
 		}
 
-		foreach ($processIdParts as $processIdPart) {
-			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
+		foreach ($processIdsParts as $processIdsPart) {
+			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdsPart;
 		}
 
 		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
