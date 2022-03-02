@@ -15,7 +15,7 @@
 				continue;
 			}
 
-			$systemDatabaseParameters = array(
+			$systemDatabase = _list(array(
 				'data' => array(
 					'authenticationCredentialAddress',
 					'authenticationCredentialPassword',
@@ -30,27 +30,7 @@
 				'where' => array(
 					'tableKey' => $systemDatabaseTableKey
 				)
-			);
-
-			if ((strpos($systemDatabaseTableKey, '__') === false) === false) {
-				$systemDatabaseTableKeyParts = explode('__', $systemDatabaseTableKey);
-
-				if (
-					(isset($systemDatabaseTableKeyParts[1]) === false) ||
-					(isset($systemDatabaseTableKeyParts[2]) === true)
-				) {
-					$response['message'] = 'Invalid system database tag for ' . $systemDatabaseTableKey . ', please try again.';
-					unset($response['_connect']);
-					_output($parameters, $response);
-				}
-
-				$systemDatabaseParameters['where'] = array(
-					'tableKey' => $systemDatabaseTableKeyParts[0],
-					'tag' => $systemDatabaseTableKeyParts[1]
-				);
-			}
-
-			$systemDatabase = _list($systemDatabaseParameters, $response);
+			), $response);
 			$systemDatabase = current($systemDatabase);
 
 			if (empty($systemDatabase) === true) {
@@ -62,7 +42,7 @@
 			$response['_connect'][$systemDatabase['tableKey']] = array(
 				'connection' => mysqli_connect($systemDatabase['authenticationCredentialAddress'], 'root', $systemDatabase['authenticationCredentialPassword'], 'firewallSecurityApi'),
 				'structure'=> array(
-					'tableKey' => $systemDatabaseParameters['where']['tableKey']
+					'tableKey' => $systemDatabaseTableKey
 				)
 			);
 
