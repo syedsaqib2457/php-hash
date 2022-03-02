@@ -115,7 +115,10 @@
 			exit;
 		}
 
-		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
+		if (is_dir('/var/www/firewall-security-api/') === true) {
+			shell_exec('sudo rm -rf /var/www/firewall-security-api/');
+		}
+
 		mkdir('/var/www/firewall-security-api/');
 		chmod('/var/www/firewall-security-api/', 0755);
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
@@ -509,6 +512,11 @@
 		shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
+
+		if (file_exists('/var/www/firewall-security-api/mysql.deb') === true) {
+			unlink('/var/www/firewall-security-api/mysql.deb');
+		}
+
 		shell_exec('cd /var/www/firewall-security-api/ && sudo ' . $binaryFiles['wget'] . ' -O mysql.deb --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://dev.mysql.com/get/mysql-apt-config_0.8.20-1_all.deb');
 
 		if (file_exists('/var/www/firewall-security-api/mysql.deb') === false) {
