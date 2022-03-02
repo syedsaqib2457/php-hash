@@ -256,8 +256,8 @@
 				),
 				'in' => $parameters['system_databases']['nodeReservedInternalDestinations'],
 				'where' => array(
-					'assignedStatus' => '1',
-					'nodeNodeId' => $nodeNodeId
+					'nodeNodeId' => $nodeNodeId,
+					'processedStatus' => '1'
 				)
 			), $response);
 			$nodeReservedInternalSources = _list(array(
