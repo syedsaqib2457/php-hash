@@ -14,7 +14,8 @@
 			'data' => array(
 				'addedStatus',
 				'id',
-				'ipAddress'
+				'ipAddress',
+				'ipAddressVersionNumber'
 			),
 			'in' => $parameters['systemDatabases']['nodeReservedInternalDestinations'],
 			'limit' => 1,
