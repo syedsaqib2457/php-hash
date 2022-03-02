@@ -1300,7 +1300,7 @@
 		foreach ($systemDatabaseCommands as $systemDatabaseCommandKey => $systemDatabaseCommand) {
 			if (
 				(is_numeric($systemDatabaseCommandKey) === false) &&
-				(is_int(strpos($systemDatabaseCommand, 'ADD PRIMARY KEY')) === true)
+				((strpos($systemDatabaseCommand, 'ADD PRIMARY KEY') === false) === false)
 			) {
 				$systemDatabaseCommandKey = explode('__', $systemDatabaseCommandKey);
 				$systemDatabaseKeys = mysqli_query($systemDatabaseConnection, 'SHOW KEYS FROM `' . $systemDatabaseCommandKey[1] . '` WHERE Column_name=\'' . $systemDatabaseCommandKey[0] . '\'')->num_rows;
