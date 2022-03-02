@@ -1213,10 +1213,10 @@
 				'nodeId' => 'VARCHAR(30)',
 				'responseAuthenticatedStatus' => 'VARCHAR(1)',
 				'responseData' => 'VARCHAR(900)',
-				'responseMessage' => 'VARCHAR(100)',
+				'responseMessage' => 'VARCHAR(900)',
 				'responseValidatedStatus' => 'VARCHAR(1)',
 				'sourceIpAddress' => 'VARCHAR(39)',
-				'systemAction' => 'VARCHAR(100)',
+				'systemAction' => 'VARCHAR(200)',
 				'systemUserAuthenticationTokenId' => 'VARCHAR(30)',
 				'systemUserId' => 'VARCHAR(30)',
 				'value' => 'VARCHAR(900)'
