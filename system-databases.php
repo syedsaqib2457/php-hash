@@ -178,7 +178,25 @@
 		$systemDatabaseListColumnKeys = '*';
 
 		if (empty($parameters['data']) === false) {
-			$systemDatabaseListColumnKeys = '`' . implode('`,`', $parameters['data']) . '`';
+			$systemDatabaseListColumnKeys = '';
+
+			foreach ($parameters['data'] as $listDataValue) {
+				if (
+					((strlen($listDataValue) === 0) === true) ||
+					((strpos($listDataValue, '`') === false) === false)
+				) {
+					$response['message'] = 'Error processing data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
+					_output($parameters, $response);
+				}
+
+				if (is_bool($listDataValue) === true) {
+					$listDataValue = intval($listDataValue);
+				}
+
+				$systemDatabaseListColumnKeys .= ',`' . $listDataValue . '`';
+			}
+
+			$systemDatabaseListColumnKeys = substr($parameters['data'], 1);
 		}
 
 		$systemDatabaseListCommand = 'SELECT ' . $systemDatabaseListColumnKeys . ' FROM ' . $parameters['in']['structure']['tableKey'];
