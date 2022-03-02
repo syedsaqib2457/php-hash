@@ -32,24 +32,29 @@
 			return $response;
 		}
 
+		$node = _list(array(
+			'data' => array(
+				'id',
+				'nodeId'
+			),
+			'in' => $parameters['systemDatabases']['nodes'],
+			'where' => array(
+				'id' => $parameters['data']['nodeId']
+			)
+		), $response);
+		$node = current($node);
+
+		if (empty($node) === true) {
+			$response['message'] = 'Error listing node, please try again.';
+			return $response;
+		}
+
 		_delete(array(
 			'in' => $parameters['systemDatabases']['nodes'],
 			'where' => array(
 				'either' => array(
 					'id' => $parameters['where']['id'],
 					'nodeId' => $parameters['where']['id']
-				)
-			)
-		), $response);
-		_edit(array(
-			'data' => array(
-				'processedStatus' => '0'
-			),
-			'in' => $parameters['systemDatabases']['nodeReservedInternalDestinations'],
-			'where' => array(
-				'either' => array(
-					'nodeId' => $parameters['where']['id'],
-					'nodeNodeId' => $parameters['where']['id']
 				)
 			)
 		), $response);
@@ -63,18 +68,22 @@
 			'nodeProcessNodeUsers',
 			'nodeProcessRecursiveDnsDestinations'
 		);
-		$nodeCount = _count(array(
-			'in' => $parameters['systemDatabases']['nodes'],
-			'where' => array(
-				'either' => array(
-					'id' => $parameters['where']['id'],
-					'nodeId' => $parameters['where']['id']
-				)
-			)
-		), $response);
 
-		if (($nodeCount === 0) === true) {
+		if (empty($node['nodeId']) === true) {
 			$systemDatabaseTableKeys[] = 'nodeReservedInternalDestinations';
+		} else {
+			_edit(array(
+				'data' => array(
+					'processedStatus' => '0'
+				),
+				'in' => $parameters['systemDatabases']['nodeReservedInternalDestinations'],
+				'where' => array(
+					'either' => array(
+						'nodeId' => $parameters['where']['id'],
+						'nodeNodeId' => $parameters['where']['id']
+					)
+				)
+			), $response);
 		}
 
 		foreach ($systemDatabaseTableKeys as $systemDatabaseTableKey) {
