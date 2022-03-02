@@ -140,7 +140,11 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commands = implode("\n", $commands);
-		unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
+
+		if (file_exists('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh') === true) {
+			unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
+		}
+
 		file_put_contents('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', $commands);
 		chmod('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', 0755);
 		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-deploy-node-commands.sh', $binaryFile);
@@ -267,7 +271,11 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commands = implode("\n", $commands);
-		unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
+
+		if (file_exists('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh') === true) {
+			unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
+		}
+
 		file_put_contents('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', $commands);
 		chmod('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', 0755);
 		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-deploy-node-commands.sh', $binaryFile);
@@ -389,7 +397,11 @@
 		)
 	);
 	$systemActionListSystemSettingsParameters = json_encode($systemActionListSystemSettingsParameters);
-	unlink('/usr/local/firewall-security-api/system-action-list-system-settings-response.json');
+
+	if (file_exists('/usr/local/firewall-security-api/system-action-list-system-settings-response.json') === true) {
+		unlink('/usr/local/firewall-security-api/system-action-list-system-settings-response.json');
+	}
+
 	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-list-system-settings-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionListSystemSettingsParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system-endpoint.php');
 
 	if (file_exists('/usr/local/firewall-security-api/system-action-list-system-settings-response.json') === false) {
@@ -416,7 +428,11 @@
 		'nodeAuthenticationToken' => $_SERVER['argv'][1]
 	);
 	$systemActionActivateNodeParameters = json_encode($systemActionActivateNodeParameters);
-	unlink('/usr/local/firewall-security-api/system-action-activate-node-response.json');
+
+	if (file_exists('/usr/local/firewall-security-api/system-action-activate-node-response.json') === true) {
+		unlink('/usr/local/firewall-security-api/system-action-activate-node-response.json');
+	}
+
 	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-activate-node-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . '/system-endpoint.php');
 
 	if (file_exists('/usr/local/firewall-security-api/system-action-activate-node-response.json') === false) {
@@ -443,7 +459,11 @@
 		'nodeAuthenticationToken' => $_SERVER['argv'][1]
 	);
 	$systemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
-	unlink('/usr/local/firewall-security-api/system-action-process-node-response.json');
+
+	if (file_exists('/usr/local/firewall-security-api/system-action-process-node-response.json') === true) {
+		unlink('/usr/local/firewall-security-api/system-action-process-node-response.json');
+	}
+
 	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . '/system-endpoint.php');
 
 	if (file_exists('/usr/local/firewall-security-api/system-action-process-node-response.json') === false) {
@@ -587,7 +607,11 @@
 		'nodeAuthenticationToken' => $_SERVER['argv'][1]
 	);
 	$systemActionDeployNodeParameters = json_encode($systemActionDeployNodeParameters);
-	unlink('/usr/local/firewall-security-api/system-action-deploy-node-response.json');
+
+	if (file_exists('/usr/local/firewall-security-api/system-action-deploy-node-response.json') === true) {
+		unlink('/usr/local/firewall-security-api/system-action-deploy-node-response.json');
+	}
+
 	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-deploy-node-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . '/system-endpoint.php');
 
 	if (file_exists('/usr/local/firewall-security-api/system-action-deploy-node-response.json') === false) {
