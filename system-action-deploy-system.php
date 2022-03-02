@@ -897,9 +897,9 @@
 				'type' => 'VARCHAR(14)'
 			),
 			'nodeProcessForwardingDestinations' => array(
-				'addressVersion4',
+				'addressVersion4' => 'VARCHAR(15)',
 				'addressVersion4NodeId' => 'VARCHAR(30)',
-				'addressVersion6',
+				'addressVersion6' => 'VARCHAR(39)',
 				'addressVersion6NodeId' => 'VARCHAR(30)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
@@ -930,9 +930,9 @@
 				'nodeNodeId' => 'VARCHAR(30)',
 				'nodeProcessType' => 'VARCHAR(14)',
 				'nodeUserAuthenticationSourceId' => 'VARCHAR(30)',
-				'nodeUserAuthenticationSourceIpAddress',
-				'nodeUserAuthenticationSourceIpAddressBlockLength',
-				'nodeUserAuthenticationSourceIpAddressVersionNumber',
+				'nodeUserAuthenticationSourceIpAddress' => 'VARCHAR(39)',
+				'nodeUserAuthenticationSourceIpAddressBlockLength' => 'VARCHAR(3)',
+				'nodeUserAuthenticationSourceIpAddressVersionNumber' => 'VARCHAR(1)',
 				'nodeUserId' => 'VARCHAR(30)'
 			),
 			'nodeProcessNodeUserNodeRequestDestinationLogs' => array(
@@ -944,7 +944,7 @@
 				'nodeProcessType' => 'VARCHAR(14)',
 				'nodeRequestDestinationId' => 'VARCHAR(30)',
 				'nodeUserId' => 'VARCHAR(30)',
-				'requestCount'
+				'requestCount' => 'VARCHAR(30)'
 			),
 			'nodeProcessNodeUserNodeRequestDestinations' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
@@ -953,7 +953,7 @@
 				'nodeId' => 'VARCHAR(30)',
 				'nodeNodeId' => 'VARCHAR(30)',
 				'nodeProcessType' => 'VARCHAR(14)',
-				'nodeRequestDestinationAddress',
+				'nodeRequestDestinationAddress' => 'VARCHAR(900)',
 				'nodeRequestDestinationId' => 'VARCHAR(30)',
 				'nodeUserId' => 'VARCHAR(30)'
 			),
@@ -974,8 +974,8 @@
 				'bytesReceived' => 'VARCHAR(30)',
 				'bytesSent' => 'VARCHAR(30)',
 				'createdTimestamp' => 'VARCHAR(10)',
-				'destinationHostnameAddress',
-				'destinationIpAddress',
+				'destinationHostnameAddress' => 'VARCHAR(900)',
+				'destinationIpAddress' => 'VARCHAR(39)',
 				'id' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
@@ -986,7 +986,7 @@
 				'processedStatus' => 'VARCHAR(1)',
 				'processingProcessId' => 'VARCHAR(5)',
 				'responseCode' => 'VARCHAR(30)',
-				'sourceIpAddress'
+				'sourceIpAddress' => 'VARCHAR(39)'
 			),
 			'nodeProcessNodeUserResourceUsageLogs' => array(
 				'bytesReceived' => 'VARCHAR(30)',
@@ -998,7 +998,7 @@
 				'nodeNodeId' => 'VARCHAR(30)',
 				'nodeProcessType' => 'VARCHAR(14)',
 				'nodeUserId' => 'VARCHAR(30)',
-				'requestCount' => 'VARCHAR(15)',
+				'requestCount' => 'VARCHAR(15)'
 			),
 			'nodeProcessNodeUsers' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
@@ -1014,9 +1014,9 @@
 			),
 			'nodeProcessRecursiveDnsDestinations' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
-				'destinationIpAddressVersion4',
+				'destinationIpAddressVersion4' => 'VARCHAR(15)',
 				'destinationIpAddressVersion4NodeId' => 'VARCHAR(30)',
-				'destinationIpAddressVersion6',
+				'destinationIpAddressVersion6' => 'VARCHAR(39)',
 				'destinationIpAddressVersion6NodeId' => 'VARCHAR(30)',
 				'id' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
@@ -1025,8 +1025,8 @@
 				'nodeProcessType' => 'VARCHAR(14)',
 				'portNumberVersion4' => 'VARCHAR(5)',
 				'portNumberVersion6' => 'VARCHAR(5)',
-				'sourceIpAddressVersion4',
-				'sourceIpAddressVersion6'
+				'sourceIpAddressVersion4' => 'VARCHAR(15)',
+				'sourceIpAddressVersion6' => 'VARCHAR(39)'
 			),
 			'nodeProcessResourceUsageLogs' => array(
 				'bytesReceived' => 'VARCHAR(30)',
@@ -1041,7 +1041,7 @@
 				'requestCount' => 'VARCHAR(30)'
 			),
 			'nodeRequestDestinations' => array(
-				'address',
+				'address' => 'VARCHAR(900)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)'
@@ -1049,7 +1049,7 @@
 			'nodeRequestLimitRules' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
-				'intervalMinutes',
+				'intervalMinutes' => 'VARCHAR(10)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'requestCount' => 'VARCHAR(30)',
 				'requestCountIntervalMinutes' => 'VARCHAR(10)',
@@ -1058,8 +1058,8 @@
 				'addedStatus' => 'VARCHAR(1)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
-				'ipAddress',
-				'ipAddressVersionNumber',
+				'ipAddress' => 'VARCHAR(39)',
+				'ipAddressVersionNumber' => 'VARCHAR(1)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
 				'nodeNodeId' => 'VARCHAR(30)',
@@ -1068,8 +1068,8 @@
 			'nodeReservedInternalSources' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
-				'ipAddress',
-				'ipAddressBlockLength',
+				'ipAddress' => 'VARCHAR(39)',
+				'ipAddressBlockLength' => 'VARCHAR(3)',
 				'ipAddressVersionNumber' => 'VARCHAR(1)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)'
@@ -1077,58 +1077,58 @@
 			'nodeResourceUsageLogs' => array(
 				'bytesReceived' => 'VARCHAR(30)',
 				'bytesSent' => 'VARCHAR(30)',
-				'cpuCapacityMegahertz',
-				'cpuCoreCount',
+				'cpuCapacityMegahertz' => 'VARCHAR(30)',
+				'cpuCoreCount' => 'VARCHAR(30)',
 				'cpuPercentage' => 'VARCHAR(3)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
-				'memoryCapacityMegabytes',
+				'memoryCapacityMegabytes' => 'VARCHAR(30)',
 				'memoryPercentage' => 'VARCHAR(3)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
 				'requestCount' => 'VARCHAR(30)'
-				'storageCapacityMegabytes',
+				'storageCapacityMegabytes' => 'VARCHAR(30)',
 				'storagePercentage' => 'VARCHAR(3)'
 			),
 			'nodes' => array(
-				'activatedStatus',
-				'authenticationToken',
-				'cpuCapacityMegahertz',
-				'cpuCoreCount',
+				'activatedStatus' => 'VARCHAR(1)',
+				'authenticationToken' => 'VARCHAR(30)',
+				'cpuCapacityMegahertz' => 'VARCHAR(30)',
+				'cpuCoreCount' => 'VARCHAR(30)',
 				'createdTimestamp' => 'VARCHAR(10)',
-				'deployedStatus',
-				'externalIpAddressVersion4',
-				'externalIpAddressVersion4Type',
-				'externalIpAddressVersion6',
-				'externalIpAddressVersion6Type',
+				'deployedStatus' => 'VARCHAR(1)',
+				'externalIpAddressVersion4' => 'VARCHAR(15)',
+				'externalIpAddressVersion4Type' => 'VARCHAR(23)',
+				'externalIpAddressVersion6' => 'VARCHAR(39)',
+				'externalIpAddressVersion6Type' => 'VARCHAR(23)',
 				'id' => 'VARCHAR(30)',
-				'internalIpAddressVersion4',
-				'internalIpAddressVersion4Type',
-				'internalIpAddressVersion6',
-				'internalIpAddressVersion6Type',
-				'memoryCapacityMegabytes',
+				'internalIpAddressVersion4' => 'VARCHAR(15)',
+				'internalIpAddressVersion4Type' => 'VARCHAR(23)',
+				'internalIpAddressVersion6' => 'VARCHAR(39)',
+				'internalIpAddressVersion6Type' => 'VARCHAR(23)',
+				'memoryCapacityMegabytes' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
 				'processedStatus' => 'VARCHAR(1)',
-				'processingProgressCheckpoint',
+				'processingProgressCheckpoint' => 'VARCHAR(35)',
 				'processingProgressOverrideStatus' => 'VARCHAR(1)',
 				'processingProgressPercentage' => 'VARCHAR(3)',
 				'processingStatus' => 'VARCHAR(1)',
-				'storageCapacityMegabytes'
+				'storageCapacityMegabytes' => 'VARCHAR(30)'
 			),
 			'nodeUserAuthenticationCredentials' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeUserId' => 'VARCHAR(30)',
-				'password' => 'VARCHAR(1000)',
-				'username' => 'VARCHAR(1000)'
+				'password' => 'VARCHAR(900)',
+				'username' => 'VARCHAR(900)'
 			),
 			'nodeUserAuthenticationSources' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
-				'ipAddress',
-				'ipAddressBlockLength',
+				'ipAddress' => 'VARCHAR(39)',
+				'ipAddressBlockLength' => 'VARCHAR(3)',
 				'ipAddressVersionNumber' => 'VARCHAR(1)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeUserId' => 'VARCHAR(30)'
@@ -1137,7 +1137,7 @@
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
-				'nodeRequestDestinationAddress',
+				'nodeRequestDestinationAddress' => 'VARCHAR(39)',
 				'nodeRequestDestinationId' => 'VARCHAR(30)',
 				'nodeUserId' => 'VARCHAR(30)'
 			),
@@ -1158,23 +1158,23 @@
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeRequestDestinationsOnlyAllowedStatus' => 'VARCHAR(1)',
 				'nodeRequestLogsAllowedStatus' => 'VARCHAR(1)',
-				'tag' => 'VARCHAR(1000)'
+				'tag' => 'VARCHAR(900)'
 			),
 			'systemDatabaseColumns' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
-				'key' => 'VARCHAR(1000)',
+				'key' => 'VARCHAR(900)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'systemDatabaseId' => 'VARCHAR(30)'
 			),
 			'systemDatabases' => array(
-				'authenticationCredentialAddress',
-				'authenticationCredentialPassword',
+				'authenticationCredentialAddress' => 'VARCHAR(30)',
+				'authenticationCredentialPassword' => 'VARCHAR(30)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
-				'tableKey' => 'VARCHAR(1000)',
-				'tag' => 'VARCHAR(1000)'
+				'tableKey' => 'VARCHAR(900)',
+				'tag' => 'VARCHAR(900)'
 			),
 			'systemRequestLogs' => array(
 				'bytesReceived' => 'VARCHAR(30)',
@@ -1183,37 +1183,37 @@
 				'id' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
-				'responseAuthenticatedStatus',
-				'responseData',
-				'responseMessage',
-				'responseValidatedStatus',
-				'sourceIpAddress',
-				'systemAction',
+				'responseAuthenticatedStatus' => 'VARCHAR(1)',
+				'responseData' => 'VARCHAR(900)',
+				'responseMessage' => 'VARCHAR(100)',
+				'responseValidatedStatus' => 'VARCHAR(1)',
+				'sourceIpAddress' => 'VARCHAR(39)',
+				'systemAction' => 'VARCHAR(100)',
 				'systemUserAuthenticationTokenId' => 'VARCHAR(30)',
 				'systemUserId' => 'VARCHAR(30)',
-				'value'
+				'value' => 'VARCHAR(900)'
 			),
 			'systemResourceUsageLogs' => array(
-				'bytesReceived',
-				'bytesSent',
-				'cpuCapacityMegahertz',
-				'cpuCoreCount',
-				'cpuPercentage',
+				'bytesReceived' => 'VARCHAR(30)',
+				'bytesSent' => 'VARCHAR(30)',
+				'cpuCapacityMegahertz' => 'VARCHAR(30)',
+				'cpuCoreCount' => 'VARCHAR(30)',
+				'cpuPercentage' => 'VARCHAR(3)',
 				'createdTimestamp' => 'VARCHAR(10)',
-				'destinationIpAddress',
+				'destinationIpAddress' => 'VARCHAR(39)',
 				'id' => 'VARCHAR(30)',
-				'memoryCapacityMegabytes',
-				'memoryPercentage',
+				'memoryCapacityMegabytes' => 'VARCHAR(30)',
+				'memoryPercentage' => 'VARCHAR(3)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
-				'storageCapacityMegabytes',
-				'storagePercentage'
+				'storageCapacityMegabytes' => 'VARCHAR(30)',
+				'storagePercentage' => 'VARCHAR(3)'
 			),
 			'systemSettings' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
-				'key' => 'VARCHAR(1000)',
+				'key' => 'VARCHAR(900)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
-				'value' => 'VARCHAR(1000)'
+				'value' => 'VARCHAR(900)'
 			),
 			'systemUserAuthenticationTokens' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
@@ -1233,8 +1233,8 @@
 			'systemUserAuthenticationTokenSources' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
-				'ipAddressRangeStart',
-				'ipAddressRangeStop',
+				'ipAddressRangeStart' => 'VARCHAR(39)',
+				'ipAddressRangeStop' => 'VARCHAR(39)',
 				'ipAddressRangeVersionNumber' => 'VARCHAR(1)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'systemUserAuthenticationTokenId' => 'VARCHAR(30)',
@@ -1262,21 +1262,6 @@
 			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey => $systemDatabaseColumnType) {
 				if (($systemDatabaseColumnKey === 'createdTimestamp') === true) {
 					continue;
-				}
-
-				if (
-					(($systemDatabaseColumnKey === 'id') === true) ||
-					((substr($systemDatabaseColumnKey, -2) === 'Id') === true)
-				) {
-					$systemDatabaseColumnType = 'VARCHAR(30)';
-				}
-
-				if ((substr($systemDatabaseColumnKey, -10) === 'Percentage') === true) {
-					$systemDatabaseColumnType = 'VARCHAR(3)';
-				}
-
-				if ((substr($systemDatabaseColumnKey, -6) === 'Status') === true) {
-					$systemDatabaseColumnType = 'VARCHAR(1)';
 				}
 
 				$systemDatabaseCommandActions = array(
