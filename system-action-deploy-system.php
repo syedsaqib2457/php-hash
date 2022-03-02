@@ -844,20 +844,20 @@
 			}
 
 			touch('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
-			$firewallRuleParts = array();
-			$firewallRulePartsKey = 0;
+			$firewallRulesParts = array();
+			$firewallRulesPartsKey = 0;
 
 			foreach ($firewallRules as $firewallRulesKey => $firewallRule) {
 				if ((($firewallRulesKey % 1000) === 0) === true) {
-					$firewallRulePartsKey++;
-					$firewallRuleParts[$firewallRulePartsKey] = '';
+					$firewallRulesPartsKey++;
+					$firewallRulesParts[$firewallRulesPartsKey] = '';
 				}
 
-				$firewallRuleParts[$firewallRulePartsKey] .= $firewallRule . "\n";
+				$firewallRulesParts[$firewallRulesPartsKey] .= $firewallRule . "\n";
 			}
 
-			foreach ($firewallRuleParts as $firewallRulePart) {
-				shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/firewall-security-api/firewall-ip-aaddress-version-' . $ipAddressVersionNumber . '.dat');
+			foreach ($firewallRulesParts as $firewallRulesPart) {
+				shell_exec('sudo echo "' . $firewallRulesPart . '" >> /var/www/firewall-security-api/firewall-ip-aaddress-version-' . $ipAddressVersionNumber . '.dat');
 			}
 
 			shell_exec('sudo ' . $firewallBinaryFiles[$ipAddressVersionNumber] . ' < /var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
@@ -918,8 +918,8 @@
 				'nodeNodeId' => 'VARCHAR(30)',
 				'nodeProcessType' => 'VARCHAR(14)',
 				'nodeUserAuthenticationCredentialId' => 'VARCHAR(30)',
-				'nodeUserAuthenticationCredentialPassword' => 'VARCHAR(1000)',
-				'nodeUserAuthenticationCredentialUsername' => 'VARCHAR(1000)',
+				'nodeUserAuthenticationCredentialPassword' => 'VARCHAR(900)',
+				'nodeUserAuthenticationCredentialUsername' => 'VARCHAR(900)',
 				'nodeUserId' => 'VARCHAR(30)'
 			),
 			'nodeProcessNodeUserAuthenticationSources' => array(
@@ -1226,7 +1226,7 @@
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
-				'systemAction' => 'VARCHAR(1000)',
+				'systemAction' => 'VARCHAR(900)',
 				'systemUserAuthenticationTokenId' => 'VARCHAR(30)',
 				'systemUserId' => 'VARCHAR(30)'
 			),
