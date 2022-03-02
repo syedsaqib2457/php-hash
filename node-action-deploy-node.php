@@ -11,8 +11,8 @@
 		$processIdParts = array();
 		$processIdPartsKey = 0;
 
-		foreach ($processIds as $processIdKey => $processId) {
-			if ((($processIdKey % 10) === 0) === true) {
+		foreach ($processIds as $processIdsKey => $processId) {
+			if ((($processIdsKey % 10) === 0) === true) {
 				$processIdPartsKey++;
 				$processIdParts[$processIdPartsKey] = '';
 			}
