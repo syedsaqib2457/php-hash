@@ -265,7 +265,7 @@
 			) {
 				$recursiveWhereConditions = $whereConditionValue;
 				$whereConditions[$whereConditionKey] = _processSystemDatabaseCommandWhereConditions($recursiveWhereConditions);
-				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $whereConditionConjunction . ' (', $whereConditions[$whereConditionKey]) . ')';
+				$whereConditions[$whereConditionKey] = '(' . implode(' ' . $whereConditionConjunction . ' ', $whereConditions[$whereConditionKey]) . ')';
 			} else {
 				if (is_array($whereConditionValue) === false) {
 					$whereConditionValue = array(
