@@ -99,6 +99,12 @@
 		exit;
 	}
 
+	// todo: validate node deployed === '0'
+
+	if (is_dir('/usr/local/firewall-security-api/') === true) {
+		shell_exec('sudo rm -rf /usr/local/firewall-security-api/');
+	}
+
 	mkdir('/usr/local/firewall-security-api/');
 	chmod('/usr/local/firewall-security-api/', 0755);
 
