@@ -147,18 +147,25 @@
 
 	function _edit($parameters, $response) {
 		if (empty($parameters['data']) === false) {
-			$systemDatabaseUpdateCommand = 'UPDATE ' . $parameters['in']['structure']['tableKey'] . ' SET ';
+			$systemDatabaseEditCommand = 'UPDATE ' . $parameters['in']['structure']['tableKey'] . ' SET ';
 
 			if (isset($parameters['data']['modifiedTimestamp']) === false) {
 				$parameters['data']['modifiedTimestamp'] = time();
 			}
 
-			foreach ($parameters['data'] as $updateKey => $updateValue) {
-				if ((strlen($updateValue) === 0) === true) {
-					$updateValue = '';
+			foreach ($parameters['data'] as $editDataKey => $editDataValue) {
+				if ((strpos($editDataKey, '`') === false) === false) {
+					$response['message'] = 'Error processing data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
+					_output($parameters, $response);
 				}
 
-				$systemDatabaseUpdateCommand .= '`' . $updateKey . "`='" . str_replace("'", "\'", $updateValue) . "',";
+				if ((strlen($editDataValue) === 0) === true) {
+					$editDataValue = '';
+				} else {
+					$editDataValue = str_replace("'", "\'", $editDataValue);
+				}
+
+				$systemDatabaseEditCommand .= '`' . $editDataKey . "`='" . $editDataValue . "',";
 			}
 
 			$parameters['where'] = _processSystemDatabaseCommandWhereConditions($parameters['where']);
@@ -168,15 +175,15 @@
 				_output($parameters, $response);
 			}
 
-			$systemDatabaseUpdateCommand = rtrim($systemDatabaseUpdateCommand, ',') . ' WHERE ' . implode(' AND ', $parameters['where']);
+			$systemDatabaseEditCommand = rtrim($systemDatabaseEditCommand, ',') . ' WHERE ' . implode(' AND ', $parameters['where']);
 
 			if (empty($parameters['limit']) === false) {
-				$systemDatabaseUpdateCommand .= ' LIMIT ' . $parameters['limit'];
+				$systemDatabaseEditCommand .= ' LIMIT ' . $parameters['limit'];
 			}
 
-			$systemDatabaseUpdateCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseUpdateCommand);
+			$systemDatabaseEditCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseEditCommand);
 
-			if ($systemDatabaseUpdateCommandResponse === false) {
+			if ($systemDatabaseEditCommandResponse === false) {
 				$response['message'] = 'Error editing data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
 				_output($parameters, $response);
 			}
@@ -276,7 +283,7 @@
 				$whereConditionValueConditions = array();
 
 				foreach ($whereConditionValue as $whereConditionValueKey => $whereConditionValueValue) {
-					if ((strpos($whereConditionKey, '`') === false) === false) {
+					if ((strpos($whereConditionValueKey, '`') === false) === false) {
 						return false;
 					}
 
