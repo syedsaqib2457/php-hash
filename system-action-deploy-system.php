@@ -642,6 +642,7 @@
 		$crontabCommands[] = '# firewall-security-api-system-processes';
 		$crontabCommands[] = '@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab firewall-security-api-system-processes';
 		// $crontabCommands[] = '* * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/firewall-security-api/system-action-process-system-action.php process-node-request-logs firewall-security-api-system-processes';
+		$crontabCommands[] = '';
 		$crontabCommands = implode("\n", $crontabCommands);
 		file_put_contents('/etc/crontab', $crontabCommands);
 		shell_exec('sudo ' . $binaryFiles['crontab'] . ' /etc/crontab');
