@@ -16,11 +16,11 @@
 		$parameters['data']['activatedStatus'] = '0';
 		$parameters['data']['authenticationToken'] = _createUniqueId();
 		$parameters['data']['deployedStatus'] = '0';
-		$parameters['data']['nodeId'] = '';
 
 		if (empty($parameters['data']['nodeId']) === false) {
 			$nodeNode = _list(array(
 				'data' => array(
+					'activatedStatus',
 					'authenticationToken',
 					'deployedStatus',
 					'id',
@@ -28,7 +28,10 @@
 				),
 				'in' => $parameters['systemDatabases']['nodes'],
 				'where' => array(
-					'id' => $parameters['data']['nodeId']
+					'either' => array(
+						'id' => $parameters['data']['nodeId'],
+						'nodeId' => $parameters['data']['nodeId']
+					)
 				)
 			), $response);
 			$nodeNode = current($nodeNode);
@@ -38,9 +41,14 @@
 				return $response;
 			}
 
+			$parameters['data']['activatedStatus'] = $nodeNode['activatedStatus'];
 			$parameters['data']['authenticationToken'] = $nodeNode['authenticationToken'];
 			$parameters['data']['deployedStatus'] = $nodeNode['deployedStatus'];
 			$parameters['data']['nodeId'] = $nodeNode['id'];
+
+			if (empty($nodeNode['nodeId']) === false) {
+				$parameters['data']['nodeId'] = $nodeNode['nodeId'];
+			}
 		}
 
 		$nodeExternalIpAddresses = $nodeInternalIpAddresses = array();
