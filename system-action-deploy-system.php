@@ -148,7 +148,11 @@
 				'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-			unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
+
+			if (file_exists('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh') === true) {
+				unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
+			}
+
 			file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands);
 			chmod('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', 0755);
 			exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-binary-file-list-commands.sh', $binaryFile);
@@ -275,7 +279,11 @@
 				'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-			unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
+
+			if (file_exists('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh') === true) {
+				unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
+			}
+
 			file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands);
 			chmod('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', 0755);
 			exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-binary-file-list-commands.sh', $binaryFile);
@@ -291,7 +299,10 @@
 			$binaryFiles[$binary['name']] = $binaryFile;
 		}
 
-		unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
+		if (file_exists('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh') === true) {
+			unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
+		}
+
 		$phpSettings = array(
 			'allow_url_fopen = On',
 			'allow_url_include = Off',
@@ -525,7 +536,11 @@
 		}
 
 		shell_exec('cd /var/www/firewall-security-api/ && sudo DEBIAN_FRONTEND=noninteractive dpkg -i mysql.deb');
-		unlink('/var/www/firewall-security-api/mysql.deb');
+
+		if (file_exists('/var/www/firewall-security-api/mysql.deb') === true) {
+			unlink('/var/www/firewall-security-api/mysql.deb');
+		}
+
 		shell_exec('sudo add-apt-repository -y universe');
 		shell_exec('sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 467B942D3A79BD29');
 		shell_exec('sudo apt-get update');
@@ -861,7 +876,11 @@
 			}
 
 			shell_exec('sudo ' . $firewallBinaryFiles[$ipAddressVersionNumber] . ' < /var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
-			unlink('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
+
+			if (file_exists('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat') === true) {
+				unlink('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
+			}
+
 			sleep(1);
 		}
 	} else {
