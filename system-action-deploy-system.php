@@ -1194,7 +1194,7 @@
 			'systemResourceUsageLogs' => array(
 				'bytesReceived',
 				'bytesSent',
-				'cpuCapacity_megahertz',
+				'cpuCapacityMegahertz',
 				'cpuCoreCount',
 				'cpuPercentage',
 				'createdTimestamp',
