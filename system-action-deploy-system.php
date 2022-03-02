@@ -1084,7 +1084,7 @@
 				'memoryPercentage' => 'VARCHAR(3)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
-				'requestCount' => 'VARCHAR(30)'
+				'requestCount' => 'VARCHAR(30)',
 				'storageCapacityMegabytes' => 'VARCHAR(30)',
 				'storagePercentage' => 'VARCHAR(3)'
 			),
