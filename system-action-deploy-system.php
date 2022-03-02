@@ -837,7 +837,11 @@
 			}
 
 			$firewallRules[] = 'COMMIT';
-			unlink('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
+
+			if (file_exists('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat') === true) {
+				unlink('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
+			}
+
 			touch('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
 			$firewallRuleParts = array();
 			$firewallRulePartsKey = 0;
