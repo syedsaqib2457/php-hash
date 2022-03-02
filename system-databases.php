@@ -244,11 +244,13 @@
 		return $response['data'];
 	}
 
-	function _processSystemDatabaseCommandWhereConditions($whereConditions, $whereConditionConjunction = 'AND') {
+	function _processSystemDatabaseCommandWhereConditions($whereConditions, ) {
 		foreach ($whereConditions as $whereConditionKey => $whereConditionValue) {
 			if ((strpos($whereConditionKey, '`') === false) === false) {
 				return false;
 			}
+
+			$whereConditionConjunction = 'AND';
 
 			if ($whereConditionKey === 'either') {
 				$whereConditionConjunction = 'OR';
@@ -259,7 +261,7 @@
 				((count($whereConditionValue) === count($whereConditionValue, true)) === false)
 			) {
 				$recursiveWhereConditions = $whereConditionValue;
-				$whereConditions[$whereConditionKey] = _processSystemDatabaseCommandWhereConditions($recursiveWhereConditions, $whereConditionConjunction);
+				$whereConditions[$whereConditionKey] = _processSystemDatabaseCommandWhereConditions($recursiveWhereConditions);
 				$whereConditions[$whereConditionKey] = '(' . implode(') ' . $whereConditionConjunction . ' (', $whereConditions[$whereConditionKey]) . ')';
 			} else {
 				if (is_array($whereConditionValue) === false) {
