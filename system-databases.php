@@ -158,7 +158,7 @@
 					$updateValue = '';
 				}
 
-				$systemDatabaseUpdateCommand .= $updateValueKey . "='" . str_replace("'", "\'", $updateValue) . "',";
+				$systemDatabaseUpdateCommand .= '`' . $updateValueKey . "`='" . str_replace("'", "\'", $updateValue) . "',";
 			}
 
 			$parameters['where'] = _processSystemDatabaseCommandWhereConditions($parameters['where']);
@@ -442,7 +442,7 @@
 					$systemDatabaseInsertColumnKeys .= ',' . $systemDatabaseColumnKey;
 					$systemDatabaseInsertColumnValue = '';
 
-					if (empty($systemDatabaseColumnValue) === false) {
+					if ((strlen($systemDatabaseColumnValue) === 0) === false) {
 						$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseColumnValue);
 						$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
 					}
