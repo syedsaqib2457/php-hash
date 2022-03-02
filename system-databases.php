@@ -153,12 +153,12 @@
 				$parameters['data']['modifiedTimestamp'] = time();
 			}
 
-			foreach ($parameters['data'] as $updateValueKey => $updateValue) {
-				if (empty($updateValue) === true) {
+			foreach ($parameters['data'] as $updateKey => $updateValue) {
+				if ((strlen($updateValue) === 0) === true) {
 					$updateValue = '';
 				}
 
-				$systemDatabaseUpdateCommand .= '`' . $updateValueKey . "`='" . str_replace("'", "\'", $updateValue) . "',";
+				$systemDatabaseUpdateCommand .= '`' . $updateKey . "`='" . str_replace("'", "\'", $updateValue) . "',";
 			}
 
 			$parameters['where'] = _processSystemDatabaseCommandWhereConditions($parameters['where']);
