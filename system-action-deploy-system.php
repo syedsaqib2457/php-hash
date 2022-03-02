@@ -884,11 +884,13 @@
 			exit;
 		}
 
+		echo 'Currently converting TEXT database columns to VARCHAR(n) to allow default string value.';
+		exit;
 		$systemDatabases = array(
 			'nodeProcesses' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'portNumber',
@@ -899,9 +901,9 @@
 				'addressVersion4NodeId',
 				'addressVersion6',
 				'addressVersion6NodeId',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -909,9 +911,9 @@
 				'portNumberVersion6'
 			),
 			'nodeProcessNodeUserAuthenticationCredentials' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -921,9 +923,9 @@
 				'nodeUserId'
 			),
 			'nodeProcessNodeUserAuthenticationSources' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -934,9 +936,9 @@
 				'nodeUserId'
 			),
 			'nodeProcessNodeUserNodeRequestDestinationLogs' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -945,9 +947,9 @@
 				'requestCount'
 			),
 			'nodeProcessNodeUserNodeRequestDestinations' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -957,10 +959,10 @@
 			),
 			'nodeProcessNodeUserNodeRequestLimitRules' => array(
 				'activatedStatus',
-				'createdTimestamp',
-				'expiredTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
+				'expiredTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -971,11 +973,11 @@
 			'nodeProcessNodeUserRequestLogs' => array(
 				'bytesReceived',
 				'bytesSent',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'destinationHostnameAddress',
 				'destinationIpAddress',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -989,9 +991,9 @@
 			'nodeProcessNodeUserResourceUsageLogs' => array(
 				'bytesReceived',
 				'bytesSent',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -999,9 +1001,9 @@
 				'requestCount'
 			),
 			'nodeProcessNodeUsers' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -1011,13 +1013,13 @@
 				'nodeUserNodeRequestLogsAllowedStatus'
 			),
 			'nodeProcessRecursiveDnsDestinations' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'destinationIpAddressVersion4',
 				'destinationIpAddressVersion4NodeId',
 				'destinationIpAddressVersion6',
 				'destinationIpAddressVersion6NodeId',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'nodeProcessType',
@@ -1030,46 +1032,46 @@
 				'bytesReceived',
 				'bytesSent',
 				'cpuPercentage',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'memoryPercentage',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeProcessType',
 				'requestCount'
 			),
 			'nodeRequestDestinations' => array(
 				'address',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp'
+				'modifiedTimestamp' => 'VARCHAR(10)'
 			),
 			'nodeRequestLimitRules' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'intervalMinutes',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'requestCount',
 				'requestCountIntervalMinutes'
 			),
 			'nodeReservedInternalDestinations' => array(
 				'addedStatus',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'ipAddress',
 				'ipAddressVersionNumber',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'nodeNodeId',
 				'processedStatus'
 			),
 			'nodeReservedInternalSources' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'ipAddress',
 				'ipAddressBlockLength',
 				'ipAddressVersionNumber',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId'
 			),
 			'nodeResourceUsageLogs' => array(
@@ -1078,11 +1080,11 @@
 				'cpuCapacityMegahertz',
 				'cpuCoreCount',
 				'cpuPercentage',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'memoryCapacityMegabytes',
 				'memoryPercentage',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'requestCount',
 				'storageCapacityMegabytes',
@@ -1093,7 +1095,7 @@
 				'authenticationToken',
 				'cpuCapacityMegahertz',
 				'cpuCoreCount',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'deployedStatus',
 				'externalIpAddressVersion4',
 				'externalIpAddressVersion4Type',
@@ -1105,7 +1107,7 @@
 				'internalIpAddressVersion6',
 				'internalIpAddressVersion6Type',
 				'memoryCapacityMegabytes',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'processedStatus',
 				'processingProgressCheckpoint',
@@ -1115,71 +1117,71 @@
 				'storageCapacityMegabytes'
 			),
 			'nodeUserAuthenticationCredentials' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeUserId',
 				'password',
 				'username'
 			),
 			'nodeUserAuthenticationSources' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'ipAddress',
 				'ipAddressBlockLength',
 				'ipAddressVersionNumber',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeUserId'
 			),
 			'nodeUserNodeRequestDestinations' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeRequestDestinationAddress',
 				'nodeRequestDestinationId',
 				'nodeUserId'
 			),
 			'nodeUserNodeRequestLimitRules' => array(
 				'activatedStatus',
-				'createdTimestamp',
-				'expiredTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
+				'expiredTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeRequestDestinationId',
 				'nodeRequestLimitRuleId',
 				'nodeUserId'
 			),
 			'nodeUsers' => array(
 				'authenticationStrictOnlyAllowedStatus',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeRequestDestinationsOnlyAllowedStatus',
 				'nodeRequestLogsAllowedStatus',
 				'tag'
 			),
 			'systemDatabaseColumns' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'key',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'systemDatabaseId'
 			),
 			'systemDatabases' => array(
 				'authenticationCredentialAddress',
 				'authenticationCredentialPassword',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'tableKey',
 				'tag'
 			),
 			'systemRequestLogs' => array(
 				'bytesReceived',
 				'bytesSent',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId',
 				'responseAuthenticatedStatus',
 				'responseData',
@@ -1194,60 +1196,60 @@
 			'systemResourceUsageLogs' => array(
 				'bytesReceived',
 				'bytesSent',
-				'cpuCapacityMegahertz',
+				'cpuCapacity_megahertz',
 				'cpuCoreCount',
 				'cpuPercentage',
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'destinationIpAddress',
 				'id',
 				'memoryCapacityMegabytes',
 				'memoryPercentage',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'storageCapacityMegabytes',
 				'storagePercentage'
 			),
 			'systemSettings' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'key',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'value'
 			),
 			'systemUserAuthenticationTokens' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'systemUserId',
 				'value'
 			),
 			'systemUserAuthenticationTokenScopes' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'systemAction',
 				'systemUserAuthenticationTokenId',
 				'systemUserId'
 			),
 			'systemUserAuthenticationTokenSources' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
 				'ipAddressRangeStart',
 				'ipAddressRangeStop',
 				'ipAddressRangeVersionNumber',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'systemUserAuthenticationTokenId',
 				'systemUserId'
 			),
 			'systemUsers' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'systemUserId'
 			),
 			'systemUserSystemUsers' => array(
-				'createdTimestamp',
+				'createdTimestamp' => 'VARCHAR(10)',
 				'id',
-				'modifiedTimestamp',
+				'modifiedTimestamp' => 'VARCHAR(10)',
 				'systemUserId',
 				'systemUserSystemUserId'
 			)
@@ -1255,14 +1257,12 @@
 		$systemDatabaseCommands = array();
 
 		foreach ($systemDatabases as $systemDatabaseTableKey => $systemDatabaseColumnKeys) {
-			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableKey . '` (`createdTimestamp` VARCHAR(10) NULL DEFAULT "");';
+			$systemDatabaseCommands[] = 'CREATE TABLE IF NOT EXISTS `' . $systemDatabaseTableKey . '` (`createdTimestamp` VARCHAR(10) DEFAULT "");';
 
-			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey) {
+			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey => $systemDatabaseColumnType) {
 				if (($systemDatabaseColumnKey === 'createdTimestamp') === true) {
 					continue;
 				}
-
-				$systemDatabaseColumnType = 'text';
 
 				if (
 					(($systemDatabaseColumnKey === 'id') === true) ||
@@ -1279,15 +1279,11 @@
 					$systemDatabaseColumnType = 'VARCHAR(1)';
 				}
 
-				if ((substr($systemDatabaseColumnKey, -9) === 'Timestamp') === true) {
-					$systemDatabaseColumnType = 'VARCHAR(10)';
-				}
-
 				$systemDatabaseCommandActions = array(
 					'add' => 'ADD `' . $systemDatabaseColumnKey . '`',
 					'change' => 'CHANGE `' . $systemDatabaseColumnKey . '` `' . $systemDatabaseColumnKey . '`'
 				);
-				$systemDatabaseCommand = 'ALTER TABLE `' . $systemDatabaseTableKey . '` ' . $systemDatabaseCommandActions['change'] . ' ' . $systemDatabaseColumnType . ' NULL DEFAULT ""';
+				$systemDatabaseCommand = 'ALTER TABLE `' . $systemDatabaseTableKey . '` ' . $systemDatabaseCommandActions['change'] . ' ' . $systemDatabaseColumnType . ' DEFAULT ""';
 
 				if (mysqli_query($systemDatabaseConnection, $systemDatabaseCommand) === false) {
 					$systemDatabaseCommands[] = str_replace($systemDatabaseCommandActions['change'], $systemDatabaseCommandActions['add'], $systemDatabaseCommand);
@@ -1331,7 +1327,7 @@
 				$systemDatabaseCommandResponse = intval($systemDatabaseCommandResponse);
 
 				if (($systemDatabaseColumnKeysCount === $systemDatabaseCommandResponse) === false) {
-					echo 'Error executing system database commands, please try again.' . "\n";
+					echo 'Error counting system database columns in system database ' . $systemDatabaseTableKey . ', please try again.' . "\n";
 					exit;
 				}
 			}
@@ -1415,7 +1411,7 @@
 				'tableKey' => $systemDatabaseTableKey
 			);
 
-			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey) {
+			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey => $systemDatabaseColumnType) {
 				$systemDatabaseData['systemDatabaseColumns'][] = array(
 					'createdTimestamp' => $timestamp,
 					'id' => _createUniqueId(),
