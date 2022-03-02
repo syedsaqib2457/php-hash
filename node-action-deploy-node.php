@@ -579,6 +579,7 @@
 	$crontabCommands[] = '* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/firewall-security-api/node-endpoint.php process-node-processes firewall-security-api-node-processes';
 	$crontabCommands[] = '* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/firewall-security-api/node-endpoint.php process-node-resource-usage-logs firewall-security-api-node-processes';
 	$crontabCommands[] = '* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/firewall-security-api/node-endpoint.php process-recursive-dns-destination firewall-security-api-node-processes';
+	$crontabCommands[] = '';
 	$crontabCommands = implode("\n", $crontabCommands);
 	file_put_contents('/etc/crontab', $crontabCommands);
 	$systemActionDeployNodeParameters = array(
