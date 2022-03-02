@@ -53,7 +53,6 @@
 		), $response);
 		_edit(array(
 			'data' => array(
-				'addedStatus' => '0',
 				'processedStatus' => '0'
 			),
 			'in' => $parameters['systemDatabases']['nodeReservedInternalDestinations'],
