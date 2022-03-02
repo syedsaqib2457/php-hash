@@ -291,7 +291,7 @@
 						$whereConditionValueValue = str_replace("'", "\'", $whereConditionValueValue);
 					} elseif (is_bool($whereConditionValueValue) === true) {
 						$whereConditionValueValue = intval($whereConditionValueValue);
-					} elseif (is_null($whereConditionValueValue) === true) {
+					} elseif ((strlen($whereConditionValueValue) === 0) === true) {
 						$whereConditionValueValue = '';
 					}
 
