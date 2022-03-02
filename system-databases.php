@@ -442,7 +442,7 @@
 					$systemDatabaseInsertColumnKeys .= ',' . $systemDatabaseColumnKey;
 					$systemDatabaseInsertColumnValue = '';
 
-					if (empty($systemDatabaseInsertColumnValue) === false) {
+					if (empty($systemDatabaseColumnValue) === false) {
 						$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseColumnValue);
 						$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
 					}
