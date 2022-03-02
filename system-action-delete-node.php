@@ -8,32 +8,22 @@
 		'nodeProcessForwardingDestinations',
 		'nodeProcessNodeUserAuthenticationCredentials',
 		'nodeProcessNodeUserAuthenticationSources',
-		'nodeProcessNodeUserRequestDestinationLogs',
 		'nodeProcessNodeUserNodeRequestDestinations',
 		'nodeProcessNodeUserNodeRequestLimitRules',
-		'nodeProcessNodeUserRequestLogs',
-		'nodeProcessNodeUserResourceUsageLogs',
 		'nodeProcessNodeUsers',
 		'nodeProcessRecursiveDnsDestinations',
-		'nodeProcessResourceUsageLogs',
 		'nodeReservedInternalDestinations',
-		'nodeResourceUsageLogs',
 		'nodes'
 	), $parameters['systemDatabases'], $response);
 	$parameters['systemDatabases']['nodeProcesses'] = $systemDatabasesConnections['nodeProcesses'];
 	$parameters['systemDatabases']['nodeProcessForwardingDestinations'] = $systemDatabasesConnections['nodeProcessForwardingDestinations'];
 	$parameters['systemDatabases']['nodeProcessNodeUserAuthenticationCredentials'] = $systemDatabasesConnections['nodeProcessNodeUserAuthenticationCredentials'];
 	$parameters['systemDatabases']['nodeProcessNodeUserAuthenticationSources'] = $systemDatabasesConnections['nodeProcessNodeUserAuthenticationSources'];
-	$parameters['systemDatabases']['nodeProcessNodeUserRequestDestinationLogs'] = $systemDatabasesConnections['nodeProcessNodeUserRequestDestinationLogs'];
 	$parameters['systemDatabases']['nodeProcessNodeUserNodeRequestDestinations'] = $systemDatabasesConnections['nodeProcessNodeUserNodeRequestDestinations'];
 	$parameters['systemDatabases']['nodeProcessNodeUserNodeRequestLimitRules'] = $systemDatabasesConnections['nodeProcessNodeUserNodeRequestLimitRules'];
-	$parameters['systemDatabases']['nodeProcessNodeUserRequestLogs'] = $systemDatabasesConnections['nodeProcessNodeUserRequestLogs'];
-	$parameters['systemDatabases']['nodeProcessNodeUserResourceUsageLogs'] = $systemDatabasesConnections['nodeProcessNodeUserResourceUsageLogs'];
 	$parameters['systemDatabases']['nodeProcessNodeUsers'] = $systemDatabasesConnections['nodeProcessNodeUsers'];
 	$parameters['systemDatabases']['nodeProcessRecursiveDnsDestinations'] = $systemDatabasesConnections['nodeProcessRecursiveDnsDestinations'];
-	$parameters['systemDatabases']['nodeProcessResourceUsageLogs'] = $systemDatabasesConnections['nodeProcessResourceUsageLogs'];
 	$parameters['systemDatabases']['nodeReservedInternalDestinations'] = $systemDatabasesConnections['nodeReservedInternalDestinations'];
-	$parameters['systemDatabases']['nodeResourceUsageLogs'] = $systemDatabasesConnections['nodeResourceUsageLogs'];
 	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
 
 	function _deleteNode($parameters, $response) {
@@ -68,15 +58,10 @@
 			'nodeProcessForwardingDestinations',
 			'nodeProcessNodeUserAuthenticationCredentials',
 			'nodeProcessNodeUserAuthenticationSources',
-			'nodeProcessNodeUserRequestDestinationLogs',
 			'nodeProcessNodeUserNodeRequestDestinations',
 			'nodeProcessNodeUserNodeRequestLimitRules',
-			'nodeProcessNodeUserRequestLogs',
-			'nodeProcessNodeUserResourceUsageLogs',
 			'nodeProcessNodeUsers',
-			'nodeProcessRecursiveDnsDestinations',
-			'nodeProcessResourceUsageLogs',
-			'nodeResourceUsageLogs'
+			'nodeProcessRecursiveDnsDestinations'
 		);
 		$nodeCount = _count(array(
 			'in' => $parameters['systemDatabases']['nodes'],
