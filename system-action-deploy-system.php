@@ -1072,7 +1072,6 @@
 				'requestCountIntervalMinutes' => 'VARCHAR(10)',
 			),
 			'nodeReservedInternalDestinations' => array(
-				'addedStatus' => 'VARCHAR(1)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
 				'ipAddress' => 'VARCHAR(39)',
