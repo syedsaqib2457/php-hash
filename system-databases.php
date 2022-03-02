@@ -244,7 +244,7 @@
 		return $response['data'];
 	}
 
-	function _processSystemDatabaseCommandWhereConditions($whereConditions, ) {
+	function _processSystemDatabaseCommandWhereConditions($whereConditions) {
 		foreach ($whereConditions as $whereConditionKey => $whereConditionValue) {
 			if ((strpos($whereConditionKey, '`') === false) === false) {
 				return false;
