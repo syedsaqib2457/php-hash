@@ -12,7 +12,6 @@
 		$nodeIpAddressVersionNumber = key($parameters['node']);
 		$existingNodeReservedInternalDestination = _list(array(
 			'data' => array(
-				'addedStatus',
 				'id',
 				'ipAddress',
 				'ipAddressVersionNumber'
@@ -23,25 +22,23 @@
 				'ipAddress' => 'ascending'
 			),
 			'where' => array(
-				'addedStatus' => '0',
 				'either' => array(
 					'nodeId' => $parameters['node'][$nodeIpAddressVersionNumber],
 					'nodeNodeId' => $parameters['node'][$nodeIpAddressVersionNumber]
 				),
 				'ipAddressVersionNumber' => $nodeIpAddressVersionNumber,
-				'processedStatus' => '1'
+				'processedStatus' => '0'
 			)
 		), $response);
 		$existingNodeReservedInternalDestination = current($existingNodeReservedInternalDestination);
 
 		if (empty($existingNodeReservedInternalDestination) === true) {
 			$existingNodeReservedInternalDestination = array(
-				'addedStatus' => '0',
 				'id' => _createUniqueId(),
 				'ipAddressVersionNumber' => $nodeIpAddressVersionNumber,
 				'nodeId' => $parameters['node'][$nodeIpAddressVersionNumber]['id'],
 				'nodeNodeId' => $parameters['node'][$nodeIpAddressVersionNumber]['nodeId'],
-				'processedStatus' => '1'
+				'processedStatus' => '0'
 			);
 
 			switch ($nodeIpAddressVersionNumber) {
@@ -53,9 +50,9 @@
 					break;
 			}
 
-			$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ip_address'];
+			$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ipAddress'];
 
-			while (($existingNodeReservedInternalDestination['addedStatus'] === '0') === true) {
+			while (($existingNodeReservedInternalDestination['processedStatus'] === '0') === true) {
 				switch ($nodeIpAddressVersionNumber) {
 					case '4':
 						$nodeReservedInternalDestinationIpAddress = ip2long($nodeReservedInternalDestinationIpAddress);
@@ -96,19 +93,19 @@
 				), $response);
 
 				if (($existingNodeCount === 0) === true) {
-					$existingNodeReservedInternalDestination['addedStatus'] = '1';
 					$existingNodeReservedInternalDestination['ipAddress'] = $nodeReservedInternalDestinationIpAddress;
+					$existingNodeReservedInternalDestination['processedStatus'] = '1';
 				}
 			}
 		} else {
-			$existingNodeReservedInternalDestination['addedStatus'] = true;
+			$existingNodeReservedInternalDestination['processedStatus'] = '1';
 		}
 
 		$existingNodeReservedInternalDestinationsData = array(
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
-		$existingNodeReservedInternalDestinationsData[1]['addedStatus'] = '0';
+		$existingNodeReservedInternalDestinationsData[1]['processedStatus'] = '0';
 		$existingNodeReservedInternalDestinationsData[1]['id'] = _createUniqueId();
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ipAddress'];
 
