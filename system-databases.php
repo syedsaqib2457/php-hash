@@ -159,10 +159,12 @@
 					_output($parameters, $response);
 				}
 
-				if ((strlen($editDataValue) === 0) === true) {
-					$editDataValue = '';
-				} else {
+				if ((strpos($editDataValue, "'") === false) === false) {
 					$editDataValue = str_replace("'", "\'", $editDataValue);
+				} elseif (is_bool($editDataValue) === true) {
+					$editDataValue = intval($editDataValue);
+				} elseif ((strlen($editDataValue) === 0) === true) {
+					$editDataValue = '';
 				}
 
 				$systemDatabaseEditCommand .= '`' . $editDataKey . "`='" . $editDataValue . "',";
