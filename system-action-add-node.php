@@ -320,7 +320,9 @@
 		), $response);
 		$node = _list(array(
 			'in' => $parameters['systemDatabases']['nodes'],
-			'where' => $nodeIpAddresses
+			'where' => array(
+				'id' => $parameters['data']['id']
+			)
 		), $response);
 		$node = current($node);
 		$response['data'] = $node;
