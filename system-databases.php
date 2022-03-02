@@ -257,8 +257,11 @@
 			}
 
 			if (
-				(is_array($whereConditionValue) === true) &&
-				((count($whereConditionValue) === count($whereConditionValue, true)) === false)
+				(is_int($whereConditionKey) === true) ||
+				(
+					(is_array($whereConditionValue) === true) &&
+					((count($whereConditionValue) === count($whereConditionValue, true)) === false)
+				)
 			) {
 				$recursiveWhereConditions = $whereConditionValue;
 				$whereConditions[$whereConditionKey] = _processSystemDatabaseCommandWhereConditions($recursiveWhereConditions);
