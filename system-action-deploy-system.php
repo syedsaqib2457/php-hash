@@ -839,10 +839,19 @@
 			$firewallRules[] = 'COMMIT';
 			unlink('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
 			touch('/var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
-			$firewallRuleParts = array_chunk($firewallRules, 1000);
+			$firewallRuleParts = array();
+			$firewallRulePartsKey = 0;
+
+			foreach ($firewallRules as $firewallRulesKey => $firewallRule) {
+				if ((($firewallRulesKey % 1000) === 0) === true) {
+					$firewallRulePartsKey++;
+					$firewallRuleParts[$firewallRulePartsKey] = '';
+				}
+
+				$firewallRuleParts[$firewallRulePartsKey] .= $firewallRule . "\n";
+			}
 
 			foreach ($firewallRuleParts as $firewallRulePart) {
-				$firewallRulePart = implode("\n", $firewallRulePart);
 				shell_exec('sudo echo "' . $firewallRulePart . '" >> /var/www/firewall-security-api/firewall-ip-aaddress-version-' . $ipAddressVersionNumber . '.dat');
 			}
 
