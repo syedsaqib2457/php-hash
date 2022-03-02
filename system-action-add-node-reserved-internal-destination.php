@@ -14,7 +14,8 @@
 			'data' => array(
 				'id',
 				'ipAddress',
-				'ipAddressVersionNumber'
+				'ipAddressVersionNumber',
+				'nodeNodeId'
 			),
 			'in' => $parameters['systemDatabases']['nodeReservedInternalDestinations'],
 			'limit' => 1,
@@ -98,6 +99,7 @@
 				}
 			}
 		} else {
+			$existingNodeReservedInternalDestination['nodeId'] = $parameters['node'][$nodeIpAddressVersionNumber]['id'];
 			$existingNodeReservedInternalDestination['processedStatus'] = '1';
 		}
 
@@ -105,8 +107,9 @@
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
-		$existingNodeReservedInternalDestinationsData[1]['processedStatus'] = '0';
 		$existingNodeReservedInternalDestinationsData[1]['id'] = _createUniqueId();
+		$existingNodeReservedInternalDestinationsData[1]['nodeId'] = '';
+		$existingNodeReservedInternalDestinationsData[1]['processedStatus'] = '0';
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ipAddress'];
 
 		while (($existingNodeReservedInternalDestinationsData[0]['ipAddress'] === $existingNodeReservedInternalDestinationsData[1]['ipAddress']) === true) {
