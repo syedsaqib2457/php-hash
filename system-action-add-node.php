@@ -119,14 +119,20 @@
 				'either' => $nodeExternalIpAddresses
 			)
 		);
-		$nodeIpAddresses = array_merge($nodeExternalIpAddresses, $nodeInternalIpAddresses);
 
 		if (empty($parameters['data']['nodeId']) === false) {
 			$existingNodeParameters['where']['either'] = array(
 				$existingNodeParameters['where'],
 				array(
-					'either' => $nodeIpAddresses,
-					'nodeId' => $parameters['data']['nodeId']
+					array(
+						'either' => $nodeInternalIpAddresses
+					),
+					array(
+						'either' => array(
+							'id' => $parameters['data']['nodeId'],
+							'nodeId' => $parameters['data']['nodeId']
+						)
+					)
 				)
 			);
 		}
@@ -138,8 +144,13 @@
 			$existingNodeIpAddresses = array_filter($existingNode);
 
 			foreach ($existingNodeIpAddresses as $existingNodeIpAddress) {
-				if (in_array($existingNodeIpAddress, $nodeIpAddresses) === true) {
-					$response['message'] = 'Node already exists with the same IP address ' . $existingNodeIpAddress . ', please try again.';
+				if (in_array($existingNodeIpAddress, $nodeExternalIpAddresses) === true) {
+					$response['message'] = 'Node already exists with the same external IP address ' . $existingNodeIpAddress . ', please try again.';
+					return $response;
+				}
+
+				if (in_array($existingNodeIpAddress, $nodeInternalIpAddresses) === true) {
+					$response['message'] = 'Node already exists with the same internal IP address ' . $existingNodeIpAddress . ' and node ID ' . $parameters['data']['nodeId'] . ', please try again.';
 					return $response;
 				}
 			}
