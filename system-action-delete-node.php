@@ -39,7 +39,7 @@
 			),
 			'in' => $parameters['systemDatabases']['nodes'],
 			'where' => array(
-				'id' => $parameters['data']['id']
+				'id' => $parameters['where']['id']
 			)
 		), $response);
 		$node = current($node);
@@ -74,6 +74,7 @@
 		} else {
 			_edit(array(
 				'data' => array(
+					'nodeId' => '',
 					'processedStatus' => '0'
 				),
 				'in' => $parameters['systemDatabases']['nodeReservedInternalDestinations'],
