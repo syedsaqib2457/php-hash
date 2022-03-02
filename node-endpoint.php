@@ -19,8 +19,20 @@
 			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 ' . $processIdPart;
 		}
 
-		$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\')';
-		$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
+		$processIds = false;
+		exec('ps -o ppid -o stat | grep Z | grep -v grep | awk \'{print $1}\'', $processIds);
+
+		if (empty($processIds) === false) {
+			$processIdsParts = '';
+
+			foreach ($processIds as $processId) {
+				$processIdsParts .= ' ' . $processId;
+			}
+
+			$killProcessCommands[] = 'sudo ' . $binaryFiles['kill'] . ' -9' . $processIdsParts;
+			$killProcessCommands[] = 'sudo ' . $binaryFiles['telinit'] . ' u';
+		}
+
 		$killProcessCommands = implode("\n", $killProcessCommands);
 		file_put_contents('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $currentProcessId . '.sh', $killProcessCommands);
 		shell_exec('sudo chmod +x /usr/local/firewall-security-api/node-action-' . $nodeAction . '-kill-process-commands-' . $currentProcessId . '.sh');
