@@ -158,7 +158,7 @@
 
 		_save(array(
 			'data' => $existingNodeReservedInternalDestinationsData,
-			'to' => $parameters['systemDatabases']['nodeReservedInternalDestinations']
+			'in' => $parameters['systemDatabases']['nodeReservedInternalDestinations']
 		), $response);
 		$response = $nodeReservedInternalDestinationIpAddress;
 		return $response;
