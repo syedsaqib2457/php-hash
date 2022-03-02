@@ -39,7 +39,7 @@
 			),
 			'in' => $parameters['systemDatabases']['nodes'],
 			'where' => array(
-				'id' => $parameters['data']['nodeId']
+				'id' => $parameters['data']['id']
 			)
 		), $response);
 		$node = current($node);
