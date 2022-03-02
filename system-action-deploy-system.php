@@ -884,8 +884,6 @@
 			exit;
 		}
 
-		echo 'Currently converting TEXT database columns to VARCHAR(n) to allow default string value.';
-		exit;
 		$systemDatabases = array(
 			'nodeProcesses' => array(
 				'createdTimestamp' => 'VARCHAR(10)',
