@@ -1321,14 +1321,11 @@
 				exit;
 			}
 
-			end($systemDatabaseColumnKeys);
-			$systemDatabaseColumnKeysCount = (key($systemDatabaseColumnKeys) + 1);
-
 			foreach ($systemDatabaseCommandResponse as $systemDatabaseCommandResponse) {
 				$systemDatabaseCommandResponse = current($systemDatabaseCommandResponse);
 				$systemDatabaseCommandResponse = intval($systemDatabaseCommandResponse);
 
-				if (($systemDatabaseColumnKeysCount === $systemDatabaseCommandResponse) === false) {
+				if ((count($systemDatabaseColumnKeys) === $systemDatabaseCommandResponse) === false) {
 					echo 'Error counting system database columns in system database ' . $systemDatabaseTableKey . ', please try again.' . "\n";
 					exit;
 				}
