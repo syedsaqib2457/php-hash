@@ -121,8 +121,6 @@ This is the authenticated status indicator for the request.
 
 The value is either `1` if the request is authenticated or `0` if the request isn't authenticated.
 
-The request must have a valid `systemUserAuthenticationToken` to be authenticated.
-
 #### data.activatedStatus
 
 This is the activated status indicator in the added node.
