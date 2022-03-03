@@ -16,7 +16,7 @@
 
 	function _deleteSystemUserAuthenticationTokens($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
-			$response['message'] = 'System user authentication token must have an ID, please try again.';
+			$response['message'] = 'System user authentication tokens must have IDs, please try again.';
 			return $response;
 		}
 
@@ -33,7 +33,7 @@
 		), $response);
 
 		foreach ($systemUserAuthenticationTokens as $systemUserAuthenticationToken) {
-			$systemUserSystemUserCount = _count(array(
+			$systemUserSystemUsersCount = _count(array(
 				'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
 				'where' => array(
 					'systemUserId' => $systemUserAuthenticationToken['systemUserId'],
@@ -42,7 +42,7 @@
 			), $response);
 
 			if (
-				(($systemUserSystemUserCount > 0) === false) &&
+				(($systemUserSystemUsersCount === 1) === false) &&
 				(($parameters['systemUserId'] === $systemUserAuthenticationToken['systemUserId']) === false)
 			) {
 				$response['message'] = 'Invalid permissions to delete system user authentication token ' . $systemUserAuthenticationToken['id'] . ', please try again.';
@@ -55,14 +55,14 @@
 			}
 		}
 
-		$systemDatabaseTableKeys = array(
+		$systemDatabaseTablesKeys = array(
 			'systemUserAuthenticationTokenScopes',
 			'systemUserAuthenticationTokenSources',
 		);
 
-		foreach ($systemDatabaseTableKeys as $systemDatabaseTableKey) {
+		foreach ($systemDatabaseTablesKeys as $systemDatabaseTablesKey) {
 			_delete(array(
-				'in' => $parameters['systemDatabases'][$systemDatabaseTableKey],
+				'in' => $parameters['systemDatabases'][$systemDatabaseTablesKey],
 				'where' => array(
 					'systemUserAuthenticationTokenId' => $parameters['where']['id']
 				)
