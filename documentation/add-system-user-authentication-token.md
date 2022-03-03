@@ -31,7 +31,7 @@ These are descriptions for each request parameter.
 
 The value must be `addSystemUserAuthenticationToken`.
 
-#### data [systemUserId]
+#### data.systemUserId
 
 This is required to map the added system user authentication token to a `systemUserId`.
 
@@ -76,29 +76,29 @@ The value is either `1` if the request is authenticated or `0` if the request is
 
 The request must have a valid `systemUserAuthenticationToken` value to be authenticated.
 
-#### data [createdTimestamp]
+#### data.createdTimestamp
 
 This is the `Unix timestamp in seconds` of when the system user authentication token was added.
 
-#### data [id]
+#### data.id
 
 This is the unique ID of the added system user authentication token.
 
 The value is a `numeric ID` with a string length of `30 characters`.
 
-#### data [modifiedTimestamp]
+#### data.modifiedTimestamp
 
 This is the `Unix timestamp in seconds` of when the system user authentication token was added.
 
 The value changes to the current timestamp whenever the added system user is modified.
 
-#### data [systemUserId]
+#### data.systemUserId
 
 This is the unique ID of the system user that the added system user belongs to.
 
 The value is a `numeric ID` with a string length of `30 characters`.
 
-#### data [value]
+#### data.value
 
 This is the system user authentication token value to use for the `systemUserAuthenticationToken` request parameter.
 
