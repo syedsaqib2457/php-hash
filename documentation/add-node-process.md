@@ -140,10 +140,10 @@ This is the type in the added node process.
 This is the list of possible values.
 
 ```
-httpProxy
-loadBalancer
-recursiveDns
-socksProxy
+- httpProxy
+- loadBalancer
+- recursiveDns
+- socksProxy
 ```
 
 #### message
