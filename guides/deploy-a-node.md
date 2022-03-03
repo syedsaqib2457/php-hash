@@ -41,6 +41,27 @@ The system user authentication token must have the following scopes.
 
 ### Add Node
 
+This is an example `POST` request body made to the `/system-endpoint.php` path in `JSON` format.
+
+All values are formatted as `string` types and contained in `json=`.
+
+```json
+{
+    "action": "addNode",
+    "data": {
+        "externalIpAddressVersion4": "10.10.10.1",
+        "internalIpAddressVersion4": "10.10.10.2"
+    },
+    "systemUserAuthenticationToken": "012345678901234567890123456789"
+}
+```
+
+This is an example `wget` request with the response output to `/tmp/add-node-response.json`.
+
+``` console
+sudo wget -O /tmp/add-node-response.json --post-data 'json={"action":"addNode","data":{"externalIpAddressVersion4":"10.10.10.1","internalIpAddressVersion4":"10.10.10.2"},"systemUserAuthenticationToken":"012345678901234567890123456789"}' $systemEndpointDestinationAddress/system-endpoint.php?$RANDOM && sudo cat /tmp/debug.json && echo ""
+```
+
 ### Activate Node
 
 ### Deploy Node
