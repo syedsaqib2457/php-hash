@@ -13,8 +13,8 @@ This pre-release development code shouldn't be used in production until version 
 # Checklist features before version 1.00 release
 
 - Adding API DDoS protection from unauthorized requests
-- Adding node resource usage logging functionality to API
 - Adding system IP address migration support
+- Adding system resource usage logging functionality from node resource usage logging
 - Adding system update + node update scripts for each release version in system-action-update-system.php
 - Installing in a subdirectory with custom ports
 - Testing + bug fixes
@@ -24,7 +24,7 @@ This pre-release development code shouldn't be used in production until version 
 
 ### Get Started
 
-Open the terminal console on one of these Linux distributions.
+Open the terminal console in one of these Linux distributions.
 
 ```
 Debian 10
