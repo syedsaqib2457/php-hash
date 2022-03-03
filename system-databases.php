@@ -234,10 +234,10 @@
 					}
 
 					$systemDatabaseListSortOrder = substr($systemDatabaseListSortOrder, 0, -6);
-					$systemDatabaseListCommand .= ',`' . $systemDatabaseListSortColumnKey . '` ' . strtoupper($systemDatabaseListSortOrder);
+					$systemDatabaseListCommand .= '`' . $systemDatabaseListSortColumnKey . '` ' . strtoupper($systemDatabaseListSortOrder) . ',';
 				}
 
-				$systemDatabaseListCommand = substr($systemDatabaseListCommand, 1);
+				$systemDatabaseListCommand = substr($systemDatabaseListCommand, 0, -1);
 			}
 		}
 
