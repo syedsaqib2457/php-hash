@@ -1476,8 +1476,8 @@
 			}
 		}
 
-		echo "\n" . 'System user authentication token is ' . $systemUserAuthenticationToken . "\n";
 		echo 'System deployed successfully.' . "\n";
+		echo 'The systemUserAuthenticationToken is ' . $systemUserAuthenticationToken . ".\n";
 		exit;
 	}
 ?>
