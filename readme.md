@@ -6,7 +6,7 @@ ___
 This is a free and open-source API to secure firewalls.
 
 ``` json
-This pre-release development code shouldn't be used in production until version 1.00 is released.`
+This pre-release development code shouldn't be used in production until release version 1.00.`
 ```
 
 ``` console
