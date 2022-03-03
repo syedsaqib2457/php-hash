@@ -33,9 +33,9 @@ The value must be `deleteNode`.
 
 #### where.id
 
-This is required if the node has an IPv4 address routed to the device.
+This is required for deleting a node by the `id`.
 
-The value must be a `public or reserved IPv4 address`.
+The value must be a `numeric ID` with a string length of `30 characters`.
 
 #### systemUserAuthenticationToken
 
