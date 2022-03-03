@@ -196,7 +196,7 @@
 				$systemDatabaseListColumnKeys .= ',`' . $listDataValue . '`';
 			}
 
-			$systemDatabaseListColumnKeys = substr($parameters['data'], 1);
+			$systemDatabaseListColumnKeys = substr($systemDatabaseListColumnKeys, 1);
 		}
 
 		$systemDatabaseListCommand = 'SELECT ' . $systemDatabaseListColumnKeys . ' FROM ' . $parameters['in']['structure']['tableKey'];
