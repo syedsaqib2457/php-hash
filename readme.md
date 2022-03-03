@@ -12,9 +12,12 @@ This pre-release development code shouldn't be used in production until version 
 ``` console
 # Checklist features before version 1.00 release
 
-- Adding node resource usage logging functionality to system
+- Adding node resource usage logging functionality to API
 - API DDoS protection from unauthorized requests
+- Documentaion
+- Guides
 - Installing in a subdirectory with custom ports
+- System update scripts for each release version in system-action-update-system.php
 - Testing + bug fixes
 ```
 
