@@ -55,9 +55,13 @@ System user authentication token is 012345678901234567890123456789
 System deployed successfully.
 ```
 
+Deploy Nodes `[guide coming soon]`
+
 Read API Documentation `[guide coming soon]`
 
 ### Usage
+
+Database Scaling `[guide coming soon]`
 
 Egress Firewall `[guide coming soon]`
 
