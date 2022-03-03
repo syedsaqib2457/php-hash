@@ -1,5 +1,3 @@
-<br>
-
 ### Firewall Security API
 ___
 
@@ -55,9 +53,7 @@ System deployed successfully.
 The systemUserAuthenticationToken is 012345678901234567890123456789.
 ```
 
-Deploy a Node `[guide coming soon]`
-
-Read Documentation `[guide coming soon]`
+The next step is to [deploy a node](https://github.com/twexxor/firewall-security-api/blob/main/guides/deploy-a-node.md#user-content-deploy-a-node), read the documentation or follow one of these guides.
 
 ### Usage
 
