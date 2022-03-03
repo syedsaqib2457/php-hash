@@ -58,7 +58,7 @@
 				)
 			)
 		), $response);
-		$systemDatabaseTableKeys = array(
+		$systemDatabaseTablesKeys = array(
 			'nodeProcesses',
 			'nodeProcessForwardingDestinations',
 			'nodeProcessNodeUserAuthenticationCredentials',
@@ -70,7 +70,7 @@
 		);
 
 		if (empty($node['nodeId']) === true) {
-			$systemDatabaseTableKeys[] = 'nodeReservedInternalDestinations';
+			$systemDatabaseTablesKeys[] = 'nodeReservedInternalDestinations';
 		} else {
 			_edit(array(
 				'data' => array(
@@ -87,9 +87,9 @@
 			), $response);
 		}
 
-		foreach ($systemDatabaseTableKeys as $systemDatabaseTableKey) {
+		foreach ($systemDatabaseTablesKeys as $systemDatabaseTablesKey) {
 			_delete(array(
-				'in' => $parameters['systemDatabases'][$systemDatabaseTableKey],
+				'in' => $parameters['systemDatabases'][$systemDatabaseTablesKey],
 				'where' => array(
 					'either' => array(
 						'nodeId' => $parameters['where']['id'],
