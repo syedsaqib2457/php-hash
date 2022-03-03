@@ -169,7 +169,7 @@ The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
-``` console
+```
 currentNetwork
 documentation
 ietfProtocolAssignments
@@ -195,7 +195,7 @@ The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
-``` console
+```
 currentNetwork
 documentation
 ietfProtocolAssignments
@@ -225,7 +225,7 @@ The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
-``` console
+```
 currentNetwork
 documentation
 ietfProtocolAssignments
@@ -250,7 +250,7 @@ The value is either an `IP address type` or `empty`.
 
 This is the list of possible values.
 
-``` console
+```
 currentNetwork
 documentation
 ietfProtocolAssignments
@@ -295,7 +295,7 @@ The value is either an `alphanumeric checkpoint` if the added node is deployed o
 
 This is the list of possible values.
 
-``` console
+```
 processingCompleted
 processingNodeProcesses
 processingProxyNodeProcesses
