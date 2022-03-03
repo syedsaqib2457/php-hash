@@ -106,4 +106,26 @@ Parameter details are explained in the [addNode API action](https://github.com/t
 
 ### Activate Node
 
+The `data.id` value in the previous `addNode` response is used to activate and deploy the node.
+
+This is an example `POST` request body made to the `/system-endpoint.php` path in `JSON` format.
+
+All values are formatted as `string` types and contained in `json=`.
+
+```json
+{
+    "action": "activateNode",
+    "data": {
+        "id": "012345678901234567890123456789"
+    },
+    "systemUserAuthenticationToken": "012345678901234567890123456789"
+}
+```
+
+This is an example `wget` request with the response output to `/tmp/activate-node-response.json`.
+
+``` console
+sudo wget -O /tmp/activate-node-response.json --post-data 'json={"action":"activateNode","data":{"id":"012345678901234567890123456789"},"systemUserAuthenticationToken":"012345678901234567890123456789"}' $systemEndpointDestinationAddress/system-endpoint.php?$RANDOM
+```
+
 ### Deploy Node
