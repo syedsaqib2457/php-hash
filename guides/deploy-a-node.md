@@ -105,7 +105,7 @@ sudo cat /tmp/add-node-response.json && echo ""
         "processingStatus": "0",
         "storageCapacityMegabytes": ""
     },
-    "message":"Node added successfully.",
+    "message": "Node added successfully.",
     "validatedStatus": "1"
 }
 ```
