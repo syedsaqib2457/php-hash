@@ -41,6 +41,8 @@ The value must be a `numeric ID` with a string length of `30 characters`.
 
 This is required for authenticating system user access.
 
+The value must be a `numeric ID` with a string length of `30 characters`.
+
 ### Response Example
 
 This is an example response body from the example request in `JSON` format.
