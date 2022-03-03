@@ -20,7 +20,7 @@
 
 	function _deleteSystemUsers($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
-			$response['message'] = 'System user must have an ID, please try again.';
+			$response['message'] = 'System users must have IDs, please try again.';
 			return $response;
 		}
 
@@ -94,17 +94,17 @@
 					'id' => $systemUserSystemUsersIdsPart
 				)
 			), $response);
+			_delete(array(
+				'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
+				'where' => array(
+					'either' => array(
+						'systemUserId' => $systemUserSystemUsersIdsPart,
+						'systemUserSystemUserId' => $systemUserSystemUsersIdsPart
+					)
+				)
+			), $response);
 		}
 
-		_delete(array(
-			'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
-			'where' => array(
-				'either' => array(
-					'systemUserId' => $parameters['where']['id'],
-					'systemUserSystemUserId' => $parameters['where']['id']
-				)
-			)
-		), $response);
 		$response['message'] = 'System users deleted successfully.';
 		$response['validatedStatus'] = '1';
 		return $response;
