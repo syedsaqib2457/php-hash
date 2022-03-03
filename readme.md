@@ -13,8 +13,9 @@ This pre-release development code shouldn't be used in production until version 
 # Checklist features before version 1.00 release
 
 - Adding node resource usage logging functionality to system
+- API DDoS protection from unauthorized requests
 - Installing in a subdirectory with custom ports
-- Testing Quality testing + bug fixes
+- Testing + bug fixes
 ```
 
 ### Get Started
