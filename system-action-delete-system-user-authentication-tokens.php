@@ -31,6 +31,8 @@
 				'id' => $parameters['where']['id']
 			)
 		), $response);
+		$systemUserAuthenticationTokensIdsPartsIndex = 0;
+		$systemUserAuthenticationTokensIdsParts = array();
 
 		foreach ($systemUserAuthenticationTokens as $systemUserAuthenticationToken) {
 			$systemUserSystemUsersCount = _count(array(
@@ -53,6 +55,12 @@
 				$response['message'] = 'System user authentication token ID ' . $systemUserAuthenticationToken['id'] . ' is the current system user authentication token, please try again.';
 				return $response;
 			}
+
+			if (empty($systemUserAuthenticationTokensIdsParts[$systemUserAuthenticationTokensIdsPartsIndex][10]) === false) {
+				$systemUserAuthenticationTokensIdsPartsIndex++;
+			}
+
+			$systemUserAuthenticationTokensIdsParts[$systemUserAuthenticationTokensIdsPartsIndex][] = $systemUserAuthenticationToken['id'];
 		}
 
 		$systemDatabaseTablesKeys = array(
@@ -60,21 +68,24 @@
 			'systemUserAuthenticationTokenSources',
 		);
 
-		foreach ($systemDatabaseTablesKeys as $systemDatabaseTablesKey) {
+		foreach ($systemUserAuthenticationTokensIdsParts as $systemUserAuthenticationTokensIdsPart) {
+			foreach ($systemDatabaseTablesKeys as $systemDatabaseTablesKey) {
+				_delete(array(
+					'in' => $parameters['systemDatabases'][$systemDatabaseTablesKey],
+					'where' => array(
+						'systemUserAuthenticationTokenId' => $systemUserAuthenticationTokensIdsPart
+					)
+				), $response);
+			}
+
 			_delete(array(
-				'in' => $parameters['systemDatabases'][$systemDatabaseTablesKey],
+				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokens'],
 				'where' => array(
-					'systemUserAuthenticationTokenId' => $parameters['where']['id']
+					'id' => $systemUserAuthenticationTokensIdsPart
 				)
 			), $response);
 		}
 
-		_delete(array(
-			'in' => $parameters['systemDatabases']['systemUserAuthenticationTokens'],
-			'where' => array(
-				'id' => $parameters['where']['id']
-			)
-		), $response);
 		$response['message'] = 'System user authentication tokens deleted successfully.';
 		$response['validatedStatus'] = '1';
 		return $response;
