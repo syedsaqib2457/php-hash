@@ -31,13 +31,13 @@ These are descriptions for each request parameter.
 
 The value must be `addNodeProcess`.
 
-#### data [nodeId]
+#### data.nodeId
 
 This is required to map IP addresses from an existing `nodeId` to the node process `portNumber`.
 
 The value must be a `numeric ID` with a string length of `30 characters`.
 
-#### data [portNumber]
+#### data.portNumber
 
 This is required to assign a listening port to the process.
 
@@ -45,7 +45,7 @@ The value must be a `numeric port number` between `1` and `65535`.
 
 Requests to a `portNumber` will automatically load-balance between all node processes with the same `node_id`.
 
-#### data [type]
+#### data.type
 
 This is required to assign a `type` the node process `portNumber`.
 
@@ -58,7 +58,7 @@ recursiveDns
 socksProxy
 ```
 
-#### system_user_authentication_token
+#### systemUserAuthenticationToken
 
 This is required for authenticating system user access.
 
@@ -72,18 +72,18 @@ All values are formatted as `string` types.
 
 ```json
 {
-    "authenticated_status": "1",
+    "authenticatedStatus": "1",
     "data": {
-        "created_timestamp": "0000000000",
-        "id": "unique_id",
-        "modified_timestamp": "0000000000",
-        "node_id": "unique_id",
-        "node_node_id": "unique_id",
-        "port_number": "1080",
-        "type": "socks_proxy",
+        "createdTimestamp": "0123456789",
+        "id": "012345678901234567890123456789",
+        "modifiedTimestamp": "0123456789",
+        "nodeId": "012345678901234567890123456789",
+        "nodeNodeId": "012345678901234567890123456789",
+        "portNumber": "1080",
+        "type": "socksProxy",
     },
     "message": "Node process added successfully.",
-    "valid_status": "1"
+    "validatedStatus": "1"
 }
 ```
 
@@ -99,33 +99,33 @@ The value is either `1` if the request is authenticated or `0` if the request is
 
 The request must have a valid `systemUserAuthenticationToken` to be authenticated.
 
-#### data [createdTimestamp]
+#### data.createdTimestamp
 
 This is the `Unix timestamp in seconds` of when the node process was added.
 
-#### data [id]
+#### data.id
 
 This is the unique ID of the added node process.
 
 The value is a `numeric ID` with a string length of `30 characters`.
 
-#### data [modifiedTimestamp]
+#### data.modifiedTimestamp
 
 This is the `Unix timestamp in seconds` of when the node process was added.
 
 The value changes to the current timestamp whenever the added system user is modified.
 
-#### data [nodeId]
+#### data.nodeId
 
 This is the unique ID of the node that the node process was assigned to.
 
-#### data [nodeNodeId]
+#### data.nodeNodeId
 
 This is the unique ID of the main node that the node process was assigned to.
 
 The value is a `numeric ID` with a string length of `30 characters`.
 
-#### data [portNumber]
+#### data.portNumber
 
 This is the port number in the added node process.
 
@@ -133,7 +133,7 @@ The value is a `numeric port number` between `1` and `65535`.
 
 Requests to a `portNumber` will automatically load-balance between all node processes with the same `nodeId`.
 
-#### data [type]
+#### data.type
 
 This is the type in the added node process.
 
