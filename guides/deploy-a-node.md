@@ -70,7 +70,7 @@ This is an example `wget` request with the response output to `/tmp/add-node-res
 sudo wget -O /tmp/add-node-response.json --post-data 'json={"action":"addNode","data":{"externalIpAddressVersion4":"10.10.10.1","internalIpAddressVersion4":"10.10.10.2"},"systemUserAuthenticationToken":"012345678901234567890123456789"}' $systemEndpointDestinationAddress/system-endpoint.php?$RANDOM
 ```
 
-This is the response in `/tmp/add-node-response.json`.
+This is the example response in `/tmp/add-node-response.json`.
 
 ``` console
 sudo cat /tmp/add-node-response.json && echo ""
@@ -136,4 +136,23 @@ This is an example `wget` request with the response output to `/tmp/activate-nod
 sudo wget -O /tmp/activate-node-response.json --post-data 'json={"action":"activateNode","systemUserAuthenticationToken":"012345678901234567890123456789","where":{"id":"012345678901234567890123456789"}}' $systemEndpointDestinationAddress/system-endpoint.php?$RANDOM
 ```
 
+This is the example response in `/tmp/activate-node-response.json`.
+
+``` console
+sudo cat /tmp/activate-node-response.json && echo ""
+```
+
+``` json
+{
+    "authenticatedStatus": "1",
+    "data": {
+        "terminalConsoleCommand": "cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O node-action-deploy-node.php --no-dns-cache 10.10.10.10/node-action-deploy-node.php?$RANDOM && sudo php node-action-deploy-node.php 012345678901234567890123456789 10.10.10.10"
+    },
+    "message": "Node is ready for activation and deployment.",
+    "validatedStatus": "1"
+}
+```
+
 ### Deploy Node
+
+The `data.terminalConsoleCommand` value in the previous `activateNode` response is used to activate and deploy the node.
