@@ -5,9 +5,13 @@
 
 This guide explains how to deploy a node after [deploying the system](https://github.com/twexxor/firewall-security-api#user-content-get-started).
 
-A node represents either a main IP address or an additional IP address on a device.
+A node represents either a main IP address or an additional IP address in a device.
 
-For example, a node with 253 IP addresses will have 1 main node with 252 nodes belonging to the main `nodeId`.
+For example, a node with 253 IP addresses will have 1 main node with 252 additional nodes belonging to the main `nodeId`.
+
+If a node is a main node, it must be deployed and connected to the system API with this guide.
+
+If a node is an additional node, it will automatically connect to the deployed node.
 
 A node can have both IPv4 and IPv6 addresses with external and internal IP addresses.
 
@@ -156,3 +160,17 @@ sudo cat /tmp/activate-node-response.json && echo ""
 ### Deploy Node
 
 The `data.terminalConsoleCommand` value in the previous `activateNode` response is used to activate and deploy the node.
+
+Open the terminal console in the device to deploy with the node IP addresses.
+
+Copy and paste the `data.terminalConsoleCommand` value.
+
+``` console
+cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O node-action-deploy-node.php --no-dns-cache 10.10.10.10/node-action-deploy-node.php?$RANDOM && sudo php node-action-deploy-node.php 012345678901234567890123456789 10.10.10.10
+```
+
+After processing, the node will be activated and deployed with the device connected to the system API.
+
+``` console
+Node deployed successfully.
+```
