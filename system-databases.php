@@ -159,8 +159,11 @@
 
 			$systemDatabaseEditCommand = rtrim($systemDatabaseEditCommand, ',') . ' WHERE ' . implode(' AND ', $parameters['where']);
 
-			if (empty($parameters['limit']) === false) {
-				$systemDatabaseEditCommand .= ' LIMIT ' . $parameters['limit'];
+			if (
+				(isset($parameters['limit']) === true) &&
+				(is_numeric($parameters['limit']) === true)
+			) {
+				$systemDatabaseEditCommand .= ' LIMIT ' . intval($parameters['limit']);
 			}
 
 			$systemDatabaseEditCommandResponse = mysqli_query($parameters['in']['connection'], $systemDatabaseEditCommand);
@@ -219,20 +222,37 @@
 				$systemDatabaseListCommand .= 'RAND()';
 			} else {
 				foreach ($parameters['sort'] as $systemDatabaseListSortColumnKey => $systemDatabaseListSortOrder) {
-					$systemDatabaseListSortOrder = str_replace('ending', '', $systemDatabaseListSortOrder);
-					$systemDatabaseListCommand .= $systemDatabaseListSortColumnKey . ' ' . strtoupper($systemDatabaseListSortOrder) . ',';
+					if (
+						((strpos($systemDatabaseListSortColumnKey, '`') === false) === false) ||
+						(
+							(($systemDatabaseListSortOrder === 'ascending') === false) &&
+							(($systemDatabaseListSortOrder === 'descending') === false)
+						)
+					) {
+						$response['message'] = 'Error processing sort conditions in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
+						_output($parameters, $response);
+					}
+
+					$systemDatabaseListSortOrder = substr($systemDatabaseListSortOrder, 0, -6);
+					$systemDatabaseListCommand .= ',`' . $systemDatabaseListSortColumnKey . '` ' . strtoupper($systemDatabaseListSortOrder);
 				}
 
-				$systemDatabaseListCommand = rtrim($systemDatabaseListCommand, ',');
+				$systemDatabaseListCommand = substr($systemDatabaseListCommand, 1);
 			}
 		}
 
-		if (empty($parameters['limit']) === false) {
-			$systemDatabaseListCommand .= ' LIMIT ' . $parameters['limit'];
+		if (
+			(isset($parameters['limit']) === true) &&
+			(is_numeric($parameters['limit']) === true)
+		) {
+			$systemDatabaseListCommand .= ' LIMIT ' . intval($parameters['limit']);
 		}
 
-		if (empty($parameters['offset']) === false) {
-			$systemDatabaseListCommand .= ' OFFSET ' . $parameters['offset'];
+		if (
+			(isset($parameters['offset']) === true) &&
+			(is_numeric($parameters['offset']) === true)
+		) {
+			$systemDatabaseListCommand .= ' OFFSET ' . intval($parameters['offset']);
 		}
 
 		$systemDatabaseListRows = mysqli_query($parameters['in']['connection'], $systemDatabaseListCommand);
@@ -264,7 +284,7 @@
 			}
 
 			if (
-				(is_int($whereConditionKey) === true) ||
+				(is_numeric($whereConditionKey) === true) ||
 				(
 					(is_array($whereConditionValue) === true) &&
 					((count($whereConditionValue) === count($whereConditionValue, true)) === false)
