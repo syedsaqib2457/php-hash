@@ -9,7 +9,7 @@ For example, a node with 253 IP addresses will have 1 main node with 252 additio
 
 If a node is a main node, it must be deployed and connected to the system API with this guide.
 
-If a node is an additional node, it will automatically update on the deployed node with no downtime.
+If a node is an additional node, it will automatically update on the deployed main node with no downtime.
 
 A node can have both IPv4 and IPv6 addresses with external and internal IP addresses.
 
