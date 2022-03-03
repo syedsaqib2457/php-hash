@@ -11,7 +11,7 @@ System user authentication token scopes are required to grant permissions to eac
 
 This is an example `POST` request body made to the `/system-endpoint.php` path in `JSON` format.
 
-All values are formatted as `string` types.
+All values are formatted as `string` types and contained in `json=`.
 
 ```json
 {
