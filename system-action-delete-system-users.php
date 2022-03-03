@@ -61,7 +61,6 @@
 				'systemUserSystemUserId' => $parameters['where']['id']
 			)
 		), $response);
-		$systemUserSystemUsers = current($systemUserSystemUsers);
 
 		foreach ($systemUserSystemUsers as $systemUserSystemUser) {
 			if (empty($systemUserSystemUsersIdsParts[$systemUserSystemUsersIdsPartsIndex][10]) === false) {
