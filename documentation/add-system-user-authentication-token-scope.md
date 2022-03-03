@@ -32,11 +32,11 @@ These are descriptions for each request parameter.
 
 The value must be `addSystemUserAuthenticationTokenScope`.
 
-#### data [systemAction]
+#### data.systemAction
 
 This is required to map the added system user authentication token scope to a `systemAction`.
 
-#### data [systemUserAuthenticationTokenId]
+#### data.systemUserAuthenticationTokenId
 
 This is required to map the added system user authentication token scope to a `systemUserAuthenticationTokenId
 
@@ -82,33 +82,33 @@ The value is either `1` if the request is authenticated or `0` if the request is
 
 The request must have a valid `systemUserAuthenticationToken` value to be authenticated.
 
-#### data [createdTimestamp]
+#### data.createdTimestamp
 
 This is the `Unix timestamp in seconds` of when the system user authentication token scope was added.
 
-#### data [id]
+#### data.id
 
 This is the unique ID of the added system user authentication token scope.
 
 The value is a `numeric ID` with a string length of `30 characters`.
 
-#### data [modifiedTimestamp]
+#### data.modifiedTimestamp
 
 This is the `Unix timestamp in seconds` of when the system user authentication token scope was added.
 
 The value changes to the current timestamp whenever the added system user is modified.
 
-#### data [systemAction]
+#### data.systemAction
 
 This is the system action that the added system user authentication token scope grants permissions to.
 
-#### data [systemUserAuthenticationTokenId]
+#### data.systemUserAuthenticationTokenId
 
 This is the unique ID of the system user authentication token that the added system user authentication token scope belongs to.
 
 The value is a `numeric ID` with a string length of `30 characters`.
 
-#### data [systemUserId]
+#### data.systemUserId
 
 This is the unique ID of the system user that the added system user authentication token scope belongs to.
 
