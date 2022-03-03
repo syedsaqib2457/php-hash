@@ -355,6 +355,14 @@
 
 								$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 								$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
+
+								if (
+									(($whereConditionValueCondition === 'like') === false) &&
+									(($whereConditionValueCondition === 'not like') === false)
+								) {
+									return false;
+								}
+
 								$whereConditionValueCondition = strtoupper($whereConditionValueCondition);
 								$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
 								$whereConditionValueValue = $whereConditionValueWildcards['prefix'] . str_replace('%', '\%', $whereConditionValueValue) . $whereConditionValueWildcards['suffix'];
@@ -415,6 +423,14 @@
 
 							$whereConditionValueKeyDelimiterPosition = strpos($whereConditionValueKey, ' ');
 							$whereConditionValueCondition = substr($whereConditionValueKey, ($whereConditionValueKeyDelimiterPosition + 1));
+
+							if (
+								(($whereConditionValueCondition === 'like') === false) &&
+								(($whereConditionValueCondition === 'not like') === false)
+							) {
+								return false;
+							}
+
 							$whereConditionValueCondition = strtoupper($whereConditionValueCondition);
 							$whereConditionValueKey = substr($whereConditionValueKey, 0, $whereConditionValueKeyDelimiterPosition);
 							$whereConditionValueValueConditions = '(';
