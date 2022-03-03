@@ -33,13 +33,13 @@ These are descriptions for each request parameter.
 
 The value must be `addSystemUserAuthenticationTokenSource`.
 
-#### data [ipAddressRangeStart]
+#### data.ipAddressRangeStart
 
 This is required to identify the first IP address in a range of IP addresses.
 
 The value must be a `public or reserved IPv4 or IPv6 address`.
 
-#### data [ipAddressRangeStop]
+#### data.ipAddressRangeStop
 
 This is required to identify the last IP address in a range of IP addresses.
 
@@ -47,7 +47,7 @@ The value must be a `public or reserved IPv4 or IPv6 address`.
 
 If the system user authentication token source has only 1 IP address, the value should be the same as `ipAddressRangeStart`.
 
-#### data [systemUserAuthenticationTokenId]
+#### data.systemUserAuthenticationTokenId
 
 This is required to map the added system user authentication token source to a `systemUserAuthenticationTokenId`.
 
@@ -93,47 +93,47 @@ The value is either `1` if the request is authenticated or `0` if the request is
 
 The request must have a valid `systemUserAuthenticationToken` value to be authenticated.
 
-#### data [createdTimestamp]
+#### data.createdTimestamp
 
 This is the `Unix timestamp in seconds` of when the system user authentication token source was added.
 
-#### data [id]
+#### data.id
 
 This is the unique ID of the added system user authentication token source.
 
 The value is a `numeric ID` with a string length of `30 characters`.
 
-#### data [ipAddressRangeStart]
+#### data.ipAddressRangeStart
 
 This is the first IPv4 or IPv6 address in the added system user authentication token source.
 
 The value is a `public or reserved IPv4 or IPv6 address`.
 
-#### data [ipAddressRangeStop]
+#### data.ipAddressRangeStop
 
 This is the last IPv4 or IPv6 address in the added system user authentication token source.
 
 The value is a `public or reserved IPv4 or IPv6 address`.
 
-#### data [ipAddressRangeVersionNumber]
+#### data.ipAddressRangeVersionNumber
 
 This is the numeric IP address range version number in the added system user authentication token source.
 
 The value is either `4` or `6`.
 
-#### data [modifiedTimestamp]
+#### data.modifiedTimestamp
 
 This is the `Unix timestamp in seconds` of when the system user authentication token source was added.
 
 The value changes to the current timestamp whenever the added system user is modified.
 
-#### data [systemUserAuthenticationTokenId]
+#### data.systemUserAuthenticationTokenId
 
 This is the unique ID of the system user authentication token that the added system user authentication token source belongs to.
 
 The value is a `numeric ID` with a string length of `30 characters`.
 
-#### data [systemUserId]
+#### data.systemUserId
 
 This is the unique ID of the system user that the added system user authentication token source belongs to.
 
