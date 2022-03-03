@@ -1,2 +1,0 @@
-### Authenticate a Node Process
----
