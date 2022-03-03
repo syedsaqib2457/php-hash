@@ -51,7 +51,7 @@ This is required to assign a `type` the node process `portNumber`.
 
 This is the list of possible values.
 
-``` console
+```
 httpProxy
 loadBalancer
 recursiveDns
@@ -137,7 +137,7 @@ This is the type in the added node process.
 
 This is the list of possible values.
 
-``` console
+```
 httpProxy
 loadBalancer
 recursiveDns
