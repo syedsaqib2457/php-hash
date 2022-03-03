@@ -67,7 +67,7 @@ An `externalIpAddressVersion6` value must also be set.
 
 This is required if the node is added as an additional node to an existing node.
 
-The value must be an `numeric ID` with a string length of `30 characters`.
+The value must be a `numeric ID` with a string length of `30 characters`.
 
 #### systemUserAuthenticationToken
 
