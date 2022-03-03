@@ -14,9 +14,9 @@
 			return $response;
 		}
 
+		$nodeProcessesIds = $parameters['where']['id'];
 		$nodeProcessesIdsPartsIndex = 0;
 		$nodeProcessesIdsParts = array();
-		$nodeProcessesIds = $parameters['where']['id'];
 
 		if (is_array($nodeProcessesIds) === false) {
 			$nodeProcessesIds = array(
