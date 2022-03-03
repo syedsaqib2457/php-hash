@@ -39,7 +39,7 @@ The value must be a `numeric ID` with a string length of `30 characters`.
 
 #### where.id
 
-This is required for deleting node processes by the `id`.
+This is required for deleting node processes by each `id`.
 
 The value must either be an `array of numeric IDs` with string lengths of `30 characters` or a `numeric ID` with a string length of `30 characters`.
 
