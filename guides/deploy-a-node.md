@@ -71,7 +71,7 @@ sudo cat /tmp/add-node-response.json && echo ""
 ``` json
 {
     "authenticatedStatus": "1",
-    "data" {
+    "data": {
         "createdTimestamp": "0123456789",
         "activatedStatus": "0",
         "authenticationToken": "012345678901234567890123456789",
@@ -98,7 +98,7 @@ sudo cat /tmp/add-node-response.json && echo ""
         "storageCapacityMegabytes": ""
     },
     "message":"Node added successfully.",
-    "validatedStatus":"1"
+    "validatedStatus": "1"
 }
 ```
 
