@@ -66,8 +66,17 @@
 				}
 
 				if (($parameters['systemUserId'] === $systemUserAuthenticationToken['systemUserId']) === true) {
-					$response['message'] = 'System user authentication token ID ' . $systemUserAuthenticationToken['id'] . ' is the current system user authentication token, please try again.';
-					return $response;
+					$systemUserAuthenticationTokensCount = _count(array(
+						'in' => $parameters['systemDatabases']['systemUserAuthenticationTokens'],
+						'where' => array(
+							'systemUserId' => $systemUserAuthenticationToken['systemUserId']
+						)
+					), $response);
+
+					if (($systemUserAuthenticationTokensCount === 1) === true) {
+						$response['message'] = 'System user authentication token ID ' . $systemUserAuthenticationToken['id'] . ' is the only current system user authentication token, please try again.';
+						return $response;
+					}
 				}
 			}
 		}
