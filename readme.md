@@ -9,8 +9,8 @@ This is a free and open-source API to secure firewalls.
 This pre-release development code shouldn't be used in production until release version 1.00.`
 ```
 
-``` console
-# Checklist features before version 1.00 release
+```
+Checklist features before version 1.00 release
 
 - Adding API DDoS protection from unauthorized requests
 - Adding system IP address migration support
@@ -27,9 +27,9 @@ This pre-release development code shouldn't be used in production until release 
 Open the terminal console in one of these Linux distributions.
 
 ```
-Debian 10
-Debian 11
-Ubuntu 20.04
+- Debian 10
+- Debian 11
+- Ubuntu 20.04
 ```
 
 Open port `80` for the API to receive requests.
@@ -51,8 +51,8 @@ cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND
 The `systemUserAuthenticationToken` is provided after a successful installation.
 
 ``` console
-System user authentication token is 012345678901234567890123456789
 System deployed successfully.
+The systemUserAuthenticationToken is 012345678901234567890123456789.
 ```
 
 Deploy Nodes `[guide coming soon]`
