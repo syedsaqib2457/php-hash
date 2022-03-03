@@ -5,11 +5,50 @@ ___
 
 This is a free and open-source API to secure firewalls.
 
-`This is a pre-release development version.`
+``` json
+This pre-release development code shouldn't be used in production until version 1.00 is released.`
+```
+
+``` console
+# Checklist features before version 1.00 release
+
+- Adding node resource usage logging functionality to system
+- Installing in a subdirectory with custom ports
+- Testing Quality testing + bug fixes
+```
 
 ### Get Started
 
-Deployment `[guide coming soon]`
+Open the terminal console on one of these Linux distributions.
+
+```
+Debian 10
+Debian 11
+Ubuntu 20.04
+```
+
+Make sure `port 80` is open for the API to receive requests.
+
+Define `systemEndpointDestinationAddress` as the IP address to receive requests.
+
+This example uses `10.10.10.10` to receive requests.
+
+``` console
+systemEndpointDestinationAddress=10.10.10.10
+```
+
+Install with this command.
+
+``` console
+cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system-action-deploy-system.php ; sudo wget -O system-action-deploy-system.php --no-dns-cache --retry-connrefused --timeout=10 --tries=2 "https://raw.githubusercontent.com/twexxor/firewall-security-api/main/system-action-deploy-system.php?$RANDOM" && sudo php system-action-deploy-system.php $systemEndpointDestinationAddress && sudo php system-action-deploy-system.php $systemEndpointDestinationAddress 1;
+```
+
+The `systemUserAuthenticationToken` is provided after a successful installation.
+
+``` console
+System user authentication token is 012345678901234567890123456789
+System deployed successfully.
+```
 
 Read API Documentation `[guide coming soon]`
 
