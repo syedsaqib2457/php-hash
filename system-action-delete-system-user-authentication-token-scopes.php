@@ -41,10 +41,7 @@
 				)
 			), $response);
 
-			if (
-				(($systemUserSystemUserCount > 0) === false) &&
-				(($parameters['systemUserId'] === $systemUserAuthenticationTokenScope['systemUserId']) === false)
-			) {
+			if (($systemUserSystemUserCount === 1) === false) {
 				$response['message'] = 'Invalid permissions to delete system user authentication token scope ID ' . $systemUserAuthenticationTokenScope['id'] . ', please try again.';
 				return $response;
 			}
