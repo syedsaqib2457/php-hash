@@ -16,43 +16,65 @@
 			return $response;
 		}
 
-		$systemUserAuthenticationTokenScopes = _list(array(
-			'data' => array(
-				'id',
-				'systemUserId'
-			),
-			'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenScopes'],
-			'where' => array(
-				'id' => $parameters['where']['id']
-			)
-		), $response);
+		$systemUserAuthenticationTokenScopesIds = $parameters['where']['id'];
 
-		foreach ($systemUserAuthenticationTokenScopes as $systemUserAuthenticationTokenScope) {
-			if (($parameters['systemUserId'] === $systemUserAuthenticationTokenScope['systemUserId']) === true) {
-				$response['message'] = 'System user authentication token scope must belong to another user, please try again.';
-				return $response;
+		if (is_array($systemUserAuthenticationTokenScopesIds) === false) {
+			$systemUserAuthenticationTokenScopesIds = array(
+				$systemUserAuthenticationTokenScopesIds
+			);
+		}
+
+		$systemUserAuthenticationTokensScopesIdsPartsIndex = 0;
+		$systemUserAuthenticationTokensScopesIdsParts = array();
+
+		foreach ($systemUserAuthenticationTokenSourcesIds as $systemUserAuthenticationTokenSourcesId) {
+			if (empty($systemUserAuthenticationTokensScopesIdsParts[$systemUserAuthenticationTokensScopesIdsPartsIndex][10]) === false) {
+				$systemUserAuthenticationTokensScopesIdsPartsIndex++;
 			}
 
-			$systemUserSystemUserCount = _count(array(
-				'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
+			$systemUserAuthenticationTokensScopesIdsParts[$systemUserAuthenticationTokensScopesIdsPartsIndex][] = $systemUserAuthenticationTokenScopesId;
+		}
+
+		foreach ($systemUserAuthenticationTokensScopesIdsParts as $systemUserAuthenticationTokensScopesIdsPart) {
+			$systemUserAuthenticationTokenScopes = _list(array(
+				'data' => array(
+					'id',
+					'systemUserId'
+				),
+				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenScopes'],
 				'where' => array(
-					'systemUserId' => $systemUserAuthenticationTokenScope['systemUserId'],
-					'systemUserSystemUserId' => $parameters['systemUserId']
+					'id' => $systemUserAuthenticationTokensScopesIdsPart
 				)
 			), $response);
 
-			if (($systemUserSystemUserCount === 1) === false) {
-				$response['message'] = 'Invalid permissions to delete system user authentication token scope ID ' . $systemUserAuthenticationTokenScope['id'] . ', please try again.';
-				return $response;
+			foreach ($systemUserAuthenticationTokenScopes as $systemUserAuthenticationTokenScope) {
+				if (($parameters['systemUserId'] === $systemUserAuthenticationTokenScope['systemUserId']) === true) {
+					$response['message'] = 'System user authentication token scope must belong to another user, please try again.';
+					return $response;
+				}
+
+				$systemUserSystemUserCount = _count(array(
+					'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
+					'where' => array(
+						'systemUserId' => $systemUserAuthenticationTokenScope['systemUserId'],
+						'systemUserSystemUserId' => $parameters['systemUserId']
+					)
+				), $response);
+
+				if (($systemUserSystemUserCount === 1) === false) {
+					$response['message'] = 'Invalid permissions to delete system user authentication token scope ID ' . $systemUserAuthenticationTokenScope['id'] . ', please try again.';
+					return $response;
+				}
 			}
+
+			_delete(array(
+				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenScopes'],
+				'where' => array(
+					'id' => $systemUserAuthenticationTokensScopesIdsPart
+				)
+			), $response);
 		}
 
-		_delete(array(
-			'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenScopes'],
-			'where' => array(
-				'id' => $parameters['where']['id']
-			)
-		), $response);
 		$response['message'] = 'System user authentication token scope deleted successfully.';
 		$response['validatedStatus'] = '1';
 		return $response;
