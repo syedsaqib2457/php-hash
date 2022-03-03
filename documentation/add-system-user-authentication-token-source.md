@@ -1,6 +1,7 @@
-## Add System User Authentication Token Source
+<br>
 
-### Introduction
+### Add System User Authentication Token Source
+---
 
 This API action adds a system user authentication token source to a system user authentication token.
 
@@ -8,19 +9,19 @@ System user authentication token sources are optional to grant permissions to sp
 
 ### Request Example
 
-This is an example `POST` request body made to the `/system_endpoint.php` path in `JSON` format.
+This is an example `POST` request body made to the `/system-endpoint.php` path in `JSON` format.
 
 All values are formatted as `string` types.
 
 ```json
 {
-    "action": "add_system_user_authentication_token_source",
+    "action": "addSystemUserAuthenticationTokenSource",
     "data": {
-        "ip_address_range_start": "10.10.10.10",
-        "ip_address_range_stop": "10.10.10.20",
-        "system_user_authentication_token_id": "unique_id"
+        "ipAddressRangeStart": "10.10.10.10",
+        "ipAddressRangeStop": "10.10.10.20",
+        "systemUserAuthenticationTokenId": "012345678901234567890123456789"
     },
-    "system_user_authentication_token": "unique_id"
+    "systemUserAuthenticationToken": "012345678901234567890123456789"
 }
 ```
 
@@ -30,27 +31,27 @@ These are descriptions for each request parameter.
 
 #### action
 
-The value must be `add_system_user_authentication_token_source`.
+The value must be `addSystemUserAuthenticationTokenSource`.
 
-#### data [ip_address_range_start]
+#### data [ipAddressRangeStart]
 
 This is required to identify the first IP address in a range of IP addresses.
 
 The value must be a `public or reserved IPv4 or IPv6 address`.
 
-#### data [ip_address_range_stop]
+#### data [ipAddressRangeStop]
 
 This is required to identify the last IP address in a range of IP addresses.
 
 The value must be a `public or reserved IPv4 or IPv6 address`.
 
-If the system user authentication token source has only 1 IP address, the value should be the same as `ip_address_range_start`.
+If the system user authentication token source has only 1 IP address, the value should be the same as `ipAddressRangeStart`.
 
-#### data [system_user_authentication_token_id]
+#### data [systemUserAuthenticationTokenId]
 
-This is required to map the added system user authentication token source to a `system_user_authentication_token_id`.
+This is required to map the added system user authentication token source to a `systemUserAuthenticationTokenId`.
 
-#### system_user_authentication_token
+#### systemUserAuthenticationToken
 
 This is required for authenticating system user access.
 
@@ -62,19 +63,19 @@ All values are formatted as `string` types.
 
 ```json
 {
-    "authenticated_status": "1",
+    "authenticatedStatus": "1",
     "data": {
-        "created_timestamp": "0000000000",
-        "id": "unique_id",
-        "ip_address_range_start": "10.10.10.10",
-        "ip_address_range_stop": "10.10.10.20",
-        "ip_address_range_version_number": "4",
-        "modified_timestamp": "0000000000",
-        "system_user_authentication_token_id": "unique_id",
-        "system_user_id": "unique_id"
+        "createdTimestamp": "0123456789",
+        "id": "012345678901234567890123456789",
+        "ipAddressRangeStart": "10.10.10.10",
+        "ipAddressRangeStop": "10.10.10.20",
+        "ipAddressRangeVersionNumber": "4",
+        "modifiedTimestamp": "0123456789",
+        "systemUserAuthenticationTokenId": "012345678901234567890123456789",
+        "systemUserId": "012345678901234567890123456789"
     },
     "message": "System user authentication token source added successfully.",
-    "valid_status": "1"
+    "validatedStatus": "1"
 }
 ```
 
@@ -82,15 +83,15 @@ All values are formatted as `string` types.
 
 These are descriptions for each response parameter.
 
-#### authenticated_status
+#### authenticatedStatus
 
 This is the authenticated status indicator for the request.
 
 The value is either `1` if the request is authenticated or `0` if the request isn't authenticated.
 
-The request must have a valid `system_user_authentication_token` value to be authenticated.
+The request must have a valid `systemUserAuthenticationToken` value to be authenticated.
 
-#### data [created_timestamp]
+#### data [createdTimestamp]
 
 This is the `Unix timestamp in seconds` of when the system user authentication token source was added.
 
@@ -98,35 +99,35 @@ This is the `Unix timestamp in seconds` of when the system user authentication t
 
 This is the unique ID of the added system user authentication token source.
 
-#### data [ip_address_range_start]
+#### data [ipAddressRangeStart]
 
 This is the first IPv4 or IPv6 address in the added system user authentication token source.
 
 The value is a `public or reserved IPv4 or IPv6 address`.
 
-#### data [ip_address_range_stop]
+#### data [ipAddressRangeStop]
 
 This is the last IPv4 or IPv6 address in the added system user authentication token source.
 
 The value is a `public or reserved IPv4 or IPv6 address`.
 
-#### data [ip_address_range_version_number]
+#### data [ipAddressRangeVersionNumber]
 
 This is the numeric IP address range version number in the added system user authentication token source.
 
 The value is either `4` or `6`.
 
-#### data [modified_timestamp]
+#### data [modifiedTimestamp]
 
 This is the `Unix timestamp in seconds` of when the system user authentication token source was added.
 
 The value changes to the current timestamp whenever the added system user is modified.
 
-#### data [system_user_authentication_token_id]
+#### data [systemUserAuthenticationTokenId]
 
 This is the unique ID of the system user authentication token that the added system user authentication token source belongs to.
 
-#### data [system_user_id]
+#### data [systemUserId]
 
 This is the unique ID of the system user that the added system user authentication token source belongs to.
 
@@ -134,8 +135,8 @@ This is the unique ID of the system user that the added system user authenticati
 
 This is the message for debugging after processing the request.
 
-#### valid_status
+#### validatedStatus
 
-This is the valid status indicator for the request.
+This is the validated status indicator for the request.
 
-The value is either `1` if the request is valid or `0` if the request isn't valid.
+The value is either `1` if the request is validated or `0` if the request isn't validated.
