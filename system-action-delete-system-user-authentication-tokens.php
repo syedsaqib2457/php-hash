@@ -60,11 +60,13 @@
 					)
 				), $response);
 
-				if (
-					(($systemUserSystemUsersCount === 1) === false) &&
-					(($parameters['systemUserId'] === $systemUserAuthenticationToken['systemUserId']) === false)
-				) {
+				if (($systemUserSystemUsersCount === 1) === false) {
 					$response['message'] = 'Invalid permissions to delete system user authentication token ' . $systemUserAuthenticationToken['id'] . ', please try again.';
+					return $response;
+				}
+
+				if (($parameters['systemUserId'] === $systemUserAuthenticationToken['systemUserId']) === true) {
+					$response['message'] = 'System user authentication token ID ' . $systemUserAuthenticationToken['id'] . ' is the current system user authentication token, please try again.';
 					return $response;
 				}
 			}
