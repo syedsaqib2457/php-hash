@@ -21,7 +21,7 @@ All values are formatted as `string` types.
         "portNumber": "1080",
         "type": "socksProxy"
     },
-    "systemUserAuthenticationToken": "123456789"
+    "systemUserAuthenticationToken": "012345678901234567890123456789"
 }
 ```
 
@@ -49,7 +49,7 @@ Requests to a `portNumber` will automatically load-balance between all node proc
 
 #### data [type]
 
-This is required to assign a `type` the node process `port_number`.
+This is required to assign a `type` the node process `portNumber`.
 
 This is the list of possible values.
 
