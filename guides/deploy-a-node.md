@@ -115,17 +115,17 @@ All values are formatted as `string` types and contained in `json=`.
 ```json
 {
     "action": "activateNode",
-    "data": {
+    "systemUserAuthenticationToken": "012345678901234567890123456789",
+    "where": {
         "id": "012345678901234567890123456789"
-    },
-    "systemUserAuthenticationToken": "012345678901234567890123456789"
+    }
 }
 ```
 
 This is an example `wget` request with the response output to `/tmp/activate-node-response.json`.
 
 ``` console
-sudo wget -O /tmp/activate-node-response.json --post-data 'json={"action":"activateNode","data":{"id":"012345678901234567890123456789"},"systemUserAuthenticationToken":"012345678901234567890123456789"}' $systemEndpointDestinationAddress/system-endpoint.php?$RANDOM
+sudo wget -O /tmp/activate-node-response.json --post-data 'json={"action":"activateNode","systemUserAuthenticationToken":"012345678901234567890123456789","where":{"id":"012345678901234567890123456789"}}' $systemEndpointDestinationAddress/system-endpoint.php?$RANDOM
 ```
 
 ### Deploy Node
