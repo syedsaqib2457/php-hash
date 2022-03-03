@@ -70,7 +70,7 @@
 			$systemUserSystemUsersIdsParts[$systemUserSystemUsersIdsPartsIndex][] = $systemUserSystemUser['systemUserId'];
 		}
 
-		$systemDatabaseTableKeys = array(
+		$systemDatabaseTablesKeys = array(
 			'systemUserAuthenticationTokens',
 			'systemUserAuthenticationTokenScopes',
 			'systemUserAuthenticationTokenSources',
@@ -78,9 +78,9 @@
 		);
 
 		foreach ($systemUserSystemUsersIdsParts as $systemUserSystemUsersIdsPart) {
-			foreach ($systemDatabaseTableKeys as $systemDatabaseTableKey) {
+			foreach ($systemDatabaseTablesKeys as $systemDatabaseTablesKey) {
 				_delete(array(
-					'in' => $parameters['systemDatabases'][$systemDatabaseTableKey],
+					'in' => $parameters['systemDatabases'][$systemDatabaseTablesKey],
 					'where' => array(
 						'systemUserId' => $systemUserSystemUsersIdsPart
 					)
