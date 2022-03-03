@@ -1,5 +1,3 @@
-<br>
-
 ### Deploy a Node
 ---
 
