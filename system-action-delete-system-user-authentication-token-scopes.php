@@ -12,7 +12,7 @@
 
 	function _deleteSystemUserAuthenticationTokenScopes($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
-			$response['message'] = 'System user authentication token scope must have an ID, please try again.';
+			$response['message'] = 'System user authentication token scopes must have IDs, please try again.';
 			return $response;
 		}
 
@@ -24,18 +24,18 @@
 			);
 		}
 
-		$systemUserAuthenticationTokensScopesIdsPartsIndex = 0;
-		$systemUserAuthenticationTokensScopesIdsParts = array();
+		$systemUserAuthenticationTokenScopesIdsPartsIndex = 0;
+		$systemUserAuthenticationTokenScopesIdsParts = array();
 
 		foreach ($systemUserAuthenticationTokenScopesIds as $systemUserAuthenticationTokenScopesId) {
-			if (empty($systemUserAuthenticationTokensScopesIdsParts[$systemUserAuthenticationTokensScopesIdsPartsIndex][10]) === false) {
-				$systemUserAuthenticationTokensScopesIdsPartsIndex++;
+			if (empty($systemUserAuthenticationTokenScopesIdsParts[$systemUserAuthenticationTokenScopesIdsPartsIndex][10]) === false) {
+				$systemUserAuthenticationTokenScopesIdsPartsIndex++;
 			}
 
-			$systemUserAuthenticationTokensScopesIdsParts[$systemUserAuthenticationTokensScopesIdsPartsIndex][] = $systemUserAuthenticationTokenScopesId;
+			$systemUserAuthenticationTokenScopesIdsParts[$systemUserAuthenticationTokenScopesIdsPartsIndex][] = $systemUserAuthenticationTokenScopesId;
 		}
 
-		foreach ($systemUserAuthenticationTokensScopesIdsParts as $systemUserAuthenticationTokensScopesIdsPart) {
+		foreach ($systemUserAuthenticationTokenScopesIdsParts as $systemUserAuthenticationTokenScopesIdsPart) {
 			$systemUserAuthenticationTokenScopes = _list(array(
 				'data' => array(
 					'id',
@@ -43,7 +43,7 @@
 				),
 				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenScopes'],
 				'where' => array(
-					'id' => $systemUserAuthenticationTokensScopesIdsPart
+					'id' => $systemUserAuthenticationTokenScopesIdsPart
 				)
 			), $response);
 
@@ -70,12 +70,12 @@
 			_delete(array(
 				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenScopes'],
 				'where' => array(
-					'id' => $systemUserAuthenticationTokensScopesIdsPart
+					'id' => $systemUserAuthenticationTokenScopesIdsPart
 				)
 			), $response);
 		}
 
-		$response['message'] = 'System user authentication token scope deleted successfully.';
+		$response['message'] = 'System user authentication token scopes deleted successfully.';
 		$response['validatedStatus'] = '1';
 		return $response;
 	}
