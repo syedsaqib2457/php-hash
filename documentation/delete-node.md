@@ -3,9 +3,9 @@
 
 This API action deletes a node.
 
-If the node is a main node, all additional nodes belonging to the node `id` will be deleted.
+If the deleted node is a main node, all additional nodes belonging to the deleted node will be deleted.
 
-Logs belonging to the node `id` will remain in the system API.
+Logs belonging to the deleted node will remain in the system API.
 
 ### Request Example
 
