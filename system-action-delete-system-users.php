@@ -50,8 +50,8 @@
 			}
 		}
 
-		$systemUserSystemUserIdPartIndex = 0;
-		$systemUserSystemUserIdParts = array();
+		$systemUserSystemUsersIdsPartsIndex = 0;
+		$systemUserSystemUsersIdsParts = array();
 		$systemUserSystemUsers = _list(array(
 			'data' => array(
 				'systemUserId'
@@ -63,11 +63,11 @@
 		$systemUserSystemUsers = current($systemUserSystemUsers);
 
 		foreach ($systemUserSystemUsers as $systemUserSystemUser) {
-			if (empty($systemUserSystemUserIdParts[$systemUserSystemUserIdPartIndex][10]) === false) {
-				$systemUserSystemUserIdPartIndex++;
+			if (empty($systemUserSystemUsersIdsParts[$systemUserSystemUsersIdsPartsIndex][10]) === false) {
+				$systemUserSystemUsersIdsPartsIndex++;
 			}
 
-			$systemUserSystemUserIdParts[$systemUserSystemUserIdPartIndex][] = $systemUserSystemUser['systemUserId'];
+			$systemUserSystemUsersIdsParts[$systemUserSystemUsersIdsPartsIndex][] = $systemUserSystemUser['systemUserId'];
 		}
 
 		$systemDatabaseTableKeys = array(
@@ -77,12 +77,12 @@
 			'systemUserRequestLogs'
 		);
 
-		foreach ($systemUserSystemUserIdParts as $systemUserSystemUserIdPart) {
+		foreach ($systemUserSystemUsersIdsParts as $systemUserSystemUsersIdsPart) {
 			foreach ($systemDatabaseTableKeys as $systemDatabaseTableKey) {
 				_delete(array(
 					'in' => $parameters['systemDatabases'][$systemDatabaseTableKey],
 					'where' => array(
-						'systemUserId' => $systemUserSystemUserIdPart
+						'systemUserId' => $systemUserSystemUsersIdsPart
 					)
 				), $response);
 			}
@@ -90,7 +90,7 @@
 			_delete(array(
 				'in' => $parameters['systemDatabases']['systemUsers'],
 				'where' => array(
-					'id' => $systemUserSystemUserIdPart
+					'id' => $systemUserSystemUsersIdsPart
 				)
 			), $response);
 		}
