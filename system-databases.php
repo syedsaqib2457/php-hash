@@ -443,38 +443,51 @@
 			$timestamp = time();
 
 			foreach ($parameters['data'] as $systemDatabaseColumns) {
-				$systemDatabaseInsertColumnKeys = $systemDatabaseInsertColumnValues = $systemDatabaseUpdateColumnValues = '';
+				$systemDatabaseInsertColumnKeys = '';
+				$systemDatabaseInsertColumnValues = '';
+				$systemDatabaseUpdateColumnValues = '';
 
 				foreach ($systemDatabaseColumns as $systemDatabaseColumnKey => $systemDatabaseColumnValue) {
-					$systemDatabaseInsertColumnKeys .= ',' . $systemDatabaseColumnKey;
+					if ((strpos($systemDatabaseColumnKey, '`') === false) === false) {
+						continue;
+					}
+
+					$systemDatabaseInsertColumnKeys .= ',`' . $systemDatabaseColumnKey . '`';
 					$systemDatabaseInsertColumnValue = '';
 
 					if ((strlen($systemDatabaseColumnValue) === 0) === false) {
-						$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseColumnValue);
-						$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
+						$systemDatabaseInsertColumnValue = $systemDatabaseColumnValue;
+
+						if ((strpos($systemDatabaseInsertColumnValue, '\\') === false) === false) {
+							$systemDatabaseInsertColumnValue = str_replace('\\', '\\\\', $systemDatabaseInsertColumnValue);
+						}
+
+						if ((strpos($systemDatabaseInsertColumnValue, "'") === false) === false) {
+							$systemDatabaseInsertColumnValue = str_replace("'", "\'", $systemDatabaseInsertColumnValue);
+						}
 					}
 
-					$systemDatabaseInsertColumnValues .= "','" . $systemDatabaseInsertColumnValue;
-					$systemDatabaseUpdateColumnValues .= "," . $systemDatabaseColumnKey . "='" . $systemDatabaseInsertColumnValue . "'";
+					$systemDatabaseInsertColumnValues .= ",'" . $systemDatabaseInsertColumnValue . "'";
+					$systemDatabaseUpdateColumnValues .= ',`' . $systemDatabaseColumnKey . "`='" . $systemDatabaseInsertColumnValue . "'";
 				}
 
 				if (empty($systemDatabaseColumns['createdTimestamp']) === true) {
-					$systemDatabaseInsertColumnKeys .= ',createdTimestamp';
-					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
-					$systemDatabaseUpdateColumnValues .= ",createdTimestamp='" . $timestamp . "'";
+					$systemDatabaseInsertColumnKeys .= ',`createdTimestamp`';
+					$systemDatabaseInsertColumnValues .= ",'" . $timestamp . "'";
+					$systemDatabaseUpdateColumnValues .= ",`createdTimestamp`='" . $timestamp . "'";
 				}
 
 				if (empty($systemDatabaseColumns['modifiedTimestamp']) === true) {
-					$systemDatabaseInsertColumnKeys .= ',modifiedTimestamp';
-					$systemDatabaseInsertColumnValues .= "','" . $timestamp;
-					$systemDatabaseUpdateColumnValues .= ",modifiedTimestamp='" . $timestamp . "'";
+					$systemDatabaseInsertColumnKeys .= ',`modifiedTimestamp`';
+					$systemDatabaseInsertColumnValues .= ",'" . $timestamp . "'";
+					$systemDatabaseUpdateColumnValues .= ",`modifiedTimestamp`='" . $timestamp . "'";
 				}
 
 				$systemDatabaseInsertColumnKeys = substr($systemDatabaseInsertColumnKeys, 1);
-				$systemDatabaseInsertColumnValues = substr($systemDatabaseInsertColumnValues, 2);
-				$systemDatabaseUpdateColumnValues = ' ON DUPLICATE KEY UPDATE ' . substr($systemDatabaseUpdateColumnValues, 1);
+				$systemDatabaseInsertColumnValues = substr($systemDatabaseInsertColumnValues, 1);
+				$systemDatabaseUpdateColumnValues = 'ON DUPLICATE KEY UPDATE ' . substr($systemDatabaseUpdateColumnValues, 1);
 
-				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['tableKey'] . '(' . $systemDatabaseInsertColumnKeys . ") VALUES (" . $systemDatabaseInsertColumnValues . "')" . $systemDatabaseUpdateColumnValues) === false) {
+				if (mysqli_query($parameters['in']['connection'], 'INSERT INTO ' . $parameters['in']['structure']['tableKey'] . '(' . $systemDatabaseInsertColumnKeys . ') VALUES (' . $systemDatabaseInsertColumnValues . ') ' . $systemDatabaseUpdateColumnValues) === false) {
 					$response['message'] = 'Error saving data in ' . $parameters['in']['structure']['tableKey'] . ' system database, please try again.';
 					_output($parameters, $response);
 				}
