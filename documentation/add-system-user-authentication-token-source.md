@@ -1,5 +1,3 @@
-<br>
-
 ### Add System User Authentication Token Source
 ---
 
