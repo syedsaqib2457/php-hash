@@ -25,7 +25,7 @@
 		}
 
 		foreach ($nodeProcessesIds as $nodeProcessesId) {
-			if (empty($nodeProcessesIdsParts[$nodeProcessesIdsPartsIndex][100]) === false) {
+			if (empty($nodeProcessesIdsParts[$nodeProcessesIdsPartsIndex][10]) === false) {
 				$nodeProcessesIdsPartsIndex++;
 			}
 
