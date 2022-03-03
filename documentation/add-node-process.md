@@ -3,8 +3,6 @@
 ### Add Node Process
 ---
 
-### Introduction
-
 This API action adds a node process to an existing node.
 
 ### Request Example
