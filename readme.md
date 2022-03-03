@@ -55,9 +55,9 @@ System deployed successfully.
 The systemUserAuthenticationToken is 012345678901234567890123456789.
 ```
 
-Deploy Nodes `[guide coming soon]`
+Deploy a Node `[guide coming soon]`
 
-Read API Documentation `[guide coming soon]`
+Read Documentation `[guide coming soon]`
 
 ### Usage
 
