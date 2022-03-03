@@ -1,5 +1,3 @@
-<br>
-
 ### Add System User Authentication Token
 ---
 
@@ -13,7 +11,7 @@ This is an example `POST` request body made to the `/system-endpoint.php` path i
 
 All values are formatted as `string` types and contained in `json=`.
 
-```json
+``` json
 {
     "action": "addSystemUserAuthenticationToken",
     "data": {
