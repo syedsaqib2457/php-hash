@@ -20,47 +20,54 @@
 			return $response;
 		}
 
-		$systemUserAuthenticationTokens = _list(array(
-			'data' => array(
-				'id',
-				'systemUserId',
-				'value'
-			),
-			'in' => $parameters['systemDatabases']['systemUserAuthenticationTokens'],
-			'where' => array(
-				'id' => $parameters['where']['id']
-			)
-		), $response);
+		$systemUserAuthenticationTokensIds = $parameters['where']['id'];
+
+		if (is_array($systemUserAuthenticationTokensIds) === false) {
+			$systemUserAuthenticationTokensIds = array(
+				$systemUserAuthenticationTokensIds
+			);
+		}
+
 		$systemUserAuthenticationTokensIdsPartsIndex = 0;
 		$systemUserAuthenticationTokensIdsParts = array();
 
-		foreach ($systemUserAuthenticationTokens as $systemUserAuthenticationToken) {
-			$systemUserSystemUsersCount = _count(array(
-				'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
-				'where' => array(
-					'systemUserId' => $systemUserAuthenticationToken['systemUserId'],
-					'systemUserSystemUserId' => $parameters['systemUserId']
-				)
-			), $response);
-
-			if (
-				(($systemUserSystemUsersCount === 1) === false) &&
-				(($parameters['systemUserId'] === $systemUserAuthenticationToken['systemUserId']) === false)
-			) {
-				$response['message'] = 'Invalid permissions to delete system user authentication token ' . $systemUserAuthenticationToken['id'] . ', please try again.';
-				return $response;
-			}
-
-			if (($parameters['systemUserAuthenticationToken'] === $systemUserAuthenticationToken['value']) === true) {
-				$response['message'] = 'System user authentication token ID ' . $systemUserAuthenticationToken['id'] . ' is the current system user authentication token, please try again.';
-				return $response;
-			}
-
+		foreach ($systemUserAuthenticationTokensIds as $systemUserAuthenticationTokensId) {
 			if (empty($systemUserAuthenticationTokensIdsParts[$systemUserAuthenticationTokensIdsPartsIndex][10]) === false) {
 				$systemUserAuthenticationTokensIdsPartsIndex++;
 			}
 
-			$systemUserAuthenticationTokensIdsParts[$systemUserAuthenticationTokensIdsPartsIndex][] = $systemUserAuthenticationToken['id'];
+			$systemUserAuthenticationTokensIdsParts[$systemUserAuthenticationTokensIdsPartsIndex][] = $systemUserAuthenticationTokensId;
+		}
+
+		foreach ($systemUserAuthenticationTokensIdsParts as $systemUserAuthenticationTokensIdsPart) {
+			$systemUserAuthenticationTokens = _list(array(
+				'data' => array(
+					'id',
+					'systemUserId'
+				),
+				'in' => $parameters['systemDatabases']['systemUserAuthenticationTokens'],
+				'where' => array(
+					'id' => $systemUserAuthenticationTokensIdsPart
+				)
+			), $response);
+
+			foreach ($systemUserAuthenticationTokens as $systemUserAuthenticationToken) {
+				$systemUserSystemUsersCount = _count(array(
+					'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
+					'where' => array(
+						'systemUserId' => $systemUserAuthenticationToken['systemUserId'],
+						'systemUserSystemUserId' => $parameters['systemUserId']
+					)
+				), $response);
+
+				if (
+					(($systemUserSystemUsersCount === 1) === false) &&
+					(($parameters['systemUserId'] === $systemUserAuthenticationToken['systemUserId']) === false)
+				) {
+					$response['message'] = 'Invalid permissions to delete system user authentication token ' . $systemUserAuthenticationToken['id'] . ', please try again.';
+					return $response;
+				}
+			}
 		}
 
 		$systemDatabaseTablesKeys = array(
