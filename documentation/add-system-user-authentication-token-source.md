@@ -91,8 +91,6 @@ This is the authenticated status indicator for the request.
 
 The value is either `1` if the request is authenticated or `0` if the request isn't authenticated.
 
-The request must have a valid `systemUserAuthenticationToken` value to be authenticated.
-
 #### data.createdTimestamp
 
 This is the `Unix timestamp in seconds` of when the system user authentication token source was added.
