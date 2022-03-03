@@ -170,13 +170,13 @@ The value is either an `IP address type` or `empty`.
 This is the list of possible values.
 
 ```
-currentNetwork
-documentation
-ietfProtocolAssignments
-internet
-loopback
-privateNetwork
-publicNetwork
+- currentNetwork
+- documentation
+- ietfProtocolAssignments
+- internet
+- loopback
+- privateNetwork
+- publicNetwork
 ```
 
 #### data [externalIpAddressVersion6]
@@ -196,13 +196,13 @@ The value is either an `IP address type` or `empty`.
 This is the list of possible values.
 
 ```
-currentNetwork
-documentation
-ietfProtocolAssignments
-internet
-loopback
-privateNetwork
-publicNetwork
+- currentNetwork
+- documentation
+- ietfProtocolAssignments
+- internet
+- loopback
+- privateNetwork
+- publicNetwork
 ```
 
 #### data [id]
@@ -226,12 +226,12 @@ The value is either an `IP address type` or `empty`.
 This is the list of possible values.
 
 ```
-currentNetwork
-documentation
-ietfProtocolAssignments
-internet
-loopback
-privateNetwork
+- currentNetwork
+- documentation
+- ietfProtocolAssignments
+- internet
+- loopback
+- privateNetwork
 ```
 
 #### data [internalIpAddressVersion6]
@@ -251,12 +251,12 @@ The value is either an `IP address type` or `empty`.
 This is the list of possible values.
 
 ```
-currentNetwork
-documentation
-ietfProtocolAssignments
-internet
-loopback
-privateNetwork
+- currentNetwork
+- documentation
+- ietfProtocolAssignments
+- internet
+- loopback
+- privateNetwork
 ```
 
 #### data [memoryCapacityMegabytes]
@@ -296,13 +296,13 @@ The value is either an `alphanumeric checkpoint` if the added node is deployed o
 This is the list of possible values.
 
 ```
-processingCompleted
-processingNodeProcesses
-processingProxyNodeProcesses
-processingQueued
-processingFirewall
-processingRecursiveDnsNodeProcesses
-verifyingNodeProcesses
+- processingCompleted
+- processingNodeProcesses
+- processingProxyNodeProcesses
+- processingQueued
+- processingFirewall
+- processingRecursiveDnsNodeProcesses
+- verifyingNodeProcesses
 ```
 
 #### data [processingProgressPercentage]
