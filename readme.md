@@ -12,13 +12,14 @@ This pre-release development code shouldn't be used in production until version 
 ``` console
 # Checklist features before version 1.00 release
 
+- Adding API DDoS protection from unauthorized requests
 - Adding node resource usage logging functionality to API
-- API DDoS protection from unauthorized requests
-- Documentaion
-- Guides
+- Adding system IP address migration support
+- Adding system update + node update scripts for each release version in system-action-update-system.php
 - Installing in a subdirectory with custom ports
-- System update scripts for each release version in system-action-update-system.php
 - Testing + bug fixes
+- Writing Documentaion
+- Writing Guides
 ```
 
 ### Get Started
@@ -31,7 +32,7 @@ Debian 11
 Ubuntu 20.04
 ```
 
-Make sure `port 80` is open for the API to receive requests.
+Open port `80` for the API to receive requests.
 
 Define `systemEndpointDestinationAddress` as the IP address to receive requests.
 
