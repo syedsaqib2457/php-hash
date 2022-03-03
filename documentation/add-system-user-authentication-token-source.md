@@ -11,7 +11,7 @@ System user authentication token sources are optional to grant permissions to sp
 
 This is an example `POST` request body made to the `/system-endpoint.php` path in `JSON` format.
 
-All values are formatted as `string` types.
+All values are formatted as `string` types and contained in `json=`.
 
 ```json
 {
