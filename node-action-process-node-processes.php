@@ -240,10 +240,6 @@
 				'networkMask' => '128'
 			)
 		);
-		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
-		$parameters['kernelPageSize'] = current($kernelPageSize);
-		exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
-		$parameters['memoryCapacityBytes'] = current($memoryCapacityBytes);
 		$parameters['nodeProcessTypeFirewallRuleSetIndex'] = 0;
 
 		if (file_exists('/etc/ssh/sshd_config') === true) {
@@ -315,14 +311,14 @@
 			}
 		}
 
-		$kernelOptions = array(
+		$kernelSettings = array(
 			'fs.aio-max-nr = 1000000000',
 			'fs.file-max = 1000000000',
 			'fs.nr_open = 1000000000',
 			'fs.pipe-max-size = 10000000',
 			'fs.suid_dumpable = 0',
 			'kernel.core_uses_pid = 1',
-			'kernel.hung_task_timeout_secs = 2',
+			'kernel.hung_task_timeout_secs = 3',
 			'kernel.io_delay_type = 3',
 			'kernel.kptr_restrict = 2',
 			'kernel.msgmax = 65535',
@@ -358,27 +354,27 @@
 			'net.ipv4.neigh.default.gc_thresh1 = 32',
 			'net.ipv4.neigh.default.gc_thresh2 = 1024',
 			'net.ipv4.neigh.default.gc_thresh3 = 2048',
-			'net.ipv4.route.gc_timeout = 2',
+			'net.ipv4.route.gc_timeout = 3',
 			'net.ipv4.tcp_adv_win_scale = 2',
 			'net.ipv4.tcp_congestion_control = htcp',
 			'net.ipv4.tcp_fastopen = 2',
-			'net.ipv4.tcp_fin_timeout = 2',
-			'net.ipv4.tcp_keepalive_intvl = 2',
-			'net.ipv4.tcp_keepalive_probes = 2',
-			'net.ipv4.tcp_keepalive_time = 2',
+			'net.ipv4.tcp_fin_timeout = 3',
+			'net.ipv4.tcp_keepalive_intvl = 3',
+			'net.ipv4.tcp_keepalive_probes = 3',
+			'net.ipv4.tcp_keepalive_time = 3',
 			'net.ipv4.tcp_low_latency = 1',
 			'net.ipv4.tcp_max_orphans = 100000',
 			'net.ipv4.tcp_max_syn_backlog = 1000000',
 			'net.ipv4.tcp_max_tw_buckets = 100000000',
 			'net.ipv4.tcp_moderate_rcvbuf = 1',
 			'net.ipv4.tcp_no_metrics_save = 1',
-			'net.ipv4.tcp_orphan_retries = 0',
-			'net.ipv4.tcp_retries2 = 1',
+			'net.ipv4.tcp_orphan_retries = 3',
+			'net.ipv4.tcp_retries2 = 3',
 			'net.ipv4.tcp_rfc1337 = 0',
 			'net.ipv4.tcp_sack = 0',
 			'net.ipv4.tcp_slow_start_after_idle = 0',
-			'net.ipv4.tcp_syn_retries = 2',
-			'net.ipv4.tcp_synack_retries = 2',
+			'net.ipv4.tcp_syn_retries = 3',
+			'net.ipv4.tcp_synack_retries = 3',
 			'net.ipv4.tcp_syncookies = 0',
 			'net.ipv4.tcp_thin_linear_timeouts = 1',
 			'net.ipv4.tcp_timestamps = 1',
@@ -398,7 +394,7 @@
 			'net.ipv6.neigh.default.gc_thresh1 = 32',
 			'net.ipv6.neigh.default.gc_thresh2 = 1024',
 			'net.ipv6.neigh.default.gc_thresh3 = 2048',
-			'net.ipv6.route.gc_timeout = 2',
+			'net.ipv6.route.gc_timeout = 3',
 			'vm.dirty_background_ratio = 10',
 			'vm.dirty_expire_centisecs = 10',
 			'vm.dirty_ratio = 10',
@@ -408,35 +404,39 @@
 			'vm.overcommit_memory = 0',
 			'vm.swappiness = 0'
 		);
-		$kernelOptions = implode("\n", $kernelOptions);
+		$kernelSettings = implode("\n", $kernelSettings);
 
-		if (file_put_contents('/etc/sysctl.conf', $kernelOptions) === false) {
+		if (file_put_contents('/etc/sysctl.conf', $kernelSettings) === false) {
 			$response['message'] = 'Error adding kernel options, please try again.';
 			return $response;
 		}
 
 		shell_exec('sudo ' . $parameters['binaryFiles']['sysctl'] . ' -p');
-		$defaultSocketBufferMemoryBytes = ceil($parameters['memoryCapacityBytes'] * 0.0003);
-		$kernelOptions = array(
-			'kernel.shmall' => floor($parameters['memoryCapacityBytes'] / $parameters['kernelPageSize']),
-			'kernel.shmmax' => $parameters['memoryCapacityBytes'],
-			'net.core.optmem_max' => ceil($parameters['memoryCapacityBytes'] * 0.02),
-			'net.core.rmem_default' => $defaultSocketBufferMemoryBytes,
-			'net.core.rmem_max' => ($defaultSocketBufferMemoryBytes * 2),
-			'net.core.wmem_default' => $defaultSocketBufferMemoryBytes,
-			'net.core.wmem_max' => ($defaultSocketBufferMemoryBytes * 2)
+		exec('getconf PAGE_SIZE 2>&1', $kernelPageSize);
+		$kernelPageSize = current($kernelPageSize);
+		exec('free -b | grep "Mem:" | grep -v free | awk \'{print $2}\'', $memoryCapacityBytes);
+		$memoryCapacityBytes = current($memoryCapacityBytes);
+		$memoryCapacityPages = ceil($memoryCapacityBytes / $kernelPageSize);
+		$defaultSocketBufferMemoryBytes = ceil($memoryCapacityBytes * 0.00034);
+		$kernelSettings = array(
+			'kernel.shmall="' . floor($memoryCapacityBytes / $kernelPageSize) . '"',
+			'kernel.shmmax="' . $memoryCapacityBytes . '"',
+			'net.core.optmem_max="' . ceil($memoryCapacityBytes * 0.02) . '"',
+			'net.core.rmem_default="' . $defaultSocketBufferMemoryBytes . '"',
+			'net.core.rmem_max="' . ($defaultSocketBufferMemoryBytes * 2) . '"',
+			'net.core.wmem_default="' . $defaultSocketBufferMemoryBytes . '"',
+			'net.core.wmem_max="' . ($defaultSocketBufferMemoryBytes * 2) . '"'
 		);
-		$memoryCapacityPages = ceil($parameters['memoryCapacityBytes'] / $parameters['kernelPageSize']);
 
-		foreach ($parameters['data'][$parameters['nodeProcessDataKey']]['nodeIpAddressVersionNumbers'] as $nodeIpAddressVersionNumber) {
-			$kernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_mem'] = $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages;
-			$kernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_rmem'] = 1 . ' ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2);
-			$kernelOptions['net.ipv' . $nodeIpAddressVersion . '.tcp_wmem'] = $kernelOptions['net.ipv' . $nodeIpAddressVersionNumber . '.tcp_rmem'];
-			$kernelOptions['net.ipv' . $nodeIpAddressVersion . '.udp_mem'] = $kernelOptions['net.ipv' . $nodeIpAddressVersionNumber . '.tcp_mem'];
+		foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
+			$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
+			$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_rmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
+			$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_wmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
+			$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.udp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
 		}
 
-		foreach ($kernelOptions as $kernelOptionKey => $kernelOptionValue) {
-			shell_exec('sudo ' . $parameters['binaryFiles']['sysctl'] . ' -w ' . $kernelOptionKey . '="' . $kernelOptionValue . '"');
+		foreach ($kernelSettings as $kernelSetting) {
+			shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w ' . $kernelSetting);
 		}
 
 		$nodeActionProcessNetworkInterfaceIpAddressesCommands = array(
