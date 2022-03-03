@@ -27,7 +27,7 @@
 		$systemUserAuthenticationTokensScopesIdsPartsIndex = 0;
 		$systemUserAuthenticationTokensScopesIdsParts = array();
 
-		foreach ($systemUserAuthenticationTokenSourcesIds as $systemUserAuthenticationTokenSourcesId) {
+		foreach ($systemUserAuthenticationTokenScopesIds as $systemUserAuthenticationTokenScopesId) {
 			if (empty($systemUserAuthenticationTokensScopesIdsParts[$systemUserAuthenticationTokensScopesIdsPartsIndex][10]) === false) {
 				$systemUserAuthenticationTokensScopesIdsPartsIndex++;
 			}
