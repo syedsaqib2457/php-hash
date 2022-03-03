@@ -25,7 +25,7 @@ A node must be deployed in one of these Linux distributions with `all ports open
 - Ubuntu 20.04
 ```
 
-The system automatically closes and opens ports for each node process.
+The system API automatically closes and opens ports for each node process.
 
 This guide uses the following example data to deploy a node without any node processes.
 
