@@ -41,7 +41,7 @@ The value must be a `numeric ID` with a string length of `30 characters`.
 
 This is required for deleting node processes by the `id`.
 
-The value must be an `array of numeric IDs` with string lengths of `30 characters`.
+The value must either be an `array of numeric IDs` with string lengths of `30 characters` or a `numeric ID` with a string length of `30 characters`.
 
 ### Response Example
 
