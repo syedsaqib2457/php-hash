@@ -53,9 +53,11 @@ System deployed successfully.
 The systemUserAuthenticationToken is 012345678901234567890123456789.
 ```
 
-The next step is to [deploy a node](https://github.com/twexxor/firewall-security-api/blob/main/guides/deploy-a-node.md#user-content-deploy-a-node), read the documentation or follow one of these guides.
-
 ### Usage
+
+First, [deploy the system](https://github.com/twexxor/firewall-security-api/blob/main/readme.md#user-content-get-started) and [deploy a node](https://github.com/twexxor/firewall-security-api/blob/main/guides/deploy-a-node.md#user-content-deploy-a-node).
+
+Then, read the [documentation](https://github.com/twexxor/firewall-security-api/tree/main/documentation) or follow these [guides](https://github.com/twexxor/firewall-security-api/tree/main/guides).
 
 Database Scaling `[guide coming soon]`
 
