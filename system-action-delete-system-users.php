@@ -24,28 +24,28 @@
 			return $response;
 		}
 
-		$systemUserIds = $parameters['where']['id'];
+		$systemUsersIds = $parameters['where']['id'];
 
-		if (is_string($parameters['where']['id']) === true) {
-			$systemUserIds = array(
+		if (is_array($parameters['where']['id']) === false) {
+			$systemUsersIds = array(
 				$parameters['where']['id']
 			);
 		}
 
-		foreach ($systemUserIds as $systemUserId) {
-			$systemUserSystemUserCount = _count(array(
+		foreach ($systemUsersIds as $systemUsersId) {
+			$systemUserSystemUsersCount = _count(array(
 				'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
 				'where' => array(
-					'systemUserId' => $systemUserId,
+					'systemUserId' => $systemUsersId,
 					'systemUserSystemUserId' => $parameters['systemUserId']
 				)
 			), $response);
 
 			if (
-				(($systemUserSystemUserCount === 1) === false) ||
-				(($parameters['systemUserId'] === $systemUserId) === true)
+				(($systemUserSystemUsersCount === 1) === false) ||
+				(($parameters['systemUserId'] === $systemUsersId) === true)
 			) {
-				$response['message'] = 'Invalid permissions to delete system user ID ' . $systemUserId . ', please try again.';
+				$response['message'] = 'Invalid permissions to delete system user ID ' . $systemUsersId . ', please try again.';
 				return $response;
 			}
 		}
