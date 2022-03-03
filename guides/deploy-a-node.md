@@ -1,7 +1,7 @@
 ### Deploy a Node
 ---
 
-This guide explains how to deploy a node after [deploying the system](https://github.com/twexxor/firewall-security-api#user-content-get-started).
+This guide explains how to deploy a node after [deploying the system](https://github.com/twexxor/firewall-security-api/blob/main/readme.md#user-content-get-started).
 
 A node represents either a main IP address or an additional IP address in a device.
 
