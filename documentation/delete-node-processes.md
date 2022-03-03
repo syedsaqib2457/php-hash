@@ -1,9 +1,9 @@
-### Delete Node Process
+### Delete Node Processes
 ---
 
-This API action deletes a node process.
+This API action deletes node processes.
 
-Logs belonging to the node process `id` will remain in the system API.
+Logs belonging to the node processes will remain in the system API.
 
 ### Request Example
 
@@ -13,10 +13,12 @@ All values are formatted as `string` types and contained in `json=`.
 
 ```json
 {
-    "action": "deleteNodeProcess",
+    "action": "deleteNodeProcesses",
     "systemUserAuthenticationToken": "012345678901234567890123456789",
     "where": {
-        "id": "012345678901234567890123456789"
+        "id": [
+            "012345678901234567890123456789"
+        ]
     }
 }
 ```
@@ -27,7 +29,7 @@ These are descriptions for each request parameter.
 
 #### action
 
-The value must be `deleteNodeProcess`.
+The value must be `deleteNodeProcesses`.
 
 #### systemUserAuthenticationToken
 
@@ -37,9 +39,9 @@ The value must be a `numeric ID` with a string length of `30 characters`.
 
 #### where.id
 
-This is required for deleting a node process by the `id`.
+This is required for deleting node processes by the `id`.
 
-The value must be a `numeric ID` with a string length of `30 characters`.
+The value must be an `array of numeric IDs` with a string length of `30 characters`.
 
 ### Response Example
 
@@ -51,7 +53,7 @@ All values are formatted as `string` types.
 {
     "authenticatedStatus": "1",
     "data": {},
-    "message": "Node process deleted successfully.",
+    "message": "Node processes deleted successfully.",
     "validatedStatus": "1"
 }
 ```
