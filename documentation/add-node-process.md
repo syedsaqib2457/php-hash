@@ -119,6 +119,8 @@ The value changes to the current timestamp whenever the added system user is mod
 
 This is the unique ID of the node that the node process was assigned to.
 
+The value is a `numeric ID` with a string length of `30 characters`.
+
 #### data.nodeNodeId
 
 This is the unique ID of the main node that the node process was assigned to.
