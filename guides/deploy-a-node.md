@@ -56,6 +56,14 @@ All values are formatted as `string` types and contained in `json=`.
 }
 ```
 
+Open the terminal console in one of these Linux distributions.
+
+```
+- Debian 10
+- Debian 11
+- Ubuntu 20.04
+```
+
 This is an example `wget` request with the response output to `/tmp/add-node-response.json`.
 
 ``` console
