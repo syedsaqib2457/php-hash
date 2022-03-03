@@ -73,7 +73,7 @@ The value must be a `numeric ID` with a string length of `30 characters`.
 
 This is required for authenticating system user access.
 
-The value must be a `string` in the `systemUserAuthenticationTokens` database.
+The value must be a `numeric ID` with a string length of `30 characters`.
 
 ### Response Example
 
