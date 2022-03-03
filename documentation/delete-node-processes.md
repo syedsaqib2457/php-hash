@@ -3,7 +3,7 @@
 
 This API action deletes node processes.
 
-Logs belonging to the node processes will remain in the system API.
+Logs belonging to the deleted node processes will remain in the system API.
 
 ### Request Example
 
