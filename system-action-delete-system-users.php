@@ -59,6 +59,7 @@
 			'in' => $parameters['systemDatabases']['systemUserSystemUsers'],
 			'where' => array(
 				'systemUserSystemUserId' => $parameters['where']['id']
+			)
 		), $response);
 		$systemUserSystemUsers = current($systemUserSystemUsers);
 
