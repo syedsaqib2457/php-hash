@@ -72,6 +72,8 @@ This is the `Unix timestamp in seconds` of when the system user was added.
 
 This is the unique ID of the added system user.
 
+The value is a `numeric ID` with a string length of `30 characters`.
+
 #### data [modifiedTimestamp]
 
 This is the `Unix timestamp in seconds` of when the system user was added.
@@ -81,6 +83,8 @@ The value changes to the current timestamp whenever the added system user is mod
 #### data [systemUserId]
 
 This is the unique ID of the system user that the added system user belongs to.
+
+The value is a `numeric ID` with a string length of `30 characters`.
 
 #### message
 
