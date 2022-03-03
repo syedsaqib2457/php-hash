@@ -51,6 +51,8 @@ If the system user authentication token source has only 1 IP address, the value 
 
 This is required to map the added system user authentication token source to a `systemUserAuthenticationTokenId`.
 
+The value must be a `numeric ID` with a string length of `30 characters`.
+
 #### systemUserAuthenticationToken
 
 This is required for authenticating system user access.
@@ -99,6 +101,8 @@ This is the `Unix timestamp in seconds` of when the system user authentication t
 
 This is the unique ID of the added system user authentication token source.
 
+The value is a `numeric ID` with a string length of `30 characters`.
+
 #### data [ipAddressRangeStart]
 
 This is the first IPv4 or IPv6 address in the added system user authentication token source.
@@ -127,9 +131,13 @@ The value changes to the current timestamp whenever the added system user is mod
 
 This is the unique ID of the system user authentication token that the added system user authentication token source belongs to.
 
+The value is a `numeric ID` with a string length of `30 characters`.
+
 #### data [systemUserId]
 
 This is the unique ID of the system user that the added system user authentication token source belongs to.
+
+The value is a `numeric ID` with a string length of `30 characters`.
 
 #### message
 
