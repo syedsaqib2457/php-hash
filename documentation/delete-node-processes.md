@@ -11,7 +11,7 @@ This is an example `POST` request body made to the `/system-endpoint.php` path i
 
 All values are formatted as `string` types and contained in `json=`.
 
-```json
+``` json
 {
     "action": "deleteNodeProcesses",
     "systemUserAuthenticationToken": "012345678901234567890123456789",
@@ -49,7 +49,7 @@ This is an example response body from the example request in `JSON` format.
 
 All values are formatted as `string` types.
 
-```json
+``` json
 {
     "authenticatedStatus": "1",
     "data": {},
