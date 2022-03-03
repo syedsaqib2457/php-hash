@@ -11,7 +11,7 @@ The added system user and all system users above the added system user have perm
 
 This is an example `POST` request body made to the `/system-endpoint.php` path in `JSON` format.
 
-All values are formatted as `string` types.
+All values are formatted as `string` types and contained in `json=`.
 
 ```json
 {
