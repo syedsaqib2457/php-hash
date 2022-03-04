@@ -1045,13 +1045,13 @@
 			'nodeProcessResourceUsageLogs' => array(
 				'bytesReceived' => 'VARCHAR(30)',
 				'bytesSent' => 'VARCHAR(30)',
-				'cpuPercentage' => 'VARCHAR(3)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
 				'memoryPercentage' => 'VARCHAR(3)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
 				'nodeProcessType' => 'VARCHAR(14)',
+				'processorPercentage' => 'VARCHAR(3)',
 				'requestCount' => 'VARCHAR(30)'
 			),
 			'nodeRequestDestinations' => array(
@@ -1090,15 +1090,15 @@
 			'nodeResourceUsageLogs' => array(
 				'bytesReceived' => 'VARCHAR(30)',
 				'bytesSent' => 'VARCHAR(30)',
-				'cpuCapacityMegahertz' => 'VARCHAR(30)',
-				'cpuCoreCount' => 'VARCHAR(30)',
-				'cpuPercentage' => 'VARCHAR(3)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'id' => 'VARCHAR(30)',
 				'memoryCapacityMegabytes' => 'VARCHAR(30)',
 				'memoryPercentage' => 'VARCHAR(3)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
+				'processorCapacityMegahertz' => 'VARCHAR(30)',
+				'processorCoreCount' => 'VARCHAR(30)',
+				'processorPercentage' => 'VARCHAR(3)',
 				'requestCount' => 'VARCHAR(30)',
 				'storageCapacityMegabytes' => 'VARCHAR(30)',
 				'storagePercentage' => 'VARCHAR(3)'
@@ -1106,8 +1106,6 @@
 			'nodes' => array(
 				'activatedStatus' => 'VARCHAR(1)',
 				'authenticationToken' => 'VARCHAR(30)',
-				'cpuCapacityMegahertz' => 'VARCHAR(30)',
-				'cpuCoreCount' => 'VARCHAR(30)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'deployedStatus' => 'VARCHAR(1)',
 				'externalIpAddressVersion4' => 'VARCHAR(15)',
@@ -1127,6 +1125,8 @@
 				'processingProgressOverrideStatus' => 'VARCHAR(1)',
 				'processingProgressPercentage' => 'VARCHAR(3)',
 				'processingStatus' => 'VARCHAR(1)',
+				'processorCapacityMegahertz' => 'VARCHAR(30)',
+				'processorCoreCount' => 'VARCHAR(30)',
 				'storageCapacityMegabytes' => 'VARCHAR(30)'
 			),
 			'nodeUserAuthenticationCredentials' => array(
@@ -1209,15 +1209,15 @@
 			'systemResourceUsageLogs' => array(
 				'bytesReceived' => 'VARCHAR(30)',
 				'bytesSent' => 'VARCHAR(30)',
-				'cpuCapacityMegahertz' => 'VARCHAR(30)',
-				'cpuCoreCount' => 'VARCHAR(30)',
-				'cpuPercentage' => 'VARCHAR(3)',
 				'createdTimestamp' => 'VARCHAR(10)',
 				'destinationIpAddress' => 'VARCHAR(39)',
 				'id' => 'VARCHAR(30)',
 				'memoryCapacityMegabytes' => 'VARCHAR(30)',
 				'memoryPercentage' => 'VARCHAR(3)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
+				'processorCapacityMegahertz' => 'VARCHAR(30)',
+				'processorCoreCount' => 'VARCHAR(30)',
+				'processorPercentage' => 'VARCHAR(3)',
 				'storageCapacityMegabytes' => 'VARCHAR(30)',
 				'storagePercentage' => 'VARCHAR(3)'
 			),
