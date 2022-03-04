@@ -98,7 +98,7 @@
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'crontab',
-			'output' => 'invalid ',
+			'output' => 'invalid',
 			'package' => 'cron'
 		),
 		array(
@@ -128,43 +128,49 @@
 		array(
 			'command' => '-h',
 			'name' => 'ip6tables-restore',
-			'output' => 'tables-restore ',
+			'output' => 'tables-restore',
 			'package' => 'iptables'
+		),
+		array(
+			'command' => $uniqueId,
+			'name' => 'ipset',
+			'output' => 'unknown ',
+			'package' => 'ipset'
 		),
 		array(
 			'command' => '-h',
 			'name' => 'iptables-restore',
-			'output' => 'tables-restore ',
+			'output' => 'tables-restore',
 			'package' => 'iptables'
 		),
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'kill',
-			'output' => 'invalid ',
+			'output' => 'invalid',
 			'package' => 'procps'
 		),
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'netstat',
-			'output' => 'invalid ',
+			'output' => 'invalid',
 			'package' => 'net-tools'
 		),
 		array(
 			'command' => '-v',
 			'name' => 'php',
-			'output' => 'PHP ',
+			'output' => 'PHP',
 			'package' => 'php'
 		),
 		array(
 			'command' => $uniqueId,
 			'name' => 'service',
-			'output' => 'unrecognized ',
+			'output' => 'unrecognized',
 			'package' => 'systemd'
 		),
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'sleep',
-			'output' => 'invalid ',
+			'output' => 'invalid',
 			'package' => 'coreutils'
 		),
 		array(
@@ -176,19 +182,19 @@
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'systemctl',
-			'output' => 'invalid ',
+			'output' => 'invalid',
 			'package' => 'systemd'
 		),
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'telinit',
-			'output' => 'invalid ',
+			'output' => 'invalid',
 			'package' => 'systemd-sysv'
 		),
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'timeout',
-			'output' => 'invalid ',
+			'output' => 'invalid',
 			'package' => 'coreutils'
 		),
 		array(
