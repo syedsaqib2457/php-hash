@@ -513,8 +513,8 @@
 		'}'
 	);
 
-	foreach ($systemActionProcessNodeResponse['data']['nodeIpAddressVersions'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
-		foreach ($systemActionProcessNodeResponse['data']['nodeIpAddresses'][$nodeIpAddressVersionNetworkMask] as $nodeIpAddress) {
+	foreach ($systemActionProcessNodeResponse['data']['nodeIpAddressVersionNumbers'] as $nodeIpAddressVersionNetworkMask => $nodeIpAddressVersionNumber) {
+		foreach ($systemActionProcessNodeResponse['data']['nodeIpAddresses'][$nodeIpAddressVersionNumber] as $nodeIpAddress) {
 			$nodeActionProcessNetworkInterfaceIpAddressesCommands[] = 'shell_exec(\'sudo ' . $binaryFiles['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $networkInterfaceName . '\');';
 			shell_exec('sudo ' . $binaryFiles['ip'] . ' -' . $nodeIpAddressVersionNumber . ' addr add ' . $nodeIpAddress . '/' . $nodeIpAddressVersionNetworkMask . ' dev ' . $networkInterfaceName);
 		}
