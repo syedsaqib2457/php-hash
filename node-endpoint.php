@@ -162,6 +162,12 @@
 			'package' => 'php'
 		),
 		array(
+			'command' => '-' . $uniqueId,
+			'name' => 'prlimit',
+			'output' => 'invalid',
+			'package' => 'util-linux'
+		),
+		array(
 			'command' => $uniqueId,
 			'name' => 'service',
 			'output' => 'unrecognized',
