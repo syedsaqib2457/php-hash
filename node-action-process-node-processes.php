@@ -282,7 +282,7 @@
 			return $response;
 		}
 
-		shell_exec('sudo ' . $parameters['binaryFiles']['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-next-response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=600 ' . $parameters['systemEndpointDestinationIpAddress'] . '/system-endpoint.php');
+		shell_exec('sudo ' . $parameters['binaryFiles']['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-next-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $parameters['systemEndpointDestinationIpAddress'] . '/system-endpoint.php');
 		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
 		unset($systemActionProcessNodeParameterData);
 
@@ -1165,7 +1165,7 @@
 		}
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --timeout=10 ' . $systemEndpointDestinationIpAddress . '/system_endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --read-timeout=60 --tries=1 ' . $systemEndpointDestinationIpAddress . '/system-endpoint.php');
 
 			if (file_exists('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json') === true) {
 				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json');
