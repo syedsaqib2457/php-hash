@@ -605,7 +605,7 @@
 		}
 	}
 
-	$crontabCommands[] = '# firewall-security-api-node-processes',
+	$crontabCommands[] = '# firewall-security-api-node-processes';
 	$crontabCommands[] = '@reboot root sudo ' . $binaryFiles['php'] . ' /usr/local/firewall-security-api/node-endpoint.php process-network-interface-ip-addresses firewall-security-api-node-processes';
 	$crontabCommands[] = '* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/firewall-security-api/node-endpoint.php process-node-process-node-user-request-logs firewall-security-api-node-processes';
 	$crontabCommands[] = '* * * * * root sudo ' . $binaryFiles['php'] . ' /usr/local/firewall-security-api/node-endpoint.php process-node-process-resource-usage-logs firewall-security-api-node-processes';
