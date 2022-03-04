@@ -82,18 +82,6 @@
 					'deb http://security.debian.org/debian-security/ bullseye-security main',
 					'deb-src http://security.debian.org/debian-security/ bullseye-security main'
 				)
-			),
-			'ubuntu' => array(
-				'20.04' => array(
-					'deb http://archive.ubuntu.com/ubuntu focal main',
-					'deb http://archive.ubuntu.com/ubuntu focal-updates main',
-					'deb http://archive.ubuntu.com/ubuntu focal-backports main',
-					'deb http://security.ubuntu.com/ubuntu focal-security main',
-					'deb-src http://archive.ubuntu.com/ubuntu focal main',
-					'deb-src http://archive.ubuntu.com/ubuntu focal-backports main',
-					'deb-src http://archive.ubuntu.com/ubuntu focal-updates main',
-					'deb-src http://security.ubuntu.com/ubuntu focal-security main'
-				)
 			)
 		);
 		exec('sudo cat /etc/*-release 2>&1', $imageDetails);
@@ -136,7 +124,6 @@
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install systemd');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
 		$uniqueId = '_' . uniqid();
 		$binaries = array(
 			array(
@@ -190,7 +177,6 @@
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install upstart*');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 		$binaries = array(
 			array(
@@ -553,7 +539,6 @@
 			unlink('/var/www/firewall-security-api/mysql.deb');
 		}
 
-		shell_exec('sudo add-apt-repository -y universe');
 		shell_exec('sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 467B942D3A79BD29');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libmecab2 lsb-release');
