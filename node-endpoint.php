@@ -174,7 +174,7 @@
 			'package' => 'coreutils'
 		),
 		array(
-			'command' => '-' . $uniqueId,
+			'command' => $uniqueId,
 			'name' => 'wget',
 			'output' => 'unable to resolve host address',
 			'package' => 'wget'
