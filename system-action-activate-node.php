@@ -55,7 +55,7 @@
 				return $response;
 			}
 
-			$response['data']['terminalConsoleCommand'] = "cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O node-action-deploy-node.php --no-dns-cache " . $systemEndpointDestinationIpAddress . "/node-action-deploy-node.php?\$RANDOM && sudo php node-action-deploy-node.php " . $node['authenticationToken'] . " " . $systemEndpointDestinationIpAddress;
+			$response['data']['terminalConsoleCommand'] = "cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O node-action-deploy-node.php --no-dns-cache " . $systemEndpointDestinationIpAddress . "/node-action-deploy-node.php?" . _createUniqueId() . " && sudo php node-action-deploy-node.php " . $node['authenticationToken'] . " " . $systemEndpointDestinationIpAddress;
 			$response['message'] = 'Node is ready for activation and deployment.';
 			$response['validatedStatus'] = '1';
 			return $response;
