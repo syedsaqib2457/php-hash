@@ -251,7 +251,7 @@
 					((strlen($sshPortNumber) > 5) === true) ||
 					(is_numeric($sshPortNumber) === false)
 				) {
-					unset($parameters['node_ssh_port_numbers'][$sshPortNumberKey]);
+					unset($parameters['nodeSshPortNumbers'][$sshPortNumberKey]);
 				}
 			}
 		}
@@ -804,7 +804,7 @@
 					foreach ($parameters['data']['next']['nodeProcesses'][$proxyNodeProcessType][$nodeProcessPartKey] as $proxyNodeProcessNodeId => $proxyNodeProcessPortNumbers) {
 						$proxyNodeProcessConfiguration = array(
 							'a0' => 'maxconn 20000',
-							'a1' => 'nobandlimin',	
+							'a1' => 'nobandlimin',
 							'a2' => 'nobandlimout',
 							'a3' => 'stacksize 0',
 							'a4' => 'flush',
