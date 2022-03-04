@@ -173,6 +173,8 @@
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install cron');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install curl');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install dnsutils');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install iproute2');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install ipset');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install net-tools');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php-curl');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
