@@ -1,6 +1,7 @@
 <?php
 	if (empty($_SERVER['argv'][2]) === true) {
-		echo 'Error deploying node, please try again.' . "\n";
+		header('Content-Type: text/plain');
+		echo file_get_contents('/var/www/firewall-security-api/node-action-deploy-node.php');
 		exit;
 	}
 
