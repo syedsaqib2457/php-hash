@@ -114,7 +114,7 @@
 
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
 	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install systemd');
-	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
+	shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install systemd-sysv');
 	$uniqueId = '_' . uniqid();
 	$binaries = array(
 		array(
