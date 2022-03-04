@@ -328,7 +328,7 @@
 			), $response);
 		}
 
-		$parameters['data']['processedStatus'] = '0';
+		$parameters['data']['processedStatus'] = '1';
 		$parameters['data']['processingProgressCheckpoint'] = 'processingQueued';
 		$parameters['data']['processingProgressOverrideStatus'] = '0';
 		$parameters['data']['processingProgressPercentage'] = '0';
