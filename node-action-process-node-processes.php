@@ -987,7 +987,7 @@
 							shell_exec('cd /bin && sudo ln /bin/3proxy ' . $proxyNodeProcessType . $proxyNodeProcessId);
 							$proxyNodeProcessService = array(
 								'[Service]',
-								'ExecStart=/bin/' . $proxyNodeProcessType . $proxyNodeProcessId . ' /etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg')
+								'ExecStart=/bin/' . $proxyNodeProcessType . $proxyNodeProcessId . ' /etc/3proxy/' . $proxyNodeProcessType . $proxyNodeProcessId . '.cfg'
 							);
 							$proxyNodeProcessService = implode("\n", $proxyNodeProcessService);
 							file_put_contents('/etc/systemd/system/' . $proxyNodeProcessType . $proxyNodeProcessId . '.service', $proxyNodeProcessService);
