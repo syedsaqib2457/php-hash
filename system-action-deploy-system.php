@@ -1065,6 +1065,7 @@
 				'memoryPercentage' => 'VARCHAR(3)',
 				'modifiedTimestamp' => 'VARCHAR(10)',
 				'nodeId' => 'VARCHAR(30)',
+				'nodeNodeId' => 'VARCHAR(30)',
 				'nodeProcessType' => 'VARCHAR(14)',
 				'processorPercentage' => 'VARCHAR(3)',
 				'requestCount' => 'VARCHAR(30)'
