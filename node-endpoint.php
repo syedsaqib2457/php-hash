@@ -164,7 +164,7 @@
 		array(
 			'command' => $uniqueId,
 			'name' => 'telinit',
-			'output' => 'single',
+			'output' => 'invalid ',
 			'package' => 'systemd'
 		),
 		array(
