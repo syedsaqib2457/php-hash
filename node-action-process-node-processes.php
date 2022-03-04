@@ -485,9 +485,7 @@
 							foreach ($parameters['data']['current']['nodeProcessTypeFirewallRuleSetPortNumbers'][$nodeProcessType][$nodeProcessPartKey][$nodeIpAddressVersionNumber] as $nodeProcessTypeFirewallRuleSet => $nodeProcessPortNumbers) {
 								foreach ($parameters['data']['current']['nodeProcessTypeFirewallRuleSetReservedInternalDestinations'][$nodeProcessTypeFirewallRuleSet] as $nodeReservedInternalDestination) {
 									foreach ($nodeProcessPortNumbers as $nodeProcessPortNumber) {
-										$verifyNodeProcessResponse = _verifyNodeProcess($parameters['binaryFiles'], $nodeReservedInternalDestination['ipAddress'], $nodeReservedInternalDestination['ipAddressVersion'], $nodeProcessPortNumber, $nodeProcessType) === false) {
-
-										if ($verifyNodeProcessResponse === false) {
+										if (_verifyNodeProcess($parameters['binaryFiles'], $nodeReservedInternalDestination['ipAddress'], $nodeReservedInternalDestination['ipAddressVersion'], $nodeProcessPortNumber, $nodeProcessType) === false) {
 											$systemActionProcessNodeParameters['data'] = array(
 												'processedStatus' => '0',
 												'processingProgressCheckpoint' => 'processingQueued',
