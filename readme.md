@@ -22,12 +22,7 @@ Checklist features before version 1.00 release
 
 ### Get Started
 
-Open the terminal console on one of these Linux distributions.
-
-```
-- Debian 10
-- Debian 11
-```
+Open the terminal console on either `Debian 10` or `Debian 11`.
 
 Open port `80` for the API to receive requests.
 
