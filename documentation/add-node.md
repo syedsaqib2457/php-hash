@@ -98,7 +98,7 @@ All values are formatted as `string` types.
         "memoryCapacityMegabytes": "",
         "modifiedTimestamp": "0123456789",
         "nodeId": "012345678901234567890123456789",
-        "processedStatus": "0",
+        "processedStatus": "1",
         "processingProgressCheckpoint": "",
         "processingProgressPercentage": "0",
         "processingStatus": "0",
@@ -265,7 +265,9 @@ The value is either an `numeric ID` with a string length of `30 characters` if t
 
 This is the processed status indicator in the added node.
 
-The value is either `1` if the added node is processed or `0` if the added node isn't processed.
+The value is `1` in the added node.
+
+Setting this value to `0` will automatically process updated node settings on the device.
 
 The added node must be deployed before it can be processed.
 
@@ -299,7 +301,7 @@ The value is a `numeric progress percentage`.
 
 This is the processing status indicator in the added node.
 
-The value is either `1` if the added node is processing or `0` if the added node isn't processing.
+The value is `0` for the added node.
 
 The added node must be deployed before it can be processed.
 
