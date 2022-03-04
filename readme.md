@@ -27,7 +27,6 @@ Open the terminal console on one of these Linux distributions.
 ```
 - Debian 10
 - Debian 11
-- Ubuntu 20.04
 ```
 
 Open port `80` for the API to receive requests.
