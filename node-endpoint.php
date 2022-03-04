@@ -120,6 +120,24 @@
 			'package' => 'net-tools'
 		),
 		array(
+			'command' => $uniqueId,
+			'name' => 'ip',
+			'output' => 'ip help',
+			'package' => 'iproute2'
+		),
+		array(
+			'command' => '-h',
+			'name' => 'ip6tables-restore',
+			'output' => 'tables-restore ',
+			'package' => 'iptables'
+		),
+		array(
+			'command' => '-h',
+			'name' => 'iptables-restore',
+			'output' => 'tables-restore ',
+			'package' => 'iptables'
+		),
+		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'kill',
 			'output' => 'invalid ',
