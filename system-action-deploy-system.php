@@ -212,7 +212,7 @@
 			array(
 				'command' => '-' . $uniqueId,
 				'name' => 'crontab',
-				'output' => 'invalid option',
+				'output' => 'invalid ',
 				'package' => 'cron'
 			),
 			array(
@@ -236,7 +236,7 @@
 			array(
 				'command' => $uniqueId,
 				'name' => 'service',
-				'output' => 'unrecognized service',
+				'output' => 'unrecognized ',
 				'package' => 'systemd'
 			),
 			array(
@@ -248,19 +248,19 @@
 			array(
 				'command' => '-' . $uniqueId,
 				'name' => 'systemctl',
-				'output' => 'invalid option',
+				'output' => 'invalid ',
 				'package' => 'systemd'
 			),
 			array(
 				'command' => '-' . $uniqueId,
 				'name' => 'tar',
-				'output' => 'invalid option',
+				'output' => 'invalid ',
 				'package' => 'tar'
 			),
 			array(
 				'command' => '-' . $uniqueId,
 				'name' => 'timeout',
-				'output' => 'invalid option',
+				'output' => 'invalid ',
 				'package' => 'coreutils'
 			),
 			array(
