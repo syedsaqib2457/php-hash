@@ -436,7 +436,7 @@
 		}
 
 		foreach ($kernelSettings as $kernelSetting) {
-			shell_exec('sudo ' . $binaryFiles['sysctl'] . ' -w ' . $kernelSetting);
+			shell_exec('sudo ' . $parameters['binaryFiles']['sysctl'] . ' -w ' . $kernelSetting);
 		}
 
 		$nodeActionProcessNetworkInterfaceIpAddressesCommands = array(
