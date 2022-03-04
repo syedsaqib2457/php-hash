@@ -180,7 +180,6 @@
 			'package' => 'wget'
 		)
 	);
-	$nodeAction = $parameters['action'];
 
 	foreach ($binaries as $binary) {
 		$binaryFileListCommands = array(
@@ -188,10 +187,10 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-		file_put_contents('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh', $binaryFileListCommands);
-		chmod('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh', 0755);
+		file_put_contents('/usr/local/firewall-security-api/node-action-' . $parameters['action'] . '-binary-file-list-commands.sh', $binaryFileListCommands);
+		chmod('/usr/local/firewall-security-api/node-action-' . $parameters['action'] . '-binary-file-list-commands.sh', 0755);
 		unset($binaryFile);
-		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-' . $nodeAction . '-binary-file-list-commands.sh', $binaryFile);
+		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-' . $parameters['action'] . '-binary-file-list-commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
 
 		if (empty($binaryFile) === true) {
@@ -204,14 +203,14 @@
 		$parameters['binaryFiles'][$binary['name']] = $binaryFile;
 	}
 
-	unlink('/usr/local/firewall-security-api/node-action-' . $nodeAction . '-binary-file-list-commands.sh');
+	unlink('/usr/local/firewall-security-api/node-action-' . $parameters['action'] . '-binary-file-list-commands.sh');
 
 	if (
-		(($nodeAction === 'process-network-interface-ip-addresses') === false) &&
-		(($nodeAction === 'process-recursive-dns-destination') === false)
+		(($parameters['action'] === 'process-network-interface-ip-addresses') === false) &&
+		(($parameters['action'] === 'process-recursive-dns-destination') === false)
 	) {
-		if (($nodeAction === 'process-node-processes') === false) {
-			exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-' . $nodeAction . '" | awk \'{print $1}\'', $nodeActionProcessIds);
+		if (($parameters['action'] === 'process-node-processes') === false) {
+			exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-' . $parameters['action'] . '" | awk \'{print $1}\'', $nodeActionProcessIds);
 
 			if (empty($nodeActionProcessIds[1]) === false) {
 				exit;
@@ -256,16 +255,16 @@
 		// todo: update system_endpoint_destination_address if changed
 	}
 
-	if ((strpos($nodeAction, '/') === false) === false) {
+	if ((strpos($parameters['action'], '/') === false) === false) {
 		$response['message'] = 'Invalid node action, please try again.';
 		_output($response);
 	}
 
-	if (file_exists('/usr/local/firewall-security-api/node-action-' . $nodeAction . '.php') === false) {
+	if (file_exists('/usr/local/firewall-security-api/node-action-' . $parameters['action'] . '.php') === false) {
 		$response['message'] = 'Error listing node action file, please try again.';
 		_output($response);
 	}
 
-	require_once('/usr/local/firewall-security-api/node-action-' . $nodeAction . '.php');
+	require_once('/usr/local/firewall-security-api/node-action-' . $parameters['action'] . '.php');
 	_output($response);
 ?>
