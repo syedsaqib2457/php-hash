@@ -22,7 +22,7 @@ Checklist features before version 1.00 release
 
 ### Get Started
 
-Open the terminal console in one of these Linux distributions.
+Open the terminal console on one of these Linux distributions.
 
 ```
 - Debian 10
