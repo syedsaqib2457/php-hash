@@ -55,6 +55,6 @@ The systemUserAuthenticationToken is 012345678901234567890123456789.
 
 ### Usage
 
-First, [deploy the system](https://github.com/twexxor/firewall-security-api/blob/main/readme.md#user-content-get-started) and [deploy a node](https://github.com/twexxor/firewall-security-api/blob/main/guides/deploy-a-node.md#user-content-deploy-a-node).
+First, [deploy a node](https://github.com/twexxor/firewall-security-api/blob/main/guides/deploy-a-node.md#user-content-deploy-a-node) after deploying the system.
 
 Then, read the [documentation](https://github.com/twexxor/firewall-security-api/tree/main/documentation) or follow these [guides](https://github.com/twexxor/firewall-security-api/tree/main/guides).
