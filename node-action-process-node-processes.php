@@ -1002,7 +1002,7 @@
 							$proxyNodeProcessResponse = false;
 
 							while ($proxyNodeProcessResponse === false) {
-								$proxyNodeProcessResponse = _verifyNodeProcess($parameters['binaryFiles'], $parameters['data']['next']['nodeReservedInternalDestinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ipAddress'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
+								$proxyNodeProcessResponse = (_verifyNodeProcess($parameters['binaryFiles'], $parameters['data']['next']['nodeReservedInternalDestinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ipAddress'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === false);
 								sleep(1);
 							}
 
@@ -1011,7 +1011,7 @@
 							if ($proxyNodeProcessesStart === true) {
 								while ($proxyNodeProcessResponse === false) {
 									shell_exec('sudo ' . $parameters['binaryFiles']['service'] . ' ' . $proxyNodeProcessType . $proxyNodeProcessId . ' start');
-									$proxyNodeProcessResponse = _verifyNodeProcess($parameters['binaryFiles'], $parameters['data']['next']['nodeReservedInternalDestinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ipAddress'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
+									$proxyNodeProcessResponse = (_verifyNodeProcess($parameters['binaryFiles'], $parameters['data']['next']['nodeReservedInternalDestinations'][$proxyNodeProcessNodeId][$proxyNodeIpAddressVersionNumber]['ipAddress'], $proxyNodeIpAddressVersionNumber, $proxyNodeProcessPortNumber, $proxyNodeProcessType) === true);
 									sleep(1);
 								}
 							} else {
