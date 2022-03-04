@@ -136,7 +136,7 @@
 				'command' => '-' . $uniqueId,
 				'name' => 'telinit',
 				'output' => 'invalid ',
-				'package' => 'systemd'
+				'package' => 'systemd-sysv'
 			)
 		);
 		$binaryFiles = array();
@@ -173,10 +173,25 @@
 		$lockedProcessIds = false;
 		exec('fuser -v /var/cache/debconf/config.dat', $lockedProcessIds);
 		_killProcessIds($binaryFiles, $lockedProcessIds);
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 bind9 bind9utils coreutils cron curl git iptables libapache2-mod-fcgid net-tools php-curl php-fpm php-mysqli syslinux systemd util-linux');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install apache2');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install bind9');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install bind9utils');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install coreutils');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install cron');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install curl');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gnupg');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install iptables');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install libapache2-mod-fcgid');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install net-tools');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php-curl');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php-fpm');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php-mysqli');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install procps');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sysvinit-core sysvinit-utils');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install syslinux');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install systemd');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install systemd-sysv');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y install util-linux');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge conntrack');
 		$binaries = array(
 			array(
