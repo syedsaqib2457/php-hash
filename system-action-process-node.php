@@ -392,7 +392,7 @@
 			}
 
 			foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
-				$response['data']['nodeReservedInternalSources'][$nodeReservedInternalSource['ipAddressVersionNumber']][] = $nodeReservedInternalDestination['ipAddress'] . '/' . $nodeReservedInternalDestination['ipAddressBlockLength'];
+				$response['data']['nodeReservedInternalSources'][$nodeReservedInternalSource['ipAddressVersionNumber']][] = $nodeReservedInternalSource['ipAddress'] . '/' . $nodeReservedInternalSource['ipAddressBlockLength'];
 			}
 		}
 
