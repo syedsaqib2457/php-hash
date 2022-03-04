@@ -300,7 +300,7 @@
 			return $response;
 		}
 
-		$parameters['node_process_data_key'] = 'current';
+		$parameters['nodeProcessDataKey'] = 'current';
 
 		if (empty($systemActionProcessNodeResponse['data']) === false) {
 			$parameters['data']['next'] = $systemActionProcessNodeResponse['data'];
@@ -428,11 +428,11 @@
 			'net.core.wmem_max="' . ($defaultSocketBufferMemoryBytes * 2) . '"'
 		);
 
-		foreach ($ipAddressVersionNumbers as $ipAddressVersionNumber) {
-			$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
-			$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_rmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
-			$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.tcp_wmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
-			$kernelSettings[] = 'net.ipv' . $ipAddressVersionNumber . '.udp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
+		foreach ($parameters['data'][$parameters['nodeProcessDataKey']]['nodeIpAddressVersionNumbers'] as $nodeIpAddressVersionNumber) {
+			$kernelSettings[] = 'net.ipv' . $nodeIpAddressVersionNumber . '.tcp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
+			$kernelSettings[] = 'net.ipv' . $nodeIpAddressVersionNumber . '.tcp_rmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
+			$kernelSettings[] = 'net.ipv' . $nodeIpAddressVersionNumber . '.tcp_wmem="1 ' . $defaultSocketBufferMemoryBytes . ' ' . ($defaultSocketBufferMemoryBytes * 2) . '"';
+			$kernelSettings[] = 'net.ipv' . $nodeIpAddressVersionNumber . '.udp_mem="' . $memoryCapacityPages . ' ' . $memoryCapacityPages . ' ' . $memoryCapacityPages . '"';
 		}
 
 		foreach ($kernelSettings as $kernelSetting) {
