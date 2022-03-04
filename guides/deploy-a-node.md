@@ -15,13 +15,7 @@ A node can have both IPv4 and IPv6 addresses with external and internal IP addre
 
 If the device has no internal IP address assigned, only the external IP address is required.
 
-A node must be deployed in one of these Linux distributions with `all ports open`.
-
-```
-- Debian 10
-- Debian 11
-- Ubuntu 20.04
-```
+A node must be deployed on either `Debian 10` or `Debian 11` with `all ports open`.
 
 The system API automatically closes and opens ports for each node process.
 
