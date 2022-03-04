@@ -100,8 +100,6 @@
 		exit;
 	}
 
-	// todo: validate node deployed === '0'
-
 	if (is_dir('/usr/local/firewall-security-api/') === true) {
 		shell_exec('sudo rm -rf /usr/local/firewall-security-api/');
 	}
@@ -626,8 +624,6 @@
 		exit;
 	}
 
-	echo $systemActionDeployNodeResponse['message'] . "\n";
-
 	if (($systemActionProcessNodeResponse['validatedStatus'] === '1') === true) {
 		$nodeSettingsData['authenticationToken'] = $_SERVER['argv'][1];
 		$nodeSettingsData['systemVersionNumber'] = '1';
@@ -636,5 +632,6 @@
 		shell_exec('sudo ' . $binaryFiles['crontab'] . ' /etc/crontab');
 	}
 
+	echo $systemActionDeployNodeResponse['message'] . "\n";
 	exit;
 ?>
