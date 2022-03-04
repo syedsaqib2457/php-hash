@@ -92,7 +92,7 @@
 		$encodedSystemParameters = json_encode($systemParameters);
 
 		if (empty($encodedSystemParameters) === false) {
-			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/firewall-security-api/system-action-add-node-resource-usage-logs-response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --read-timeout=60 --tries=1 ' . $parameters['systemEndpointDestinationAddress'] . '/system-endpoint.php');
+			shell_exec('sudo ' . $parameters['binary_files']['wget'] . ' -O /usr/local/firewall-security-api/system-action-add-node-resource-usage-logs-response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --read-timeout=60 --tries=1 ' . $parameters['systemEndpointDestinationIpAddress'] . '/system-endpoint.php');
 
 			if (file_exists('/usr/local/firewall-security-api/system-action-add-node-resource-usage-logs-response.json') === true) {
 				$systemActionProcessNodeResourceUsageLogResponse = file_get_contents('/usr/local/firewall-security-api/system-action-add-node-resource-usage-logs-response.json');
