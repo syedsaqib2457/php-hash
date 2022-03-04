@@ -98,7 +98,7 @@
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'crontab',
-			'output' => 'invalid option',
+			'output' => 'invalid ',
 			'package' => 'cron'
 		),
 		array(
@@ -122,13 +122,13 @@
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'kill',
-			'output' => 'invalid signal',
+			'output' => 'invalid ',
 			'package' => 'procps'
 		),
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'netstat',
-			'output' => 'invalid option',
+			'output' => 'invalid ',
 			'package' => 'net-tools'
 		),
 		array(
@@ -140,13 +140,13 @@
 		array(
 			'command' => $uniqueId,
 			'name' => 'service',
-			'output' => 'unrecognized service',
+			'output' => 'unrecognized ',
 			'package' => 'systemd'
 		),
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'sleep',
-			'output' => 'invalid option',
+			'output' => 'invalid ',
 			'package' => 'coreutils'
 		),
 		array(
@@ -158,7 +158,7 @@
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'systemctl',
-			'output' => 'invalid option',
+			'output' => 'invalid ',
 			'package' => 'systemd'
 		),
 		array(
@@ -170,7 +170,7 @@
 		array(
 			'command' => '-' . $uniqueId,
 			'name' => 'timeout',
-			'output' => 'invalid option',
+			'output' => 'invalid ',
 			'package' => 'coreutils'
 		),
 		array(
