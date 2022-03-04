@@ -165,7 +165,7 @@
 			'command' => '-' . $uniqueId,
 			'name' => 'telinit',
 			'output' => 'invalid ',
-			'package' => 'systemd'
+			'package' => 'systemd-sysv'
 		),
 		array(
 			'command' => '-' . $uniqueId,
