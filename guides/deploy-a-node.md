@@ -159,7 +159,7 @@ sudo cat /tmp/activate-node-response.json && echo ""
 
 The `data.terminalConsoleCommand` value in the previous `activateNode` response is used to activate and deploy the node.
 
-Open the terminal console in the device to deploy with the node IP addresses.
+Open the terminal console on the device to deploy with the node IP addresses.
 
 Copy and paste the `data.terminalConsoleCommand` value.
 
