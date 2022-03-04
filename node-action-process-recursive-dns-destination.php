@@ -13,9 +13,11 @@
 			_killProcessIds($parameters['binaryFiles'], $parameters['processId'], $parameters['action'], $recursiveDnsDestinationProcessIds);
 		}
 
-		while (true) {
-			shell_exec('sudo cp /usr/local/firewall-security-api/resolv.conf /etc/resolv.conf');
-			usleep(200000);
+		if (file_exists('/usr/local/firewall-security-api/resolv.conf') === true) {
+			while (true) {
+				shell_exec('sudo cp /usr/local/firewall-security-api/resolv.conf /etc/resolv.conf');
+				sleep(1);
+			}
 		}
 	}
 
