@@ -530,7 +530,11 @@
 		}
 
 		shell_exec('sudo /usr/bin/systemctl stop mysql');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-client');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-common');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-community-client');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-community-server');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server');
 		shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
@@ -607,6 +611,10 @@
 		file_put_contents('/tmp/mysql-public-key.asc', $mysqlPublicKey);
 		shell_exec('sudo apt-key add /tmp/mysql-public-key.asc');
 		shell_exec('sudo apt-get update');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-client');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-common');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-community-client');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-community-server');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-server');
 
 		if (file_exists('/etc/mysql/mysql.conf.d/mysqld.cnf') === false) {
