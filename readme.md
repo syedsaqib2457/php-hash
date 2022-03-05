@@ -10,13 +10,13 @@ This pre-release development code shouldn't be used in production until release 
 ```
 Checklist features before version 1.00 release
 
-- Adding API DDoS protection from unauthorized requests
-- Addding automatic node file updating in node-action-process-node-processes.php when system version updates
+- Adding API DDoS protection from unauthorized requests with 4xx + 5xx error PHP pages that log failed requests for inbound request limiting
+- Adding automatic node file updating in node-action-process-node-processes.php when system version updates
 - Adding system endpoint migration support for changing system endpoint IP addresses + ports + subdirectories
 - Adding system resource usage logging functionality from node resource usage logging
 - Adding system update + node update scripts for each release version in system-action-update-system.php
-- Installing in a subdirectory
-- Testing + bug fixes
+- Installing in a subdirectory to avoid detection from footprint scrapers
+- Testing + bug fixes for node processes + logging
 - Writing Documentaion
 - Writing Guides
 ```
