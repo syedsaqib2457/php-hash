@@ -46,7 +46,7 @@ Define `systemEndpointDestinationSubdirectory` as the subdirectory to receive re
 This an additional security measure to avoid exposure if `systemEndpointDestinationIpAddress` is a public network IP address.
 
 ``` console
-systemEndpointDestinationSubdirectory=''
+systemEndpointDestinationSubdirectory='/'
 ```
 
 Install with this command.
