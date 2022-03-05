@@ -74,6 +74,11 @@
 			exit;
 		}
 
+		if (empty($_SERVER['argv'][3]) === true) {
+			echo 'Invalid system endpoint destination subdirectory, please try again.' . "\n";
+			exit;
+		}
+
 		$packageSources = array(
 			'debian' => array(
 				'10' => array(
@@ -693,21 +698,12 @@
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
 		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
-		mkdir('/var/www/firewall-security-api/');
-		chmod('/var/www/firewall-security-api/', 0755);
+		shell_exec('sudo mkdir -p /var/www/firewall-security-api/' . $_SERVER['argv'][3]);
+		shell_exec('sudo chmod -R 0755 /var/www/firewall-security-api/' . $_SERVER['argv'][3]);
 
-		if (empty($_SERVER['argv'][3]) === false) {
-			if ((strpos($_SERVER['argv'][3], '//') === false) === false) {
-				echo 'Invalid system endpoint destination subdirectory, please try again.' . "\n";
-				exit;
-			}
-
-			shell_exec('sudo mkdir -p /var/www/firewall-security-api/' . $_SERVER['argv'][3]);
-
-			if (is_dir('/var/www/firewall-security-api/' . $_SERVER['argv'][3]) === false) {
-				echo 'Error adding system endpoint destination subdirectory, please try again.' . "\n";
-				exit;
-			}
+		if (is_dir('/var/www/firewall-security-api/' . $_SERVER['argv'][3]) === false) {
+			echo 'Error adding system endpoint destination subdirectory, please try again.' . "\n";
+			exit;
 		}
 
 		// todo: download from most-recent release after v1.00
