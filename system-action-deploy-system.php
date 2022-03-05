@@ -63,7 +63,7 @@
 		exit;
 	}
 
-	if (empty($_SERVER['argv'][2]) === true) {
+	if (empty($_SERVER['argv'][3]) === true) {
 		$packageSources = array(
 			'debian' => array(
 				'10' => array(
@@ -651,14 +651,28 @@
 		shell_exec('sudo ' . $binaryFiles['service'] . ' mysql restart');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
+		$systemEndpointDestinationPortNumber = 80;
+
+		if (empty($_SERVER['argv'][2]) === false) {
+			$systemEndpointDestinationPortNumber = $_SERVER['argv'][2];
+
+			if (
+				(($systemEndpointDestinationPortNumber < 0) === true) ||
+				(($systemEndpointDestinationPortNumber > 65536) === true)
+			) {
+				echo 'Invalid system endpoint destination port number ' . $systemEndpointDestinationPortNumber . ', please try again.' . "\n";
+				exit;
+			}
+		}
+
 		$apacheSettings = array(
-			'<VirtualHost *:80>',
+			'<VirtualHost *:' . $systemEndpointDestinationPortNumber . '>',
 			'ServerAlias ' . $_SERVER['argv'][1],
 			'ServerName ' . $_SERVER['argv'][1],
 			'DocumentRoot /var/www/firewall-security-api/',
 			'<Directory /var/www/firewall-security-api/>',
 			'Allow from all',
-			'Options FollowSymLinks',
+			'Options FollowSymLinks -Indexes',
 			'AllowOverride All',
 			'</Directory>',
 			'</VirtualHost>'
