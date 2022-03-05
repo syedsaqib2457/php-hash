@@ -11,10 +11,11 @@ This pre-release development code shouldn't be used in production until release 
 Checklist features before version 1.00 release
 
 - Adding API DDoS protection from unauthorized requests
-- Adding system IP address migration support
+- Addding automatic node file updating in node-action-process-node-processes.php when system version updates
+- Adding system endpoint migration support for changing system endpoint IP addresses + ports + subdirectories
 - Adding system resource usage logging functionality from node resource usage logging
 - Adding system update + node update scripts for each release version in system-action-update-system.php
-- Installing in a subdirectory with custom ports
+- Installing in a subdirectory
 - Testing + bug fixes
 - Writing Documentaion
 - Writing Guides
