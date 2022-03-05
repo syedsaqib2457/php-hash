@@ -96,10 +96,8 @@
 			}
 		}
 
-		$imageName = ucwords($imageDetails['id']) . ' ' . $imageDetails['version_id'];
-
 		if (empty($packageSources[$imageDetails['id']][$imageDetails['version_id']]) === true) {
-			echo 'Error installing on unsupported ' . $imageName . ' image, please try again.' . "\n";
+			echo 'Error installing on unsupported ' . ucwords($imageDetails['id']) . ' ' . $imageDetails['version_id'] . ' image, please try again.' . "\n";
 			exit;
 		}
 
