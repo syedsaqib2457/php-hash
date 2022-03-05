@@ -41,7 +41,7 @@ Change `80` to the actual port number to receive requests.
 systemEndpointDestinationPortNumber=80
 ```
 
-Define `systemEndpointDestinationSubdirectory` as the subdirectory to receive requests.
+Define an optional `systemEndpointDestinationSubdirectory` as the subdirectory to receive requests.
 
 This an additional security measure to avoid exposure if `systemEndpointDestinationIpAddress` is a public network IP address.
 
