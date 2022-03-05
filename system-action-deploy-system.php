@@ -530,7 +530,7 @@
 		}
 
 		shell_exec('sudo /usr/bin/systemctl stop mysql');
-		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server*');
+		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*');
 		shell_exec('sudo rm -rf /etc/mysql/ /var/lib/mysql/ /var/log/mysql/');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoremove');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get -y autoclean');
