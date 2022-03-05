@@ -59,21 +59,21 @@
 		'128' => '6'
 	);
 
-	if (empty($_SERVER['argv'][1]) === true) {
-		echo 'Invalid system endpoint destination IP address, please try again.' . "\n";
-		exit;
-	}
-
-	if (
-		(empty($_SERVER['argv'][2]) === true) ||
-		(($_SERVER['argv'][2] < 0) === true) ||
-		(($_SERVER['argv'][2] > 65536) === true)
-	) {
-		echo 'Invalid system endpoint destination port number, please try again.' . "\n";
-		exit;
-	}
-
 	if (empty($_SERVER['argv'][4]) === true) {
+		if (empty($_SERVER['argv'][1]) === true) {
+			echo 'Invalid system endpoint destination IP address, please try again.' . "\n";
+			exit;
+		}
+
+		if (
+			(empty($_SERVER['argv'][2]) === true) ||
+			(($_SERVER['argv'][2] < 0) === true) ||
+			(($_SERVER['argv'][2] > 65536) === true)
+		) {
+			echo 'Invalid system endpoint destination port number, please try again.' . "\n";
+			exit;
+		}
+
 		$packageSources = array(
 			'debian' => array(
 				'10' => array(
@@ -695,17 +695,17 @@
 		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
 		mkdir('/var/www/firewall-security-api/');
 		chmod('/var/www/firewall-security-api/', 0755);
-		$systemEndpointDestinationSubdirectory = '';
 
 		if (empty($_SERVER['argv'][3]) === false) {
-			$systemEndpointDestinationSubdirectory = $_SERVER['argv'][3];
-			shell_exec('sudo mkdir -p /var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory);
-
-			if (
-				(is_dir('/var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory) === false) ||
-				((strpos($systemEndpointDestinationSubdirectory, '//') === false) === false)
-			) {
+			if ((strpos($_SERVER['argv'][3], '//') === false) === false) {
 				echo 'Invalid system endpoint destination subdirectory, please try again.' . "\n";
+				exit;
+			}
+
+			shell_exec('sudo mkdir -p /var/www/firewall-security-api/' . $_SERVER['argv'][3]);
+
+			if (is_dir('/var/www/firewall-security-api/' . $_SERVER['argv'][3]) === false) {
+				echo 'Error adding system endpoint destination subdirectory, please try again.' . "\n";
 				exit;
 			}
 		}
@@ -713,10 +713,10 @@
 		// todo: download from most-recent release after v1.00
 		shell_exec('cd /var/www/firewall-security-api/ && sudo ' . $binaryFiles['wget'] . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://github.com/twexxor/firewall-security-api/archive/refs/heads/main.tar.gz');
 		shell_exec('cd /var/www/firewall-security-api/ && sudo ' . $binaryFiles['tar'] . ' -xvzf main.tar.gz && sudo rm main.tar.gz');
-		shell_exec('sudo mv /var/www/firewall-security-api/firewall-security-api-main/* /var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory);
+		shell_exec('sudo mv /var/www/firewall-security-api/firewall-security-api-main/* /var/www/firewall-security-api/' . $_SERVER['argv'][3]);
 		shell_exec('sudo rm -rf /var/www/firewall-security-api/firewall-security-api-main/');
 
-		if (file_exists('/var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory . '/readme.md') === false) {
+		if (file_exists('/var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/readme.md') === false) {
 			echo 'Error downloading system files, please try again.' . "\n";
 			exit;
 		}
@@ -1458,6 +1458,8 @@
 		);
 		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
 		$systemSettingsData = array(
+			'endpointDestinationPortNumber' => $_SERVER['argv'][2],
+			'endpointDestinationSubdirectory' => $_SERVER['argv'][3],
 			'versionNumber' => '1'
 		);
 
@@ -1513,7 +1515,7 @@
 			}
 		}
 
-		$systemFiles = scandir('/var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory);
+		$systemFiles = scandir('/var/www/firewall-security-api/' . $_SERVER['argv'][3]);
 
 		foreach ($systemFiles as $systemFile) {
 			if ((substr($systemFile, 0, 13) === 'system-action') === true) {
