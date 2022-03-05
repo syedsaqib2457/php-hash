@@ -27,13 +27,15 @@ Open the terminal console on either `Debian 10` or `Debian 11`.
 
 Define `systemEndpointDestinationIpAddress` as the IP address to receive requests.
 
-This example uses `10.10.10.10` to receive requests.
+Change `10.10.10.10` to the actual IP address to receive requests.
 
 ``` console
 systemEndpointDestinationIpAddress=10.10.10.10
 ```
 
 Define `systemEndpointDestinationPortNumber` as the port number to receive requests.
+
+Change `80` to the actual port number to receive requests.
 
 ``` console
 systemEndpointDestinationPortNumber=80
