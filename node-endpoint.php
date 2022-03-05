@@ -222,6 +222,7 @@
 		unset($binaryFile);
 		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-' . $parameters['action'] . '-binary-file-list-commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
+		unlink('/usr/local/firewall-security-api/node-action-' . $parameters['action'] . '-binary-file-list-commands.sh');
 
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
@@ -232,8 +233,6 @@
 
 		$parameters['binaryFiles'][$binary['name']] = $binaryFile;
 	}
-
-	unlink('/usr/local/firewall-security-api/node-action-' . $parameters['action'] . '-binary-file-list-commands.sh');
 
 	if (
 		(($parameters['action'] === 'process-network-interface-ip-addresses') === false) &&
