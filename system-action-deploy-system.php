@@ -59,7 +59,16 @@
 	);
 
 	if (empty($_SERVER['argv'][1]) === true) {
-		echo 'Invalid URL parameter, please try again.' . "\n";
+		echo 'Invalid system endpoint destination IP address, please try again.' . "\n";
+		exit;
+	}
+
+	if (
+		(empty($_SERVER['argv'][2]) === true) ||
+		(($_SERVER['argv'][2] < 0) === true) ||
+		(($_SERVER['argv'][2] > 65536) === true)
+	) {
+		echo 'Invalid system endpoint destination port number, please try again.' . "\n";
 		exit;
 	}
 
@@ -651,22 +660,8 @@
 		shell_exec('sudo ' . $binaryFiles['service'] . ' mysql restart');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
-		$systemEndpointDestinationPortNumber = 80;
-
-		if (empty($_SERVER['argv'][2]) === false) {
-			$systemEndpointDestinationPortNumber = $_SERVER['argv'][2];
-
-			if (
-				(($systemEndpointDestinationPortNumber < 0) === true) ||
-				(($systemEndpointDestinationPortNumber > 65536) === true)
-			) {
-				echo 'Invalid system endpoint destination port number ' . $systemEndpointDestinationPortNumber . ', please try again.' . "\n";
-				exit;
-			}
-		}
-
 		$apacheSettings = array(
-			'<VirtualHost *:' . $systemEndpointDestinationPortNumber . '>',
+			'<VirtualHost *:' . $_SERVER['argv'][2] . '>',
 			'ServerAlias ' . $_SERVER['argv'][1],
 			'ServerName ' . $_SERVER['argv'][1],
 			'DocumentRoot /var/www/firewall-security-api/',
