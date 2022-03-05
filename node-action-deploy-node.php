@@ -48,6 +48,7 @@
 
 		shell_exec('sudo chmod +x /usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
 		shell_exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-deploy-node-commands.sh');
+		unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
 		return;
 	}
 
@@ -138,15 +139,11 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commands = implode("\n", $commands);
-
-		if (file_exists('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh') === true) {
-			unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
-		}
-
 		file_put_contents('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', $commands);
 		chmod('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', 0755);
 		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-deploy-node-commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
+		unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
 
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
@@ -283,15 +280,11 @@
 			'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 		);
 		$commands = implode("\n", $commands);
-
-		if (file_exists('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh') === true) {
-			unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
-		}
-
 		file_put_contents('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', $commands);
 		chmod('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh', 0755);
 		exec('cd /usr/local/firewall-security-api/ && sudo ./node-action-deploy-node-commands.sh', $binaryFile);
 		$binaryFile = current($binaryFile);
+		unlink('/usr/local/firewall-security-api/node-action-deploy-node-commands.sh');
 
 		if (empty($binaryFile) === true) {
 			shell_exec('sudo apt-get update');
