@@ -30,7 +30,7 @@ Define `systemEndpointDestinationIpAddress` as the IP address to receive request
 Change `10.10.10.10` to the actual IP address to receive requests.
 
 ``` console
-systemEndpointDestinationIpAddress=10.10.10.10
+systemEndpointDestinationIpAddress='10.10.10.10'
 ```
 
 Define `systemEndpointDestinationPortNumber` as the port number to receive requests.
@@ -38,7 +38,7 @@ Define `systemEndpointDestinationPortNumber` as the port number to receive reque
 Change `80` to the actual port number to receive requests.
 
 ``` console
-systemEndpointDestinationPortNumber=80
+systemEndpointDestinationPortNumber='80'
 ```
 
 Define `systemEndpointDestinationSubdirectory` as the subdirectory to receive requests.
@@ -46,7 +46,7 @@ Define `systemEndpointDestinationSubdirectory` as the subdirectory to receive re
 This an additional security measure to avoid exposure if `systemEndpointDestinationIpAddress` is a public network IP address.
 
 ``` console
-systemEndpointDestinationSubdirectory=
+systemEndpointDestinationSubdirectory=''
 ```
 
 Install with this command.
