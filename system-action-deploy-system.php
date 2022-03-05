@@ -667,7 +667,8 @@
 			'DocumentRoot /var/www/firewall-security-api/',
 			'<Directory /var/www/firewall-security-api/>',
 			'Allow from all',
-			'Options FollowSymLinks -Indexes',
+			'Options FollowSymLinks',
+			'Options -Indexes',
 			'AllowOverride All',
 			'</Directory>',
 			'</VirtualHost>'
