@@ -24,8 +24,6 @@ Checklist features before version 1.00 release
 
 Open the terminal console on either `Debian 10` or `Debian 11`.
 
-Open port `80` for the API to receive requests.
-
 Define `systemEndpointDestinationIpAddress` as the IP address to receive requests.
 
 This example uses `10.10.10.10` to receive requests.
