@@ -57,7 +57,7 @@ Open the terminal console on either `Debian 10` or `Debian 11`.
 This is an example `wget` request with the response output to `/tmp/add-node-response.json`.
 
 ``` console
-sudo wget -O /tmp/add-node-response.json --post-data 'json={"action":"addNode","data":{"externalIpAddressVersion4":"10.10.10.1","internalIpAddressVersion4":"10.10.10.2"},"systemUserAuthenticationToken":"012345678901234567890123456789"}' $systemEndpointDestinationIpAddress:$systemEndpointDestinationPortNumber/system-endpoint.php?$RANDOM
+sudo wget -O /tmp/add-node-response.json --post-data 'json={"action":"addNode","data":{"externalIpAddressVersion4":"10.10.10.1","internalIpAddressVersion4":"10.10.10.2"},"systemUserAuthenticationToken":"012345678901234567890123456789"}' http://$systemEndpointDestinationIpAddress:$systemEndpointDestinationPortNumber/system-endpoint.php?$RANDOM
 ```
 
 This is the example response in `/tmp/add-node-response.json`.
@@ -123,7 +123,7 @@ All values are formatted as `string` types and contained in `json=`.
 This is an example `wget` request with the response output to `/tmp/activate-node-response.json`.
 
 ``` console
-sudo wget -O /tmp/activate-node-response.json --post-data 'json={"action":"activateNode","systemUserAuthenticationToken":"012345678901234567890123456789","where":{"id":"012345678901234567890123456789"}}' $systemEndpointDestinationIpAddress:$systemEndpointDestinationPortNumber/system-endpoint.php?$RANDOM
+sudo wget -O /tmp/activate-node-response.json --post-data 'json={"action":"activateNode","systemUserAuthenticationToken":"012345678901234567890123456789","where":{"id":"012345678901234567890123456789"}}' http://$systemEndpointDestinationIpAddress:$systemEndpointDestinationPortNumber/system-endpoint.php?$RANDOM
 ```
 
 This is the example response in `/tmp/activate-node-response.json`.
