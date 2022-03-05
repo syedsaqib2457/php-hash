@@ -34,10 +34,16 @@ This example uses `10.10.10.10` to receive requests.
 systemEndpointDestinationIpAddress=10.10.10.10
 ```
 
+Define `systemEndpointDestinationPortNumber` as the port number to receive requests.
+
+``` console
+systemEndpointDestinationPortNumber=80
+```
+
 Install with this command.
 
 ``` console
-cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system-action-deploy-system.php ; sudo wget -O system-action-deploy-system.php --no-dns-cache --retry-connrefused https://raw.githubusercontent.com/twexxor/firewall-security-api/main/system-action-deploy-system.php?$RANDOM && sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress && sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress 1;
+cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system-action-deploy-system.php ; sudo wget -O system-action-deploy-system.php --no-dns-cache --retry-connrefused https://raw.githubusercontent.com/twexxor/firewall-security-api/main/system-action-deploy-system.php?$RANDOM && sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress $systemEndpointDestinationPortNumber && sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress systemEndpointDestinationPortNumber 1;
 ```
 
 The `systemUserAuthenticationToken` is provided after a successful installation.
