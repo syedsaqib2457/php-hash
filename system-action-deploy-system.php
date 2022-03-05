@@ -50,6 +50,7 @@
 
 		shell_exec('sudo chmod +x /var/www/firewall-security-api/system-action-deploy-system-commands.sh');
 		shell_exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-commands.sh');
+		unlink('/var/www/firewall-security-api/system-action-deploy-system-commands.sh');
 		return;
 	}
 
@@ -72,7 +73,7 @@
 		exit;
 	}
 
-	if (empty($_SERVER['argv'][3]) === true) {
+	if (empty($_SERVER['argv'][4]) === true) {
 		$packageSources = array(
 			'debian' => array(
 				'10' => array(
@@ -154,15 +155,11 @@
 				'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-
-			if (file_exists('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh') === true) {
-				unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
-			}
-
 			file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands);
 			chmod('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', 0755);
 			exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-binary-file-list-commands.sh', $binaryFile);
 			$binaryFile = current($binaryFile);
+			unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
 
 			if (empty($binaryFile) === true) {
 				shell_exec('sudo apt-get update');
@@ -299,15 +296,11 @@
 				'whereis ' . $binary['name'] . ' | awk \'{ for (i=2; i<=NF; i++) print $i }\' | while read -r binaryFile; do echo $((sudo $binaryFile "' . $binary['command'] . '") 2>&1) | grep -c "' . $binary['output'] . '" && echo $binaryFile && break; done | tail -1'
 			);
 			$binaryFileListCommands = implode("\n", $binaryFileListCommands);
-
-			if (file_exists('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh') === true) {
-				unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
-			}
-
 			file_put_contents('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', $binaryFileListCommands);
 			chmod('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh', 0755);
 			exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-binary-file-list-commands.sh', $binaryFile);
 			$binaryFile = current($binaryFile);
+			unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
 
 			if (empty($binaryFile) === true) {
 				shell_exec('sudo apt-get update');
@@ -317,10 +310,6 @@
 			}
 
 			$binaryFiles[$binary['name']] = $binaryFile;
-		}
-
-		if (file_exists('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh') === true) {
-			unlink('/var/www/firewall-security-api/system-action-deploy-system-binary-file-list-commands.sh');
 		}
 
 		$phpSettings = array(
@@ -619,8 +608,8 @@
 			'-----END PGP PUBLIC KEY BLOCK-----'
 		);
 		$mysqlPublicKey = implode("\n", $mysqlPublicKey);
-		file_put_contents('/tmp/mysql-public-key.asc', $mysqlPublicKey);
-		shell_exec('sudo apt-key add /tmp/mysql-public-key.asc');
+		file_put_contents('/var/www/firewall-security-api/mysql-public-key.asc', $mysqlPublicKey);
+		shell_exec('sudo apt-key add /var/www/firewall-security-api/mysql-public-key.asc');
 		shell_exec('sudo apt-get update');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-client');
 		shell_exec('sudo DEBIAN_FRONTEND=noninteractive apt-get --fix-broken -y install mysql-common');
@@ -704,12 +693,30 @@
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		shell_exec('sudo ' . $binaryFiles['apachectl'] . ' graceful');
 		shell_exec('sudo rm -rf /var/www/firewall-security-api/');
-		// todo: download from most-recent release after v1
-		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['wget'] . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://github.com/twexxor/firewall-security-api/archive/refs/heads/main.tar.gz');
-		shell_exec('cd /var/www/ && sudo ' . $binaryFiles['tar'] . ' -xvzf main.tar.gz && sudo rm main.tar.gz');
-		shell_exec('cd /var/www/ && sudo mv firewall-security-api-main firewall-security-api');
+		mkdir('/var/www/firewall-security-api/');
+		chmod('/var/www/firewall-security-api/', 0755);
+		$systemEndpointDestinationSubdirectory = '';
 
-		if (file_exists('/var/www/firewall-security-api/readme.md') === false) {
+		if (empty($_SERVER['argv'][3]) === false) {
+			$systemEndpointDestinationSubdirectory = $_SERVER['argv'][3];
+			shell_exec('sudo mkdir -p /var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory);
+
+			if (
+				(is_dir('/var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory) === false) ||
+				((strpos($systemEndpointDestinationSubdirectory, '//') === false) === false)
+			) {
+				echo 'Invalid system endpoint destination subdirectory, please try again.' . "\n";
+				exit;
+			}
+		}
+
+		// todo: download from most-recent release after v1.00
+		shell_exec('cd /var/www/firewall-security-api/ && sudo ' . $binaryFiles['wget'] . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --read-timeout=60 --tries=1 https://github.com/twexxor/firewall-security-api/archive/refs/heads/main.tar.gz');
+		shell_exec('cd /var/www/firewall-security-api/ && sudo ' . $binaryFiles['tar'] . ' -xvzf main.tar.gz && sudo rm main.tar.gz');
+		shell_exec('sudo mv /var/www/firewall-security-api/firewall-security-api-main/* /var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory);
+		shell_exec('sudo rm -rf /var/www/firewall-security-api/firewall-security-api-main/');
+
+		if (file_exists('/var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory . '/readme.md') === false) {
 			echo 'Error downloading system files, please try again.' . "\n";
 			exit;
 		}
@@ -903,6 +910,7 @@
 		chmod('/var/www/firewall-security-api/system-action-deploy-system-gcloud-binary-file-list-commands.sh', 0755);
 		exec('cd /var/www/firewall-security-api/ && sudo ./system-action-deploy-system-gcloud-binary-file-list-commands.sh', $gcloudBinaryFile);
 		$gcloudBinaryFile = current($gcloudBinaryFile);
+		unlink('/var/www/firewall-security-api/system-action-deploy-system-gcloud-binary-file-list-commands.sh');
 
 		if (empty($gcloudBinaryFile) === false) {
 			unset($nodeReservedInternalSources['4'][4]);
@@ -1505,7 +1513,7 @@
 			}
 		}
 
-		$systemFiles = scandir('/var/www/firewall-security-api/');
+		$systemFiles = scandir('/var/www/firewall-security-api/' . $systemEndpointDestinationSubdirectory);
 
 		foreach ($systemFiles as $systemFile) {
 			if ((substr($systemFile, 0, 13) === 'system-action') === true) {
