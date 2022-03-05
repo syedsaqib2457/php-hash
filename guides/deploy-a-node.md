@@ -57,7 +57,7 @@ Open the terminal console on either `Debian 10` or `Debian 11`.
 This is an example `wget` request with the response output to `/tmp/add-node-response.json`.
 
 ``` console
-sudo wget -O /tmp/add-node-response.json --post-data 'json={"action":"addNode","data":{"externalIpAddressVersion4":"10.10.10.1","internalIpAddressVersion4":"10.10.10.2"},"systemUserAuthenticationToken":"012345678901234567890123456789"}' http://$systemEndpointDestinationIpAddress:$systemEndpointDestinationPortNumber/system-endpoint.php?$RANDOM
+sudo wget -O /tmp/add-node-response.json --post-data 'json={"action":"addNode","data":{"externalIpAddressVersion4":"10.10.10.1","internalIpAddressVersion4":"10.10.10.2"},"systemUserAuthenticationToken":"012345678901234567890123456789"}' http://$systemEndpointDestinationIpAddress:$systemEndpointDestinationPortNumber/$systemEndpointDestinationSubdirectory/system-endpoint.php?$RANDOM
 ```
 
 This is the example response in `/tmp/add-node-response.json`.
@@ -123,7 +123,7 @@ All values are formatted as `string` types and contained in `json=`.
 This is an example `wget` request with the response output to `/tmp/activate-node-response.json`.
 
 ``` console
-sudo wget -O /tmp/activate-node-response.json --post-data 'json={"action":"activateNode","systemUserAuthenticationToken":"012345678901234567890123456789","where":{"id":"012345678901234567890123456789"}}' http://$systemEndpointDestinationIpAddress:$systemEndpointDestinationPortNumber/system-endpoint.php?$RANDOM
+sudo wget -O /tmp/activate-node-response.json --post-data 'json={"action":"activateNode","systemUserAuthenticationToken":"012345678901234567890123456789","where":{"id":"012345678901234567890123456789"}}' http://$systemEndpointDestinationIpAddress:$systemEndpointDestinationPortNumber/$systemEndpointDestinationSubdirectory/system-endpoint.php?$RANDOM
 ```
 
 This is the example response in `/tmp/activate-node-response.json`.
@@ -136,7 +136,7 @@ sudo cat /tmp/activate-node-response.json && echo ""
 {
     "authenticatedStatus": "1",
     "data": {
-        "terminalConsoleCommand": "cd \/tmp && rm -rf \/etc\/cloud\/ \/var\/lib\/cloud\/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf \/etc\/cloud\/ \/var\/lib\/cloud\/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O node-action-deploy-node.php --no-dns-cache 10.10.10.10\/node-action-deploy-node.php?012345678901234567890123456789 && sudo php node-action-deploy-node.php 012345678901234567890123456789 10.10.10.10"
+        "terminalConsoleCommand": "cd \/tmp && rm -rf \/etc\/cloud\/ \/var\/lib\/cloud\/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf \/etc\/cloud\/ \/var\/lib\/cloud\/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O node-action-deploy-node.php --no-dns-cache 10.10.10.10:80\/\/node-action-deploy-node.php?012345678901234567890123456789 && sudo php node-action-deploy-node.php 012345678901234567890123456789 10.10.10.10"
     },
     "message": "Node is ready for activation and deployment.",
     "validatedStatus": "1"
@@ -152,7 +152,7 @@ Open the terminal console on the device to deploy with the node IP addresses.
 Copy and paste the `data.terminalConsoleCommand` value.
 
 ``` console
-cd \/tmp && rm -rf \/etc\/cloud\/ \/var\/lib\/cloud\/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf \/etc\/cloud\/ \/var\/lib\/cloud\/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O node-action-deploy-node.php --no-dns-cache 10.10.10.10\/node-action-deploy-node.php?012345678901234567890123456789 && sudo php node-action-deploy-node.php 012345678901234567890123456789 10.10.10.10
+cd \/tmp && rm -rf \/etc\/cloud\/ \/var\/lib\/cloud\/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf \/etc\/cloud\/ \/var\/lib\/cloud\/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo wget -O node-action-deploy-node.php --no-dns-cache 10.10.10.10:80\/\/node-action-deploy-node.php?012345678901234567890123456789 && sudo php node-action-deploy-node.php 012345678901234567890123456789 10.10.10.10
 ```
 
 After processing, the node will be activated and deployed with the device connected to the system API.
