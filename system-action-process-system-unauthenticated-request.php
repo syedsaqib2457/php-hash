@@ -9,21 +9,21 @@
 		}
 
 		$unauthenticatedSourceIpAddressIndex = 0;
-		$unauthenticatedSourceIpAddressPath = '';
+		$unauthenticatedSourceIpAddressLogPath = '';
 
 		while (isset($unauthenticatedSourceIpAddress[$unauthenticatedSourceIpAddressIndex]) === true) {
-			$unauthenticatedSourceIpAddressPath .= $unauthenticatedSourceIpAddress[$unauthenticatedSourceIpAddressIndex] . '/';
+			$unauthenticatedSourceIpAddressLogPath .= $unauthenticatedSourceIpAddress[$unauthenticatedSourceIpAddressIndex] . '/';
 			$unauthenticatedSourceIpAddressIndex++;
 		}
 
 		$unauthenticatedSourceIpAddressTimestamp = time();
 		$unauthenticatedSourceIpAddressLogPath .= date('i', $unauthenticatedSourceIpAddressTimestamp) . '/';
 		$unauthenticatedSourceIpAddressLog = $unauthenticatedSourceIpAddressLogPath . hrtime(true) . '/';
-		mkdir('/tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/allowed/' . $unauthenticatedSourceIpAddressLog, 0777, true);
-		exec('cd /tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/allowed/' . $unauthenticatedSourceIpAddressLogPath . ' && ls 2>&1', $unauthenticatedSourceIpAddressLogs);
+		mkdir('/tmp/firewall-security-api/unauthenticated-source-ip-addresses-logs/allowed/' . $unauthenticatedSourceIpAddressLog, 0777, true);
+		exec('cd /tmp/firewall-security-api/unauthenticated-source-ip-addresses-logs/allowed/' . $unauthenticatedSourceIpAddressLogPath . ' && ls 2>&1', $unauthenticatedSourceIpAddressLogs);
 
 		if (isset($unauthenticatedSourceIpAddressLogs[9]) === true) {
-			mkdir('/tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/denied/' . $unauthenticatedSourceIpAddressLogPath, 0777, true);
+			mkdir('/tmp/firewall-security-api/unauthenticated-source-ip-addresses-logs/denied/' . $unauthenticatedSourceIpAddressLogPath, 0777, true);
 		}
 	}
 
