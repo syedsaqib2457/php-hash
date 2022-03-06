@@ -399,6 +399,7 @@
 				'endpointDestinationIpAddressType',
 				'endpointDestinationIpAddressVersionNumber',
 				'endpointDestinationPortNumber',
+				'endpointDestinationProtocol',
 				'endpointDestinationSubdirectory'
 			)
 		)
@@ -440,7 +441,7 @@
 		unlink('/usr/local/firewall-security-api/system-action-activate-node-response.json');
 	}
 
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-activate-node-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'] . '/system-endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-activate-node-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionActivateNodeParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system-endpoint.php');
 
 	if (file_exists('/usr/local/firewall-security-api/system-action-activate-node-response.json') === false) {
 		echo 'Error activating node, please try again.' . "\n";
@@ -471,7 +472,7 @@
 		unlink('/usr/local/firewall-security-api/system-action-process-node-response.json');
 	}
 
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'] . '/system-endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-response.json  --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $_SERVER['argv'][2] . '/system-endpoint.php');
 
 	if (file_exists('/usr/local/firewall-security-api/system-action-process-node-response.json') === false) {
 		echo 'Error processing node, please try again.' . "\n";
@@ -550,7 +551,7 @@
 				)
 			);
 			$systemActionDownloadNodeFileParameters = json_encode($systemActionDownloadNodeFileParameters);
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/' . $nodeFile . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'] . '/system-endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/' . $nodeFile . ' --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDownloadNodeFileParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system-endpoint.php');
 
 			if (file_exists('/usr/local/firewall-security-api/' . $nodeFile) === false) {
 				echo 'Error downloading node file ' . $nodeFile . ', please try again.' . "\n";
@@ -619,7 +620,7 @@
 		unlink('/usr/local/firewall-security-api/system-action-deploy-node-response.json');
 	}
 
-	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-deploy-node-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'] . '/system-endpoint.php');
+	shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-deploy-node-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $systemActionDeployNodeParameters . '\' --read-timeout=60 --tries=1 ' . $_SERVER['argv'][2] . '/system-endpoint.php');
 
 	if (file_exists('/usr/local/firewall-security-api/system-action-deploy-node-response.json') === false) {
 		echo 'Error deploying node, please try again.' . "\n";
