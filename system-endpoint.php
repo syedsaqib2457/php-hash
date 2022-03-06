@@ -8,6 +8,10 @@
 	}
 
 	function _output($parameters, $response) {
+		if (($response['authenticatedStatus'] === '0') === true) {
+			require_once('system-action-process-system-unauthenticated-request.php');
+		}
+
 		$systemRequestLogsData = array(
 			// 'bytesReceived',
 			// 'bytesSent',
