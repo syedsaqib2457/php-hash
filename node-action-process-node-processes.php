@@ -272,7 +272,7 @@
 			),
 			'nodeAuthenticationToken' => $parameters['nodeAuthenticationToken']
 		);
-		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationIpAddress']);
+		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestination']);
 		$systemActionProcessNodeParameterData = $systemActionProcessNodeParameters['data'];
 		unset($systemActionProcessNodeParameters['data']);
 		$encodedSystemActionProcessNodeParameters = json_encode($systemActionProcessNodeParameters);
@@ -282,7 +282,7 @@
 			return $response;
 		}
 
-		shell_exec('sudo ' . $parameters['binaryFiles']['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-next-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $parameters['systemEndpointDestinationIpAddress'] . '/system-endpoint.php');
+		shell_exec('sudo ' . $parameters['binaryFiles']['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-next-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --read-timeout=600 --tries=1 ' . $parameters['systemEndpointDestination'] . '/system-endpoint.php');
 		$systemActionProcessNodeParameters['data'] = $systemActionProcessNodeParameterData;
 		unset($systemActionProcessNodeParameterData);
 
@@ -475,7 +475,7 @@
 
 		if (empty($parameters['data']['next']['nodes']) === true) {
 			if (empty($parameters['data']['current']) === false) {
-				$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationIpAddress']);
+				$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestination']);
 
 				foreach ($parameters['data']['current']['nodeProcessTypes'] as $nodeProcessType) {
 					if (empty($parameters['data']['current']['nodeProcessTypeFirewallRuleSetPortNumbers'][$nodeProcessType]) === false) {
@@ -492,7 +492,7 @@
 												'processingProgressPercentage' => '0',
 												'processingStatus' => '0'
 											);
-											_processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationIpAddress']);
+											_processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestination']);
 											$response['message'] = 'Queueing node processing after node process verification error on destination address ' . $nodeReservedInternalDestination['ipAddress'] . ':' . $nodeProcessPortNumber . '.';
 											return $response;
 										}
@@ -510,13 +510,13 @@
 				'processingProgressPercentage' => '100',
 				'processingStatus' => '0'
 			);
-			_processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationIpAddress']);
+			_processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestination']);
 			$response = $systemActionProcessNodeResponse;
 			return $response;
 		}
 
 		unset($parameters['processingProgressCheckpoints'][2]);
-		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationIpAddress']);
+		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestination']);
 
 		if (empty($recursiveDnsNodeProcessDefaultServiceName) === true) {
 			$recursiveDnsNodeProcessDefaultServiceName = 'named';
@@ -786,7 +786,7 @@
 			return $response;
 		}
 
-		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationIpAddress']);
+		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestination']);
 		$parameters['nodeProcessTypeProcessPartDataKeys']['recursiveDns'] = array(
 			'next',
 			'next'
@@ -1044,7 +1044,7 @@
 			);
 		}
 
-		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationIpAddress']);
+		$parameters['processingProgressCheckpoints'] = _processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestination']);
 		$parameters = _processFirewall($parameters);
 
 		foreach ($nodeProcessTypeFirewallRuleSetsToDestroy as $nodeProcessTypeFirewallRuleSetToDestroy) {
@@ -1129,14 +1129,14 @@
 		}
 
 		$systemActionProcessNodeParameters['data']['processingStatus'] = '0';
-		_processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestinationIpAddress']);
+		_processNodeProcessingProgress($parameters['binaryFiles'], $parameters['processId'], $parameters['processingProgressCheckpoints'], $parameters['processingProgressCheckpointCount'], $systemActionProcessNodeParameters, $parameters['systemEndpointDestination']);
 		unlink('/usr/local/firewall-security-api/system-action-process-node-next-response.json');
 		unset($systemActionProcessNodeResponse['data']);
 		$response = $systemActionProcessNodeResponse;
 		return $response;
 	}
 
-	function _processNodeProcessingProgress($binaryFiles, $currentProcessId, $processingProgressCheckpoints, $processingProgressCheckpointCount, $systemActionProcessNodeParameters, $systemEndpointDestinationIpAddress) {
+	function _processNodeProcessingProgress($binaryFiles, $currentProcessId, $processingProgressCheckpoints, $processingProgressCheckpointCount, $systemActionProcessNodeParameters, $systemEndpointDestination) {
 		exec('ps -h -o pid -o cmd $(pgrep php) | grep "node-endpoint.php node-action-process-node-processes" | awk \'{print $1}\'', $nodeProcessProcessIds);
 
 		if (
@@ -1163,7 +1163,7 @@
 		}
 
 		if (empty($encodedSystemActionProcessNodeParameters) === false) {
-			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --read-timeout=60 --tries=1 ' . $systemEndpointDestinationIpAddress . '/system-endpoint.php');
+			shell_exec('sudo ' . $binaryFiles['wget'] . ' -O /usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemActionProcessNodeParameters . '\' --read-timeout=60 --tries=1 ' . $systemEndpointDestination . '/system-endpoint.php');
 
 			if (file_exists('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json') === true) {
 				$systemActionProcessNodeProcessingStatusResponse = file_get_contents('/usr/local/firewall-security-api/system-action-process-node-processing-status-' . $currentProcessId . '-response.json');
