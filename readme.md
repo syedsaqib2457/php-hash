@@ -34,7 +34,7 @@ Define `systemEndpointDestinationIpAddress` as the IP address to receive request
 
 Change `10.10.10.10` to the actual IP address to receive requests.
 
-```
+``` console
 systemEndpointDestinationIpAddress=10.10.10.10
 ```
 
@@ -42,7 +42,7 @@ Define `systemEndpointDestinationPortNumber` as the port number to receive reque
 
 Change `80` to the actual port number to receive requests.
 
-```
+``` console
 systemEndpointDestinationPortNumber=80
 ```
 
@@ -50,14 +50,27 @@ Define `systemEndpointDestinationSubdirectory` as the subdirectory to receive re
 
 Change the root `/` subdirectory path to the desired subdirectory path to receive requests.
 
-```
+``` console
 systemEndpointDestinationSubdirectory=/
 ```
 
 Install with this command.
 
-```
-cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system-action-deploy-system.php ; sudo wget -O system-action-deploy-system.php --no-dns-cache --retry-connrefused https://raw.githubusercontent.com/twexxor/firewall-security-api/main/system-action-deploy-system.php?$RANDOM && sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress $systemEndpointDestinationPortNumber $systemEndpointDestinationSubdirectory && sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress $systemEndpointDestinationPortNumber $systemEndpointDestinationSubdirectory 1;
+``` console
+cd /tmp && \
+rm -rf /etc/cloud/ /var/lib/cloud/ ; \
+apt-get update ; \
+DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; \
+sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; \
+sudo $(whereis telinit | awk '{print $2}') u ; \
+sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; \
+sudo dpkg --configure -a ; \
+sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; \
+sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && \
+sudo rm system-action-deploy-system.php ; \
+sudo wget -O system-action-deploy-system.php --no-dns-cache --retry-connrefused https://raw.githubusercontent.com/twexxor/firewall-security-api/main/system-action-deploy-system.php?$RANDOM && \
+sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress $systemEndpointDestinationPortNumber $systemEndpointDestinationSubdirectory && \
+sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress $systemEndpointDestinationPortNumber $systemEndpointDestinationSubdirectory 1;
 ```
 
 ```
@@ -72,6 +85,6 @@ systemUserAuthenticationToken
 
 ### Usage
 
-First, [deploy a node](https://github.com/twexxor/firewall-security-api/blob/main/guides/deploy-a-node.md#user-content-deploy-a-node) after deploying the system.
+After deploying the system, [deploy a node](https://github.com/twexxor/firewall-security-api/blob/main/guides/deploy-a-node.md#user-content-deploy-a-node).
 
 Then, read the [documentation](https://github.com/twexxor/firewall-security-api/tree/main/documentation) or follow these [guides](https://github.com/twexxor/firewall-security-api/tree/main/guides).
