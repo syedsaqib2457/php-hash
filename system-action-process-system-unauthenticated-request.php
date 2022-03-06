@@ -1,9 +1,5 @@
 <?php
 	if (empty($_SERVER['REMOTE_ADDR']) === false) {
-		if (is_dir('/var/www/firewall-security-api/unauthorized-source-ip-addresses-logs/') === false) {
-			shell_exec('cd /var/www/firewall-security-api/ && sudo mkdir -p unauthorized-source-ip-addresses-logs/allowed/ unauthorized-source-ip-addresses-logs/denied/');
-		}
-
 		$sourceIpAddress = $_SERVER['REMOTE_ADDR'];
 
 		if ((strpos($sourceIpAddress, ':') === false) === false) {
@@ -21,12 +17,13 @@
 		}
 
 		$timestamp = time();
-		$sourceIpAddressLogsPath = $sourceIpAddressPath . date('i', $timestamp) . '/' . hrtime(true);
-		shell_exec('cd /var/www/firewall-security-api/allowed/ && sudo mkdir -p ' . $sourceIpAddressLogPath . '/');
-		exec('cd /var/www/firewall-security-api/' . $sourceIpAddressLogsPath . ' && ls | tail -10 2>&1', $sourceIpAddressLogs);
+		$sourceIpAddressPath .= date('i', $timestamp) . '/';
+		$sourceIpAddressLogsPath = $sourceIpAddressPath . hrtime(true) . '/';
+		mkdir('/tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/allowed/' . $sourceIpAddressLogsPath, 0777, true);
+		exec('cd /tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/allowed/' . $sourceIpAddressPath . ' && ls 2>&1', $sourceIpAddressLogs);
 
 		if (isset($sourceIpAddressLogs[9]) === true) {
-			shell_exec('cd /var/www/firewall-security-api/ && sudo mkdir -p unauthorized-source-ip-addresses-logs/denied/' . $sourceIpAddressPath);
+			mkdir('/tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/denied/' . $sourceIpAddressPath, 0777, true);
 		}
 	}
 
