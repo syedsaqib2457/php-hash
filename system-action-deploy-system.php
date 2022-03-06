@@ -1474,6 +1474,12 @@
 			exit;
 		}
 
+		$systemSettingsData['systemEndpointDestination'] = $systemSettingsData['systemEndpointDestinationProtocol'] . '://' . $systemSettingsData['systemEndpointDestinationIpAddress'] . ':' . $systemSettingsData['systemEndpointDestinationPortNumber'] . '/' . $systemSettingsData['systemEndpointDestinationSubdirectory'];
+
+		if (($systemSettingsData['endpointDestinationIpAddressVersionNumber'] === '6') === 'true') {
+			$systemSettingsData['systemEndpointDestination'] = $systemSettingsData['systemEndpointDestinationProtocol'] . '://[' . $systemSettingsData['systemEndpointDestinationIpAddress'] . ']:' . $systemSettingsData['systemEndpointDestinationPortNumber'] . '/' . $systemSettingsData['systemEndpointDestinationSubdirectory'];
+		}
+
 		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-type.php');
 		$systemSettingsData['endpointDestinationIpAddressType'] = _validateIpAddressType($systemSettingsData['endpointDestinationIpAddress'], $systemSettingsData['endpointDestinationIpAddressVersionNumber']);
 
