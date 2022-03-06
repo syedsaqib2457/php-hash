@@ -43,8 +43,6 @@ systemEndpointDestinationPortNumber='80'
 
 Define `systemEndpointDestinationSubdirectory` as the subdirectory to receive requests.
 
-This an additional security measure to avoid exposure if `systemEndpointDestinationIpAddress` is a public network IP address.
-
 Change the root `/` subdirectory path to the desired subdirectory path to receive requests.
 
 ``` console
