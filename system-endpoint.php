@@ -80,8 +80,8 @@
 		'message' => 'Invalid parameters, please try again.',
 		'validatedStatus' => '0'
 	);
-	require_once('/var/www/firewall-security-api/system-databases.php');
-	$systemSettingsData = file_get_contents('/var/www/firewall-security-api/system-settings-data.json');
+	require_once('system-databases.php');
+	$systemSettingsData = file_get_contents('system-settings-data.json');
 	$systemSettingsData = json_decode($systemSettingsData, true);
 
 	if ($systemSettingsData === false) {
@@ -121,7 +121,7 @@
 			$actionIndex++;
 		}
 
-		$parameters['systemActionFile'] = '/var/www/firewall-security-api/system-action-' . $parameters['systemActionFile'] . '.php';
+		$parameters['systemActionFile'] = '/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-' . $parameters['systemActionFile'] . '.php';
 
 		if (file_exists($parameters['systemActionFile']) === false) {
 			$response['message'] = 'Error listing system action file, please try again.';
@@ -204,7 +204,7 @@
 				_output($parameters, $response);
 			}
 
-			require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
+			require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-ip-address-version-number.php');
 			$parameters['source'] = array(
 				'ipAddress' => $_SERVER['REMOTE_ADDR'],
 				'ipAddressVersionNumber' => '4'
