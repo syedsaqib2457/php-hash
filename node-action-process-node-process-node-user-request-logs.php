@@ -38,7 +38,7 @@
 							return $response;
 						}
 
-						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['systemEndpointDestinationIpAddress'] . '/system-endpoint.php 2>&1', $systemActionProcessNodeProcessNodeUserRequestLogsResponse);
+						exec('sudo curl -s --form "data=@/var/log/' . $nodeProcessType . '/' . $nodeProcessNodeUserRequestLogFile . '" --form-string \'json=' . $encodedSystemParameters . '\' ' . $parameters['systemEndpointDestination'] . '/system-endpoint.php 2>&1', $systemActionProcessNodeProcessNodeUserRequestLogsResponse);
 						$systemActionProcessNodeProcessNodeUserRequestLogsResponse = current($systemActionProcessNodeProcessNodeUserRequestLogsResponse);
 						$systemActionProcessNodeProcessNodeUserRequestLogsResponse = json_decode($systemActionProcessNodeProcessNodeUserRequestLogsResponse, true);
 
