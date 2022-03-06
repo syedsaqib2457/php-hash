@@ -960,7 +960,7 @@
 			}
 
 			foreach ($firewallRulesParts as $firewallRulesPart) {
-				shell_exec('sudo echo "' . $firewallRulesPart . '" >> /var/www/firewall-security-api/firewall-ip-aaddress-version-' . $ipAddressVersionNumber . '.dat');
+				shell_exec('sudo echo "' . $firewallRulesPart . '" >> /var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
 			}
 
 			shell_exec('sudo ' . $firewallBinaryFiles[$ipAddressVersionNumber] . ' < /var/www/firewall-security-api/firewall-ip-address-version-' . $ipAddressVersionNumber . '.dat');
@@ -1452,7 +1452,7 @@
 				)
 			)
 		);
-		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
+		require_once('/var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/system-action-validate-ip-address-version-number.php');
 		$systemSettingsData = array(
 			'endpointDestinationPortNumber' => $_SERVER['argv'][2],
 			'endpointDestinationProtocol' => 'http',
@@ -1480,7 +1480,7 @@
 			$systemSettingsData['endpointDestination'] = $systemSettingsData['endpointDestinationProtocol'] . '://[' . $systemSettingsData['endpointDestinationIpAddress'] . ']:' . $systemSettingsData['endpointDestinationPortNumber'] . '/' . $systemSettingsData['endpointDestinationSubdirectory'];
 		}
 
-		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-type.php');
+		require_once('/var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/system-action-validate-ip-address-type.php');
 		$systemSettingsData['endpointDestinationIpAddressType'] = _validateIpAddressType($systemSettingsData['endpointDestinationIpAddress'], $systemSettingsData['endpointDestinationIpAddressVersionNumber']);
 
 		foreach ($systemSettingsData as $systemSettingsDataKey => $systemSettingsDataValue) {
@@ -1494,7 +1494,7 @@
 		}
 
 		$encodedSystemSettingsData = json_encode($systemSettingsData);
-		file_put_contents('/var/www/firewall-security-api/system-settings-data.json', $encodedSystemSettingsData);
+		file_put_contents('/var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/system-settings-data.json', $encodedSystemSettingsData);
 
 		foreach ($systemDatabases as $systemDatabaseTableKey => $systemDatabaseColumnKeys) {
 			$systemDatabaseId = _createUniqueId();
