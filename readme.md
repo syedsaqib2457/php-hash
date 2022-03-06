@@ -15,7 +15,6 @@ Checklist features before version 1.00 release
 - Adding system endpoint migration support for changing system endpoint IP addresses + ports + subdirectories
 - Adding system resource usage logging functionality from node resource usage logging
 - Adding system update + node update scripts for each release version in system-action-update-system.php
-- Installing in a subdirectory to avoid detection from footprint scrapers
 - Testing + bug fixes for node processes + logging
 - Writing Documentaion
 - Writing Guides
