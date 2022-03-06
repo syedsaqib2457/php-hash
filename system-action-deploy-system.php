@@ -745,8 +745,8 @@
 
 		$crontabCommands[] = '# firewall-security-api-system-processes';
 		$crontabCommands[] = '@reboot root sudo ' . $binaryFiles['crontab'] . ' /etc/crontab firewall-security-api-system-processes';
-		$crontabCommands[] = '*/2 * * * * root sudo rm -rf /var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/unauthorized-source-ip-addresses/*';
-		$crontabCommands[] = '*/2 * * * * root sudo rm -rf /var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/unauthorized-source-ip-addresses-exceeded/*';
+		$crontabCommands[] = '*/2 * * * * root sudo rm -rf /var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/unauthorized-source-ip-addresses-blocked-logs/*';
+		$crontabCommands[] = '*/2 * * * * root sudo rm -rf /var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/unauthorized-source-ip-addresses-logs/*';
 		// $crontabCommands[] = '*/5 * * * * root sudo ' . $binaryFiles['php'] . ' /var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/system-action-process-system-action.php process-system-request-logs firewall-security-api-system-processes';
 		$crontabCommands[] = '';
 		$crontabCommands = implode("\n", $crontabCommands);
