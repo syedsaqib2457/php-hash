@@ -1493,8 +1493,8 @@
 			);
 		}
 
-		$systemSettingsData = json_encode($systemSettingsData);
-		file_put_contents('/var/www/firewall-security-api/system-settings-data.json', $systemSettingsData);
+		$encodedSystemSettingsData = json_encode($systemSettingsData);
+		file_put_contents('/var/www/firewall-security-api/system-settings-data.json', $encodedSystemSettingsData);
 
 		foreach ($systemDatabases as $systemDatabaseTableKey => $systemDatabaseColumnKeys) {
 			$systemDatabaseId = _createUniqueId();
