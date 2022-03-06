@@ -656,9 +656,11 @@
 		shell_exec('sudo ' . $binaryFiles['systemctl'] . ' start apache2');
 		$apacheSettings = array(
 			'<VirtualHost *:' . $_SERVER['argv'][2] . '>',
+			'DocumentRoot /var/www/firewall-security-api/',
+			'ErrorDocument 404 ' . $_SERVER['argv'][3] . '/system-action-process-unauthenticated-request.php',
+			'ErrorDocument 403 ' . $_SERVER['argv'][3] . '/system-action-process-unauthenticated-request.php',
 			'ServerAlias ' . $_SERVER['argv'][1],
 			'ServerName ' . $_SERVER['argv'][1],
-			'DocumentRoot /var/www/firewall-security-api/',
 			'<Directory /var/www/firewall-security-api/>',
 			'Allow from all',
 			'Options FollowSymLinks',
