@@ -1474,10 +1474,10 @@
 			exit;
 		}
 
-		$systemSettingsData['systemEndpointDestination'] = $systemSettingsData['systemEndpointDestinationProtocol'] . '://' . $systemSettingsData['systemEndpointDestinationIpAddress'] . ':' . $systemSettingsData['systemEndpointDestinationPortNumber'] . '/' . $systemSettingsData['systemEndpointDestinationSubdirectory'];
+		$systemSettingsData['endpointDestination'] = $systemSettingsData['endpointDestinationProtocol'] . '://' . $systemSettingsData['endpointDestinationIpAddress'] . ':' . $systemSettingsData['endpointDestinationPortNumber'] . '/' . $systemSettingsData['endpointDestinationSubdirectory'];
 
-		if (($systemSettingsData['endpointDestinationIpAddressVersionNumber'] === '6') === 'true') {
-			$systemSettingsData['systemEndpointDestination'] = $systemSettingsData['systemEndpointDestinationProtocol'] . '://[' . $systemSettingsData['systemEndpointDestinationIpAddress'] . ']:' . $systemSettingsData['systemEndpointDestinationPortNumber'] . '/' . $systemSettingsData['systemEndpointDestinationSubdirectory'];
+		if (($systemSettingsData['endpointDestinationIpAddressVersionNumber'] === '6') === true) {
+			$systemSettingsData['endpointDestination'] = $systemSettingsData['endpointDestinationProtocol'] . '://[' . $systemSettingsData['endpointDestinationIpAddress'] . ']:' . $systemSettingsData['endpointDestinationPortNumber'] . '/' . $systemSettingsData['endpointDestinationSubdirectory'];
 		}
 
 		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-type.php');
@@ -1564,7 +1564,7 @@
 
 		echo "System deployed successfully.\n\n";
 		echo "systemEndpointDestination\n";
-		echo $systemSettingsData['systemEndpointDestination'] . "/system-endpoint.php\n\n";
+		echo $systemSettingsData['endpointDestination'] . "/system-endpoint.php\n\n";
 		echo "systemUserAuthenticationToken\n";
 		echo $systemUserAuthenticationToken . "\n";
 		exit;
