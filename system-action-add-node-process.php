@@ -9,7 +9,7 @@
 	), $parameters['systemDatabases'], $response);
 	$parameters['systemDatabases']['nodeProcesses'] = $systemDatabasesConnections['nodeProcesses'];
 	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
-	require_once('/var/www/firewall-security-api/system-action-validate-port-number.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-port-number.php');
 
 	function _addNodeProcess($parameters, $response) {
 		if (empty($parameters['data']['nodeId']) === true) {
