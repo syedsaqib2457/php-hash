@@ -23,7 +23,12 @@ Checklist features before version 1.00 release
 
 ### Get Started
 
-Open the terminal console on either `Debian 10` or `Debian 11`.
+Open the terminal console on one of the following systems.
+
+```
+- Debian 10
+- Debian 11
+```
 
 Define `systemEndpointDestinationIpAddress` as the IP address to receive requests.
 
