@@ -3,7 +3,7 @@
 		exit;
 	}
 
-	require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-ip-address-version-number.php');
 
 	function _validateHostnameAddress($hostnameAddress, $allowIpAddress = false) {
 		$ipAddressVersionNumbers = array(
