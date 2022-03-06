@@ -11,8 +11,8 @@
 	$parameters['systemDatabases']['nodeProcessNodeUserRequestDestinationLogs'] = $systemDatabasesConnections['nodeProcessNodeUserRequestDestinationLogs'];
 	$parameters['systemDatabases']['nodeProcessNodeUserRequestLogs'] = $systemDatabasesConnections['nodeProcessNodeUserRequestLogs'];
 	$parameters['systemDatabases']['nodeProcessNodeUsers'] = $systemDatabasesConnections['nodeProcessNodeUsers'];
-	require_once('/var/www/firewall-security-api/system-action-add-node-resource-usage-log.php');
-	require_once('/var/www/firewall-security-api/system-action-add-node-process-resource-usage-logs.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-add-node-resource-usage-log.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-add-node-process-resource-usage-logs.php');
 
 	function _processNodeProcessNodeUserRequestLogs($parameters, $response) {
 		_edit(array(
