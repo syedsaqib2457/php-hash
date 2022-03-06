@@ -90,7 +90,7 @@
 	}
 
 	foreach ($systemSettingsData as $systemSettingsDataKey => $systemSettingsDataValue) {
-		$parameters[$systemSettingsDataKey] = $systemSettingsDataValue;
+		$parameters['system' . ucwords($systemSettingsDataKey)] = $systemSettingsDataValue;
 	}
 
 	if (empty($_POST['json']) === false) {
