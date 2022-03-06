@@ -431,6 +431,12 @@
 		$nodeSettingsData['system' . ucwords($systemActionListSystemSettingsResponseData['key'])] = $systemActionListSystemSettingsResponseData['value'];
 	}
 
+	$nodeSettingsData['systemEndpointDestination'] = $nodeSettingsData['systemEndpointDestinationProtocol'] . '://' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'];
+
+	if (($nodeSettingsData['systemEndpointDestinationIpAddressVersionNumber'] === '6') === true) {
+		$nodeSettingsData['systemEndpointDestination'] = $nodeSettingsData['systemEndpointDestinationProtocol'] . '://[' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ']:' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'];
+	}
+
 	$systemActionActivateNodeParameters = array(
 		'action' => 'activateNode',
 		'nodeAuthenticationToken' => $_SERVER['argv'][1]
