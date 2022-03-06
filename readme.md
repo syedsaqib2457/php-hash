@@ -57,11 +57,16 @@ Install with this command.
 cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -y install sudo ; sudo kill -9 $(ps -o ppid -o stat | grep Z | grep -v grep | awk '{print $1}') ; sudo $(whereis telinit | awk '{print $2}') u ; sudo rm -rf /etc/cloud/ /var/lib/cloud/ ; sudo dpkg --configure -a ; sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y purge php* ; sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php wget --fix-missing && sudo rm system-action-deploy-system.php ; sudo wget -O system-action-deploy-system.php --no-dns-cache --retry-connrefused https://raw.githubusercontent.com/twexxor/firewall-security-api/main/system-action-deploy-system.php?$RANDOM && sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress $systemEndpointDestinationPortNumber $systemEndpointDestinationSubdirectory && sudo php system-action-deploy-system.php $systemEndpointDestinationIpAddress $systemEndpointDestinationPortNumber $systemEndpointDestinationSubdirectory 1;
 ```
 
-The `systemUserAuthenticationToken` is provided after a successful installation.
+The `systemEndpointDestination` and `systemUserAuthenticationToken` are provided after a successful installation.
 
 ``` console
-System deployed successfully at http://10.10.10.10:80/system-endpoint.php.
-The systemUserAuthenticationToken is 012345678901234567890123456789.
+System deployed successfully.
+
+systemEndpointDestination
+http://10.10.10.10:80/system-endpoint.php
+
+systemUserAuthenticationToken
+012345678901234567890123456789
 ```
 
 ### Usage
