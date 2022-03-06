@@ -80,7 +80,7 @@
 		'systemVersionNumber' => $nodeSettingsData['systemVersionNumber']
 	);
 
-	if ($nodeSettingsData['systemEndpointDestinationIpAddressType'] === '6') {
+	if ($nodeSettingsData['systemEndpointDestinationIpAddressVersionNumber'] === '6') {
 		$parameters['systemEndpointDestination'] = $nodeSettingsData['systemEndpointDestinationProtocol'] . '://[' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ']:' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'];
 	}
 
