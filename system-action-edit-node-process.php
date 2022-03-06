@@ -23,7 +23,7 @@
 	$parameters['systemDatabases']['nodeProcessNodeUsers'] = $systemDatabasesConnections['nodeProcessNodeUsers'];
 	$parameters['systemDatabases']['nodeProcessRecursiveDnsDestinations'] = $systemDatabasesConnections['nodeProcessRecursiveDnsDestinations'];
 	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
-	require_once('/var/www/firewall-security-api/system-action-validate-port-number.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-port-number.php');
 
 	function _editNodeProcess($parameters, $response) {
 		if (empty($parameters['where']['id']) === true) {
