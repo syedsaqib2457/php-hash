@@ -1455,6 +1455,7 @@
 		require_once('/var/www/firewall-security-api/system-action-validate-ip-address-version-number.php');
 		$systemSettingsData = array(
 			'endpointDestinationPortNumber' => $_SERVER['argv'][2],
+			'endpointDestinationProtocol' => 'http',
 			'endpointDestinationSubdirectory' => $_SERVER['argv'][3],
 			'versionNumber' => '1'
 		);
