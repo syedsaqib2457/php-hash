@@ -1487,7 +1487,6 @@
 		$systemSettingsData['endpointDestination'] = $systemSettingsData['endpointDestinationProtocol'] . '://' . str_replace('//', '/', $systemSettingsData['endpointDestination']);
 		require_once('/var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/system-action-validate-ip-address-type.php');
 		$systemSettingsData['endpointDestinationIpAddressType'] = _validateIpAddressType($systemSettingsData['endpointDestinationIpAddress'], $systemSettingsData['endpointDestinationIpAddressVersionNumber']);
-		$systemSettingsData['endpointDestinationUnauthenticatedRequestLimitRulePerMinuteCount'] = 10;
 
 		foreach ($systemSettingsData as $systemSettingsDataKey => $systemSettingsDataValue) {
 			$systemDatabaseData['systemSettings'][] = array(
