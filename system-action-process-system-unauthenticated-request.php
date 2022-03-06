@@ -1,7 +1,5 @@
 <?php
 	if (empty($_SERVER['REMOTE_ADDR']) === false) {
-		$systemEndpointDestinationUnauthenticatedRequestLimitRulePerMinuteCount = 10;
-
 		if (is_dir('/var/www/firewall-security-api/unauthorized-source-ip-addresses-logs/') === false) {
 			shell_exec('cd /var/www/firewall-security-api/ && sudo mkdir -p unauthorized-source-ip-addresses-logs/allowed/ unauthorized-source-ip-addresses-logs/denied/');
 		}
@@ -15,14 +13,21 @@
 		}
 
 		$sourceIpAddressIndex = 0;
-		$sourceIpAddressPath = '/';
+		$sourceIpAddressPath = '';
 
 		while (isset($sourceIpAddress[$sourceIpAddressIndex]) === true) {
 			$sourceIpAddressPath .= $sourceIpAddress[$sourceIpAddressIndex] . '/';
 			$sourceIpAddressIndex++;
 		}
 
-		// todo
+		$timestamp = time();
+		$sourceIpAddressLogsPath = $sourceIpAddressPath . date('i', $timestamp) . '/' . hrtime(true);
+		shell_exec('cd /var/www/firewall-security-api/allowed/ && sudo mkdir -p ' . $sourceIpAddressLogPath . '/');
+		exec('cd /var/www/firewall-security-api/' . $sourceIpAddressLogsPath . ' && ls | tail -10 2>&1', $sourceIpAddressLogs);
+
+		if (isset($sourceIpAddressLogs[9]) === true) {
+			shell_exec('cd /var/www/firewall-security-api/ && sudo mkdir -p unauthorized-source-ip-addresses-logs/denied/' . $sourceIpAddressPath);
+		}
 	}
 
 	exit;
