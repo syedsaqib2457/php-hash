@@ -9,7 +9,7 @@ This is an example `POST` request body made to the `/system-endpoint.php` path i
 
 All values are formatted as `string` types and contained in `json=`.
 
-```json
+``` json
 {
     "action": "deleteSystemUserAuthenticationTokenSources",
     "systemUserAuthenticationToken": "012345678901234567890123456789",
