@@ -45,6 +45,8 @@ Define `systemEndpointDestinationSubdirectory` as the subdirectory to receive re
 
 This an additional security measure to avoid exposure if `systemEndpointDestinationIpAddress` is a public network IP address.
 
+Change the root `/` path to the desired subdirectory path to receive requests.
+
 ``` console
 systemEndpointDestinationSubdirectory='/'
 ```
