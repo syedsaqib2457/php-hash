@@ -7,7 +7,7 @@
 		'nodeRequestDestinations'
 	), $parameters['systemDatabases'], $response);
 	$parameters['systemDatabases']['nodeRequestDestinations'] = $systemDatabasesConnections['nodeRequestDestinations'];
-	require_once('/var/www/firewall-security-api/system-action-validate-hostname-address.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-hostname-address.php');
 
 	function _addNodeRequestDestination($parameters, $response) {
 		if (empty($parameters['data']['address']) === true) {
