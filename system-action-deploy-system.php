@@ -1562,8 +1562,11 @@
 			}
 		}
 
-		echo 'System deployed successfully.' . "\n";
-		echo 'The systemUserAuthenticationToken is ' . $systemUserAuthenticationToken . ".\n";
+		echo "System deployed successfully.\n\n";
+		echo "systemEndpointDestination\n";
+		echo $systemSettingsData['systemEndpointDestination'] . "/system-endpoint.php\n\n";
+		echo "systemUserAuthenticationToken\n";
+		echo $systemUserAuthenticationToken . "\n";
 		exit;
 	}
 ?>
