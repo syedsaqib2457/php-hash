@@ -1,29 +1,29 @@
 <?php
 	if (empty($_SERVER['REMOTE_ADDR']) === false) {
-		$sourceIpAddress = $_SERVER['REMOTE_ADDR'];
+		$unauthenticatedSourceIpAddress = $_SERVER['REMOTE_ADDR'];
 
-		if ((strpos($sourceIpAddress, ':') === false) === false) {
-			$sourceIpAddress = str_replace(':', '_', $sourceIpAddress);
+		if ((strpos($unauthenticatedSourceIpAddress, ':') === false) === false) {
+			$unauthenticatedSourceIpAddress = str_replace(':', '_', $unauthenticatedSourceIpAddress);
 		} else {
-			$sourceIpAddress = str_replace('.', '', $sourceIpAddress);
+			$unauthenticatedSourceIpAddress = str_replace('.', '', $unauthenticatedSourceIpAddress);
 		}
 
-		$sourceIpAddressIndex = 0;
-		$sourceIpAddressPath = '';
+		$unauthenticatedSourceIpAddressIndex = 0;
+		$unauthenticatedSourceIpAddressPath = '';
 
-		while (isset($sourceIpAddress[$sourceIpAddressIndex]) === true) {
-			$sourceIpAddressPath .= $sourceIpAddress[$sourceIpAddressIndex] . '/';
-			$sourceIpAddressIndex++;
+		while (isset($unauthenticatedSourceIpAddress[$unauthenticatedSourceIpAddressIndex]) === true) {
+			$unauthenticatedSourceIpAddressPath .= $unauthenticatedSourceIpAddress[$unauthenticatedSourceIpAddressIndex] . '/';
+			$unauthenticatedSourceIpAddressIndex++;
 		}
 
-		$timestamp = time();
-		$sourceIpAddressPath .= date('i', $timestamp) . '/';
-		$sourceIpAddressLogsPath = $sourceIpAddressPath . hrtime(true) . '/';
-		mkdir('/tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/allowed/' . $sourceIpAddressLogsPath, 0777, true);
-		exec('cd /tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/allowed/' . $sourceIpAddressPath . ' && ls 2>&1', $sourceIpAddressLogs);
+		$unauthenticatedSourceIpAddressTimestamp = time();
+		$unauthenticatedSourceIpAddressLogPath .= date('i', $unauthenticatedSourceIpAddressTimestamp) . '/';
+		$unauthenticatedSourceIpAddressLog = $unauthenticatedSourceIpAddressLogPath . hrtime(true) . '/';
+		mkdir('/tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/allowed/' . $unauthenticatedSourceIpAddressLog, 0777, true);
+		exec('cd /tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/allowed/' . $unauthenticatedSourceIpAddressLogPath . ' && ls 2>&1', $unauthenticatedSourceIpAddressLogs);
 
-		if (isset($sourceIpAddressLogs[9]) === true) {
-			mkdir('/tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/denied/' . $sourceIpAddressPath, 0777, true);
+		if (isset($unauthenticatedSourceIpAddressLogs[9]) === true) {
+			mkdir('/tmp/firewall-security-api/unauthorized-source-ip-addresses-logs/denied/' . $unauthenticatedSourceIpAddressLogPath, 0777, true);
 		}
 	}
 
