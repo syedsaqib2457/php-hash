@@ -64,6 +64,29 @@
 		exit;
 	}
 
+	if (empty($_SERVER['REMOTE_ADDR']) === false) {
+		$unauthenticatedSourceIpAddress = $_SERVER['REMOTE_ADDR'];
+
+		if ((strpos($unauthenticatedSourceIpAddress, ':') === false) === false) {
+			$unauthenticatedSourceIpAddress = str_replace(':', '_', $unauthenticatedSourceIpAddress);
+		} else {
+			$unauthenticatedSourceIpAddress = str_replace('.', '', $unauthenticatedSourceIpAddress);
+		}
+
+		$unauthenticatedSourceIpAddressIndex = 0;
+		$unauthenticatedSourceIpAddressLogPath = '';
+
+		while (isset($unauthenticatedSourceIpAddress[$unauthenticatedSourceIpAddressIndex]) === true) {
+			$unauthenticatedSourceIpAddressLogPath .= $unauthenticatedSourceIpAddress[$unauthenticatedSourceIpAddressIndex] . '/';
+			$unauthenticatedSourceIpAddressIndex++;
+		}
+		
+		if (is_dir('/tmp/firewall-security-api/unauthenticated-source-ip-addresses-logs/denied/' . $unauthenticatedSourceIpAddressLogPath) === true) {
+			echo 'Requests from source IP address ' . $_SERVER['REMOTE_ADDR'] . ' are temporarily blocked from too many unauthenticated requests, please try again.';
+			exit;
+		}
+	}
+
 	$parameters = array();
 
 	if (empty($_POST['json']) === false) {
