@@ -70,6 +70,7 @@
 		'binaryFiles' => array(),
 		'nodeAuthenticationToken' => $nodeSettingsData['authenticationToken'],
 		'processId' => getmypid(),
+		'systemEndpointDestination' => $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'],
 		'systemEndpointDestinationIpAddress' => $nodeSettingsData['systemEndpointDestinationIpAddress'],
 		'systemEndpointDestinationIpAddressType' => $nodeSettingsData['systemEndpointDestinationIpAddressType'],
 		'systemEndpointDestinationIpAddressVersionNumber' => $nodeSettingsData['systemEndpointDestinationIpAddressVersionNumber'],
