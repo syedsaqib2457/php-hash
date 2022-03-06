@@ -49,7 +49,7 @@ This is an example response body from the example request in `JSON` format.
 
 All values are formatted as `string` types.
 
-```json
+``` json
 {
     "authenticatedStatus": "1",
     "data": {},
