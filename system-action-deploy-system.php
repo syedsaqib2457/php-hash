@@ -657,8 +657,8 @@
 		$apacheSettings = array(
 			'<VirtualHost *:' . $_SERVER['argv'][2] . '>',
 			'DocumentRoot /var/www/firewall-security-api/',
-			'ErrorDocument 404 ' . $_SERVER['argv'][3] . '/system-action-process-unauthenticated-request.php',
-			'ErrorDocument 403 ' . $_SERVER['argv'][3] . '/system-action-process-unauthenticated-request.php',
+			'ErrorDocument 404 ' . $_SERVER['argv'][3] . '/system-action-process-system-unauthenticated-request.php',
+			'ErrorDocument 403 ' . $_SERVER['argv'][3] . '/system-action-process-system-unauthenticated-request.php',
 			'ServerAlias ' . $_SERVER['argv'][1],
 			'ServerName ' . $_SERVER['argv'][1],
 			'<Directory /var/www/firewall-security-api/>',
