@@ -70,14 +70,19 @@
 		'binaryFiles' => array(),
 		'nodeAuthenticationToken' => $nodeSettingsData['authenticationToken'],
 		'processId' => getmypid(),
-		'systemEndpointDestination' => $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'],
+		'systemEndpointDestination' => $nodeSettingsData['systemEndpointDestinationProtocol'] . '://' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'],
 		'systemEndpointDestinationIpAddress' => $nodeSettingsData['systemEndpointDestinationIpAddress'],
 		'systemEndpointDestinationIpAddressType' => $nodeSettingsData['systemEndpointDestinationIpAddressType'],
 		'systemEndpointDestinationIpAddressVersionNumber' => $nodeSettingsData['systemEndpointDestinationIpAddressVersionNumber'],
 		'systemEndpointDestinationPortNumber' => $nodeSettingsData['systemEndpointDestinationPortNumber'],
+		'systemEndpointDestinationProtocol' => $nodeSettingsData['systemEndpointDestinationProtocol'],
 		'systemEndpointDestinationSubdirectory' => $nodeSettingsData['systemEndpointDestinationSubdirectory'],
 		'systemVersionNumber' => $nodeSettingsData['systemVersionNumber']
 	);
+
+	if ($nodeSettingsData['systemEndpointDestinationIpAddressType'] === '6') {
+		$parameters['systemEndpointDestination'] = $nodeSettingsData['systemEndpointDestinationProtocol'] . '://[' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ']:' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'];
+	}
 
 	if ($parameters['processId'] === false) {
 		$response['message'] = 'Error listing process ID, please try again.';
