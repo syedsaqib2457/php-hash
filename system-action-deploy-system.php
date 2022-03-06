@@ -1474,12 +1474,13 @@
 			exit;
 		}
 
-		$systemSettingsData['endpointDestination'] = $systemSettingsData['endpointDestinationProtocol'] . '://' . $systemSettingsData['endpointDestinationIpAddress'] . ':' . $systemSettingsData['endpointDestinationPortNumber'] . '/' . $systemSettingsData['endpointDestinationSubdirectory'];
+		$systemSettingsData['endpointDestination'] = $systemSettingsData['endpointDestinationIpAddress'] . ':' . $systemSettingsData['endpointDestinationPortNumber'] . '/' . $systemSettingsData['endpointDestinationSubdirectory'];
 
 		if (($systemSettingsData['endpointDestinationIpAddressVersionNumber'] === '6') === true) {
-			$systemSettingsData['endpointDestination'] = $systemSettingsData['endpointDestinationProtocol'] . '://[' . $systemSettingsData['endpointDestinationIpAddress'] . ']:' . $systemSettingsData['endpointDestinationPortNumber'] . '/' . $systemSettingsData['endpointDestinationSubdirectory'];
+			$systemSettingsData['endpointDestination'] = '[' . $systemSettingsData['endpointDestinationIpAddress'] . ']:' . $systemSettingsData['endpointDestinationPortNumber'] . '/' . $systemSettingsData['endpointDestinationSubdirectory'];
 		}
 
+		$systemSettingsData['endpointDestination'] = $systemSettingsData['endpointDestinationProtocol'] . '://' . str_replace('//', '/', $systemSettingsData['endpointDestination']);
 		require_once('/var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/system-action-validate-ip-address-type.php');
 		$systemSettingsData['endpointDestinationIpAddressType'] = _validateIpAddressType($systemSettingsData['endpointDestinationIpAddress'], $systemSettingsData['endpointDestinationIpAddressVersionNumber']);
 
@@ -1564,7 +1565,7 @@
 
 		echo "System deployed successfully.\n\n";
 		echo "systemEndpointDestination\n";
-		echo $systemSettingsData['endpointDestination'] . "/system-endpoint.php\n\n";
+		echo rtrim($systemSettingsData['endpointDestination'], '/') . "/system-endpoint.php\n\n";
 		echo "systemUserAuthenticationToken\n";
 		echo $systemUserAuthenticationToken . "\n";
 		exit;
