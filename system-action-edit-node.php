@@ -9,8 +9,8 @@
 	), $parameters['systemDatabases'], $response);
 	$parameters['systemDatabases']['nodeReservedInternalDestinations'] = $systemDatabasesConnections['nodeReservedInternalDestinations'];
 	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
-	require_once('/var/www/firewall-security-api/system-action-add-node-reserved-internal-destination.php');
-	require_once('/var/www/firewall-security-api/system-action-validate-ip_address-type.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-add-node-reserved-internal-destination.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-ip_address-type.php');
 
 	function _editNode($parameters, $response) {
 		if (empty($parameters['systemUserAuthenticationToken']) === true) {
