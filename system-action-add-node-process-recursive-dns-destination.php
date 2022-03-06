@@ -11,8 +11,8 @@
 	$parameters['systemDatabases']['nodeProcessRecursiveDnsDestinations'] = $systemDatabasesConnections['nodeProcessRecursiveDnsDestinations'];
 	$parameters['systemDatabases']['nodeProcesses'] = $systemDatabasesConnections['nodeProcesses'];
 	$parameters['systemDatabases']['nodes'] = $systemDatabasesConnections['nodes'];
-	require_once('/var/www/firewall-security-api/system-action-validate-ip-address-type.php');
-	require_once('/var/www/firewall-security-api/system-action-validate-port-number.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-ip-address-type.php');
+	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-port-number.php');
 
 	function _addNodeProcessRecursiveDnsDestination($parameters, $response) {
 		$parameters['data']['id'] = _createUniqueId();
