@@ -60,7 +60,7 @@ cd /tmp && rm -rf /etc/cloud/ /var/lib/cloud/ ; apt-get update ; DEBIAN_FRONTEND
 The `systemUserAuthenticationToken` is provided after a successful installation.
 
 ``` console
-System deployed successfully.
+System deployed successfully at http://10.10.10.10:80/system-endpoint.php.
 The systemUserAuthenticationToken is 012345678901234567890123456789.
 ```
 
