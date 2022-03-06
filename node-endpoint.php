@@ -73,6 +73,8 @@
 		'systemEndpointDestinationIpAddress' => $nodeSettingsData['systemEndpointDestinationIpAddress'],
 		'systemEndpointDestinationIpAddressType' => $nodeSettingsData['systemEndpointDestinationIpAddressType'],
 		'systemEndpointDestinationIpAddressVersionNumber' => $nodeSettingsData['systemEndpointDestinationIpAddressVersionNumber'],
+		'systemEndpointDestinationPortNumber' => $nodeSettingsData['systemEndpointDestinationPortNumber'],
+		'systemEndpointDestinationSubdirectory' => $nodeSettingsData['systemEndpointDestinationSubdirectory'],
 		'systemVersionNumber' => $nodeSettingsData['systemVersionNumber']
 	);
 
@@ -257,7 +259,7 @@
 			_output($response);
 		}
 
-		shell_exec('sudo ' . $parameters['binaryFiles']['wget'] . ' -O /usr/local/firewall-security-api/system-action-list-system-settings-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --read-timeout=60 --tries=1 ' . $parameters['systemEndpointDestinationIpAddress'] . '/system-endpoint.php');
+		shell_exec('sudo ' . $parameters['binaryFiles']['wget'] . ' -O /usr/local/firewall-security-api/system-action-list-system-settings-response.json --connect-timeout=5 --dns-timeout=5 --no-dns-cache --post-data \'json=' . $encodedSystemParameters . '\' --read-timeout=60 --tries=1 ' . $nodeSettingsData['systemEndpointDestinationIpAddress'] . ':' . $nodeSettingsData['systemEndpointDestinationPortNumber'] . '/' . $nodeSettingsData['systemEndpointDestinationSubdirectory'] . '/system-endpoint.php');
 
 		if (file_exists('/usr/local/firewall-security-api/system-action-list-system-settings-response.json') === false) {
 			$response['message'] = 'Error listing system settings, please try again.';
