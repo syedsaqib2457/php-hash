@@ -15,9 +15,16 @@ A node can have both IPv4 and IPv6 addresses with external and internal IP addre
 
 If the device has no internal IP address assigned, only the external IP address is required.
 
-A node must be deployed on either `Debian 10` or `Debian 11` with `all ports open`.
+A node must be deployed on one of the following systems.
 
-The system API automatically closes and opens ports for each node process.
+```
+- Debian 10
+- Debian 11
+```
+
+All ports to be used with node processes should be open in the upstream firewall.
+
+The system API firewall automatically closes and opens ports for each node process.
 
 This guide uses the following example data to deploy a node without any node processes.
 
