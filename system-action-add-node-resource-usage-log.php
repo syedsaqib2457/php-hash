@@ -9,7 +9,7 @@
 	$parameters['systemDatabases']['nodeResourceUsageLogs'] = $systemDatabasesConnections['nodeResourceUsageLogs'];
 
 	function _addNodeResourceUsageLog($parameters, $response) {
-		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['id'] = _generateUniqueId();
 		$parameters['data']['nodeId'] = $parameters['node']]['id'];
 		$existingNodeResourceUsageLog = _list(array(
 			'data' => array(
