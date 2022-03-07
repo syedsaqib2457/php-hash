@@ -1,10 +1,9 @@
 <?php
 	function _createUniqueId() {
-		$uniqueId = hrtime(true);
-		$uniqueId = substr($uniqueId, -10);
-		$uniqueId = sprintf('%010s', $uniqueId);
-		$uniqueId .= (microtime(true) * 10000) . mt_rand(100000, 999999);
-		return $uniqueId;
+		$uniqueIdPart = (microtime(true) * 10000);
+		$uniqueId = sprintf('%016s', $uniqueIdPart);
+		$uniqueIdPart = mt_rand(0, 99999999999999);
+		return $uniqueId . sprintf('%014s', $uniqueIdPart);
 	}
 
 	function _output($parameters, $response) {
