@@ -27,5 +27,7 @@
 		}
 	}
 
-	exit;
+	if (empty($parameters) === true) {
+		exit;
+	}
 ?>
