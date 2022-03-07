@@ -1,5 +1,5 @@
 <?php
-	function _createUniqueId() {
+	function _generateUniqueId() {
 		$uniqueIdPart = (microtime(true) * 10000);
 		$uniqueId = sprintf('%016s', $uniqueIdPart);
 		$uniqueIdPart = mt_rand(0, 99999999999999);
@@ -1424,9 +1424,9 @@
                 }
 
 		$timestamp = time();
-		$systemUserAuthenticationToken = _createUniqueId();
-		$systemUserAuthenticationTokenId = _createUniqueId();
-		$systemUserId = _createUniqueId();
+		$systemUserAuthenticationToken = _generateUniqueId();
+		$systemUserAuthenticationTokenId = _generateUniqueId();
+		$systemUserId = _generateUniqueId();
 		$systemDatabaseData = array(
 			'systemUserAuthenticationTokens' => array(
 				array(
@@ -1448,7 +1448,7 @@
 			'systemUserSystemUsers' => array(
 				array(
 					'createdTimestamp' => $timestamp,
-					'id' => _createUniqueId(),
+					'id' => _generateUniqueId(),
 					'modifiedTimestamp' => $timestamp,
 					'systemUserId' => $systemUserId,
 					'systemUserSystemUserId' => $systemUserId
@@ -1490,7 +1490,7 @@
 		foreach ($systemSettingsData as $systemSettingsDataKey => $systemSettingsDataValue) {
 			$systemDatabaseData['systemSettings'][] = array(
 				'createdTimestamp' => $timestamp,
-				'id' => _createUniqueId(),
+				'id' => _generateUniqueId(),
 				'modifiedTimestamp' => $timestamp,
 				'key' => $systemSettingsDataKey,
 				'value' => $systemSettingsDataValue
@@ -1501,7 +1501,7 @@
 		file_put_contents('/var/www/firewall-security-api/' . $_SERVER['argv'][3] . '/system-settings-data.json', $encodedSystemSettingsData);
 
 		foreach ($systemDatabases as $systemDatabaseTableKey => $systemDatabaseColumnKeys) {
-			$systemDatabaseId = _createUniqueId();
+			$systemDatabaseId = _generateUniqueId();
 			$systemDatabaseData['systemDatabases'][] = array(
 				'authenticationCredentialAddress' => 'localhost',
 				'authenticationCredentialPassword' => 'password',
@@ -1514,7 +1514,7 @@
 			foreach ($systemDatabaseColumnKeys as $systemDatabaseColumnKey => $systemDatabaseColumnType) {
 				$systemDatabaseData['systemDatabaseColumns'][] = array(
 					'createdTimestamp' => $timestamp,
-					'id' => _createUniqueId(),
+					'id' => _generateUniqueId(),
 					'key' => $systemDatabaseColumnKey,
 					'modifiedTimestamp' => $timestamp,
 					'systemDatabaseId' => $systemDatabaseId
@@ -1543,7 +1543,7 @@
 
 				$systemDatabaseData['systemUserAuthenticationTokenScopes'][] = array(
 					'createdTimestamp' => $timestamp,
-					'id' => _createUniqueId(),
+					'id' => _generateUniqueId(),
 					'modifiedTimestamp' => $timestamp,
 					'systemAction' => $systemAction,
 					'systemUserAuthenticationTokenId' => $systemUserAuthenticationTokenId,
