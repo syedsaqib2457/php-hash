@@ -99,7 +99,7 @@
 		if (($nodeUserNodeRequestDestinationCount === 0) === true) {
 			_save(array(
 				'data' => array(
-					'id' => _createUniqueId(),
+					'id' => _generateUniqueId(),
 					'nodeRequestDestinationAddress' => $nodeRequestDestination['address'],
 					'nodeRequestDestinationId' => $parameters['data']['nodeRequestDestinationId'],
 					'nodeUserId' => $parameters['data']['nodeUserId']
@@ -108,7 +108,7 @@
 			));
 		}
 
-		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['id'] = _generateUniqueId();
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['systemDatabases']['nodeUserNodeRequestLimitRules']
