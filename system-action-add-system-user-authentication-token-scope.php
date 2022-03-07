@@ -75,7 +75,7 @@
 			return $response;
 		}
 
-		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['id'] = _generateUniqueId();
 		$parameters['data']['systemUserId'] = $systemUserAuthenticationToken['systemUserId'];
 		$existingSystemUserAuthenticationTokenScopeCount = _count(array(
 			'in' => $parameters['systemDatabases']['systemUserAuthenticationTokenScopes'],
