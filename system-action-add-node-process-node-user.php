@@ -84,7 +84,7 @@
 			return $response;
 		}
 
-		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['id'] = _generateUniqueId();
 		$parameters['data']['nodeUserauthenticationStrictOnlyAllowedStatus'] = $nodeUser['authenticationStrictOnlyAllowedStatus'];
 		$parameters['data']['nodeUsernodeRequestDestinationsOnlyAllowedStatus'] = $nodeUser['nodeRequestDestinationsOnlyAllowedStatus'];
 		$parameters['data']['nodeUsernodeRequestLogsAllowedStatus'] = $nodeUser['nodeRequestLogsAllowedStatus'];
