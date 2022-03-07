@@ -26,7 +26,7 @@
 
 		$parameters['data'] = array(
 			'authenticationStrictOnlyAllowedStatus' => intval($parameters['data']['authenticationStrictOnlyAllowedStatus']),
-			'id' => _createUniqueId(),
+			'id' => _generateUniqueId(),
 			'nodeRequestDestinationsOnlyAllowedStatus' => intval($parameters['data']['nodeRequestDestinationsOnlyAllowedStatus']),
 			'nodeRequestLogsAllowedStatus' => intval($parameters['data']['nodeRequestLogsAllowedStatus'])
 		);
