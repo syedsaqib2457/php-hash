@@ -1,5 +1,5 @@
 <?php
-	function _createUniqueId() {
+	function _generateUniqueId() {
 		$uniqueIdPart = (microtime(true) * 10000);
 		$uniqueId = sprintf('%016s', $uniqueIdPart);
 		$uniqueIdPart = mt_rand(0, 99999999999999);
@@ -14,7 +14,7 @@
 		$systemRequestLogsData = array(
 			// 'bytesReceived',
 			// 'bytesSent',
-			'id' => _createUniqueId(),
+			'id' => _generateUniqueId(),
 			'responseAuthenticatedStatus' => $response['authenticatedStatus'],
 			'responseMessage' => $response['message'],
 			'responseValidatedStatus' => $response['validatedStatus'],
