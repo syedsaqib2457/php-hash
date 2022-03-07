@@ -35,7 +35,7 @@
 
 		if (empty($existingNodeReservedInternalDestination) === true) {
 			$existingNodeReservedInternalDestination = array(
-				'id' => _createUniqueId(),
+				'id' => _generateUniqueId(),
 				'ipAddressVersionNumber' => $nodeIpAddressVersionNumber,
 				'nodeId' => $parameters['node'][$nodeIpAddressVersionNumber]['id'],
 				'nodeNodeId' => $parameters['node'][$nodeIpAddressVersionNumber]['nodeId'],
@@ -107,7 +107,7 @@
 			$existingNodeReservedInternalDestination,
 			$existingNodeReservedInternalDestination
 		);
-		$existingNodeReservedInternalDestinationsData[1]['id'] = _createUniqueId();
+		$existingNodeReservedInternalDestinationsData[1]['id'] = _generateUniqueId();
 		$existingNodeReservedInternalDestinationsData[1]['nodeId'] = '';
 		$existingNodeReservedInternalDestinationsData[1]['processedStatus'] = '0';
 		$nodeReservedInternalDestinationIpAddress = $existingNodeReservedInternalDestination['ipAddress'];
