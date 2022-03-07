@@ -16,7 +16,7 @@
 		}
 
 		foreach ($parameters['data'] as $nodeProcessResourceUsageLogKey => $nodeProcessResourceUsageLog) {
-			$parameters['data'][$nodeProcessResourceUsageLogKey]['id'] = _createUniqueId();
+			$parameters['data'][$nodeProcessResourceUsageLogKey]['id'] = _generateUniqueId();
 			$parameters['data'][$nodeProcessResourceUsageLogKey]['nodeId'] = $parameters['node']]['id'];
 			$existingNodeProcessResourceUsageLog = _list(array(
 				'data' => array(
