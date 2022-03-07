@@ -14,7 +14,7 @@
 
 	function _addNode($parameters, $response) {
 		$parameters['data']['activatedStatus'] = '0';
-		$parameters['data']['authenticationToken'] = _createUniqueId();
+		$parameters['data']['authenticationToken'] = _generateUniqueId();
 		$parameters['data']['deployedStatus'] = '0';
 
 		if (empty($parameters['data']['nodeId']) === false) {
@@ -156,7 +156,7 @@
 			}
 		}
 
-		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['id'] = _generateUniqueId();
 
 		foreach ($nodeIpAddressVersionNumbers as $nodeIpAddressVersionNumber) {
 			if (empty($parameters['data']['externalIpAddressVersion' . $nodeIpAddressVersionNumber]) === false) {
@@ -312,7 +312,7 @@
 				foreach ($nodeReservedInternalSources as $nodeReservedInternalSource) {
 					if (empty($nodeExternalIpAddresses['externalIpAddressVersion' . $nodeReservedInternalSourceIpAddressVersionNumber]) === false) {
 						$nodeReservedInternalSourceData[] = array(
-							'id' => _createUniqueId(),
+							'id' => _generateUniqueId(),
 							'ipAddress' => $nodeReservedInternalSource['ipAddress'],
 							'ipAddressBlockLength' => $nodeReservedInternalSource['ipAddressBlockLength'],
 							'ipAddressVersionNumber' => $nodeReservedInternalSourceIpAddressVersionNumber,
