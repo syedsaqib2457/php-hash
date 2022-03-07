@@ -77,7 +77,7 @@
 						'created' => $nodeProcessNodeUserRequestLog[2],
 						'destinationHostnameAddress' => $nodeProcessNodeUserRequestLog[3],
 						'destinationIpAddress' => $nodeProcessNodeUserRequestLog[4],
-						'id' => _createUniqueId(),
+						'id' => _generateUniqueId(),
 						'nodeId' => $parameters['data']['nodeId'],
 						'nodeNodeId' => $parameters['node']['id'],
 						'nodeProcessType' => $parameters['data']['nodeProcessType'],
