@@ -57,7 +57,7 @@
 			return $response;
 		}
 
-		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['id'] = _generateUniqueId();
 		_save(array(
 			'data' => $parameters['data'],
 			'in' => $parameters['systemDatabases']['nodeRequestLimitRules']
