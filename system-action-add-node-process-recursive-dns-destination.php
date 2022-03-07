@@ -15,7 +15,7 @@
 	require_once('/var/www/firewall-security-api/' . $parameters['systemEndpointDestinationSubdirectory'] . '/system-action-validate-port-number.php');
 
 	function _addNodeProcessRecursiveDnsDestination($parameters, $response) {
-		$parameters['data']['id'] = _createUniqueId();
+		$parameters['data']['id'] = _generateUniqueId();
 
 		if (empty($parameters['data']['nodeId']) === true) {
 			$response['message'] = 'Node process recursive DNS destination must have a node ID, please try again.';
