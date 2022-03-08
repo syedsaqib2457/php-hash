@@ -3,4 +3,6 @@ ___
 
 Generate hashes in PHP with a minimal SHA-256 algorithm function.
 
-In development
+``` php
+echo _sha256('buymeacoffee.com/twexxor');
+```
