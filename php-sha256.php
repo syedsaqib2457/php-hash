@@ -1,5 +1,5 @@
 <?php
-	function _sha256($_0) {
+	function twexxorSha256($_0) {
 		if (function_exists('_0') === false) {
 			function _0($_0, $_1) {
 				if (($_0 < 0) === true) {
