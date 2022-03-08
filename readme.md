@@ -1,7 +1,7 @@
 ### PHP SHA-256
 ___
 
-Generate hashes in PHP with a minified SHA-256 algorithm function.
+Generate hash strings in PHP with a [free](https://github.com/twexxor/php-sha256/blob/main/license.md) SHA-256 algorithm [function](https://github.com/twexxor/php-sha256/blob/main/php-sha256.php).
 
 ``` php
 echo twexxorSha256('buymeacoffee.com/twexxor');
