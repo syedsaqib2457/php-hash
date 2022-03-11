@@ -1,4 +1,6 @@
 <?php
+	// todo: redo this without constants
+
 	function twexxorSha256($_0) {
 		if (function_exists('_0') === false) {
 			function _0($_0, $_1) {
