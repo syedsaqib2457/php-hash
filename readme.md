@@ -1,3 +1,3 @@
 ``` php
-echo twexxorSha256('buymeacoffee.com/twexxor');
+echo twexxorSha256('https://twexxor.bio.link/');
 ```
