@@ -1,5 +1,5 @@
+Permission to use this is granted.
+
 ``` php
 echo twexxorSha256('buymeacoffee.com/twexxor');
 ```
-
-##### Permission to use these files is granted.
