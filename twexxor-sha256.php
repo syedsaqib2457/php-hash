@@ -67,7 +67,7 @@
 	}
 
 	function twexxorSha256($_0) {
-		$_1 = dechex(strlen($_0) * 8);
+		$_1 = base_convert(strlen($_0) * 8, 10, 16);
 		$_2 = strlen($_1);
 
 		if (($_2 & 1) === 1) {
