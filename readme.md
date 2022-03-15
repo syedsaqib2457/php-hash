@@ -4,7 +4,7 @@ Hash SHA-256 strings with PHP.
 
 #### Requirements
 
-- PHP version 4 or greater  
+- PHP version 4 or greater
 
 #### Usage
 
