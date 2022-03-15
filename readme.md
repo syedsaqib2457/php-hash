@@ -1,18 +1,14 @@
-<br>
-
 ### PHP SHA-256
 
 Hash SHA-256 strings with PHP.
 
 #### Requirements
 
-PHP version 4 or greater is required.
-
-The PHP hash extension isn't required.
+- PHP version 4 or greater  
 
 #### Usage
 
-Clone the repository.
+Download the repository.
 
 ``` console
 git clone https://github.com/twexxor/php-sha256.git
@@ -25,8 +21,7 @@ require_once('twexxor-sha256.php');
 echo twexxorSha256('twexxor');
 ```
 
-ASCII and Unicode string inputs are supported in binary, decimal or hexidecimal format.
-
+ASCII and Unicode string inputs are supported in binary, decimal or hexidecimal format.  
 Responses are in hexidecimal string format.
 
 ``` console
