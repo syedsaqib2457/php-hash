@@ -1,4 +1,4 @@
-### PHP SHA-256
+## PHP SHA-256
 
 Hash SHA-256 strings with PHP.
 
@@ -7,8 +7,6 @@ Hash SHA-256 strings with PHP.
 - PHP version 4 or greater  
 
 #### Usage
-
-Download the repository.
 
 ``` console
 git clone https://github.com/twexxor/php-sha256.git
