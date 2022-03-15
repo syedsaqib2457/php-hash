@@ -1,5 +1,4 @@
-### PHP SHA-256
-___
+# PHP SHA-256
 
 Hash SHA-256 strings with PHP.
 
