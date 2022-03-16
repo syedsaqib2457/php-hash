@@ -66,7 +66,7 @@
 		return $_0_0;
 	}
 
-	function twexxorSha256($_0_0) {
+	function twexxorSha256Hasher($_0_0) {
 		$_0_1 = base_convert(strlen($_0_0) * 8, 10, 16);
 		$_0_2 = strlen($_0_1);
 
