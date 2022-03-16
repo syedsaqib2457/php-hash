@@ -1,4 +1,4 @@
-## PHP SHA-256
+## PHP SHA-256 Hasher
 
 Hash SHA-256 strings with PHP.
 
@@ -9,14 +9,14 @@ Hash SHA-256 strings with PHP.
 #### Usage
 
 ``` console
-git clone https://github.com/twexxor/php-sha256.git
+git clone https://github.com/twexxor/php-sha256-hasher.git
 ```
 
-Include `twexxor-sha256.php` and hash a string with `twexxorSha256()`.
+Include `twexxor-sha256-hasher.php` and hash a string with `twexxorSha256Hasher()`.
 
 ``` php
-require_once('twexxor-sha256.php');
-echo twexxorSha256('twexxor');
+require_once('twexxor-sha256-hasher.php');
+echo twexxorSha256Hasher('twexxor');
 ```
 
 ASCII and Unicode string inputs are supported in binary, decimal or hexidecimal format.  
