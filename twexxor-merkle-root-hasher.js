@@ -20,6 +20,18 @@ const _9_1 = function(_9_0, _9_1) {
 
 const twexxorMerkleRootHasher = function(_9_2, _9_3) {
 	_9_0 = _9_0[_9_3];
+	let _9_4 = _9_2.length;
+
+	if (_9_4 === 1) {
+		return _9_2[0];
+	}
+
+	let _9_5 = 0;
+
+	while (_9_4 !== 2) {
+		
+	}
+
 	// todo
 };
 
