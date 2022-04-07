@@ -1,4 +1,6 @@
-const twexxorMerkleRootHasher = function(_9_0) {
+_9_0 = require('twexxor-sha256-hasher');
+
+const twexxorMerkleRootHasher = function(_9_1) {
 	// todo
 };
 
