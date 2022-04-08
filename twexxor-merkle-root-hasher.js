@@ -20,7 +20,7 @@ const twexxorMerkleRootHasher = function(_9_2, _9_3) {
 	let _9_4 = _9_2.length;
 
 	if (_9_4 === 1) {
-		return _9_2[0];
+		_9_2[_9_4] = _9_2[_9_4++ - 1];
 	}
 
 	let _9_5 = 0;
