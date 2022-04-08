@@ -1,5 +1,3 @@
-In development.
-
 Hash merkle roots with JavaScript.
 
 The first input is an array of strings to hash and the second input is the algorithm to hash with.
