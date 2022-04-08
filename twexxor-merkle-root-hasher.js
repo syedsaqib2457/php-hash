@@ -16,6 +16,7 @@ const _9_1 = function(_9_0, _9_1) {
 };
 
 const twexxorMerkleRootHasher = function(_9_2, _9_3) {
+	// todo
 	_9_0 = _9_0[_9_3];
 	let _9_4 = _9_2.length;
 
