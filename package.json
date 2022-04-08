@@ -30,5 +30,5 @@
 		"type": "git",
 		"url": "git://github.com/twexxor/javascript-merkle-root-hasher.git"
 	},
-	"version": "1.0.0"
+	"version": "1.0.1"
 }
