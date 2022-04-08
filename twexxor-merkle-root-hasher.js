@@ -49,7 +49,14 @@ const twexxorMerkleRootHasher = function(_9_2, _9_3, _9_4) {
 		_9_5 >>= 1;
 	}
 
-	return _9_0[0](_9_1(_9_0[0](_9_2[0] + _9_2[1]), _9_0[1]));
+	_9_6 = _9_0[0](_9_2[0] + _9_2[1]), _9_0[1];
+	_9_7 = 1;
+
+	while (_9_7++ !== _9_4) {
+		_9_6 = _9_0[0](_9_1(_9_6), _9_0[1]);
+	}
+
+	return _9_6;
 };
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
