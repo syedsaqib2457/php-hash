@@ -16,7 +16,6 @@ const _9_1 = function(_9_0, _9_1) {
 };
 
 const twexxorMerkleRootHasher = function(_9_2, _9_3, _9_4) {
-	// todo
 	_9_0 = _9_0[_9_3];
 	let _9_5 = _9_2.length;
 
@@ -26,6 +25,12 @@ const twexxorMerkleRootHasher = function(_9_2, _9_3, _9_4) {
 
 	let _9_6 = '';
 	let _9_7 = 0;
+
+	while (_9_7 !== _9_5) {
+		_9_2[_9_7] = _9_1(_9_2[_9_7], _9_2[_9_7++].length);
+	}
+
+	_9_7 = 0;
 	let _9_8 = 1;
 
 	while (_9_5 !== 2) {
