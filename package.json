@@ -1,0 +1,34 @@
+{
+	"author": "Twexxor <twexxor@gmail.com> (https://github.com/twexxor)",
+	"dependencies": {
+		"twexxor-sha256-hasher": "1.1.5"
+	},
+	"description": "Hash Merkle roots with JavaScript.",
+	"keywords": [
+		"binary",
+		"cryptography",
+		"fast",
+		"hash",
+		"hasher",
+		"hashing-algorithm",
+		"hexadecimal",
+		"javascript",
+		"js",
+		"merkle",
+		"merkle-root",
+		"merkle-tree",
+		"module",
+		"nodejs",
+		"nodejs-module",
+		"root",
+		"tree"
+	],
+	"license": "MIT",
+	"main": "twexxor-merkle-root-hasher.js",
+	"name": "twexxor-merkle-root-hasher",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/twexxor/javascript-merkle-root-hasher.git"
+	},
+	"version": "1.0.0"
+}
