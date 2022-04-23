@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"twexxor-sha256-hasher": "1.1.9"
+		"twexxor-sha256-hasher": "1.2.0"
 	},
 	"main": "twexxor-merkle-root-hasher.js",
 	"name": "twexxor-merkle-root-hasher",
@@ -8,5 +8,5 @@
 		"type": "git",
 		"url": "git://github.com/twexxor/javascript-merkle-root-hasher.git"
 	},
-	"version": "1.0.3"
+	"version": "1.0.4"
 }
