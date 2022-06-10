@@ -2,6 +2,8 @@
 	"dependencies": {
 		"twexxor-sha256-hasher": "1.2.6"
 	},
+	"description": "Hash Merkle root strings quickly with huge arrays of strings.",
+	"keywords": [],
 	"license": "MIT",
 	"main": "twexxor-merkle-root-hasher.js",
 	"name": "twexxor-merkle-root-hasher",
