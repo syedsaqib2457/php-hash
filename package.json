@@ -2,7 +2,7 @@
 	"dependencies": {
 		"twexxor-sha256-hasher": "1.2.6"
 	},
-	"license": "Read license.md.",
+	"license": "MIT",
 	"main": "twexxor-merkle-root-hasher.js",
 	"name": "twexxor-merkle-root-hasher",
 	"repository": {
