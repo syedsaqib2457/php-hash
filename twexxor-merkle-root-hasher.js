@@ -3,7 +3,7 @@ let _9_0 = {
 };
 
 const twexxorMerkleRootHasher = function(_9_1, _9_2) {
-	if (((typeof _9_1) !== 'object') || ((typeof _9_2) === 'undefined')) {
+	if (((typeof _9_1) !== 'object') || ((typeof _9_0[_9_2]) === 'undefined')) {
 		return false;
 	}
 
