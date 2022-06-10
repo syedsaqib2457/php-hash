@@ -3,7 +3,7 @@
 		"twexxor-sha256-hasher": "1.2.6"
 	},
 	"description": "Hash Merkle root strings quickly with huge arrays of strings.",
-	"keywords": ["algorithm", "array", "big", "binary", "compatibility", "concatenate", "cryptography", "digest", "fast", "fastest", "hashing", "large", "string", "tree"],
+	"keywords": ["algorithm", "array", "big", "binary", "characters", "compatibility", "concatenate", "cryptography", "digest", "fast", "fastest", "hashing", "large", "simple", "special", "string", "tree"],
 	"license": "MIT",
 	"main": "twexxor-merkle-root-hasher.js",
 	"name": "twexxor-merkle-root-hasher",
