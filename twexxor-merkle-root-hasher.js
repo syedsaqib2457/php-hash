@@ -3,34 +3,33 @@ let _9_0 = {
 };
 
 const twexxorMerkleRootHasher = function(_9_1, _9_2) {
-	if (typeof _9_1 !== 'object' || typeof _9_2 === 'undefined') {
+	if (((typeof _9_1) !== 'object') || ((typeof _9_2) === 'undefined')) {
 		return false;
 	}
 
 	let _9_3 = _9_0[_9_2];
 	let _9_4 = _9_1.length;
-	let _9_5 = 0x7FFFFFFF - _9_4;
-	_9_5 += '';
+	let _9_5 = _9_4 + '';
 
-	if (_9_5[0] === '-') {
+	if ((typeof _9_5[9]) === 'string') {
 		return false;
 	}
 
 	if (_9_4 === 1) {
-		_9_1[_9_4] = _9_1[_9_4++ - 1];
+		_9_1[_9_4] = _9_1[((_9_4++) - 1)];
 	}
 
 	_9_5 = 0;
 
 	while (_9_4 !== 2) {
 		if ((_9_4 & 1) === 1) {
-			_9_1[_9_4] = _9_1[_9_4++ - 1];
+			_9_1[_9_4] = _9_1[((_9_4++) - 1)];
 		}
 
 		_9_5 = 0;
 
-		while (_9_5 !== _9_4) {
-			_9_1[_9_5 >> 1] = _9_3(_9_1[_9_5++] + _9_1[_9_5++]);
+		while (_9_4 !== _9_5) {
+			_9_1[(_9_5 >> 1)] = _9_3(_9_1[(_9_5++)] + _9_1[(_9_5++)]);
 		}
 
 		_9_4 >>= 1;
@@ -39,6 +38,6 @@ const twexxorMerkleRootHasher = function(_9_1, _9_2) {
 	return _9_3(_9_1[0] + _9_1[1]);
 };
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+if (((typeof module) !== 'undefined') && ((typeof module.exports) !== 'undefined')) {
 	module.exports = twexxorMerkleRootHasher;
 }
