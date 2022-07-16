@@ -1,7 +1,7 @@
 ## About
 
 #### Description
-This is an automation tool to deploy, manage and secure large-scale cloud firewall systems with simple API requests.
+This is an automation tool to deploy, manage and secure large-scale cloud firewall systems with an API.
 
 It's written in PHP and can be deployed on any major cloud platform.
 
